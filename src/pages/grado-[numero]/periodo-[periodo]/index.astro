@@ -67,9 +67,25 @@ const guias = Array.from({ length: 10 }, (_, i) => {
   <!-- Guías como Bento Grid -->
   <section class="pb-12">
     <div class="bento-container">
-      <div class="mb-8">
-        <span class="chip-bento mb-3">10 Sesiones</span>
-        <h2 class="heading-huge">Guías de aprendizaje.</h2>
+      <div class="mb-8 flex items-end justify-between gap-4 flex-wrap">
+        <div>
+          <span class="chip-bento mb-3">10 Sesiones</span>
+          <h2 class="heading-huge">Guías de aprendizaje.</h2>
+        </div>
+        <div
+          class="hidden text-right"
+          data-progreso-periodo
+          data-grado={grado.numero}
+          data-periodo={periodo.numero}
+        >
+          <div class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">
+            Tu progreso · período
+          </div>
+          <div class="text-2xl font-black tracking-tight mt-1">
+            <span data-pp-completas>0</span>/10 guías
+            <span class="text-sm font-bold opacity-70 ml-1" data-pp-proyecto-tag></span>
+          </div>
+        </div>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
@@ -77,7 +93,11 @@ const guias = Array.from({ length: 10 }, (_, i) => {
           guias.map((g) => (
             <a
               href={g.href}
-              class="bento-card-hover flex gap-4 items-start group"
+              data-sesion-card
+              data-grado={grado.numero}
+              data-periodo={periodo.numero}
+              data-sesion={g.numero}
+              class="bento-card-hover flex gap-4 items-start group relative"
             >
               <span class="text-5xl md:text-6xl font-black tracking-tighter leading-none shrink-0 group-hover:scale-110 transition-transform" style="color: var(--fg-muted); opacity: 0.4;">
                 {g.numero}
@@ -90,12 +110,59 @@ const guias = Array.from({ length: 10 }, (_, i) => {
                   {g.titulo}
                 </h3>
               </div>
+              <span
+                data-sesion-check
+                class="hidden absolute top-3 right-3 w-7 h-7 rounded-full bg-bento-lime text-black flex items-center justify-center text-sm font-black shrink-0"
+                aria-label="Completada"
+              >✓</span>
             </a>
           ))
         }
       </div>
     </div>
   </section>
+
+  <script>
+    import { progresoPeriodo, estaGuiaCompletada, onCambio } from '../../../scripts/progreso';
+
+    function render() {
+      // Marca tarjetas de sesión completadas
+      document.querySelectorAll<HTMLElement>('[data-sesion-card]').forEach((card) => {
+        const g = parseInt(card.dataset.grado || '0', 10);
+        const p = parseInt(card.dataset.periodo || '0', 10);
+        const s = parseInt(card.dataset.sesion || '0', 10);
+        const check = card.querySelector<HTMLElement>('[data-sesion-check]');
+        if (estaGuiaCompletada(g, p, s)) {
+          check?.classList.remove('hidden');
+          check?.classList.add('flex');
+          card.classList.add('ring-2', 'ring-bento-lime/50');
+        } else {
+          check?.classList.add('hidden');
+          check?.classList.remove('flex');
+          card.classList.remove('ring-2', 'ring-bento-lime/50');
+        }
+      });
+
+      // Resumen del período
+      const wrap = document.querySelector<HTMLElement>('[data-progreso-periodo]');
+      if (wrap) {
+        const g = parseInt(wrap.dataset.grado || '0', 10);
+        const p = parseInt(wrap.dataset.periodo || '0', 10);
+        const r = progresoPeriodo(g, p);
+        const completas = wrap.querySelector<HTMLElement>('[data-pp-completas]');
+        const tag = wrap.querySelector<HTMLElement>('[data-pp-proyecto-tag]');
+        if (completas) completas.textContent = String(r.guiasCompletadas);
+        if (tag) tag.textContent = r.proyectoCompletado ? '· proyecto ✓' : '';
+        if (r.guiasCompletadas > 0 || r.proyectoCompletado) {
+          wrap.classList.remove('hidden');
+        } else {
+          wrap.classList.add('hidden');
+        }
+      }
+    }
+    render();
+    onCambio(render);
+  </script>
 
   <!-- Proyecto integrador -->
   <section class="pb-24">

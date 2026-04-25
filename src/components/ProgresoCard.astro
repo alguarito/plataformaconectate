@@ -1,0 +1,232 @@
+---
+/**
+ * Tarjeta principal del estado del estudiante.
+ *
+ * - Si NO ha elegido grado: muestra invitación a elegir.
+ * - Si SÍ: nivel, progreso del grado (barra), XP del grado y XP de exploración.
+ * - Se actualiza en tiempo real al disparar progreso:cambio.
+ */
+---
+
+<section
+  id="progreso-card-section"
+  class="pb-12 hidden"
+  data-progreso-section
+>
+  <div class="bento-container">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6">
+      {/* Tarjeta grande de nivel — col 7 */}
+      <div
+        id="progreso-nivel-card"
+        class="bento-card-color bg-bento-blue md:col-span-7 min-h-[260px] flex flex-col justify-between transition-colors"
+      >
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-widest opacity-80">
+              <span data-progreso-saludo>Tu progreso</span>
+            </span>
+            <div class="flex items-baseline gap-3 mt-2 flex-wrap">
+              <h3 class="text-3xl md:text-5xl font-black tracking-tight leading-none">
+                <span data-progreso-emoji>🌱</span> <span data-progreso-nivel>Novato</span>
+              </h3>
+              <span class="text-lg md:text-xl font-bold opacity-80">
+                · <span data-progreso-grado>—</span>°
+              </span>
+            </div>
+          </div>
+          <button
+            type="button"
+            data-abrir-onboarding
+            aria-label="Cambiar de grado"
+            class="px-3 py-1.5 rounded-full text-xs font-bold bg-black/15 hover:bg-black/25 transition-colors shrink-0"
+          >
+            Cambiar grado
+          </button>
+        </div>
+
+        <div class="mt-6">
+          <div class="flex items-end justify-between mb-2 gap-3 flex-wrap">
+            <span class="text-sm font-bold uppercase tracking-widest opacity-80">
+              <span data-progreso-items-grado>0</span> de 33 completas
+            </span>
+            <span class="text-2xl md:text-3xl font-black tracking-tight">
+              <span data-progreso-pct>0</span>%
+            </span>
+          </div>
+          <div class="w-full h-3 rounded-full bg-black/20 overflow-hidden">
+            <div
+              data-progreso-barra
+              class="h-full bg-white rounded-full transition-all duration-700 ease-out"
+              style="width: 0%;"
+            ></div>
+          </div>
+          <div class="mt-3 text-sm font-bold">
+            ⚡ <span data-progreso-xp-grado>0</span> XP del grado
+          </div>
+        </div>
+      </div>
+
+      {/* Tarjeta de exploración — col 5 */}
+      <div
+        class="bento-card-color bg-bento-yellow md:col-span-5 min-h-[260px] flex flex-col justify-between"
+      >
+        <div>
+          <span class="text-xs font-bold uppercase tracking-widest opacity-80">
+            Exploración
+          </span>
+          <div class="text-5xl md:text-6xl font-black tracking-tighter leading-none mt-2">
+            <span data-progreso-items-otros>0</span>
+          </div>
+          <div class="text-sm font-bold opacity-80 mt-1">
+            guías y proyectos de otros grados
+          </div>
+        </div>
+
+        <div>
+          <div class="text-sm font-bold mb-2">
+            ⭐ <span data-progreso-xp-explora>0</span> XP exploración
+          </div>
+          <div class="flex flex-wrap gap-2" data-progreso-insignias>
+            {/* insignias se insertan por JS */}
+          </div>
+          <div
+            class="text-xs mt-2 opacity-80"
+            data-progreso-proxima-insignia
+          ></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{/* Tarjeta alternativa: aún no eligió grado (modo invitado) */}
+<section
+  id="progreso-invitado-section"
+  class="pb-12 hidden"
+>
+  <div class="bento-container">
+    <div class="bento-card-color bg-bento-black flex flex-col md:flex-row md:items-center gap-4 md:gap-6 grid-pattern">
+      <div class="text-7xl md:text-8xl">🎯</div>
+      <div class="flex-1">
+        <span class="text-xs font-bold uppercase tracking-widest opacity-70">
+          Aún no eliges grado
+        </span>
+        <h3 class="text-2xl md:text-3xl font-black tracking-tight mt-2 mb-2">
+          Activa tu progreso personal
+        </h3>
+        <p class="opacity-80 max-w-2xl text-sm md:text-base leading-relaxed">
+          Elige tu grado y ConectaTE empezará a separar las guías que sí
+          son del año en que estás de las que exploras por curiosidad.
+        </p>
+      </div>
+      <button
+        type="button"
+        data-abrir-onboarding
+        class="px-6 py-3 rounded-full font-bold bg-bento-lime text-black hover:scale-105 transition-transform"
+      >
+        Elegir mi grado
+      </button>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { calcStats, leerEstado, onCambio } from '../scripts/progreso';
+  import type { Insignia } from '../scripts/progreso';
+  import { INSIGNIAS_EXPLORACION } from '../scripts/progreso';
+
+  const COLORES_NIVEL: Record<string, string> = {
+    Novato: 'bg-bento-blue',
+    Aprendiz: 'bg-bento-cyan',
+    Experto: 'bg-bento-lime',
+    'Casi Maestro': 'bg-bento-orange',
+    Maestro: 'bg-bento-pink',
+  };
+
+  const sectionGrado = document.getElementById('progreso-card-section');
+  const sectionInvitado = document.getElementById('progreso-invitado-section');
+  const nivelCard = document.getElementById('progreso-nivel-card');
+
+  function setText(sel: string, value: string | number) {
+    document.querySelectorAll<HTMLElement>(sel).forEach((el) => {
+      el.textContent = String(value);
+    });
+  }
+
+  function render() {
+    const estado = leerEstado();
+    const s = calcStats();
+
+    // Estado: invitado (sin grado) vs grado seleccionado
+    if (s.gradoActual === null) {
+      sectionGrado?.classList.add('hidden');
+      sectionInvitado?.classList.remove('hidden');
+      return;
+    }
+    sectionGrado?.classList.remove('hidden');
+    sectionInvitado?.classList.add('hidden');
+
+    // Saludo dinámico
+    setText('[data-progreso-saludo]', `Vas en grado ${s.gradoActual}°`);
+
+    // Nivel
+    setText('[data-progreso-emoji]', s.nivel.emoji);
+    setText('[data-progreso-nivel]', s.nivel.nombre);
+    setText('[data-progreso-grado]', s.gradoActual);
+
+    // Color de fondo del nivel
+    if (nivelCard) {
+      // limpia clases anteriores
+      Object.values(COLORES_NIVEL).forEach((c) => nivelCard.classList.remove(c));
+      const c = COLORES_NIVEL[s.nivel.nombre] ?? 'bg-bento-blue';
+      nivelCard.classList.add(c);
+    }
+
+    // Progreso
+    setText('[data-progreso-items-grado]', s.itemsGrado);
+    setText('[data-progreso-pct]', s.porcentajeGrado);
+    const barra = document.querySelector<HTMLElement>('[data-progreso-barra]');
+    if (barra) barra.style.width = `${s.porcentajeGrado}%`;
+
+    // XP
+    setText('[data-progreso-xp-grado]', s.xpGrado.toLocaleString('es-CO'));
+    setText('[data-progreso-xp-explora]', s.xpExploracion.toLocaleString('es-CO'));
+    setText('[data-progreso-items-otros]', s.itemsOtros);
+
+    // Insignias ganadas
+    const wrap = document.querySelector<HTMLElement>('[data-progreso-insignias]');
+    if (wrap) {
+      wrap.innerHTML = '';
+      if (s.insigniasGanadas.length === 0) {
+        const tag = document.createElement('span');
+        tag.className = 'text-xs italic opacity-70';
+        tag.textContent = 'Aún sin insignias';
+        wrap.appendChild(tag);
+      } else {
+        s.insigniasGanadas.forEach((ins: Insignia) => {
+          const tag = document.createElement('span');
+          tag.className =
+            'inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/15 text-xs font-bold';
+          tag.innerHTML = `<span>${ins.emoji}</span><span>${ins.nombre}</span>`;
+          wrap.appendChild(tag);
+        });
+      }
+    }
+
+    // Próxima insignia
+    const prox = document.querySelector<HTMLElement>('[data-progreso-proxima-insignia]');
+    if (prox) {
+      if (s.proximaInsignia) {
+        const restante = s.proximaInsignia.min - s.itemsOtros;
+        prox.textContent = `Faltan ${restante} para ${s.proximaInsignia.emoji} ${s.proximaInsignia.nombre}`;
+      } else {
+        prox.textContent = '🌟 Has ganado todas las insignias de exploración';
+      }
+    }
+  }
+
+  // Render inicial
+  render();
+  // Re-render cuando cambie progreso
+  onCambio(render);
+</script>

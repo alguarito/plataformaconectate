@@ -1,0 +1,48 @@
+---
+/**
+ * Chip compacto del nivel del estudiante en el header.
+ *
+ * Solo aparece si hay grado seleccionado. Tap para reabrir el onboarding
+ * (cambiar grado o desactivar).
+ */
+---
+
+<button
+  type="button"
+  id="perfil-chip"
+  data-abrir-onboarding
+  class="hidden items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold hover:opacity-80 transition-opacity"
+  style="background: var(--border);"
+  aria-label="Tu nivel — toca para cambiar de grado"
+>
+  <span data-perfil-emoji>🌱</span>
+  <span data-perfil-grado>—°</span>
+  <span class="opacity-60">·</span>
+  <span data-perfil-pct>0%</span>
+</button>
+
+<script>
+  import { calcStats, onCambio } from '../scripts/progreso';
+
+  const chip = document.getElementById('perfil-chip');
+  if (chip) {
+    function render() {
+      const s = calcStats();
+      if (s.gradoActual === null) {
+        chip!.classList.add('hidden');
+        chip!.classList.remove('inline-flex');
+        return;
+      }
+      chip!.classList.remove('hidden');
+      chip!.classList.add('inline-flex');
+      const e = chip!.querySelector<HTMLElement>('[data-perfil-emoji]');
+      const g = chip!.querySelector<HTMLElement>('[data-perfil-grado]');
+      const p = chip!.querySelector<HTMLElement>('[data-perfil-pct]');
+      if (e) e.textContent = s.nivel.emoji;
+      if (g) g.textContent = `${s.gradoActual}°`;
+      if (p) p.textContent = `${s.porcentajeGrado}%`;
+    }
+    render();
+    onCambio(render);
+  }
+</script>

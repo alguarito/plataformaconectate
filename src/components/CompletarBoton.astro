@@ -1,0 +1,171 @@
+---
+/**
+ * Botón para marcar una guía o proyecto como completado/pendiente.
+ *
+ * Se inserta en la página de cada guía y de cada proyecto integrador.
+ * Muestra:
+ * - Estado actual (✅ completada / ⭕ pendiente)
+ * - XP que ganaría según si es de su grado o no
+ * - Animación al completar
+ */
+interface Props {
+  tipo: 'guia' | 'proyecto';
+  grado: number;
+  periodo: number;
+  sesion?: number; // solo para tipo='guia'
+}
+
+const { tipo, grado, periodo, sesion } = Astro.props;
+---
+
+<div
+  class="bento-card mb-10"
+  data-completar-bloque
+  data-completar-tipo={tipo}
+  data-completar-grado={grado}
+  data-completar-periodo={periodo}
+  data-completar-sesion={sesion ?? ''}
+>
+  <div class="flex items-start gap-4 flex-wrap md:flex-nowrap">
+    <div class="text-5xl shrink-0" data-completar-emoji>⭕</div>
+
+    <div class="flex-1 min-w-0">
+      <span class="chip-bento mb-2">Tu progreso</span>
+      <h3 class="text-xl md:text-2xl font-black tracking-tight mt-2 mb-1" data-completar-titulo>
+        Marca esta {tipo === 'guia' ? 'guía' : 'proyecto'} como completada
+      </h3>
+      <p class="text-sm leading-relaxed" style="color: var(--fg-muted);" data-completar-descripcion>
+        Cargando tu progreso…
+      </p>
+    </div>
+
+    <button
+      type="button"
+      data-completar-toggle
+      class="px-6 py-3 rounded-full font-bold text-sm bg-bento-lime text-black hover:scale-105 active:scale-95 transition-transform shrink-0 disabled:opacity-50"
+      disabled
+    >
+      Cargando…
+    </button>
+  </div>
+</div>
+
+<script>
+  import {
+    estaGuiaCompletada,
+    estaProyectoCompletado,
+    marcarGuia,
+    marcarProyecto,
+    leerEstado,
+    onCambio,
+  } from '../scripts/progreso';
+
+  document.querySelectorAll<HTMLElement>('[data-completar-bloque]').forEach((bloque) => {
+    const tipo = bloque.dataset.completarTipo as 'guia' | 'proyecto';
+    const grado = parseInt(bloque.dataset.completarGrado || '0', 10);
+    const periodo = parseInt(bloque.dataset.completarPeriodo || '0', 10);
+    const sesion = bloque.dataset.completarSesion
+      ? parseInt(bloque.dataset.completarSesion, 10)
+      : undefined;
+
+    const emoji = bloque.querySelector<HTMLElement>('[data-completar-emoji]');
+    const titulo = bloque.querySelector<HTMLElement>('[data-completar-titulo]');
+    const desc = bloque.querySelector<HTMLElement>('[data-completar-descripcion]');
+    const btn = bloque.querySelector<HTMLButtonElement>('[data-completar-toggle]');
+    if (!btn) return;
+
+    function isCompletada(): boolean {
+      if (tipo === 'guia' && sesion !== undefined) {
+        return estaGuiaCompletada(grado, periodo, sesion);
+      }
+      if (tipo === 'proyecto') {
+        return estaProyectoCompletado(grado, periodo);
+      }
+      return false;
+    }
+
+    function calcularXP(): number {
+      const ga = leerEstado().gradoActual;
+      const esDeMiGrado = ga !== null && ga === grado;
+      if (tipo === 'guia') return esDeMiGrado ? 100 : 50;
+      return esDeMiGrado ? 500 : 200;
+    }
+
+    function render() {
+      const ga = leerEstado().gradoActual;
+      const esDeMiGrado = ga !== null && ga === grado;
+      const completada = isCompletada();
+      const xp = calcularXP();
+      const etiqueta = tipo === 'guia' ? 'guía' : 'proyecto integrador';
+
+      if (emoji) emoji.textContent = completada ? '✅' : '⭕';
+
+      if (titulo) {
+        titulo.textContent = completada
+          ? `${etiqueta.charAt(0).toUpperCase() + etiqueta.slice(1)} completada`
+          : `Marca esta ${etiqueta} como completada`;
+      }
+
+      if (desc) {
+        if (completada) {
+          desc.innerHTML = `Sumaste <strong>+${xp} XP</strong> al ${
+            esDeMiGrado ? 'progreso de tu grado' : 'contador de exploración'
+          }. Puedes desmarcarla si la quieres rehacer.`;
+        } else {
+          if (ga === null) {
+            desc.innerHTML = `Vas a ganar <strong>+${xp} XP de exploración</strong>. <a href="#" data-abrir-onboarding class="underline font-semibold">Elige tu grado</a> para que cuente como progreso del grado.`;
+          } else if (esDeMiGrado) {
+            desc.innerHTML = `Vas a ganar <strong>+${xp} XP</strong> en el progreso de <strong>tu grado ${grado}°</strong>.`;
+          } else {
+            desc.innerHTML = `Como esta es de grado ${grado}° y tú vas en ${ga}°, sumará <strong>+${xp} XP</strong> al contador de <strong>exploración</strong>.`;
+          }
+        }
+      }
+
+      btn.disabled = false;
+      btn.textContent = completada ? 'Desmarcar' : 'Marcar como completada';
+      if (completada) {
+        btn.classList.remove('bg-bento-lime', 'text-black');
+        btn.classList.add('bg-black/10');
+        btn.style.color = 'var(--fg)';
+      } else {
+        btn.classList.remove('bg-black/10');
+        btn.classList.add('bg-bento-lime', 'text-black');
+        btn.style.color = '';
+      }
+
+      // Re-bind del enlace [data-abrir-onboarding] insertado dinámicamente
+      desc?.querySelectorAll<HTMLAnchorElement>('a[data-abrir-onboarding]').forEach((a) => {
+        a.addEventListener('click', (e) => {
+          e.preventDefault();
+          const dlg = document.getElementById('onboarding-grado') as HTMLDialogElement | null;
+          dlg?.showModal();
+        });
+      });
+    }
+
+    btn.addEventListener('click', () => {
+      const completada = isCompletada();
+      const proximo = !completada;
+      if (tipo === 'guia' && sesion !== undefined) {
+        marcarGuia(grado, periodo, sesion, proximo);
+      } else if (tipo === 'proyecto') {
+        marcarProyecto(grado, periodo, proximo);
+      }
+      // celebración pequeña al completar
+      if (proximo) {
+        bloque.animate(
+          [
+            { transform: 'scale(1)' },
+            { transform: 'scale(1.02)' },
+            { transform: 'scale(1)' },
+          ],
+          { duration: 350, easing: 'ease-out' },
+        );
+      }
+    });
+
+    render();
+    onCambio(render);
+  });
+</script>

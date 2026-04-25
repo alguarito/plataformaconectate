@@ -6,14 +6,18 @@ interface Props {
   bgClass: string;
   totalGuias: number;
   href: string;
+  grado: number;
 }
 
-const { numero, titulo, descripcion, bgClass, totalGuias, href } = Astro.props;
+const { numero, titulo, descripcion, bgClass, totalGuias, href, grado } = Astro.props;
 ---
 
 <a
   href={href}
-  class={`bento-card-color group ${bgClass} flex flex-col justify-between min-h-[280px] hover:scale-[1.02] active:scale-[0.99] transition-transform duration-300`}
+  data-periodo-card
+  data-grado={grado}
+  data-periodo={numero}
+  class={`bento-card-color group ${bgClass} flex flex-col justify-between min-h-[280px] hover:scale-[1.02] active:scale-[0.99] transition-transform duration-300 relative`}
 >
   <div class="flex items-start justify-between">
     <span class="text-xs font-bold uppercase tracking-widest opacity-80">
@@ -33,6 +37,26 @@ const { numero, titulo, descripcion, bgClass, totalGuias, href } = Astro.props;
         {descripcion}
       </p>
     )}
+
+    {/* Mini barra de progreso (solo visible si tiene avance) */}
+    <div class="hidden mt-4 mb-3" data-periodo-progreso>
+      <div class="flex items-center justify-between mb-1.5">
+        <span class="text-xs font-bold uppercase tracking-widest opacity-80">
+          Tu avance
+        </span>
+        <span class="text-xs font-bold opacity-90">
+          <span data-pc-completas>0</span>/{totalGuias}<span data-pc-proyecto-tag></span>
+        </span>
+      </div>
+      <div class="w-full h-2 rounded-full bg-black/20 overflow-hidden">
+        <div
+          data-pc-barra
+          class="h-full bg-white rounded-full transition-all duration-500"
+          style="width: 0%;"
+        ></div>
+      </div>
+    </div>
+
     <div class="flex items-center justify-between mt-4">
       <span class="text-sm font-semibold opacity-90">
         {totalGuias} guías · 1 proyecto
@@ -44,3 +68,32 @@ const { numero, titulo, descripcion, bgClass, totalGuias, href } = Astro.props;
     </div>
   </div>
 </a>
+
+<script>
+  import { progresoPeriodo, onCambio } from '../scripts/progreso';
+
+  function render() {
+    document.querySelectorAll<HTMLElement>('[data-periodo-card]').forEach((card) => {
+      const g = parseInt(card.dataset.grado || '0', 10);
+      const p = parseInt(card.dataset.periodo || '0', 10);
+      const r = progresoPeriodo(g, p);
+      const wrap = card.querySelector<HTMLElement>('[data-periodo-progreso]');
+      const completas = card.querySelector<HTMLElement>('[data-pc-completas]');
+      const proyectoTag = card.querySelector<HTMLElement>('[data-pc-proyecto-tag]');
+      const barra = card.querySelector<HTMLElement>('[data-pc-barra]');
+      const total = 11; // 10 guías + 1 proyecto
+      const hechos = r.guiasCompletadas + (r.proyectoCompletado ? 1 : 0);
+      const pct = Math.round((hechos / total) * 100);
+
+      if (completas) completas.textContent = String(r.guiasCompletadas);
+      if (proyectoTag) proyectoTag.textContent = r.proyectoCompletado ? ' · 🎯 ✓' : '';
+      if (barra) barra.style.width = `${pct}%`;
+      if (wrap) {
+        if (hechos > 0) wrap.classList.remove('hidden');
+        else wrap.classList.add('hidden');
+      }
+    });
+  }
+  render();
+  onCambio(render);
+</script>

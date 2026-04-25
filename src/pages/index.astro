@@ -22,6 +22,24 @@ const base = import.meta.env.BASE_URL;
         </div>
       </div>
 
+      {/* Chip de filtro activo (solo móvil, oculto por defecto) */}
+      <div
+        id="grado-filter-chip"
+        class="hidden mb-6 md:hidden"
+      >
+        <button
+          type="button"
+          data-clear-grado-filter
+          class="inline-flex items-center gap-2 px-4 py-2 rounded-full font-bold text-sm bg-bento-blue text-white hover:opacity-90 transition-opacity"
+        >
+          <span>Filtro: Grado <span data-filter-grado-num>—</span>°</span>
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 6 6 18"></path>
+            <path d="m6 6 12 12"></path>
+          </svg>
+        </button>
+      </div>
+
       <!-- Grid Bento asimétrico real -->
       <div class="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6 auto-rows-min">
         <!-- Grado 6 - LARGE (8 cols, 2 rows) -->
@@ -151,6 +169,64 @@ const base = import.meta.env.BASE_URL;
     </div>
   </section>
 
+  {/* Bottom sheet selector de grado (solo móvil) */}
+  <dialog
+    id="grado-picker-dialog"
+    class="md:hidden bg-transparent p-0 m-0 max-w-none w-full max-h-none h-full backdrop:bg-black/60"
+  >
+    <div class="fixed inset-x-0 bottom-0 max-h-[85vh] overflow-y-auto rounded-t-3xl shadow-2xl" style="background: var(--bg);">
+      <div class="p-6">
+        {/* Drag handle visual */}
+        <div class="w-12 h-1.5 rounded-full mx-auto mb-6" style="background: var(--border);"></div>
+
+        <div class="flex items-start justify-between mb-6">
+          <div>
+            <span class="chip-bento mb-2">Selecciona</span>
+            <h2 class="text-2xl font-black tracking-tight">Tu grado</h2>
+          </div>
+          <button
+            type="button"
+            data-close-grado-picker
+            aria-label="Cerrar"
+            class="w-10 h-10 rounded-full flex items-center justify-center hover:opacity-70 transition-opacity"
+            style="background: var(--border);"
+          >
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 6 6 18"></path>
+              <path d="m6 6 12 12"></path>
+            </svg>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 mb-3">
+          {grados.map((g) => (
+            <button
+              type="button"
+              data-pick-grado={g.numero}
+              class={`bento-card-color ${g.bgClass} text-left p-5 active:scale-95 transition-transform`}
+            >
+              <div class="text-4xl font-black tracking-tighter leading-none mb-2">
+                {g.numero}°
+              </div>
+              <div class="text-xs font-bold opacity-80 line-clamp-2 leading-tight">
+                {g.titulo}
+              </div>
+            </button>
+          ))}
+        </div>
+
+        <button
+          type="button"
+          data-pick-grado="all"
+          class="w-full mt-3 py-4 rounded-bento-sm font-bold text-sm border-2 hover:opacity-70 transition-opacity"
+          style="border-color: var(--border); color: var(--fg);"
+        >
+          Ver todos los grados
+        </button>
+      </div>
+    </div>
+  </dialog>
+
   <!-- CTA Final -->
   <section class="pb-24">
     <div class="bento-container">
@@ -172,4 +248,84 @@ const base = import.meta.env.BASE_URL;
       </div>
     </div>
   </section>
+
+  <script>
+    // Selector de grado en móvil — filtra la home a un grado o vuelve a "todos"
+    const dialog = document.getElementById('grado-picker-dialog') as HTMLDialogElement | null;
+    const chip = document.getElementById('grado-filter-chip');
+    const chipNum = document.querySelector<HTMLElement>('[data-filter-grado-num]');
+    const cards = document.querySelectorAll<HTMLElement>('[data-grado-card]');
+
+    function applyFilter(grado: string | null) {
+      if (!grado || grado === 'all') {
+        // Mostrar todas
+        cards.forEach((c) => c.removeAttribute('data-grado-hidden'));
+        chip?.classList.add('hidden');
+      } else {
+        cards.forEach((c) => {
+          if (c.dataset.gradoCard === grado) {
+            c.removeAttribute('data-grado-hidden');
+          } else {
+            c.setAttribute('data-grado-hidden', '');
+          }
+        });
+        if (chip && chipNum) {
+          chipNum.textContent = grado;
+          chip.classList.remove('hidden');
+        }
+      }
+    }
+
+    // Abrir dialog
+    document.querySelectorAll('[data-open-grado-picker]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        if (typeof dialog?.showModal === 'function') {
+          dialog.showModal();
+        }
+      });
+    });
+
+    // Cerrar dialog (botón X)
+    document.querySelectorAll('[data-close-grado-picker]').forEach((btn) => {
+      btn.addEventListener('click', () => dialog?.close());
+    });
+
+    // Cerrar al tocar fuera del contenido (en el backdrop)
+    dialog?.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if (target === dialog) dialog.close();
+    });
+
+    // Seleccionar grado
+    document.querySelectorAll<HTMLButtonElement>('[data-pick-grado]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const grado = btn.dataset.pickGrado || null;
+        applyFilter(grado);
+        dialog?.close();
+        // Scroll suave a la sección de grados
+        document.getElementById('grados')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    // Limpiar filtro desde el chip
+    document.querySelectorAll('[data-clear-grado-filter]').forEach((btn) => {
+      btn.addEventListener('click', () => applyFilter('all'));
+    });
+  </script>
+
+  <style is:global>
+    /* Oculta tarjetas de grado filtradas (solo aplica si tienen el atributo) */
+    [data-grado-card][data-grado-hidden] {
+      display: none !important;
+    }
+
+    /* Animación suave del bottom sheet al abrir */
+    #grado-picker-dialog[open] > div {
+      animation: slide-up 0.25s ease-out;
+    }
+    @keyframes slide-up {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+  </style>
 </BaseLayout>

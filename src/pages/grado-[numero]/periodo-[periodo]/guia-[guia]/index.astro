@@ -1,0 +1,283 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import { grados } from '../../../../data/grados';
+import {
+  getRecurso,
+  pdfPreviewUrl,
+  pdfDownloadUrl,
+  pdfViewUrl,
+} from '../../../../data/recursos';
+
+export function getStaticPaths() {
+  const paths: any[] = [];
+  for (const g of grados) {
+    for (const p of g.periodos) {
+      for (let s = 1; s <= 10; s++) {
+        paths.push({
+          params: {
+            numero: String(g.numero),
+            periodo: String(p.numero),
+            guia: String(s),
+          },
+          props: { grado: g, periodo: p, sesion: s },
+        });
+      }
+    }
+  }
+  return paths;
+}
+
+const { grado, periodo, sesion } = Astro.props;
+const base = import.meta.env.BASE_URL;
+
+// Recurso real desde Drive (titulo + pdfId)
+const recurso = getRecurso(grado.numero, periodo.numero, sesion);
+const tituloGuia = recurso?.titulo ?? `Guía ${sesion}`;
+const pdfId = recurso?.pdfId ?? '';
+const previewUrl = pdfId ? pdfPreviewUrl(pdfId) : '';
+const downloadUrl = pdfId ? pdfDownloadUrl(pdfId) : '';
+const viewUrl = pdfId ? pdfViewUrl(pdfId) : '';
+
+// Navegación previa/siguiente
+const prevSesion = sesion > 1 ? sesion - 1 : null;
+const nextSesion = sesion < 10 ? sesion + 1 : null;
+---
+
+<BaseLayout
+  title={`Sesión ${sesion} · ${tituloGuia} — ConectaTE`}
+>
+  <article class="pt-12 pb-20">
+    <div class="bento-container max-w-5xl">
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-sm font-semibold mb-8 flex-wrap" style="color: var(--fg-muted);">
+        <a href={base || '/'} class="hover:opacity-60 transition-opacity">Inicio</a>
+        <span>/</span>
+        <a href={`${base}/grado-${grado.numero}`} class="hover:opacity-60 transition-opacity">
+          Grado {grado.numero}°
+        </a>
+        <span>/</span>
+        <a href={`${base}/grado-${grado.numero}/periodo-${periodo.numero}`} class="hover:opacity-60 transition-opacity">
+          Período {periodo.numero}
+        </a>
+        <span>/</span>
+        <span style="color: var(--fg);">Sesión {sesion}</span>
+      </nav>
+
+      <!-- Hero card de la guía -->
+      <div class={`bento-card-color ${periodo.bgClass} mb-10 min-h-[340px] flex flex-col justify-between`}>
+        <div class="flex items-start justify-between flex-wrap gap-3">
+          <div class="flex flex-wrap gap-2">
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-black/15">
+              Grado {grado.numero}°
+            </span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-black/15">
+              Período {periodo.numero}
+            </span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-black/15">
+              ⏱ 2 horas
+            </span>
+          </div>
+          <span class="text-[10rem] md:text-[12rem] font-black tracking-tighter leading-none opacity-25 -mr-4 -my-4">
+            {sesion}
+          </span>
+        </div>
+
+        <div>
+          <span class="text-xs font-bold uppercase tracking-widest opacity-80">
+            Sesión {sesion} · {periodo.titulo}
+          </span>
+          <h1 class="heading-giant text-balance mt-2">
+            {tituloGuia}
+          </h1>
+        </div>
+      </div>
+
+      {pdfId && (
+        <>
+          <!-- Acciones rápidas: descargar / abrir en Drive -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-10">
+            <a
+              href={downloadUrl}
+              class="bento-card-color bg-bento-lime flex items-center gap-4 hover:scale-[1.01] transition-transform group"
+            >
+              <div class="text-5xl">⬇️</div>
+              <div class="flex-1">
+                <span class="text-xs font-bold uppercase tracking-widest opacity-80">PDF</span>
+                <div class="font-black text-xl leading-tight mt-1">Descargar guía</div>
+                <div class="text-sm opacity-80 mt-1">Llévala contigo en cualquier dispositivo</div>
+              </div>
+              <svg class="w-7 h-7 group-hover:translate-x-1 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14"></path>
+                <path d="m12 5 7 7-7 7"></path>
+              </svg>
+            </a>
+
+            <a
+              href={viewUrl}
+              target="_blank"
+              rel="noopener"
+              class="bento-card-hover flex items-center gap-4"
+            >
+              <div class="text-5xl">📂</div>
+              <div class="flex-1">
+                <span class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">Drive</span>
+                <div class="font-black text-xl leading-tight mt-1">Abrir en Drive</div>
+                <div class="text-sm mt-1" style="color: var(--fg-muted);">Versión completa con anotaciones</div>
+              </div>
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+            </a>
+          </div>
+
+          <!-- Visor PDF embebido -->
+          <div class="bento-card mb-10 p-0 overflow-hidden">
+            <div class="px-6 py-4 border-b" style="border-color: var(--border);">
+              <div class="flex items-center justify-between gap-3 flex-wrap">
+                <div>
+                  <span class="chip-bento">Guía completa · PDF</span>
+                </div>
+                <div class="text-sm font-semibold" style="color: var(--fg-muted);">
+                  {recurso?.guiaId}
+                </div>
+              </div>
+            </div>
+            <div class="aspect-[8.5/11] md:aspect-[3/4] w-full bg-black/5">
+              <iframe
+                src={previewUrl}
+                class="w-full h-full"
+                loading="lazy"
+                allow="autoplay"
+                title={`Visor PDF — ${tituloGuia}`}
+              ></iframe>
+            </div>
+          </div>
+        </>
+      )}
+
+      {!pdfId && (
+        <div class="bento-card-color bg-bento-yellow mb-10 flex items-start gap-4">
+          <div class="text-5xl">📝</div>
+          <div>
+            <h3 class="text-xl font-black tracking-tight mb-1">PDF en preparación</h3>
+            <p class="opacity-80 leading-relaxed">
+              Esta guía aún no tiene PDF publicado. Estará disponible muy pronto.
+            </p>
+          </div>
+        </div>
+      )}
+
+      <!-- Estructura de la sesión -->
+      <div class="bento-card mb-10">
+        <span class="chip-bento mb-6">Estructura de la sesión</span>
+
+        <div class="space-y-6 mt-6">
+          <div class="flex gap-4">
+            <div class="w-12 h-12 rounded-bento-sm bg-bento-blue text-white flex items-center justify-center text-xl font-black shrink-0">1</div>
+            <div>
+              <h3 class="text-xl font-black mb-1">Introducción</h3>
+              <p class="leading-relaxed" style="color: var(--fg-muted);">
+                Activación de conocimientos previos y planteamiento del problema o pregunta orientadora.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex gap-4">
+            <div class="w-12 h-12 rounded-bento-sm bg-bento-orange text-white flex items-center justify-center text-xl font-black shrink-0">2</div>
+            <div>
+              <h3 class="text-xl font-black mb-1">Desarrollo conceptual</h3>
+              <p class="leading-relaxed" style="color: var(--fg-muted);">
+                Explicación de los contenidos de la sesión con ejemplos, recursos visuales y referencias.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex gap-4">
+            <div class="w-12 h-12 rounded-bento-sm bg-bento-lime text-black flex items-center justify-center text-xl font-black shrink-0">3</div>
+            <div>
+              <h3 class="text-xl font-black mb-1">Actividad práctica</h3>
+              <p class="leading-relaxed" style="color: var(--fg-muted);">
+                Ejercicio individual o colaborativo donde aplicas lo aprendido.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex gap-4">
+            <div class="w-12 h-12 rounded-bento-sm bg-bento-pink text-white flex items-center justify-center text-xl font-black shrink-0">4</div>
+            <div>
+              <h3 class="text-xl font-black mb-1">Evaluación</h3>
+              <p class="leading-relaxed" style="color: var(--fg-muted);">
+                Cuestionario interactivo, producto o reflexión escrita para evidenciar el aprendizaje.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navegación previa / siguiente -->
+      <nav class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+        {prevSesion ? (
+          <a
+            href={`${base}/grado-${grado.numero}/periodo-${periodo.numero}/guia-${prevSesion}`}
+            class="bento-card-hover flex items-center gap-4"
+          >
+            <svg class="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 12H5"></path>
+              <path d="m12 19-7-7 7-7"></path>
+            </svg>
+            <div>
+              <div class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">Anterior</div>
+              <div class="font-black text-lg">Sesión {prevSesion}</div>
+            </div>
+          </a>
+        ) : (
+          <a
+            href={`${base}/grado-${grado.numero}/periodo-${periodo.numero}`}
+            class="bento-card-hover flex items-center gap-4"
+          >
+            <svg class="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 12H5"></path>
+              <path d="m12 19-7-7 7-7"></path>
+            </svg>
+            <div>
+              <div class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">Volver al</div>
+              <div class="font-black text-lg">Período {periodo.numero}</div>
+            </div>
+          </a>
+        )}
+
+        {nextSesion ? (
+          <a
+            href={`${base}/grado-${grado.numero}/periodo-${periodo.numero}/guia-${nextSesion}`}
+            class="bento-card-hover flex items-center gap-4 justify-end text-right"
+          >
+            <div>
+              <div class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">Siguiente</div>
+              <div class="font-black text-lg">Sesión {nextSesion}</div>
+            </div>
+            <svg class="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14"></path>
+              <path d="m12 5 7 7-7 7"></path>
+            </svg>
+          </a>
+        ) : (
+          <a
+            href={`${base}/grado-${grado.numero}/periodo-${periodo.numero}/proyecto`}
+            class={`bento-card-color ${periodo.bgClass} flex items-center gap-4 justify-end text-right`}
+          >
+            <div>
+              <div class="text-xs font-bold uppercase tracking-widest opacity-80">Continúa con el</div>
+              <div class="font-black text-lg">Proyecto integrador</div>
+            </div>
+            <svg class="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14"></path>
+              <path d="m12 5 7 7-7 7"></path>
+            </svg>
+          </a>
+        )}
+      </nav>
+    </div>
+  </article>
+</BaseLayout>

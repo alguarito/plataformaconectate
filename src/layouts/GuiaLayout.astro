@@ -1,0 +1,107 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  frontmatter: {
+    titulo: string;
+    grado: number;
+    periodo: number;
+    sesion: number;
+    duracion?: string;
+    objetivos?: string[];
+    competencias?: string[];
+    bgClass?: string;
+  };
+}
+
+const { frontmatter } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const bgClass = frontmatter.bgClass || 'bg-bento-blue';
+---
+
+<BaseLayout title={`${frontmatter.titulo} · ConectaTE`}>
+  <article class="pt-12 pb-20">
+    <div class="bento-container max-w-5xl">
+      <a
+        href={`${base}/grado-${frontmatter.grado}/periodo-${frontmatter.periodo}`}
+        class="inline-flex items-center gap-2 text-sm font-semibold mb-8 hover:opacity-60 transition-opacity"
+        style="color: var(--fg-muted);"
+      >
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 18l-6-6 6-6"></path>
+        </svg>
+        Período {frontmatter.periodo}
+      </a>
+
+      <!-- Hero de la guía: Bento card de color con título -->
+      <div class={`bento-card-color ${bgClass} mb-10 min-h-[320px] flex flex-col justify-between`}>
+        <div class="flex items-start justify-between flex-wrap gap-3">
+          <div class="flex flex-wrap gap-2">
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-black/15">
+              Grado {frontmatter.grado}°
+            </span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-black/15">
+              Período {frontmatter.periodo}
+            </span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-black/15">
+              Sesión {frontmatter.sesion}
+            </span>
+            {frontmatter.duracion && (
+              <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-black/15">
+                ⏱ {frontmatter.duracion}
+              </span>
+            )}
+          </div>
+          <span class="text-7xl font-black tracking-tighter leading-none opacity-30">
+            {frontmatter.sesion}
+          </span>
+        </div>
+
+        <h1 class="heading-giant text-balance mt-8">
+          {frontmatter.titulo}
+        </h1>
+      </div>
+
+      <!-- Bento de objetivos y competencias -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6 mb-10">
+        {
+          frontmatter.objetivos && (
+            <div class="bento-card md:col-span-7">
+              <span class="chip-bento mb-4">Objetivos</span>
+              <ul class="space-y-3 mt-4">
+                {frontmatter.objetivos.map((o) => (
+                  <li class="flex items-start gap-3">
+                    <span class="w-6 h-6 rounded-full bg-bento-lime text-black flex items-center justify-center text-xs font-black shrink-0 mt-0.5">
+                      ✓
+                    </span>
+                    <span class="leading-relaxed">{o}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+
+        {
+          frontmatter.competencias && (
+            <div class="bento-card md:col-span-5">
+              <span class="chip-bento mb-4">Competencias</span>
+              <div class="flex flex-wrap gap-2 mt-4">
+                {frontmatter.competencias.map((c) => (
+                  <span class="px-3 py-1.5 rounded-full text-sm font-semibold" style="background: var(--bg); border: 1px solid var(--border);">
+                    {c}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )
+        }
+      </div>
+
+      <!-- Contenido de la guía -->
+      <div class="bento-card prose prose-neutral dark:prose-invert max-w-none prose-headings:font-black prose-headings:tracking-tight prose-h2:text-3xl prose-h3:text-2xl prose-strong:font-bold">
+        <slot />
+      </div>
+    </div>
+  </article>
+</BaseLayout>

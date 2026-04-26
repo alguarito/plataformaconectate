@@ -8,14 +8,29 @@ import BuscadorOverlay from '../components/BuscadorOverlay.astro';
 interface Props {
   title?: string;
   description?: string;
+  /** Imagen para Open Graph y Twitter Card. Ruta relativa al `base` (ej. "/og/grado-6.png") o URL absoluta. */
+  imagen?: string;
+  /** Tipo Open Graph; "website" para landings, "article" para guías */
+  ogType?: 'website' | 'article';
 }
 
 const {
   title = 'ConectaTE — Conectando Tecnología con Educación',
   description = 'Plataforma educativa del Dr. Álvaro Cárdenas Orozco — I.E. Sor María Juliana, Cartago. 180 guías de Tecnología e Informática para grados 6° a 11°.',
+  imagen,
+  ogType = 'website',
 } = Astro.props;
 
 const base = import.meta.env.BASE_URL;
+
+// URL canónica de la página actual
+const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://alguarito.github.io').toString();
+
+// Imagen OG: si no se pasó una específica, usamos LOGO.png
+const ogImageRel = imagen ?? '/LOGO.png';
+const ogImageUrl = ogImageRel.startsWith('http')
+  ? ogImageRel
+  : new URL(`${base}${ogImageRel}`.replace(/\/+/g, '/'), Astro.site ?? 'https://alguarito.github.io').toString();
 ---
 
 <!doctype html>
@@ -24,11 +39,37 @@ const base = import.meta.env.BASE_URL;
     <meta charset="UTF-8" />
     <meta name="description" content={description} />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/png" href={`${base}/LOGO.png`} />
     <meta name="generator" content={Astro.generator} />
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
     <meta name="theme-color" content="#FAFAFA" media="(prefers-color-scheme: light)" />
     <title>{title}</title>
+
+    <!-- Iconos / PWA -->
+    <link rel="icon" type="image/png" href={`${base}/LOGO.png`} />
+    <link rel="apple-touch-icon" href={`${base}/LOGO.png`} />
+    <link rel="manifest" href={`${base}/manifest.webmanifest`} />
+    <link rel="canonical" href={canonical} />
+
+    <!-- Open Graph (Facebook, WhatsApp, Telegram, LinkedIn, Discord, etc.) -->
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content="ConectaTE" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1024" />
+    <meta property="og:image:height" content="1024" />
+    <meta property="og:image:alt" content="ConectaTE — Plataforma educativa" />
+    <meta property="og:locale" content="es_CO" />
+
+    <!-- Twitter Card (X, también lo respetan otros clientes) -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    <!-- Datos del autor -->
+    <meta name="author" content="Dr. Álvaro Cárdenas Orozco" />
 
     <!-- Inter variable font -->
     <link rel="preconnect" href="https://rsms.me/" />

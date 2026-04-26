@@ -1,0 +1,120 @@
+---
+/**
+ * Tarjeta para compartir la página actual.
+ *
+ * - Botón principal: abre WhatsApp con texto pre-llenado (titulo + URL)
+ * - Botón secundario: copia la URL al portapapeles (con feedback visual)
+ *
+ * Construye la URL canónica al build para que funcione bien al compartir
+ * (en lugar de window.location, que puede llegar con parámetros UTM, etc.).
+ */
+interface Props {
+  /** Título legible que se incluirá en el mensaje. */
+  titulo: string;
+  /** Etiqueta de contexto que se antepone (ej. "Grado 6° · P1 · Sesión 1"). */
+  contexto?: string;
+}
+
+const { titulo, contexto } = Astro.props;
+
+// URL canónica completa
+const canonical = new URL(
+  Astro.url.pathname,
+  Astro.site ?? 'https://alguarito.github.io',
+).toString();
+
+// Texto pre-formateado que verá el destinatario
+const textoMensaje = contexto
+  ? `📚 ${contexto}\n${titulo}\n\nMira esta guía en ConectaTE 👇\n${canonical}`
+  : `${titulo}\n\nMira esto en ConectaTE 👇\n${canonical}`;
+
+const whatsappHref = `https://wa.me/?text=${encodeURIComponent(textoMensaje)}`;
+---
+
+<div class="bento-card mb-10">
+  <div class="flex items-start gap-4 flex-wrap md:flex-nowrap">
+    <div class="text-5xl shrink-0">📤</div>
+    <div class="flex-1 min-w-0">
+      <span class="chip-bento mb-2">Comparte</span>
+      <h3 class="text-xl md:text-2xl font-black tracking-tight mt-2 mb-1">
+        Envíaselo a quien lo necesite
+      </h3>
+      <p class="text-sm leading-relaxed mb-4" style="color: var(--fg-muted);">
+        Tus compañeras y compañeros, padres o profesores pueden abrir esto
+        directamente en su celular sin instalar nada.
+      </p>
+
+      <div class="flex flex-wrap gap-2">
+        <a
+          href={whatsappHref}
+          target="_blank"
+          rel="noopener"
+          aria-label="Compartir por WhatsApp"
+          class="inline-flex items-center gap-2 px-5 py-3 rounded-full font-bold text-sm bg-[#25D366] text-white hover:scale-105 active:scale-95 transition-transform shadow-sm"
+        >
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M19.05 4.91A9.82 9.82 0 0 0 12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.91 9.91 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.91-7.02ZM12.04 20.15h-.01a8.23 8.23 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.21 8.21 0 0 1-1.26-4.39c0-4.54 3.7-8.24 8.25-8.24a8.18 8.18 0 0 1 5.83 2.42 8.2 8.2 0 0 1 2.42 5.83c0 4.54-3.7 8.24-8.25 8.24Zm4.52-6.16c-.25-.12-1.46-.72-1.69-.8-.23-.08-.39-.12-.56.12-.16.25-.64.8-.79.96-.15.17-.29.19-.54.06-.25-.12-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.38-1.72-.15-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.12-.15.16-.25.25-.42.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.16 0-.43.06-.66.31s-.86.85-.86 2.06c0 1.21.88 2.39 1 2.55.12.17 1.74 2.66 4.21 3.74.59.26 1.05.41 1.4.52.59.19 1.13.16 1.55.1.47-.07 1.46-.6 1.66-1.17.21-.58.21-1.07.15-1.17-.06-.1-.22-.16-.46-.28Z"/>
+          </svg>
+          Compartir por WhatsApp
+        </a>
+
+        <button
+          type="button"
+          data-copiar-enlace
+          data-url={canonical}
+          class="inline-flex items-center gap-2 px-5 py-3 rounded-full font-bold text-sm border-2 hover:opacity-80 transition-opacity"
+          style="border-color: var(--border); color: var(--fg);"
+        >
+          <span data-copiar-icono>
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+          </span>
+          <span data-copiar-texto>Copiar enlace</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-copiar-enlace]').forEach((btn) => {
+    const url = btn.dataset.url || window.location.href;
+    const texto = btn.querySelector<HTMLElement>('[data-copiar-texto]');
+    const icono = btn.querySelector<HTMLElement>('[data-copiar-icono]');
+    const textoOriginal = texto?.textContent ?? 'Copiar enlace';
+    const iconoOriginal = icono?.innerHTML ?? '';
+    let revertir: number | null = null;
+
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(url);
+      } catch {
+        // Fallback: input temporal
+        const ta = document.createElement('textarea');
+        ta.value = url;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          document.execCommand('copy');
+        } finally {
+          document.body.removeChild(ta);
+        }
+      }
+      if (texto) texto.textContent = '¡Enlace copiado!';
+      if (icono)
+        icono.innerHTML =
+          '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+      btn.classList.add('bg-bento-lime', 'text-black', 'border-bento-lime');
+      if (revertir) window.clearTimeout(revertir);
+      revertir = window.setTimeout(() => {
+        if (texto) texto.textContent = textoOriginal;
+        if (icono) icono.innerHTML = iconoOriginal;
+        btn.classList.remove('bg-bento-lime', 'text-black', 'border-bento-lime');
+      }, 1800);
+    });
+  });
+</script>

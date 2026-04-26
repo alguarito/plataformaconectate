@@ -11,6 +11,7 @@
  */
 import { grados } from '../data/grados';
 import { recursos } from '../data/recursos';
+import { proyectos } from '../data/proyectos';
 
 const base = import.meta.env.BASE_URL;
 
@@ -55,17 +56,24 @@ const indice: ItemIndice[] = [
     bgClass: colorPorPeriodo[`${r.grado}-${r.periodo}`] ?? 'bg-bento-blue',
   })),
   ...grados.flatMap((g) =>
-    g.periodos.map((p) => ({
-      tipo: 'proyecto' as const,
-      grado: g.numero,
-      periodo: p.numero,
-      sesion: 0,
-      titulo: `Proyecto integrador · ${p.titulo}`,
-      contexto: `Período ${p.numero}`,
-      href: `${base}/grado-${g.numero}/periodo-${p.numero}/proyecto`,
-      k: normalizar(`proyecto integrador ${p.titulo} ${p.descripcion}`),
-      bgClass: p.bgClass,
-    })),
+    g.periodos.map((p) => {
+      const proy = proyectos.find((pr) => pr.grado === g.numero && pr.periodo === p.numero);
+      const reto = proy?.retoCentral ?? p.titulo;
+      const aprendizajesTexto = proy?.aprendizajes.join(' ') ?? '';
+      return {
+        tipo: 'proyecto' as const,
+        grado: g.numero,
+        periodo: p.numero,
+        sesion: 0,
+        titulo: `Proyecto integrador · ${reto}`,
+        contexto: `Período ${p.numero}`,
+        href: `${base}/grado-${g.numero}/periodo-${p.numero}/proyecto`,
+        k: normalizar(
+          `proyecto integrador ${reto} ${p.titulo} ${proy?.productoFinal ?? ''} ${proy?.estrategia ?? ''} ${aprendizajesTexto}`,
+        ),
+        bgClass: p.bgClass,
+      };
+    }),
   ),
 ];
 

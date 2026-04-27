@@ -229,17 +229,18 @@ export interface Especialidad {
 }
 
 /**
- * Áreas de especialización (las 8 del CV con barra de habilidades).
+ * Áreas de especialización (con barra de habilidades visual).
  */
 export const especialidades: Especialidad[] = [
+  { titulo: 'Capacitación docente', emoji: '🎓', nivel: 100 },
+  { titulo: 'Uso de la IA en educación', emoji: '🤖', nivel: 100 },
   { titulo: 'Integración de TIC en educación', emoji: '💻', nivel: 95 },
   { titulo: 'Innovación educativa STEM+', emoji: '🧪', nivel: 92 },
-  { titulo: 'Aplicación de IA en educación', emoji: '🤖', nivel: 90 },
-  { titulo: 'Liderazgo en investigación educativa', emoji: '🔬', nivel: 90 },
   { titulo: 'Pensamiento computacional', emoji: '🧩', nivel: 92 },
-  { titulo: 'Formación de comunidades de aprendizaje', emoji: '🌐', nivel: 85 },
+  { titulo: 'Liderazgo en investigación educativa', emoji: '🔬', nivel: 90 },
   { titulo: 'Gamificación y aprendizaje activo', emoji: '🎮', nivel: 88 },
   { titulo: 'CTeI y apropiación social del conocimiento', emoji: '📚', nivel: 88 },
+  { titulo: 'Formación de comunidades de aprendizaje', emoji: '🌐', nivel: 85 },
 ];
 
 export interface FormacionGrupo {

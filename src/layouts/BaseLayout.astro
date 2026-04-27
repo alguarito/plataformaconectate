@@ -27,11 +27,15 @@ const base = import.meta.env.BASE_URL;
 // URL canónica de la página actual
 const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://alguarito.github.io').toString();
 
-// Imagen OG: si no se pasó una específica, usamos LOGO.png
-const ogImageRel = imagen ?? '/LOGO.png';
+// Imagen OG: si no se pasó una específica, usamos /og/home.png (1200×630)
+const ogImageRel = imagen ?? '/og/home.png';
 const ogImageUrl = ogImageRel.startsWith('http')
   ? ogImageRel
   : new URL(`${base}${ogImageRel}`.replace(/\/+/g, '/'), Astro.site ?? 'https://alguarito.github.io').toString();
+// Las imágenes de /og/ son 1200×630; el LOGO.png antiguo era 1024×1024
+const isFullsizeOg = !ogImageRel.includes('LOGO.png');
+const ogImageWidth = isFullsizeOg ? 1200 : 1024;
+const ogImageHeight = isFullsizeOg ? 630 : 1024;
 ---
 
 <!doctype html>
@@ -58,8 +62,8 @@ const ogImageUrl = ogImageRel.startsWith('http')
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImageUrl} />
-    <meta property="og:image:width" content="1024" />
-    <meta property="og:image:height" content="1024" />
+    <meta property="og:image:width" content={String(ogImageWidth)} />
+    <meta property="og:image:height" content={String(ogImageHeight)} />
     <meta property="og:image:alt" content="ConectaTE — Plataforma educativa" />
     <meta property="og:locale" content="es_CO" />
 

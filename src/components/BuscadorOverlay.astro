@@ -12,6 +12,7 @@
 import { grados } from '../data/grados';
 import { recursos } from '../data/recursos';
 import { proyectos } from '../data/proyectos';
+import { examenes } from '../data/examenes';
 
 const base = import.meta.env.BASE_URL;
 
@@ -24,10 +25,10 @@ function normalizar(s: string): string {
 }
 
 interface ItemIndice {
-  tipo: 'guia' | 'proyecto';
+  tipo: 'guia' | 'proyecto' | 'examen';
   grado: number;
   periodo: number;
-  sesion: number; // 0 para proyectos, así seguimos teniendo número
+  sesion: number; // 0 para proyectos y exámenes
   titulo: string;
   contexto: string; // ej. "P1 · Sesión 1"
   href: string;
@@ -75,6 +76,25 @@ const indice: ItemIndice[] = [
       };
     }),
   ),
+  ...examenes.map((e) => {
+    // Buscar el período correspondiente para acceder a su título y descripción
+    const grado = grados.find((g) => g.numero === e.grado);
+    const periodo = grado?.periodos.find((p) => p.numero === e.periodo);
+    const tituloPeriodo = periodo?.titulo ?? '';
+    return {
+      tipo: 'examen' as const,
+      grado: e.grado,
+      periodo: e.periodo,
+      sesion: 0,
+      titulo: `Examen final · ${tituloPeriodo}`,
+      contexto: `Período ${e.periodo}`,
+      href: `${base}/grado-${e.grado}/periodo-${e.periodo}/examen`,
+      k: normalizar(
+        `examen final ${tituloPeriodo} ${periodo?.descripcion ?? ''} sintesis aplicacion argumentacion`,
+      ),
+      bgClass: periodo?.bgClass ?? 'bg-bento-blue',
+    };
+  }),
 ];
 
 const totalItems = indice.length;
@@ -232,7 +252,11 @@ const totalItems = indice.length;
       if (item.tipo === 'guia') {
         return `g${item.grado}-p${item.periodo}-s${item.sesion}` in c.guias;
       }
-      return `g${item.grado}-p${item.periodo}` in c.proyectos;
+      if (item.tipo === 'proyecto') {
+        return `g${item.grado}-p${item.periodo}` in c.proyectos;
+      }
+      // exámenes no se trackean en el progreso
+      return false;
     }
 
     /** Búsqueda + render ----------------------------------------------- */
@@ -288,7 +312,10 @@ const totalItems = indice.length;
         );
         for (const it of items) {
           const completado = estaCompletado(it);
-          const icono = it.tipo === 'proyecto' ? '🎯' : '📄';
+          const icono =
+            it.tipo === 'proyecto' ? '🎯' :
+            it.tipo === 'examen' ? '📝' :
+            '📄';
           partes.push(`
             <a
               href="${escapeHtml(it.href)}"

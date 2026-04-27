@@ -1,0 +1,242 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import CompartirWhatsApp from '../../../../components/CompartirWhatsApp.astro';
+import { grados } from '../../../../data/grados';
+import {
+  getExamen,
+  examenPreviewUrl,
+  examenDownloadUrl,
+  examenViewUrl,
+} from '../../../../data/examenes';
+
+export function getStaticPaths() {
+  const paths: any[] = [];
+  for (const g of grados) {
+    for (const p of g.periodos) {
+      paths.push({
+        params: { numero: String(g.numero), periodo: String(p.numero) },
+        props: { grado: g, periodo: p },
+      });
+    }
+  }
+  return paths;
+}
+
+const { grado, periodo } = Astro.props;
+const base = import.meta.env.BASE_URL;
+
+const examen = getExamen(grado.numero, periodo.numero);
+const pdfId = examen?.pdfId ?? '';
+const previewUrl = pdfId ? examenPreviewUrl(pdfId) : '';
+const downloadUrl = pdfId ? examenDownloadUrl(pdfId) : '';
+const viewUrl = pdfId ? examenViewUrl(pdfId) : '';
+---
+
+<BaseLayout
+  title={`Examen Final · Grado ${grado.numero}° P${periodo.numero}: ${periodo.titulo} — ConectaTE`}
+  description={`Examen aplicado del Período ${periodo.numero}: ${periodo.titulo}. Síntesis, aplicación y argumentación de aprendizajes en grado ${grado.numero}°.`}
+  ogType="article"
+>
+  <article class="pt-12 pb-20">
+    <div class="bento-container max-w-5xl">
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-sm font-semibold mb-8 flex-wrap" style="color: var(--fg-muted);">
+        <a href={base || '/'} class="hover:opacity-60 transition-opacity">Inicio</a>
+        <span>/</span>
+        <a href={`${base}/grado-${grado.numero}`} class="hover:opacity-60 transition-opacity">
+          Grado {grado.numero}°
+        </a>
+        <span>/</span>
+        <a href={`${base}/grado-${grado.numero}/periodo-${periodo.numero}`} class="hover:opacity-60 transition-opacity">
+          Período {periodo.numero}
+        </a>
+        <span>/</span>
+        <span style="color: var(--fg);">Examen final</span>
+      </nav>
+
+      <!-- Hero card del examen -->
+      <div class={`bento-card-color ${periodo.bgClass} mb-10 min-h-[340px] flex flex-col justify-between`}>
+        <div class="flex items-start justify-between flex-wrap gap-3">
+          <div class="flex flex-wrap gap-2">
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-black/15">
+              Grado {grado.numero}°
+            </span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-black/15">
+              Período {periodo.numero}
+            </span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-black/15">
+              📝 Examen final
+            </span>
+          </div>
+          <span class="text-9xl">📝</span>
+        </div>
+
+        <div>
+          <span class="text-xs font-bold uppercase tracking-widest opacity-80">
+            Examen Final · {periodo.titulo}
+          </span>
+          <h1 class="heading-giant text-balance mt-2 mb-3">
+            Demuestra lo aprendido.
+          </h1>
+          <p class="text-base md:text-lg font-semibold opacity-90 leading-snug max-w-2xl">
+            Síntesis · aplicación · argumentación. Verifica la transferencia
+            de las 10 sesiones del período.
+          </p>
+        </div>
+      </div>
+
+      {pdfId && (
+        <>
+          <!-- Acciones rápidas -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-10">
+            <a
+              href={downloadUrl}
+              class="bento-card-color bg-bento-lime flex items-center gap-4 hover:scale-[1.01] transition-transform group"
+            >
+              <div class="text-5xl">⬇️</div>
+              <div class="flex-1">
+                <span class="text-xs font-bold uppercase tracking-widest opacity-80">PDF</span>
+                <div class="font-black text-xl leading-tight mt-1">Descargar examen</div>
+                <div class="text-sm opacity-80 mt-1">Imprime o resuélvelo offline</div>
+              </div>
+              <svg class="w-7 h-7 group-hover:translate-x-1 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14"></path>
+                <path d="m12 5 7 7-7 7"></path>
+              </svg>
+            </a>
+
+            <a
+              href={viewUrl}
+              target="_blank"
+              rel="noopener"
+              class="bento-card-hover flex items-center gap-4"
+            >
+              <div class="text-5xl">📂</div>
+              <div class="flex-1">
+                <span class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">Drive</span>
+                <div class="font-black text-xl leading-tight mt-1">Abrir en Drive</div>
+                <div class="text-sm mt-1" style="color: var(--fg-muted);">Versión completa del docente</div>
+              </div>
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+            </a>
+          </div>
+
+          <!-- Visor PDF embebido -->
+          <div class="bento-card mb-10 p-0 overflow-hidden">
+            <div class="px-6 py-4 border-b" style="border-color: var(--border);">
+              <div class="flex items-center justify-between gap-3 flex-wrap">
+                <div>
+                  <span class="chip-bento">Examen completo · PDF</span>
+                </div>
+                <div class="text-sm font-semibold" style="color: var(--fg-muted);">
+                  examen-{periodo.numero}-{grado.numero}-TIC
+                </div>
+              </div>
+            </div>
+            <div class="aspect-[8.5/11] md:aspect-[3/4] w-full bg-black/5">
+              <iframe
+                src={previewUrl}
+                class="w-full h-full"
+                loading="lazy"
+                allow="autoplay"
+                title={`Examen final · Grado ${grado.numero}° P${periodo.numero}`}
+              ></iframe>
+            </div>
+          </div>
+        </>
+      )}
+
+      {!pdfId && (
+        <div class="bento-card-color bg-bento-yellow mb-10 flex items-start gap-4">
+          <div class="text-5xl">📝</div>
+          <div>
+            <h3 class="text-xl font-black tracking-tight mb-1">Examen en preparación</h3>
+            <p class="opacity-80 leading-relaxed">
+              Este examen aún no está publicado. Estará disponible muy pronto.
+            </p>
+          </div>
+        </div>
+      )}
+
+      <!-- Estructura del examen -->
+      <div class="bento-card mb-10">
+        <span class="chip-bento mb-6">Cómo se evalúa</span>
+        <p class="text-sm md:text-base mb-6 leading-relaxed" style="color: var(--fg-muted);">
+          Los exámenes finales se conciben como instrumentos de síntesis,
+          aplicación y argumentación, no como ejercicios de memoria aislada.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mt-6">
+          <div class="flex gap-4">
+            <div class="w-12 h-12 rounded-bento-sm bg-bento-blue text-white flex items-center justify-center text-xl font-black shrink-0">
+              ✏️
+            </div>
+            <div>
+              <h3 class="text-lg font-black mb-1">Síntesis</h3>
+              <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">
+                Integra los conceptos clave de las 10 sesiones del período.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex gap-4">
+            <div class="w-12 h-12 rounded-bento-sm bg-bento-orange text-white flex items-center justify-center text-xl font-black shrink-0">
+              🔧
+            </div>
+            <div>
+              <h3 class="text-lg font-black mb-1">Aplicación</h3>
+              <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">
+                Resuelve situaciones reales con lo aprendido en clase.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex gap-4">
+            <div class="w-12 h-12 rounded-bento-sm bg-bento-pink text-white flex items-center justify-center text-xl font-black shrink-0">
+              💬
+            </div>
+            <div>
+              <h3 class="text-lg font-black mb-1">Argumentación</h3>
+              <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">
+                Justifica tus respuestas con criterio técnico y ético.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-8 p-4 rounded-bento-sm" style="background: var(--bg);">
+          <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">
+            <strong style="color: var(--fg);">Ponderación:</strong> en el sistema
+            ConectaTE, el examen vale el 20% del período. El otro 80% se reparte
+            entre guías y portafolio (30%), proyecto integrador (30%) y
+            participación con reflexión MILC (20%).
+          </p>
+        </div>
+      </div>
+
+      <CompartirWhatsApp
+        titulo={`Examen Final · ${periodo.titulo}`}
+        contexto={`Grado ${grado.numero}° · Período ${periodo.numero}`}
+      />
+
+      <!-- Volver -->
+      <a
+        href={`${base}/grado-${grado.numero}/periodo-${periodo.numero}`}
+        class="bento-card-hover flex items-center gap-4"
+      >
+        <svg class="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 12H5"></path>
+          <path d="m12 19-7-7 7-7"></path>
+        </svg>
+        <div>
+          <div class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">Volver al</div>
+          <div class="font-black text-lg">Período {periodo.numero}</div>
+        </div>
+      </a>
+    </div>
+  </article>
+</BaseLayout>

@@ -44,6 +44,12 @@ export const GET: APIRoute = async ({ site }) => {
         priority: 0.7,
         changefreq: 'monthly',
       });
+      // Examen final
+      urls.push({
+        loc: `${fullBase}/grado-${g.numero}/periodo-${p.numero}/examen`,
+        priority: 0.65,
+        changefreq: 'monthly',
+      });
       // 10 guías por período
       for (let s = 1; s <= 10; s++) {
         urls.push({

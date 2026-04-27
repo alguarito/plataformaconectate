@@ -1,0 +1,443 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import {
+  perfil,
+  formacion,
+  experiencia,
+  reconocimientos,
+  especialidades,
+  formacionComplementaria,
+  membresias,
+  stats,
+} from '../../data/perfil';
+
+const base = import.meta.env.BASE_URL;
+
+// CV PDF
+const cvHref = `${base}/perfil/hoja_de_vida.pdf`;
+
+// Mensaje pre-llenado para WhatsApp del docente
+const whatsappTexto = `Hola Dr. Cárdenas, le escribo desde la página "Acerca de" de la plataforma ConectaTE.`;
+const whatsappHref = `https://wa.me/${perfil.whatsappE164}?text=${encodeURIComponent(whatsappTexto)}`;
+const mailtoHref = `mailto:${perfil.email}?subject=Saludos desde ConectaTE`;
+
+// Reconocimientos destacados / restantes
+const recoDestacados = reconocimientos.filter((r) => r.destacado);
+const recoOtros = reconocimientos.filter((r) => !r.destacado);
+
+// Cargos destacados (actuales) / pasados
+const cargosActuales = experiencia.filter((e) => e.hasta === 'actualidad');
+const cargosPasados = experiencia.filter((e) => e.hasta !== 'actualidad');
+
+// Total de items de formación complementaria
+const totalComplementaria = formacionComplementaria.reduce(
+  (sum, g) => sum + g.items.length,
+  0,
+);
+---
+
+<BaseLayout
+  title={`Acerca de ${perfil.prefijo} ${perfil.nombre} — ConectaTE`}
+  description={`${perfil.prefijo} ${perfil.nombre}, ${perfil.cargo} en ${perfil.institucion}. ${stats.anosDocencia}+ años de experiencia, doctor en Ciencias de la Educación, colaborador NASA-IASC, finalista Samsung Solve for Tomorrow.`}
+  ogType="article"
+>
+  <article class="pt-12 pb-20">
+    <div class="bento-container max-w-6xl">
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-sm font-semibold mb-8 flex-wrap" style="color: var(--fg-muted);">
+        <a href={base || '/'} class="hover:opacity-60 transition-opacity">Inicio</a>
+        <span>/</span>
+        <span style="color: var(--fg);">Acerca del docente</span>
+      </nav>
+
+      <!-- HERO -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6 mb-10">
+        <div class="bento-card-color bg-bento-blue md:col-span-7 min-h-[420px] flex flex-col justify-between">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-black/15">
+              👨‍🏫 Docente · Investigador
+            </span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-black/15">
+              🇨🇴 Cartago, Valle del Cauca
+            </span>
+          </div>
+
+          <div>
+            <span class="text-xs font-bold uppercase tracking-widest opacity-80">{perfil.prefijo}</span>
+            <h1 class="heading-giant text-balance leading-[0.95] mt-1 mb-3">
+              {perfil.nombre}
+            </h1>
+            <p class="text-lg md:text-2xl font-semibold opacity-90 leading-tight">
+              {perfil.cargo}
+            </p>
+            <p class="text-sm md:text-base opacity-80 mt-2">
+              {perfil.institucion}
+            </p>
+          </div>
+        </div>
+
+        <!-- Tarjeta de stats compactos -->
+        <div class="md:col-span-5 grid grid-cols-2 gap-4 md:gap-6">
+          <div class="bento-card-color bg-bento-lime flex flex-col justify-between min-h-[200px]">
+            <span class="text-xs font-bold uppercase tracking-widest opacity-80">Años</span>
+            <div>
+              <div class="text-6xl font-black tracking-tighter leading-none">{stats.anosDocencia}+</div>
+              <div class="text-sm font-bold mt-1">en docencia</div>
+            </div>
+          </div>
+          <div class="bento-card-color bg-bento-pink flex flex-col justify-between min-h-[200px]">
+            <span class="text-xs font-bold uppercase tracking-widest opacity-80">Títulos</span>
+            <div>
+              <div class="text-6xl font-black tracking-tighter leading-none">{stats.titulosAcademicos}</div>
+              <div class="text-sm font-bold mt-1">académicos formales</div>
+            </div>
+          </div>
+          <div class="bento-card-color bg-bento-cyan flex flex-col justify-between min-h-[200px]">
+            <span class="text-xs font-bold uppercase tracking-widest opacity-80">Formación</span>
+            <div>
+              <div class="text-6xl font-black tracking-tighter leading-none">{totalComplementaria}+</div>
+              <div class="text-sm font-bold mt-1">cursos y diplomados</div>
+            </div>
+          </div>
+          <div class="bento-card-color bg-bento-yellow flex flex-col justify-between min-h-[200px]">
+            <span class="text-xs font-bold uppercase tracking-widest opacity-80">Reconocimientos</span>
+            <div>
+              <div class="text-6xl font-black tracking-tighter leading-none">{stats.reconocimientosInt}+</div>
+              <div class="text-sm font-bold mt-1">internacionales</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PERFIL PROFESIONAL + CV -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6 mb-10">
+        <div class="bento-card md:col-span-8">
+          <span class="chip-bento mb-4">Perfil profesional</span>
+          <p class="text-base md:text-lg leading-relaxed mt-4">
+            {perfil.resumen}
+          </p>
+        </div>
+
+        <a
+          href={cvHref}
+          download
+          class="bento-card-color bg-bento-purple md:col-span-4 flex flex-col justify-between min-h-[220px] hover:scale-[1.01] transition-transform group"
+        >
+          <div class="text-7xl">📄</div>
+          <div>
+            <span class="text-xs font-bold uppercase tracking-widest opacity-80">PDF · 264 KB</span>
+            <h3 class="text-2xl md:text-3xl font-black tracking-tight leading-tight mt-2 mb-2">
+              Hoja de Vida
+            </h3>
+            <p class="text-sm opacity-80 mb-3 leading-relaxed">
+              Versión completa con referencias laborales
+            </p>
+            <div class="inline-flex items-center gap-2 font-bold text-sm group-hover:gap-3 transition-all">
+              Descargar
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- FORMACIÓN ACADÉMICA FORMAL -->
+      <div class="bento-card mb-10">
+        <span class="chip-bento mb-3">Formación académica formal</span>
+        <h2 class="heading-huge mb-2 leading-tight">5 títulos · 4 instituciones · 2 países.</h2>
+        <p class="text-sm md:text-base mb-8" style="color: var(--fg-muted);">
+          Trayectoria que va desde la ingeniería de sistemas hasta el doctorado en
+          ciencias de la educación, pasando por gestión de tecnología educativa.
+        </p>
+
+        <div class="space-y-4">
+          {formacion.map((f, i) => (
+            <div class="flex items-start gap-4 pb-4 border-b last:border-b-0 last:pb-0" style="border-color: var(--border);">
+              <div class="text-2xl md:text-3xl font-black tracking-tighter shrink-0 w-24" style="color: var(--fg-muted);">
+                {f.desde}
+              </div>
+              <div class="flex-1">
+                <h3 class="text-lg md:text-xl font-black leading-tight mb-1">
+                  {f.titulo}
+                </h3>
+                <p class="text-sm md:text-base" style="color: var(--fg-muted);">
+                  {f.institucion} · {f.pais} · <strong>{f.desde}–{f.hasta}</strong>
+                </p>
+              </div>
+              {i === 0 && (
+                <span class="px-2 py-1 rounded-full text-xs font-black uppercase tracking-widest bg-bento-pink text-white shrink-0">
+                  PhD
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- TRAYECTORIA DOCENTE -->
+      <div class="bento-card mb-10">
+        <span class="chip-bento mb-3">Trayectoria docente</span>
+        <h2 class="heading-huge mb-2 leading-tight">{experiencia.length} cargos en {stats.institucionesEnsenadas} instituciones.</h2>
+        <p class="text-sm md:text-base mb-8" style="color: var(--fg-muted);">
+          De la educación básica al posgrado. De la dirección de proyectos
+          educativos a la formación de futuros docentes en la Maestría en
+          Enseñanza de la Física de la UTP.
+        </p>
+
+        <h4 class="text-xs font-black uppercase tracking-widest mb-4" style="color: var(--fg-muted);">
+          Cargos actuales
+        </h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          {cargosActuales.map((e) => (
+            <div class="bento-card-color bg-bento-lime flex flex-col justify-between min-h-[160px]">
+              <span class="text-xs font-bold uppercase tracking-widest opacity-80">
+                Desde {e.desde} · activo
+              </span>
+              <div>
+                <h3 class="text-lg md:text-xl font-black leading-tight mb-1">
+                  {e.cargo}
+                </h3>
+                <p class="text-sm opacity-90">{e.organizacion}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <h4 class="text-xs font-black uppercase tracking-widest mb-4" style="color: var(--fg-muted);">
+          Trayectoria previa
+        </h4>
+        <div class="space-y-3">
+          {cargosPasados.map((e) => (
+            <div class="flex items-start gap-4 pb-3 border-b last:border-b-0 last:pb-0" style="border-color: var(--border);">
+              <div class="text-sm font-black tracking-tight shrink-0 w-24 md:w-28" style="color: var(--fg-muted);">
+                {e.desde}–{e.hasta}
+              </div>
+              <div class="flex-1">
+                <h4 class="font-black leading-tight mb-0.5">{e.cargo}</h4>
+                <p class="text-sm" style="color: var(--fg-muted);">{e.organizacion}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- RECONOCIMIENTOS DESTACADOS -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6 mb-10">
+        {recoDestacados.map((r, i) => (
+          <div class={`bento-card-color ${i === 0 ? 'bg-bento-blue' : 'bg-bento-pink'} md:col-span-6 min-h-[260px] flex flex-col justify-between`}>
+            <div class="flex items-start justify-between">
+              <span class="text-xs font-bold uppercase tracking-widest opacity-80">
+                Reconocimiento internacional
+              </span>
+              <span class="text-6xl">{r.emoji}</span>
+            </div>
+            <div>
+              <h3 class="text-2xl md:text-3xl font-black tracking-tight leading-tight mb-2">
+                {r.titulo}
+              </h3>
+              <p class="text-sm md:text-base opacity-90 mb-3">
+                {r.organizacion}
+              </p>
+              <div class="flex flex-wrap gap-2">
+                {r.anos.map((a) => (
+                  <span class="px-3 py-1 rounded-full text-xs font-black bg-black/15 tracking-widest">
+                    {a}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- OTROS RECONOCIMIENTOS -->
+      <div class="bento-card mb-10">
+        <span class="chip-bento mb-4">Más reconocimientos y participaciones</span>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+          {recoOtros.map((r) => (
+            <div class="flex items-start gap-3">
+              <div class="text-3xl shrink-0">{r.emoji}</div>
+              <div class="flex-1">
+                <h3 class="font-black leading-tight">
+                  {r.titulo}
+                </h3>
+                <p class="text-sm" style="color: var(--fg-muted);">
+                  {r.organizacion}
+                  {r.anos.length > 0 && ` · ${r.anos.join(', ')}`}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- ÁREAS DE ESPECIALIZACIÓN -->
+      <div class="bento-card mb-10">
+        <span class="chip-bento mb-3">Áreas de especialización</span>
+        <h2 class="heading-huge mb-8 leading-tight">Donde más impacto.</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
+          {especialidades.map((e) => (
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-2">
+                  <span class="text-2xl">{e.emoji}</span>
+                  <span class="font-bold text-sm md:text-base">{e.titulo}</span>
+                </div>
+                <span class="text-sm font-black tracking-tight" style="color: var(--fg-muted);">
+                  {e.nivel}%
+                </span>
+              </div>
+              <div class="w-full h-2 rounded-full overflow-hidden" style="background: var(--border);">
+                <div
+                  class="h-full bg-bento-blue rounded-full transition-all duration-700"
+                  style={`width: ${e.nivel}%`}
+                ></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- FORMACIÓN COMPLEMENTARIA AGRUPADA -->
+      <div class="bento-card mb-10">
+        <span class="chip-bento mb-3">Formación complementaria</span>
+        <h2 class="heading-huge mb-2 leading-tight">{totalComplementaria}+ certificaciones.</h2>
+        <p class="text-sm md:text-base mb-8" style="color: var(--fg-muted);">
+          Cursos, talleres y diplomados que complementan la formación formal,
+          agrupados por área de impacto.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+          {formacionComplementaria.map((g) => (
+            <div class={`bento-card-color ${g.bgClass} flex flex-col`}>
+              <div class="flex items-center gap-3 mb-4">
+                <span class="text-4xl">{g.emoji}</span>
+                <div>
+                  <h3 class="text-lg md:text-xl font-black tracking-tight leading-tight">
+                    {g.categoria}
+                  </h3>
+                  <p class="text-xs font-bold opacity-80 uppercase tracking-widest">
+                    {g.items.length} certificaciones
+                  </p>
+                </div>
+              </div>
+              <ul class="space-y-2 mt-2">
+                {g.items.map((it) => (
+                  <li class="flex items-start gap-2 text-sm leading-snug">
+                    <span class="opacity-70 mt-0.5">·</span>
+                    <span>{it}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- MEMBRESÍAS -->
+      <div class="bento-card mb-10">
+        <span class="chip-bento mb-3">Membresías y roles activos</span>
+        <h2 class="heading-huge mb-8 leading-tight">Donde participo hoy.</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {membresias.map((m) => (
+            <div class="flex items-start gap-3 p-4 rounded-bento-sm" style="background: var(--bg);">
+              <div class="text-3xl shrink-0">{m.emoji}</div>
+              <div>
+                <h3 class="font-black leading-tight mb-1">{m.rol}</h3>
+                <p class="text-sm" style="color: var(--fg-muted);">{m.organizacion}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- FILOSOFÍA / FRASES -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-10">
+        {perfil.frases.map((f, i) => (
+          <div class={`bento-card-color ${i === 0 ? 'bg-bento-purple' : 'bg-bento-orange'} flex flex-col justify-between min-h-[240px]`}>
+            <div class="text-7xl opacity-30 leading-none">"</div>
+            <div>
+              <p class="text-lg md:text-2xl font-black tracking-tight leading-tight italic mb-3">
+                {f.texto}
+              </p>
+              <p class="text-sm font-bold opacity-80">— {f.autor}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- CONTACTO -->
+      <div class="bento-card-color bg-bento-black grid-pattern py-12 md:py-16 px-6 md:px-10 mb-10">
+        <div class="text-center max-w-2xl mx-auto">
+          <span class="chip-bento mb-3 bg-white/10 text-white">Contacto</span>
+          <h2 class="heading-huge mb-3 leading-tight">¿Hablamos?</h2>
+          <p class="text-base md:text-lg opacity-80 mb-8 leading-relaxed">
+            Estoy disponible para charlas, asesorías sobre IA en educación,
+            formación docente, proyectos STEM+ y colaboraciones académicas.
+          </p>
+
+          <div class="flex flex-wrap gap-3 justify-center">
+            <a
+              href={whatsappHref}
+              target="_blank"
+              rel="noopener"
+              class="inline-flex items-center gap-2 px-5 py-3 rounded-full font-bold text-sm bg-[#25D366] text-white hover:scale-105 active:scale-95 transition-transform shadow-sm"
+            >
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M19.05 4.91A9.82 9.82 0 0 0 12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.91 9.91 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.91-7.02ZM12.04 20.15h-.01a8.23 8.23 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.21 8.21 0 0 1-1.26-4.39c0-4.54 3.7-8.24 8.25-8.24a8.18 8.18 0 0 1 5.83 2.42 8.2 8.2 0 0 1 2.42 5.83c0 4.54-3.7 8.24-8.25 8.24Zm4.52-6.16c-.25-.12-1.46-.72-1.69-.8-.23-.08-.39-.12-.56.12-.16.25-.64.8-.79.96-.15.17-.29.19-.54.06-.25-.12-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.38-1.72-.15-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.12-.15.16-.25.25-.42.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.16 0-.43.06-.66.31s-.86.85-.86 2.06c0 1.21.88 2.39 1 2.55.12.17 1.74 2.66 4.21 3.74.59.26 1.05.41 1.4.52.59.19 1.13.16 1.55.1.47-.07 1.46-.6 1.66-1.17.21-.58.21-1.07.15-1.17-.06-.1-.22-.16-.46-.28Z"/>
+              </svg>
+              WhatsApp · {perfil.whatsapp}
+            </a>
+            <a
+              href={mailtoHref}
+              class="inline-flex items-center gap-2 px-5 py-3 rounded-full font-bold text-sm bg-bento-lime text-black hover:scale-105 active:scale-95 transition-transform"
+            >
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
+              Correo
+            </a>
+            <a
+              href={perfil.blog}
+              target="_blank"
+              rel="noopener"
+              class="inline-flex items-center gap-2 px-5 py-3 rounded-full font-bold text-sm border-2 border-white/30 text-white hover:border-white transition-colors"
+            >
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+              Blog personal
+            </a>
+          </div>
+
+          <p class="text-xs opacity-60 mt-6">
+            {perfil.email}
+          </p>
+        </div>
+      </div>
+
+      <!-- VOLVER -->
+      <a
+        href={base || '/'}
+        class="bento-card-hover flex items-center gap-4"
+      >
+        <svg class="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 12H5"></path>
+          <path d="m12 19-7-7 7-7"></path>
+        </svg>
+        <div>
+          <div class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">Volver al</div>
+          <div class="font-black text-lg">Inicio de ConectaTE</div>
+        </div>
+      </a>
+    </div>
+  </article>
+</BaseLayout>

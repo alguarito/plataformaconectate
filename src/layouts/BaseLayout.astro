@@ -4,6 +4,7 @@ import Navigation from '../components/Navigation.astro';
 import Footer from '../components/Footer.astro';
 import OnboardingGrado from '../components/OnboardingGrado.astro';
 import BuscadorOverlay from '../components/BuscadorOverlay.astro';
+import OfflineIndicator from '../components/OfflineIndicator.astro';
 
 interface Props {
   title?: string;
@@ -103,5 +104,17 @@ const ogImageUrl = ogImageRel.startsWith('http')
     <Footer />
     <OnboardingGrado />
     <BuscadorOverlay />
+    <OfflineIndicator />
+
+    <!-- Service Worker: registra para funcionamiento offline -->
+    <script is:inline define:vars={{ swPath: `${base}/sw.js`.replace(/\/+/g, '/'), swScope: `${base}/`.replace(/\/+/g, '/') }}>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker
+            .register(swPath, { scope: swScope })
+            .catch((err) => console.warn('[ConectaTE] Service Worker no se registró:', err));
+        });
+      }
+    </script>
   </body>
 </html>

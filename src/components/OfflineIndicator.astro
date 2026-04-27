@@ -1,0 +1,88 @@
+---
+/**
+ * Chip flotante que aparece cuando el usuario pierde la conexión.
+ *
+ * Mensaje sutil pero visible en la parte inferior derecha. Se descarta con tap
+ * y reaparece si hay un nuevo cambio de estado de red.
+ */
+---
+
+<div
+  id="offline-indicator"
+  class="hidden fixed bottom-4 right-4 z-50 max-w-xs"
+  role="status"
+  aria-live="polite"
+>
+  <div
+    class="flex items-start gap-3 pl-4 pr-3 py-3 rounded-bento-sm shadow-2xl bg-bento-yellow text-black border-2 border-black/10"
+  >
+    <span class="text-xl shrink-0 leading-none">📡</span>
+    <div class="flex-1 min-w-0">
+      <div class="font-black text-sm leading-tight">Sin conexión</div>
+      <div class="text-xs leading-snug opacity-80 mt-0.5">
+        Solo verás contenido ya visitado.
+      </div>
+    </div>
+    <button
+      type="button"
+      data-cerrar-offline
+      aria-label="Ocultar aviso"
+      class="w-6 h-6 rounded-full flex items-center justify-center hover:bg-black/10 transition-colors shrink-0 -mt-0.5"
+    >
+      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 6 6 18"></path>
+        <path d="m6 6 12 12"></path>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<script>
+  const indicator = document.getElementById('offline-indicator');
+  const btnCerrar = document.querySelector<HTMLButtonElement>('[data-cerrar-offline]');
+
+  let dismissed = false;
+
+  function actualizar() {
+    if (!indicator) return;
+    if (navigator.onLine || dismissed) {
+      indicator.classList.add('hidden');
+    } else {
+      indicator.classList.remove('hidden');
+    }
+  }
+
+  // Cuando cambia el estado, levantamos el dismiss
+  window.addEventListener('online', () => {
+    dismissed = false;
+    actualizar();
+  });
+  window.addEventListener('offline', () => {
+    dismissed = false;
+    actualizar();
+  });
+
+  btnCerrar?.addEventListener('click', () => {
+    dismissed = true;
+    actualizar();
+  });
+
+  // Estado inicial
+  actualizar();
+</script>
+
+<style>
+  #offline-indicator:not(.hidden) > div {
+    animation: offline-slide-in 0.3s ease-out;
+  }
+  @keyframes offline-slide-in {
+    from {
+      opacity: 0;
+      transform: translateY(20px) scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+</style>

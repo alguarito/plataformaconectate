@@ -22,6 +22,9 @@ export const GET: APIRoute = async ({ site }) => {
   // Página "Acerca de"
   urls.push({ loc: `${fullBase}/acerca`, priority: 0.8, changefreq: 'monthly' });
 
+  // Página "Plan de Área"
+  urls.push({ loc: `${fullBase}/plan-de-area`, priority: 0.85, changefreq: 'monthly' });
+
   // Páginas de grado, período, guías y proyectos
   for (const g of grados) {
     urls.push({

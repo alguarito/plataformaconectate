@@ -147,16 +147,30 @@ export const reconocimientos: Reconocimiento[] = [
   {
     titulo: 'Colaborador Científico',
     organizacion: 'NASA · International Astronomical Search Collaboration (IASC)',
-    anos: [2021, 2023, 2024],
+    anos: [2021, 2022, 2023, 2024, 2025, 2026],
     emoji: '🚀',
     destacado: true,
   },
   {
-    titulo: 'Finalista Solve for Tomorrow',
-    organizacion: 'Samsung',
-    anos: [2022, 2023],
+    titulo: 'Top 50 Finalistas · Solve for Tomorrow',
+    organizacion: 'Samsung · Participación desde 2022, finalista nacional 3 años seguidos',
+    anos: [2022, 2023, 2024, 2025],
     emoji: '🏆',
     destacado: true,
+  },
+  {
+    titulo: 'Feria de Ciencias y Energía',
+    organizacion: 'Pereira · Finalistas 2023 y 2024 · 2025 incentivo a la institución que más proyectos presentó',
+    anos: [2023, 2024, 2025],
+    emoji: '⚡',
+  },
+  {
+    titulo: 'Reconocimientos Institucionales y Municipales',
+    organizacion: 'I.E. Sor María Juliana y Alcaldía de Cartago · 12 años consecutivos',
+    anos: [
+      2014, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025,
+    ],
+    emoji: '🎖',
   },
   {
     titulo: 'Ponente · 12.º CNEFA',
@@ -196,21 +210,15 @@ export const reconocimientos: Reconocimiento[] = [
   },
   {
     titulo: 'Torneo STEAM',
-    organizacion: '2021',
+    organizacion: 'Competencia educativa',
     anos: [2021],
     emoji: '⚙️',
-  },
-  {
-    titulo: 'Reconocimiento Institucional + Municipal',
-    organizacion: 'I.E. Sor María Juliana · Cartago',
-    anos: [],
-    emoji: '🎖',
   },
   {
     titulo: 'VII Encuentro Internacional · Avances de Investigación y Electrónica',
     organizacion: 'Encuentro académico internacional',
     anos: [],
-    emoji: '⚡',
+    emoji: '🔌',
   },
 ];
 
@@ -353,7 +361,8 @@ export const stats = {
   anosDocencia: 12,
   titulosAcademicos: 5,
   formacionComplementaria: 37, // 28 cursos + 9 diplomados
-  reconocimientosInt: 8,
+  reconocimientos: 12, // 12 reconocimientos distintos (NASA: 6 años · Samsung: 4 años · Inst/Mun: 11 años · etc.)
   institucionesEnsenadas: 6,
   semillerosLiderados: 2,
+  anosNasaIASC: 6, // 2021-2026
 };

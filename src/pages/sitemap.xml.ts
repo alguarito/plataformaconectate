@@ -25,6 +25,9 @@ export const GET: APIRoute = async ({ site }) => {
   // Página "Plan de Área"
   urls.push({ loc: `${fullBase}/plan-de-area`, priority: 0.85, changefreq: 'monthly' });
 
+  // Dashboard del estudiante (acceso público para SEO; el contenido se gatea client-side)
+  urls.push({ loc: `${fullBase}/dashboard`, priority: 0.5, changefreq: 'monthly' });
+
   // Páginas de grado, período, guías y proyectos
   for (const g of grados) {
     urls.push({

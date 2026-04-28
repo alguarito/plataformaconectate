@@ -1,48 +1,80 @@
 ---
 /**
- * Chip compacto del nivel del estudiante en el header.
+ * Chip compacto del estado del usuario en el header.
  *
- * Solo aparece si hay grado seleccionado. Tap para reabrir el onboarding
- * (cambiar grado o desactivar).
+ * Comportamiento por rol:
+ *  - Visitante con grado escogido: muestra nivel + grado, link a re-elegir grado
+ *  - Estudiante: emoji 🎓 + grado/grupo + link al /dashboard
+ *  - Docente: emoji 👨‍🏫 + "Docente", link a abrir login para cerrar sesión
  */
+const base = import.meta.env.BASE_URL;
 ---
 
-<button
-  type="button"
+<a
   id="perfil-chip"
-  data-abrir-onboarding
+  href={`${base}/dashboard`}
   class="hidden items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold hover:opacity-80 transition-opacity"
   style="background: var(--border);"
-  aria-label="Tu nivel — toca para cambiar de grado"
+  aria-label="Tu perfil"
 >
   <span data-perfil-emoji>🌱</span>
-  <span data-perfil-grado>—°</span>
-  <span class="opacity-60">·</span>
-  <span data-perfil-pct>0%</span>
-</button>
+  <span data-perfil-texto>—</span>
+</a>
 
 <script>
   import { calcStats, onCambio } from '../scripts/progreso';
+  import { leerPerfil, onCambioPerfil } from '../scripts/perfilUsuario';
 
-  const chip = document.getElementById('perfil-chip');
+  const chip = document.getElementById('perfil-chip') as HTMLAnchorElement | null;
   if (chip) {
+    const base = (window as any).__base ?? '';
     function render() {
+      const p = leerPerfil();
       const s = calcStats();
-      if (s.gradoActual === null) {
-        chip!.classList.add('hidden');
-        chip!.classList.remove('inline-flex');
+      const emoji = chip!.querySelector<HTMLElement>('[data-perfil-emoji]');
+      const texto = chip!.querySelector<HTMLElement>('[data-perfil-texto]');
+
+      if (p.rol === 'docente') {
+        chip!.classList.remove('hidden');
+        chip!.classList.add('inline-flex');
+        if (emoji) emoji.textContent = '👨‍🏫';
+        if (texto) texto.textContent = 'Docente';
+        chip!.setAttribute('data-abrir-login', '');
+        chip!.removeAttribute('href');
         return;
       }
-      chip!.classList.remove('hidden');
-      chip!.classList.add('inline-flex');
-      const e = chip!.querySelector<HTMLElement>('[data-perfil-emoji]');
-      const g = chip!.querySelector<HTMLElement>('[data-perfil-grado]');
-      const p = chip!.querySelector<HTMLElement>('[data-perfil-pct]');
-      if (e) e.textContent = s.nivel.emoji;
-      if (g) g.textContent = `${s.gradoActual}°`;
-      if (p) p.textContent = `${s.porcentajeGrado}%`;
+
+      if (p.rol === 'estudiante' && p.grado) {
+        chip!.classList.remove('hidden');
+        chip!.classList.add('inline-flex');
+        if (emoji) emoji.textContent = '🎓';
+        if (texto) texto.textContent = `${p.grado}° ${p.grupo ?? ''} · ${s.porcentajeGrado}%`;
+        chip!.removeAttribute('data-abrir-login');
+        // Link al dashboard
+        const links = document.querySelectorAll<HTMLLinkElement>('link[rel="canonical"]');
+        const canonical = links[0]?.href ?? '';
+        const baseDir = canonical ? new URL(canonical).pathname.split('/').slice(0, 2).join('/') : '';
+        chip!.setAttribute('href', `${baseDir}/dashboard`);
+        return;
+      }
+
+      // Visitante con grado pre-seleccionado (compatibilidad con sistema anterior)
+      if (s.gradoActual != null) {
+        chip!.classList.remove('hidden');
+        chip!.classList.add('inline-flex');
+        if (emoji) emoji.textContent = s.nivel.emoji;
+        if (texto) texto.textContent = `${s.gradoActual}° · ${s.porcentajeGrado}%`;
+        chip!.setAttribute('data-abrir-login', '');
+        chip!.removeAttribute('href');
+        return;
+      }
+
+      // Sin grado, sin rol — esconder
+      chip!.classList.add('hidden');
+      chip!.classList.remove('inline-flex');
     }
     render();
     onCambio(render);
+    onCambioPerfil(render);
   }
 </script>

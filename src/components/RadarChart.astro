@@ -1,0 +1,155 @@
+---
+/**
+ * Gráfico radar (octágono para IM) en SVG puro, sin librerías.
+ *
+ * Recibe N etiquetas + N valores 0-100. Dibuja:
+ *   - 4 anillos de referencia (25, 50, 75, 100)
+ *   - N ejes desde el centro
+ *   - Polígono coloreado uniendo los valores
+ *   - Etiquetas en los extremos
+ */
+
+interface Props {
+  etiquetas: string[];
+  valores: number[];
+  /** Color del polígono y los valores (hex). */
+  color?: string;
+  size?: number;
+}
+
+const { etiquetas, valores, color = '#0066FF', size = 480 } = Astro.props;
+
+const cx = size / 2;
+const cy = size / 2;
+const radio = size * 0.36; // deja margen para etiquetas
+const n = etiquetas.length;
+const angInicial = -Math.PI / 2; // arriba
+
+function puntoEnAngulo(ang: number, r: number): { x: number; y: number } {
+  return {
+    x: cx + Math.cos(ang) * r,
+    y: cy + Math.sin(ang) * r,
+  };
+}
+
+const ejes = etiquetas.map((_, i) => {
+  const ang = angInicial + (i * 2 * Math.PI) / n;
+  return { ang, ...puntoEnAngulo(ang, radio) };
+});
+
+// Anillos: para evitar solapamiento, uso polígonos del mismo número de lados
+function poligono(r: number): string {
+  return ejes
+    .map((e) => {
+      const p = puntoEnAngulo(e.ang, r);
+      return `${p.x.toFixed(1)},${p.y.toFixed(1)}`;
+    })
+    .join(' ');
+}
+
+const anillos = [0.25, 0.5, 0.75, 1].map((f) => poligono(radio * f));
+
+// Polígono de valores
+const valoresPoly = ejes
+  .map((e, i) => {
+    const v = Math.max(0, Math.min(100, valores[i] ?? 0));
+    const p = puntoEnAngulo(e.ang, radio * (v / 100));
+    return `${p.x.toFixed(1)},${p.y.toFixed(1)}`;
+  })
+  .join(' ');
+
+// Posición de etiquetas (un poco fuera del radio)
+const etiquetasPos = ejes.map((e) => {
+  const r = radio + 36;
+  return puntoEnAngulo(e.ang, r);
+});
+---
+
+<svg
+  viewBox={`0 0 ${size} ${size}`}
+  class="w-full max-w-md mx-auto"
+  role="img"
+  aria-label={`Gráfico radar con ${n} dimensiones`}
+>
+  {/* Anillos de fondo */}
+  {anillos.map((puntos, i) => (
+    <polygon
+      points={puntos}
+      fill="none"
+      stroke="var(--border)"
+      stroke-width="1"
+      opacity={0.4 + i * 0.15}
+    />
+  ))}
+
+  {/* Líneas de los ejes */}
+  {ejes.map((e) => (
+    <line
+      x1={cx}
+      y1={cy}
+      x2={e.x}
+      y2={e.y}
+      stroke="var(--border)"
+      stroke-width="1"
+      opacity="0.4"
+    />
+  ))}
+
+  {/* Polígono de valores */}
+  <polygon
+    points={valoresPoly}
+    fill={color}
+    fill-opacity="0.25"
+    stroke={color}
+    stroke-width="2.5"
+    stroke-linejoin="round"
+  />
+
+  {/* Puntos en cada vértice */}
+  {ejes.map((e, i) => {
+    const v = Math.max(0, Math.min(100, valores[i] ?? 0));
+    const p = puntoEnAngulo(e.ang, radio * (v / 100));
+    return (
+      <circle
+        cx={p.x.toFixed(1)}
+        cy={p.y.toFixed(1)}
+        r="4"
+        fill={color}
+      />
+    );
+  })}
+
+  {/* Etiquetas */}
+  {etiquetas.map((label, i) => {
+    const pos = etiquetasPos[i];
+    const v = valores[i] ?? 0;
+    return (
+      <g>
+        <text
+          x={pos.x.toFixed(1)}
+          y={pos.y.toFixed(1)}
+          text-anchor="middle"
+          dominant-baseline="middle"
+          font-family="Helvetica, sans-serif"
+          font-weight="700"
+          font-size="11"
+          fill="currentColor"
+        >
+          {label}
+        </text>
+        <text
+          x={pos.x.toFixed(1)}
+          y={(pos.y + 14).toFixed(1)}
+          text-anchor="middle"
+          dominant-baseline="middle"
+          font-family="Helvetica, sans-serif"
+          font-weight="900"
+          font-size="13"
+          fill={color}
+        >
+          {v}%
+        </text>
+      </g>
+    );
+  })}
+</svg>

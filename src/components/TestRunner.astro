@@ -1,0 +1,290 @@
+---
+/**
+ * Wizard genérico para tomar tests psicométricos en ConectaTE.
+ *
+ * Recibe una lista de preguntas + escala Likert + color base. Renderiza:
+ *  - Barra de progreso superior
+ *  - Una pregunta a la vez (centrada, tipografía grande)
+ *  - Botones Likert grandes (touch friendly)
+ *  - Navegación con teclado (1-5 para responder, Backspace para volver)
+ *
+ * Al completar emite un CustomEvent('test:completado', detail: respuestas[]).
+ * El consumidor decide cómo guardar / interpretar los scores.
+ */
+
+interface Pregunta {
+  pregunta: string;
+}
+
+interface Opcion {
+  valor: number;
+  etiqueta: string;
+}
+
+interface Props {
+  /** Identificador único para distinguir entre tests (ej. "im" o "ac"). */
+  testId: string;
+  titulo: string;
+  emoji: string;
+  bgClass: string;
+  preguntas: Pregunta[];
+  opciones: Opcion[];
+  duracionEstimadaMin: number;
+}
+
+const { testId, titulo, emoji, bgClass, preguntas, opciones, duracionEstimadaMin } = Astro.props;
+---
+
+<section
+  data-test-runner
+  data-test-id={testId}
+  class="hidden"
+>
+  {/* Pantalla 1: introducción */}
+  <div data-test-pantalla="intro" class={`bento-card-color ${bgClass} min-h-[420px] flex flex-col justify-between`}>
+    <div class="flex items-center gap-2 flex-wrap">
+      <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-black/15">
+        Test reflexivo
+      </span>
+      <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-black/15">
+        ⏱ ~{duracionEstimadaMin} min
+      </span>
+      <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-black/15">
+        {preguntas.length} preguntas
+      </span>
+    </div>
+    <div>
+      <div class="text-7xl md:text-8xl mb-4">{emoji}</div>
+      <h2 class="heading-huge text-balance leading-tight mb-3">
+        {titulo}
+      </h2>
+      <p class="text-base md:text-lg leading-relaxed opacity-90 max-w-2xl mb-6">
+        No hay respuestas correctas o incorrectas. Lee cada frase y responde
+        con honestidad. Tus resultados <strong>solo los verás tú</strong>, en
+        este dispositivo.
+      </p>
+      <button
+        type="button"
+        data-test-iniciar
+        class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full font-bold bg-black text-white hover:scale-105 active:scale-95 transition-transform"
+      >
+        Empezar
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14"></path>
+          <path d="m12 5 7 7-7 7"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  {/* Pantalla 2: preguntas */}
+  <div data-test-pantalla="preguntas" class="hidden bento-card flex flex-col gap-6 min-h-[420px]">
+    {/* Barra superior */}
+    <div class="flex items-center justify-between gap-4 flex-wrap">
+      <div class="flex items-center gap-3">
+        <span class="text-3xl">{emoji}</span>
+        <div>
+          <div class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">
+            {titulo}
+          </div>
+          <div class="font-black">
+            Pregunta <span data-test-actual>1</span> de {preguntas.length}
+          </div>
+        </div>
+      </div>
+      <button
+        type="button"
+        data-test-cancelar
+        class="px-4 py-1.5 rounded-full text-xs font-bold border-2 hover:opacity-70 transition-opacity"
+        style="border-color: var(--border); color: var(--fg-muted);"
+      >
+        Cancelar
+      </button>
+    </div>
+
+    {/* Barra de progreso */}
+    <div class="w-full h-2 rounded-full overflow-hidden" style="background: var(--border);">
+      <div
+        data-test-progreso
+        class={`h-full rounded-full ${bgClass} transition-all duration-300`}
+        style="width: 0%;"
+      ></div>
+    </div>
+
+    {/* Pregunta actual */}
+    <div class="flex-1 flex items-center justify-center py-8">
+      <p
+        data-test-pregunta
+        class="text-2xl md:text-3xl font-black tracking-tight leading-snug text-center max-w-3xl text-balance"
+      >
+        Cargando…
+      </p>
+    </div>
+
+    {/* Opciones Likert */}
+    <div class="grid grid-cols-1 sm:grid-cols-5 gap-2 md:gap-3">
+      {opciones.map((o) => (
+        <button
+          type="button"
+          data-test-opcion={o.valor}
+          class="p-4 rounded-bento-sm border-2 font-bold text-sm transition-all hover:scale-[1.02] active:scale-95"
+          style="border-color: var(--border); background: var(--bg-card); color: var(--fg);"
+        >
+          <div class="text-2xl font-black mb-1">{o.valor}</div>
+          <div class="text-xs leading-tight" style="color: var(--fg-muted);">
+            {o.etiqueta}
+          </div>
+        </button>
+      ))}
+    </div>
+
+    {/* Navegación */}
+    <div class="flex items-center justify-between">
+      <button
+        type="button"
+        data-test-volver
+        disabled
+        class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold disabled:opacity-30 disabled:cursor-not-allowed hover:opacity-70 transition-opacity"
+        style="color: var(--fg-muted);"
+      >
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 18l-6-6 6-6"></path>
+        </svg>
+        Anterior
+      </button>
+      <span class="text-xs hidden md:block" style="color: var(--fg-muted);">
+        Tip: presiona 1-5 en tu teclado para responder más rápido
+      </span>
+    </div>
+  </div>
+
+  {/* Pantalla 3: completado */}
+  <div data-test-pantalla="hecho" class="hidden bento-card-color bg-bento-lime min-h-[420px] flex flex-col justify-center items-center text-center p-8">
+    <div class="text-8xl mb-6">✅</div>
+    <h2 class="heading-huge mb-3 leading-tight">¡Listo!</h2>
+    <p class="text-lg opacity-90 max-w-md mx-auto mb-6">
+      Procesando tus respuestas…
+    </p>
+  </div>
+</section>
+
+<script define:vars={{ preguntas, testId }}>
+  const root = document.querySelector(`[data-test-id="${testId}"]`);
+  if (root) {
+    const total = preguntas.length;
+    let actual = 0;
+    let respuestas = [];
+
+    const pant = (p) => root.querySelector(`[data-test-pantalla="${p}"]`);
+    const $ = (sel) => root.querySelector(sel);
+
+    function mostrar(panel) {
+      ['intro', 'preguntas', 'hecho'].forEach((k) => {
+        const el = pant(k);
+        if (!el) return;
+        if (k === panel) {
+          el.classList.remove('hidden');
+          el.classList.add('flex');
+        } else {
+          el.classList.add('hidden');
+          el.classList.remove('flex');
+        }
+      });
+    }
+
+    function pintarPregunta() {
+      const p = preguntas[actual];
+      $('[data-test-pregunta]').textContent = p.pregunta;
+      $('[data-test-actual]').textContent = String(actual + 1);
+      const pct = Math.round((actual / total) * 100);
+      const barra = $('[data-test-progreso]');
+      if (barra) barra.style.width = `${pct}%`;
+      const volver = $('[data-test-volver]');
+      if (volver) volver.disabled = actual === 0;
+
+      // Resaltar opción ya seleccionada (si volvemos)
+      const seleccionada = respuestas[actual];
+      root.querySelectorAll('[data-test-opcion]').forEach((b) => {
+        const v = parseInt(b.dataset.testOpcion || '0', 10);
+        b.classList.remove('ring-4', 'ring-bento-blue');
+        if (v === seleccionada) b.classList.add('ring-4', 'ring-bento-blue');
+      });
+    }
+
+    function responder(valor) {
+      respuestas[actual] = valor;
+      if (actual < total - 1) {
+        actual++;
+        pintarPregunta();
+      } else {
+        // último: completar
+        completar();
+      }
+    }
+
+    function completar() {
+      mostrar('hecho');
+      // Espera breve para feedback visual, luego dispara evento
+      setTimeout(() => {
+        root.dispatchEvent(
+          new CustomEvent('test:completado', {
+            detail: { testId, respuestas },
+            bubbles: true,
+          }),
+        );
+      }, 600);
+    }
+
+    function iniciar() {
+      actual = 0;
+      respuestas = [];
+      mostrar('preguntas');
+      pintarPregunta();
+    }
+
+    /* ─── Bindings ─── */
+
+    $('[data-test-iniciar]')?.addEventListener('click', iniciar);
+
+    root.querySelectorAll('[data-test-opcion]').forEach((b) => {
+      b.addEventListener('click', () => {
+        const v = parseInt(b.dataset.testOpcion || '0', 10);
+        if (v >= 1 && v <= 5) responder(v);
+      });
+    });
+
+    $('[data-test-volver]')?.addEventListener('click', () => {
+      if (actual > 0) {
+        actual--;
+        pintarPregunta();
+      }
+    });
+
+    $('[data-test-cancelar]')?.addEventListener('click', () => {
+      if (confirm('¿Cancelar el test? Tus respuestas hasta ahora se perderán.')) {
+        actual = 0;
+        respuestas = [];
+        mostrar('intro');
+      }
+    });
+
+    /* ─── Atajos de teclado 1-5 ─── */
+
+    document.addEventListener('keydown', (e) => {
+      const visible = !pant('preguntas')?.classList.contains('hidden');
+      if (!visible) return;
+      if (e.key >= '1' && e.key <= '5') {
+        e.preventDefault();
+        responder(parseInt(e.key, 10));
+      } else if (e.key === 'Backspace' && actual > 0) {
+        e.preventDefault();
+        actual--;
+        pintarPregunta();
+      }
+    });
+
+    // Mostrar la sección apenas el componente está listo
+    root.classList.remove('hidden');
+    mostrar('intro');
+  }
+</script>

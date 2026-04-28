@@ -1,0 +1,727 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RadarChart from '../../components/RadarChart.astro';
+import BarChart from '../../components/BarChart.astro';
+import TestRunner from '../../components/TestRunner.astro';
+import {
+  preguntasIM,
+  opcionesLikert,
+  dimensionesIM,
+} from '../../data/tests/inteligenciasMultiples';
+import {
+  preguntasAC,
+  opcionesLikertAC,
+  dimensionesAC,
+} from '../../data/tests/autoconcepto';
+
+const base = import.meta.env.BASE_URL;
+---
+
+<BaseLayout
+  title="Mi panel — ConectaTE"
+  description="Tu progreso, tus inteligencias, tu autoconcepto. Todo en un lugar."
+>
+  <article class="pt-12 pb-20">
+    <div class="bento-container max-w-6xl">
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-sm font-semibold mb-8 flex-wrap" style="color: var(--fg-muted);">
+        <a href={base || '/'} class="hover:opacity-60 transition-opacity">Inicio</a>
+        <span>/</span>
+        <span style="color: var(--fg);">Mi panel</span>
+      </nav>
+
+      {/* Mensaje si no es estudiante (rol incorrecto) */}
+      <div data-dashboard-bloqueado class="hidden bento-card-color bg-bento-yellow text-center py-16 px-6">
+        <div class="text-7xl mb-4">🎓</div>
+        <h1 class="heading-huge text-balance leading-tight mb-4">
+          Mi panel es para estudiantes
+        </h1>
+        <p class="text-base md:text-lg leading-relaxed max-w-xl mx-auto mb-6">
+          Esta sección muestra tu progreso, tus inteligencias múltiples y tu
+          autoconcepto. Para activarla, regístrate como estudiante.
+        </p>
+        <button
+          type="button"
+          data-abrir-login
+          class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full font-bold bg-black text-white hover:scale-105 transition-transform"
+        >
+          Registrarme como estudiante
+        </button>
+      </div>
+
+      {/* Contenido del estudiante */}
+      <div data-dashboard-contenido class="hidden">
+        <!-- HERO con identidad -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6 mb-10">
+          <div class="bento-card-color bg-bento-blue md:col-span-8 min-h-[280px] flex flex-col justify-between">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-black/15">
+                🎓 Mi panel
+              </span>
+              <span
+                class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-black/15"
+                data-perfil-grado-grupo
+              >Grado · Grupo</span>
+            </div>
+            <div>
+              <span class="text-xs font-bold uppercase tracking-widest opacity-80">Hola,</span>
+              <h1 class="heading-giant text-balance leading-[0.95] mt-1 mb-3">
+                <span data-perfil-nombre>—</span>
+              </h1>
+              <p class="text-base md:text-lg opacity-85 leading-relaxed">
+                Aquí ves tu progreso académico, cómo aprendes mejor (inteligencias
+                múltiples) y cómo te ves a ti mismo (autoconcepto). Todo es
+                privado y vive solo en este dispositivo.
+              </p>
+            </div>
+          </div>
+
+          <div class="bento-card-color bg-bento-lime md:col-span-4 flex flex-col justify-between min-h-[280px]">
+            <span class="text-xs font-bold uppercase tracking-widest opacity-80">
+              Días registrado
+            </span>
+            <div>
+              <div class="text-7xl font-black tracking-tighter leading-none" data-perfil-dias>0</div>
+              <div class="text-sm font-bold mt-2">
+                desde tu primer ingreso
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ATAJOS RÁPIDOS -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-10">
+          <a
+            href="#test-im"
+            class="bento-card-hover flex items-center gap-4"
+          >
+            <div class="text-4xl">🧠</div>
+            <div class="flex-1">
+              <div class="font-black">Inteligencias Múltiples</div>
+              <div class="text-xs mt-1" style="color: var(--fg-muted);" data-im-estado>Cargando…</div>
+            </div>
+          </a>
+          <a
+            href="#test-ac"
+            class="bento-card-hover flex items-center gap-4"
+          >
+            <div class="text-4xl">🪞</div>
+            <div class="flex-1">
+              <div class="font-black">Autoconcepto</div>
+              <div class="text-xs mt-1" style="color: var(--fg-muted);" data-ac-estado>Cargando…</div>
+            </div>
+          </a>
+          <a
+            href={`${base}/grado-6`}
+            data-perfil-grado-link
+            class="bento-card-hover flex items-center gap-4"
+          >
+            <div class="text-4xl">📚</div>
+            <div class="flex-1">
+              <div class="font-black">Mis guías</div>
+              <div class="text-xs mt-1" style="color: var(--fg-muted);">Volver al currículo de mi grado</div>
+            </div>
+          </a>
+        </div>
+
+        <!-- INTELIGENCIAS MÚLTIPLES -->
+        <section id="test-im" class="mb-12">
+          <div class="bento-card mb-6">
+            <div class="flex items-start justify-between gap-4 flex-wrap mb-4">
+              <div>
+                <span class="chip-bento mb-2">🧠 Inteligencias Múltiples</span>
+                <h2 class="heading-huge leading-tight">¿Cómo aprendes?</h2>
+              </div>
+              <button
+                type="button"
+                data-iniciar-im
+                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-sm bg-bento-blue text-white hover:scale-105 transition-transform"
+              >
+                <span data-im-cta-texto>Hacer test</span>
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 12h14"></path>
+                  <path d="m12 5 7 7-7 7"></path>
+                </svg>
+              </button>
+            </div>
+
+            <p class="text-sm md:text-base leading-relaxed mb-6" style="color: var(--fg-muted);">
+              Howard Gardner propuso que no hay una sola inteligencia, sino al
+              menos 8 formas de ser inteligente. Estas son las tuyas hoy —
+              <strong style="color: var(--fg);">son tus puertas de entrada</strong>,
+              no etiquetas fijas. Todas se desarrollan con experiencia.
+            </p>
+
+            <!-- Sin resultado: invitación -->
+            <div data-im-vacio class="text-center py-12">
+              <div class="text-6xl mb-3">🤔</div>
+              <p class="font-bold text-lg mb-2">Aún no has tomado este test</p>
+              <p class="text-sm leading-relaxed max-w-md mx-auto" style="color: var(--fg-muted);">
+                Toma ~7 minutos y descubre cómo te conectas con el aprendizaje.
+              </p>
+            </div>
+
+            <!-- Resultado: gráfico + interpretación -->
+            <div data-im-resultado class="hidden">
+              <div class="grid grid-cols-1 md:grid-cols-12 gap-6 mb-6">
+                <div class="md:col-span-6">
+                  <RadarChart
+                    etiquetas={dimensionesIM.map((d) => d.nombre.split(' ')[0])}
+                    valores={Array(dimensionesIM.length).fill(0)}
+                    color="#0066FF"
+                  />
+                </div>
+                <div class="md:col-span-6">
+                  <h3 class="font-black mb-3">Tus 3 puertas principales hoy</h3>
+                  <ul data-im-top class="space-y-3"></ul>
+                </div>
+              </div>
+              <div class="text-xs p-3 rounded-bento-sm" style="background: var(--bg); color: var(--fg-muted);" data-im-fecha>
+                Última toma: —
+              </div>
+            </div>
+          </div>
+
+          <!-- Test runner para IM (oculto hasta iniciar) -->
+          <TestRunner
+            testId="im"
+            titulo="Test de Inteligencias Múltiples"
+            emoji="🧠"
+            bgClass="bg-bento-blue"
+            preguntas={preguntasIM.map((p) => ({ pregunta: p.pregunta }))}
+            opciones={opcionesLikert}
+            duracionEstimadaMin={7}
+          />
+        </section>
+
+        <!-- AUTOCONCEPTO -->
+        <section id="test-ac" class="mb-12">
+          <div class="bento-card mb-6">
+            <div class="flex items-start justify-between gap-4 flex-wrap mb-4">
+              <div>
+                <span class="chip-bento mb-2">🪞 Autoconcepto AF-5</span>
+                <h2 class="heading-huge leading-tight">¿Cómo te ves?</h2>
+              </div>
+              <button
+                type="button"
+                data-iniciar-ac
+                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-sm bg-bento-yellow text-black hover:scale-105 transition-transform"
+              >
+                <span data-ac-cta-texto>Hacer test</span>
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 12h14"></path>
+                  <path d="m12 5 7 7-7 7"></path>
+                </svg>
+              </button>
+            </div>
+
+            <p class="text-sm md:text-base leading-relaxed mb-6" style="color: var(--fg-muted);">
+              El autoconcepto es <strong style="color: var(--fg);">cómo te ves a ti mismo</strong>
+              en 5 áreas de tu vida. Esto no es un diagnóstico — es un retrato
+              de tus emociones de hoy. Puede cambiar, y cambia.
+            </p>
+
+            <div data-ac-vacio class="text-center py-12">
+              <div class="text-6xl mb-3">📝</div>
+              <p class="font-bold text-lg mb-2">Aún no has tomado este test</p>
+              <p class="text-sm leading-relaxed max-w-md mx-auto" style="color: var(--fg-muted);">
+                Toma ~5 minutos. Si una dimensión sale baja, te sugerimos pasos a seguir.
+              </p>
+            </div>
+
+            <div data-ac-resultado class="hidden">
+              <div data-ac-bars></div>
+
+              <div class="mt-6 space-y-3" data-ac-consejos></div>
+
+              <div class="text-xs mt-6 p-3 rounded-bento-sm" style="background: var(--bg); color: var(--fg-muted);" data-ac-fecha>
+                Última toma: —
+              </div>
+            </div>
+          </div>
+
+          <TestRunner
+            testId="ac"
+            titulo="Test de Autoconcepto AF-5"
+            emoji="🪞"
+            bgClass="bg-bento-yellow"
+            preguntas={preguntasAC.map((p) => ({ pregunta: p.pregunta }))}
+            opciones={opcionesLikertAC}
+            duracionEstimadaMin={5}
+          />
+        </section>
+
+        <!-- HISTÓRICO MENSUAL -->
+        <div class="bento-card mb-10" data-historicos-card>
+          <span class="chip-bento mb-3">Tus tomas anteriores</span>
+          <h2 class="heading-huge leading-tight mb-3">Cómo cambias en el tiempo</h2>
+          <p class="text-sm md:text-base leading-relaxed mb-6" style="color: var(--fg-muted);">
+            Recomendamos volver a tomar los tests <strong style="color: var(--fg);">una vez al mes</strong>
+            para ver tu evolución. Aquí ves tus tomas anteriores.
+          </p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h3 class="font-black mb-2 text-sm uppercase tracking-widest">🧠 Inteligencias</h3>
+              <ul data-historico-im class="space-y-1 text-sm" style="color: var(--fg-muted);">
+                <li class="italic">Sin tomas registradas</li>
+              </ul>
+            </div>
+            <div>
+              <h3 class="font-black mb-2 text-sm uppercase tracking-widest">🪞 Autoconcepto</h3>
+              <ul data-historico-ac class="space-y-1 text-sm" style="color: var(--fg-muted);">
+                <li class="italic">Sin tomas registradas</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- ZONA DE PRIVACIDAD -->
+        <div class="bento-card mb-10">
+          <span class="chip-bento mb-3">🔒 Tu privacidad</span>
+          <p class="text-sm md:text-base leading-relaxed mb-4" style="color: var(--fg-muted);">
+            Todo lo que registras vive solo en este navegador. ConectaTE no
+            envía nada a un servidor. Puedes borrar tu perfil completo cuando
+            quieras.
+          </p>
+          <div class="flex flex-wrap gap-3">
+            <button
+              type="button"
+              data-exportar
+              class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-sm border-2 hover:opacity-70 transition-opacity"
+              style="border-color: var(--border); color: var(--fg);"
+            >
+              📥 Exportar mis datos
+            </button>
+            <button
+              type="button"
+              data-cerrar-sesion
+              class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-sm border-2 hover:opacity-70 transition-opacity"
+              style="border-color: var(--border); color: var(--fg);"
+            >
+              🚪 Cerrar sesión
+            </button>
+            <button
+              type="button"
+              data-olvidar
+              class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-sm bg-bento-pink text-white hover:scale-105 transition-transform"
+            >
+              🗑 Borrar todo mi perfil
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <script define:vars={{ base }}>
+    /* Imports diferidos para que el SSR no tropiece */
+    import('../../scripts/perfilUsuario').then((mod) => {
+      const {
+        leerPerfil,
+        guardarResultadoIM,
+        guardarResultadoAC,
+        ultimoTestIM,
+        ultimoTestAC,
+        diasDesdeUltimoIM,
+        diasDesdeUltimoAC,
+        momentoDeRetomarIM,
+        momentoDeRetomarAC,
+        cerrarSesion,
+        olvidarTodo,
+        exportarComoJSON,
+        onCambioPerfil,
+      } = mod;
+
+      Promise.all([
+        import('../../data/tests/inteligenciasMultiples'),
+        import('../../data/tests/autoconcepto'),
+      ]).then(([imMod, acMod]) => {
+        const { calcularScoresIM, dimensionesIM } = imMod;
+        const { calcularScoresAC, dimensionesAC } = acMod;
+
+        const $ = (sel) => document.querySelector(sel);
+        const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+
+        const sectionBloqueado = $('[data-dashboard-bloqueado]');
+        const sectionContenido = $('[data-dashboard-contenido]');
+
+        function pintarPerfilHero(p) {
+          const isEstudiante = p.rol === 'estudiante' && p.nombre && p.grado;
+          if (!isEstudiante) {
+            sectionBloqueado?.classList.remove('hidden');
+            sectionContenido?.classList.add('hidden');
+            return;
+          }
+          sectionBloqueado?.classList.add('hidden');
+          sectionContenido?.classList.remove('hidden');
+
+          $('[data-perfil-nombre]').textContent = p.nombre;
+          $('[data-perfil-grado-grupo]').textContent =
+            `Grado ${p.grado}° · Grupo ${p.grupo ?? ''}`.trim();
+          const linkGrado = $('[data-perfil-grado-link]');
+          if (linkGrado) linkGrado.href = `${base}/grado-${p.grado}`;
+          const dias = p.fechaRegistro
+            ? Math.max(0, Math.floor((Date.now() - p.fechaRegistro) / 86400000))
+            : 0;
+          $('[data-perfil-dias]').textContent = String(dias);
+        }
+
+        function pintarEstadoIM() {
+          const ultimo = ultimoTestIM();
+          const d = diasDesdeUltimoIM();
+          const debe = momentoDeRetomarIM();
+
+          const cta = $('[data-im-cta-texto]');
+          const estado = $('[data-im-estado]');
+          if (!ultimo) {
+            if (cta) cta.textContent = 'Hacer test';
+            if (estado) estado.textContent = 'Sin tomas registradas';
+            $('[data-im-vacio]')?.classList.remove('hidden');
+            $('[data-im-resultado]')?.classList.add('hidden');
+            return;
+          }
+          if (cta) cta.textContent = debe ? 'Volver a hacer' : 'Repetir';
+          if (estado)
+            estado.textContent = `Última toma hace ${d} día${d === 1 ? '' : 's'}`;
+          $('[data-im-vacio]')?.classList.add('hidden');
+          $('[data-im-resultado]')?.classList.remove('hidden');
+
+          // Pintar radar (vuelve a renderizar el SVG actualizando posiciones de puntos)
+          const valores = dimensionesIM.map((d) => ultimo.scores[d.id] ?? 0);
+          const radarSvg = $('[data-im-resultado] svg');
+          if (radarSvg) {
+            // Estrategia: re-renderizamos el SVG desde cero para evitar mantener
+            // referencias complejas. Usamos un helper.
+            radarSvg.outerHTML = renderRadar(
+              dimensionesIM.map((d) => d.nombre.split(' ')[0]),
+              valores,
+            );
+          }
+
+          // Top 3 dimensiones
+          const ranked = [...dimensionesIM]
+            .map((d) => ({ ...d, valor: ultimo.scores[d.id] ?? 0 }))
+            .sort((a, b) => b.valor - a.valor)
+            .slice(0, 3);
+          const topUl = $('[data-im-top]');
+          if (topUl) {
+            topUl.innerHTML = ranked
+              .map(
+                (d, i) => `
+              <li class="flex items-start gap-3 p-3 rounded-bento-sm" style="background: var(--bg);">
+                <div class="text-3xl">${d.emoji}</div>
+                <div class="flex-1">
+                  <div class="flex items-baseline justify-between gap-2 flex-wrap">
+                    <span class="font-black">${i + 1}. ${d.nombre}</span>
+                    <span class="font-black text-bento-blue">${d.valor}%</span>
+                  </div>
+                  <p class="text-xs mt-1" style="color: var(--fg-muted);">${d.descripcion}</p>
+                </div>
+              </li>`,
+              )
+              .join('');
+          }
+
+          // Fecha
+          const fechaEl = $('[data-im-fecha]');
+          if (fechaEl) {
+            const f = new Date(ultimo.fecha);
+            fechaEl.textContent = `Última toma: ${f.toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' })}`;
+          }
+        }
+
+        function pintarEstadoAC() {
+          const ultimo = ultimoTestAC();
+          const d = diasDesdeUltimoAC();
+
+          const cta = $('[data-ac-cta-texto]');
+          const estado = $('[data-ac-estado]');
+          if (!ultimo) {
+            if (cta) cta.textContent = 'Hacer test';
+            if (estado) estado.textContent = 'Sin tomas registradas';
+            $('[data-ac-vacio]')?.classList.remove('hidden');
+            $('[data-ac-resultado]')?.classList.add('hidden');
+            return;
+          }
+          if (cta) cta.textContent = momentoDeRetomarAC() ? 'Volver a hacer' : 'Repetir';
+          if (estado)
+            estado.textContent = `Última toma hace ${d} día${d === 1 ? '' : 's'}`;
+          $('[data-ac-vacio]')?.classList.add('hidden');
+          $('[data-ac-resultado]')?.classList.remove('hidden');
+
+          // Pintar barras
+          const colorPorDim = {
+            academico: '#0066FF',
+            social: '#A3FF12',
+            emocional: '#FFD60A',
+            familiar: '#FF2D87',
+            fisico: '#FF6B35',
+          };
+          const barsHtml = dimensionesAC
+            .map((d) => {
+              const v = Math.max(0, Math.min(100, ultimo.scores[d.id] ?? 0));
+              const isBajo = v <= 40;
+              const c = colorPorDim[d.id];
+              return `
+                <li class="mb-4">
+                  <div class="flex items-baseline justify-between gap-3 mb-1.5">
+                    <span class="font-bold text-sm md:text-base flex items-center gap-2">
+                      <span class="text-xl">${d.emoji}</span>
+                      ${d.nombre}
+                      ${isBajo ? '<span class="text-[10px] uppercase tracking-widest font-black px-1.5 py-0.5 rounded-full bg-bento-pink text-white">oportunidad</span>' : ''}
+                    </span>
+                    <span class="text-2xl md:text-3xl font-black tracking-tight" style="color: ${c};">
+                      ${v}%
+                    </span>
+                  </div>
+                  <div class="w-full h-3 rounded-full overflow-hidden" style="background: var(--border);">
+                    <div class="h-full rounded-full transition-all duration-700 ease-out" style="width: ${v}%; background: ${c};"></div>
+                  </div>
+                </li>`;
+            })
+            .join('');
+          const wrap = $('[data-ac-bars]');
+          if (wrap) wrap.innerHTML = `<ul>${barsHtml}</ul>`;
+
+          // Consejos para dimensiones bajas
+          const consejos = dimensionesAC
+            .filter((d) => (ultimo.scores[d.id] ?? 0) <= 40)
+            .map(
+              (d) => `
+              <div class="p-4 rounded-bento-sm border-l-4 border-bento-pink" style="background: var(--bg);">
+                <div class="font-black text-sm mb-1">${d.emoji} ${d.nombre}</div>
+                <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">${d.consejoBajo}</p>
+              </div>`,
+            )
+            .join('');
+          const consejosEl = $('[data-ac-consejos]');
+          if (consejosEl) consejosEl.innerHTML = consejos;
+
+          // Fecha
+          const fechaEl = $('[data-ac-fecha]');
+          if (fechaEl) {
+            const f = new Date(ultimo.fecha);
+            fechaEl.textContent = `Última toma: ${f.toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' })}`;
+          }
+        }
+
+        function pintarHistorico() {
+          const p = leerPerfil();
+          const fmt = (ts) =>
+            new Date(ts).toLocaleDateString('es-CO', { day: 'numeric', month: 'short', year: 'numeric' });
+
+          const im = $('[data-historico-im]');
+          if (im) {
+            if (p.testsIM.length === 0) {
+              im.innerHTML = '<li class="italic">Sin tomas registradas</li>';
+            } else {
+              im.innerHTML = p.testsIM
+                .slice()
+                .reverse()
+                .map((r, i) => {
+                  const top = Object.entries(r.scores)
+                    .sort((a, b) => Number(b[1]) - Number(a[1]))[0];
+                  const dimMeta = dimensionesIM.find((d) => d.id === top[0]);
+                  return `<li><strong>${fmt(r.fecha)}</strong> · top: ${dimMeta?.emoji ?? ''} ${dimMeta?.nombre ?? top[0]} (${top[1]}%)</li>`;
+                })
+                .join('');
+            }
+          }
+          const ac = $('[data-historico-ac]');
+          if (ac) {
+            if (p.testsAC.length === 0) {
+              ac.innerHTML = '<li class="italic">Sin tomas registradas</li>';
+            } else {
+              ac.innerHTML = p.testsAC
+                .slice()
+                .reverse()
+                .map((r) => {
+                  const promedio = Math.round(
+                    Object.values(r.scores).reduce((a, b) => Number(a) + Number(b), 0) /
+                      Object.keys(r.scores).length,
+                  );
+                  return `<li><strong>${fmt(r.fecha)}</strong> · promedio ${promedio}%</li>`;
+                })
+                .join('');
+            }
+          }
+        }
+
+        /* ─── Helper para re-renderizar el radar ─── */
+
+        function renderRadar(etiquetas, valores) {
+          const size = 480;
+          const cx = size / 2;
+          const cy = size / 2;
+          const radio = size * 0.36;
+          const n = etiquetas.length;
+          const angInicial = -Math.PI / 2;
+          const color = '#0066FF';
+
+          const pt = (ang, r) => ({
+            x: cx + Math.cos(ang) * r,
+            y: cy + Math.sin(ang) * r,
+          });
+          const ejes = etiquetas.map((_, i) => {
+            const ang = angInicial + (i * 2 * Math.PI) / n;
+            return { ang, ...pt(ang, radio) };
+          });
+          const poligono = (r) =>
+            ejes
+              .map((e) => {
+                const p = pt(e.ang, r);
+                return `${p.x.toFixed(1)},${p.y.toFixed(1)}`;
+              })
+              .join(' ');
+          const anillos = [0.25, 0.5, 0.75, 1].map((f) => poligono(radio * f));
+          const valoresPoly = ejes
+            .map((e, i) => {
+              const v = Math.max(0, Math.min(100, valores[i] ?? 0));
+              const p = pt(e.ang, radio * (v / 100));
+              return `${p.x.toFixed(1)},${p.y.toFixed(1)}`;
+            })
+            .join(' ');
+          const etiquetasPos = ejes.map((e) => pt(e.ang, radio + 36));
+
+          const anillosEls = anillos
+            .map(
+              (puntos, i) =>
+                `<polygon points="${puntos}" fill="none" stroke="var(--border)" stroke-width="1" opacity="${0.4 + i * 0.15}"/>`,
+            )
+            .join('');
+          const ejesEls = ejes
+            .map(
+              (e) =>
+                `<line x1="${cx}" y1="${cy}" x2="${e.x}" y2="${e.y}" stroke="var(--border)" stroke-width="1" opacity="0.4"/>`,
+            )
+            .join('');
+          const puntosEls = ejes
+            .map((e, i) => {
+              const v = Math.max(0, Math.min(100, valores[i] ?? 0));
+              const p = pt(e.ang, radio * (v / 100));
+              return `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="4" fill="${color}"/>`;
+            })
+            .join('');
+          const labelsEls = etiquetas
+            .map((label, i) => {
+              const p = etiquetasPos[i];
+              const v = valores[i] ?? 0;
+              return `
+                <g>
+                  <text x="${p.x.toFixed(1)}" y="${p.y.toFixed(1)}" text-anchor="middle" dominant-baseline="middle" font-family="Helvetica, sans-serif" font-weight="700" font-size="11" fill="currentColor">${label}</text>
+                  <text x="${p.x.toFixed(1)}" y="${(p.y + 14).toFixed(1)}" text-anchor="middle" dominant-baseline="middle" font-family="Helvetica, sans-serif" font-weight="900" font-size="13" fill="${color}">${v}%</text>
+                </g>`;
+            })
+            .join('');
+
+          return `<svg viewBox="0 0 ${size} ${size}" class="w-full max-w-md mx-auto" role="img">
+            ${anillosEls}
+            ${ejesEls}
+            <polygon points="${valoresPoly}" fill="${color}" fill-opacity="0.25" stroke="${color}" stroke-width="2.5" stroke-linejoin="round"/>
+            ${puntosEls}
+            ${labelsEls}
+          </svg>`;
+        }
+
+        /* ─── Eventos ─── */
+
+        // Iniciar tests (botones del dashboard)
+        $('[data-iniciar-im]')?.addEventListener('click', () => {
+          const runner = document.querySelector('[data-test-id="im"]');
+          if (runner) {
+            runner.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            runner.querySelector('[data-test-iniciar]')?.click();
+          }
+        });
+        $('[data-iniciar-ac]')?.addEventListener('click', () => {
+          const runner = document.querySelector('[data-test-id="ac"]');
+          if (runner) {
+            runner.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            runner.querySelector('[data-test-iniciar]')?.click();
+          }
+        });
+
+        // Capturar el resultado de los tests
+        document.addEventListener('test:completado', (ev) => {
+          const { testId, respuestas } = ev.detail;
+          if (testId === 'im') {
+            const scores = calcularScoresIM(respuestas);
+            guardarResultadoIM(scores);
+            // Mostrar resultados después de un momento
+            setTimeout(() => {
+              window.location.hash = '#test-im';
+              window.scrollTo({ top: document.querySelector('#test-im')?.offsetTop ?? 0, behavior: 'smooth' });
+            }, 300);
+          } else if (testId === 'ac') {
+            const scores = calcularScoresAC(respuestas);
+            guardarResultadoAC(scores);
+            setTimeout(() => {
+              window.location.hash = '#test-ac';
+              window.scrollTo({ top: document.querySelector('#test-ac')?.offsetTop ?? 0, behavior: 'smooth' });
+            }, 300);
+          }
+          // Volver a la pantalla intro del runner
+          const runner = document.querySelector(`[data-test-id="${testId}"]`);
+          if (runner) {
+            runner.querySelectorAll('[data-test-pantalla]').forEach((el) => {
+              if (el.dataset.testPantalla === 'intro') {
+                el.classList.remove('hidden');
+                el.classList.add('flex');
+              } else {
+                el.classList.add('hidden');
+                el.classList.remove('flex');
+              }
+            });
+          }
+        });
+
+        // Cerrar sesión
+        $('[data-cerrar-sesion]')?.addEventListener('click', () => {
+          if (confirm('¿Cerrar sesión? Tus datos quedarán guardados pero entrarás como visitante.')) {
+            cerrarSesion();
+            window.location.href = base || '/';
+          }
+        });
+
+        // Borrar todo
+        $('[data-olvidar]')?.addEventListener('click', () => {
+          if (
+            confirm(
+              '⚠️ Esto BORRARÁ permanentemente tu nombre, grado, tests y progreso. ¿Estás seguro?',
+            )
+          ) {
+            olvidarTodo();
+            window.location.href = base || '/';
+          }
+        });
+
+        // Exportar
+        $('[data-exportar]')?.addEventListener('click', () => {
+          const json = exportarComoJSON();
+          const blob = new Blob([json], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `conectate-perfil-${Date.now()}.json`;
+          a.click();
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+        });
+
+        // Render inicial
+        const perfil = leerPerfil();
+        pintarPerfilHero(perfil);
+        pintarEstadoIM();
+        pintarEstadoAC();
+        pintarHistorico();
+
+        // Reaccionar a cambios
+        onCambioPerfil((p) => {
+          pintarPerfilHero(p);
+          pintarEstadoIM();
+          pintarEstadoAC();
+          pintarHistorico();
+        });
+      });
+    });
+  </script>
+</BaseLayout>

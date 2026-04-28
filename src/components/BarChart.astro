@@ -1,0 +1,57 @@
+---
+/**
+ * Gráfico de barras horizontales en SVG, ideal para mostrar dimensiones
+ * de autoconcepto (5 barras horizontales, 0-100).
+ */
+
+interface BarItem {
+  etiqueta: string;
+  emoji?: string;
+  valor: number;
+  color: string; // hex
+}
+
+interface Props {
+  datos: BarItem[];
+  /** Si true, marca con un punto rojo dimensiones <= 40 (señal de oportunidad) */
+  destacarBajos?: boolean;
+}
+
+const { datos, destacarBajos = false } = Astro.props;
+---
+
+<div class="w-full">
+  <ul class="space-y-4">
+    {datos.map((d) => {
+      const v = Math.max(0, Math.min(100, d.valor));
+      const isBajo = destacarBajos && v <= 40;
+      return (
+        <li>
+          <div class="flex items-baseline justify-between gap-3 mb-1.5">
+            <span class="font-bold text-sm md:text-base flex items-center gap-2">
+              {d.emoji && <span class="text-xl">{d.emoji}</span>}
+              {d.etiqueta}
+              {isBajo && (
+                <span
+                  class="text-[10px] uppercase tracking-widest font-black px-1.5 py-0.5 rounded-full bg-bento-pink text-white"
+                  title="Oportunidad de crecimiento"
+                >
+                  oportunidad
+                </span>
+              )}
+            </span>
+            <span class="text-2xl md:text-3xl font-black tracking-tight" style={`color: ${d.color};`}>
+              {v}%
+            </span>
+          </div>
+          <div class="w-full h-3 rounded-full overflow-hidden" style="background: var(--border);">
+            <div
+              class="h-full rounded-full transition-all duration-700 ease-out"
+              style={`width: ${v}%; background: ${d.color};`}
+            ></div>
+          </div>
+        </li>
+      );
+    })}
+  </ul>
+</div>

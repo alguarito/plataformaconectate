@@ -1,0 +1,420 @@
+---
+/**
+ * Modal de login para ConectaTE — Fase A
+ *
+ * Reemplaza el OnboardingGrado anterior. Tres caminos:
+ *   🚪 Visitante — entra sin identificarse
+ *   🎓 Estudiante — formulario nombre + grado + grupo + tests opcionales
+ *   👨‍🏫 Docente — login con email/contraseña (decorativo, Fase A)
+ *
+ * Se muestra automáticamente en primera visita. Reabre desde
+ * cualquier botón con [data-abrir-login].
+ */
+import { grados } from '../data/grados';
+---
+
+<dialog
+  id="login-modal"
+  class="bg-transparent p-0 m-0 max-w-none w-full max-h-none h-full backdrop:bg-black/70 backdrop:backdrop-blur-sm"
+>
+  <div class="fixed inset-0 flex items-end md:items-center justify-center p-0 md:p-6">
+    <div
+      class="w-full md:max-w-2xl max-h-[92vh] overflow-y-auto rounded-t-3xl md:rounded-bento-lg shadow-2xl"
+      style="background: var(--bg);"
+    >
+      <div class="p-6 md:p-10">
+        <div class="w-12 h-1.5 rounded-full mx-auto mb-6 md:hidden" style="background: var(--border);"></div>
+
+        <div class="flex items-start justify-between gap-4 mb-2">
+          <div class="flex-1" data-login-titulo>
+            <span class="chip-bento mb-3">Bienvenida · Bienvenido</span>
+            <h2 class="text-3xl md:text-4xl font-black tracking-tight leading-tight">
+              ¿Cómo entras a ConectaTE?
+            </h2>
+            <p class="mt-3 text-sm md:text-base leading-relaxed" style="color: var(--fg-muted);">
+              Tu progreso, tus tests y tus reflexiones se guardan en este
+              navegador. Nada viaja a un servidor.
+            </p>
+          </div>
+          <button
+            type="button"
+            data-cerrar-login
+            aria-label="Cerrar"
+            class="w-10 h-10 rounded-full flex items-center justify-center hover:opacity-70 transition-opacity shrink-0"
+            style="background: var(--border);"
+          >
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 6 6 18"></path>
+              <path d="m6 6 12 12"></path>
+            </svg>
+          </button>
+        </div>
+
+        {/* PASO 1 — selector de rol */}
+        <div data-login-paso="rol" class="grid grid-cols-1 gap-3 mt-8">
+          <!-- Estudiante -->
+          <button
+            type="button"
+            data-rol-estudiante
+            class="bento-card-color bg-bento-blue text-left p-5 active:scale-95 transition-transform group flex items-center gap-4"
+          >
+            <div class="text-5xl shrink-0">🎓</div>
+            <div class="flex-1">
+              <div class="text-xl md:text-2xl font-black tracking-tight leading-tight">
+                Soy estudiante
+              </div>
+              <div class="text-sm opacity-90 mt-1">
+                Registra tu nombre, grado y grupo. Tests opcionales para conocerte mejor.
+              </div>
+            </div>
+            <svg class="w-6 h-6 group-hover:translate-x-1 transition-transform shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14"></path>
+              <path d="m12 5 7 7-7 7"></path>
+            </svg>
+          </button>
+
+          <!-- Docente -->
+          <button
+            type="button"
+            data-rol-docente
+            class="bento-card-color bg-bento-purple text-left p-5 active:scale-95 transition-transform group flex items-center gap-4"
+          >
+            <div class="text-5xl shrink-0">👨‍🏫</div>
+            <div class="flex-1">
+              <div class="text-xl md:text-2xl font-black tracking-tight leading-tight">
+                Soy el docente
+              </div>
+              <div class="text-sm opacity-90 mt-1">
+                Acceso con email y contraseña institucional.
+              </div>
+            </div>
+            <svg class="w-6 h-6 group-hover:translate-x-1 transition-transform shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14"></path>
+              <path d="m12 5 7 7-7 7"></path>
+            </svg>
+          </button>
+
+          <!-- Visitante -->
+          <button
+            type="button"
+            data-rol-visitante
+            class="text-left p-5 rounded-bento-sm border-2 active:scale-95 transition-transform group flex items-center gap-4 hover:opacity-80"
+            style="border-color: var(--border); color: var(--fg);"
+          >
+            <div class="text-5xl shrink-0">🚪</div>
+            <div class="flex-1">
+              <div class="text-xl md:text-2xl font-black tracking-tight leading-tight">
+                Entrar como visitante
+              </div>
+              <div class="text-sm mt-1" style="color: var(--fg-muted);">
+                Explora sin registrarte. Tu progreso no se guarda con tu identidad.
+              </div>
+            </div>
+          </button>
+        </div>
+
+        {/* PASO 2 — formulario estudiante */}
+        <form
+          data-login-paso="estudiante"
+          class="hidden mt-6 space-y-5"
+        >
+          <button
+            type="button"
+            data-volver-rol
+            class="inline-flex items-center gap-2 text-sm font-semibold hover:opacity-60 transition-opacity"
+            style="color: var(--fg-muted);"
+          >
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 18l-6-6 6-6"></path>
+            </svg>
+            Volver
+          </button>
+
+          <div>
+            <label for="est-nombre" class="block text-sm font-bold mb-2">Tu nombre</label>
+            <input
+              id="est-nombre"
+              type="text"
+              autocomplete="given-name"
+              required
+              minlength="2"
+              maxlength="60"
+              placeholder="Ej. María Fernanda"
+              class="w-full px-4 py-3 rounded-bento-sm border-2 outline-none focus:border-bento-blue transition-colors"
+              style="border-color: var(--border); background: var(--bg-card); color: var(--fg);"
+            />
+          </div>
+
+          <div>
+            <label for="est-grado" class="block text-sm font-bold mb-2">Tu grado</label>
+            <div class="grid grid-cols-3 gap-2" data-est-grado-opciones>
+              {grados.map((g) => (
+                <button
+                  type="button"
+                  data-est-grado={g.numero}
+                  class={`p-3 rounded-bento-sm border-2 font-bold transition-colors hover:opacity-80`}
+                  style="border-color: var(--border); color: var(--fg);"
+                >
+                  {g.numero}°
+                </button>
+              ))}
+            </div>
+            <input id="est-grado" type="hidden" required />
+          </div>
+
+          <div>
+            <label for="est-grupo" class="block text-sm font-bold mb-2">Tu grupo</label>
+            <input
+              id="est-grupo"
+              type="text"
+              required
+              maxlength="20"
+              placeholder="Ej. A, B, 6-1, único…"
+              class="w-full px-4 py-3 rounded-bento-sm border-2 outline-none focus:border-bento-blue transition-colors"
+              style="border-color: var(--border); background: var(--bg-card); color: var(--fg);"
+            />
+          </div>
+
+          <div class="text-xs leading-relaxed p-3 rounded-bento-sm" style="background: var(--bg-card); color: var(--fg-muted); border: 1px solid var(--border);">
+            🔒 Tu información se guarda solo en este navegador. Si limpias el caché,
+            tendrás que volver a registrarte. ConectaTE no envía tus datos a ningún
+            servidor.
+          </div>
+
+          <button
+            type="submit"
+            class="btn-bento-accent w-full"
+          >
+            Crear mi perfil
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14"></path>
+              <path d="m12 5 7 7-7 7"></path>
+            </svg>
+          </button>
+        </form>
+
+        {/* PASO 3 — formulario docente */}
+        <form
+          data-login-paso="docente"
+          class="hidden mt-6 space-y-5"
+        >
+          <button
+            type="button"
+            data-volver-rol
+            class="inline-flex items-center gap-2 text-sm font-semibold hover:opacity-60 transition-opacity"
+            style="color: var(--fg-muted);"
+          >
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 18l-6-6 6-6"></path>
+            </svg>
+            Volver
+          </button>
+
+          <div>
+            <label for="doc-email" class="block text-sm font-bold mb-2">Email institucional</label>
+            <input
+              id="doc-email"
+              type="email"
+              autocomplete="email"
+              required
+              placeholder="alvaro.cardenas.orozco@gmail.com"
+              class="w-full px-4 py-3 rounded-bento-sm border-2 outline-none focus:border-bento-purple transition-colors"
+              style="border-color: var(--border); background: var(--bg-card); color: var(--fg);"
+            />
+          </div>
+
+          <div>
+            <label for="doc-password" class="block text-sm font-bold mb-2">Contraseña</label>
+            <input
+              id="doc-password"
+              type="password"
+              autocomplete="current-password"
+              required
+              class="w-full px-4 py-3 rounded-bento-sm border-2 outline-none focus:border-bento-purple transition-colors"
+              style="border-color: var(--border); background: var(--bg-card); color: var(--fg);"
+            />
+          </div>
+
+          <div
+            data-doc-error
+            class="hidden p-3 rounded-bento-sm bg-bento-pink text-white text-sm font-bold"
+          ></div>
+
+          <div class="text-xs leading-relaxed p-3 rounded-bento-sm" style="background: var(--bg-card); color: var(--fg-muted); border: 1px solid var(--border);">
+            ⚠️ <strong>Fase A — autenticación local:</strong> esta verificación
+            ocurre en el navegador. No es seguridad real para datos sensibles.
+            La autenticación con backend llega en una fase futura.
+          </div>
+
+          <button type="submit" class="btn-bento-accent w-full">
+            Ingresar como docente
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14"></path>
+              <path d="m12 5 7 7-7 7"></path>
+            </svg>
+          </button>
+        </form>
+
+        <p class="text-xs mt-6 leading-relaxed" style="color: var(--fg-muted);">
+          🔒 Privacidad: ConectaTE no recolecta datos personales en servidores.
+          Todo lo que registres vive solo en tu dispositivo. Puedes borrarlo
+          en cualquier momento.
+        </p>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  import {
+    leerPerfil,
+    loginEstudiante,
+    loginDocente,
+    loginVisitante,
+  } from '../scripts/perfilUsuario';
+
+  const dialog = document.getElementById('login-modal') as HTMLDialogElement | null;
+  if (!dialog) {
+    /* SSR no-op */
+  } else {
+    const base = (document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null)?.href ?? '';
+
+    /* ─── Helpers de UI ─── */
+
+    type Paso = 'rol' | 'estudiante' | 'docente';
+    function mostrarPaso(paso: Paso) {
+      ['rol', 'estudiante', 'docente'].forEach((p) => {
+        const el = dialog.querySelector(`[data-login-paso="${p}"]`);
+        if (!el) return;
+        if (p === paso) el.classList.remove('hidden');
+        else el.classList.add('hidden');
+      });
+    }
+
+    function abrirModal() {
+      mostrarPaso('rol');
+      if (typeof dialog.showModal === 'function') dialog.showModal();
+    }
+
+    function cerrar() {
+      sessionStorage.setItem('login-omitido', '1');
+      dialog.close();
+    }
+
+    /* ─── Auto-abrir en primera visita si es visitante puro ─── */
+
+    const perfil = leerPerfil();
+    const yaIdentificado = perfil.rol !== 'visitante' || perfil.grado != null;
+    if (!yaIdentificado && !sessionStorage.getItem('login-omitido')) {
+      setTimeout(() => abrirModal(), 600);
+    }
+
+    /* ─── Bindings de cierre ─── */
+
+    dialog.querySelectorAll('[data-cerrar-login]').forEach((b) =>
+      b.addEventListener('click', cerrar),
+    );
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) cerrar();
+    });
+
+    /* ─── Selección de rol ─── */
+
+    dialog.querySelector('[data-rol-estudiante]')?.addEventListener('click', () =>
+      mostrarPaso('estudiante'),
+    );
+    dialog.querySelector('[data-rol-docente]')?.addEventListener('click', () =>
+      mostrarPaso('docente'),
+    );
+    dialog.querySelector('[data-rol-visitante]')?.addEventListener('click', () => {
+      loginVisitante();
+      cerrar();
+    });
+    dialog.querySelectorAll('[data-volver-rol]').forEach((b) =>
+      b.addEventListener('click', () => mostrarPaso('rol')),
+    );
+
+    /* ─── Form estudiante ─── */
+
+    const formEst = dialog.querySelector('[data-login-paso="estudiante"]') as HTMLFormElement;
+    const inputGrado = formEst?.querySelector('#est-grado') as HTMLInputElement;
+    const opcionesGrado = formEst?.querySelectorAll<HTMLButtonElement>('[data-est-grado]');
+
+    opcionesGrado?.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        opcionesGrado.forEach((b) => {
+          b.classList.remove('bg-bento-blue', 'text-white');
+          b.style.borderColor = 'var(--border)';
+        });
+        btn.classList.add('bg-bento-blue', 'text-white');
+        btn.style.borderColor = 'var(--accent)';
+        inputGrado.value = btn.dataset.estGrado ?? '';
+      });
+    });
+
+    formEst?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const nombre = (formEst.querySelector('#est-nombre') as HTMLInputElement).value.trim();
+      const grado = parseInt(inputGrado.value, 10);
+      const grupo = (formEst.querySelector('#est-grupo') as HTMLInputElement).value.trim();
+      if (!nombre || !grado || !grupo) {
+        alert('Completa todos los campos para continuar.');
+        return;
+      }
+      loginEstudiante(nombre, grado, grupo);
+      // Al cerrar, redirigir al dashboard del estudiante (que ofrece tomar tests)
+      dialog.close();
+      const homePath = (document.querySelector('meta[name="generator"]') ? '/plataformaconectate' : '');
+      window.location.href = `${homePath}/dashboard`;
+    });
+
+    /* ─── Form docente ─── */
+
+    const formDoc = dialog.querySelector('[data-login-paso="docente"]') as HTMLFormElement;
+    const errBox = formDoc?.querySelector('[data-doc-error]') as HTMLElement;
+
+    formDoc?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = (formDoc.querySelector('#doc-email') as HTMLInputElement).value;
+      const password = (formDoc.querySelector('#doc-password') as HTMLInputElement).value;
+      const r = loginDocente(email, password);
+      if (!r.ok) {
+        errBox.textContent = r.mensaje ?? 'No fue posible ingresar.';
+        errBox.classList.remove('hidden');
+        return;
+      }
+      errBox.classList.add('hidden');
+      dialog.close();
+      // Refrescar para que el chip de docente y demás estados se actualicen
+      window.location.reload();
+    });
+
+    /* ─── Reabrir desde otros componentes ─── */
+
+    // Atributos nuevos y antiguos (retrocompatibilidad con OnboardingGrado)
+    document
+      .querySelectorAll('[data-abrir-login], [data-abrir-onboarding]')
+      .forEach((btn) =>
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          abrirModal();
+        }),
+      );
+  }
+</script>
+
+<style>
+  #login-modal[open] > div > div {
+    animation: login-pop 0.3s ease-out;
+  }
+  @keyframes login-pop {
+    from {
+      opacity: 0;
+      transform: translateY(40px) scale(0.97);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+</style>

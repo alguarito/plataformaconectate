@@ -1,0 +1,156 @@
+---
+/**
+ * Visualización paso a paso de un concepto.
+ *
+ * Muestra una serie de pasos que el estudiante navega con botones
+ * Anterior/Siguiente. Cada paso puede tener bloque de código asociado.
+ */
+import type { LabVisualizacion as LabVizType } from '../data/guiasContenido/_schema';
+
+interface Props {
+  data: LabVizType;
+  id: string;
+}
+
+const { data, id } = Astro.props;
+const totalPasos = data.pasos.length;
+---
+
+<div class="bento-card" data-lab-viz={id}>
+  <div class="flex items-start justify-between gap-4 flex-wrap mb-3">
+    <div>
+      <span class="chip-bento mb-2">🧪 Laboratorio · Visualización</span>
+      <h3 class="text-xl md:text-2xl font-black tracking-tight leading-tight">{data.titulo}</h3>
+    </div>
+    <span class="text-sm font-bold" style="color: var(--fg-muted);">
+      <span data-viz-actual>1</span> / {totalPasos}
+    </span>
+  </div>
+  <p class="text-sm leading-relaxed mb-5" style="color: var(--fg-muted);">
+    {data.instrucciones}
+  </p>
+
+  <!-- Indicador de pasos -->
+  <div class="flex items-center gap-1 mb-6">
+    {
+      data.pasos.map((_, i) => (
+        <div
+          data-viz-dot={i}
+          class="flex-1 h-1.5 rounded-full transition-colors"
+          style={`background: ${i === 0 ? 'var(--accent)' : 'var(--border)'};`}
+        ></div>
+      ))
+    }
+  </div>
+
+  <!-- Paso actual -->
+  <div class="min-h-[280px]" data-viz-paso-wrap>
+    <h4 class="text-lg md:text-xl font-black tracking-tight mb-3" data-viz-titulo>
+      {data.pasos[0].titulo}
+    </h4>
+    <p class="leading-relaxed mb-4" data-viz-texto>
+      {data.pasos[0].texto}
+    </p>
+    {
+      data.pasos[0].codigo && (
+        <pre
+          data-viz-codigo
+          class="text-sm md:text-base p-4 rounded-bento-sm overflow-x-auto font-mono"
+          style="background: var(--bg); border: 1px solid var(--border); color: var(--fg);"
+        >{data.pasos[0].codigo}</pre>
+      )
+    }
+    {
+      !data.pasos[0].codigo && (
+        <pre
+          data-viz-codigo
+          class="hidden text-sm md:text-base p-4 rounded-bento-sm overflow-x-auto font-mono"
+          style="background: var(--bg); border: 1px solid var(--border); color: var(--fg);"
+        ></pre>
+      )
+    }
+  </div>
+
+  <!-- Navegación -->
+  <div class="flex items-center justify-between mt-6 pt-4 border-t" style="border-color: var(--border);">
+    <button
+      type="button"
+      data-viz-anterior
+      disabled
+      class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold disabled:opacity-30 disabled:cursor-not-allowed hover:opacity-70 transition-opacity"
+      style="color: var(--fg-muted);"
+    >
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 18l-6-6 6-6"></path>
+      </svg>
+      Anterior
+    </button>
+    <button
+      type="button"
+      data-viz-siguiente
+      class="inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-bold bg-bento-blue text-white hover:scale-105 transition-transform"
+    >
+      Siguiente
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12h14"></path>
+        <path d="m12 5 7 7-7 7"></path>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<script define:vars={{ id, pasos: data.pasos }}>
+  const root = document.querySelector(`[data-lab-viz="${id}"]`);
+  if (root) {
+    const total = pasos.length;
+    let i = 0;
+
+    const $ = (s) => root.querySelector(s);
+    const $$ = (s) => Array.from(root.querySelectorAll(s));
+
+    function pintar() {
+      const p = pasos[i];
+      $('[data-viz-titulo]').textContent = p.titulo;
+      $('[data-viz-texto]').textContent = p.texto;
+
+      const codigo = $('[data-viz-codigo]');
+      if (codigo) {
+        if (p.codigo) {
+          codigo.textContent = p.codigo;
+          codigo.classList.remove('hidden');
+        } else {
+          codigo.classList.add('hidden');
+          codigo.textContent = '';
+        }
+      }
+
+      $('[data-viz-actual]').textContent = String(i + 1);
+      $$('[data-viz-dot]').forEach((dot, idx) => {
+        dot.style.background = idx <= i ? 'var(--accent)' : 'var(--border)';
+      });
+
+      $('[data-viz-anterior]').disabled = i === 0;
+      const sig = $('[data-viz-siguiente]');
+      if (i === total - 1) {
+        sig.disabled = true;
+        sig.style.opacity = '0.4';
+        sig.style.cursor = 'not-allowed';
+        sig.querySelector('svg')?.remove();
+        sig.firstChild && (sig.firstChild.textContent = '✓ Completado');
+      }
+    }
+
+    $('[data-viz-anterior]')?.addEventListener('click', () => {
+      if (i > 0) {
+        i--;
+        pintar();
+      }
+    });
+    $('[data-viz-siguiente]')?.addEventListener('click', () => {
+      if (i < total - 1) {
+        i++;
+        pintar();
+      }
+    });
+  }
+</script>

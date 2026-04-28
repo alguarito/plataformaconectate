@@ -1,0 +1,226 @@
+---
+/**
+ * Quiz interactivo con feedback inmediato.
+ *
+ * - Opciones tipo botón grande (touch friendly)
+ * - Al elegir: muestra feedback (correcto/incorrecto) y revela la respuesta
+ * - Al final: resumen de aciertos + posibilidad de reintentar
+ */
+import type { LabQuiz as LabQuizType } from '../data/guiasContenido/_schema';
+
+interface Props {
+  data: LabQuizType;
+  /** ID único de este lab dentro de la guía (para evitar colisiones si hay varios). */
+  id: string;
+}
+
+const { data, id } = Astro.props;
+---
+
+<div class="bento-card" data-lab-quiz={id}>
+  <div class="flex items-start justify-between gap-4 flex-wrap mb-3">
+    <div>
+      <span class="chip-bento mb-2">🧪 Laboratorio · Quiz</span>
+      <h3 class="text-xl md:text-2xl font-black tracking-tight leading-tight">{data.titulo}</h3>
+    </div>
+    <button
+      type="button"
+      data-quiz-reset
+      class="hidden px-4 py-1.5 rounded-full text-xs font-bold border-2 hover:opacity-70 transition-opacity"
+      style="border-color: var(--border); color: var(--fg-muted);"
+    >
+      🔄 Reintentar
+    </button>
+  </div>
+  <p class="text-sm leading-relaxed mb-5" style="color: var(--fg-muted);">
+    {data.instrucciones}
+  </p>
+
+  <!-- Barra de progreso interna -->
+  <div class="mb-4 hidden" data-quiz-progreso-wrap>
+    <div class="flex items-center justify-between mb-1.5 text-xs font-bold" style="color: var(--fg-muted);">
+      <span><span data-quiz-acierto-count>0</span> de <span data-quiz-total>{data.preguntas.length}</span></span>
+      <span data-quiz-pct>0%</span>
+    </div>
+    <div class="w-full h-2 rounded-full overflow-hidden" style="background: var(--border);">
+      <div data-quiz-progreso class="h-full rounded-full bg-bento-lime transition-all duration-300" style="width: 0%;"></div>
+    </div>
+  </div>
+
+  <!-- Lista de preguntas (todas visibles, scrollable) -->
+  <ol data-quiz-preguntas class="space-y-6">
+    {
+      data.preguntas.map((p, idx) => (
+        <li data-quiz-pregunta-idx={idx} class="border-t pt-5" style="border-color: var(--border);">
+          <div class="font-bold mb-3 leading-relaxed">
+            <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-bento-blue text-white text-xs font-black mr-2 align-middle">
+              {idx + 1}
+            </span>
+            <span class="whitespace-pre-line">{p.enunciado}</span>
+          </div>
+          <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3" data-quiz-opciones>
+            {p.opciones.map((opt, optIdx) => (
+              <li>
+                <button
+                  type="button"
+                  data-quiz-opcion-idx={optIdx}
+                  data-pregunta={idx}
+                  class="w-full text-left p-3 rounded-bento-sm border-2 font-semibold text-sm hover:opacity-80 active:scale-95 transition-all"
+                  style="border-color: var(--border); background: var(--bg-card); color: var(--fg);"
+                >
+                  <span class="font-black mr-2">{String.fromCharCode(65 + optIdx)}.</span>
+                  {opt}
+                </button>
+              </li>
+            ))}
+          </ul>
+          <div
+            data-quiz-feedback
+            class="hidden mt-3 p-3 rounded-bento-sm text-sm leading-relaxed"
+          ></div>
+        </li>
+      ))
+    }
+  </ol>
+
+  <!-- Resumen final -->
+  <div data-quiz-resumen class="hidden mt-6 p-5 rounded-bento-sm" style="background: var(--bg);">
+    <div class="text-center">
+      <div class="text-5xl mb-2" data-quiz-resumen-emoji>🎉</div>
+      <h4 class="font-black text-lg mb-1" data-quiz-resumen-titulo>¡Completaste el quiz!</h4>
+      <p class="text-sm" style="color: var(--fg-muted);">
+        Aciertos: <strong data-quiz-resumen-aciertos>0</strong> de
+        <strong data-quiz-resumen-total>{data.preguntas.length}</strong>
+      </p>
+    </div>
+  </div>
+</div>
+
+<script define:vars={{ id, preguntas: data.preguntas }}>
+  const root = document.querySelector(`[data-lab-quiz="${id}"]`);
+  if (root) {
+    const total = preguntas.length;
+    let aciertos = 0;
+    /** ya respondidas (por idx pregunta) — evita double-tap */
+    const respondidas = new Set();
+
+    const $ = (sel, base = root) => base.querySelector(sel);
+    const $$ = (sel, base = root) => Array.from(base.querySelectorAll(sel));
+
+    const wrap = $('[data-quiz-progreso-wrap]');
+    const pct = $('[data-quiz-pct]');
+    const barra = $('[data-quiz-progreso]');
+    const aciertosCount = $('[data-quiz-acierto-count]');
+
+    function actualizarProgreso() {
+      const respondidasN = respondidas.size;
+      if (respondidasN > 0 && wrap) wrap.classList.remove('hidden');
+      const p = total > 0 ? Math.round((respondidasN / total) * 100) : 0;
+      if (pct) pct.textContent = `${p}%`;
+      if (barra) barra.style.width = `${p}%`;
+      if (aciertosCount) aciertosCount.textContent = String(aciertos);
+
+      if (respondidasN === total) mostrarResumen();
+    }
+
+    function mostrarResumen() {
+      const resumen = $('[data-quiz-resumen]');
+      const reset = $('[data-quiz-reset]');
+      if (!resumen) return;
+      resumen.classList.remove('hidden');
+      reset?.classList.remove('hidden');
+
+      const ratio = aciertos / total;
+      const emoji = $('[data-quiz-resumen-emoji]');
+      const titulo = $('[data-quiz-resumen-titulo]');
+      const aciertosEl = $('[data-quiz-resumen-aciertos]');
+
+      if (aciertosEl) aciertosEl.textContent = String(aciertos);
+      if (ratio === 1) {
+        if (emoji) emoji.textContent = '🏆';
+        if (titulo) titulo.textContent = '¡Perfecto!';
+      } else if (ratio >= 0.6) {
+        if (emoji) emoji.textContent = '👏';
+        if (titulo) titulo.textContent = '¡Buen trabajo!';
+      } else {
+        if (emoji) emoji.textContent = '💪';
+        if (titulo) titulo.textContent = 'Repasa y vuelve a intentar';
+      }
+    }
+
+    function resetear() {
+      aciertos = 0;
+      respondidas.clear();
+      $$('[data-quiz-pregunta-idx]').forEach((li) => {
+        $$('[data-quiz-opcion-idx]', li).forEach((b) => {
+          b.disabled = false;
+          b.classList.remove('bg-bento-lime', 'bg-bento-pink', 'text-black', 'text-white', 'border-bento-lime', 'border-bento-pink', 'opacity-50');
+          b.style.borderColor = 'var(--border)';
+          b.style.background = 'var(--bg-card)';
+          b.style.color = 'var(--fg)';
+        });
+        const fb = $('[data-quiz-feedback]', li);
+        if (fb) {
+          fb.classList.add('hidden');
+          fb.classList.remove('bg-bento-lime', 'bg-bento-pink', 'text-black', 'text-white');
+          fb.textContent = '';
+        }
+      });
+      $('[data-quiz-resumen]')?.classList.add('hidden');
+      $('[data-quiz-reset]')?.classList.add('hidden');
+      if (wrap) wrap.classList.add('hidden');
+      if (pct) pct.textContent = '0%';
+      if (barra) barra.style.width = '0%';
+    }
+
+    /* ─── Click handler ─── */
+    $$('[data-quiz-opcion-idx]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const preguntaIdx = parseInt(btn.dataset.pregunta || '0', 10);
+        const opcionIdx = parseInt(btn.dataset.quizOpcionIdx || '0', 10);
+        if (respondidas.has(preguntaIdx)) return;
+        respondidas.add(preguntaIdx);
+
+        const p = preguntas[preguntaIdx];
+        const correcta = p.respuestaIndex === opcionIdx;
+        if (correcta) aciertos++;
+
+        const li = btn.closest('[data-quiz-pregunta-idx]');
+        if (!li) return;
+
+        // Marcar todas las opciones (correcta verde, elegida-incorrecta rosa)
+        $$('[data-quiz-opcion-idx]', li).forEach((b) => {
+          const oi = parseInt(b.dataset.quizOpcionIdx || '0', 10);
+          b.disabled = true;
+          if (oi === p.respuestaIndex) {
+            b.classList.add('bg-bento-lime', 'text-black');
+            b.style.borderColor = '#A3FF12';
+          } else if (oi === opcionIdx) {
+            b.classList.add('bg-bento-pink', 'text-white');
+            b.style.borderColor = '#FF2D87';
+          } else {
+            b.classList.add('opacity-50');
+          }
+        });
+
+        // Mostrar feedback
+        const fb = $('[data-quiz-feedback]', li);
+        if (fb) {
+          fb.classList.remove('hidden');
+          if (correcta) {
+            fb.classList.add('bg-bento-lime', 'text-black');
+            fb.innerHTML = `<strong>✓ Correcto.</strong> ${p.feedbackCorrecto}`;
+          } else {
+            fb.classList.add('bg-bento-pink', 'text-white');
+            fb.innerHTML = `<strong>✗ Hmm.</strong> ${p.feedbackIncorrecto}`;
+          }
+        }
+
+        actualizarProgreso();
+      });
+    });
+
+    /* ─── Reset ─── */
+    $('[data-quiz-reset]')?.addEventListener('click', resetear);
+  }
+</script>

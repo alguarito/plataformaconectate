@@ -8,9 +8,10 @@ import BadgeDensidad from '../../../../components/BadgeDensidad.astro';
 import { grados } from '../../../../data/grados';
 import {
   getRecurso,
-  pdfPreviewUrl,
-  pdfDownloadUrl,
-  pdfViewUrl,
+  previewUrlFor,
+  downloadUrlFor,
+  viewUrlFor,
+  isMejorada,
 } from '../../../../data/recursos';
 import { getContenidoGuia } from '../../../../data/guiasContenido/_index';
 
@@ -40,9 +41,10 @@ const base = import.meta.env.BASE_URL;
 const recurso = getRecurso(grado.numero, periodo.numero, sesion);
 const tituloGuia = recurso?.titulo ?? `Guía ${sesion}`;
 const pdfId = recurso?.pdfId ?? '';
-const previewUrl = pdfId ? pdfPreviewUrl(pdfId) : '';
-const downloadUrl = pdfId ? pdfDownloadUrl(pdfId) : '';
-const viewUrl = pdfId ? pdfViewUrl(pdfId) : '';
+const previewUrl = recurso ? previewUrlFor(recurso, base) : '';
+const downloadUrl = recurso ? downloadUrlFor(recurso, base) : '';
+const viewUrl = recurso ? viewUrlFor(recurso, base) : '';
+const esMejorada = isMejorada(recurso);
 
 // Contenido enriquecido (si existe para esta guía)
 const enriquecida = getContenidoGuia(grado.numero, periodo.numero, sesion);
@@ -103,6 +105,15 @@ const nextSesion = sesion < 10 ? sesion + 1 : null;
           <span class="text-xs font-bold uppercase tracking-widest opacity-80">
             Sesión {sesion} · {periodo.titulo}{enriquecida?.subtema ? ` · ${enriquecida.subtema}` : ''}
           </span>
+          {esMejorada && (
+            <span
+              class="inline-flex items-center gap-1.5 ml-2 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider"
+              style="background: linear-gradient(135deg, #5A0038 0%, #E5B400 50%, #0093A5 100%); color: white;"
+              title="Versión MILC v2 — apertura ancestral, pensamiento computacional, 5 dimensiones, Triángulo Dussel-Estoicismo-Floridi"
+            >
+              ✨ Guía MILC v2
+            </span>
+          )}
           <h1 class="heading-giant text-balance mt-2">
             {tituloGuia}
           </h1>

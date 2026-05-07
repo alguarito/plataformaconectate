@@ -7,8 +7,15 @@ export interface RecursoGuia {
   sesion: number;
   sesionGlobal: number;
   titulo: string;
+  /** fileId de Google Drive del PDF original. */
   pdfId: string;
   guiaId: string;
+  /**
+   * Path local opcional (relativo a BASE_URL) a una versión MEJORADA del PDF
+   * servida desde public/. Si está definido, tiene prioridad sobre pdfId.
+   * Ej: "/guias-mejoras/30-8-TIC.pdf"
+   */
+  pdfLocal?: string;
 }
 
 export const recursos: RecursoGuia[] = [
@@ -818,8 +825,9 @@ export const recursos: RecursoGuia[] = [
     "periodo": 3,
     "sesion": 10,
     "sesionGlobal": 30,
-    "titulo": "Sustentación pública y evaluación final — portafolio digital y bitácora de aprendizaje",
+    "titulo": "Sustentación pública y portafolio digital — apertura ancestral, pensamiento computacional, Triángulo Dussel-Estoicismo-Floridi",
     "pdfId": "1fxsfA32344JnBnXbJRTDlHOrZByDAaGr",
+    "pdfLocal": "/guias-mejoras/30-8-TIC.pdf",
     "guiaId": "30-8-TIC"
   },
   {
@@ -1648,4 +1656,35 @@ export function pdfDownloadUrl(id: string): string {
 
 export function pdfViewUrl(id: string): string {
   return `https://drive.google.com/file/d/${id}/view`;
+}
+
+/**
+ * Devuelve URL de preview del PDF de un recurso. Si tiene pdfLocal
+ * (versión mejorada servida desde el repo), la usa; si no, cae al pdfId
+ * de Drive.
+ */
+export function previewUrlFor(recurso: RecursoGuia, baseUrl: string): string {
+  if (recurso.pdfLocal) {
+    return `${baseUrl}${recurso.pdfLocal}`;
+  }
+  return pdfPreviewUrl(recurso.pdfId);
+}
+
+export function downloadUrlFor(recurso: RecursoGuia, baseUrl: string): string {
+  if (recurso.pdfLocal) {
+    return `${baseUrl}${recurso.pdfLocal}`;
+  }
+  return pdfDownloadUrl(recurso.pdfId);
+}
+
+export function viewUrlFor(recurso: RecursoGuia, baseUrl: string): string {
+  if (recurso.pdfLocal) {
+    return `${baseUrl}${recurso.pdfLocal}`;
+  }
+  return pdfViewUrl(recurso.pdfId);
+}
+
+/** True si el recurso tiene una versión mejorada servida localmente. */
+export function isMejorada(recurso: RecursoGuia | undefined): boolean {
+  return !!recurso?.pdfLocal;
 }

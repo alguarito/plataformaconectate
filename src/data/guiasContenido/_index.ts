@@ -6,14 +6,15 @@
  * lee este mapa y renderiza el contenido enriquecido si existe; si no,
  * cae al scaffolding genérico (compatibilidad total).
  *
- * Estado actual: 1 / 180 enriquecidas.
+ * Estado actual: 2 / 180 enriquecidas.
  */
 import type { ContenidoGuia } from './_schema';
 import { claveContenido } from './_schema';
 
 import g8_2_1 from './8-2-1';
+import g8_3_10 from './8-3-10';
 
-const TODAS: ContenidoGuia[] = [g8_2_1];
+const TODAS: ContenidoGuia[] = [g8_2_1, g8_3_10];
 
 const MAPA = new Map<string, ContenidoGuia>();
 for (const g of TODAS) {

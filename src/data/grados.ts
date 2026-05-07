@@ -154,33 +154,33 @@ export const grados: Grado[] = [
   },
   {
     numero: 10,
-    titulo: 'Ciberseguridad, arquitectura y Python',
+    titulo: 'Escritura asistida, IA y decisiones empresariales',
     descripcion:
-      'Seguridad digital corporativa, arquitectura interna del computador, mantenimiento avanzado y programación con Python para emprender.',
+      'Redacción colaborativa con IA, prompting, informes técnicos y análisis de datos para la toma de decisiones empresariales.',
     bgClass: 'bg-bento-pink',
     icono: '🔐',
     periodos: [
       {
         numero: 1,
-        titulo: 'Ciberseguridad y ética digital',
+        titulo: 'Escritura asistida y prompting',
         descripcion:
-          'Amenazas, ransomware, gestión corporativa de la información y normativa.',
+          'IA generativa, asistencia de escritura, ingeniería de prompts y ética de la autoría con IA.',
         bgClass: 'bg-bento-pink',
         totalGuias: 10,
       },
       {
         numero: 2,
-        titulo: 'Arquitectura y mantenimiento',
+        titulo: 'Informes técnicos y análisis',
         descripcion:
-          'Placa base, buses, ensamblaje y mantenimiento avanzado de sistemas.',
+          'LaTeX, informes comerciales, encuestas y análisis de datos con soporte de IA.',
         bgClass: 'bg-bento-purple',
         totalGuias: 10,
       },
       {
         numero: 3,
-        titulo: 'Python, Pandas y emprendimiento',
+        titulo: 'Datos empresariales y decisiones',
         descripcion:
-          'Programación con Python, análisis con Pandas y modelo CANVAS para emprender.',
+          'Bases de datos, indicadores de negocio, dashboards y toma de decisiones asistida por IA.',
         bgClass: 'bg-bento-orange',
         totalGuias: 10,
       },
@@ -188,33 +188,33 @@ export const grados: Grado[] = [
   },
   {
     numero: 11,
-    titulo: 'Desarrollo web, calidad y proyecto final',
+    titulo: 'Transformación digital empresarial y proyecto final',
     descripcion:
-      'Sitios web con HTML5/CSS3, gestión de calidad ISO 9001 y proyecto final analéctico de impacto comunitario.',
+      'Presencia digital, automatización de procesos empresariales, análisis de datos y proyecto integrador de impacto emprendedor.',
     bgClass: 'bg-bento-cyan',
     icono: '🚀',
     periodos: [
       {
         numero: 1,
-        titulo: 'Desarrollo web y marketing digital',
+        titulo: 'Presencia y marca digital',
         descripcion:
-          'HTML5 semántico, CSS3, CMS y arquitectura de información en la red.',
+          'Identidad de marca, sitios web empresariales, SEO y contenido digital con soporte de IA.',
         bgClass: 'bg-bento-cyan',
         totalGuias: 10,
       },
       {
         numero: 2,
-        titulo: 'Gestión de calidad y normatividad',
+        titulo: 'Automatización y procesos',
         descripcion:
-          'ISO 9001, principios del SGC, ética y responsabilidad legal en TI.',
+          'Mapeo de procesos, automatización con IA, formularios digitales y mejora continua.',
         bgClass: 'bg-bento-blue',
         totalGuias: 10,
       },
       {
         numero: 3,
-        titulo: 'Proyecto final y debates contemporáneos',
+        titulo: 'Proyecto final emprendedor',
         descripcion:
-          'Escuta analéctica, problemas comunitarios, singularidad y biotecnología.',
+          'Proyecto integrador de impacto: solución empresarial, datos, automatización y sustentación final.',
         bgClass: 'bg-bento-lime',
         totalGuias: 10,
       },

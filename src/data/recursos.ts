@@ -566,6 +566,7 @@ export const recursos: RecursoGuia[] = [
     "sesionGlobal": 1,
     "titulo": "Análisis de datos con phronesis: preguntas, variables y decisiones prudentes",
     "pdfId": "1OtyTCEG3iQkSCbuF-kYLb9m9fDyEohRj",
+    "pdfLocal": "/guias-mejoras/1-8-TIC.pdf",
     "guiaId": "1-8-TIC"
   },
   {

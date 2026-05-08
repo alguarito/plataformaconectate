@@ -1,9 +1,9 @@
 /**
- * Guía 11 · Grado 8° · Período 2 · Sesión 1
- * Lógica avanzada I: estructuras condicionales anidadas (if-else-if)
+ * Contenido enriquecido para Grado 8 · Período 2 · Sesión 1
+ * (sesión global 11 — Lógica avanzada I, MILC v3).
  *
- * Producto MILC: algoritmo comentado o diagrama de flujo con prueba de casos
- * y reflexión sobre decisiones.
+ * Apertura del periodo 2: pasamos de phronesis con datos a lógica
+ * avanzada y computación física.
  */
 import type { ContenidoGuia } from './_schema';
 
@@ -12,189 +12,55 @@ const contenido: ContenidoGuia = {
   periodo: 2,
   sesion: 1,
   resumen:
-    'Cómo un programa toma decisiones complejas: anidar if/else if/else para clasificar casos.',
+    'Como las pruebas del oficio del herrero: cruzar varias condiciones antes de actuar. Aprendes estructuras condicionales anidadas (if-else-if) y operadores lógicos AND/OR/NOT.',
   duracionMin: 90,
-  subtema: 'Lógica de Control',
+  subtema: 'Lógica avanzada · if-else · AND/OR/NOT',
 
   preLectura: {
     porQueImporta:
-      'Cada vez que tu celular decide si te muestra una notificación, cuando un videojuego elige qué enemigo aparece, o cuando Excel pinta una celda en rojo si el valor está bajo — eso es lógica condicional anidada. Vamos a aprender a escribirla nosotros.',
+      'Saber escribir condicionales con lógica compuesta es habilidad universal de programación: lo aplicarás en cualquier lenguaje (Python, JS, MakeCode), en cualquier sistema (web, móvil, hardware). Es la columna vertebral del pensamiento computacional.',
     preguntaDetonante:
-      '¿Cómo decide tu celular si te muestra el mensaje de "batería baja", "batería crítica" o "apagado por batería"?',
+      '¿Qué del juicio del herrero — su capacidad de cruzar varias condiciones antes de actuar — podemos llevar al código que decide?',
     activacion: {
-      titulo: 'Calienta motores: el portero del club',
+      titulo: 'La decisión cotidiana',
       descripcion:
-        'En grupos de 3, escriban cómo decide un portero quién entra a un evento: ¿solo lista? ¿lista + edad? ¿lista + edad + pase VIP? Comparten 2 minutos. Notarán que ya están pensando en condicionales anidadas — solo que en español, no en código.',
+        'En 5 minutos: en parejas describan una decisión real (de hoy o ayer) que tomaron cruzando varias condiciones. ¿Era AND (todas obligatorias) o OR (alcanzaba con una)? ¿Hubo NOT (algo que NO debía pasar)?',
       duracionMin: 5,
     },
     conexion: {
-      anterior:
-        'En el período anterior usaste IF simple en Excel y Scratch. Hoy vamos al siguiente nivel: decisiones que tienen varios caminos posibles.',
-      siguiente:
-        'En la próxima sesión combinaremos esto con bucles (for/while) para automatizar decisiones repetitivas — ahí construirás tu primer mini-programa que clasifica datos.',
+      anterior: 'En el periodo 1 trabajaste análisis de datos con phronesis (Excel, estadística).',
+      siguiente: 'En la sesión 12 construirás tablas de verdad para verificar tu lógica.',
     },
   },
 
   conceptosClave: [
-    {
-      termino: 'Condición',
-      definicion:
-        'Pregunta lógica que un programa hace para decidir qué camino seguir. Solo tiene dos respuestas: verdadero (sí) o falso (no).',
-      ejemplo: 'nota >= 3.0 → ¿la nota es 3.0 o más? Si sí, "aprueba".',
-      emoji: '❓',
-    },
-    {
-      termino: 'Rama',
-      definicion:
-        'Bloque de instrucciones que se ejecuta cuando una condición se cumple. Cada if, else if y else es una rama distinta.',
-      ejemplo:
-        'if (edad >= 18) imprime "adulto" — esa línea es la rama del if.',
-      emoji: '🌿',
-    },
-    {
-      termino: 'Anidación',
-      definicion:
-        'Poner una estructura condicional dentro de otra. Como cajas dentro de cajas. Permite clasificaciones más finas.',
-      ejemplo:
-        'Primero pregunta si tiene boleto. Si sí, pregunta si es VIP. Si no es VIP, pregunta el sector.',
-      emoji: '📦',
-    },
-    {
-      termino: 'Operador lógico',
-      definicion:
-        'Conector que combina varias condiciones: AND (todas verdaderas), OR (al menos una), NOT (la opuesta).',
-      ejemplo: 'edad >= 18 AND tiene_cedula → debe cumplirse las dos.',
-      emoji: '🔗',
-    },
-    {
-      termino: 'Prueba de casos',
-      definicion:
-        'Probar el programa con valores de frontera, esperados y contrarios para encontrar errores antes de que los encuentre el usuario.',
-      ejemplo:
-        'Si la nota mínima de aprobación es 3.0, prueba con 2.9, 3.0, 3.1, 0 y 5.',
-      emoji: '🔬',
-    },
+    { categoria: '🧱 Cómo se estructura la decisión', termino: 'Condición simple', definicion: 'Comparación entre dos valores que se evalúa como V o F. Operadores: ==, !=, <, >, <=, >=. Es la unidad mínima de la lógica programada.', ejemplo: 'edad >= 13 es V si la edad es 13 o más, F si es menor. Una condición = una respuesta V/F.', emoji: '❓' },
+    { categoria: '🧱 Cómo se estructura la decisión', termino: 'if-else', definicion: 'Estructura de dos caminos: si la condición es V, ejecuta el bloque de IF; si es F, ejecuta el de ELSE. Cada decisión tiene exactamente dos salidas.', ejemplo: 'if (nota >= 3) then mostrar("aprobado") else mostrar("reprobado"). Dos resultados posibles, uno solo se ejecuta.', emoji: '🔀' },
+    { categoria: '🧱 Cómo se estructura la decisión', termino: 'if-else-if', definicion: 'Estructura de múltiples caminos secuenciales: evalúa varias condiciones en orden hasta encontrar la primera verdadera. Útil para clasificar en categorías.', ejemplo: 'if (nota >= 4.5) "excelente" else if (nota >= 3.5) "bueno" else if (nota >= 3) "aceptable" else "reprobado". Cuatro categorías.', emoji: '🌳' },
+    { categoria: '🧱 Cómo se estructura la decisión', termino: 'Anidamiento', definicion: 'Condición dentro de otra condición. Permite decisiones jerárquicas pero puede volverse ilegible si se abusa. Regla: máximo 2-3 niveles.', ejemplo: 'if (lluvia) { if (frío) abrigo() else paraguas() }. Decisión anidada dentro de la condición de lluvia.', emoji: '📦' },
+    { categoria: '🔗 Cómo se combinan', termino: 'AND (Y)', definicion: 'Operador que produce V solo cuando AMBAS condiciones son V. Si una falla, falla todo. Es el operador exigente.', ejemplo: 'edad >= 13 AND tiene_permiso → V solo si la persona tiene 13+ Y tiene permiso. Si falta uno, F.', emoji: '➕' },
+    { categoria: '🔗 Cómo se combinan', termino: 'OR (O)', definicion: 'Operador que produce V si AL MENOS UNA condición es V. Solo da F cuando ambas fallan. Es el operador permisivo.', ejemplo: 'lluvia OR frío → V si llueve, V si hace frío, V si ambas. Solo F cuando ninguna pasa.', emoji: '〰️' },
+    { categoria: '🔗 Cómo se combinan', termino: 'NOT (no)', definicion: 'Operador unario que invierte el valor. V se vuelve F y viceversa. Útil para expresar "lo contrario de".', ejemplo: 'NOT lluvia es V cuando NO está lloviendo. NOT (A AND B) es V cuando A o B fallan.', emoji: '🚫' },
+    { categoria: '🔗 Cómo se combinan', termino: 'Tabla de verdad', definicion: 'Enumeración de todos los casos posibles de una expresión booleana y su resultado. Para n variables hay 2ⁿ casos. Verifica que la lógica funciona en TODOS los escenarios.', ejemplo: 'Tabla de "A AND B": 4 filas (FF→F, FV→F, VF→F, VV→V). Solo el caso VV produce V.', emoji: '🎯' },
   ],
 
-  laboratorios: [
-    /* L1 — Visualización: paso a paso de un if anidado real */
-    {
-      tipo: 'visualizacion',
-      titulo: 'Paso a paso: un if-else-if que clasifica notas',
-      instrucciones:
-        'Recorre el programa línea por línea. En cada paso ves qué decisión toma el computador y por qué.',
-      pasos: [
-        {
-          titulo: 'El programa empieza',
-          texto:
-            'El usuario ingresa una nota. Imagina que ingresa 3.4. La variable `nota` queda con el valor 3.4.',
-          codigo: 'nota = 3.4',
-          destacar: [1],
-        },
-        {
-          titulo: 'Primera pregunta: ¿es excelente?',
-          texto:
-            'Pregunta si nota es ≥ 4.5. Como 3.4 < 4.5, la respuesta es FALSO. El programa NO entra a esta rama y pasa a la siguiente.',
-          codigo:
-            'if (nota >= 4.5) {\n  imprime "Excelente"\n}',
-          destacar: [1],
-        },
-        {
-          titulo: 'Segunda pregunta: ¿es aprobado?',
-          texto:
-            'Pregunta else if (nota >= 3.0). Como 3.4 ≥ 3.0, la respuesta es VERDADERO. ENTRA a esta rama y ejecuta su instrucción.',
-          codigo:
-            'else if (nota >= 3.0) {\n  imprime "Aprobado"\n}',
-          destacar: [1, 2, 3],
-        },
-        {
-          titulo: 'El programa termina',
-          texto:
-            'Una vez ENTRA a una rama, las demás se ignoran. Aunque después haya un else con "Reprobado", ya no se ejecuta. El programa imprime "Aprobado" y termina.',
-          codigo: 'else {\n  imprime "Reprobado"\n}',
-          destacar: [],
-        },
-        {
-          titulo: 'Resumen de la decisión',
-          texto:
-            'Para nota = 3.4 → revisó 2 condiciones, entró a una sola rama, imprimió un solo resultado. Esa es la magia del if-else-if: clasifica sin solapamientos.',
-        },
-      ],
-    },
-
-    /* L2 — Quiz: 5 preguntas con feedback inmediato */
-    {
-      tipo: 'quiz',
-      titulo: 'Quiz: ¿qué imprime este programa?',
-      instrucciones:
-        'Lee cada caso y elige la respuesta correcta. Si te equivocas, lee la explicación — eso vale más que la nota.',
-      preguntas: [
-        {
-          enunciado:
-            'Si nota = 5.0, ¿qué imprime?\nif (nota >= 4.5) imprime "Excelente"\nelse if (nota >= 3.0) imprime "Aprobado"\nelse imprime "Reprobado"',
-          opciones: ['Excelente', 'Aprobado', 'Excelente y Aprobado', 'Reprobado'],
-          respuestaIndex: 0,
-          feedbackCorrecto:
-            '¡Bien! 5.0 cumple la primera condición y entra a su rama. Las demás se ignoran.',
-          feedbackIncorrecto:
-            'Recuerda: en if-else-if, una vez se cumple UNA condición, el resto se ignora. 5.0 ≥ 4.5 es verdadero, entra ahí y termina.',
-        },
-        {
-          enunciado:
-            'Si nota = 2.9, ¿qué imprime el mismo programa?',
-          opciones: ['Excelente', 'Aprobado', 'Reprobado', 'Nada'],
-          respuestaIndex: 2,
-          feedbackCorrecto:
-            'Correcto. 2.9 < 4.5 (falso) y 2.9 < 3.0 (falso), por eso cae al else.',
-          feedbackIncorrecto:
-            'El else captura todos los casos que NO cumplieron las condiciones anteriores. 2.9 no es ≥ 4.5 ni ≥ 3.0, así que cae al else.',
-        },
-        {
-          enunciado:
-            '¿Qué pasa si cambias el orden a este?\nif (nota >= 3.0) imprime "Aprobado"\nelse if (nota >= 4.5) imprime "Excelente"\nPara nota = 5.0, ¿qué imprime?',
-          opciones: ['Excelente', 'Aprobado', 'Las dos', 'Error'],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            '¡Atrapaste el bug! Como 5.0 ≥ 3.0 es verdadero, entra a esa rama y ya nunca evalúa la segunda. Por eso el ORDEN importa: de más estricto a más laxo.',
-          feedbackIncorrecto:
-            'Truco: la primera condición que se cumple gana. 5.0 ≥ 3.0 es verdadero (la primera), entonces imprime "Aprobado" y nunca llega a evaluar la segunda. El orden importa en if-else-if.',
-        },
-        {
-          enunciado:
-            '¿Cuál operador lógico usarías para "edad mayor a 18 Y tener cédula"?',
-          opciones: ['OR', 'AND', 'NOT', 'IF'],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Correcto. AND exige que las dos condiciones sean verdaderas para que el resultado sea verdadero.',
-          feedbackIncorrecto:
-            'AND (Y) es para "ambas a la vez". OR (O) es para "al menos una". NOT (NO) niega. Aquí necesitamos las dos al tiempo: AND.',
-        },
-        {
-          enunciado:
-            'Estás probando un programa que clasifica edades. ¿Cuál es el mejor caso de prueba para encontrar bugs?',
-          opciones: [
-            'Solo probar con edad = 20',
-            'Probar con 17, 18, 19 (frontera)',
-            'Probar con 100',
-            'No probar, ya quedó',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Exacto. Los bugs viven en las fronteras. Probar 17, 18, 19 te dice si la condición usa >= o > (un detalle que confunde mucho).',
-          feedbackIncorrecto:
-            'En lógica condicional, los bugs viven en las fronteras (18 vs 19, >= vs >). Probar valores cercanos al límite revela errores que un caso normal nunca detectaría.',
-        },
-      ],
-    },
-  ],
+  laboratorios: [{
+    tipo: 'quiz',
+    titulo: 'Quiz · Lógica con condicionales',
+    instrucciones: '5 preguntas tipo ICFES sobre estructuras condicionales y operadores lógicos.',
+    preguntas: [
+      { enunciado: 'Una sala de cine tiene la regla "edad >= 13 AND tiene_permiso". Si edad=15 y tiene_permiso=falso, ¿la persona entra?', opciones: ['Sí, porque tiene la edad', 'NO, porque AND requiere ambas verdaderas', 'Sí, AND no se aplica aquí', 'Depende del contexto'], respuestaIndex: 1, feedbackCorrecto: '✅ Correcto. AND es exigente: necesita TODAS las condiciones en V. tiene_permiso=falso hace que toda la conjunción sea F. La persona NO entra.', feedbackIncorrecto: '❌ AND requiere AMBAS verdaderas. Tener la edad NO basta si falta el permiso. tiene_permiso=falso → toda la expresión es F → no entra.' },
+      { enunciado: 'En "if (nota>=4) aprobado else if (nota>=3) recuperación else reprobado", si nota=3.5, el resultado es:', opciones: ['aprobado', 'recuperación', 'reprobado', 'Error'], respuestaIndex: 1, feedbackCorrecto: '✅ Sí. La estructura if-else-if evalúa en ORDEN. nota=3.5 NO es >= 4 (falla primer if). Sí es >= 3 (segundo if pasa). Resultado: "recuperación".', feedbackIncorrecto: '❌ if-else-if evalúa en ORDEN. 3.5 >= 4 es F (no aprobado). 3.5 >= 3 es V (sí recuperación). El else final solo aplica si ningún if anterior pasó.' },
+      { enunciado: '¿Cuál es el resultado de "NOT (lluvia OR frío)" si llueve y NO hace frío?', opciones: ['Verdadero', 'Falso', 'No se puede determinar', 'Error de sintaxis'], respuestaIndex: 1, feedbackCorrecto: '✅ Correcto. (lluvia OR frío) = (V OR F) = V. NOT V = F. La expresión completa es F.', feedbackIncorrecto: '❌ Paso a paso: lluvia=V, frío=F. (V OR F)=V. NOT V = F. La expresión completa es F.' },
+      { enunciado: 'En una tabla de verdad de "p AND q", ¿cuántos casos producen V?', opciones: ['0 casos', '1 caso (cuando ambos son V)', '2 casos', '3 casos'], respuestaIndex: 1, feedbackCorrecto: '✅ Correcto. AND solo es V cuando AMBOS son V. De los 4 casos posibles (FF, FV, VF, VV), solo VV da V. Por eso AND es "exigente".', feedbackIncorrecto: '❌ AND es exigente: solo es V cuando AMBOS son V. De los 4 casos, solo 1 (VV) produce V. Eso lo distingue del OR (que tiene 3 casos V).' },
+      { enunciado: 'Para una "alarma de incendio inteligente", la lógica más adecuada es:', opciones: ['humo (solo eso)', 'humo OR (temperatura > 50°C)', 'humo OR (temperatura > 50°C AND tiempo_caliente > 30s)', 'humo AND temperatura'], respuestaIndex: 2, feedbackCorrecto: '✅ Excelente. Combina alternativa (humo OR temperatura) Y filtro de ruido (la temperatura debe sostenerse 30s para evitar falsa alarma por una vela). Lógica robusta.', feedbackIncorrecto: '❌ "Solo humo" se pierde casos. "humo OR temp" da falsas alarmas. "humo AND temp" es muy restrictivo. La fórmula buena combina alternativa + filtro: humo OR (temp alta sostenida).' },
+    ],
+  }],
 
   postLectura: {
-    reflexion:
-      'Mira atrás 24 horas. ¿En qué decisión que tomaste hoy aplicaste condiciones anidadas sin saberlo? (¿Cómo elegiste qué ponerte? ¿Qué ruta tomaste? ¿A quién le respondiste primero?). Escríbelo.',
-    transferencia:
-      'Encuentra 3 ejemplos de if-else-if en apps que uses todos los días. Pista: filtros de Instagram, recomendaciones de Spotify, iconos de batería de tu celular.',
-    cierre:
-      'En MILC, evaluar no es calificar — es preguntarse: "¿cómo cuido lo que aprendí, y a quién sirve?". Una buena lógica condicional no solo evita errores: protege a los usuarios de malas decisiones automáticas. Esa es tu praxis hoy.',
+    reflexion: 'Toda regla lógica excluye casos. ¿Qué regla en tu vida (familia, colegio) tiene un caso real que NO captura bien? ¿Cómo la mejorarías con AND/OR/NOT?',
+    transferencia: 'Esta semana: en MakeCode escribe un programa con condicional anidada (if-else-if) que clasifique datos reales (ej: edad → categoría, nota → estado). Pruébalo con 5 casos distintos.',
+    cierre: 'El juicio del herrero y la condicional anidada hacen lo mismo: cruzar varias condiciones antes de actuar. La diferencia: el herrero lo aprende con años; el código lo replica en milisegundos.',
   },
 };
 

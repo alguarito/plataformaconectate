@@ -666,6 +666,7 @@ export const recursos: RecursoGuia[] = [
     "sesionGlobal": 11,
     "titulo": "Lógica avanzada I: estructuras condicionales anidadas (if-else-if) — operadores lógicos AND/OR/NOT",
     "pdfId": "1qHWMfib7m9M-1Os9eC1wVJAm35pnN37Z",
+    "pdfLocal": "/guias-mejoras/11-8-TIC.pdf",
     "guiaId": "11-8-TIC"
   },
   {
@@ -675,6 +676,7 @@ export const recursos: RecursoGuia[] = [
     "sesionGlobal": 12,
     "titulo": "Tablas de verdad y condiciones compuestas: AND, OR y NOT en decisiones",
     "pdfId": "17_ckzzlBqJ42hlukWKcYQbZCCdUjPNgQ",
+    "pdfLocal": "/guias-mejoras/12-8-TIC.pdf",
     "guiaId": "12-8-TIC"
   },
   {
@@ -684,6 +686,7 @@ export const recursos: RecursoGuia[] = [
     "sesionGlobal": 13,
     "titulo": "Pseudocódigo y diagramas de flujo para lógica de control",
     "pdfId": "1lOWdulx7KIWGt-ZYQzP46lbL0gvRv3pk",
+    "pdfLocal": "/guias-mejoras/13-8-TIC.pdf",
     "guiaId": "13-8-TIC"
   },
   {
@@ -693,6 +696,7 @@ export const recursos: RecursoGuia[] = [
     "sesionGlobal": 14,
     "titulo": "Sensores básicos: luz, temperatura — activación de eventos mediante código en MakeCode",
     "pdfId": "1NPC4J5rGIMCu4l3Rvcx91go6vPm5cPS0",
+    "pdfLocal": "/guias-mejoras/14-8-TIC.pdf",
     "guiaId": "14-8-TIC"
   },
   {
@@ -702,6 +706,7 @@ export const recursos: RecursoGuia[] = [
     "sesionGlobal": 15,
     "titulo": "Actuadores y eventos: LEDs, sonido y respuestas automáticas en MakeCode",
     "pdfId": "1edOMjeK102yCOEgswsiHMb7kiTzyaCHL",
+    "pdfLocal": "/guias-mejoras/15-8-TIC.pdf",
     "guiaId": "15-8-TIC"
   },
   {

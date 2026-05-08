@@ -766,6 +766,7 @@ export const recursos: RecursoGuia[] = [
     "sesionGlobal": 21,
     "titulo": "Diseño de presentaciones multimedia: principios de comunicación visual y diseño de diapositivas",
     "pdfId": "1PpVvBooxZlsRmSYFIk_gYIYwGuxvt_DP",
+    "pdfLocal": "/guias-mejoras/21-8-TIC.pdf",
     "guiaId": "21-8-TIC"
   },
   {
@@ -775,6 +776,7 @@ export const recursos: RecursoGuia[] = [
     "sesionGlobal": 22,
     "titulo": "PowerPoint/Canva: animaciones de entrada, énfasis y salida — inserción de hipervínculos",
     "pdfId": "19HIeb7tsQxB43G0SGQy5sWMl5bDcV2xu",
+    "pdfLocal": "/guias-mejoras/22-8-TIC.pdf",
     "guiaId": "22-8-TIC"
   },
   {
@@ -784,6 +786,7 @@ export const recursos: RecursoGuia[] = [
     "sesionGlobal": 23,
     "titulo": "Taller de diseño: creación de una presentación de alto impacto sobre un proyecto tecnológico",
     "pdfId": "1uZDYEsNVpL4sd1lOVbanWX9M1XLvLO8c",
+    "pdfLocal": "/guias-mejoras/23-8-TIC.pdf",
     "guiaId": "23-8-TIC"
   },
   {
@@ -793,6 +796,7 @@ export const recursos: RecursoGuia[] = [
     "sesionGlobal": 24,
     "titulo": "Edición básica de imagen: herramientas digitales para mejorar recursos visuales",
     "pdfId": "1OHV1HkuIL9incw0dZoaDizoP7jnfOb1q",
+    "pdfLocal": "/guias-mejoras/24-8-TIC.pdf",
     "guiaId": "24-8-TIC"
   },
   {
@@ -802,6 +806,7 @@ export const recursos: RecursoGuia[] = [
     "sesionGlobal": 25,
     "titulo": "Edición básica de sonido: captura, edición y exportación de audio para presentaciones",
     "pdfId": "1G38jqEcS6-k8VvyoiGYDifTMPIG333fy",
+    "pdfLocal": "/guias-mejoras/25-8-TIC.pdf",
     "guiaId": "25-8-TIC"
   },
   {

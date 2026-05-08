@@ -1205,8 +1205,9 @@ export const recursos: RecursoGuia[] = [
     "periodo": 2,
     "sesion": 1,
     "sesionGlobal": 11,
-    "titulo": "Del libro al informe profesional — diferencias entre texto creativo, informe técnico, informe comercial y estudio de mercado",
+    "titulo": "Del libro al informe profesional: texto creativo, informe técnico, informe comercial y estudio de mercado",
     "pdfId": "16npO0ZkAToEXE5F6V_f8H1-xrEFh6GgJ",
+    "pdfLocal": "/guias-mejoras/11-10-TIC.pdf",
     "guiaId": "11-10-TIC"
   },
   {

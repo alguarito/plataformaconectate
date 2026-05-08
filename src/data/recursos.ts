@@ -816,6 +816,7 @@ export const recursos: RecursoGuia[] = [
     "sesionGlobal": 26,
     "titulo": "Seguridad en la red I: ciberbullying — definición, prevención y rutas de denuncia",
     "pdfId": "1405_67w7Iq2Rqd8Z1NdywIW58CsNxal2",
+    "pdfLocal": "/guias-mejoras/26-8-TIC.pdf",
     "guiaId": "26-8-TIC"
   },
   {
@@ -825,6 +826,7 @@ export const recursos: RecursoGuia[] = [
     "sesionGlobal": 27,
     "titulo": "Seguridad en la red II: sexting y grooming — estrategias de protección y conciencia digital",
     "pdfId": "1jhPRqJ0mxr5yXTpVt_hv5GZFirxvPeAB",
+    "pdfLocal": "/guias-mejoras/27-8-TIC.pdf",
     "guiaId": "27-8-TIC"
   },
   {
@@ -834,6 +836,7 @@ export const recursos: RecursoGuia[] = [
     "sesionGlobal": 28,
     "titulo": "Estética de la liberación: crear contenidos que reflejen la belleza de la cultura popular",
     "pdfId": "1CnUbbMHqS3kqwB_SN_vNWFly3bn-maCj",
+    "pdfLocal": "/guias-mejoras/28-8-TIC.pdf",
     "guiaId": "28-8-TIC"
   },
   {
@@ -843,6 +846,7 @@ export const recursos: RecursoGuia[] = [
     "sesionGlobal": 29,
     "titulo": "Proyecto MILC integrador: presentación multimedia sobre problemática social con enfoque ético",
     "pdfId": "1tCIlhc7DMwmdo8tZbbTlMKYkC_PV2q8k",
+    "pdfLocal": "/guias-mejoras/29-8-TIC.pdf",
     "guiaId": "29-8-TIC"
   },
   {

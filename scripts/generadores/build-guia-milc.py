@@ -90,7 +90,13 @@ def generar_guia(grado: int, sesion_global: int, datos_grado: list[dict]) -> Pat
 
 
 def compilar_pdf(tex_path: Path) -> Path:
-    """Compila .tex a PDF con xelatex."""
+    """Compila .tex a PDF con xelatex.
+
+    Compila 2 veces: el tikzpicture con remember picture,overlay (la
+    portada de las guías MILC) requiere 2 pasadas para resolver las
+    posiciones absolutas de página. Sin la 2ª pasada, la portada queda
+    casi vacía.
+    """
     workdir = tex_path.parent
     cmd = [
         'xelatex',
@@ -99,15 +105,15 @@ def compilar_pdf(tex_path: Path) -> Path:
         '-output-directory', str(workdir),
         str(tex_path),
     ]
-    result = subprocess.run(cmd, capture_output=True, text=True, cwd=workdir)
-    if result.returncode != 0:
-        # Mostrar las últimas líneas del log para diagnóstico
-        log_path = tex_path.with_suffix('.log')
-        if log_path.exists():
-            log = log_path.read_text(errors='replace')
-            print(f'⚠️ Compilación falló: {tex_path.name}')
-            print(log[-2000:])
-        raise RuntimeError(f'xelatex falló para {tex_path.name}')
+    for pasada in (1, 2):
+        result = subprocess.run(cmd, capture_output=True, text=True, cwd=workdir)
+        if result.returncode != 0:
+            log_path = tex_path.with_suffix('.log')
+            if log_path.exists():
+                log = log_path.read_text(errors='replace')
+                print(f'⚠️ Compilación pasada {pasada} falló: {tex_path.name}')
+                print(log[-2000:])
+            raise RuntimeError(f'xelatex falló (pasada {pasada}) para {tex_path.name}')
     pdf_path = tex_path.with_suffix('.pdf')
     return pdf_path
 

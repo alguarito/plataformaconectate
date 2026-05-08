@@ -576,6 +576,7 @@ export const recursos: RecursoGuia[] = [
     "sesionGlobal": 2,
     "titulo": "Tipos de datos y formato de celdas — ingreso y organización de información numérica",
     "pdfId": "1hoCtq2sL1oygWdlGd30uqdCytm0JsYcc",
+    "pdfLocal": "/guias-mejoras/2-8-TIC.pdf",
     "guiaId": "2-8-TIC"
   },
   {
@@ -585,6 +586,7 @@ export const recursos: RecursoGuia[] = [
     "sesionGlobal": 3,
     "titulo": "Tablas de datos en Excel: campos, registros y limpieza básica",
     "pdfId": "1RPkmtsNAJ1KHRbAiX7WE4ZBp1JqgJKWl",
+    "pdfLocal": "/guias-mejoras/3-8-TIC.pdf",
     "guiaId": "3-8-TIC"
   },
   {
@@ -594,6 +596,7 @@ export const recursos: RecursoGuia[] = [
     "sesionGlobal": 4,
     "titulo": "Funciones estadísticas: SUMA, PROMEDIO, MAX, MIN — aplicaciones en datos reales del entorno",
     "pdfId": "1DGQg5b_XNIX4NxDCU2ZSnrcM6Btqaz0a",
+    "pdfLocal": "/guias-mejoras/4-8-TIC.pdf",
     "guiaId": "4-8-TIC"
   },
   {
@@ -603,6 +606,7 @@ export const recursos: RecursoGuia[] = [
     "sesionGlobal": 5,
     "titulo": "Referencias relativas y absolutas — anclaje de celdas para cálculos complejos",
     "pdfId": "14LzDpe4fEUpX2dMBQ4g3PIUzhXLb6DED",
+    "pdfLocal": "/guias-mejoras/5-8-TIC.pdf",
     "guiaId": "5-8-TIC"
   },
   {

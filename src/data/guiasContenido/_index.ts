@@ -41,6 +41,7 @@ import g8_3_7 from './8-3-7';
 import g8_3_8 from './8-3-8';
 import g8_3_9 from './8-3-9';
 import g8_3_10 from './8-3-10';
+import g8_3_11 from './8-3-11';
 import g10_2_1 from './10-2-1';
 
 const TODAS: ContenidoGuia[] = [
@@ -50,6 +51,7 @@ const TODAS: ContenidoGuia[] = [
   g8_2_6, g8_2_7, g8_2_8, g8_2_9, g8_2_10,
   g8_3_1, g8_3_2, g8_3_3, g8_3_4, g8_3_5,
   g8_3_6, g8_3_7, g8_3_8, g8_3_9, g8_3_10,
+  g8_3_11,
   g10_2_1,
 ];
 

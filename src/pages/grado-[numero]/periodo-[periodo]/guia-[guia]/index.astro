@@ -19,7 +19,10 @@ export function getStaticPaths() {
   const paths: any[] = [];
   for (const g of grados) {
     for (const p of g.periodos) {
-      for (let s = 1; s <= 10; s++) {
+      // Grado 8 · Periodo 3 incluye una sesión 11 extra: examen integrador
+      // interactivo (50 preguntas tipo quiz que cierran el grado).
+      const maxSesion = g.numero === 8 && p.numero === 3 ? 11 : 10;
+      for (let s = 1; s <= maxSesion; s++) {
         paths.push({
           params: {
             numero: String(g.numero),
@@ -39,7 +42,13 @@ const base = import.meta.env.BASE_URL;
 
 // Recurso real desde Drive (titulo + pdfId)
 const recurso = getRecurso(grado.numero, periodo.numero, sesion);
-const tituloGuia = recurso?.titulo ?? `Guía ${sesion}`;
+// Sesión 11 de G8/P3 es el cierre interactivo: no tiene PDF en Drive,
+// pero la guía enriquecida le da título más abajo.
+const esCierreG8P3 = grado.numero === 8 && periodo.numero === 3 && sesion === 11;
+const tituloGuia = recurso?.titulo
+  ?? (esCierreG8P3
+    ? 'Cierre de grado · 50 retos integradores'
+    : `Guía ${sesion}`);
 const pdfId = recurso?.pdfId ?? '';
 const previewUrl = recurso ? previewUrlFor(recurso, base) : '';
 const downloadUrl = recurso ? downloadUrlFor(recurso, base) : '';
@@ -50,8 +59,10 @@ const esMejorada = isMejorada(recurso);
 const enriquecida = getContenidoGuia(grado.numero, periodo.numero, sesion);
 
 // Navegación previa/siguiente
+// Grado 8 · Periodo 3 tiene una sesión 11 extra (cierre interactivo).
+const maxSesionPeriodo = grado.numero === 8 && periodo.numero === 3 ? 11 : 10;
 const prevSesion = sesion > 1 ? sesion - 1 : null;
-const nextSesion = sesion < 10 ? sesion + 1 : null;
+const nextSesion = sesion < maxSesionPeriodo ? sesion + 1 : null;
 ---
 
 <BaseLayout
@@ -134,7 +145,7 @@ const nextSesion = sesion < 10 ? sesion + 1 : null;
 
       {pdfId && (
         <>
-          <!-- Acciones rápidas: descargar / abrir en Drive -->
+          <!-- Acciones rápidas: descargar / abrir en Drive (solo si hay PDF) -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-10">
             <a
               href={downloadUrl}
@@ -171,9 +182,11 @@ const nextSesion = sesion < 10 ? sesion + 1 : null;
               </svg>
             </a>
           </div>
+        </>
+      )}
 
-          {/* ═══ PRE-LECTURA (solo si la guía está enriquecida) ═══ */}
-          {enriquecida && (
+      {/* ═══ PRE-LECTURA (solo si la guía está enriquecida) ═══ */}
+      {enriquecida && (
             <>
               <!-- Por qué importa + pregunta detonante -->
               <div class="bento-card-color bg-bento-yellow mb-6 flex items-start gap-4">
@@ -282,11 +295,11 @@ const nextSesion = sesion < 10 ? sesion + 1 : null;
                   </div>
                 );
               })()}
-            </>
-          )}
+          </>
+      )}
 
-          <!-- Visor PDF embebido -->
-          <div class="bento-card mb-10 p-0 overflow-hidden">
+      {pdfId && (
+        <div class="bento-card mb-10 p-0 overflow-hidden">
             <div class="px-6 py-4 border-b" style="border-color: var(--border);">
               <div class="flex items-center justify-between gap-3 flex-wrap">
                 <div>
@@ -307,9 +320,10 @@ const nextSesion = sesion < 10 ? sesion + 1 : null;
               ></iframe>
             </div>
           </div>
+      )}
 
-          {/* ═══ POST-LECTURA: laboratorios + reflexión ═══ */}
-          {enriquecida && (
+      {/* ═══ POST-LECTURA: laboratorios + reflexión ═══ */}
+      {enriquecida && (
             <>
               <!-- Encabezado de laboratorios -->
               <div class="bento-card-color bg-bento-lime mb-6 text-center py-8 px-6">
@@ -323,18 +337,136 @@ const nextSesion = sesion < 10 ? sesion + 1 : null;
                 </p>
               </div>
 
-              <!-- Cada laboratorio -->
-              <div class="space-y-6 mb-10">
+              <!-- Cada laboratorio. Si hay >=2 labs, se muestran como stepper:
+                   solo el bloque activo es visible y al completarlo aparece
+                   un botón "Continuar al siguiente bloque". -->
+              <div
+                class="space-y-6 mb-10"
+                data-labs-stepper={enriquecida.laboratorios.length > 1 ? 'on' : null}
+                data-labs-total={enriquecida.laboratorios.length}
+              >
                 {enriquecida.laboratorios.map((lab, idx) => {
-                  if (lab.tipo === 'quiz') {
-                    return <LabQuiz data={lab} id={`lab-${idx}-quiz`} />;
-                  }
-                  if (lab.tipo === 'visualizacion') {
-                    return <LabVisualizacion data={lab} id={`lab-${idx}-viz`} />;
-                  }
-                  return null;
+                  const esUltimo = idx === enriquecida.laboratorios.length - 1;
+                  const totalLabs = enriquecida.laboratorios.length;
+                  return (
+                    <div data-lab-step={idx} class={totalLabs > 1 && idx > 0 ? 'hidden' : ''}>
+                      {lab.tipo === 'quiz' && <LabQuiz data={lab} id={`lab-${idx}-quiz`} />}
+                      {lab.tipo === 'visualizacion' && <LabVisualizacion data={lab} id={`lab-${idx}-viz`} />}
+                      {totalLabs > 1 && !esUltimo && (
+                        <button
+                          type="button"
+                          data-lab-continuar={idx}
+                          disabled
+                          class="hidden mt-4 w-full md:w-auto md:mx-auto md:flex items-center justify-center gap-2 px-6 py-3 rounded-full font-black text-base bg-bento-lime text-black border-2 border-bento-lime hover:opacity-80 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity"
+                        >
+                          Continuar al Bloque {idx + 2}
+                          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12h14"></path>
+                            <path d="m12 5 7 7-7 7"></path>
+                          </svg>
+                        </button>
+                      )}
+                      {totalLabs > 1 && esUltimo && (
+                        <div data-lab-final-aviso class="hidden mt-4 text-center text-sm font-semibold" style="color: var(--fg-muted);">
+                          🎯 Has completado los {totalLabs} bloques. Lee la reflexión final más abajo.
+                        </div>
+                      )}
+                    </div>
+                  );
                 })}
               </div>
+
+              {enriquecida.laboratorios.length > 1 && (
+                <script>
+                  {`
+                  (() => {
+                    const stepper = document.querySelector('[data-labs-stepper="on"]');
+                    if (!stepper) return;
+                    const total = parseInt(stepper.dataset.labsTotal || '0', 10);
+
+                    // Umbral de aprobación para desbloquear el siguiente bloque (60%).
+                    const UMBRAL = 0.6;
+
+                    function watchStep(idx) {
+                      const step = stepper.querySelector('[data-lab-step="' + idx + '"]');
+                      if (!step) return;
+                      const resumen = step.querySelector('[data-quiz-resumen]');
+                      const btn = step.querySelector('[data-lab-continuar="' + idx + '"]');
+                      const finalAviso = step.querySelector('[data-lab-final-aviso]');
+                      if (!resumen) return;
+
+                      const evaluarYActualizar = () => {
+                        if (resumen.classList.contains('hidden')) return;
+                        const aciertosEl = resumen.querySelector('[data-quiz-resumen-aciertos]');
+                        const totalEl = resumen.querySelector('[data-quiz-resumen-total]');
+                        const aciertos = parseInt(aciertosEl?.textContent || '0', 10);
+                        const tot = parseInt(totalEl?.textContent || '1', 10);
+                        const ratio = tot > 0 ? aciertos / tot : 0;
+                        const aprobado = ratio >= UMBRAL;
+
+                        // Insertar (o actualizar) un aviso bajo el resumen
+                        let aviso = step.querySelector('[data-lab-aprobacion]');
+                        if (!aviso) {
+                          aviso = document.createElement('div');
+                          aviso.setAttribute('data-lab-aprobacion', '');
+                          aviso.className = 'mt-3 p-3 rounded-bento-sm text-sm font-semibold text-center';
+                          resumen.parentNode?.insertBefore(aviso, resumen.nextSibling);
+                        }
+                        const minimos = Math.ceil(tot * UMBRAL);
+                        if (aprobado) {
+                          aviso.style.background = 'var(--bento-lime, #C8FF6B)';
+                          aviso.style.color = '#000';
+                          aviso.textContent = '✅ Aprobado (' + aciertos + '/' + tot + '). Puedes continuar al siguiente bloque.';
+                          if (btn) {
+                            btn.classList.remove('hidden');
+                            btn.disabled = false;
+                          }
+                          if (finalAviso) finalAviso.classList.remove('hidden');
+                        } else {
+                          aviso.style.background = 'var(--bento-pink, #FF2D87)';
+                          aviso.style.color = '#fff';
+                          aviso.textContent = '🔒 Aún no apruebas (' + aciertos + '/' + tot + '). Necesitas al menos ' + minimos + '/' + tot + ' para avanzar. Usa "🔄 Reintentar" arriba.';
+                          if (btn) {
+                            btn.classList.add('hidden');
+                            btn.disabled = true;
+                          }
+                        }
+                      };
+
+                      // Re-evaluar cuando el resumen aparece/cambia, y también cuando
+                      // se hace reset (resumen vuelve a ocultarse → limpiar aviso).
+                      const obs = new MutationObserver(() => {
+                        if (resumen.classList.contains('hidden')) {
+                          step.querySelector('[data-lab-aprobacion]')?.remove();
+                          if (btn) {
+                            btn.classList.add('hidden');
+                            btn.disabled = true;
+                          }
+                          return;
+                        }
+                        evaluarYActualizar();
+                      });
+                      obs.observe(resumen, { attributes: true, attributeFilter: ['class'] });
+                      // También observar cambios internos del resumen (aciertos)
+                      obs.observe(resumen, { childList: true, subtree: true, characterData: true });
+
+                      if (btn) {
+                        btn.addEventListener('click', () => {
+                          const next = stepper.querySelector('[data-lab-step="' + (idx + 1) + '"]');
+                          if (next) {
+                            next.classList.remove('hidden');
+                            next.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            watchStep(idx + 1);
+                          }
+                        });
+                      }
+                    }
+
+                    watchStep(0);
+                  })();
+                  `}
+                </script>
+              )}
 
               <!-- Reflexión, transferencia y cierre MILC -->
               <div class="bento-card-color bg-bento-purple mb-10">
@@ -363,10 +495,8 @@ const nextSesion = sesion < 10 ? sesion + 1 : null;
               </div>
             </>
           )}
-        </>
-      )}
 
-      {!pdfId && (
+      {!pdfId && !enriquecida && (
         <div class="bento-card-color bg-bento-yellow mb-10 flex items-start gap-4">
           <div class="text-5xl">📝</div>
           <div>

@@ -59,6 +59,72 @@ Do not load the reference for plain text content edits unless LaTeX structure or
 - Use `circuitikz` for electronics or IoT schematics.
 - Use `siunitx` for physics, electronics, measurements, units, and scientific notation.
 
+## Anti-vacío: nunca un hueco sin andamiaje
+
+Cada espacio para que el estudiante escriba o dibuje debe ofrecer un
+mínimo de andamiaje. Un `\respuesta{}` desnudo es un fracaso pedagógico
+y estético. El "espacio en blanco" mata la actividad: el estudiante
+queda en parálisis cognitiva ("¿por dónde empiezo?") y la página luce
+desértica.
+
+Antes de dejar un hueco, aplica una de estas seis técnicas:
+
+1. **Frame starter (pista de inicio)** — REGLA GENERAL
+   Da el comienzo de la respuesta como plantilla con líneas guía.
+   Ej: `Me sentí ___ porque ___ y eso me enseñó que ___`
+   Implementación LaTeX: tres prompts cortos, cada uno seguido por
+   `\rule{14cm}{0.5pt}` o `\respuesta{1}` (NO `\respuesta{2+}`).
+   Usar en ≈80% de los huecos. Mantiene la voz personal del estudiante.
+
+2. **Tabla mini-rejilla** — EXCEPCIÓN PARA PARALELISMOS EVIDENTES
+   Sustituye espacio libre por tabularx 2-3 columnas con encabezados.
+   Usar SOLO cuando hay paralelismo claro (5 dimensiones, comparación
+   ancestral/contemporáneo, 4 fases, etc).
+   No abusar: la tabla siente "hoja de cálculo" si reemplaza reflexión.
+
+3. **Esquema con cajas pre-dibujadas**
+   Para dibujos: 3-9 cajas etiquetadas en TikZ o tabularx, no espacio
+   libre. Cada caja con sub-instrucción específica.
+   Ej (rejilla 3×3 para símbolo): forma / color / detalle / territorio /
+   digital / palabra clave / firma / fecha / flecha de futuro.
+
+4. **Lista numerada con prompts breves**
+   1) ___ que ya sé · 2) ___ que descubrí · 3) ___ que me intriga
+   Útil cuando se pide enumerar evidencias, hallazgos o pasos.
+
+5. **Pregunta + ejemplo pre-llenado**
+   Da un ejemplo trabajado primero, luego el espacio.
+   "Ej: 'Mi proyecto demuestra cómo el portafolio digital democratiza
+   la voz estudiantil'. **Tu turno:** ___."
+   Reduce el bloqueo "no sé qué escribir".
+
+6. **Banda de información complementaria** (anti-pie de página vacío)
+   Si una sección termina pronto y deja >5cm al pie de página, insertar:
+   - dato curioso del tema (1-2 líneas con tcolorbox pequeño)
+   - cita complementaria de un maestro del Triángulo
+   - glosario mínimo de términos técnicos
+   - mini-historia de un estudiante real (anonimizado)
+   - "Saber más": pista de un libro, video o link sugerido
+
+### Reglas duras
+
+- NUNCA `\respuesta{>2}` sin frame starter o esquema previo.
+- NUNCA `\vspace{>3cm}` para dibujo sin cajas o cuadrícula.
+- NUNCA dos `\respuesta{}` consecutivos sin separación contextual.
+- NUNCA terminar una página con >5cm de blanco al pie.
+- Si la página termina con espacio sobrante, llenar con técnica #6.
+
+### Combinaciones recomendadas
+
+- Reflexión personal/emocional (Escuta, Evaluación) → técnica #1
+- 5 dimensiones liberatorias paralelas → técnica #2 (tabla)
+- Triángulo Dussel/Estoicismo/Floridi → técnica #1 dentro de cada softbox
+  (NO tabla — cada voz necesita respiro independiente)
+- Drawbox de símbolo o dibujo → técnica #3 (cajas guiadas)
+- Listas de hallazgos, criterios → técnica #4
+- Frase de abstracción, guion plantilla → técnica #5 (ejemplo)
+- Pies de página vacíos → técnica #6 (banda info)
+
 ## MILC Document Checks
 
 For guides:
@@ -67,7 +133,10 @@ For guides:
 - MILC phases visually distinct but not visually noisy;
 - concept sections readable and not overly compressed;
 - guided practice and independent practice have enough space;
-- product criteria and rubric are visible and specific.
+- product criteria and rubric are visible and specific;
+- **anti-vacío**: every `\respuesta{}` and `\vspace{}` for drawing has
+  scaffolding (frame starter, mini-table, pre-drawn boxes, numbered
+  prompt list, worked example, or info-band). NO blank holes.
 
 For exams:
 

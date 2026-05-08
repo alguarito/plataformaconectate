@@ -20,22 +20,25 @@ export function getStaticPaths() {
 const { grado, periodo } = Astro.props;
 const base = import.meta.env.BASE_URL;
 
-// Grado 8 · Periodo 3 cierra con una sesión 11: examen integrador interactivo
-// (50 preguntas tipo quiz que recorren los tres periodos del año).
-const totalSesiones = grado.numero === 8 && periodo.numero === 3 ? 11 : 10;
-
-const guias = Array.from({ length: totalSesiones }, (_, i) => {
+const guias = Array.from({ length: 10 }, (_, i) => {
   const sesion = i + 1;
   const recurso = getRecurso(grado.numero, periodo.numero, sesion);
-  const esCierreG8 = grado.numero === 8 && periodo.numero === 3 && sesion === 11;
   return {
     numero: sesion,
-    titulo: esCierreG8
-      ? 'Cierre de grado · 50 retos integradores (P1·P2·P3)'
-      : (recurso?.titulo ?? `Sesión ${sesion}`),
+    titulo: recurso?.titulo ?? `Sesión ${sesion}`,
     href: `${base}/grado-${grado.numero}/periodo-${periodo.numero}/guia-${sesion}`,
   };
 });
+
+// Grado 8 · Periodo 3 estrena un examen final interactivo (50 preguntas
+// tipo quiz mezcladas de los 3 periodos). Vive en /guia-11 — la card
+// "Examen Final" más abajo lo enlaza directamente para no romper el
+// listado de 10 sesiones.
+const esExamenInteractivoG8 =
+  grado.numero === 8 && periodo.numero === 3;
+const examenFinalHref = esExamenInteractivoG8
+  ? `${base}/grado-${grado.numero}/periodo-${periodo.numero}/guia-11`
+  : `${base}/grado-${grado.numero}/periodo-${periodo.numero}/examen`;
 ---
 
 <BaseLayout
@@ -121,23 +124,28 @@ const guias = Array.from({ length: totalSesiones }, (_, i) => {
 
         <!-- Examen final (también visible desde el inicio para transparencia evaluativa) -->
         <a
-          href={`${base}/grado-${grado.numero}/periodo-${periodo.numero}/examen`}
+          href={examenFinalHref}
           class="bento-card-color bg-bento-black md:col-span-5 flex flex-col gap-4 hover:scale-[1.01] transition-transform group min-h-[260px] grid-pattern"
         >
-          <div class="text-7xl md:text-8xl">📝</div>
+          <div class="text-7xl md:text-8xl">{esExamenInteractivoG8 ? '🎯' : '📝'}</div>
           <div class="flex-1 flex flex-col justify-end">
             <span class="text-xs font-bold uppercase tracking-widest opacity-70">
-              Examen Final · Se aplica en la sesión 10
+              {esExamenInteractivoG8
+                ? 'Examen Final Interactivo · Cierre del Grado 8'
+                : 'Examen Final · Se aplica en la sesión 10'}
             </span>
             <h3 class="text-2xl md:text-3xl font-black tracking-tight mt-2 mb-3 leading-tight">
-              Síntesis · Aplicación · Argumentación
+              {esExamenInteractivoG8
+                ? '50 retos · 3 bloques · P1·P2·P3'
+                : 'Síntesis · Aplicación · Argumentación'}
             </h3>
             <p class="opacity-70 leading-relaxed text-sm">
-              Conoce desde ya cómo se evalúa la transferencia de los aprendizajes
-              del período. Sin sorpresas.
+              {esExamenInteractivoG8
+                ? 'Quiz interactivo con feedback inmediato. Avanza al siguiente bloque al aprobar el actual (mín. 60%). Sin nota dura — para cerrar el año sabiendo qué dominas.'
+                : 'Conoce desde ya cómo se evalúa la transferencia de los aprendizajes del período. Sin sorpresas.'}
             </p>
             <div class="inline-flex items-center gap-2 font-bold text-sm mt-3 group-hover:gap-3 transition-all">
-              Ver examen
+              {esExamenInteractivoG8 ? 'Empezar quiz' : 'Ver examen'}
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M5 12h14"></path>
                 <path d="m12 5 7 7-7 7"></path>

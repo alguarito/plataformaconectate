@@ -20,12 +20,19 @@ export function getStaticPaths() {
 const { grado, periodo } = Astro.props;
 const base = import.meta.env.BASE_URL;
 
-const guias = Array.from({ length: 10 }, (_, i) => {
+// Grado 8 · Periodo 3 cierra con una sesión 11: examen integrador interactivo
+// (50 preguntas tipo quiz que recorren los tres periodos del año).
+const totalSesiones = grado.numero === 8 && periodo.numero === 3 ? 11 : 10;
+
+const guias = Array.from({ length: totalSesiones }, (_, i) => {
   const sesion = i + 1;
   const recurso = getRecurso(grado.numero, periodo.numero, sesion);
+  const esCierreG8 = grado.numero === 8 && periodo.numero === 3 && sesion === 11;
   return {
     numero: sesion,
-    titulo: recurso?.titulo ?? `Sesión ${sesion}`,
+    titulo: esCierreG8
+      ? 'Cierre de grado · 50 retos integradores (P1·P2·P3)'
+      : (recurso?.titulo ?? `Sesión ${sesion}`),
     href: `${base}/grado-${grado.numero}/periodo-${periodo.numero}/guia-${sesion}`,
   };
 });

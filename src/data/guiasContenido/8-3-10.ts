@@ -36,60 +36,60 @@ const contenido: ContenidoGuia = {
 
   conceptosClave: [
     {
-      termino: 'Apertura ancestral-contemporánea',
+      termino: 'Audiencia',
       definicion:
-        'Conexión que cada guía MILC abre entre un saber tradicional (consejo de mayores, tejido, minga) y un saber técnico moderno. No es decoración: es anclaje cultural.',
+        'Las personas que te escuchan. Una buena sustentación se diseña para una audiencia concreta, no para "el público en general". Saber a quién hablas cambia qué dices, qué evitas y qué evidencia eliges.',
       ejemplo:
-        'Sustentar en círculo de mayores (ancestral) ↔ Sustentar un portafolio digital (contemporáneo). Ambos son actos comunitarios de palabra con evidencias.',
-      emoji: '🪶',
+        'No le hablas igual a tu profesor que a tus compañeros que a la junta de acción comunal del barrio. La misma evidencia, distintas palabras y ejemplos.',
+      emoji: '👥',
     },
     {
-      termino: 'Pensamiento computacional',
+      termino: 'Evidencia',
       definicion:
-        'Cuatro pilares para resolver problemas: descomposición, reconocimiento de patrones, abstracción y algoritmo. Sirve para programar pero también para preparar una sustentación.',
+        'Dato, captura, registro o prueba que sustenta lo que afirmas. Sin evidencia, una sustentación es una opinión. Con evidencia, es un argumento.',
       ejemplo:
-        'Para tu sustentación: descompones el proyecto en partes, reconoces patrones de buenas presentaciones, abstraes tu mensaje en una frase, y diseñas un algoritmo (apertura → evidencia → propuesta → preguntas → cierre).',
-      emoji: '🧩',
+        'Si dices "mi proyecto mejora la seguridad digital de mi familia", la evidencia es el antes/después: capturas de las contraseñas débiles que detectaste y de las que crearon nuevas.',
+      emoji: '🔍',
     },
     {
-      termino: 'Portafolio digital',
+      termino: 'Argumentación',
       definicion:
-        'Conjunto organizado de evidencias (textos, imágenes, audios, capturas, reflexiones) que demuestran tu proceso y aprendizajes durante un periodo escolar.',
+        'Conectar la evidencia con la afirmación mediante razones. No basta con mostrar datos: hay que explicar por qué prueban lo que dices.',
       ejemplo:
-        'Carpeta digital con 6+ evidencias: una guía resuelta de cada periodo, una evidencia multimedia, una de ciberseguridad, una colaborativa, una reflexión sobre un error, y una autoevaluación con rúbrica.',
-      emoji: '📁',
+        '"Estas capturas (evidencia) muestran que mi familia mejoró la seguridad (afirmación) porque el porcentaje de contraseñas fuertes pasó de 0% a 80% en una semana (razón)."',
+      emoji: '🧮',
     },
     {
-      termino: 'Cinco dimensiones de la evaluación liberadora',
+      termino: 'Anatomía de presentación',
       definicion:
-        'Marco MILC para que la evaluación no sea solo nota: incluye desarrollo personal, control emocional, reflexión ciudadana, reflexión local y vínculo intergeneracional.',
+        'La estructura clásica de una buena sustentación: apertura (30s) → problema (1 min) → evidencia (1-2 min) → propuesta (1-2 min) → preguntas (2-3 min) → cierre (30s). Total: 5-7 minutos.',
       ejemplo:
-        'Después de sustentar, te preguntas: ¿qué cambió en mí? ¿qué emoción manejé? ¿cómo aporta esto a la democracia? ¿qué dice esto a Cartago? ¿qué le contaría a mi abuela?',
-      emoji: '🌱',
+        'Como un libro: portada, planteamiento, capítulos centrales, clímax, preguntas y desenlace. Una sustentación que sigue esta anatomía rara vez se pierde.',
+      emoji: '🏛️',
     },
     {
-      termino: 'Triángulo de pensamiento',
+      termino: 'Voz propia',
       definicion:
-        'Cierre filosófico de cada guía MILC con tres voces: Dussel (lente del nosotros), Estoicismo (lente del cuidado interior), Floridi (lente de la infoesfera).',
+        'La autoría auténtica: lo que tú aprendiste, en tus palabras, con tus ejemplos. Es lo opuesto a leer un texto que parece de otra persona o que la IA escribió por ti.',
       ejemplo:
-        'En esta guía: Dussel pregunta a quién das voz al sustentar. Epicteto pregunta qué juicio eliges para no temer al público. Floridi pregunta qué información proteges y cuál haces pública.',
-      emoji: '🔺',
+        'Si tu portafolio dice cosas que tú no podrías explicar oralmente sin ese papel, perdiste tu voz. Si lo que escribiste suena como hablas, la encontraste.',
+      emoji: '🎙️',
     },
     {
-      termino: 'Inforg (Floridi)',
+      termino: 'Retroalimentación iterativa',
       definicion:
-        'Concepto del filósofo Luciano Floridi: somos organismos de información que vivimos en una infoesfera. Cada decisión de información tiene peso ético.',
+        'Aceptar preguntas y críticas para mejorar, no para defenderte. Cada pregunta de la audiencia es una oportunidad de iterar tu propuesta antes de la siguiente versión.',
       ejemplo:
-        'Cuando decides qué incluir o no en tu portafolio público, estás actuando como inforg responsable: cuidas tus datos y los de tus compañeros.',
-      emoji: '🌐',
+        'Si te preguntan "¿y qué pasa con los adultos mayores que no usan internet?" y tu portafolio no lo cubre, anótalo como mejora futura, no como ataque.',
+      emoji: '🔄',
     },
     {
-      termino: 'Analéctica (Dussel)',
+      termino: 'Lenguaje no verbal',
       definicion:
-        'Método del filósofo Enrique Dussel: parte del Otro como Otro. Una sustentación es analéctica cuando incluye la voz de quien habitualmente queda fuera.',
+        'Lo que comunicas sin palabras: voz, postura, mirada, manos, ritmo. Estudios de oratoria muestran que el 38% del impacto viene de la voz, el 55% del cuerpo y solo el 7% de las palabras exactas.',
       ejemplo:
-        'Si tu portafolio sobre ciberseguridad nunca menciona a las personas mayores que no usan internet, la analéctica te invita a darles lugar.',
-      emoji: '🤝',
+        'Respirar profundo antes de empezar, mantener pies firmes, mirar a tres personas distintas durante la sustentación, y dejar silencio después de una idea importante.',
+      emoji: '🧘',
     },
   ],
 

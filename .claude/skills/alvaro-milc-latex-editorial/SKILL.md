@@ -48,10 +48,55 @@ Do not load the reference for plain text content edits unless LaTeX structure or
 6. Regenerate representative outputs.
 7. Render or inspect samples before reporting completion.
 
+## Hyphenation y justificación en español
+
+A common mistake in MILC `.tex` templates is forbidding hyphenation entirely:
+
+```latex
+% ❌ Causes "rivers" of whitespace in justified text
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=10000
+\setlength{\emergencystretch}{3em}
+```
+
+When LaTeX cannot break words and must justify, it stretches inter-word
+spaces dramatically. The reader sees Spanish lines like "este  proyecto  es
+un  ejemplo" with floating words.
+
+**Correct preamble for Spanish-justified text:**
+
+```latex
+\usepackage[spanish]{babel}     % activates Spanish hyphenation patterns
+\usepackage{microtype}          % font-level micro-justification (huge help)
+
+% Balanced penalties — allow word breaks when needed, prefer to keep
+% them whole when possible.
+\hyphenpenalty=200
+\exhyphenpenalty=200
+\pretolerance=400
+\tolerance=2000
+\setlength{\emergencystretch}{1em}
+```
+
+Why this works:
+- `babel` loads Spanish hyphenation rules — words like "comunicación"
+  become breakable as "comu-nicación" or "comunica-ción".
+- `microtype` adjusts font protrusion and inter-word spacing at the
+  font level, smoothing rivers without visible breaks.
+- Lower penalties (200 vs 10000) tell LaTeX "you may break words if
+  it improves the line".
+- Smaller `emergencystretch` (1em vs 3em) limits how much space LaTeX
+  is allowed to add before giving up.
+
+Apply this preamble to ALL new MILC guide templates and to any guide
+being rewritten v2+.
+
 ## Package Selection Guide
 
 - Use `fontspec` with XeLaTeX/LuaLaTeX for Spanish documents with modern fonts.
-- Use `babel` for Spanish language conventions when compatible with the template.
+- Use `babel[spanish]` ALWAYS — hyphenation is non-negotiable in justified Spanish.
+- Use `microtype` ALWAYS — it costs nothing and dramatically improves typography.
 - Use `tcolorbox` for instructional sections, examples, warnings, and rubrics.
 - Use `tabularx`, `array`, and controlled column widths for rubrics and student data.
 - Use `tikz` for diagrams, visual organizers, worksheets, and structured drawing spaces.

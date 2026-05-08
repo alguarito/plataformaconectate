@@ -219,6 +219,49 @@ Each citation must be SHORT, CONTEXTUALIZED to the guide topic, and accompanied 
 
 The triangle does NOT demand deep philosophy in every session. It plants three voices the student will recognize cycle after cycle, year after year, until they become part of how they think.
 
+## Conceptos clave del web enriquecido — del DOMINIO, no del método
+
+When generating `src/data/guiasContenido/{grado}-{periodo}-{sesion}.ts`, the
+`conceptosClave` array must contain **terms from the SUBJECT MATTER of the
+guide**, not meta-concepts about the MILC method itself.
+
+### ❌ Wrong (meta-concepts about MILC)
+For a guide on *Public sustentation*:
+- "Apertura ancestral-contemporánea"
+- "Pensamiento computacional"
+- "Cinco dimensiones de la evaluación liberadora"
+- "Triángulo de pensamiento"
+- "Inforg (Floridi)"
+
+These are HOW we learn (the method), not WHAT we learn (the subject).
+They feel generic and disconnected from the topic.
+
+### ✅ Right (domain concepts)
+For the same guide on *Public sustentation*:
+- "Audiencia"
+- "Evidencia"
+- "Argumentación"
+- "Anatomía de presentación"
+- "Voz propia"
+- "Retroalimentación iterativa"
+- "Lenguaje no verbal"
+
+These are WHAT a student of public speaking needs to internalize. They
+are checkable, applicable, and directly tied to what the guide teaches.
+
+### Rule of thumb
+
+Ask yourself: "If this concept disappeared from MILC tomorrow, would
+the student still need to know it to do the work this guide is teaching?"
+- If yes → it's a domain concept. Include it.
+- If no → it's a method concept. Move it to a separate "Glosario MILC"
+  page of the site, or omit.
+
+The Triángulo (Dussel/Stoicism/Floridi) and the 5 dimensions BELONG in
+the guide as scaffolding (in the `.tex` and the philosophical closing),
+but NOT in the `conceptosClave` list of the web. They are tools, not
+content of the topic.
+
 ## ICFES-Style Question Pattern
 
 For final exams or diagnostic checks:

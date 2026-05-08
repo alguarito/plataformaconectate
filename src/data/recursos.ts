@@ -716,6 +716,7 @@ export const recursos: RecursoGuia[] = [
     "sesionGlobal": 16,
     "titulo": "Variables, umbrales y calibración: interpretar lecturas de sensores",
     "pdfId": "1-t72XSphHlnfSAy_k4bE29lWZHCZU1Oy",
+    "pdfLocal": "/guias-mejoras/16-8-TIC.pdf",
     "guiaId": "16-8-TIC"
   },
   {
@@ -725,6 +726,7 @@ export const recursos: RecursoGuia[] = [
     "sesionGlobal": 17,
     "titulo": "Depuración de lógica de control: casos esperados, contrarios y límites",
     "pdfId": "18FewaFaoSY9YSwV5v6pDWBbdgKCStjq4",
+    "pdfLocal": "/guias-mejoras/17-8-TIC.pdf",
     "guiaId": "17-8-TIC"
   },
   {
@@ -734,6 +736,7 @@ export const recursos: RecursoGuia[] = [
     "sesionGlobal": 18,
     "titulo": "Simulación de sistema de alerta ambiental: lectura, condición y respuesta",
     "pdfId": "1L2HFjw1vDUaixrCRvzyTcPk5Zl-M2T2A",
+    "pdfLocal": "/guias-mejoras/18-8-TIC.pdf",
     "guiaId": "18-8-TIC"
   },
   {
@@ -743,6 +746,7 @@ export const recursos: RecursoGuia[] = [
     "sesionGlobal": 19,
     "titulo": "Proyecto MILC: sistema de monitoreo ambiental con sensores simulados — Logos como razón universal",
     "pdfId": "1_Lu1wYmE5c1nHJV0Vlah0ogCDRbjjUvI",
+    "pdfLocal": "/guias-mejoras/19-8-TIC.pdf",
     "guiaId": "19-8-TIC"
   },
   {
@@ -752,6 +756,7 @@ export const recursos: RecursoGuia[] = [
     "sesionGlobal": 20,
     "titulo": "Sustentación del proyecto de computación física: evidencias, pruebas y mejoras",
     "pdfId": "11Tx-aZPWjzWA4RO5DQbUpWxQTfxlH5Gc",
+    "pdfLocal": "/guias-mejoras/20-8-TIC.pdf",
     "guiaId": "20-8-TIC"
   },
   {

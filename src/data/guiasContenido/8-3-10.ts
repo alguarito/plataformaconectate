@@ -35,7 +35,9 @@ const contenido: ContenidoGuia = {
   },
 
   conceptosClave: [
+    // ───── Cómo se prepara ─────
     {
+      categoria: '🛠️ Cómo se prepara',
       termino: 'Audiencia',
       definicion:
         'Las personas que te escuchan. Una buena sustentación se diseña para una audiencia concreta, no para "el público en general". Saber a quién hablas cambia qué dices, qué evitas y qué evidencia eliges.',
@@ -44,22 +46,7 @@ const contenido: ContenidoGuia = {
       emoji: '👥',
     },
     {
-      termino: 'Evidencia',
-      definicion:
-        'Dato, captura, registro o prueba que sustenta lo que afirmas. Sin evidencia, una sustentación es una opinión. Con evidencia, es un argumento.',
-      ejemplo:
-        'Si dices "mi proyecto mejora la seguridad digital de mi familia", la evidencia es el antes/después: capturas de las contraseñas débiles que detectaste y de las que crearon nuevas.',
-      emoji: '🔍',
-    },
-    {
-      termino: 'Argumentación',
-      definicion:
-        'Conectar la evidencia con la afirmación mediante razones. No basta con mostrar datos: hay que explicar por qué prueban lo que dices.',
-      ejemplo:
-        '"Estas capturas (evidencia) muestran que mi familia mejoró la seguridad (afirmación) porque el porcentaje de contraseñas fuertes pasó de 0% a 80% en una semana (razón)."',
-      emoji: '🧮',
-    },
-    {
+      categoria: '🛠️ Cómo se prepara',
       termino: 'Anatomía de presentación',
       definicion:
         'La estructura clásica de una buena sustentación: apertura (30s) → problema (1 min) → evidencia (1-2 min) → propuesta (1-2 min) → preguntas (2-3 min) → cierre (30s). Total: 5-7 minutos.',
@@ -68,28 +55,59 @@ const contenido: ContenidoGuia = {
       emoji: '🏛️',
     },
     {
+      categoria: '🛠️ Cómo se prepara',
+      termino: 'Frase de abstracción',
+      definicion:
+        'Tu proyecto entero contado en UNA sola oración. Si no cabe en una frase, todavía no está clara. Funciona como brújula en toda la sustentación: cuando dudas, vuelves a ella.',
+      ejemplo:
+        '"Mi portafolio demuestra cómo el pensamiento computacional ayuda a un estudiante de octavo a sustentar con calma y evidencia". Test de la abuela: si tu abuela la entiende sin que expliques nada más, está lista.',
+      emoji: '✏️',
+    },
+    {
+      categoria: '🛠️ Cómo se prepara',
+      termino: 'Evidencia',
+      definicion:
+        'Dato, captura, registro o prueba que sustenta lo que afirmas. Sin evidencia, una sustentación es una opinión. Con evidencia, es un argumento que la audiencia puede revisar.',
+      ejemplo:
+        'Si dices "mi proyecto mejora la seguridad digital de mi familia", la evidencia es el antes/después: capturas de las contraseñas débiles que detectaste y de las que crearon nuevas.',
+      emoji: '🔍',
+    },
+    // ───── Cómo se entrega ─────
+    {
+      categoria: '🎙️ Cómo se entrega',
+      termino: 'Argumentación',
+      definicion:
+        'Conectar la evidencia con la afirmación mediante razones. No basta con mostrar datos: hay que explicar por qué prueban lo que dices. La argumentación es el puente entre lo que enseñas y lo que la audiencia concluye.',
+      ejemplo:
+        '"Estas capturas (evidencia) muestran que mi familia mejoró la seguridad (afirmación) porque el porcentaje de contraseñas fuertes pasó de 0% a 80% en una semana (razón)."',
+      emoji: '🧮',
+    },
+    {
+      categoria: '🎙️ Cómo se entrega',
       termino: 'Voz propia',
       definicion:
-        'La autoría auténtica: lo que tú aprendiste, en tus palabras, con tus ejemplos. Es lo opuesto a leer un texto que parece de otra persona o que la IA escribió por ti.',
+        'La autoría auténtica: lo que tú aprendiste, en tus palabras, con tus ejemplos. Es lo opuesto a leer un texto que parece de otra persona o que la IA escribió por ti sin que entiendas qué dice.',
       ejemplo:
         'Si tu portafolio dice cosas que tú no podrías explicar oralmente sin ese papel, perdiste tu voz. Si lo que escribiste suena como hablas, la encontraste.',
       emoji: '🎙️',
     },
     {
-      termino: 'Retroalimentación iterativa',
-      definicion:
-        'Aceptar preguntas y críticas para mejorar, no para defenderte. Cada pregunta de la audiencia es una oportunidad de iterar tu propuesta antes de la siguiente versión.',
-      ejemplo:
-        'Si te preguntan "¿y qué pasa con los adultos mayores que no usan internet?" y tu portafolio no lo cubre, anótalo como mejora futura, no como ataque.',
-      emoji: '🔄',
-    },
-    {
+      categoria: '🎙️ Cómo se entrega',
       termino: 'Lenguaje no verbal',
       definicion:
         'Lo que comunicas sin palabras: voz, postura, mirada, manos, ritmo. Estudios de oratoria muestran que el 38% del impacto viene de la voz, el 55% del cuerpo y solo el 7% de las palabras exactas.',
       ejemplo:
         'Respirar profundo antes de empezar, mantener pies firmes, mirar a tres personas distintas durante la sustentación, y dejar silencio después de una idea importante.',
       emoji: '🧘',
+    },
+    {
+      categoria: '🎙️ Cómo se entrega',
+      termino: 'Retroalimentación iterativa',
+      definicion:
+        'Aceptar preguntas y críticas para mejorar, no para defenderte. Cada pregunta de la audiencia es una oportunidad de iterar tu propuesta antes de la siguiente versión.',
+      ejemplo:
+        'Si te preguntan "¿y qué pasa con los adultos mayores que no usan internet?" y tu portafolio no lo cubre, anótalo como mejora futura, no como ataque.',
+      emoji: '🔄',
     },
   ],
 

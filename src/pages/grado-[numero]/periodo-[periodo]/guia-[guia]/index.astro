@@ -236,29 +236,52 @@ const nextSesion = sesion < 10 ? sesion + 1 : null;
               </div>
 
               <!-- Conceptos clave -->
-              <div class="bento-card mb-10">
-                <span class="chip-bento mb-3">📚 Vocabulario clave</span>
-                <h3 class="heading-huge mb-2 leading-tight">
-                  Las {enriquecida.conceptosClave.length} palabras que vas a entender hoy.
-                </h3>
-                <p class="text-sm md:text-base leading-relaxed mb-6" style="color: var(--fg-muted);">
-                  Domina estas ideas y todo lo demás cae solo. Léelas antes de abrir el PDF.
-                </p>
-                <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {enriquecida.conceptosClave.map((c, i) => (
-                    <li class="p-4 rounded-bento-sm border-2" style="border-color: var(--border);">
-                      <div class="flex items-baseline gap-2 mb-2">
-                        {c.emoji && <span class="text-2xl">{c.emoji}</span>}
-                        <h4 class="font-black text-base md:text-lg">{c.termino}</h4>
+              {(() => {
+                // Agrupa por categoría si los conceptos la tienen.
+                const conceptos = enriquecida.conceptosClave;
+                const categorias = Array.from(new Set(conceptos.map((c) => c.categoria).filter(Boolean)));
+                const tienenCategoria = categorias.length >= 2;
+                const grupos = tienenCategoria
+                  ? categorias.map((cat) => ({
+                      categoria: cat as string,
+                      items: conceptos.filter((c) => c.categoria === cat),
+                    }))
+                  : [{ categoria: '', items: conceptos }];
+                return (
+                  <div class="bento-card mb-10">
+                    <span class="chip-bento mb-3">📚 Vocabulario clave</span>
+                    <h3 class="heading-huge mb-2 leading-tight">
+                      Las {conceptos.length} palabras que vas a entender hoy.
+                    </h3>
+                    <p class="text-sm md:text-base leading-relaxed mb-6" style="color: var(--fg-muted);">
+                      Domina estas ideas y todo lo demás cae solo. Léelas antes de abrir el PDF.
+                    </p>
+                    {grupos.map((g) => (
+                      <div class={tienenCategoria ? 'mb-6 last:mb-0' : ''}>
+                        {g.categoria && (
+                          <h4 class="text-sm font-black uppercase tracking-widest mb-3 mt-2" style="color: var(--fg-muted);">
+                            {g.categoria}
+                          </h4>
+                        )}
+                        <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {g.items.map((c) => (
+                            <li class="p-4 rounded-bento-sm border-2" style="border-color: var(--border);">
+                              <div class="flex items-baseline gap-2 mb-2">
+                                {c.emoji && <span class="text-2xl">{c.emoji}</span>}
+                                <h4 class="font-black text-base md:text-lg">{c.termino}</h4>
+                              </div>
+                              <p class="text-sm leading-relaxed mb-2">{c.definicion}</p>
+                              <p class="text-xs leading-relaxed italic p-2 rounded-md" style="background: var(--bg); color: var(--fg-muted);">
+                                <strong style="color: var(--fg);">Ej.</strong> {c.ejemplo}
+                              </p>
+                            </li>
+                          ))}
+                        </ul>
                       </div>
-                      <p class="text-sm leading-relaxed mb-2">{c.definicion}</p>
-                      <p class="text-xs leading-relaxed italic p-2 rounded-md" style="background: var(--bg); color: var(--fg-muted);">
-                        <strong style="color: var(--fg);">Ej.</strong> {c.ejemplo}
-                      </p>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+                    ))}
+                  </div>
+                );
+              })()}
             </>
           )}
 

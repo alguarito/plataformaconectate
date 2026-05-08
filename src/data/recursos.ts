@@ -616,6 +616,7 @@ export const recursos: RecursoGuia[] = [
     "sesionGlobal": 6,
     "titulo": "Fórmulas compuestas: operadores, porcentajes y orden de cálculo",
     "pdfId": "1iFbLWVRyXsc9G98WBeFetkT5HZ2Y3KTO",
+    "pdfLocal": "/guias-mejoras/6-8-TIC.pdf",
     "guiaId": "6-8-TIC"
   },
   {
@@ -625,6 +626,7 @@ export const recursos: RecursoGuia[] = [
     "sesionGlobal": 7,
     "titulo": "Gráficos básicos: barras, líneas y circulares para interpretar datos",
     "pdfId": "1znUdSi5NktHAFCjbeRrs1dlXboHG-rBQ",
+    "pdfLocal": "/guias-mejoras/7-8-TIC.pdf",
     "guiaId": "7-8-TIC"
   },
   {
@@ -634,6 +636,7 @@ export const recursos: RecursoGuia[] = [
     "sesionGlobal": 8,
     "titulo": "Formato condicional y validación de datos — presentación profesional de información",
     "pdfId": "12KkXpkDRDh7HGfOBJpH7S9pbdsblxiMP",
+    "pdfLocal": "/guias-mejoras/8-8-TIC.pdf",
     "guiaId": "8-8-TIC"
   },
   {
@@ -643,6 +646,7 @@ export const recursos: RecursoGuia[] = [
     "sesionGlobal": 9,
     "titulo": "Mini estudio de datos del entorno: recolección, análisis y conclusión prudente",
     "pdfId": "1j-xSYi0VdhXsBs54gzZVZIxJqfv99u4r",
+    "pdfLocal": "/guias-mejoras/9-8-TIC.pdf",
     "guiaId": "9-8-TIC"
   },
   {
@@ -652,6 +656,7 @@ export const recursos: RecursoGuia[] = [
     "sesionGlobal": 10,
     "titulo": "Socialización del portafolio de análisis de datos con phronesis",
     "pdfId": "1pVGYrxV6xxPuCJEzSNPTxfZhimCgLj2j",
+    "pdfLocal": "/guias-mejoras/10-8-TIC.pdf",
     "guiaId": "10-8-TIC"
   },
   {

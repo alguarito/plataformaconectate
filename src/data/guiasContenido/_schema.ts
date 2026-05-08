@@ -18,6 +18,15 @@ export interface ConceptoClave {
   definicion: string;
   ejemplo: string;
   emoji?: string;
+  /**
+   * Etiqueta de agrupación opcional. Cuando los conceptos de una guía
+   * tienen categorías (ej: "preparar" + "entregar"), la página los
+   * renderiza separados con un sub-encabezado por grupo.
+   *
+   * Si TODOS los conceptos tienen la misma categoría, se ignora.
+   * Si NINGUNO tiene, se renderizan en una sola grilla (compatibilidad).
+   */
+  categoria?: string;
 }
 
 /* ─────── Pre-lectura: contexto antes de abrir el PDF ─────── */

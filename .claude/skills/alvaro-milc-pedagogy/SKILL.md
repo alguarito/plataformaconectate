@@ -114,7 +114,12 @@ Flag a guide as weak if it:
 - skips the ancestral-contemporary opening;
 - asks students to answer about tools, ethics, concepts, or procedures that were not introduced first;
 - treats Sistematización or Praxis as content-dump without the four computational thinking pillars;
-- closes with a generic "self-evaluation" instead of the five dimensions and the Triángulo.
+- closes with a generic "self-evaluation" instead of the five dimensions and the Triángulo;
+- **leaves blank `\respuesta{}` or `\vspace{}` without scaffolding** (frame
+  starter, mini-table, pre-drawn boxes, prompt list, worked example, or
+  info-band). Refer to `alvaro-milc-latex-editorial` "Anti-vacío" section.
+  Frame starter is the dominant technique (~80% of slots); tables only for
+  evident parallelism (5 dimensions, comparisons).
 
 ## Autonomous Learning Pattern
 

@@ -161,5 +161,53 @@ Prefer the repository's existing compiler flow. If none exists:
 - Save build artifacts outside source folders when possible.
 - After compile, inspect at least one short-title and one long-title sample.
 
-When reporting, include the files changed, the outputs regenerated, and any remaining visual risk.
+### Render-validation: compilar OK ≠ ver bien
+
+**Compilation success without warnings is NOT enough.** A guide can compile
+clean and still have huge white bands when forced `\newpage` separates
+content into nearly-empty pages. ALWAYS validate the rendered PDF
+visually before declaring done.
+
+Required render-validation pipeline:
+
+```bash
+# 1. Convert each page to PNG (80 dpi is enough)
+gs -q -dNOPAUSE -dBATCH -sDEVICE=png16m -r80 \
+   -sOutputFile=pages/p%02d.png file.pdf
+
+# 2. Detect whitespace bands per page
+python3 -c "
+from PIL import Image
+img = Image.open('pages/p03.png').convert('L')
+w, h = img.size
+pixels = img.load()
+rows = [sum(1 for x in range(w) if pixels[x,y]>240)/w for y in range(h)]
+# Find continuous bands where row >98.5% white and length >80px (~2.5cm)
+"
+```
+
+Threshold rules:
+- A band of **>80 pixels at 80dpi (~2.5cm) of >98.5% white** is suspicious.
+- A band **>5cm in the middle or top** of any page is a failure → fix it.
+- A band **at the page bottom (last 30%)** is acceptable up to ~5cm
+  (normal page letter margin).
+
+### Common causes of white bands
+
+1. **`\newpage` overuse**: every forced page break is a candidate for an
+   almost-empty page. Use `\newpage` ONLY for the cover. Let LaTeX flow
+   naturally; if a section begins on a tight page, use `\pagebreak[3]`
+   (suggestion) instead of `\newpage` (force).
+
+2. **Big drawbox + sigilbox grid undersized**: if the drawing area is
+   smaller than the remaining page space, the rest is white. Either
+   enlarge the cells or add a complementary block (cita, info-band,
+   firma, footer).
+
+3. **End of document with leftover space**: add a closing soft-box
+   (cita rotativa de un maestro del Triángulo) + firma del cierre
+   to fill the last page densely.
+
+When reporting, include the files changed, the outputs regenerated, the
+**per-page whitespace report**, and any remaining visual risk.
 

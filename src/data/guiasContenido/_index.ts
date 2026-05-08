@@ -6,7 +6,7 @@
  * lee este mapa y renderiza el contenido enriquecido si existe; si no,
  * cae al scaffolding genérico (compatibilidad total).
  *
- * Estado actual: 27 / 180 enriquecidas.
+ * Estado actual: 31 / 180 enriquecidas.
  */
 import type { ContenidoGuia } from './_schema';
 import { claveContenido } from './_schema';
@@ -36,6 +36,10 @@ import g8_3_2 from './8-3-2';
 import g8_3_3 from './8-3-3';
 import g8_3_4 from './8-3-4';
 import g8_3_5 from './8-3-5';
+import g8_3_6 from './8-3-6';
+import g8_3_7 from './8-3-7';
+import g8_3_8 from './8-3-8';
+import g8_3_9 from './8-3-9';
 import g8_3_10 from './8-3-10';
 import g10_2_1 from './10-2-1';
 
@@ -45,7 +49,7 @@ const TODAS: ContenidoGuia[] = [
   g8_2_1, g8_2_2, g8_2_3, g8_2_4, g8_2_5,
   g8_2_6, g8_2_7, g8_2_8, g8_2_9, g8_2_10,
   g8_3_1, g8_3_2, g8_3_3, g8_3_4, g8_3_5,
-  g8_3_10,
+  g8_3_6, g8_3_7, g8_3_8, g8_3_9, g8_3_10,
   g10_2_1,
 ];
 

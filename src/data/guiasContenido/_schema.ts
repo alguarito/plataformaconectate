@@ -113,6 +113,14 @@ export interface ContenidoGuia {
    */
   titulo?: string;
 
+  /**
+   * Si es true, oculta el visor de PDF y los botones de descarga/abrir en Drive.
+   * Se usa en sesiones meta (apertura/cosecha) cuyo PDF de Drive corresponde
+   * al título VIEJO y no debe mostrarse al estudiante. El contenido enriquecido
+   * es suficiente para el aula. Default: false.
+   */
+  ocultarPDF?: boolean;
+
   /** Resumen muy breve mostrado debajo del título (1 línea) */
   resumen: string;
 

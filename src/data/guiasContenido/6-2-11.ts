@@ -14,6 +14,7 @@ const contenido: ContenidoGuia = {
   sesion: 11,
   titulo:
     'Cosecha del periodo 2 · Diagnóstico de un equipo + integración cruzada P1+P2 + Escuta digitalizado',
+  ocultarPDF: true,
   resumen:
     'Habitamos la sala digital con dignidad — capítulo 2 cerrado: ahora sé qué hay dentro y cómo cuidarlo. Hoy diagnosticas un equipo, conectas lo aprendido entre P1 y P2 y entregas el segundo hito del Escuta: tu entrevista digitalizada y respaldada.',
   duracionMin: 90,

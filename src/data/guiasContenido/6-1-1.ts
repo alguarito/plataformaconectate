@@ -15,6 +15,7 @@ const contenido: ContenidoGuia = {
   sesion: 1,
   titulo:
     'Bienvenida MILC · Cómo aprenderemos este año en Tecnología — la sala digital, nuestro pacto y mi proyecto Escuta',
+  ocultarPDF: true,
   resumen:
     'Habitamos la sala digital con dignidad — capítulo 1: llegar y reconocer. Hoy entiendes cómo aprenderemos este año: el método MILC, la plataforma ConectaTE, tu proyecto Escuta y el pacto que firmamos juntos.',
   duracionMin: 90,

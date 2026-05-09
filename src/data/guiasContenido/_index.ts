@@ -6,11 +6,17 @@
  * lee este mapa y renderiza el contenido enriquecido si existe; si no,
  * cae al scaffolding genérico (compatibilidad total).
  *
- * Estado actual: 31 / 180 enriquecidas.
+ * Estado actual: 37 / 198 enriquecidas (incluye 6 S1/S11 patrón MILC para grado 6).
  */
 import type { ContenidoGuia } from './_schema';
 import { claveContenido } from './_schema';
 
+import g6_1_1 from './6-1-1';
+import g6_1_11 from './6-1-11';
+import g6_2_1 from './6-2-1';
+import g6_2_11 from './6-2-11';
+import g6_3_1 from './6-3-1';
+import g6_3_11 from './6-3-11';
 import g8_1_1 from './8-1-1';
 import g8_1_2 from './8-1-2';
 import g8_1_3 from './8-1-3';
@@ -45,6 +51,9 @@ import g8_3_11 from './8-3-11';
 import g10_2_1 from './10-2-1';
 
 const TODAS: ContenidoGuia[] = [
+  g6_1_1, g6_1_11,
+  g6_2_1, g6_2_11,
+  g6_3_1, g6_3_11,
   g8_1_1, g8_1_2, g8_1_3, g8_1_4, g8_1_5,
   g8_1_6, g8_1_7, g8_1_8, g8_1_9, g8_1_10,
   g8_2_1, g8_2_2, g8_2_3, g8_2_4, g8_2_5,

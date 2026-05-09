@@ -30,7 +30,7 @@ export const grados: Grado[] = [
         descripcion:
           'Correo institucional, netiqueta, historia de los medios y huella digital.',
         bgClass: 'bg-bento-blue',
-        totalGuias: 10,
+        totalGuias: 11,
       },
       {
         numero: 2,
@@ -38,7 +38,7 @@ export const grados: Grado[] = [
         descripcion:
           'Arquitectura del computador, periféricos, sistema operativo y mantenimiento.',
         bgClass: 'bg-bento-cyan',
-        totalGuias: 10,
+        totalGuias: 11,
       },
       {
         numero: 3,
@@ -46,7 +46,7 @@ export const grados: Grado[] = [
         descripcion:
           'Word/Docs, búsqueda crítica de información y seguridad básica en la red.',
         bgClass: 'bg-bento-purple',
-        totalGuias: 10,
+        totalGuias: 11,
       },
     ],
   },
@@ -114,7 +114,7 @@ export const grados: Grado[] = [
         descripcion:
           'Diseño visual, edición de imagen, audio y video para comunicar ideas.',
         bgClass: 'bg-bento-pink',
-        totalGuias: 10,
+        totalGuias: 11,
       },
     ],
   },

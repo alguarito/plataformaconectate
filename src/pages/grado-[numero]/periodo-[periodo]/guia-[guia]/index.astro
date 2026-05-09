@@ -19,10 +19,10 @@ export function getStaticPaths() {
   const paths: any[] = [];
   for (const g of grados) {
     for (const p of g.periodos) {
-      // Grado 8 · Periodo 3 incluye una sesión 11 extra: examen integrador
-      // interactivo (50 preguntas tipo quiz que cierran el grado).
-      const maxSesion = g.numero === 8 && p.numero === 3 ? 11 : 10;
-      for (let s = 1; s <= maxSesion; s++) {
+      // El total de sesiones por periodo lo dicta src/data/grados.ts.
+      // Grado 6 (los 3 periodos) y Grado 8 · Periodo 3 ya están en 11
+      // (S1 = apertura MILC, S11 = cosecha / sustentación / examen).
+      for (let s = 1; s <= p.totalGuias; s++) {
         paths.push({
           params: {
             numero: String(g.numero),
@@ -42,27 +42,33 @@ const base = import.meta.env.BASE_URL;
 
 // Recurso real desde Drive (titulo + pdfId)
 const recurso = getRecurso(grado.numero, periodo.numero, sesion);
-// Sesión 11 de G8/P3 es el cierre interactivo: no tiene PDF en Drive,
-// pero la guía enriquecida le da título más abajo.
+
+// Contenido enriquecido (si existe para esta guía)
+const enriquecida = getContenidoGuia(grado.numero, periodo.numero, sesion);
+
+// Sesiones meta sin PDF en Drive: G8·P3·S11 (examen integrador) y las
+// S1/S11 patrón MILC (apertura/cosecha) que aún no tienen recurso registrado.
 const esCierreG8P3 = grado.numero === 8 && periodo.numero === 3 && sesion === 11;
+const esApertura = sesion === 1 && enriquecida?.subtema?.startsWith('Apertura');
+const esCosecha = sesion === periodo.totalGuias && enriquecida?.subtema?.startsWith('Cosecha');
 const tituloGuia = recurso?.titulo
   ?? (esCierreG8P3
     ? 'Cierre de grado · 50 retos integradores'
-    : `Guía ${sesion}`);
+    : esApertura
+      ? `Apertura MILC · ${periodo.titulo}`
+      : esCosecha
+        ? `Cosecha MILC · ${periodo.titulo}`
+        : `Guía ${sesion}`);
 const pdfId = recurso?.pdfId ?? '';
 const previewUrl = recurso ? previewUrlFor(recurso, base) : '';
 const downloadUrl = recurso ? downloadUrlFor(recurso, base) : '';
 const viewUrl = recurso ? viewUrlFor(recurso, base) : '';
 const esMejorada = isMejorada(recurso);
 
-// Contenido enriquecido (si existe para esta guía)
-const enriquecida = getContenidoGuia(grado.numero, periodo.numero, sesion);
-
-// Navegación previa/siguiente. El flujo lineal cubre 10 sesiones; la
-// sesión 11 de G8/P3 es accesible desde la card "Examen Final" en la
-// página del periodo, no desde el flujo prev/next.
+// Navegación previa/siguiente. La S11 (cosecha o examen) se accede también
+// desde la card del periodo; pero permitimos prev/next lineal hasta totalGuias.
 const prevSesion = sesion > 1 ? sesion - 1 : null;
-const nextSesion = sesion < 10 ? sesion + 1 : null;
+const nextSesion = sesion < periodo.totalGuias ? sesion + 1 : null;
 ---
 
 <BaseLayout

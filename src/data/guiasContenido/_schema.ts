@@ -106,6 +106,13 @@ export interface ContenidoGuia {
   periodo: number;
   sesion: number;
 
+  /**
+   * Título a mostrar en hero, breadcrumb y <title>. Cuando está presente,
+   * tiene prioridad sobre el título de `recursos.ts`. Se usa para sesiones
+   * meta (apertura MILC, cosecha) o cuando el título del recurso quedó obsoleto.
+   */
+  titulo?: string;
+
   /** Resumen muy breve mostrado debajo del título (1 línea) */
   resumen: string;
 

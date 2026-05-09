@@ -14,6 +14,7 @@ const contenido: ContenidoGuia = {
   sesion: 1,
   titulo:
     'Re-encuentro MILC · Lo que cosechamos en P1, lo que viene con el hardware y mi proyecto Escuta sigue creciendo',
+  ocultarPDF: true,
   resumen:
     'Habitamos la sala digital con dignidad — capítulo 2: equiparme y cuidar. Te re-encuentras con el método MILC, abrimos un equipo para que veas qué hay dentro y refinamos tu proyecto Escuta para la fase de digitalización.',
   duracionMin: 90,

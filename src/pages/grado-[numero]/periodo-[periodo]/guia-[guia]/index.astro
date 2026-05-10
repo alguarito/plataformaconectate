@@ -400,12 +400,65 @@ const nextSesion = sesion < periodo.totalGuias ? sesion + 1 : null;
                     // Umbral de aprobación para desbloquear el siguiente bloque (60%).
                     const UMBRAL = 0.6;
 
+                    function desbloquearBoton(step, idx, mensaje) {
+                      const btn = step.querySelector('[data-lab-continuar="' + idx + '"]');
+                      const finalAviso = step.querySelector('[data-lab-final-aviso]');
+                      let aviso = step.querySelector('[data-lab-aprobacion]');
+                      if (!aviso) {
+                        aviso = document.createElement('div');
+                        aviso.setAttribute('data-lab-aprobacion', '');
+                        aviso.className = 'mt-3 p-3 rounded-bento-sm text-sm font-semibold text-center';
+                        const anchor = step.querySelector('[data-quiz-resumen]') || step.querySelector('[data-lab-viz]');
+                        anchor?.parentNode?.insertBefore(aviso, anchor.nextSibling);
+                      }
+                      aviso.style.background = 'var(--bento-lime, #C8FF6B)';
+                      aviso.style.color = '#000';
+                      aviso.textContent = mensaje;
+                      if (btn) {
+                        btn.classList.remove('hidden');
+                        btn.disabled = false;
+                      }
+                      if (finalAviso) finalAviso.classList.remove('hidden');
+                    }
+
                     function watchStep(idx) {
                       const step = stepper.querySelector('[data-lab-step="' + idx + '"]');
                       if (!step) return;
                       const resumen = step.querySelector('[data-quiz-resumen]');
                       const btn = step.querySelector('[data-lab-continuar="' + idx + '"]');
                       const finalAviso = step.querySelector('[data-lab-final-aviso]');
+
+                      // Engancha el click del botón "Continuar al siguiente bloque"
+                      // independientemente del tipo de lab.
+                      if (btn && !btn.dataset.bound) {
+                        btn.dataset.bound = '1';
+                        btn.addEventListener('click', () => {
+                          const next = stepper.querySelector('[data-lab-step="' + (idx + 1) + '"]');
+                          if (next) {
+                            next.classList.remove('hidden');
+                            next.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            watchStep(idx + 1);
+                          }
+                        });
+                      }
+
+                      // Lab tipo visualización: desbloquea cuando llega al último paso.
+                      const viz = step.querySelector('[data-lab-viz]');
+                      if (viz) {
+                        if (viz.getAttribute('data-viz-completado') === 'true') {
+                          desbloquearBoton(step, idx, '✅ Visualización completada. Puedes continuar al siguiente bloque.');
+                        } else {
+                          const obsViz = new MutationObserver(() => {
+                            if (viz.getAttribute('data-viz-completado') === 'true') {
+                              desbloquearBoton(step, idx, '✅ Visualización completada. Puedes continuar al siguiente bloque.');
+                              obsViz.disconnect();
+                            }
+                          });
+                          obsViz.observe(viz, { attributes: true, attributeFilter: ['data-viz-completado'] });
+                        }
+                      }
+
+                      // Lab tipo quiz: lógica de aprobación con umbral.
                       if (!resumen) return;
 
                       const evaluarYActualizar = () => {
@@ -462,17 +515,7 @@ const nextSesion = sesion < periodo.totalGuias ? sesion + 1 : null;
                       obs.observe(resumen, { attributes: true, attributeFilter: ['class'] });
                       // También observar cambios internos del resumen (aciertos)
                       obs.observe(resumen, { childList: true, subtree: true, characterData: true });
-
-                      if (btn) {
-                        btn.addEventListener('click', () => {
-                          const next = stepper.querySelector('[data-lab-step="' + (idx + 1) + '"]');
-                          if (next) {
-                            next.classList.remove('hidden');
-                            next.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                            watchStep(idx + 1);
-                          }
-                        });
-                      }
+                      // El click handler ya quedó montado al inicio de watchStep — no duplicar.
                     }
 
                     watchStep(0);

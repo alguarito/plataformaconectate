@@ -15,6 +15,7 @@ const contenido: ContenidoGuia = {
   titulo:
     'Cosecha del año · Sustentación pública del Escuta + auto-check final + carta al estudiante de 6° del próximo año',
   ocultarPDF: true,
+  sinStepper: true,
   resumen:
     'Habitamos la sala digital con dignidad — capítulo final: lo aprendido se entrega. Hoy sustentas tu Escuta a tu curso (con tu adulto mayor invitado), miras tu gráfica longitudinal completa de las 6 mediciones, escribes tu triángulo propio y le dejas una carta al estudiante de 6° del próximo año.',
   duracionMin: 90,

@@ -121,6 +121,15 @@ export interface ContenidoGuia {
    */
   ocultarPDF?: boolean;
 
+  /**
+   * Si es true, todos los laboratorios se muestran a la vez (sin stepper de
+   * desbloqueo). Útil en sesiones meta donde el flujo libre es más sano que
+   * forzar al estudiante a "aprobar" un lab para ver el siguiente.
+   * El stepper se mantiene en evaluaciones (ej: examen integrador G8·P3·S11).
+   * Default: false (stepper ON cuando hay >=2 labs).
+   */
+  sinStepper?: boolean;
+
   /** Resumen muy breve mostrado debajo del título (1 línea) */
   resumen: string;
 

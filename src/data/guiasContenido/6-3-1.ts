@@ -15,6 +15,7 @@ const contenido: ContenidoGuia = {
   titulo:
     'Aceleración MILC · El año que se cierra: Word, Internet, mi sustentación del Escuta y mi carta a 6° del próximo año',
   ocultarPDF: true,
+  sinStepper: true,
   resumen:
     'Habitamos la sala digital con dignidad — capítulo 3: comunicar y sustentar. Hoy un compañero explica MILC al curso (embajador), revisas tu trayectoria con auto-check #5 y recibes el brief final del proyecto Escuta para sustentarlo en P3·S11.',
   duracionMin: 90,

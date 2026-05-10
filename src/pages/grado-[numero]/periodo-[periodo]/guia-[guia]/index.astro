@@ -355,17 +355,18 @@ const nextSesion = sesion < periodo.totalGuias ? sesion + 1 : null;
                    un botón "Continuar al siguiente bloque". -->
               <div
                 class="space-y-6 mb-10"
-                data-labs-stepper={enriquecida.laboratorios.length > 1 ? 'on' : null}
+                data-labs-stepper={enriquecida.laboratorios.length > 1 && !enriquecida.sinStepper ? 'on' : null}
                 data-labs-total={enriquecida.laboratorios.length}
               >
                 {enriquecida.laboratorios.map((lab, idx) => {
                   const esUltimo = idx === enriquecida.laboratorios.length - 1;
                   const totalLabs = enriquecida.laboratorios.length;
+                  const stepperOn = totalLabs > 1 && !enriquecida.sinStepper;
                   return (
-                    <div data-lab-step={idx} class={totalLabs > 1 && idx > 0 ? 'hidden' : ''}>
+                    <div data-lab-step={idx} class={stepperOn && idx > 0 ? 'hidden' : ''}>
                       {lab.tipo === 'quiz' && <LabQuiz data={lab} id={`lab-${idx}-quiz`} />}
                       {lab.tipo === 'visualizacion' && <LabVisualizacion data={lab} id={`lab-${idx}-viz`} />}
-                      {totalLabs > 1 && !esUltimo && (
+                      {stepperOn && !esUltimo && (
                         <button
                           type="button"
                           data-lab-continuar={idx}
@@ -379,7 +380,7 @@ const nextSesion = sesion < periodo.totalGuias ? sesion + 1 : null;
                           </svg>
                         </button>
                       )}
-                      {totalLabs > 1 && esUltimo && (
+                      {stepperOn && esUltimo && (
                         <div data-lab-final-aviso class="hidden mt-4 text-center text-sm font-semibold" style="color: var(--fg-muted);">
                           🎯 Has completado los {totalLabs} bloques. Lee la reflexión final más abajo.
                         </div>
@@ -389,7 +390,7 @@ const nextSesion = sesion < periodo.totalGuias ? sesion + 1 : null;
                 })}
               </div>
 
-              {enriquecida.laboratorios.length > 1 && (
+              {enriquecida.laboratorios.length > 1 && !enriquecida.sinStepper && (
                 <script>
                   {`
                   (() => {

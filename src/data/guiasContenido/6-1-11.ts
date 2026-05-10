@@ -16,6 +16,7 @@ const contenido: ContenidoGuia = {
   titulo:
     'Cosecha del periodo 1 · Vitrina del Escuta + auto-check MILC + cierre del primer ciclo',
   ocultarPDF: true,
+  sinStepper: true,
   resumen:
     'Habitamos la sala digital con dignidad — capítulo 1 cerrado: lo que escuchamos también nos enseñó. Hoy presentas tu Escuta, comparas tu auto-check con la línea base y entregas el primer hito del proyecto del año.',
   duracionMin: 90,

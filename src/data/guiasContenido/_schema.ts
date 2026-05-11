@@ -99,6 +99,108 @@ export interface PostLectura {
   cierre: string;
 }
 
+/* ─────── Saber ancestral (apertura obligatoria — contrato MILC v3) ─────── */
+
+export interface SaberAncestral {
+  /** El saber concreto: tejido, oficio, minga, ritual, observación, etc. */
+  saber: string;
+  /** De dónde viene: Wayuu, Quimbaya, campesino, afro-pacífico, etc. */
+  fuente?: string;
+  /** Pregunta-puente que conecta el saber ancestral con el tema técnico. */
+  preguntaPuente: string;
+}
+
+/* ─────── Mapa de ruta (estaciones visibles al inicio) ─────── */
+
+export type IconoBloque = '🌱' | '📖' | '✏️' | '👁' | '✅' | '🔎' | '💭';
+
+export interface EstacionMapa {
+  numero: number;
+  /** Icono(s) del tipo de bloque dominante en la estación */
+  iconos: IconoBloque[];
+  /** Nombre corto de la estación */
+  titulo: string;
+  /** Tiempo estimado en minutos */
+  duracionMin: number;
+}
+
+/* ─────── Bloque ACTIVIDAD (anatomía obligatoria de 6 partes) ─────── */
+
+export type VerboCognitivo =
+  | 'IDENTIFICA'
+  | 'EXPLICA'
+  | 'APLICA'
+  | 'ANALIZA'
+  | 'EVALÚA'
+  | 'CREA';
+
+export interface CuadernoFormato {
+  /** Cómo se titula el ejercicio en el cuaderno */
+  titulo: string;
+  /** Formato del producto: "párrafo de 5 renglones", "tabla 2x6", "lista", "dibujo" */
+  formato: string;
+  /** Cantidad concreta: "6 filas", "8 a 10 renglones", "3 viñetas" */
+  extension: string;
+}
+
+export interface Actividad {
+  /** Número correlativo de la actividad dentro de la guía (1, 2, 3...) */
+  numero: number;
+  /** Verbo cognitivo (uno de los 6 permitidos) */
+  verbo: VerboCognitivo;
+  /** Título imperativo en una línea: "Identifica los componentes del computador" */
+  titulo: string;
+  /** Tiempo estimado en minutos */
+  tiempoMin: number;
+  /** Modalidad: individual, parejas, equipo de N */
+  modalidad: 'individual' | 'parejas' | 'equipo';
+  /** Si modalidad = equipo, tamaño del equipo */
+  equipoTamano?: number;
+  /** Pasos accionables que el estudiante debe ejecutar (3-5 pasos) */
+  pasos: string[];
+  /** Cómo organizar el producto en el cuaderno */
+  cuaderno: CuadernoFormato;
+  /** Criterios observables para saber cuándo terminó bien */
+  criterios: string[];
+}
+
+/* ─────── Triángulo de pensamiento (cierre filosófico — contrato MILC v3) ─────── */
+
+export interface VozTriangulo {
+  /** Nombre del autor o tradición (Dussel, Marco Aurelio, Floridi, etc.) */
+  autor: string;
+  /** Cita textual breve */
+  cita: string;
+  /** Pregunta-espejo que el estudiante se hace a partir de la cita */
+  preguntaEspejo: string;
+  /** Etiqueta de la lente: "lente del nosotros", "lente del cuidado interior", "lente de la infoesfera" */
+  lente: string;
+}
+
+export interface Triangulo {
+  /** Voz 1: Dussel — color institucional vino #5A0038 */
+  dussel: VozTriangulo;
+  /** Voz 2: tradición estoica (Marco Aurelio, Epicteto o Séneca) — color mostaza #E5B400 */
+  estoico: VozTriangulo;
+  /** Voz 3: Floridi — color turquesa #0093A5 */
+  floridi: VozTriangulo;
+}
+
+/* ─────── Cinco dimensiones de evaluación liberadora ─────── */
+
+export interface CincoDimensiones {
+  /** Lo que cambió en mí — pensamiento, decisión, capacidad */
+  personal: string;
+  /** Emociones que surgieron y cómo se regularon */
+  emocional: string;
+  /** Ciudadanía digital, ética, vida en común */
+  ciudadana: string;
+  /** Cartago, Valle, Colombia, contexto local */
+  local: string;
+  /** Vínculo con quienes vienen antes y después */
+  intergeneracional: string;
+}
+
 /* ─────── Estructura completa ─────── */
 
 export interface ContenidoGuia {
@@ -144,6 +246,17 @@ export interface ContenidoGuia {
   conceptosClave: ConceptoClave[];
   laboratorios: Laboratorio[];
   postLectura: PostLectura;
+
+  /**
+   * Contrato MILC v3 — campos opcionales que activan el bloque editorial
+   * acordado con Álvaro (ver CLAUDE.md y skill alvaro-milc-pedagogy).
+   * Si están presentes, la página de guía los renderiza en su posición fija.
+   */
+  saberAncestral?: SaberAncestral;
+  mapaRuta?: EstacionMapa[];
+  actividades?: Actividad[];
+  triangulo?: Triangulo;
+  cincoDimensiones?: CincoDimensiones;
 }
 
 /* ─────── Helper de lookup ─────── */

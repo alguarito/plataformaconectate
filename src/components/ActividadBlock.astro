@@ -1,0 +1,102 @@
+---
+import type { Actividad } from '../data/guiasContenido/_schema';
+
+interface Props {
+  data: Actividad;
+}
+
+const { data } = Astro.props;
+
+const modalidadLabel =
+  data.modalidad === 'individual'
+    ? 'individual'
+    : data.modalidad === 'parejas'
+      ? 'parejas'
+      : `equipo${data.equipoTamano ? ` de ${data.equipoTamano}` : ''}`;
+
+const modalidadIcono =
+  data.modalidad === 'individual' ? '🧑' : data.modalidad === 'parejas' ? '👯' : '🤝';
+---
+
+<section
+  class="bento-card mb-6 border-l-8"
+  style="border-left-color: #FF6B35;"
+  aria-labelledby={`actividad-${data.numero}-titulo`}
+>
+  <!-- Cabecera: icono + número + verbo -->
+  <div class="flex items-center gap-3 mb-2 flex-wrap">
+    <span class="text-3xl leading-none" aria-hidden="true">✏️</span>
+    <span class="text-xs font-black uppercase tracking-widest" style="color: var(--fg-muted);">
+      Actividad {data.numero}
+    </span>
+    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-bento-orange text-white">
+      {data.verbo}
+    </span>
+  </div>
+
+  <!-- Título -->
+  <h3
+    id={`actividad-${data.numero}-titulo`}
+    class="text-xl md:text-2xl font-black tracking-tight leading-tight mb-3"
+  >
+    {data.titulo}
+  </h3>
+
+  <!-- Meta: tiempo + modalidad -->
+  <div class="flex flex-wrap gap-2 mb-5">
+    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-bento-blue text-white">
+      ⏱ {data.tiempoMin} min
+    </span>
+    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold" style="background: var(--bg); border: 1px solid var(--border); color: var(--fg);">
+      {modalidadIcono} {modalidadLabel}
+    </span>
+  </div>
+
+  <!-- Qué vas a hacer -->
+  <div class="mb-5">
+    <span class="text-xs font-bold uppercase tracking-widest mb-2 inline-block" style="color: var(--fg-muted);">
+      📋 Qué vas a hacer
+    </span>
+    <ol class="space-y-1.5 list-decimal list-inside text-sm md:text-base leading-relaxed mt-1">
+      {data.pasos.map((p) => (
+        <li>{p}</li>
+      ))}
+    </ol>
+  </div>
+
+  <!-- En tu cuaderno escribe -->
+  <div class="mb-5 p-4 rounded-bento-sm" style="background: var(--bg);">
+    <span class="text-xs font-bold uppercase tracking-widest mb-2 inline-block" style="color: var(--fg-muted);">
+      📓 En tu cuaderno escribe
+    </span>
+    <dl class="text-sm md:text-base leading-relaxed mt-1 space-y-1">
+      <div class="flex gap-2">
+        <dt class="font-bold shrink-0">Título:</dt>
+        <dd>«Actividad {data.numero} — {data.cuaderno.titulo}»</dd>
+      </div>
+      <div class="flex gap-2">
+        <dt class="font-bold shrink-0">Formato:</dt>
+        <dd>{data.cuaderno.formato}</dd>
+      </div>
+      <div class="flex gap-2">
+        <dt class="font-bold shrink-0">Extensión:</dt>
+        <dd>{data.cuaderno.extension}</dd>
+      </div>
+    </dl>
+  </div>
+
+  <!-- Sabes que terminaste cuando -->
+  <div>
+    <span class="text-xs font-bold uppercase tracking-widest mb-2 inline-block" style="color: var(--fg-muted);">
+      ✅ Sabes que terminaste cuando
+    </span>
+    <ul class="space-y-1 text-sm md:text-base leading-relaxed mt-1">
+      {data.criterios.map((c) => (
+        <li class="flex gap-2">
+          <span class="text-bento-lime font-black shrink-0" aria-hidden="true">•</span>
+          <span>{c}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

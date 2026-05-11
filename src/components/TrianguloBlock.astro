@@ -1,0 +1,70 @@
+---
+import type { Triangulo, VozTriangulo } from '../data/guiasContenido/_schema';
+
+interface Props {
+  data: Triangulo;
+}
+
+const { data } = Astro.props;
+
+// Colores institucionales del Triángulo (definidos en alvaro-milc-pedagogy)
+const COLORES = {
+  dussel:   { bg: '#5A0038', fg: '#FFFFFF', etiqueta: 'milcVino' },
+  estoico:  { bg: '#E5B400', fg: '#1A1A1A', etiqueta: 'milcMostaza' },
+  floridi:  { bg: '#0093A5', fg: '#FFFFFF', etiqueta: 'milcTurquesa' },
+} as const;
+
+type VozKey = keyof typeof COLORES;
+const voces: Array<{ key: VozKey; voz: VozTriangulo }> = [
+  { key: 'dussel', voz: data.dussel },
+  { key: 'estoico', voz: data.estoico },
+  { key: 'floridi', voz: data.floridi },
+];
+---
+
+<section class="mb-10" aria-labelledby="triangulo-titulo">
+  <div class="text-center mb-6">
+    <span class="chip-bento mb-3">💭 Triángulo de pensamiento</span>
+    <h2 id="triangulo-titulo" class="heading-huge leading-tight mt-2">
+      Tres voces para cerrar.
+    </h2>
+    <p class="text-sm md:text-base leading-relaxed max-w-2xl mx-auto mt-3" style="color: var(--fg-muted);">
+      No es decoración: son tres lentes que te acompañan toda la secundaria.
+      Léelas con calma — al final, responde la pregunta-espejo en tu cuaderno.
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+    {voces.map(({ key, voz }) => {
+      const c = COLORES[key];
+      return (
+        <article
+          class="rounded-bento-lg p-6 md:p-7 flex flex-col"
+          style={`background: ${c.bg}; color: ${c.fg};`}
+        >
+          <header class="mb-4">
+            <span class="text-[10px] font-black uppercase tracking-widest opacity-80">
+              {voz.lente}
+            </span>
+            <h3 class="text-xl md:text-2xl font-black tracking-tight mt-1 leading-tight">
+              {voz.autor}
+            </h3>
+          </header>
+
+          <blockquote class="text-sm md:text-base leading-relaxed italic mb-5 border-l-2 pl-3" style={`border-color: ${c.fg}40;`}>
+            "{voz.cita}"
+          </blockquote>
+
+          <div class="mt-auto pt-4 border-t" style={`border-color: ${c.fg}25;`}>
+            <span class="text-[10px] font-black uppercase tracking-widest opacity-80">
+              Pregunta-espejo
+            </span>
+            <p class="font-bold text-sm md:text-base leading-snug mt-1">
+              {voz.preguntaEspejo}
+            </p>
+          </div>
+        </article>
+      );
+    })}
+  </div>
+</section>

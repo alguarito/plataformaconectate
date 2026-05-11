@@ -6,6 +6,12 @@ import ProgresoCard from '../components/ProgresoCard.astro';
 import { grados } from '../data/grados';
 
 const base = import.meta.env.BASE_URL;
+
+const gradosConTotales = grados.map((g) => ({
+  ...g,
+  totalGuias: g.periodos.reduce((sum, p) => sum + p.totalGuias, 0),
+  totalPeriodos: g.periodos.length,
+}));
 ---
 
 <BaseLayout imagen="/og/home.png">
@@ -43,63 +49,21 @@ const base = import.meta.env.BASE_URL;
         </button>
       </div>
 
-      <!-- Grid Bento asimétrico real -->
+      <!-- Grid Bento asimétrico: 6° destaca como LARGE, el resto normal -->
       <div class="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6 auto-rows-min">
-        <!-- Grado 6 - LARGE (8 cols, 2 rows) -->
-        <GradoCard
-          numero={grados[0].numero}
-          titulo={grados[0].titulo}
-          descripcion={grados[0].descripcion}
-          bgClass={grados[0].bgClass}
-          icono={grados[0].icono}
-          href={`${base}/grado-${grados[0].numero}`}
-          size="large"
-        />
-        <!-- Grado 7 - normal -->
-        <GradoCard
-          numero={grados[1].numero}
-          titulo={grados[1].titulo}
-          descripcion={grados[1].descripcion}
-          bgClass={grados[1].bgClass}
-          icono={grados[1].icono}
-          href={`${base}/grado-${grados[1].numero}`}
-        />
-        <!-- Grado 8 - normal -->
-        <GradoCard
-          numero={grados[2].numero}
-          titulo={grados[2].titulo}
-          descripcion={grados[2].descripcion}
-          bgClass={grados[2].bgClass}
-          icono={grados[2].icono}
-          href={`${base}/grado-${grados[2].numero}`}
-        />
-        <!-- Grado 9 - normal -->
-        <GradoCard
-          numero={grados[3].numero}
-          titulo={grados[3].titulo}
-          descripcion={grados[3].descripcion}
-          bgClass={grados[3].bgClass}
-          icono={grados[3].icono}
-          href={`${base}/grado-${grados[3].numero}`}
-        />
-        <!-- Grado 10 - normal -->
-        <GradoCard
-          numero={grados[4].numero}
-          titulo={grados[4].titulo}
-          descripcion={grados[4].descripcion}
-          bgClass={grados[4].bgClass}
-          icono={grados[4].icono}
-          href={`${base}/grado-${grados[4].numero}`}
-        />
-        <!-- Grado 11 - normal -->
-        <GradoCard
-          numero={grados[5].numero}
-          titulo={grados[5].titulo}
-          descripcion={grados[5].descripcion}
-          bgClass={grados[5].bgClass}
-          icono={grados[5].icono}
-          href={`${base}/grado-${grados[5].numero}`}
-        />
+        {gradosConTotales.map((g, i) => (
+          <GradoCard
+            numero={g.numero}
+            titulo={g.titulo}
+            descripcion={g.descripcion}
+            bgClass={g.bgClass}
+            icono={g.icono}
+            href={`${base}/grado-${g.numero}`}
+            size={i === 0 ? 'large' : 'normal'}
+            totalGuias={g.totalGuias}
+            totalPeriodos={g.totalPeriodos}
+          />
+        ))}
       </div>
     </div>
   </section>

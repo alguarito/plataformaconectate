@@ -286,3 +286,241 @@ When responding after a pedagogical audit or rewrite, include:
 - what was improved in concepts, practice, product, and evaluation;
 - whether the fix belongs in source JSON, generator, TEX, DOCX, or only the current guide;
 - remaining risks or manual review points.
+
+---
+
+# Contrato editorial de claridad (Plataforma Conéctate)
+
+Esta sección codifica las decisiones editoriales acordadas con Álvaro para resolver el problema observado en pruebas con estudiantes: **se pierden durante el desarrollo de la guía**. Es de obligatorio cumplimiento al generar guías para la plataforma (Astro/HTML interactivo) o documentos LaTeX/PDF derivados. CLAUDE.md trae la versión corta; esta sección trae la versión con ejemplos.
+
+## Estructura visible: 10 secciones en orden fijo
+
+Toda guía sigue exactamente esta secuencia:
+
+1. **🌱 Estación 1 · Saber ancestral** — apertura con anclaje a saberes locales.
+2. **🗺 Tu ruta hoy** — mapa de la guía con 4-6 estaciones nombradas, cada una con tiempo estimado.
+3. **Propósito de aprendizaje** — 3-5 desempeños Bloom/SOLO + producto final esperado.
+4. **Marco conceptual** — desarrollo teórico, glosario, ejemplos contextualizados.
+5. **Secuencia de actividades** — escalonada Bloom; alternancia leer/hacer (regla 200 palabras).
+6. **Componente práctico tecnológico** — herramienta concreta, paso a paso.
+7. **Evaluación** — formativa + sumativa con rúbrica + ítem ICFES en cierre de periodo.
+8. **💭 Triángulo de pensamiento** — Dussel, Estoicismo, Floridi (ya definido arriba).
+9. **Evaluación liberadora — 5 dimensiones** (ya definido arriba).
+10. **Pie institucional** — datos de I.E. Sor María Juliana y autoría.
+
+## Mapa de ruta — formato visible
+
+Después del saber ancestral, antes del propósito, siempre va un bloque visible "Tu ruta hoy":
+
+```
+🗺 Tu ruta hoy
+▸ Estación 1 · 🌱 Saber ancestral (5 min)
+▸ Estación 2 · 📖 ¿Qué es un algoritmo? (15 min)
+▸ Estación 3 · ✏️ Diseña tu primer algoritmo (25 min)
+▸ Estación 4 · 🔎 Pruébalo en Scratch (20 min)
+▸ Estación 5 · 💭 Reflexión y cierre (10 min)
+Total estimado: 75 minutos
+```
+
+El estudiante entra sabiendo el viaje completo. **Sin mapa de ruta, la guía no sale.**
+
+## Iconografía de bloques (vocabulario visual cerrado)
+
+Solo estos siete íconos. Solo este significado. **Está prohibido inventar bloques nuevos.**
+
+| Icono | Bloque | Significado | Cuaderno |
+|---|---|---|---|
+| 🌱 | **SABER ANCESTRAL** | Apertura + pregunta-puente | Sí, apartado propio |
+| 📖 | **LEE** | Contenido para comprender | No |
+| ✏️ | **ACTIVIDAD** | Produce escritura/producto | **Sí, vía única** |
+| 👁 | **OBSERVA** | Atención dirigida (imagen, video) | No |
+| ✅ | **VERIFICA** | Mini-quiz mental rápido | No |
+| 🔎 | **EXPLORA** | Acción en el computador | No |
+| 💭 | **REFLEXIONA** | Metacognición / cierre filosófico | Sí, apartado propio |
+
+## Anatomía obligatoria del bloque ACTIVIDAD
+
+Cada bloque ACTIVIDAD tiene **exactamente** 6 partes en este orden:
+
+```
+✏️ ACTIVIDAD [N] · [VERBO COGNITIVO]
+[Título imperativo en una línea]
+⏱ [tiempo] · 🤝 [individual / parejas / equipo de N]
+
+📋 Qué vas a hacer
+1. [Paso accionable]
+2. [Paso accionable]
+3. [Paso accionable]
+
+📓 En tu cuaderno escribe:
+  Título: «Actividad [N] — [título]»
+  Formato: [párrafo de X renglones / tabla N×N / lista numerada / dibujo / mapa conceptual]
+  Extensión: [cantidad concreta — sin esto el estudiante escribe 2 palabras o 2 páginas]
+
+✅ Sabes que terminaste cuando:
+  • [Criterio observable, no interpretable]
+  • [Criterio observable]
+```
+
+**Si falta cualquiera de las 6 partes, no es ACTIVIDAD válida.** Esta rigidez no es arbitraria: es el código visual que el estudiante aprende a leer.
+
+### Ejemplo aplicado (6° · hardware)
+
+```
+✏️ ACTIVIDAD 3 · IDENTIFICA
+Reconoce los componentes internos del computador
+⏱ 15 minutos · 🤝 individual
+
+📋 Qué vas a hacer
+1. Observa la imagen del Marco conceptual (página anterior).
+2. Nombra cada componente señalado con un número.
+3. Escribe en una frase corta para qué sirve cada uno.
+
+📓 En tu cuaderno escribe:
+  Título: «Actividad 3 — Componentes del computador»
+  Formato: tabla de 2 columnas (Componente | Para qué sirve)
+  Extensión: 6 filas
+
+✅ Sabes que terminaste cuando:
+  • Las 6 filas están llenas
+  • Cada función está en tus propias palabras (no copiada)
+  • Puedes señalar el componente en una imagen sin ver tus apuntes
+```
+
+## Vocabulario cognitivo controlado: 6 verbos únicos
+
+Cada ACTIVIDAD lleva uno (y solo uno) de estos verbos. **Prohibido** usar sinónimos como "indica", "describe", "menciona", "comenta", "investiga" — todos colapsan en uno de los seis.
+
+| Verbo | Bloom | Equivalencias prohibidas (usar el verbo principal) |
+|---|---|---|
+| **IDENTIFICA** | Recordar | reconocer, listar, nombrar, señalar, definir, mencionar |
+| **EXPLICA** | Comprender | describe, comenta, parafrasea, indica con tus palabras |
+| **APLICA** | Aplicar | usa, resuelve, ejecuta, demuestra con un caso |
+| **ANALIZA** | Analizar | compara, contrasta, descompone, relaciona, investiga |
+| **EVALÚA** | Evaluar | juzga, critica, valora, decide, recomienda |
+| **CREA** | Crear | diseña, construye, inventa, propón, produce, formula |
+
+### Balance obligatorio por guía
+
+Una guía bien escalonada debe tener actividades en **al menos 3 niveles distintos**, terminando idealmente con un CREA. Patrón típico de 5 estaciones:
+
+- Estación 2: 1× IDENTIFICA + 1× EXPLICA
+- Estación 3: 1-2× APLICA
+- Estación 4: 1× ANALIZA o EVALÚA
+- Estación 5: 1× CREA (producto final integrador)
+
+## Contrato del cuaderno del estudiante
+
+Cada guía DEBE indicar al estudiante cómo organizar su cuaderno. La instrucción aparece dentro del bloque "Tu ruta hoy" o como nota inicial:
+
+```
+📓 Antes de empezar, en tu cuaderno escribe este encabezado:
+
+  Guía: [grado]° · Periodo [N] · Guía [N]
+  Tema: [título]
+  Fecha: __/__/____
+
+Cada vez que veas un bloque ✏️ ACTIVIDAD, escribes en tu cuaderno
+con el título que indica el bloque. El resto de la guía (📖 LEE, 👁
+OBSERVA, ✅ VERIFICA, 🔎 EXPLORA) es para entender, no para copiar.
+```
+
+**Reglas duras:**
+- Cada guía nueva: página nueva con el encabezado.
+- Actividades numeradas idéntico que en la guía.
+- Apartados 🌱 (saber ancestral) y 💭 (reflexión) tienen sus propios títulos en el cuaderno, no se llaman "actividades".
+
+## Reglas de claridad innegociables
+
+### 1. Regla de las 200 palabras
+
+**Ningún bloque de texto excede 200 palabras sin una acción intercalada** (✏️ ACTIVIDAD, ✅ VERIFICA, 👁 OBSERVA o 🔎 EXPLORA). Esta es la regla más poderosa de todas. Si un Marco conceptual o explicación se acerca a 200 palabras, parte en bloques y mete una VERIFICA u OBSERVA entre medio.
+
+### 2. Numeración de paso visible
+
+El estudiante siempre debe saber dónde está. En plataforma web: barra de progreso pegada arriba. En LaTeX/PDF: header de página con "Paso N de M". En guías Astro: el componente debe mostrar "Estación 3 de 5" visible en todo el scroll.
+
+### 3. Puentes explícitos entre secciones
+
+Cada nueva estación empieza con UN renglón de puente que conecta con la anterior:
+
+> *"Hasta aquí entendiste qué es un algoritmo. Ahora vas a construir uno tú, porque diseñar es la mejor manera de aprender."*
+
+Sin puentes, el estudiante siente que la guía "salta" — y se pierde.
+
+### 4. Micro-cierre por estación
+
+Al terminar cada estación (antes del puente a la siguiente), un bloque corto:
+
+```
+✅ Hasta aquí aprendiste:
+  • [Idea clave 1]
+  • [Idea clave 2]
+  • [Idea clave 3]
+```
+
+Si la estación lo amerita, después de este resumen va una ✅ VERIFICA (mini-quiz `LabQuiz` de 2-3 preguntas, no va al cuaderno).
+
+### 5. Voz imperativa, segunda persona singular
+
+Toda instrucción es para el estudiante directamente:
+
+- ✅ Sí: «Abre Word. Escribe tu nombre. Guarda el archivo.»
+- ❌ No: «Los estudiantes abrirán Word…»
+- ❌ No: «Se debe abrir Word…»
+
+### 6. Ejemplos contextualizados (no genéricos)
+
+Prohibido «Juan tiene 3 manzanas». Los ejemplos vienen del contexto del estudiante: Cartago, Valle del Cauca, vida cotidiana de un joven de 11-16 años, problemas reales locales, marcas y lugares conocidos, sin estigmatizar.
+
+## Saberes ancestrales: repertorio por familia de temas
+
+Priorizar saberes del Valle del Cauca y el Pacífico colombiano cuando exista anclaje natural. Abrir al ámbito nacional (Wayuu, Muiscas, Quimbaya, afrocolombianos del Pacífico, campesinos andinos) cuando el primero no aplique.
+
+| Familia de tema técnico | Saber ancestral sugerido |
+|---|---|
+| Redes y comunicación | Caminos del oro Quimbaya · chasquis · tambores cimarrones del Pacífico |
+| Algoritmos y secuencia | Tejidos Wayuu y Páez · cestería embera · ritmos de currulao |
+| IA, automatización, decisión | Adivinación, oráculos, prácticas de mayores · lo que NO puede replicar una máquina |
+| Hardware y herramientas | Orfebrería Quimbaya · ingeniería precolombina · herramientas campesinas |
+| Bases de datos y memoria | Quipus incas · memoria oral · archivos comunitarios |
+| Comunidad digital, código abierto | Minga · convite · cooperativas campesinas · mano vuelta |
+| Ética y ciudadanía digital | Cabildos · consejos comunitarios de comunidades negras · justicia indígena |
+| Cosechas, ciclos, datos | Calendario lunar · ciclos del Cauca · pesca del Pacífico |
+| Multimedia y narrativa | Tradición oral · décimas del Pacífico · canto del trabajo |
+| Diseño y estética | Wayuu (Susu) · molas guna · grafismo precolombino |
+
+Cada apertura 🌱 SABER ANCESTRAL combina:
+1. **Un saber concreto** (no genérico "los indígenas pensaban…", sino "las tejedoras Wayuu construyen patrones que se transmiten oralmente y siguen una lógica de…").
+2. **Una pregunta-puente** que prepara el tema técnico del día.
+
+## Adaptación por grado del Triángulo filosófico
+
+| Grado | Cómo aparece el Triángulo |
+|---|---|
+| 6°-7° | Versión simplificada: preguntas cotidianas inspiradas en cada autor, sin citar al autor por su nombre. Ej. "¿Qué cosas dependen de ti y cuáles no?" |
+| 8° | Aparecen los nombres de los autores con una idea breve, sin cita textual. |
+| 9°-11° | Citas textuales completas, autor visible, mirror question abierta. |
+
+## Checklist final antes de entregar una guía
+
+Toda guía generada se autoaudita contra esta lista. Si falla 1+ ítems, **rehacer la sección** que falla.
+
+- [ ] Apertura 🌱 SABER ANCESTRAL con saber concreto + pregunta-puente
+- [ ] Mapa 🗺 "Tu ruta hoy" con 4-6 estaciones y tiempos
+- [ ] Propósito de aprendizaje con 3-5 desempeños Bloom/SOLO
+- [ ] Marco conceptual sin bloques > 200 palabras sin acción intercalada
+- [ ] Al menos 3 bloques ✏️ ACTIVIDAD con anatomía completa de 6 partes
+- [ ] Cada ACTIVIDAD usa exactamente 1 de los 6 verbos cognitivos
+- [ ] Balance Bloom: al menos 3 niveles distintos, idealmente con un CREA final
+- [ ] Componente práctico con herramienta y paso a paso
+- [ ] Evaluación con rúbrica visible; ítem ICFES en cierre de periodo
+- [ ] 💭 Triángulo de pensamiento (Dussel + estoico + Floridi) adaptado al grado
+- [ ] Evaluación liberadora con las 5 dimensiones
+- [ ] Pie institucional completo
+- [ ] Contrato del cuaderno explicado al estudiante
+- [ ] Puentes entre estaciones explícitos
+- [ ] Micro-cierre `✅ Hasta aquí aprendiste:` al final de cada estación
+- [ ] Voz imperativa segunda persona en todas las instrucciones
+- [ ] Ejemplos contextualizados (no genéricos)
+- [ ] Numeración de paso visible (`Estación N de M`)

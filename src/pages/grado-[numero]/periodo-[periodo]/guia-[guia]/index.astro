@@ -5,6 +5,11 @@ import CompartirWhatsApp from '../../../../components/CompartirWhatsApp.astro';
 import LabQuiz from '../../../../components/LabQuiz.astro';
 import LabVisualizacion from '../../../../components/LabVisualizacion.astro';
 import BadgeDensidad from '../../../../components/BadgeDensidad.astro';
+import SaberAncestralBlock from '../../../../components/SaberAncestralBlock.astro';
+import MapaRutaBlock from '../../../../components/MapaRutaBlock.astro';
+import ActividadBlock from '../../../../components/ActividadBlock.astro';
+import TrianguloBlock from '../../../../components/TrianguloBlock.astro';
+import CincoDimensionesBlock from '../../../../components/CincoDimensionesBlock.astro';
 import { grados } from '../../../../data/grados';
 import {
   getRecurso,
@@ -201,6 +206,11 @@ const nextSesion = sesion < periodo.totalGuias ? sesion + 1 : null;
       {/* ═══ PRE-LECTURA (solo si la guía está enriquecida) ═══ */}
       {enriquecida && (
             <>
+              {/* 🌱 Estación 1 — Saber ancestral (contrato MILC v3) */}
+              {enriquecida.saberAncestral && (
+                <SaberAncestralBlock data={enriquecida.saberAncestral} />
+              )}
+
               <!-- Por qué importa + pregunta detonante -->
               <div class="bento-card-color bg-bento-yellow mb-6 flex items-start gap-4">
                 <div class="text-5xl shrink-0">💡</div>
@@ -221,6 +231,11 @@ const nextSesion = sesion < periodo.totalGuias ? sesion + 1 : null;
                   </div>
                 </div>
               </div>
+
+              {/* 🗺 Mapa de ruta — qué vas a recorrer (contrato MILC v3) */}
+              {enriquecida.mapaRuta && enriquecida.mapaRuta.length > 0 && (
+                <MapaRutaBlock estaciones={enriquecida.mapaRuta} />
+              )}
 
               <!-- Activación + conexión con sesiones -->
               <div class="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6 mb-6">
@@ -333,6 +348,25 @@ const nextSesion = sesion < periodo.totalGuias ? sesion + 1 : null;
               ></iframe>
             </div>
           </div>
+      )}
+
+      {/* ✏️ Actividades — produccion en cuaderno (contrato MILC v3) */}
+      {enriquecida?.actividades && enriquecida.actividades.length > 0 && (
+        <section class="mb-10">
+          <div class="bento-card-color bg-bento-orange text-white mb-6 text-center py-6 px-6">
+            <div class="text-4xl mb-2" aria-hidden="true">✏️</div>
+            <h2 class="heading-huge leading-tight mb-2">
+              Ahora, a tu cuaderno.
+            </h2>
+            <p class="text-base md:text-lg leading-relaxed max-w-2xl mx-auto opacity-95">
+              Estas son las actividades que vas a desarrollar y dejar registradas.
+              Lo que NO aparece como Actividad es para entender, no para copiar.
+            </p>
+          </div>
+          {enriquecida.actividades.map((a) => (
+            <ActividadBlock data={a} />
+          ))}
+        </section>
       )}
 
       {/* ═══ POST-LECTURA: laboratorios + reflexión ═══ */}
@@ -525,31 +559,60 @@ const nextSesion = sesion < periodo.totalGuias ? sesion + 1 : null;
                 </script>
               )}
 
-              <!-- Reflexión, transferencia y cierre MILC -->
-              <div class="bento-card-color bg-bento-purple mb-10">
-                <span class="text-xs font-bold uppercase tracking-widest opacity-80">
-                  🪞 Cierre · Evaluación liberadora
-                </span>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                  <div>
-                    <h3 class="font-black text-lg mb-2">Reflexión</h3>
-                    <p class="text-sm md:text-base leading-relaxed opacity-95">
-                      {enriquecida.postLectura.reflexion}
-                    </p>
+              {/* 💭 Triángulo de pensamiento (contrato MILC v3, estructurado) */}
+              {enriquecida.triangulo && (
+                <TrianguloBlock data={enriquecida.triangulo} />
+              )}
+
+              {/* 🌱 Cinco dimensiones de evaluación liberadora */}
+              {enriquecida.cincoDimensiones && (
+                <CincoDimensionesBlock data={enriquecida.cincoDimensiones} />
+              )}
+
+              {/* Reflexión + transferencia + cierre clásico
+                  - Si la guía trae `triangulo` estructurado, se oculta el bloque "Reflexión" (redundante).
+                  - Si la guía trae `cincoDimensiones`, se oculta el cierre en cursiva.
+                  - La transferencia siempre se conserva (puente práctico a la semana del estudiante). */}
+              {(() => {
+                const tieneTriangulo = !!enriquecida.triangulo;
+                const tieneDimensiones = !!enriquecida.cincoDimensiones;
+                // Si TODO está estructurado, no hace falta esta card.
+                if (tieneTriangulo && tieneDimensiones && !enriquecida.postLectura.transferencia) {
+                  return null;
+                }
+                return (
+                  <div class="bento-card-color bg-bento-purple mb-10">
+                    <span class="text-xs font-bold uppercase tracking-widest opacity-80">
+                      🪞 Cierre · Lleva esto a tu semana
+                    </span>
+                    <div class={`mt-4 ${!tieneTriangulo && enriquecida.postLectura.reflexion ? 'grid grid-cols-1 md:grid-cols-2 gap-6' : ''}`}>
+                      {!tieneTriangulo && enriquecida.postLectura.reflexion && (
+                        <div>
+                          <h3 class="font-black text-lg mb-2">Reflexión</h3>
+                          <p class="text-sm md:text-base leading-relaxed opacity-95">
+                            {enriquecida.postLectura.reflexion}
+                          </p>
+                        </div>
+                      )}
+                      {enriquecida.postLectura.transferencia && (
+                        <div>
+                          <h3 class="font-black text-lg mb-2">Transferencia a tu vida</h3>
+                          <p class="text-sm md:text-base leading-relaxed opacity-95">
+                            {enriquecida.postLectura.transferencia}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                    {!tieneDimensiones && enriquecida.postLectura.cierre && (
+                      <div class="mt-6 pt-6 border-t border-white/15">
+                        <p class="text-sm md:text-base italic leading-relaxed opacity-95">
+                          {enriquecida.postLectura.cierre}
+                        </p>
+                      </div>
+                    )}
                   </div>
-                  <div>
-                    <h3 class="font-black text-lg mb-2">Transferencia a tu vida</h3>
-                    <p class="text-sm md:text-base leading-relaxed opacity-95">
-                      {enriquecida.postLectura.transferencia}
-                    </p>
-                  </div>
-                </div>
-                <div class="mt-6 pt-6 border-t border-white/15">
-                  <p class="text-sm md:text-base italic leading-relaxed opacity-95">
-                    {enriquecida.postLectura.cierre}
-                  </p>
-                </div>
-              </div>
+                );
+              })()}
             </>
           )}
 

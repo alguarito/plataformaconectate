@@ -18,7 +18,7 @@ const contenido: ContenidoGuia = {
   periodo: 1,
   sesion: 1,
   titulo: 'Mi marca digital — del oficio heredado a la huella propia',
-  ocultarPDF: true,
+  ocultarPDF: false,
   resumen:
     'Apertura del grado 11. Conectamos la identidad heredada (el oficio, la palabra de la familia) con la marca digital que vas a construir profesionalmente durante el grado.',
   duracionMin: 90,

@@ -1,0 +1,399 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra para todas las guias MILC v3
+% Ver scripts/generadores/build-guia-milc.py para la lista completa de
+% claves esperadas. El script valida que no queden placeholders sin
+% reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1.75cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\hyphenpenalty=200
+\exhyphenpenalty=200
+\pretolerance=400
+\tolerance=2000
+\setlength{\emergencystretch}{1em}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0066FF}
+\definecolor{milcGradeDark}{HTML}{003D99}
+\definecolor{milcGradeSoft}{HTML}{D6E8FF}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Tecnología e Informática · Grado 11}
+\rhead{\small Guía 9 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{\textbf{\textrightarrow}}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+\begin{document}
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[white] (current page.south west) rectangle (current page.north east);
+  \path[fill=milcGradePrimary,rounded corners=16mm]
+    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
+    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
+    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+
+  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
+    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
+    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
+    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
+    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
+    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
+  \end{scope}
+
+  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{124}{124}\selectfont 11};
+  \draw[milcGradeText,line width=1.7pt]
+    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+
+  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+    {
+     {\sffamily\bfseries\fontsize{19}{22}\selectfont Métricas básicas ---\\quién entra a mi sitio\\y qué busca}\\[4mm]
+     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 9-11-TIC}\\[2mm]
+     {\sffamily\fontsize{13}{16}\selectfont Período 1 · Presencia y marca digital}\\[5mm]
+     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
+     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+    };
+
+  \path[fill=milcGradeSoft,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=3.15cm]current page.south east);
+  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=3.15cm]current page.south east);
+  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.0cm]current page.south)
+    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
+    \textcolor{milcGradeDark}{\bfseries Producto:} Dashboard de 5 indicadores configurado (Plausible/Umami/GA4) + lectura semanal};
+\end{tikzpicture}
+\mbox{}
+\newpage
+
+\section*{Apertura: Métricas básicas --- quién entra a mi sitio y qué busca}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+El \textbf{conteo de la cosecha} era una práctica seria en el campo: la abuela anotaba en una libreta cuántos racimos de café por mata, cuántas mazorcas por surco, cuántas mantas terminadas por luna, cuántos días llovió. No era vanidad ni estadística académica. Era información para \emph{decidir}: cuánto sembrar el próximo ciclo, a quién pedir ayuda, qué reservar. Sin conteo, no había aprendizaje del oficio.
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+El conteo digital de tu marca son las \textbf{métricas} de tu sitio: visitas únicas, fuentes (de dónde viene la gente), comportamiento (qué páginas miran), conversión (qué acción toman), tiempo en sitio. Herramientas: Plausible o Umami (privadas, sencillas) o Google Analytics 4 (potente, complejo). El error más común es perseguir likes (vanidad); el oficio digital es leer las \textbf{cinco métricas que sí importan} para decidir.
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{¿Qué hacían los abuelos con los conteos del año anterior que muchos hoy NO hacen con sus métricas digitales? ¿Por qué tener datos no es lo mismo que aprender de ellos?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar podrás: (1) \textbf{identificar} las 5 métricas que sí importan para una marca personal; (2) \textbf{explicar} la diferencia entre métricas de vanidad y métricas de decisión; (3) \textbf{analizar} 1 semana de datos reales de tu sitio; (4) \textbf{evaluar} qué decisión tomarías con esos datos.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Comunicación profesional en entornos digitales (MEN, Lineamientos T\&I)\\
+Referentes & Floridi (infoética) · Dussel (estética de la liberación) · Estoicismo\\
+Producto final & Dashboard de 5 indicadores configurado (Plausible/Umami/GA4) + lectura semanal\\
+\end{tabularx}
+\normalsize
+
+\puente{Antes de empezar, mira el viaje completo. Hoy le abres los \emph{ojos} a tu marca --- aprendes a leer qué pasa en tu sitio, no por curiosidad sino para decidir mejor.}
+
+\begin{titlebox}{milcGradeDark}
+Ruta MILC: así vamos a aprender
+\end{titlebox}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escuta\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Antes de configurar tu propio dashboard, vas a entender qué \emph{no} es una métrica útil. La diferencia entre vanidad y decisión es la línea que separa al que aprende del que solo cuenta.}
+
+\begin{titlebox}{milcVerde}
+Fase 1 · Escuta
+\end{titlebox}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- Métricas de vanidad vs métricas de decisión} (15 min · individual). Mira tus 3 redes personales y anota \textbf{6 cifras visibles} (likes, seguidores, vistas, comentarios, comparticiones, tiempo de pantalla). Para cada cifra pregúntate: ¿qué decisión concreta tomé alguna vez basándome en ese número? Si la respuesta es ``ninguna'', es vanidad.
+\end{softbox}
+
+\checkbox Anoté 6 cifras visibles de mis redes personales.\\
+\checkbox Identifiqué cuáles han generado alguna decisión real y cuáles no.\\
+\checkbox Distinguí mentalmente: vanidad (mira y olvida) vs decisión (mira y actúa).
+
+\begin{infoband}{milcVerde}
+\textbf{Lo que va al cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1 --- Vanidad vs decisión». \textbf{Formato:} tabla de 3 columnas (Cifra | ¿Genera decisión? Sí / No | Si sí: qué decisión), 6 filas. Al final un párrafo de 3 renglones: ¿qué proporción de tus cifras son vanidad? \textbf{Sabes que terminaste cuando} reconoces honestamente cuántas cifras miras y nunca decides nada con ellas.
+\end{infoband}
+
+\puente{Ya viste qué es métrica de vanidad. Ahora vamos a entender las \textbf{5 métricas que sí importan} para una marca personal en construcción --- ni más ni menos.}
+
+\begin{titlebox}{milcTurquesa}
+Fase 2 · Sistematización con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+Una marca personal en construcción necesita exactamente \textbf{5 métricas}. Más es ruido; menos es ceguera. Vamos a descomponerlas con los pilares del pensamiento computacional.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
+1. Descomposición & Las 5 métricas se descomponen así: (1) \textbf{visitas únicas} (cuántas personas distintas entraron), (2) \textbf{fuentes} (de dónde vinieron --- Google, redes, directo), (3) \textbf{páginas más vistas} (qué les interesó), (4) \textbf{tiempo promedio en sitio} (si se quedan o rebotan), (5) \textbf{conversiones} (cuántos tomaron la acción que quieres --- contactar, suscribirse, descargar).\\
+2. Reconocimiento de patrones & Toda métrica útil sigue el patrón \textbf{``observa-decide''}: una cifra que no lleva a una decisión es vanidad disfrazada de información. Antes de mirar la métrica, pregunta: ¿qué haría diferente si esta cifra fuera el doble o la mitad?\\
+3. Abstracción & Lo esencial del análisis cabe en una pregunta: \emph{¿esta cifra confirma o desafía mi hipótesis sobre quién visita mi sitio y por qué?}. Si solo confirma, no aprendes; si desafía, ajustas.\\
+4. Algoritmo conceptual & Pasos semanales: (1) abrir el dashboard cada lunes; (2) anotar las 5 cifras de la semana; (3) compararlas con la semana anterior; (4) escribir 1 decisión que toma\-rás esta semana basada en esas cifras.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcTurquesa}{Anatomía de un dashboard de 5 indicadores}
+\textbf{Visitas únicas:} ¿creció o decreció vs la semana pasada? \\[1mm] \textbf{Fuentes:} ¿qué porcentaje viene de Google? ¿de redes? \\[1mm] \textbf{Páginas más vistas:} ¿coinciden con las que tú considerabas más importantes? \\[1mm] \textbf{Tiempo en sitio:} ¿menos de 30 s = rebote? ¿más de 2 min = lectura real? \\[1mm] \textbf{Conversiones:} ¿cuántos tomaron la acción esperada (clic en email, envío de formulario, descarga)?
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+(1) Mirar el dashboard todos los días: ruido sin señal. Una vez por semana basta. (2) Comparar con cifras absolutas en lugar de tendencias: 30 visitas no dicen nada sin contexto. (3) Configurar GA4 sin entender qué métricas usar: bosque de datos sin brújula. (4) Tracking invasivo sin consentimiento: legal y éticamente problemático.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+\textbf{Lo que va al cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2 --- Las 5 métricas que sí importan». \textbf{Formato:} 5 fichas, una por métrica, cada una con: qué mide (1 frase) + qué decisión te llevaría a tomar (ejemplo concreto). \textbf{Sabes que terminaste cuando} para cada métrica tienes anticipada al menos UNA decisión específica que tomarías si esa cifra subiera o bajara.
+\end{infoband}
+
+\puente{Tienes el principio. Toca instalar la herramienta en \emph{tu} sitio y leer la primera semana real de datos. La instalación toma 10 minutos; la lectura, una vida de oficio.}
+
+\begin{titlebox}{milcMagenta}
+Fase 3 · Praxis con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\textbf{Actividad 3 · ANALIZA --- Tu primera semana de datos reales} (35 min · individual). Instala Plausible, Umami o GA4 en tu sitio (10 min) y, si ya hace una semana que tu sitio está vivo, lee los datos reales. Si no, deja la instalación lista y vuelve la próxima semana con datos.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
+Descomposición & Tu instalación se descompone en: (1) crear cuenta en la herramienta; (2) copiar el script de tracking; (3) pegarlo en el \texttt{<head>} de tu sitio; (4) commit + push; (5) verificar que registra.\\
+Patrones & Sigue el patrón \textbf{``privacy first''}: usa Plausible o Umami antes que GA4 si te importa respetar a tus visitantes. Son herramientas sin cookies, sin tracking transversal. Más simples, más éticas.\\
+Abstracción & Cada lectura de datos expresa una sola pregunta: ¿qué decisión tomo esta semana? Si miras tus métricas y no salen decisiones, los miraste mal o todavía no hay suficiente data.\\
+Algoritmo de armado & Algoritmo de lectura semanal: (1) abre dashboard; (2) anota las 5 cifras; (3) compara con semana anterior; (4) identifica 1 sorpresa (algo que no esperabas); (5) escribe 1 decisión concreta para la próxima semana.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcMagenta}{Checklist antes de cerrar el dashboard}
+\checkbox Herramienta instalada (Plausible / Umami / GA4) en tu sitio. \\[1mm] \checkbox Script de tracking pegado en \texttt{<head>} y commitado. \\[1mm] \checkbox Las 5 métricas configuradas y visibles en el dashboard. \\[1mm] \checkbox Política de privacidad publicada si recolectas datos personales. \\[1mm] \checkbox Primera lectura semanal escrita en cuaderno (mínimo 1 decisión extraída).
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Herramienta elegida.} \textit{Plausible / Umami / GA4 y por qué.} \\[1mm] \textbf{Mis 5 métricas (esta semana).} \textit{Tabla con las 5 cifras.} \\[1mm] \textbf{Una sorpresa.} \textit{Algo que no esperabas.} \\[1mm] \textbf{Mi decisión.} \textit{Lo que vas a cambiar la próxima semana basado en estos datos.}
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+\textbf{Lo que va al cuaderno (Actividad 3 · ANALIZA).} Título: «Actividad 3 --- Mi primera lectura semanal». \textbf{Formato:} tabla de las 5 cifras + 1 párrafo con la sorpresa + 1 párrafo con la decisión. \textbf{Extensión:} una página de cuaderno. \textbf{Sabes que terminaste cuando} tienes una decisión concreta y accionable basada en los datos, no una observación vaga.
+\end{infoband}
+
+\puente{Lo que sigue resume \emph{qué} entregas hoy: dashboard configurado + primera lectura semanal escrita. El criterio: que cada dato lleve a una decisión concreta, no solo a un sentimiento.}
+
+\begin{titlebox}{milcMostaza}
+Producto de la sesión
+\end{titlebox}
+\textbf{Dashboard de 5 indicadores instalado + primera lectura semanal escrita}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) Herramienta de analytics instalada y registrando visitas. (2) Las 5 métricas (visitas únicas / fuentes / páginas / tiempo / conversiones) están visibles. (3) Si recolectas datos personales, política de privacidad publicada. (4) Primera lectura semanal escrita en cuaderno con 1 decisión derivada. (5) Has decidido no mirar el dashboard hasta el próximo lunes.
+\end{softbox}
+
+\puente{Antes de cerrar, mira tus métricas desde las cinco dimensiones humanas. Lo que mides moldea lo que valoras --- y eso tiene consecuencias éticas.}
+
+\begin{titlebox}{milcVino}
+Fase 4 · Evaluación liberadora — cinco dimensiones
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Y para terminar, tres voces sobre las métricas. Dussel sobre lo que no se mide y se invisibiliza, Marco Aurelio sobre la obsesión por las cifras, Floridi sobre tracking y privacidad.}
+
+\begin{titlebox}{milcGradeDark}
+Triángulo de pensamiento · cierre filosófico
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{``Lo que no se mide no existe; lo que no se mide bien se inventa.''}
+
+Lo que decides medir y lo que decides ignorar es una decisión política. Si solo mides ``conversiones'' te ciegas a quien visita pero no compra (estudiantes, investigadores, gente que no puede pagar). Si solo mides ``visitas'' te ciegas a la calidad. Las métricas que eliges revelan a quién privilegias.
+
+\textbf{¿A quién hace visible mi dashboard y a quién deja invisible? ¿Qué de los visitantes que NO convierten merece ser visto y nombrado?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
+\textit{``Tu vida es lo que tus pensamientos hagan de ella.''}
+
+El peligro con métricas es obsesionarse: revisar el dashboard 10 veces al día, celebrar likes, sufrir caídas. Eso no depende de ti. Lo que sí depende: la decisión semanal informada, calma, sin drama. Que la cifra suba o baje no es la noticia; la decisión que tomes con esa cifra sí lo es.
+
+\textbf{¿Estoy mirando mis métricas para aprender o para sentir? ¿Cuántas veces a la semana las miro --- y cuántas decisiones tomé con ellas?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{``Tracking sin consentimiento es robo informacional.''}
+
+Cada vez que pones un tracker en tu sitio, recopilas información de personas reales. Floridi nos pediría preguntarnos: ¿esas personas saben que las estoy midiendo? ¿les puedo explicar qué hago con sus datos? Por eso herramientas como Plausible (sin cookies, agregadas, sin perfil individual) son éticamente superiores.
+
+\textbf{¿Mi sistema de medición respeta a quien visita mi sitio? ¿Puedo explicar en 2 frases qué datos recojo y para qué?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{titlebox}{milcVino}
+Compromiso final
+\end{titlebox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
+Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
+Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
+Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
+Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
+Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
+\end{tabularx}
+\normalsize
+
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima semana.} Lunes a las 7 PM, dedica 15 minutos a leer tu dashboard y escribir 1 decisión accionable. No mires los datos entre semana. Que la disciplina sea semanal, no diaria. El próximo lunes traes el cuaderno con esa lectura.
+\end{infoband}
+
+\end{document}

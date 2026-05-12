@@ -88,6 +88,18 @@ guia-edit:  ## Abre el YAML de la guía CLAVE en \$$EDITOR (default: VS Code)
 guia-status:  ## Tablero de progreso del grado (sin recompilar)
 	@$(PYTHON) scripts/guias-status.py --grado $(GRADO)
 
+.PHONY: guia-lint
+guia-lint:  ## Valida contrato MILC v3 en las guías completas (200 palabras, verbos, etc.)
+ifeq ($(CLAVE),)
+	@$(PYTHON) scripts/guias-lint.py --grado $(GRADO)
+else
+	@$(PYTHON) scripts/guias-lint.py --grado $(GRADO) $(CLAVE)
+endif
+
+.PHONY: guia-lint-strict
+guia-lint-strict:  ## Igual que guia-lint pero los warnings también fallan
+	@$(PYTHON) scripts/guias-lint.py --grado $(GRADO) --strict
+
 # ─── Limpieza ───────────────────────────────────────────────────────────────
 
 .PHONY: guia-clean

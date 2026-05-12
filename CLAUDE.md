@@ -183,6 +183,9 @@ make guia-build CLAVE=1-2          # compila solo G11·P1·S2
 make guia-show CLAVE=1-2           # abre el PDF en Preview
 make guia-edit CLAVE=1-2           # abre el YAML en VS Code (o $EDITOR)
 make guia-clean                    # limpia auxiliares LaTeX (.aux, .log, .out)
+make guia-lint                     # valida contrato MILC v3 en todas las guías
+make guia-lint CLAVE=1-2           # valida solo G11·P1·S2
+make guia-lint-strict              # warnings cuentan como errores
 ```
 
 > **Para sesiones futuras:** la primera acción de cada sesión nueva debería ser `make guia-status` para ver dónde estamos antes de proponer trabajo. El siguiente pendiente sale resaltado.
@@ -207,7 +210,7 @@ Documentación completa en [content/guias/_SCHEMA.md](content/guias/_SCHEMA.md).
 | 1. YAML como source | ✅ |
 | 2. Schema declarativo | ✅ |
 | 3. Pipeline `make guia-build` | ✅ |
-| 4. Validador `make guia-lint` | ⏳ próxima |
+| 4. Validador `make guia-lint` | ✅ |
 | 5. Asset management | ⏳ |
 | 6. Workflow de sesión (modos) | ⏳ |
 | 7. Status `make guia-status` | ⏳ |

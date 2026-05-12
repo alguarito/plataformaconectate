@@ -53,8 +53,7 @@ const contenido: ContenidoGuia = {
 
   conceptosClave: [
     {
-      categoria: '🎨 Las 3 piezas del sistema visual',
-      termino: 'Paleta',
+termino: 'Paleta',
       definicion:
         '3 a 5 colores con jerarquía clara: un dominante (~60%), uno secundario (~30%), uno o dos acentos (~10%).',
       ejemplo:
@@ -62,24 +61,21 @@ const contenido: ContenidoGuia = {
       emoji: '🎨',
     },
     {
-      categoria: '🎨 Las 3 piezas del sistema visual',
-      termino: 'Par tipográfico',
+termino: 'Par tipográfico',
       definicion:
         'Una fuente display para titulares + una fuente cuerpo para texto. Nunca dos display compitiendo al mismo tiempo.',
       ejemplo: 'Bricolage Grotesque para titulares + Inter para el cuerpo. Contrastan sin pelearse.',
       emoji: '🔤',
     },
     {
-      categoria: '🎨 Las 3 piezas del sistema visual',
-      termino: 'Lockup',
+termino: 'Lockup',
       definicion:
         'La firma de tu nombre con tratamiento fijo (color, fuente, espacios). Debe funcionar a 16 píxeles y a 2 metros de pared.',
       ejemplo: 'Tu nombre en mayúsculas + un símbolo a la izquierda en color de acento, siempre igual.',
       emoji: '✍️',
     },
     {
-      categoria: '🧭 Principios de coherencia',
-      termino: 'Patrón 60-30-10',
+termino: 'Patrón 60-30-10',
       definicion:
         'Regla de proporción de color: 60% dominante, 30% secundario, 10% acento. Cámbiala y se rompe la armonía.',
       ejemplo:
@@ -87,8 +83,7 @@ const contenido: ContenidoGuia = {
       emoji: '⚖️',
     },
     {
-      categoria: '🧭 Principios de coherencia',
-      termino: 'Coherencia con el manifiesto',
+termino: 'Coherencia con el manifiesto',
       definicion:
         'Cada decisión visual debe sostener la promesa de tu marca. Una marca seria con paleta neón es incoherente.',
       ejemplo:
@@ -96,8 +91,7 @@ const contenido: ContenidoGuia = {
       emoji: '🧭',
     },
     {
-      categoria: '🧭 Principios de coherencia',
-      termino: 'Test del tamaño chico',
+termino: 'Test del tamaño chico',
       definicion:
         'Si tu lockup, en blanco y negro y del tamaño de una uña, todavía dice quién eres, has abstraído bien.',
       ejemplo:

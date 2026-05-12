@@ -17,10 +17,24 @@ import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
 
-PERIODOS_NOMBRE = {
-    1: "P1 · Presencia y marca digital ",
-    2: "P2 · Automatización y procesos ",
-    3: "P3 · Proyecto final emprendedor",
+PERIODOS_POR_GRADO = {
+    11: {
+        1: "P1 · Presencia y marca digital ",
+        2: "P2 · Automatización y procesos ",
+        3: "P3 · Proyecto final emprendedor",
+    },
+    9: {
+        1: "P1 · Historia de la técnica   ",
+        2: "P2 · Diseño editorial digital ",
+        3: "P3 · Datos: registro a insight",
+    },
+}
+
+# Fallback genérico si el grado no está en el mapa explícito.
+PERIODOS_NOMBRE_FALLBACK = {
+    1: "P1                              ",
+    2: "P2                              ",
+    3: "P3                              ",
 }
 
 
@@ -59,8 +73,9 @@ def main() -> int:
     print("  " + "─" * 60)
     print()
 
+    periodos_nombre = PERIODOS_POR_GRADO.get(args.grado, PERIODOS_NOMBRE_FALLBACK)
     for p, items in por_periodo.items():
-        nombre = PERIODOS_NOMBRE[p]
+        nombre = periodos_nombre[p]
         barra = "".join("▓" if g.get("completo") else "░" for g in items)
         completas = sum(1 for g in items if g.get("completo"))
         check = "  ✅" if completas == len(items) else ""

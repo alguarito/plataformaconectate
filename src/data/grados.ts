@@ -128,9 +128,9 @@ export const grados: Grado[] = [
     periodos: [
       {
         numero: 1,
-        titulo: 'Historia y normativa técnica',
+        titulo: 'Historia de la técnica',
         descripcion:
-          'De la Revolución Industrial al presente: dilemas éticos y conciencia histórica.',
+          'Del oficio ancestral al artefacto moderno: una mirada crítica a la historia de la tecnología desde Colombia.',
         bgClass: 'bg-bento-purple',
         totalGuias: 10,
       },
@@ -138,15 +138,15 @@ export const grados: Grado[] = [
         numero: 2,
         titulo: 'Diseño editorial digital',
         descripcion:
-          'Autoedición, redes sociales con propósito y simulación de la infoesfera.',
+          'Orden, jerarquía y tipografía aplicados a piezas editoriales. Producto del periodo: una revista digital propia.',
         bgClass: 'bg-bento-pink',
         totalGuias: 10,
       },
       {
         numero: 3,
-        titulo: 'Excel intermedio y proyecto tecnológico',
+        titulo: 'Datos — del registro al insight',
         descripcion:
-          'BUSCARV, tablas dinámicas, gráficos y proyecto integrador con datos reales.',
+          'Hojas de cálculo intermedias con énfasis en ética del dato, visualización honesta y lectura crítica de cifras.',
         bgClass: 'bg-bento-cyan',
         totalGuias: 10,
       },

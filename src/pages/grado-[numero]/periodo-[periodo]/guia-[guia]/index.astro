@@ -1,4 +1,6 @@
 ---
+import { existsSync } from 'node:fs';
+import path from 'node:path';
 import BaseLayout from '../../../../layouts/BaseLayout.astro';
 import CompletarBoton from '../../../../components/CompletarBoton.astro';
 import CompartirWhatsApp from '../../../../components/CompartirWhatsApp.astro';
@@ -71,10 +73,35 @@ const tituloGuia = enriquecida?.titulo
 // Sesiones meta (apertura/cosecha) marcan ocultarPDF: true para no mostrar
 // el PDF de Drive cuyo título quedó obsoleto.
 const ocultarPDF = enriquecida?.ocultarPDF === true;
+
+// ─── PDF: prioridad LOCAL (public/guias-mejoras/) > DRIVE > nada ────────
+// Si existe public/guias-mejoras/{sesionGlobal}-{grado}-TIC.pdf usamos ese.
+// Si no, caemos al pdfId de Drive (comportamiento histórico).
+// La existencia se verifica en build-time (Astro SSG), sin costo de runtime.
+const sesionGlobal = (periodo.numero - 1) * 10 + sesion;
+const pdfLocalRel = `/guias-mejoras/${sesionGlobal}-${grado.numero}-TIC.pdf`;
+const pdfLocalFsPath = path.join(process.cwd(), 'public', pdfLocalRel);
+const tienePdfLocal = !ocultarPDF && existsSync(pdfLocalFsPath);
+
+// URL pública del PDF local (servida estática por Astro).
+const pdfLocalUrl = tienePdfLocal ? `${base}${pdfLocalRel}`.replace(/\/+/g, '/') : '';
+
+// Para el gate de visibilidad: hay PDF si está local O en Drive.
 const pdfId = ocultarPDF ? '' : (recurso?.pdfId ?? '');
-const previewUrl = recurso && !ocultarPDF ? previewUrlFor(recurso, base) : '';
-const downloadUrl = recurso && !ocultarPDF ? downloadUrlFor(recurso, base) : '';
-const viewUrl = recurso && !ocultarPDF ? viewUrlFor(recurso, base) : '';
+const hayPDF = tienePdfLocal || !!pdfId;
+
+// URLs: cuando hay local, todas apuntan al mismo archivo público.
+// Cuando solo hay Drive, mantenemos el comportamiento anterior.
+const previewUrl = tienePdfLocal
+  ? pdfLocalUrl
+  : (recurso && !ocultarPDF ? previewUrlFor(recurso, base) : '');
+const downloadUrl = tienePdfLocal
+  ? pdfLocalUrl
+  : (recurso && !ocultarPDF ? downloadUrlFor(recurso, base) : '');
+const viewUrl = tienePdfLocal
+  ? pdfLocalUrl
+  : (recurso && !ocultarPDF ? viewUrlFor(recurso, base) : '');
+
 const esMejorada = isMejorada(recurso);
 
 // Navegación previa/siguiente. La S11 (cosecha o examen) se accede también
@@ -161,9 +188,9 @@ const nextSesion = sesion < periodo.totalGuias ? sesion + 1 : null;
         </div>
       </div>
 
-      {pdfId && (
+      {hayPDF && (
         <>
-          <!-- Acciones rápidas: descargar / abrir en Drive (solo si hay PDF) -->
+          <!-- Acciones rápidas: descargar / abrir (solo si hay PDF) -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-10">
             <a
               href={downloadUrl}
@@ -187,11 +214,17 @@ const nextSesion = sesion < periodo.totalGuias ? sesion + 1 : null;
               rel="noopener"
               class="bento-card-hover flex items-center gap-4"
             >
-              <div class="text-5xl">📂</div>
+              <div class="text-5xl">{tienePdfLocal ? '🔗' : '📂'}</div>
               <div class="flex-1">
-                <span class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">Drive</span>
-                <div class="font-black text-xl leading-tight mt-1">Abrir en Drive</div>
-                <div class="text-sm mt-1" style="color: var(--fg-muted);">Versión completa con anotaciones</div>
+                <span class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">
+                  {tienePdfLocal ? 'Pestaña nueva' : 'Drive'}
+                </span>
+                <div class="font-black text-xl leading-tight mt-1">
+                  {tienePdfLocal ? 'Abrir en pestaña nueva' : 'Abrir en Drive'}
+                </div>
+                <div class="text-sm mt-1" style="color: var(--fg-muted);">
+                  {tienePdfLocal ? 'Vista limpia para imprimir o anotar' : 'Versión completa con anotaciones'}
+                </div>
               </div>
               <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
@@ -326,7 +359,7 @@ const nextSesion = sesion < periodo.totalGuias ? sesion + 1 : null;
           </>
       )}
 
-      {pdfId && (
+      {hayPDF && (
         <div class="bento-card mb-10 p-0 overflow-hidden">
             <div class="px-6 py-4 border-b" style="border-color: var(--border);">
               <div class="flex items-center justify-between gap-3 flex-wrap">
@@ -334,7 +367,7 @@ const nextSesion = sesion < periodo.totalGuias ? sesion + 1 : null;
                   <span class="chip-bento">Guía completa · PDF</span>
                 </div>
                 <div class="text-sm font-semibold" style="color: var(--fg-muted);">
-                  {recurso?.guiaId}
+                  {tienePdfLocal ? `${sesionGlobal}-${grado.numero}-TIC` : recurso?.guiaId}
                 </div>
               </div>
             </div>
@@ -616,7 +649,7 @@ const nextSesion = sesion < periodo.totalGuias ? sesion + 1 : null;
             </>
           )}
 
-      {!pdfId && !enriquecida && (
+      {!hayPDF && !enriquecida && (
         <div class="bento-card-color bg-bento-yellow mb-10 flex items-start gap-4">
           <div class="text-5xl">📝</div>
           <div>

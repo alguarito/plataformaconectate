@@ -112,6 +112,22 @@ triangulo:
 # ─── Cierre / Compromiso ─────────────────────────────────────────────
 compromiso: |             # str · tarea concreta para la próxima semana
 
+# ─── (OPCIONAL) Recursos visuales (imágenes, diagramas) ──────────────
+# Cada guía puede declarar imágenes/diagramas que se renderizan dentro
+# del PDF y/o de la página web. Los archivos viven en:
+#   public/guias-mejoras/assets/{sesionGlobal}-{grado}/
+# y se referencian por nombre de archivo (sin ruta).
+recursos:
+  imagenes:           # list opcional · imágenes incrustadas en la guía
+    - archivo: "saber-ancestral.jpg"   # nombre relativo a la carpeta de assets
+      alt: "Tejedora Wayuu trabajando con su telar tradicional"
+      caption: "Patrones que se transmiten oralmente"  # opcional
+      donde: "apertura"                # opcional · sección donde aparece
+  diagramas:          # list opcional · diagramas TikZ/SVG/PNG
+    - archivo: "anatomia-marca.svg"
+      alt: "Las 3 piezas de un sistema visual: paleta + tipografía + lockup"
+      donde: "sistematizacion"
+
 # ─── (OPCIONAL) Contenido web extra ──────────────────────────────────
 # Si la guía tiene quizzes interactivos o conceptos clave estructurados
 # para la versión web, se agregan aquí. El PDF los renderiza implícitos

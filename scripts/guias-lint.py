@@ -274,9 +274,38 @@ def lint_latex_escapes(g: dict) -> list[str]:
     return errors
 
 
+def lint_assets(g: dict, grado: int) -> list[str]:
+    """Verifica que los assets declarados (recursos.imagenes/diagramas) existan."""
+    errors = []
+    recursos = g.get("recursos") or {}
+    if not recursos:
+        return errors
+
+    sg = (g["periodo"] - 1) * 10 + g["sesion"]
+    assets_dir = ROOT / "public" / "guias-mejoras" / "assets" / f"{sg}-{grado}"
+
+    for tipo in ("imagenes", "diagramas"):
+        items = recursos.get(tipo) or []
+        for asset in items:
+            archivo = asset.get("archivo")
+            if not archivo:
+                errors.append(f"recursos.{tipo}: entrada sin campo 'archivo'")
+                continue
+            if not (assets_dir / archivo).exists():
+                errors.append(
+                    f"recursos.{tipo}: archivo '{archivo}' no existe en "
+                    f"{assets_dir.relative_to(ROOT)}/"
+                )
+            if not asset.get("alt"):
+                errors.append(
+                    f"recursos.{tipo}.{archivo}: falta 'alt' (accesibilidad requerida)"
+                )
+    return errors
+
+
 # ─── Reporte ─────────────────────────────────────────────────────────────────
 
-def lint_guia(g: dict) -> tuple[list[str], list[str]]:
+def lint_guia(g: dict, grado: int = 11) -> tuple[list[str], list[str]]:
     """Corre todos los lints y devuelve (errores, warnings)."""
     if not g.get("completo"):
         return [], []  # outlines no se lintean
@@ -296,6 +325,7 @@ def lint_guia(g: dict) -> tuple[list[str], list[str]]:
 
     errors += lint_triangulo(g)
     errors += lint_latex_escapes(g)
+    errors += lint_assets(g, grado)
 
     warnings += lint_saber_ancestral(g)
     warnings += lint_200_palabras(g)
@@ -345,7 +375,7 @@ def main() -> int:
             continue
 
         n_completas += 1
-        errors, warnings = lint_guia(g)
+        errors, warnings = lint_guia(g, args.grado)
 
         if errors:
             n_con_errores += 1

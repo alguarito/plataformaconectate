@@ -2,6 +2,7 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { grados } from '../../../data/grados';
 import { getRecurso } from '../../../data/recursos';
+import { getContenidoGuia } from '../../../data/guiasContenido/_index';
 import BadgeDensidad from '../../../components/BadgeDensidad.astro';
 
 export function getStaticPaths() {
@@ -23,9 +24,11 @@ const base = import.meta.env.BASE_URL;
 const guias = Array.from({ length: 10 }, (_, i) => {
   const sesion = i + 1;
   const recurso = getRecurso(grado.numero, periodo.numero, sesion);
+  const enriquecida = getContenidoGuia(grado.numero, periodo.numero, sesion);
   return {
     numero: sesion,
-    titulo: recurso?.titulo ?? `Sesión ${sesion}`,
+    titulo: enriquecida?.titulo ?? recurso?.titulo ?? `Sesión ${sesion}`,
+    enriquecida: !!enriquecida,
     href: `${base}/grado-${grado.numero}/periodo-${periodo.numero}/guia-${sesion}`,
   };
 });

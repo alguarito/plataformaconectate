@@ -1,0 +1,399 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra para todas las guias MILC v3
+% Ver scripts/generadores/build-guia-milc.py para la lista completa de
+% claves esperadas. El script valida que no queden placeholders sin
+% reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1.75cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\hyphenpenalty=200
+\exhyphenpenalty=200
+\pretolerance=400
+\tolerance=2000
+\setlength{\emergencystretch}{1em}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0066FF}
+\definecolor{milcGradeDark}{HTML}{003D99}
+\definecolor{milcGradeSoft}{HTML}{D6E8FF}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Tecnología e Informática · Grado 11}
+\rhead{\small Guía 10 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{\textbf{\textrightarrow}}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+\begin{document}
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[white] (current page.south west) rectangle (current page.north east);
+  \path[fill=milcGradePrimary,rounded corners=16mm]
+    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
+    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
+    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+
+  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
+    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
+    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
+    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
+    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
+    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
+  \end{scope}
+
+  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{124}{124}\selectfont 11};
+  \draw[milcGradeText,line width=1.7pt]
+    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+
+  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+    {
+     {\sffamily\bfseries\fontsize{19}{22}\selectfont Lanzamiento P1 ---\\mi presencia digital\\sale al mundo}\\[4mm]
+     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 10-11-TIC}\\[2mm]
+     {\sffamily\fontsize{13}{16}\selectfont Período 1 · Presencia y marca digital}\\[5mm]
+     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
+     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+    };
+
+  \path[fill=milcGradeSoft,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=3.15cm]current page.south east);
+  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=3.15cm]current page.south east);
+  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.0cm]current page.south)
+    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
+    \textcolor{milcGradeDark}{\bfseries Producto:} Sitio público anunciado en 3 redes + bitácora del cuaderno de marca · semana 1};
+\end{tikzpicture}
+\mbox{}
+\newpage
+
+\section*{Apertura: Lanzamiento P1 --- mi presencia digital sale al mundo}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+La \textbf{inauguración del taller} era un ritual del oficio. El carpintero, panadero o sastre que terminaba su aprendizaje y abría su propio espacio para el barrio invitaba a los vecinos, al maestro que lo enseñó, a la familia. Había nervios, había errores, había curiosos que asomaban. Pero el ritual mismo --- abrir las puertas, anunciar el oficio, recibir la primera mirada externa --- era más importante que la perfección. \emph{Lo importante era empezar; el resto se aprende sirviendo a los primeros clientes.}
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+Hoy el ritual cambia de plaza pero conserva el espíritu: \textbf{anunciar tu sitio público en tres redes}, escribir el primer post que cuenta tu propuesta, iniciar tu \textbf{bitácora de marca} (cuaderno donde anotas lo que aprendes semana a semana). Y sobre todo: aceptar que la primera versión es imperfecta. El error más común no es lanzar mal --- es no lanzar.
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{¿Qué de los antiguos rituales de inauguración del taller sigue siendo necesario hoy para lanzar una marca? ¿Por qué empezar imperfecto venció a esperar perfecto?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar podrás: (1) \textbf{analizar} cómo lanzaron 3 marcas que admiras (post inicial, redes elegidas, copy); (2) \textbf{explicar} por qué empezar imperfecto siempre vence a esperar perfecto; (3) \textbf{crear} tu post de lanzamiento + bitácora semana 1; (4) \textbf{evaluar} el lanzamiento de un compañero con criterios.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Comunicación profesional en entornos digitales (MEN, Lineamientos T\&I)\\
+Referentes & Floridi (infoética) · Dussel (estética de la liberación) · Estoicismo\\
+Producto final & Sitio público anunciado en 3 redes + bitácora del cuaderno de marca · semana 1\\
+\end{tabularx}
+\normalsize
+
+\puente{Antes de empezar, mira el viaje completo. Hoy cierras el Periodo 1 --- nueve guías te trajeron hasta aquí. Hora de abrir las puertas del taller.}
+
+\begin{titlebox}{milcGradeDark}
+Ruta MILC: así vamos a aprender
+\end{titlebox}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escuta\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Antes de lanzar tu propio sitio, vas a leer cómo lanzaron otros. Buenos y malos lanzamientos enseñan algo distinto. La diferencia entre los dos suele ser pequeña y decidible.}
+
+\begin{titlebox}{milcVerde}
+Fase 1 · Escuta
+\end{titlebox}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · ANALIZA --- Cómo lanzaron 3 marcas que admiras} (15 min · individual). Busca en redes \textbf{el primer post} de 3 perfiles profesionales que admiras (puedes revisar publicaciones antiguas o buscar ``cuando lancé''). Para cada uno: ¿qué decían? ¿qué pedían (o no pedían)? ¿cuántas reacciones tuvieron? ¿se sentía honesto o inflado?
+\end{softbox}
+
+\checkbox Encontré el primer post de 3 marcas/personas profesionales que admiro.\\
+\checkbox Los comparé en honestidad, especificidad y tono.\\
+\checkbox Identifiqué el patrón común a los 3 lanzamientos que se sintieron buenos.
+
+\begin{infoband}{milcVerde}
+\textbf{Lo que va al cuaderno (Actividad 1 · ANALIZA).} Título: «Actividad 1 --- 3 lanzamientos que admiro». \textbf{Formato:} 3 fichas, una por marca, cada una con: copy textual (o paráfrasis), tono, reacciones recibidas, y qué lección personal te llevas. Al final un párrafo de 3 renglones con el patrón común. \textbf{Sabes que terminaste cuando} las 3 fichas tienen observaciones específicas, no generalidades, y el patrón común se puede aplicar a tu propio lanzamiento.
+\end{infoband}
+
+\puente{Ya viste 3 lanzamientos reales. Ahora vamos a entender por qué \textbf{empezar imperfecto vence a esperar perfecto}: las 4 razones que la psicología, el emprendimiento y el oficio confirman.}
+
+\begin{titlebox}{milcTurquesa}
+Fase 2 · Sistematización con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+El principio del oficio digital: ``empezar imperfecto siempre vence a esperar perfecto''. Vamos a descomponer las 4 razones --- psicológicas, prácticas y éticas --- por las que esto es cierto.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
+1. Descomposición & El argumento se descompone en 4 razones: (1) \textbf{aprendizaje} (solo el lanzamiento real genera feedback real), (2) \textbf{tiempo} (cada mes que esperas es un mes que no compounding aprendizajes), (3) \textbf{visibilidad} (quien no lanza no existe en la infoesfera), (4) \textbf{ego} (esperar la perfección es miedo disfrazado de criterio).\\
+2. Reconocimiento de patrones & El patrón del lanzamiento sano sigue la fórmula \textbf{``v1 honesto > v0 perfecto''}: una primera versión sencilla pero real publicada hoy es más valiosa que una versión \emph{master} planificada para el próximo año. El primer lanzamiento es siempre la línea base, no la meta.\\
+3. Abstracción & Lo esencial del lanzamiento cabe en una pregunta: \emph{¿qué se rompe si lanzo hoy mi v1?}. Si la respuesta honesta es ``nada irreversible'', entonces lo estás postergando por miedo, no por criterio.\\
+4. Algoritmo conceptual & Pasos del lanzamiento mínimo viable: (1) elige 3 redes donde tu audiencia está; (2) escribe 1 post de presentación coherente con tu marca; (3) publica los 3 posts en una hora --- no acumules; (4) responde a los primeros comentarios con humildad.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcTurquesa}{Anatomía de un post de lanzamiento sólido}
+\textbf{Frase 1 (gancho):} algo que detenga el scroll, no una autopromoción obvia. \\[1mm] \textbf{Frase 2 (qué hago):} tu propuesta de valor en una línea (Guía 1). \\[1mm] \textbf{Frase 3 (a quién sirvo):} la audiencia concreta para la que es útil. \\[1mm] \textbf{Frase 4 (qué pido):} una pequeña acción específica (visitar el sitio, dejar feedback). \\[1mm] \textbf{Enlace:} URL de tu sitio. \textbf{Imagen:} tu retrato de la Guía 7.
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+(1) Esperar a tener \emph{todo} listo: la perfección es enemiga del lanzamiento. (2) Post genérico tipo ``hola mundo, mírenme'': muerte instantánea. (3) Lanzar en 1 red y olvidar las otras 2: pierdes alcance fácil. (4) No responder a los primeros comentarios: parece que abandonas el taller recién inaugurado.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+\textbf{Lo que va al cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2 --- Por qué empezar imperfecto vence a esperar perfecto». \textbf{Formato:} 4 fichas, una por razón (aprendizaje / tiempo / visibilidad / ego), cada una con: argumento + ejemplo concreto de tu propia experiencia. \textbf{Sabes que terminaste cuando} reconoces en ti al menos UN proyecto que postergaste por perfeccionismo y puedes nombrarlo honestamente.
+\end{infoband}
+
+\puente{Tienes el principio. Toca lanzar de verdad: post de presentación en 3 redes, enlace a tu sitio (Guía 4), tu propuesta de valor (Guía 1), tu imagen (Guía 7), tu voz (Guía 5). Todo lo que has construido converge en este momento.}
+
+\begin{titlebox}{milcMagenta}
+Fase 3 · Praxis con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\textbf{Actividad 3 · CREA --- Tu lanzamiento real} (40 min · individual). Hora de abrir las puertas del taller. Vas a redactar 3 posts adaptados a 3 redes distintas, publicarlos en una hora, y escribir la primera entrada de tu bitácora de marca.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
+Descomposición & Tu lanzamiento se descompone en 4 piezas: post LinkedIn (tono profesional), post Instagram (tono visual), post personal (WhatsApp/Telegram, círculo cercano), bitácora semana 1.\\
+Patrones & Sigue el patrón \textbf{``adaptación, no copia''}: el mismo mensaje base pero ajustado al tono y formato de cada red. LinkedIn más texto, Instagram más imagen, WhatsApp más cercano.\\
+Abstracción & Cada post expresa una sola idea principal: "abrí mi sitio, esto es lo que haces, mira si te sirve''. Sin alardes. Sin promesas que no cumples. Sin disculpas por la imperfección.\\
+Algoritmo de armado & Algoritmo del lanzamiento: (1) escribe el post LinkedIn primero (más largo); (2) condénsalo a Instagram (más visual); (3) adáptalo al tono cercano para WhatsApp; (4) publica los 3 en una sola hora; (5) responde TODOS los comentarios esa misma semana; (6) escribe la bitácora del día 1.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcMagenta}{Checklist antes de declarar el lanzamiento hecho}
+\checkbox 3 posts publicados (LinkedIn + Instagram + grupo cercano). \\[1mm] \checkbox Cada post enlaza al sitio público de la Guía 4. \\[1mm] \checkbox Cada post incluye una imagen profesional de la Guía 7. \\[1mm] \checkbox Cero ``perdón por lo imperfecto'' o ``apenas empiezo'': lanzar es lanzar. \\[1mm] \checkbox Primera entrada de bitácora escrita (cómo me siento, qué aprendí hoy).
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Post LinkedIn.} \textit{Texto completo, 4 frases + enlace + imagen.} \\[1mm] \textbf{Post Instagram.} \textit{Caption breve + imagen + URL en bio.} \\[1mm] \textbf{Mensaje cercano.} \textit{Texto adaptado para tu grupo de WhatsApp.} \\[1mm] \textbf{Bitácora día 1.} \textit{¿Cómo me sentí lanzando? ¿Qué reacción esperaba? ¿Qué reacción recibí?}
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+\textbf{Lo que va al cuaderno (Actividad 3 · CREA).} Título: «Actividad 3 --- Mi lanzamiento P1». \textbf{Formato:} las 3 versiones del post + la entrada de bitácora día 1 + capturas de las publicaciones reales. \textbf{Extensión:} una página de cuaderno. \textbf{Sabes que terminaste cuando} los 3 posts están publicados (no programados) y la bitácora está escrita en tiempo real.
+\end{infoband}
+
+\puente{Lo que sigue resume \emph{qué} entregas hoy y cierras el Periodo 1: sitio anunciado + bitácora iniciada. El criterio principal: que el siguiente lunes puedas mirar atrás y decir ``empecé''.}
+
+\begin{titlebox}{milcMostaza}
+Producto de la sesión
+\end{titlebox}
+\textbf{Sitio anunciado en 3 redes + bitácora del cuaderno de marca · semana 1}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) Los 3 posts están publicados en redes reales, no en borrador. (2) Cada post enlaza al sitio y tiene imagen profesional. (3) Cero disculpas por imperfección en los textos. (4) Primera entrada de bitácora escrita el mismo día del lanzamiento. (5) Has decidido un horario semanal fijo para escribir la bitácora durante el próximo periodo.
+\end{softbox}
+
+\puente{Antes de cerrar, mira el lanzamiento desde las cinco dimensiones humanas. Publicar tiene costo emocional y consecuencias ciudadanas que vale la pena nombrar.}
+
+\begin{titlebox}{milcVino}
+Fase 4 · Evaluación liberadora — cinco dimensiones
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Y para terminar, tres voces sobre lanzar al mundo. Dussel sobre servir vs destacar, Marco Aurelio sobre los errores del primer día, Floridi sobre añadir a la infoesfera con responsabilidad.}
+
+\begin{titlebox}{milcGradeDark}
+Triángulo de pensamiento · cierre filosófico
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{``Toda comunidad de comunicación se hace plena cuando incluye la voz del excluido.''}
+
+Lanzar puede ser un acto de promoción individual o un acto de servicio comunitario. Si tu primer post solo dice ``mírenme'', no abres puerta para nadie. Si dice ``aquí estoy, esto sé hacer, dime si te sirvo'', invitas. El primer lanzamiento define el tono de los próximos cien.
+
+\textbf{¿Mi lanzamiento es una invitación a servir o una promoción de mí mismo? ¿A quién abro la puerta hoy y a quién la cierro sin querer?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
+\textit{``El obstáculo en el camino se vuelve el camino.''}
+
+Algo va a salir mal en tu primer lanzamiento: un error de tipografía, una imagen pixelada, un comentario incómodo, un silencio que esperabas más sonoro. Eso no es el fracaso del lanzamiento --- es el lanzamiento. La calma estoica te permite leer cada error como información, no como golpe.
+
+\textbf{Lo que salió mal del lanzamiento, ¿depende de mí corregirlo, o no? ¿Qué error concreto se convierte en lección si lo miro sin drama?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{``Cada lanzamiento añade un agente más a la infoesfera; cuídala como cuidas tu firma.''}
+
+Tu post de lanzamiento es información permanente en la red. Los archivos del futuro lo guardarán, los buscadores lo indexarán, alguien lo leerá en 10 años. Floridi nos pediría preguntarnos: ¿este post de hoy es algo que mi yo de 30 años va a defender o lamentar?
+
+\textbf{¿Mi lanzamiento aporta algo útil a la infoesfera o solo añade ruido? ¿Lo defenderé en 10 años?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{titlebox}{milcVino}
+Compromiso final
+\end{titlebox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
+Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
+Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
+Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
+Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
+Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
+\end{tabularx}
+\normalsize
+
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima semana --- y el cierre del Periodo 1.} Lunes a las 7 PM, abre tu cuaderno de marca y escribe la \textbf{bitácora semana 2}: ¿qué dijeron del lanzamiento? ¿cuántas visitas tuviste? ¿qué decisión tomas para la próxima publicación? Esa disciplina semanal es lo que diferencia una marca real de una publicación aislada. Próximo lunes: arrancamos el Periodo 2 --- Automatización y procesos. \emph{Felicitaciones por terminar el primero.}
+\end{infoband}
+
+\end{document}

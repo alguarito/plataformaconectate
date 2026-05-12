@@ -1232,43 +1232,1221 @@ GUIAS: dict[str, dict] = {
     },
 
     "1-6": {
-        "completo": False,
+        "completo": True,
         "titulo": "SEO básico --- hacerme visible sin engaños",
-        "producto_final": "Plan de palabras clave + meta-etiquetas del sitio + sitemap básico",
-        "saber_ancestral_idea": "El pregonero en la plaza del pueblo: anunciaba con voz clara y a la hora correcta para que la gente correcta lo oyera. El SEO es el pregón digital, sin gritos ni engaños.",
-        "verbos_actividades": ["IDENTIFICA", "EXPLICA", "APLICA", "EVALÚA"],
+        "titulo_portada": "SEO básico ---\\\\hacerme visible\\\\sin engaños",
+        "producto_final": "Plan de palabras clave + meta-etiquetas configuradas + sitemap.xml del sitio",
+
+        "SABER_ANCESTRAL": (
+            "En las plazas del Valle, el \\textbf{pregonero} era el oficio de hacer llegar el "
+            "mensaje correcto a la gente correcta. No gritaba: \\emph{pregonaba}. Anunciaba con "
+            "voz clara, a la hora justa, en el lugar donde lo necesitaban escuchar. ``Los huevos "
+            "del corral de Don Tobías'', ``el agua bendita del padre Antonio'', ``el pan tibio de "
+            "la señora Inés''. El que lo oía iba; el que no lo necesitaba seguía su camino. "
+            "Pregón honesto, no grito desesperado."
+        ),
+        "SABER_CONTEMPORANEO": (
+            "El \\textbf{SEO} (Search Engine Optimization) es el pregón digital. No truquillos "
+            "para engañar a Google: técnica honesta para que tu sitio aparezca cuando alguien "
+            "busca lo que tú ofreces. Tres piezas: \\textbf{palabras clave} (qué busca la gente), "
+            "\\textbf{meta-etiquetas} (cómo te presentas en el resultado), y \\textbf{sitemap} "
+            "(el mapa que le entregas al buscador)."
+        ),
+        "PREGUNTA_PUENTE": (
+            "¿Qué hacía que el pregonero antiguo lograra que la gente \\emph{correcta} lo "
+            "escuchara entre el ruido de la plaza? ¿Por qué a algunos los oían y a otros no?"
+        ),
+        "SABER_HACER": (
+            "Al terminar podrás: (1) \\textbf{identificar} las palabras clave que la gente "
+            "buscaría para encontrar a alguien como tú; (2) \\textbf{explicar} con tus palabras "
+            "cómo decide un buscador qué mostrar primero; (3) \\textbf{aplicar} meta-etiquetas, "
+            "sitemap y alt text en tu sitio; (4) \\textbf{evaluar} si apareces al buscarte."
+        ),
+
+        "PUENTE_TO_RUTA": (
+            "Antes de empezar, mira el viaje completo. Hoy le abrirás la \\emph{voz} a tu sitio "
+            "--- haces que Google y otros buscadores lo encuentren cuando alguien busca lo que "
+            "tu marca ofrece."
+        ),
+        "PUENTE_TO_ESCUTA": (
+            "Antes de optimizar tu sitio para Google, hay que entender cómo busca la gente real. "
+            "Vas a ponerte en los zapatos de quien podría buscarte: ¿qué palabras escribiría en "
+            "Google si nunca te ha oído nombrar?"
+        ),
+        "PUENTE_TO_SIST": (
+            "Ya pensaste como quien busca. Ahora vamos a entender \\textbf{cómo decide Google} "
+            "qué mostrar primero. No es magia ni suerte: hay reglas claras y un puñado de "
+            "decisiones técnicas que sí dependen de ti."
+        ),
+        "PUENTE_TO_PRAX": (
+            "Conoces el principio. Toca aplicarlo a \\emph{tu} sitio: meta-etiquetas, sitemap, "
+            "alt text en imágenes. Cinco cambios pequeños que multiplican tu visibilidad sin "
+            "ningún engaño."
+        ),
+        "PUENTE_TO_PROD": (
+            "Lo que sigue es el resumen de \\emph{qué} entregas hoy. El criterio simple: que "
+            "al buscar tu nombre o tu propuesta de valor en Google, tu sitio aparezca en la "
+            "primera página."
+        ),
+        "PUENTE_TO_EVAL": (
+            "Antes de cerrar, mira tu trabajo desde las cinco dimensiones humanas. El SEO es "
+            "técnico pero tiene cara ética: invitar o engañar, servir o saturar."
+        ),
+        "PUENTE_TO_TRIANG": (
+            "Y para terminar, tres voces sobre la visibilidad. Dussel sobre incluir vs "
+            "promocionarse, Marco Aurelio sobre los algoritmos que cambian, Floridi sobre la "
+            "búsqueda como acto cooperativo."
+        ),
+
+        "ESCUTA_ESCENA": (
+            "\\textbf{Actividad 1 · IDENTIFICA --- Palabras clave del que te busca} (15 min · "
+            "individual). Imagina que alguien (futuro empleador, cliente, profesor) quiere "
+            "encontrar a alguien como tú pero no te conoce. Anota \\textbf{10 frases o palabras} "
+            "que esa persona escribiría en Google. No tus términos técnicos: los términos que "
+            "usaría alguien que apenas sabe lo que necesita."
+        ),
+        "ESCUTA_CHECK_1": "Pensé en al menos 3 perfiles distintos de personas que podrían buscarme.",
+        "ESCUTA_CHECK_2": "Anoté frases largas (3+ palabras) no solo términos sueltos.",
+        "ESCUTA_CHECK_3": "Probé en Google una de esas frases para ver qué aparece hoy.",
+        "ESCUTA_INFOBAND": (
+            "\\textbf{Lo que va al cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1 --- "
+            "Palabras clave de mi marca». \\textbf{Formato:} lista numerada de 10 frases de "
+            "búsqueda, agrupadas en 3 perfiles imaginados (quién busca cada frase). Después un "
+            "párrafo de 3 renglones eligiendo las 3 frases más estratégicas. \\textbf{Sabes que "
+            "terminaste cuando} las frases suenan a búsquedas reales (3+ palabras, lenguaje "
+            "cotidiano, no jerga técnica) y las 3 elegidas son las que tu sitio podría sostener "
+            "honestamente."
+        ),
+
+        "SISTEMATIZACION_INTRO": (
+            "Google decide qué mostrar primero según un puñado de señales que tú puedes controlar. "
+            "Vamos a descomponerlas con los pilares del pensamiento computacional."
+        ),
+        "PILAR_1_SIST": (
+            "El SEO se descompone en 4 capas: (1) \\textbf{contenido} (las palabras de tu sitio), "
+            "(2) \\textbf{metadatos} (title y description que Google muestra en el resultado), "
+            "(3) \\textbf{estructura} (HTML semántico, jerarquía de encabezados), "
+            "(4) \\textbf{accesibilidad} (alt text en imágenes, contraste, móvil-friendly)."
+        ),
+        "PILAR_2_SIST": (
+            "Los buscadores siguen un patrón: dan más peso a \\textbf{coincidencia + autoridad + "
+            "experiencia}. Coincidencia: tu sitio menciona lo que se buscó. Autoridad: otros "
+            "sitios te enlazan. Experiencia: la gente se queda en tu sitio."
+        ),
+        "PILAR_3_SIST": (
+            "Lo esencial del SEO cabe en una pregunta: \\emph{¿le facilito a Google entender de "
+            "qué se trata mi sitio en 5 segundos?}. Si la respuesta es sí, vas bien."
+        ),
+        "PILAR_4_SIST": (
+            "Pasos: (1) elige 3 frases-clave estratégicas; (2) ponlas en tu title y description; "
+            "(3) úsalas naturalmente en H1, H2 y párrafos; (4) escribe alt text para tus imágenes "
+            "con esas frases; (5) genera y sube tu sitemap.xml."
+        ),
+        "ANATOMIA_TITULO": "Anatomía de una página optimizada para buscadores",
+        "ANATOMIA_BODY": (
+            "\\textbf{Title (50-60 caracteres):} ``Tu nombre --- tu propuesta de valor''. "
+            "Aparece en la pestaña y en el resultado de Google. \\\\[1mm] "
+            "\\textbf{Meta description (140-160 caracteres):} resumen claro de qué encontrará "
+            "quien entre. \\\\[1mm] "
+            "\\textbf{H1 único:} con tu palabra clave principal de forma natural. \\\\[1mm] "
+            "\\textbf{Alt text en imágenes:} describe lo que la imagen muestra (sirve a lectores "
+            "de pantalla \\emph{y} a Google). \\\\[1mm] "
+            "\\textbf{Sitemap.xml:} lista de todas tus páginas, en la raíz de tu dominio."
+        ),
+        "ERRORES_COMUNES": (
+            "(1) Title genérico (``Inicio'' o ``Home''): pierdes el 90\\% del SEO. "
+            "(2) Repetir la palabra clave 20 veces (\\emph{keyword stuffing}): Google lo "
+            "penaliza. "
+            "(3) Imágenes sin alt text: invisibles para Google y para lectores de pantalla. "
+            "(4) Promesas que tu sitio no cumple: la gente entra, sale rápido, y tu posición "
+            "cae."
+        ),
+        "SIST_INFOBAND": (
+            "\\textbf{Lo que va al cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2 --- "
+            "Cómo decide Google qué mostrar primero». \\textbf{Formato:} 4 fichas, una por capa "
+            "del SEO (contenido / metadatos / estructura / accesibilidad), cada ficha con: qué "
+            "es (1 frase con tus palabras) + un ejemplo concreto de cómo lo aplicarías a tu "
+            "sitio. \\textbf{Sabes que terminaste cuando} puedes explicar cada capa sin mirar "
+            "notas y dar un ejemplo de tu propio caso."
+        ),
+
+        "PRAXIS_INTRO": (
+            "\\textbf{Actividad 3 · APLICA --- Optimizar tu sitio en 5 pasos} (35 min · "
+            "individual). Tienes el principio. Hora de ejecutar en \\emph{tu} sitio: meta-tags, "
+            "alt text en imágenes, jerarquía de encabezados y sitemap. Al final, tu sitio "
+            "estará listo para que Google lo encuentre cuando alguien busque lo que ofreces."
+        ),
+        "PILAR_1_PRAX": (
+            "Tu optimización se descompone en 5 cambios: title + description + H1 con palabra "
+            "clave + alt text en todas las imágenes + sitemap.xml en la raíz."
+        ),
+        "PILAR_2_PRAX": (
+            "Sigue el patrón ``honestidad SEO'': cada palabra clave que pongas debe estar "
+            "sostenida por contenido real. Si prometes pero no entregas, Google te baja en "
+            "cuestión de semanas."
+        ),
+        "PILAR_3_PRAX": (
+            "Cada meta-etiqueta expresa una sola idea. Si tu description dice 3 cosas distintas, "
+            "Google la corta y muestra un fragmento aleatorio --- pierdes la primera impresión."
+        ),
+        "PILAR_4_PRAX": (
+            "Algoritmo: (1) abre tu sitio en VS Code; (2) edita \\texttt{<title>} y "
+            "\\texttt{<meta name=description>} en el \\texttt{<head>}; (3) revisa que hay UN "
+            "\\texttt{<h1>} con tu palabra clave; (4) recorre todas las imágenes y agrega "
+            "\\texttt{alt}; (5) crea \\texttt{sitemap.xml} con tus URLs; (6) commit y push."
+        ),
+        "CHECKLIST_TITULO": "Checklist antes de declarar el SEO básico hecho",
+        "CHECKLIST_ITEMS": (
+            "\\checkbox Title de 50-60 caracteres con tu propuesta de valor. \\\\[1mm] "
+            "\\checkbox Description de 140-160 caracteres clara y específica. \\\\[1mm] "
+            "\\checkbox H1 único con tu palabra clave principal de forma natural. \\\\[1mm] "
+            "\\checkbox Todas las imágenes tienen \\texttt{alt} descriptivo. \\\\[1mm] "
+            "\\checkbox \\texttt{sitemap.xml} en la raíz, validado en search.google.com/test."
+        ),
+        "PLANTILLA_GUION": (
+            "\\textbf{Title.} \\textit{Tu fórmula final, 50-60 caracteres.} \\\\[1mm] "
+            "\\textbf{Description.} \\textit{Tu resumen final, 140-160 caracteres.} \\\\[1mm] "
+            "\\textbf{Palabras clave estratégicas.} \\textit{Las 3 elegidas, dónde aparecen en "
+            "el sitio.} \\\\[1mm] "
+            "\\textbf{Sitemap.} \\textit{URL pública del sitemap.xml.}"
+        ),
+        "PRAX_INFOBAND": (
+            "\\textbf{Lo que va al cuaderno (Actividad 3 · APLICA).} Título: «Actividad 3 --- "
+            "Mi SEO básico aplicado». \\textbf{Formato:} 4 secciones (Title · Description · "
+            "Palabras clave aplicadas · Sitemap), cada una con sus datos finales y captura del "
+            "código real. \\textbf{Extensión:} una página de cuaderno. \\textbf{Sabes que "
+            "terminaste cuando} al buscar tu title en Google (búsqueda con comillas) tu sitio "
+            "aparece en los primeros resultados."
+        ),
+        "PRODUCTO_TITULO": "Sitio optimizado con title, description, alt text y sitemap.xml",
+        "CRITERIOS_LISTA": (
+            "(1) Title específico (no ``Inicio''), 50-60 caracteres. "
+            "(2) Description única, 140-160 caracteres, sin promesas que no cumples. "
+            "(3) UN H1 con palabra clave principal usada naturalmente. "
+            "(4) Cien por ciento de imágenes con alt descriptivo. "
+            "(5) Sitemap.xml accesible y validado."
+        ),
+
+        "DUSSEL_CITA": "Toda comunidad de comunicación se hace plena cuando incluye la voz del excluido.",
+        "DUSSEL_APLICACION": (
+            "El SEO es la diferencia entre que tu sitio sea encontrado por la gente que de "
+            "verdad lo necesita o que se pierda en la marea de internet. Pero también puede ser "
+            "usado para empujar voces hacia abajo: cuando un negocio grande compra términos que "
+            "podrían servirle a uno pequeño del barrio. La pregunta ética está en a quién sirve "
+            "tu visibilidad."
+        ),
+        "DUSSEL_PREGUNTA": (
+            "¿Mi sitio aparece para servir a quien lo busca, o solo para promocionarme yo? "
+            "¿A quién dejo afuera con las palabras clave que elijo?"
+        ),
+        "ESTOICISMO_AUTOR": "Marco Aurelio",
+        "ESTOICISMO_CITA": "El obstáculo en el camino se vuelve el camino.",
+        "ESTOICISMO_APLICACION": (
+            "Los algoritmos de Google cambian todos los meses. Si tu estrategia depende de "
+            "trucos, se desmorona. Lo que sí depende de ti --- la calidad del contenido, la "
+            "honestidad de las promesas, la claridad del sitio --- sobrevive los cambios. "
+            "La paciencia estoica vence al algoritmo."
+        ),
+        "ESTOICISMO_PREGUNTA": (
+            "¿Mi SEO depende de trucos que cualquier cambio de algoritmo derriba, o de calidad "
+            "que aguanta el tiempo? ¿Qué de mi sitio sobrevive a Google?"
+        ),
+        "FLORIDI_CITA": "La búsqueda es un acto cooperativo entre el que busca, el que ofrece, y la infoesfera que los conecta.",
+        "FLORIDI_APLICACION": (
+            "Cada vez que optimizas honestamente, aportas a que la infoesfera funcione mejor "
+            "para todos. Cada vez que haces SEO de spam (palabras clave irrelevantes, "
+            "descripciones engañosas), la rompes un poco. Floridi llamaría a esto "
+            "\\emph{degradación informacional}."
+        ),
+        "FLORIDI_PREGUNTA": (
+            "¿Mi SEO aporta a la cooperación de búsqueda en la infoesfera, o la degrada con "
+            "ruido? ¿Estoy ayudando a que la gente encuentre lo que necesita?"
+        ),
+
+        "COMPROMISO_INFOBAND": (
+            "\\textbf{Para la próxima semana.} Cada día, abre Google y busca una de tus 3 frases "
+            "clave estratégicas. Anota en una hoja qué posición ocupa tu sitio y cómo se ve tu "
+            "resultado (title y description) en el listado. Esa bitácora te enseña a leer cómo "
+            "te ve Google. El próximo lunes traes la bitácora de 7 días al aula."
+        ),
     },
 
     "1-7": {
-        "completo": False,
+        "completo": True,
         "titulo": "Imagen propia --- cómo se ve mi marca en foto y video",
-        "producto_final": "3 fotos de perfil profesional + 1 video corto (≤60s) de presentación",
-        "saber_ancestral_idea": "El retrato del oficio: el panadero con su pan, el pescador con su atarraya. La imagen muestra lo que la palabra promete --- y en internet la imagen llega antes que la palabra.",
-        "verbos_actividades": ["IDENTIFICA", "ANALIZA", "CREA", "EVALÚA"],
+        "titulo_portada": "Imagen propia ---\\\\cómo se ve mi marca\\\\en foto y video",
+        "producto_final": "3 fotos de perfil profesional + 1 video corto ($\\leq$60 s) de presentación",
+
+        "SABER_ANCESTRAL": (
+            "El \\textbf{retrato del oficio} era un género visual con propósito: el panadero con "
+            "su pan, el pescador con su atarraya, la tejedora con su telar, el campesino con su "
+            "azadón. No era \\emph{selfie}. Era una imagen que decía sin palabras quién hacía "
+            "qué, dónde, y con qué orgullo. La foto comunicaba dignidad, oficio y competencia "
+            "antes de que la persona dijera su nombre."
+        ),
+        "SABER_CONTEMPORANEO": (
+            "Hoy tu marca necesita lo mismo en formato digital: una \\textbf{foto de perfil} "
+            "que comunique tu oficio, una \\textbf{foto de ambiente} que muestre dónde trabajas, "
+            "y un \\textbf{video corto} (60 segundos máximo) donde te presentas. En redes y "
+            "perfiles, esa pieza visual habla por ti antes que tu texto. Quien te ve decide en "
+            "menos de 3 segundos si quiere leerte."
+        ),
+        "PREGUNTA_PUENTE": (
+            "¿Qué hacía que una foto antigua de oficio comunicara dignidad y competencia sin "
+            "decir una palabra? ¿Qué de eso puedes replicar hoy con un celular?"
+        ),
+        "SABER_HACER": (
+            "Al terminar podrás: (1) \\textbf{identificar} qué señales visuales transmite una "
+            "imagen profesional vs una casual; (2) \\textbf{analizar} 3 fotos profesionales que "
+            "admiras; (3) \\textbf{crear} tus 3 fotos + 1 video con criterio; (4) \\textbf{evaluar} "
+            "la imagen propia de un compañero."
+        ),
+
+        "PUENTE_TO_RUTA": (
+            "Antes de empezar, mira el viaje completo. Hoy le pones \\emph{cara} a tu marca --- "
+            "no la selfie de tu cumpleaños, una imagen que comunique quién eres profesionalmente."
+        ),
+        "PUENTE_TO_ESCUTA": (
+            "Antes de tomarte tu foto, vas a leer otras. Las imágenes que funcionan tienen "
+            "decisiones técnicas atrás: encuadre, fondo, mirada, iluminación. Entrenar el ojo "
+            "es el primer paso."
+        ),
+        "PUENTE_TO_SIST": (
+            "Ya viste qué hace fuerte una imagen de oficio moderna. Ahora vamos a aprender las "
+            "\\textbf{cuatro decisiones técnicas} que la diferencian de una foto casual: "
+            "encuadre, fondo, luz, intención."
+        ),
+        "PUENTE_TO_PRAX": (
+            "Tienes el criterio. Toca producir: 3 fotos y 1 video corto con celular y un par "
+            "de minutos. Sin presupuesto, sin sesión profesional --- con decisiones acertadas."
+        ),
+        "PUENTE_TO_PROD": (
+            "Lo que sigue resume \\emph{qué} entregas hoy y \\emph{cómo se sabe} si tu imagen "
+            "funciona. El criterio principal: que un extraño pueda mirarla 3 segundos y "
+            "entender qué haces."
+        ),
+        "PUENTE_TO_EVAL": (
+            "Antes de cerrar, mira tu imagen desde las cinco dimensiones humanas. La foto "
+            "profesional toca temas profundos: cómo te ves, cómo te ven, qué expectativa "
+            "construyes."
+        ),
+        "PUENTE_TO_TRIANG": (
+            "Y para terminar, tres voces sobre la imagen pública. Dussel sobre la voz visual "
+            "silenciada, Epicteto sobre lo que depende de ti, Floridi sobre la imagen como "
+            "información en la infoesfera."
+        ),
+
+        "ESCUTA_ESCENA": (
+            "\\textbf{Actividad 1 · IDENTIFICA --- Foto profesional vs foto casual} (15 min · "
+            "individual). Busca en LinkedIn (o portafolios en línea) \\textbf{3 fotos "
+            "profesionales} de personas que admiras y \\textbf{3 fotos casuales} (Instagram, "
+            "TikTok) de cualquier persona. Para cada par: ¿qué diferencias notas en encuadre, "
+            "fondo, mirada, luz?"
+        ),
+        "ESCUTA_CHECK_1": "Encontré 3 fotos profesionales que comunican oficio o competencia.",
+        "ESCUTA_CHECK_2": "Las contrasté con 3 fotos casuales de mi propio feed.",
+        "ESCUTA_CHECK_3": "Identifiqué 4 diferencias técnicas concretas (encuadre/fondo/luz/intención).",
+        "ESCUTA_INFOBAND": (
+            "\\textbf{Lo que va al cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1 --- "
+            "Foto profesional vs casual». \\textbf{Formato:} tabla de 5 columnas (Foto | "
+            "Encuadre | Fondo | Luz | Qué transmite), 6 filas (3 profesionales + 3 casuales). "
+            "\\textbf{Sabes que terminaste cuando} cada celda nombra una decisión técnica "
+            "concreta (no ``se ve mejor''), y al final puedes resumir en 2 renglones qué "
+            "diferencia visual hace la categoría ``profesional''."
+        ),
+
+        "SISTEMATIZACION_INTRO": (
+            "Toda imagen profesional sigue 4 decisiones técnicas. Vamos a descomponerlas con "
+            "los pilares del pensamiento computacional para que puedas hacer las tuyas con "
+            "criterio y un celular."
+        ),
+        "PILAR_1_SIST": (
+            "Una imagen profesional se descompone en 4 decisiones: (1) \\textbf{encuadre} "
+            "(plano medio para retrato, plano general para ambiente), (2) \\textbf{fondo} "
+            "(limpio, coherente, no distractor), (3) \\textbf{luz} (frontal natural mejor que "
+            "flash, evita contraluces fuertes), (4) \\textbf{intención} (sabes qué transmitir "
+            "antes de disparar)."
+        ),
+        "PILAR_2_SIST": (
+            "Toda imagen sigue el patrón \\textbf{regla de los tercios}: divide mentalmente la "
+            "imagen en 9 partes y pon el sujeto en una de las líneas. El centro exacto se "
+            "siente plano; la línea, equilibrado."
+        ),
+        "PILAR_3_SIST": (
+            "Lo esencial de tu imagen cabe en una pregunta: \\emph{¿qué dirá esta foto si la ve "
+            "alguien que no me conoce, en 3 segundos?}. Si la respuesta es ``algo cualquiera'', "
+            "todavía no abstrajiste tu propuesta visual."
+        ),
+        "PILAR_4_SIST": (
+            "Pasos: (1) decide qué quieres comunicar (oficio, ambiente, acción); (2) elige fondo "
+            "y luz; (3) usa el temporizador del celular (no selfie con brazo); (4) toma 20+ "
+            "fotos; (5) descarta el 95\\%, queda con la mejor."
+        ),
+        "ANATOMIA_TITULO": "Anatomía de una foto profesional con celular",
+        "ANATOMIA_BODY": (
+            "\\textbf{Retrato (perfil):} plano medio, mirada al lente o a 45°, fondo limpio, "
+            "luz natural lateral. \\\\[1mm] "
+            "\\textbf{Ambiente:} plano más abierto que muestra dónde trabajas, sujeto a un "
+            "tercio del encuadre. \\\\[1mm] "
+            "\\textbf{Acción:} foto tomada \\emph{mientras} haces tu oficio (no posada), con "
+            "un objeto característico. \\\\[1mm] "
+            "\\textbf{Edición:} ajustes mínimos (exposición + contraste). Sin filtros agresivos. "
+            "Sin filtros de cara."
+        ),
+        "ERRORES_COMUNES": (
+            "(1) Selfie con brazo extendido: la distorsión hace ver mal hasta a un modelo. "
+            "(2) Fondos caóticos (cuarto desordenado, mucha gente): pierdes el foco. "
+            "(3) Filtros agresivos: rompen la coherencia con cualquier marca seria. "
+            "(4) Una sola foto: nunca sabrás si pudiste hacerlo mejor."
+        ),
+        "SIST_INFOBAND": (
+            "\\textbf{Lo que va al cuaderno (Actividad 2 · ANALIZA).} Título: «Actividad 2 --- "
+            "Análisis de 3 imágenes que admiro». \\textbf{Formato:} 3 fichas, una por foto, "
+            "cada una con: (a) descripción de la foto en 1 frase, (b) las 4 decisiones técnicas "
+            "(encuadre/fondo/luz/intención), (c) qué transmite. \\textbf{Sabes que terminaste "
+            "cuando} las 3 fichas tienen las 4 decisiones identificadas con precisión, no con "
+            "generalidades."
+        ),
+
+        "PRAXIS_INTRO": (
+            "\\textbf{Actividad 3 · CREA --- Tus 3 fotos + 1 video corto} (40 min · individual "
+            "o con un compañero que tome las fotos). Hora de producir. Vas a generar 3 fotos "
+            "(retrato + ambiente + acción) y 1 video de presentación de máximo 60 segundos --- "
+            "con celular, sin presupuesto, con criterio."
+        ),
+        "PILAR_1_PRAX": (
+            "Tu sesión se descompone en 4 piezas: retrato (perfil), ambiente, acción, video "
+            "corto. Cada una con propósito distinto y decisión técnica distinta."
+        ),
+        "PILAR_2_PRAX": (
+            "Sigue el patrón ``20 fotos por foto final'': nunca te quedes con la primera. La "
+            "diferencia entre amateur y profesional no es la cámara: es la cantidad de tomas "
+            "que descartas."
+        ),
+        "PILAR_3_PRAX": (
+            "Cada foto comunica una sola idea sobre ti. Si tu retrato muestra ``soy serio'' y "
+            "tu video dice ``soy divertido'', la marca pierde coherencia. Decide \\emph{antes} "
+            "qué transmitir."
+        ),
+        "PILAR_4_PRAX": (
+            "Algoritmo: (1) elige lugar y hora (luz natural, mañana o atardecer); (2) pide a un "
+            "compañero o usa temporizador; (3) toma 20+ fotos por cada una de las 3 categorías; "
+            "(4) graba 5 takes del video, queda con 1; (5) edición mínima en el celular; "
+            "(6) sube al sitio o portafolio."
+        ),
+        "CHECKLIST_TITULO": "Checklist antes de cerrar la sesión de fotos",
+        "CHECKLIST_ITEMS": (
+            "\\checkbox 3 fotos finales seleccionadas (retrato + ambiente + acción). \\\\[1mm] "
+            "\\checkbox 1 video de presentación de 30-60 segundos, audio limpio. \\\\[1mm] "
+            "\\checkbox Cero fotos con brazo extendido (selfie clásica). \\\\[1mm] "
+            "\\checkbox Fondos limpios o intencionalmente narrativos. \\\\[1mm] "
+            "\\checkbox Edición mínima, sin filtros de cara ni colores agresivos. \\\\[1mm] "
+            "\\checkbox Coherente con tu sistema visual (paleta, tono) de la Guía 2."
+        ),
+        "PLANTILLA_GUION": (
+            "\\textbf{Retrato.} \\textit{Descripción breve + decisiones técnicas usadas + "
+            "URL/captura.} \\\\[1mm] "
+            "\\textbf{Ambiente.} \\textit{Lo mismo.} \\\\[1mm] "
+            "\\textbf{Acción.} \\textit{Lo mismo.} \\\\[1mm] "
+            "\\textbf{Video (60 s).} \\textit{Guion de 3 ideas + URL del video subido.}"
+        ),
+        "PRAX_INFOBAND": (
+            "\\textbf{Lo que va al cuaderno (Actividad 3 · CREA).} Título: «Actividad 3 --- Mi "
+            "imagen de marca · v1». \\textbf{Formato:} ficha por cada uno de los 4 entregables "
+            "(3 fotos + 1 video) con descripción y URL/captura. \\textbf{Extensión:} una página "
+            "de cuaderno. \\textbf{Sabes que terminaste cuando} un extraño que mira los 4 "
+            "entregables puede decir, en 1 frase, qué haces y cómo te ves haciéndolo."
+        ),
+        "PRODUCTO_TITULO": "3 fotos profesionales + 1 video corto coherentes con tu marca",
+        "CRITERIOS_LISTA": (
+            "(1) Las 3 fotos tienen propósito distinto (retrato / ambiente / acción). "
+            "(2) Cero selfies con brazo extendido o filtros de cara. "
+            "(3) El video tiene audio limpio y mensaje claro en máximo 60 segundos. "
+            "(4) Las 4 piezas son coherentes con tu sistema visual (paleta, tono) de la Guía 2. "
+            "(5) Un extraño puede entender qué haces en 3 segundos de mirada."
+        ),
+
+        "DUSSEL_CITA": "La belleza estética nace donde una voz silenciada encuentra forma.",
+        "DUSSEL_APLICACION": (
+            "Las fotos de moda en redes responden a un canon visual del norte global "
+            "(luminosidad alta, fondos minimalistas, sonrisa estandarizada). Tu imagen propia "
+            "puede repetir ese canon o atreverse a la dignidad del retrato latinoamericano: el "
+            "color del Valle en tu ropa, el contexto real de tu lugar, una mirada que no "
+            "necesita aprobación. La descolonización empieza por la fotografía propia."
+        ),
+        "DUSSEL_PREGUNTA": (
+            "¿Mi imagen propia repite el canon global o se atreve a mostrar mi lugar? ¿Qué de "
+            "mi contexto invisibilizo cuando elijo el fondo?"
+        ),
+        "ESTOICISMO_AUTOR": "Epicteto",
+        "ESTOICISMO_CITA": "No nos perturban las cosas, sino las opiniones que tenemos de ellas.",
+        "ESTOICISMO_APLICACION": (
+            "La trampa con la imagen propia es buscar la aprobación de los demás (likes, "
+            "comentarios, comparación). Eso no depende de ti. Lo que sí depende: la decisión de "
+            "transmitir dignidad y oficio, no caza de likes. Una foto que tú puedes defender es "
+            "más valiosa que una con 1000 likes que no representa quién eres."
+        ),
+        "ESTOICISMO_PREGUNTA": (
+            "¿Estoy tomando esta foto para mí o para perseguir la aprobación de otros? ¿Puedo "
+            "defenderla en 5 años como representativa de quien era?"
+        ),
+        "FLORIDI_CITA": "Cada imagen publicada se vuelve dato en la infoesfera; cuídala como cuidarías un legado.",
+        "FLORIDI_APLICACION": (
+            "Tu imagen profesional, una vez publicada, alimenta sistemas de reconocimiento "
+            "facial, archivos del futuro, búsquedas inversas. Es información de tu identidad "
+            "biométrica. Floridi nos pediría preguntarnos: ¿qué pasa con esta imagen cuando "
+            "tenga 40 años? ¿qué legado dejo en la infoesfera?"
+        ),
+        "FLORIDI_PREGUNTA": (
+            "¿Esta imagen va a envejecer bien? Si dentro de 10 años un sistema la encuentra, "
+            "¿me representará? ¿Mis decisiones de hoy honran a mi yo futuro?"
+        ),
+
+        "COMPROMISO_INFOBAND": (
+            "\\textbf{Para la próxima semana.} Cambia tu foto de perfil en WhatsApp, "
+            "Instagram, correo institucional y LinkedIn por tu nuevo retrato. Anota durante 3 "
+            "días si te dicen algo distinto las personas con las que interactúas. Esa "
+            "respuesta te dice si tu imagen funciona o necesita ajuste. El próximo lunes traes "
+            "las observaciones."
+        ),
     },
 
     "1-8": {
-        "completo": False,
+        "completo": True,
         "titulo": "Perfiles profesionales --- LinkedIn y portafolio coherentes",
+        "titulo_portada": "Perfiles profesionales ---\\\\LinkedIn y portafolio\\\\coherentes",
         "producto_final": "Perfil de LinkedIn completo + portafolio mínimo (3 piezas) enlazado al sitio",
-        "saber_ancestral_idea": "Las \"señas\" de identidad familiar (el apellido, el oficio, la procedencia) abrían o cerraban puertas. Hoy las señas viven en LinkedIn: el handshake digital del nuevo profesional.",
-        "verbos_actividades": ["ANALIZA", "EXPLICA", "CREA", "EVALÚA"],
+
+        "SABER_ANCESTRAL": (
+            "En el Valle, el Pacífico y los pueblos andinos, las \\textbf{``señas''} de "
+            "identidad abrían o cerraban puertas en segundos. Tu apellido (``los Cárdenas''), "
+            "tu oficio (``soy hijo del herrero''), tu procedencia (``vengo del Cauca''), tu "
+            "padrino o tu maestro. Bastaba una conversación de 30 segundos en la plaza para que "
+            "te ubicaran social y profesionalmente. Las señas eran el \\emph{handshake} "
+            "tradicional: confianza basada en red verificada."
+        ),
+        "SABER_CONTEMPORANEO": (
+            "Hoy ese \\emph{handshake} sucede en \\textbf{LinkedIn} y en tu \\textbf{portafolio "
+            "público}. Tu foto, tu titular, tu sección ``acerca'', tus experiencias, tus "
+            "recomendaciones --- todo eso compone tus señas digitales. Cada elemento suma o "
+            "resta credibilidad. Un perfil incompleto cierra puertas que un perfil sólido "
+            "abre en segundos."
+        ),
+        "PREGUNTA_PUENTE": (
+            "¿Qué hacían las ``señas'' tradicionales que abrían puertas profesionales en "
+            "segundos? ¿Qué se conserva, qué cambia, en la versión digital?"
+        ),
+        "SABER_HACER": (
+            "Al terminar podrás: (1) \\textbf{analizar} 3 perfiles profesionales que admiras y "
+            "extraer su patrón; (2) \\textbf{explicar} qué hace coherentes (o no) los elementos "
+            "de un perfil; (3) \\textbf{crear} tu perfil LinkedIn + portafolio mínimo; "
+            "(4) \\textbf{evaluar} el perfil de un compañero con criterios."
+        ),
+
+        "PUENTE_TO_RUTA": (
+            "Antes de empezar, mira el viaje completo. Hoy le das forma a tu \\emph{handshake "
+            "digital} --- el primer contacto profesional con quien no te conoce todavía."
+        ),
+        "PUENTE_TO_ESCUTA": (
+            "Antes de armar tu propio LinkedIn, vas a leer otros. Detrás de cada perfil que "
+            "transmite seriedad hay decisiones coherentes; detrás de los confusos, "
+            "improvisación."
+        ),
+        "PUENTE_TO_SIST": (
+            "Ya viste 3 perfiles fuertes. Ahora vamos a entender los \\textbf{6 elementos} que "
+            "tiene todo perfil profesional sólido: foto, titular, sobre mí, experiencia, "
+            "destacado, recomendaciones."
+        ),
+        "PUENTE_TO_PRAX": (
+            "Tienes el patrón. Toca aplicarlo a \\emph{tu} perfil: foto profesional (de la "
+            "Guía 7), titular con propuesta de valor (de la Guía 1), texto coherente con tu "
+            "voz (de la Guía 5). Todo lo que has construido converge aquí."
+        ),
+        "PUENTE_TO_PROD": (
+            "Lo que sigue es el resumen de \\emph{qué} entregas hoy. El criterio principal: "
+            "que tu LinkedIn y tu portafolio cuenten la misma historia, con la misma voz, sin "
+            "inflar ni desmerecer."
+        ),
+        "PUENTE_TO_EVAL": (
+            "Antes de cerrar, mira tu identidad profesional digital desde las cinco "
+            "dimensiones humanas. LinkedIn parece técnico pero toca temas profundos de clase, "
+            "acceso, autenticidad."
+        ),
+        "PUENTE_TO_TRIANG": (
+            "Y para terminar, tres voces sobre la presencia profesional. Dussel sobre quién "
+            "está en LinkedIn y quién no, Séneca sobre el tiempo y la reputación, Floridi "
+            "sobre la identidad como capital reputacional."
+        ),
+
+        "ESCUTA_ESCENA": (
+            "\\textbf{Actividad 1 · ANALIZA --- 3 perfiles que admiras} (15 min · individual). "
+            "En LinkedIn busca \\textbf{3 personas} cuyo perfil te transmita seriedad y "
+            "competencia (no necesariamente famosas; profesionales con 3-10 años de carrera). "
+            "Para cada perfil: ¿cómo es la foto? ¿qué dice su titular? ¿qué tono usa su "
+            "``Acerca de''? ¿qué destaca?"
+        ),
+        "ESCUTA_CHECK_1": "Encontré 3 perfiles distintos en mi área de interés.",
+        "ESCUTA_CHECK_2": "Observé los 6 elementos clave (foto/titular/sobre/experiencia/destacado/recomendaciones).",
+        "ESCUTA_CHECK_3": "Anoté qué tienen en común y qué los diferencia.",
+        "ESCUTA_INFOBAND": (
+            "\\textbf{Lo que va al cuaderno (Actividad 1 · ANALIZA).} Título: «Actividad 1 --- "
+            "3 perfiles profesionales que admiro». \\textbf{Formato:} 3 fichas, una por "
+            "perfil, con los 6 elementos clave + una columna ``qué transmite''. Al final 1 "
+            "párrafo de 4 renglones con el patrón común. \\textbf{Sabes que terminaste cuando} "
+            "los 6 elementos están analizados en cada perfil con observaciones específicas (no "
+            "``buena foto'')."
+        ),
+
+        "SISTEMATIZACION_INTRO": (
+            "Todo perfil profesional sólido se compone de 6 elementos coherentes entre sí. "
+            "Vamos a descomponerlos con los pilares del pensamiento computacional para que tu "
+            "perfil sostenga la promesa que tu marca hace."
+        ),
+        "PILAR_1_SIST": (
+            "Tu perfil se descompone en: (1) \\textbf{foto profesional} (de la Guía 7), "
+            "(2) \\textbf{titular} (no tu cargo, tu propuesta de valor de la Guía 1), "
+            "(3) \\textbf{sobre mí} (3 párrafos coescritos como en la Guía 5), "
+            "(4) \\textbf{experiencia} (cargos + logros medibles), "
+            "(5) \\textbf{destacado} (3 piezas de portafolio), "
+            "(6) \\textbf{recomendaciones} (1-2 de profesores, mentores o colegas)."
+        ),
+        "PILAR_2_SIST": (
+            "Todo perfil fuerte sigue el patrón ``coherencia transversal'': lo que dice tu "
+            "titular se sostiene en tu sobre mí, se demuestra en tu experiencia, se evidencia "
+            "en tu destacado, y otros lo confirman en tus recomendaciones. Si los 6 elementos "
+            "cuentan historias distintas, la marca se rompe."
+        ),
+        "PILAR_3_SIST": (
+            "Lo esencial de tu perfil cabe en una pregunta: \\emph{¿después de leer mis 6 "
+            "elementos, alguien sabe quién soy, qué hago y por qué confiar en mí?}. Si "
+            "después de leer tu perfil esa persona todavía duda, falta coherencia."
+        ),
+        "PILAR_4_SIST": (
+            "Pasos: (1) sube tu foto de retrato (Guía 7); (2) escribe titular con tu propuesta "
+            "de valor (Guía 1); (3) pega tu ``sobre mí'' coescrito (Guía 5); (4) llena 1-3 "
+            "experiencias con logros concretos; (5) sube 3 piezas a Destacado (puede ser tu "
+            "sitio de la Guía 4); (6) pide 1-2 recomendaciones a docentes."
+        ),
+        "ANATOMIA_TITULO": "Anatomía de un perfil profesional coherente",
+        "ANATOMIA_BODY": (
+            "\\textbf{Foto:} retrato profesional, no selfie de fiesta. \\\\[1mm] "
+            "\\textbf{Titular (220 caracteres):} ``Tu propuesta de valor'' --- no tu cargo. \\\\[1mm] "
+            "\\textbf{Sobre mí:} tu voz coescrita de la Guía 5, sin clichés. \\\\[1mm] "
+            "\\textbf{Experiencia:} cada cargo con 3 logros medibles, no descripción de "
+            "tareas. \\\\[1mm] "
+            "\\textbf{Destacado:} 3 piezas tangibles (sitio, portafolio, proyecto). \\\\[1mm] "
+            "\\textbf{Recomendaciones:} 1-2 voces externas que confirmen lo anterior."
+        ),
+        "ERRORES_COMUNES": (
+            "(1) Titular tipo cargo: ``Estudiante de 11°'' (cierra puertas; mejor: tu propuesta "
+            "de valor). "
+            "(2) Sobre mí lleno de clichés (``apasionado por aprender''): se nota a kilómetros. "
+            "(3) Experiencia sin logros concretos: solo tareas sin resultados. "
+            "(4) Sin recomendaciones: tu propio perfil no se valida solo."
+        ),
+        "SIST_INFOBAND": (
+            "\\textbf{Lo que va al cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2 --- "
+            "Los 6 elementos de mi perfil». \\textbf{Formato:} 6 fichas, una por elemento, "
+            "cada una con: definición (1 frase tuya), error común a evitar, ejemplo de cómo "
+            "lo aplicarás a tu propio LinkedIn. \\textbf{Sabes que terminaste cuando} cada "
+            "ficha tiene tu propio ejemplo específico, no plantilla genérica."
+        ),
+
+        "PRAXIS_INTRO": (
+            "\\textbf{Actividad 3 · CREA --- Tu perfil de LinkedIn + portafolio mínimo} (40 min "
+            "· individual). Hora de armar tu \\emph{handshake digital}. Vas a configurar los 6 "
+            "elementos de tu perfil con todo lo que ya tienes de las guías anteriores: foto, "
+            "propuesta de valor, voz, sitio."
+        ),
+        "PILAR_1_PRAX": (
+            "Tu sesión se descompone en 6 pasos --- uno por elemento. No hagas todo de una "
+            "vez: orden, coherencia, revisión."
+        ),
+        "PILAR_2_PRAX": (
+            "Sigue el patrón ``crea hoy, refina mañana'': tu primer perfil no será perfecto. "
+            "Lo importante es que esté completo y coherente. Refinas con feedback en las "
+            "semanas siguientes."
+        ),
+        "PILAR_3_PRAX": (
+            "Cada elemento expresa una sola idea de ti. Si tu titular dice algo y tu sobre mí "
+            "lo contradice, eliges uno y ajustas el otro."
+        ),
+        "PILAR_4_PRAX": (
+            "Algoritmo: (1) entra a LinkedIn (o crea cuenta institucional); (2) sube foto + "
+            "titular + sobre mí (15 min); (3) llena 1-3 experiencias con logros (10 min); "
+            "(4) sube destacado con enlace a tu sitio (5 min); (5) escribe a 2 docentes "
+            "pidiendo recomendación (5 min); (6) publica tu primer post anunciando tu sitio "
+            "(5 min)."
+        ),
+        "CHECKLIST_TITULO": "Checklist antes de declarar el perfil publicado",
+        "CHECKLIST_ITEMS": (
+            "\\checkbox Foto profesional subida (no selfie). \\\\[1mm] "
+            "\\checkbox Titular con tu propuesta de valor (no ``estudiante''). \\\\[1mm] "
+            "\\checkbox Sobre mí coescrito de la Guía 5, sin clichés. \\\\[1mm] "
+            "\\checkbox 1-3 experiencias con logros concretos, no tareas. \\\\[1mm] "
+            "\\checkbox 3 piezas en Destacado, incluyendo tu sitio. \\\\[1mm] "
+            "\\checkbox 2 solicitudes de recomendación enviadas a docentes/mentores."
+        ),
+        "PLANTILLA_GUION": (
+            "\\textbf{Mi titular final.} \\textit{220 caracteres máximo, mi propuesta de valor.} "
+            "\\\\[1mm] "
+            "\\textbf{Mi sobre mí.} \\textit{3 párrafos coescritos de la Guía 5.} \\\\[1mm] "
+            "\\textbf{Mis 3 logros principales.} \\textit{Uno por experiencia, medible.} \\\\[1mm] "
+            "\\textbf{Mi destacado.} \\textit{3 piezas con URL.} \\\\[1mm] "
+            "\\textbf{Recomendaciones pendientes.} \\textit{2 nombres + fechas de envío.}"
+        ),
+        "PRAX_INFOBAND": (
+            "\\textbf{Lo que va al cuaderno (Actividad 3 · CREA).} Título: «Actividad 3 --- Mi "
+            "perfil LinkedIn · v1». \\textbf{Formato:} 6 secciones con el contenido final de "
+            "cada elemento + URL pública de tu perfil. \\textbf{Extensión:} una página de "
+            "cuaderno. \\textbf{Sabes que terminaste cuando} alguien que abre tu URL entiende "
+            "en 30 segundos qué haces y siente coherencia entre los 6 elementos."
+        ),
+        "PRODUCTO_TITULO": "Perfil LinkedIn completo + portafolio mínimo enlazado al sitio",
+        "CRITERIOS_LISTA": (
+            "(1) URL pública del perfil accesible para quien no esté logueado. "
+            "(2) Los 6 elementos están presentes y completos (no ``estudiante'' como titular). "
+            "(3) Coherencia transversal: foto + titular + sobre mí + experiencia se sostienen "
+            "entre sí. "
+            "(4) Mínimo 3 piezas en Destacado, incluyendo el sitio de la Guía 4. "
+            "(5) 2 solicitudes de recomendación enviadas (aunque aún no se hayan recibido)."
+        ),
+
+        "DUSSEL_CITA": "El sur global piensa desde su propia herida y desde ahí ofrece mundo.",
+        "DUSSEL_APLICACION": (
+            "LinkedIn fue diseñado por y para profesionales del norte global, con un canon de "
+            "carrera lineal (universidad → primer empleo → ascenso → MBA). Esa narrativa "
+            "invisibiliza la realidad latinoamericana: trabajos paralelos, emprendimientos "
+            "informales, oficios familiares heredados. Tu perfil puede reproducir ese canon o "
+            "puede romperlo nombrando con orgullo lo que en otro lugar ocultarían."
+        ),
+        "DUSSEL_PREGUNTA": (
+            "¿Mi perfil reproduce un modelo de carrera del norte o reconoce mi historia real "
+            "del Valle? ¿Qué de mi vida estoy borrando para encajar?"
+        ),
+        "ESTOICISMO_AUTOR": "Séneca",
+        "ESTOICISMO_CITA": "Mientras esperamos vivir, la vida pasa.",
+        "ESTOICISMO_APLICACION": (
+            "El error más común con LinkedIn en grado 11 es esperar a tener ``algo que mostrar'' "
+            "para abrirse el perfil. La reputación profesional se construye con tiempo --- "
+            "empezar hoy con un perfil honesto y sencillo es ganar 2 años contra quien espera "
+            "a graduarse para abrirlo."
+        ),
+        "ESTOICISMO_PREGUNTA": (
+            "¿Estoy postergando construir mi reputación profesional digital esperando un "
+            "momento ideal? ¿Qué pierdo cada mes que paso sin perfil?"
+        ),
+        "FLORIDI_CITA": "La identidad profesional digital es capital reputacional en la infoesfera.",
+        "FLORIDI_APLICACION": (
+            "Tu LinkedIn es activo informacional: aporta señales que otros sistemas (algoritmos "
+            "de búsqueda, recruiters automáticos, redes de recomendación) usan para ubicarte. "
+            "Cuanto más coherente y veraz, más valioso es ese capital. Cuanto más inflado, "
+            "más frágil."
+        ),
+        "FLORIDI_PREGUNTA": (
+            "¿Mi perfil construye capital reputacional honesto o capital inflado fácil de "
+            "derrumbar? ¿Qué de mi perfil puedo defender en 5 años?"
+        ),
+
+        "COMPROMISO_INFOBAND": (
+            "\\textbf{Para la próxima semana.} Cada día, dedica 10 minutos a interactuar con "
+            "contenido profesional en LinkedIn (no scrollear; comentar 1 post con criterio y "
+            "compartir 1 con tu opinión). Esa práctica diaria construye más reputación que un "
+            "perfil estático impecable. El próximo lunes traes la bitácora de 7 interacciones."
+        ),
     },
 
     "1-9": {
-        "completo": False,
+        "completo": True,
         "titulo": "Métricas básicas --- quién entra a mi sitio y qué busca",
-        "producto_final": "Dashboard de 5 indicadores en Google Analytics (o Plausible / Umami) configurado",
-        "saber_ancestral_idea": "El conteo de cosecha: el campesino cuenta racimos, semillas, días de lluvia. No para presumir sino para decidir el próximo ciclo. Las métricas son la cosecha de tu marca.",
-        "verbos_actividades": ["IDENTIFICA", "EXPLICA", "ANALIZA", "EVALÚA"],
+        "titulo_portada": "Métricas básicas ---\\\\quién entra a mi sitio\\\\y qué busca",
+        "producto_final": "Dashboard de 5 indicadores configurado (Plausible/Umami/GA4) + lectura semanal",
+
+        "SABER_ANCESTRAL": (
+            "El \\textbf{conteo de la cosecha} era una práctica seria en el campo: la abuela "
+            "anotaba en una libreta cuántos racimos de café por mata, cuántas mazorcas por "
+            "surco, cuántas mantas terminadas por luna, cuántos días llovió. No era vanidad ni "
+            "estadística académica. Era información para \\emph{decidir}: cuánto sembrar el "
+            "próximo ciclo, a quién pedir ayuda, qué reservar. Sin conteo, no había aprendizaje "
+            "del oficio."
+        ),
+        "SABER_CONTEMPORANEO": (
+            "El conteo digital de tu marca son las \\textbf{métricas} de tu sitio: visitas "
+            "únicas, fuentes (de dónde viene la gente), comportamiento (qué páginas miran), "
+            "conversión (qué acción toman), tiempo en sitio. Herramientas: Plausible o Umami "
+            "(privadas, sencillas) o Google Analytics 4 (potente, complejo). El error más común "
+            "es perseguir likes (vanidad); el oficio digital es leer las \\textbf{cinco "
+            "métricas que sí importan} para decidir."
+        ),
+        "PREGUNTA_PUENTE": (
+            "¿Qué hacían los abuelos con los conteos del año anterior que muchos hoy NO hacen "
+            "con sus métricas digitales? ¿Por qué tener datos no es lo mismo que aprender de "
+            "ellos?"
+        ),
+        "SABER_HACER": (
+            "Al terminar podrás: (1) \\textbf{identificar} las 5 métricas que sí importan para "
+            "una marca personal; (2) \\textbf{explicar} la diferencia entre métricas de "
+            "vanidad y métricas de decisión; (3) \\textbf{analizar} 1 semana de datos reales de "
+            "tu sitio; (4) \\textbf{evaluar} qué decisión tomarías con esos datos."
+        ),
+
+        "PUENTE_TO_RUTA": (
+            "Antes de empezar, mira el viaje completo. Hoy le abres los \\emph{ojos} a tu "
+            "marca --- aprendes a leer qué pasa en tu sitio, no por curiosidad sino para "
+            "decidir mejor."
+        ),
+        "PUENTE_TO_ESCUTA": (
+            "Antes de configurar tu propio dashboard, vas a entender qué \\emph{no} es una "
+            "métrica útil. La diferencia entre vanidad y decisión es la línea que separa al "
+            "que aprende del que solo cuenta."
+        ),
+        "PUENTE_TO_SIST": (
+            "Ya viste qué es métrica de vanidad. Ahora vamos a entender las \\textbf{5 métricas "
+            "que sí importan} para una marca personal en construcción --- ni más ni menos."
+        ),
+        "PUENTE_TO_PRAX": (
+            "Tienes el principio. Toca instalar la herramienta en \\emph{tu} sitio y leer la "
+            "primera semana real de datos. La instalación toma 10 minutos; la lectura, una vida "
+            "de oficio."
+        ),
+        "PUENTE_TO_PROD": (
+            "Lo que sigue resume \\emph{qué} entregas hoy: dashboard configurado + primera "
+            "lectura semanal escrita. El criterio: que cada dato lleve a una decisión concreta, "
+            "no solo a un sentimiento."
+        ),
+        "PUENTE_TO_EVAL": (
+            "Antes de cerrar, mira tus métricas desde las cinco dimensiones humanas. Lo que "
+            "mides moldea lo que valoras --- y eso tiene consecuencias éticas."
+        ),
+        "PUENTE_TO_TRIANG": (
+            "Y para terminar, tres voces sobre las métricas. Dussel sobre lo que no se mide y "
+            "se invisibiliza, Marco Aurelio sobre la obsesión por las cifras, Floridi sobre "
+            "tracking y privacidad."
+        ),
+
+        "ESCUTA_ESCENA": (
+            "\\textbf{Actividad 1 · IDENTIFICA --- Métricas de vanidad vs métricas de decisión} "
+            "(15 min · individual). Mira tus 3 redes personales y anota \\textbf{6 cifras "
+            "visibles} (likes, seguidores, vistas, comentarios, comparticiones, tiempo de "
+            "pantalla). Para cada cifra pregúntate: ¿qué decisión concreta tomé alguna vez "
+            "basándome en ese número? Si la respuesta es ``ninguna'', es vanidad."
+        ),
+        "ESCUTA_CHECK_1": "Anoté 6 cifras visibles de mis redes personales.",
+        "ESCUTA_CHECK_2": "Identifiqué cuáles han generado alguna decisión real y cuáles no.",
+        "ESCUTA_CHECK_3": "Distinguí mentalmente: vanidad (mira y olvida) vs decisión (mira y actúa).",
+        "ESCUTA_INFOBAND": (
+            "\\textbf{Lo que va al cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1 "
+            "--- Vanidad vs decisión». \\textbf{Formato:} tabla de 3 columnas (Cifra | "
+            "¿Genera decisión? Sí / No | Si sí: qué decisión), 6 filas. Al final un párrafo de "
+            "3 renglones: ¿qué proporción de tus cifras son vanidad? \\textbf{Sabes que "
+            "terminaste cuando} reconoces honestamente cuántas cifras miras y nunca decides "
+            "nada con ellas."
+        ),
+
+        "SISTEMATIZACION_INTRO": (
+            "Una marca personal en construcción necesita exactamente \\textbf{5 métricas}. Más "
+            "es ruido; menos es ceguera. Vamos a descomponerlas con los pilares del pensamiento "
+            "computacional."
+        ),
+        "PILAR_1_SIST": (
+            "Las 5 métricas se descomponen así: (1) \\textbf{visitas únicas} (cuántas personas "
+            "distintas entraron), (2) \\textbf{fuentes} (de dónde vinieron --- Google, redes, "
+            "directo), (3) \\textbf{páginas más vistas} (qué les interesó), (4) \\textbf{tiempo "
+            "promedio en sitio} (si se quedan o rebotan), (5) \\textbf{conversiones} (cuántos "
+            "tomaron la acción que quieres --- contactar, suscribirse, descargar)."
+        ),
+        "PILAR_2_SIST": (
+            "Toda métrica útil sigue el patrón \\textbf{``observa-decide''}: una cifra que no "
+            "lleva a una decisión es vanidad disfrazada de información. Antes de mirar la "
+            "métrica, pregunta: ¿qué haría diferente si esta cifra fuera el doble o la mitad?"
+        ),
+        "PILAR_3_SIST": (
+            "Lo esencial del análisis cabe en una pregunta: \\emph{¿esta cifra confirma o "
+            "desafía mi hipótesis sobre quién visita mi sitio y por qué?}. Si solo confirma, "
+            "no aprendes; si desafía, ajustas."
+        ),
+        "PILAR_4_SIST": (
+            "Pasos semanales: (1) abrir el dashboard cada lunes; (2) anotar las 5 cifras de la "
+            "semana; (3) compararlas con la semana anterior; (4) escribir 1 decisión que toma\\-rás "
+            "esta semana basada en esas cifras."
+        ),
+        "ANATOMIA_TITULO": "Anatomía de un dashboard de 5 indicadores",
+        "ANATOMIA_BODY": (
+            "\\textbf{Visitas únicas:} ¿creció o decreció vs la semana pasada? \\\\[1mm] "
+            "\\textbf{Fuentes:} ¿qué porcentaje viene de Google? ¿de redes? \\\\[1mm] "
+            "\\textbf{Páginas más vistas:} ¿coinciden con las que tú considerabas más "
+            "importantes? \\\\[1mm] "
+            "\\textbf{Tiempo en sitio:} ¿menos de 30 s = rebote? ¿más de 2 min = lectura "
+            "real? \\\\[1mm] "
+            "\\textbf{Conversiones:} ¿cuántos tomaron la acción esperada (clic en email, "
+            "envío de formulario, descarga)?"
+        ),
+        "ERRORES_COMUNES": (
+            "(1) Mirar el dashboard todos los días: ruido sin señal. Una vez por semana basta. "
+            "(2) Comparar con cifras absolutas en lugar de tendencias: 30 visitas no dicen nada "
+            "sin contexto. "
+            "(3) Configurar GA4 sin entender qué métricas usar: bosque de datos sin brújula. "
+            "(4) Tracking invasivo sin consentimiento: legal y éticamente problemático."
+        ),
+        "SIST_INFOBAND": (
+            "\\textbf{Lo que va al cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2 --- "
+            "Las 5 métricas que sí importan». \\textbf{Formato:} 5 fichas, una por métrica, "
+            "cada una con: qué mide (1 frase) + qué decisión te llevaría a tomar (ejemplo "
+            "concreto). \\textbf{Sabes que terminaste cuando} para cada métrica tienes "
+            "anticipada al menos UNA decisión específica que tomarías si esa cifra subiera o "
+            "bajara."
+        ),
+
+        "PRAXIS_INTRO": (
+            "\\textbf{Actividad 3 · ANALIZA --- Tu primera semana de datos reales} (35 min · "
+            "individual). Instala Plausible, Umami o GA4 en tu sitio (10 min) y, si ya hace una "
+            "semana que tu sitio está vivo, lee los datos reales. Si no, deja la instalación "
+            "lista y vuelve la próxima semana con datos."
+        ),
+        "PILAR_1_PRAX": (
+            "Tu instalación se descompone en: (1) crear cuenta en la herramienta; (2) copiar "
+            "el script de tracking; (3) pegarlo en el \\texttt{<head>} de tu sitio; "
+            "(4) commit + push; (5) verificar que registra."
+        ),
+        "PILAR_2_PRAX": (
+            "Sigue el patrón \\textbf{``privacy first''}: usa Plausible o Umami antes que GA4 "
+            "si te importa respetar a tus visitantes. Son herramientas sin cookies, sin "
+            "tracking transversal. Más simples, más éticas."
+        ),
+        "PILAR_3_PRAX": (
+            "Cada lectura de datos expresa una sola pregunta: ¿qué decisión tomo esta semana? "
+            "Si miras tus métricas y no salen decisiones, los miraste mal o todavía no hay "
+            "suficiente data."
+        ),
+        "PILAR_4_PRAX": (
+            "Algoritmo de lectura semanal: (1) abre dashboard; (2) anota las 5 cifras; "
+            "(3) compara con semana anterior; (4) identifica 1 sorpresa (algo que no esperabas); "
+            "(5) escribe 1 decisión concreta para la próxima semana."
+        ),
+        "CHECKLIST_TITULO": "Checklist antes de cerrar el dashboard",
+        "CHECKLIST_ITEMS": (
+            "\\checkbox Herramienta instalada (Plausible / Umami / GA4) en tu sitio. \\\\[1mm] "
+            "\\checkbox Script de tracking pegado en \\texttt{<head>} y commitado. \\\\[1mm] "
+            "\\checkbox Las 5 métricas configuradas y visibles en el dashboard. \\\\[1mm] "
+            "\\checkbox Política de privacidad publicada si recolectas datos personales. \\\\[1mm] "
+            "\\checkbox Primera lectura semanal escrita en cuaderno (mínimo 1 decisión "
+            "extraída)."
+        ),
+        "PLANTILLA_GUION": (
+            "\\textbf{Herramienta elegida.} \\textit{Plausible / Umami / GA4 y por qué.} \\\\[1mm] "
+            "\\textbf{Mis 5 métricas (esta semana).} \\textit{Tabla con las 5 cifras.} \\\\[1mm] "
+            "\\textbf{Una sorpresa.} \\textit{Algo que no esperabas.} \\\\[1mm] "
+            "\\textbf{Mi decisión.} \\textit{Lo que vas a cambiar la próxima semana basado en "
+            "estos datos.}"
+        ),
+        "PRAX_INFOBAND": (
+            "\\textbf{Lo que va al cuaderno (Actividad 3 · ANALIZA).} Título: «Actividad 3 --- "
+            "Mi primera lectura semanal». \\textbf{Formato:} tabla de las 5 cifras + 1 párrafo "
+            "con la sorpresa + 1 párrafo con la decisión. \\textbf{Extensión:} una página de "
+            "cuaderno. \\textbf{Sabes que terminaste cuando} tienes una decisión concreta y "
+            "accionable basada en los datos, no una observación vaga."
+        ),
+        "PRODUCTO_TITULO": "Dashboard de 5 indicadores instalado + primera lectura semanal escrita",
+        "CRITERIOS_LISTA": (
+            "(1) Herramienta de analytics instalada y registrando visitas. "
+            "(2) Las 5 métricas (visitas únicas / fuentes / páginas / tiempo / conversiones) "
+            "están visibles. "
+            "(3) Si recolectas datos personales, política de privacidad publicada. "
+            "(4) Primera lectura semanal escrita en cuaderno con 1 decisión derivada. "
+            "(5) Has decidido no mirar el dashboard hasta el próximo lunes."
+        ),
+
+        "DUSSEL_CITA": "Lo que no se mide no existe; lo que no se mide bien se inventa.",
+        "DUSSEL_APLICACION": (
+            "Lo que decides medir y lo que decides ignorar es una decisión política. Si solo "
+            "mides ``conversiones'' te ciegas a quien visita pero no compra (estudiantes, "
+            "investigadores, gente que no puede pagar). Si solo mides ``visitas'' te ciegas a "
+            "la calidad. Las métricas que eliges revelan a quién privilegias."
+        ),
+        "DUSSEL_PREGUNTA": (
+            "¿A quién hace visible mi dashboard y a quién deja invisible? ¿Qué de los "
+            "visitantes que NO convierten merece ser visto y nombrado?"
+        ),
+        "ESTOICISMO_AUTOR": "Marco Aurelio",
+        "ESTOICISMO_CITA": "Tu vida es lo que tus pensamientos hagan de ella.",
+        "ESTOICISMO_APLICACION": (
+            "El peligro con métricas es obsesionarse: revisar el dashboard 10 veces al día, "
+            "celebrar likes, sufrir caídas. Eso no depende de ti. Lo que sí depende: la "
+            "decisión semanal informada, calma, sin drama. Que la cifra suba o baje no es la "
+            "noticia; la decisión que tomes con esa cifra sí lo es."
+        ),
+        "ESTOICISMO_PREGUNTA": (
+            "¿Estoy mirando mis métricas para aprender o para sentir? ¿Cuántas veces a la "
+            "semana las miro --- y cuántas decisiones tomé con ellas?"
+        ),
+        "FLORIDI_CITA": "Tracking sin consentimiento es robo informacional.",
+        "FLORIDI_APLICACION": (
+            "Cada vez que pones un tracker en tu sitio, recopilas información de personas "
+            "reales. Floridi nos pediría preguntarnos: ¿esas personas saben que las estoy "
+            "midiendo? ¿les puedo explicar qué hago con sus datos? Por eso herramientas como "
+            "Plausible (sin cookies, agregadas, sin perfil individual) son éticamente "
+            "superiores."
+        ),
+        "FLORIDI_PREGUNTA": (
+            "¿Mi sistema de medición respeta a quien visita mi sitio? ¿Puedo explicar en 2 "
+            "frases qué datos recojo y para qué?"
+        ),
+
+        "COMPROMISO_INFOBAND": (
+            "\\textbf{Para la próxima semana.} Lunes a las 7 PM, dedica 15 minutos a leer tu "
+            "dashboard y escribir 1 decisión accionable. No mires los datos entre semana. "
+            "Que la disciplina sea semanal, no diaria. El próximo lunes traes el cuaderno con "
+            "esa lectura."
+        ),
     },
 
     "1-10": {
-        "completo": False,
+        "completo": True,
         "titulo": "Lanzamiento P1 --- mi presencia digital sale al mundo",
-        "producto_final": "Sitio público anunciado en 3 redes + primera entrada del cuaderno de marca",
-        "saber_ancestral_idea": "La inauguración del taller: el oficio que se abre por primera vez al barrio. Hay nervios, hay errores, hay vecinos curiosos. Lo importante es \\emph{empezar}.",
-        "verbos_actividades": ["ANALIZA", "EXPLICA", "CREA", "EVALÚA"],
+        "titulo_portada": "Lanzamiento P1 ---\\\\mi presencia digital\\\\sale al mundo",
+        "producto_final": "Sitio público anunciado en 3 redes + bitácora del cuaderno de marca · semana 1",
+
+        "SABER_ANCESTRAL": (
+            "La \\textbf{inauguración del taller} era un ritual del oficio. El carpintero, "
+            "panadero o sastre que terminaba su aprendizaje y abría su propio espacio para el "
+            "barrio invitaba a los vecinos, al maestro que lo enseñó, a la familia. Había "
+            "nervios, había errores, había curiosos que asomaban. Pero el ritual mismo --- "
+            "abrir las puertas, anunciar el oficio, recibir la primera mirada externa --- era "
+            "más importante que la perfección. \\emph{Lo importante era empezar; el resto se "
+            "aprende sirviendo a los primeros clientes.}"
+        ),
+        "SABER_CONTEMPORANEO": (
+            "Hoy el ritual cambia de plaza pero conserva el espíritu: \\textbf{anunciar tu "
+            "sitio público en tres redes}, escribir el primer post que cuenta tu propuesta, "
+            "iniciar tu \\textbf{bitácora de marca} (cuaderno donde anotas lo que aprendes "
+            "semana a semana). Y sobre todo: aceptar que la primera versión es imperfecta. "
+            "El error más común no es lanzar mal --- es no lanzar."
+        ),
+        "PREGUNTA_PUENTE": (
+            "¿Qué de los antiguos rituales de inauguración del taller sigue siendo necesario "
+            "hoy para lanzar una marca? ¿Por qué empezar imperfecto venció a esperar perfecto?"
+        ),
+        "SABER_HACER": (
+            "Al terminar podrás: (1) \\textbf{analizar} cómo lanzaron 3 marcas que admiras "
+            "(post inicial, redes elegidas, copy); (2) \\textbf{explicar} por qué empezar "
+            "imperfecto siempre vence a esperar perfecto; (3) \\textbf{crear} tu post de "
+            "lanzamiento + bitácora semana 1; (4) \\textbf{evaluar} el lanzamiento de un "
+            "compañero con criterios."
+        ),
+
+        "PUENTE_TO_RUTA": (
+            "Antes de empezar, mira el viaje completo. Hoy cierras el Periodo 1 --- nueve "
+            "guías te trajeron hasta aquí. Hora de abrir las puertas del taller."
+        ),
+        "PUENTE_TO_ESCUTA": (
+            "Antes de lanzar tu propio sitio, vas a leer cómo lanzaron otros. Buenos y malos "
+            "lanzamientos enseñan algo distinto. La diferencia entre los dos suele ser pequeña "
+            "y decidible."
+        ),
+        "PUENTE_TO_SIST": (
+            "Ya viste 3 lanzamientos reales. Ahora vamos a entender por qué \\textbf{empezar "
+            "imperfecto vence a esperar perfecto}: las 4 razones que la psicología, el "
+            "emprendimiento y el oficio confirman."
+        ),
+        "PUENTE_TO_PRAX": (
+            "Tienes el principio. Toca lanzar de verdad: post de presentación en 3 redes, "
+            "enlace a tu sitio (Guía 4), tu propuesta de valor (Guía 1), tu imagen (Guía 7), "
+            "tu voz (Guía 5). Todo lo que has construido converge en este momento."
+        ),
+        "PUENTE_TO_PROD": (
+            "Lo que sigue resume \\emph{qué} entregas hoy y cierras el Periodo 1: sitio "
+            "anunciado + bitácora iniciada. El criterio principal: que el siguiente lunes "
+            "puedas mirar atrás y decir ``empecé''."
+        ),
+        "PUENTE_TO_EVAL": (
+            "Antes de cerrar, mira el lanzamiento desde las cinco dimensiones humanas. "
+            "Publicar tiene costo emocional y consecuencias ciudadanas que vale la pena "
+            "nombrar."
+        ),
+        "PUENTE_TO_TRIANG": (
+            "Y para terminar, tres voces sobre lanzar al mundo. Dussel sobre servir vs "
+            "destacar, Marco Aurelio sobre los errores del primer día, Floridi sobre añadir a "
+            "la infoesfera con responsabilidad."
+        ),
+
+        "ESCUTA_ESCENA": (
+            "\\textbf{Actividad 1 · ANALIZA --- Cómo lanzaron 3 marcas que admiras} (15 min · "
+            "individual). Busca en redes \\textbf{el primer post} de 3 perfiles profesionales "
+            "que admiras (puedes revisar publicaciones antiguas o buscar ``cuando lancé''). "
+            "Para cada uno: ¿qué decían? ¿qué pedían (o no pedían)? ¿cuántas reacciones "
+            "tuvieron? ¿se sentía honesto o inflado?"
+        ),
+        "ESCUTA_CHECK_1": "Encontré el primer post de 3 marcas/personas profesionales que admiro.",
+        "ESCUTA_CHECK_2": "Los comparé en honestidad, especificidad y tono.",
+        "ESCUTA_CHECK_3": "Identifiqué el patrón común a los 3 lanzamientos que se sintieron buenos.",
+        "ESCUTA_INFOBAND": (
+            "\\textbf{Lo que va al cuaderno (Actividad 1 · ANALIZA).} Título: «Actividad 1 --- "
+            "3 lanzamientos que admiro». \\textbf{Formato:} 3 fichas, una por marca, cada una "
+            "con: copy textual (o paráfrasis), tono, reacciones recibidas, y qué lección "
+            "personal te llevas. Al final un párrafo de 3 renglones con el patrón común. "
+            "\\textbf{Sabes que terminaste cuando} las 3 fichas tienen observaciones "
+            "específicas, no generalidades, y el patrón común se puede aplicar a tu propio "
+            "lanzamiento."
+        ),
+
+        "SISTEMATIZACION_INTRO": (
+            "El principio del oficio digital: ``empezar imperfecto siempre vence a esperar "
+            "perfecto''. Vamos a descomponer las 4 razones --- psicológicas, prácticas y "
+            "éticas --- por las que esto es cierto."
+        ),
+        "PILAR_1_SIST": (
+            "El argumento se descompone en 4 razones: (1) \\textbf{aprendizaje} (solo el "
+            "lanzamiento real genera feedback real), (2) \\textbf{tiempo} (cada mes que "
+            "esperas es un mes que no compounding aprendizajes), (3) \\textbf{visibilidad} "
+            "(quien no lanza no existe en la infoesfera), (4) \\textbf{ego} (esperar la "
+            "perfección es miedo disfrazado de criterio)."
+        ),
+        "PILAR_2_SIST": (
+            "El patrón del lanzamiento sano sigue la fórmula \\textbf{``v1 honesto > v0 "
+            "perfecto''}: una primera versión sencilla pero real publicada hoy es más valiosa "
+            "que una versión \\emph{master} planificada para el próximo año. El primer "
+            "lanzamiento es siempre la línea base, no la meta."
+        ),
+        "PILAR_3_SIST": (
+            "Lo esencial del lanzamiento cabe en una pregunta: \\emph{¿qué se rompe si lanzo "
+            "hoy mi v1?}. Si la respuesta honesta es ``nada irreversible'', entonces lo "
+            "estás postergando por miedo, no por criterio."
+        ),
+        "PILAR_4_SIST": (
+            "Pasos del lanzamiento mínimo viable: (1) elige 3 redes donde tu audiencia está; "
+            "(2) escribe 1 post de presentación coherente con tu marca; (3) publica los 3 "
+            "posts en una hora --- no acumules; (4) responde a los primeros comentarios con "
+            "humildad."
+        ),
+        "ANATOMIA_TITULO": "Anatomía de un post de lanzamiento sólido",
+        "ANATOMIA_BODY": (
+            "\\textbf{Frase 1 (gancho):} algo que detenga el scroll, no una autopromoción "
+            "obvia. \\\\[1mm] "
+            "\\textbf{Frase 2 (qué hago):} tu propuesta de valor en una línea (Guía 1). \\\\[1mm] "
+            "\\textbf{Frase 3 (a quién sirvo):} la audiencia concreta para la que es útil. \\\\[1mm] "
+            "\\textbf{Frase 4 (qué pido):} una pequeña acción específica (visitar el sitio, "
+            "dejar feedback). \\\\[1mm] "
+            "\\textbf{Enlace:} URL de tu sitio. \\textbf{Imagen:} tu retrato de la Guía 7."
+        ),
+        "ERRORES_COMUNES": (
+            "(1) Esperar a tener \\emph{todo} listo: la perfección es enemiga del lanzamiento. "
+            "(2) Post genérico tipo ``hola mundo, mírenme'': muerte instantánea. "
+            "(3) Lanzar en 1 red y olvidar las otras 2: pierdes alcance fácil. "
+            "(4) No responder a los primeros comentarios: parece que abandonas el taller "
+            "recién inaugurado."
+        ),
+        "SIST_INFOBAND": (
+            "\\textbf{Lo que va al cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2 --- "
+            "Por qué empezar imperfecto vence a esperar perfecto». \\textbf{Formato:} 4 "
+            "fichas, una por razón (aprendizaje / tiempo / visibilidad / ego), cada una con: "
+            "argumento + ejemplo concreto de tu propia experiencia. \\textbf{Sabes que "
+            "terminaste cuando} reconoces en ti al menos UN proyecto que postergaste por "
+            "perfeccionismo y puedes nombrarlo honestamente."
+        ),
+
+        "PRAXIS_INTRO": (
+            "\\textbf{Actividad 3 · CREA --- Tu lanzamiento real} (40 min · individual). "
+            "Hora de abrir las puertas del taller. Vas a redactar 3 posts adaptados a 3 "
+            "redes distintas, publicarlos en una hora, y escribir la primera entrada de tu "
+            "bitácora de marca."
+        ),
+        "PILAR_1_PRAX": (
+            "Tu lanzamiento se descompone en 4 piezas: post LinkedIn (tono profesional), post "
+            "Instagram (tono visual), post personal (WhatsApp/Telegram, círculo cercano), "
+            "bitácora semana 1."
+        ),
+        "PILAR_2_PRAX": (
+            "Sigue el patrón \\textbf{``adaptación, no copia''}: el mismo mensaje base pero "
+            "ajustado al tono y formato de cada red. LinkedIn más texto, Instagram más imagen, "
+            "WhatsApp más cercano."
+        ),
+        "PILAR_3_PRAX": (
+            "Cada post expresa una sola idea principal: \"abrí mi sitio, esto es lo que "
+            "haces, mira si te sirve''. Sin alardes. Sin promesas que no cumples. Sin "
+            "disculpas por la imperfección."
+        ),
+        "PILAR_4_PRAX": (
+            "Algoritmo del lanzamiento: (1) escribe el post LinkedIn primero (más largo); "
+            "(2) condénsalo a Instagram (más visual); (3) adáptalo al tono cercano para "
+            "WhatsApp; (4) publica los 3 en una sola hora; (5) responde TODOS los comentarios "
+            "esa misma semana; (6) escribe la bitácora del día 1."
+        ),
+        "CHECKLIST_TITULO": "Checklist antes de declarar el lanzamiento hecho",
+        "CHECKLIST_ITEMS": (
+            "\\checkbox 3 posts publicados (LinkedIn + Instagram + grupo cercano). \\\\[1mm] "
+            "\\checkbox Cada post enlaza al sitio público de la Guía 4. \\\\[1mm] "
+            "\\checkbox Cada post incluye una imagen profesional de la Guía 7. \\\\[1mm] "
+            "\\checkbox Cero ``perdón por lo imperfecto'' o ``apenas empiezo'': lanzar es "
+            "lanzar. \\\\[1mm] "
+            "\\checkbox Primera entrada de bitácora escrita (cómo me siento, qué aprendí hoy)."
+        ),
+        "PLANTILLA_GUION": (
+            "\\textbf{Post LinkedIn.} \\textit{Texto completo, 4 frases + enlace + imagen.} \\\\[1mm] "
+            "\\textbf{Post Instagram.} \\textit{Caption breve + imagen + URL en bio.} \\\\[1mm] "
+            "\\textbf{Mensaje cercano.} \\textit{Texto adaptado para tu grupo de WhatsApp.} \\\\[1mm] "
+            "\\textbf{Bitácora día 1.} \\textit{¿Cómo me sentí lanzando? ¿Qué reacción "
+            "esperaba? ¿Qué reacción recibí?}"
+        ),
+        "PRAX_INFOBAND": (
+            "\\textbf{Lo que va al cuaderno (Actividad 3 · CREA).} Título: «Actividad 3 --- "
+            "Mi lanzamiento P1». \\textbf{Formato:} las 3 versiones del post + la entrada de "
+            "bitácora día 1 + capturas de las publicaciones reales. \\textbf{Extensión:} una "
+            "página de cuaderno. \\textbf{Sabes que terminaste cuando} los 3 posts están "
+            "publicados (no programados) y la bitácora está escrita en tiempo real."
+        ),
+        "PRODUCTO_TITULO": "Sitio anunciado en 3 redes + bitácora del cuaderno de marca · semana 1",
+        "CRITERIOS_LISTA": (
+            "(1) Los 3 posts están publicados en redes reales, no en borrador. "
+            "(2) Cada post enlaza al sitio y tiene imagen profesional. "
+            "(3) Cero disculpas por imperfección en los textos. "
+            "(4) Primera entrada de bitácora escrita el mismo día del lanzamiento. "
+            "(5) Has decidido un horario semanal fijo para escribir la bitácora durante el "
+            "próximo periodo."
+        ),
+
+        "DUSSEL_CITA": "Toda comunidad de comunicación se hace plena cuando incluye la voz del excluido.",
+        "DUSSEL_APLICACION": (
+            "Lanzar puede ser un acto de promoción individual o un acto de servicio "
+            "comunitario. Si tu primer post solo dice ``mírenme'', no abres puerta para nadie. "
+            "Si dice ``aquí estoy, esto sé hacer, dime si te sirvo'', invitas. El primer "
+            "lanzamiento define el tono de los próximos cien."
+        ),
+        "DUSSEL_PREGUNTA": (
+            "¿Mi lanzamiento es una invitación a servir o una promoción de mí mismo? ¿A quién "
+            "abro la puerta hoy y a quién la cierro sin querer?"
+        ),
+        "ESTOICISMO_AUTOR": "Marco Aurelio",
+        "ESTOICISMO_CITA": "El obstáculo en el camino se vuelve el camino.",
+        "ESTOICISMO_APLICACION": (
+            "Algo va a salir mal en tu primer lanzamiento: un error de tipografía, una "
+            "imagen pixelada, un comentario incómodo, un silencio que esperabas más sonoro. "
+            "Eso no es el fracaso del lanzamiento --- es el lanzamiento. La calma estoica te "
+            "permite leer cada error como información, no como golpe."
+        ),
+        "ESTOICISMO_PREGUNTA": (
+            "Lo que salió mal del lanzamiento, ¿depende de mí corregirlo, o no? ¿Qué error "
+            "concreto se convierte en lección si lo miro sin drama?"
+        ),
+        "FLORIDI_CITA": "Cada lanzamiento añade un agente más a la infoesfera; cuídala como cuidas tu firma.",
+        "FLORIDI_APLICACION": (
+            "Tu post de lanzamiento es información permanente en la red. Los archivos del "
+            "futuro lo guardarán, los buscadores lo indexarán, alguien lo leerá en 10 años. "
+            "Floridi nos pediría preguntarnos: ¿este post de hoy es algo que mi yo de 30 años "
+            "va a defender o lamentar?"
+        ),
+        "FLORIDI_PREGUNTA": (
+            "¿Mi lanzamiento aporta algo útil a la infoesfera o solo añade ruido? ¿Lo "
+            "defenderé en 10 años?"
+        ),
+
+        "COMPROMISO_INFOBAND": (
+            "\\textbf{Para la próxima semana --- y el cierre del Periodo 1.} Lunes a las 7 PM, "
+            "abre tu cuaderno de marca y escribe la \\textbf{bitácora semana 2}: ¿qué dijeron "
+            "del lanzamiento? ¿cuántas visitas tuviste? ¿qué decisión tomas para la próxima "
+            "publicación? Esa disciplina semanal es lo que diferencia una marca real de una "
+            "publicación aislada. Próximo lunes: arrancamos el Periodo 2 --- Automatización y "
+            "procesos. \\emph{Felicitaciones por terminar el primero.}"
+        ),
     },
 
     # ═══════════════════════════════════════════════════════════════════════

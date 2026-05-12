@@ -100,6 +100,14 @@ endif
 guia-lint-strict:  ## Igual que guia-lint pero los warnings también fallan
 	@$(PYTHON) scripts/guias-lint.py --grado $(GRADO) --strict
 
+.PHONY: guia-assets
+guia-assets:  ## Lista los assets (imágenes, diagramas) declarados por las guías
+ifeq ($(CLAVE),)
+	@$(PYTHON) scripts/guias-assets.py --grado $(GRADO)
+else
+	@$(PYTHON) scripts/guias-assets.py --grado $(GRADO) $(CLAVE)
+endif
+
 # ─── Limpieza ───────────────────────────────────────────────────────────────
 
 .PHONY: guia-clean

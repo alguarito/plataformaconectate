@@ -32,37 +32,67 @@ import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
 TEMPLATE = ROOT / "scripts/generadores/template-milc-v3-conectate.tex"
-CONTENT_DIR = ROOT / "content/guias/11"
 OUT_DIR = ROOT / "public/guias-mejoras"
 XELATEX = "/Library/TeX/texbin/xelatex"
 
-GRADO = 11
+# El grado activo se elige con la variable de entorno GRADO (default 11).
+import os
+GRADO = int(os.environ.get("GRADO", "11"))
+CONTENT_DIR = ROOT / "content" / "guias" / str(GRADO)
 
-# Paleta institucional de Grado 11 (bento-cyan/blue). Compartida por todas las guías.
-COLORES = {
-    "COLOR_PORTADA_PRIMARY": "0066FF",
-    "COLOR_PORTADA_DARK": "003D99",
-    "COLOR_PORTADA_SOFT": "D6E8FF",
-}
-
-# Metadata por periodo (DBA, referentes, nombre del periodo).
-PERIODOS = {
-    1: {
-        "PERIODO_NOMBRE": "Período 1 · Presencia y marca digital",
-        "DBA": "Comunicación profesional en entornos digitales (MEN, Lineamientos T\\&I)",
-        "REFERENTES": "Floridi (infoética) · Dussel (estética de la liberación) · Estoicismo",
+# Paleta institucional por grado (sincronizada con src/data/grados.ts).
+COLORES_POR_GRADO = {
+    9: {  # bento-purple
+        "COLOR_PORTADA_PRIMARY": "7C3AED",
+        "COLOR_PORTADA_DARK": "4C1D95",
+        "COLOR_PORTADA_SOFT": "EDE9FE",
     },
-    2: {
-        "PERIODO_NOMBRE": "Período 2 · Automatización y procesos",
-        "DBA": "Diseño y mejora de procesos digitales con criterio ético (MEN, T\\&I)",
-        "REFERENTES": "Pensamiento computacional · Lean / Kaizen · Floridi (ética informacional)",
-    },
-    3: {
-        "PERIODO_NOMBRE": "Período 3 · Proyecto final emprendedor",
-        "DBA": "Diseño, implementación y sustentación de un proyecto de impacto local (MEN, T\\&I)",
-        "REFERENTES": "Dussel (analéctica · sur global) · Lean Startup · Floridi · Estoicismo",
+    11: {  # bento-blue
+        "COLOR_PORTADA_PRIMARY": "0066FF",
+        "COLOR_PORTADA_DARK": "003D99",
+        "COLOR_PORTADA_SOFT": "D6E8FF",
     },
 }
+COLORES = COLORES_POR_GRADO.get(GRADO, COLORES_POR_GRADO[11])
+
+# Metadata por (grado, periodo): nombre del periodo, DBA, referentes.
+PERIODOS_POR_GRADO = {
+    11: {
+        1: {
+            "PERIODO_NOMBRE": "Período 1 · Presencia y marca digital",
+            "DBA": "Comunicación profesional en entornos digitales (MEN, Lineamientos T\\&I)",
+            "REFERENTES": "Floridi (infoética) · Dussel (estética de la liberación) · Estoicismo",
+        },
+        2: {
+            "PERIODO_NOMBRE": "Período 2 · Automatización y procesos",
+            "DBA": "Diseño y mejora de procesos digitales con criterio ético (MEN, T\\&I)",
+            "REFERENTES": "Pensamiento computacional · Lean / Kaizen · Floridi (ética informacional)",
+        },
+        3: {
+            "PERIODO_NOMBRE": "Período 3 · Proyecto final emprendedor",
+            "DBA": "Diseño, implementación y sustentación de un proyecto de impacto local (MEN, T\\&I)",
+            "REFERENTES": "Dussel (analéctica · sur global) · Lean Startup · Floridi · Estoicismo",
+        },
+    },
+    9: {
+        1: {
+            "PERIODO_NOMBRE": "Período 1 · Historia de la técnica",
+            "DBA": "Análisis crítico de la historia de la tecnología y su impacto social (MEN, T\\&I)",
+            "REFERENTES": "Dussel (técnica situada) · Estoicismo (téchne del cuerpo) · Floridi (infoesfera)",
+        },
+        2: {
+            "PERIODO_NOMBRE": "Período 2 · Diseño editorial digital",
+            "DBA": "Producción de piezas editoriales digitales con criterio estético y ético (MEN, T\\&I)",
+            "REFERENTES": "Tipografía colombiana · Diseño centrado en accesibilidad · Floridi",
+        },
+        3: {
+            "PERIODO_NOMBRE": "Período 3 · Datos --- del registro al insight",
+            "DBA": "Tratamiento y visualización honesta de datos para la toma de decisiones (MEN, T\\&I)",
+            "REFERENTES": "Ética del dato · Visualización honesta · Pensamiento computacional",
+        },
+    },
+}
+PERIODOS = PERIODOS_POR_GRADO.get(GRADO, PERIODOS_POR_GRADO[11])
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -72,7 +102,7 @@ PERIODOS = {
 def cargar_guias() -> dict[str, dict]:
     """Lee todos los YAMLs en content/guias/11/ y devuelve dict {clave: data}."""
     guias = {}
-    for path in sorted(CONTENT_DIR.glob("11-*.yaml")):
+    for path in sorted(CONTENT_DIR.glob(f"{GRADO}-*.yaml")):
         with path.open(encoding="utf-8") as f:
             data = yaml.safe_load(f)
         clave = data["clave"]
@@ -82,7 +112,7 @@ def cargar_guias() -> dict[str, dict]:
 
 def cargar_guia(clave: str) -> dict | None:
     """Lee una sola guía por clave (ej. '1-2')."""
-    path = CONTENT_DIR / f"11-{clave}.yaml"
+    path = CONTENT_DIR / f"{GRADO}-{clave}.yaml"
     if not path.exists():
         return None
     with path.open(encoding="utf-8") as f:

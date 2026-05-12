@@ -45,9 +45,9 @@ help:  ## Lista los comandos disponibles
 .PHONY: guia-build
 guia-build:  ## Compila la(s) guía(s) YAML → PDF (vía xelatex 2 pasadas)
 ifeq ($(CLAVE),)
-	@$(PYTHON) $(BUILDER)
+	@GRADO=$(GRADO) $(PYTHON) $(BUILDER)
 else
-	@$(PYTHON) $(BUILDER) $(CLAVE)
+	@GRADO=$(GRADO) $(PYTHON) $(BUILDER) $(CLAVE)
 endif
 
 .PHONY: guia-show

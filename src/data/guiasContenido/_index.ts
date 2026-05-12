@@ -58,6 +58,9 @@ import g9_1_7 from './9-1-7';
 import g9_1_8 from './9-1-8';
 import g9_1_9 from './9-1-9';
 import g9_1_10 from './9-1-10';
+import g9_2_1 from './9-2-1';
+import g9_2_2 from './9-2-2';
+import g9_2_3 from './9-2-3';
 import g10_2_1 from './10-2-1';
 import g11_1_1 from './11-1-1';
 import g11_1_2 from './11-1-2';
@@ -83,6 +86,7 @@ const TODAS: ContenidoGuia[] = [
   g8_3_11,
   g9_1_1, g9_1_2, g9_1_3, g9_1_4, g9_1_5,
   g9_1_6, g9_1_7, g9_1_8, g9_1_9, g9_1_10,
+  g9_2_1, g9_2_2, g9_2_3,
   g10_2_1,
   g11_1_1, g11_1_2, g11_1_3, g11_1_4, g11_1_5,
   g11_1_6, g11_1_7, g11_1_8, g11_1_9, g11_1_10,

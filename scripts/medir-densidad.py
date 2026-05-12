@@ -101,9 +101,33 @@ def palabras_estimadas(b: int) -> int:
     return int(contenido_neto / 6.5)
 
 
+# Si existe un PDF local en public/guias-mejoras/ (pipeline MILC v3 nuevo),
+# usamos su tamaño real en lugar del legacy de Drive. Eso refleja el trabajo
+# de expansión MILC v3 en las estrellas y el badge.
+ROOT_FOR_PDFS = Path(__file__).resolve().parent.parent
+PDF_DIR = ROOT_FOR_PDFS / "public" / "guias-mejoras"
+
+
+def bytes_efectivos(grado: int, sesion: int, bytes_raw: int) -> int:
+    pdf = PDF_DIR / f"{sesion}-{grado}-TIC.pdf"
+    if pdf.exists():
+        return pdf.stat().st_size
+    return bytes_raw
+
+
+# Reemplazar RAW bytes con tamaños reales de PDFs MILC v3 cuando existan.
+RAW_EFECTIVO = [(g, s, bytes_efectivos(g, s, b)) for g, s, b in RAW]
+all_bytes_eff = sorted(b for _, _, b in RAW_EFECTIVO)
+
+
+def percentile_eff(value: int) -> int:
+    rank = sum(1 for b in all_bytes_eff if b <= value)
+    return int(round(100 * rank / len(all_bytes_eff)))
+
+
 densidad = {}
-for grado, sesion, bytes_ in RAW:
-    p = percentile(bytes_)
+for grado, sesion, bytes_ in RAW_EFECTIVO:
+    p = percentile_eff(bytes_)
     densidad[f"{grado}-{sesion}"] = {
         "guiaId": f"{sesion}-{grado}-TIC",
         "grado": grado,
@@ -121,7 +145,7 @@ niveles_count = {"alta": 0, "media": 0, "baja": 0}
 for d in densidad.values():
     niveles_count[d["nivel"]] += 1
 
-ROOT = Path('/Users/alvarocardenasorozco/Desktop/PROYECTOS/PLATAFORMA CONECTATE/.claude/worktrees/quirky-goodall-264ac4')
+ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / 'public/data/densidad.json'
 OUT.parent.mkdir(parents=True, exist_ok=True)
 OUT.write_text(json.dumps(densidad, ensure_ascii=False, indent=2))

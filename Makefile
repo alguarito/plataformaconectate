@@ -108,6 +108,26 @@ else
 	@$(PYTHON) scripts/guias-assets.py --grado $(GRADO) $(CLAVE)
 endif
 
+# ─── Workflow de sesión (Pieza 6) ───────────────────────────────────────────
+
+.PHONY: sesion
+sesion:  ## Protocolo de arranque: status + recordatorio de modos
+	@$(PYTHON) scripts/guias-status.py --grado $(GRADO)
+	@echo "  Modos de sesión disponibles:"
+	@echo "    🚀 bloque   → expandir 3-5 guías nuevas (default)"
+	@echo "    🔧 afina    → ajustar un detalle en UNA guía"
+	@echo "    🔍 audita   → revisar todo antes de usar en aula"
+	@echo ""
+
+.PHONY: sesion-audita
+sesion-audita:  ## Modo audita: status + lint-strict + assets (sin cambios)
+	@$(MAKE) -s guia-status
+	@echo ""
+	@echo "─── Lint estricto ───"
+	@$(PYTHON) scripts/guias-lint.py --grado $(GRADO) --strict || true
+	@echo "─── Assets ───"
+	@$(PYTHON) scripts/guias-assets.py --grado $(GRADO) || true
+
 # ─── Limpieza ───────────────────────────────────────────────────────────────
 
 .PHONY: guia-clean

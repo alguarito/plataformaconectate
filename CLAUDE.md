@@ -153,6 +153,87 @@ Reglas:
 - Mantener **Inter** como única familia (consistente con la regla de tipografía UI).
 - Para énfasis usar peso (bold/black) o color del sistema Bento, no fuentes nuevas.
 
+## Workflow de sesión — los 3 modos de trabajo
+
+> **Esta sección es el protocolo de Claude al iniciar cada sesión nueva.** Sigue este flujo sin esperar que el usuario lo recuerde.
+
+### Protocolo de arranque (siempre, sin pedirlo)
+
+Cuando una sesión nueva empiece y el usuario diga algo como "continuemos", "siguiente", "sigamos", "hola", o cualquier saludo abierto sobre las guías, **antes de cualquier otra cosa** ejecutar:
+
+```bash
+make guia-status
+```
+
+Esa orden muestra el estado real del trabajo (no la memoria del modelo, que puede estar desactualizada). A partir del output, proponer la siguiente acción concreta.
+
+### Los 3 modos
+
+Según lo que el usuario quiera hacer, la sesión se acomoda a uno de estos modos:
+
+#### 🚀 Modo `bloque` — expansión normal (default)
+
+**Cuándo:** la sesión arranca con guías pendientes y el usuario quiere avanzar (lo más común).
+
+**Trigger:** `make guia-status` reporta pendientes Y el usuario dice "continuemos", "siguiente bloque", "sigue", etc.
+
+**Protocolo:**
+1. Identificar el siguiente bloque sugerido (3-5 guías consecutivas).
+2. Proponer al usuario el bloque con un titular por guía + ancla ancestral.
+3. Esperar confirmación o pivote (`"sí"` / `"no, prefiero X"`).
+4. Expandir cada outline → ~38 campos completos.
+5. `make guia-build` para compilar.
+6. `make guia-lint` para validar.
+7. Commit + push + `gh pr create` → pasar link al usuario.
+
+#### 🔧 Modo `afina` — ajuste puntual
+
+**Cuándo:** el usuario detectó algo específico que ajustar en UNA guía.
+
+**Trigger:** el usuario dice "afina G02 saber ancestral", "cambia X en la guía Y", "el verbo de la actividad 3 de la guía 5 debería ser...".
+
+**Protocolo:**
+1. Leer SOLO el YAML afectado.
+2. Confirmar el cambio (qué se reemplaza por qué).
+3. Editar UN campo específico (Edit puntual).
+4. `make guia-build CLAVE=p-s` (solo esa).
+5. `make guia-lint CLAVE=p-s` (solo esa).
+6. Commit pequeño + PR pequeña → link al usuario.
+
+**Regla:** no aprovechar para cambiar nada más. Una afinación = un cambio = una PR.
+
+#### 🔍 Modo `audita` — revisión antes de aula
+
+**Cuándo:** el usuario va a usar las guías en clase y quiere asegurarse de que todo está sano.
+
+**Trigger:** el usuario dice "audita", "revisa todo", "antes de imprimir", "voy a usar X en clase mañana".
+
+**Protocolo:**
+1. `make guia-status` (estado general).
+2. `make guia-lint-strict` (warnings cuentan como errores).
+3. `make guia-assets` (verifica que ningún asset esté roto).
+4. Reportar al usuario en formato tabla: ✓ OK / ⚠ atención / ✗ fix urgente.
+5. **NO hacer cambios** automáticamente. El usuario decide qué arreglar después.
+6. Si hay errores, ofrecer entrar en modo `afina` para resolverlos uno por uno.
+
+### Cómo Claude reconoce el modo
+
+| Lo que dice el usuario | Modo |
+|---|---|
+| "continuemos", "siguiente", "sigamos", "ok", saludo inicial | `bloque` (default) |
+| "afina X", "cambia Y", "el campo Z de la guía W" | `afina` |
+| "audita", "revisa", "antes de clase", "imprimo mañana" | `audita` |
+| "estado", "cómo vamos", "dónde quedamos" | sólo correr `make guia-status` |
+
+Si la intención es ambigua, **preguntar** antes de decidir. Pero por defecto, `bloque`.
+
+### Lo que NO hacer
+
+- **Nunca** proponer "innovar" sobre las piezas del sistema (YAML, schema, contrato editorial) sin pedirlo explícitamente el usuario. Ese trabajo ya está cerrado.
+- **Nunca** editar archivos generados (`.tex`, `.pdf`, archivos `.ts` derivados). Siempre editar el YAML.
+- **Nunca** saltar el linter antes del commit. Si lint falla, fix antes de PR.
+- **Nunca** mergear PRs por el usuario (regla persistente del workflow).
+
 ## Arquitectura del generador de guías PDF
 
 > Esta sección describe la **single source of truth** para generar guías. Aplica a las guías de grado 11° (y se extenderá a los demás grados con el mismo patrón).
@@ -216,7 +297,7 @@ Documentación completa en [content/guias/_SCHEMA.md](content/guias/_SCHEMA.md).
 | 3. Pipeline `make guia-build` | ✅ |
 | 4. Validador `make guia-lint` | ✅ |
 | 5. Asset management | ✅ |
-| 6. Workflow de sesión (modos) | ⏳ |
+| 6. Workflow de sesión (modos) | ✅ |
 | 7. Status `make guia-status` | ⏳ |
 
 ## Reglas operativas para Claude

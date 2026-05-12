@@ -153,6 +153,59 @@ Reglas:
 - Mantener **Inter** como única familia (consistente con la regla de tipografía UI).
 - Para énfasis usar peso (bold/black) o color del sistema Bento, no fuentes nuevas.
 
+## Arquitectura del generador de guías PDF
+
+> Esta sección describe la **single source of truth** para generar guías. Aplica a las guías de grado 11° (y se extenderá a los demás grados con el mismo patrón).
+
+### Single source of truth: archivos YAML
+
+Cada guía vive en **un solo archivo YAML** bajo `content/guias/{grado}/{clave}.yaml` (clave = `{grado}-{periodo}-{sesion}`). De ese único archivo se generan **todas las salidas**:
+
+```
+content/guias/11/11-1-2.yaml  ◀────────  fuente única editable
+        │
+        ▼
+build-guias-g11.py
+        │
+        ├──▶  public/guias-mejoras/2-11-TIC.pdf  (vía xelatex)
+        └──▶  src/data/guiasContenido/11-1-2.ts  (vía generador TS · próxima pieza)
+```
+
+**Regla de oro:** nunca edites `.tex` ni `.ts` generados; siempre edita el YAML.
+
+### Comandos
+
+```bash
+python3 scripts/build-guias-g11.py            # compila todas las completas
+python3 scripts/build-guias-g11.py 1-2        # solo G11·P1·S2
+python3 scripts/build-guias-g11.py 1-2 1-3    # varias
+```
+
+### Esquema del YAML
+
+Documentación completa en [content/guias/_SCHEMA.md](content/guias/_SCHEMA.md). Incluye:
+- Estructura de los 30+ campos del contrato editorial MILC v3
+- Reglas de validación
+- Convenciones de escritura (negrita, itálica, comillas, em-dash)
+- Cómo agregar o expandir una guía
+
+### Cuándo es `completo: true` vs outline
+
+- **`completo: true`** → todos los campos del contrato presentes. El builder compila el PDF.
+- **`completo: false`** (outline) → solo `titulo`, `producto_final`, `saber_ancestral_idea`, `verbos_actividades`. El builder lo lista como pendiente sin compilar.
+
+### Estado de las piezas del sistema
+
+| Pieza | Estado |
+|---|---|
+| 1. YAML como source | ✅ |
+| 2. Schema declarativo | ✅ |
+| 3. Pipeline `make guia-build` | ⏳ próxima |
+| 4. Validador `make guia-lint` | ⏳ |
+| 5. Asset management | ⏳ |
+| 6. Workflow de sesión (modos) | ⏳ |
+| 7. Status `make guia-status` | ⏳ |
+
 ## Reglas operativas para Claude
 
 - No agregar emojis al código ni a la UI salvo que se pida explícitamente.

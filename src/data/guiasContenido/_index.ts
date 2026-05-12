@@ -53,6 +53,9 @@ import g11_1_1 from './11-1-1';
 import g11_1_2 from './11-1-2';
 import g11_1_3 from './11-1-3';
 import g11_1_4 from './11-1-4';
+import g11_1_5 from './11-1-5';
+import g11_1_6 from './11-1-6';
+import g11_1_7 from './11-1-7';
 
 const TODAS: ContenidoGuia[] = [
   g6_1_1, g6_1_11,
@@ -66,7 +69,7 @@ const TODAS: ContenidoGuia[] = [
   g8_3_6, g8_3_7, g8_3_8, g8_3_9, g8_3_10,
   g8_3_11,
   g10_2_1,
-  g11_1_1, g11_1_2, g11_1_3, g11_1_4,
+  g11_1_1, g11_1_2, g11_1_3, g11_1_4, g11_1_5, g11_1_6, g11_1_7,
 ];
 
 const MAPA = new Map<string, ContenidoGuia>();

@@ -50,6 +50,51 @@ const contenido: ContenidoGuia = {
     transferencia: 'Esta semana: cuando algo te falle (app, dispositivo, plan), aplica el método: 3 hipótesis distintas, prueba aislada, corrección mínima, verificación. Documenta el proceso.',
     cierre: 'El ojo del mecánico y el debugger digital comparten método: paciencia disciplinada, no fuerza bruta. La sabiduría artesanal sobrevive en la depuración profesional.',
   },
+
+  saberAncestral: {
+    saber:
+      'El mecánico del pueblo del Valle no abría el motor a desarmarlo cuando un carro no encendía. Primero escuchaba: ¿prende y se apaga? ¿no prende del todo? ¿hace ruido raro? Después olía: ¿gasolina derramada? ¿caucho quemado? Después tocaba: ¿la batería está caliente? Cada paso era una hipótesis verificada antes de abrir nada. Eliminaba causas con orden, no con fuerza. La depuración digital hereda ese método: hipótesis, prueba aislada, corrección mínima, re-verificación.',
+    fuente: 'Oficio del mecánico de pueblo en el Valle del Cauca',
+    preguntaPuente:
+      '¿Qué hacía el mecánico antes de abrir el motor? ¿Y qué pasa cuando un programador novato modifica el código sin probar primero qué falla exactamente?',
+  },
+
+  triangulo: {
+    dussel: {
+      autor: 'Enrique Dussel',
+      lente: 'lente del nosotros',
+      cita: 'La depuración disciplinada es democratización del oficio — cualquiera puede aprenderla con paciencia.',
+      preguntaEspejo:
+        '¿Aplico depuración disciplinada en mi vida (técnica y no técnica) o tiendo a tirar el problema y empezar de cero?',
+    },
+    estoico: {
+      autor: 'Marco Aurelio',
+      lente: 'lente del cuidado interior',
+      cita: 'Aislar la causa raíz exige paciencia — la fuerza bruta es atajo que cuesta más al final.',
+      preguntaEspejo:
+        'Cuando algo falla en mi vida, ¿busco la causa raíz o aplico parche tras parche hasta agotarme?',
+    },
+    floridi: {
+      autor: 'Luciano Floridi',
+      lente: 'lente de la infoesfera',
+      cita: 'La depuración rigurosa es la primera línea contra la entropía de los sistemas informacionales.',
+      preguntaEspejo:
+        '¿Estoy entrenando hábitos de depuración en mi vida digital o solo cuando me obligan en el examen?',
+    },
+  },
+
+  cincoDimensiones: {
+    personal:
+      'Aprendiste un método transferible: hipótesis, prueba, corrección, verificación. Sirve para código, dispositivos, conflictos, decisiones.',
+    emocional:
+      'Resististe la tentación de la fuerza bruta — entendiste que la paciencia disciplinada es virtud, no debilidad.',
+    ciudadana:
+      'La capacidad de depurar problemas sistemáticamente es habilidad democrática: pensar antes de actuar es ciudadanía adulta.',
+    local:
+      'Heredaste el ojo del mecánico de pueblo: oír primero, tocar después, abrir solo cuando es necesario.',
+    intergeneracional:
+      'El método artesanal de diagnóstico y el debugger moderno comparten lógica. Lo que cambia es el medio, no la paciencia.',
+  },
 };
 
 export default contenido;

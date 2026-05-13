@@ -50,6 +50,51 @@ const contenido: ContenidoGuia = {
     transferencia: 'Mañana sustenta tu proyecto en 5 minutos cronometrados. Reconoce 2 limitaciones reales y propón 2 mejoras futuras. Recibe la crítica con apertura.',
     cierre: 'El mostrador del artesano y la sustentación digital comparten un principio: mostrar honestamente lo que se hizo, lo que falta, lo que se aprendió. La honestidad construye oficio. Cierre del periodo 2.',
   },
+
+  saberAncestral: {
+    saber:
+      'El mostrador del artesano del Valle —el carpintero, el zapatero, el ceramista, la tejedora wayuu— era ritual semanal o mensual: la pieza terminada se mostraba al maestro y al cliente con honestidad técnica. "Aquí quedó la veta del tablón, no pude evitarla, queda visible." "Aquí el tinte salió más claro que en la muestra, en la próxima ajusto." Mostrar el oficio incluía mostrar las limitaciones. La sustentación digital de un proyecto técnico hereda esa ética: defender la decisión, mostrar la evidencia, reconocer límites, proponer mejora futura. Es honestidad técnica encarnada.',
+    fuente: 'Mostrador del artesano en talleres del Valle, el Pacífico y la Guajira',
+    preguntaPuente:
+      '¿Qué hacía que el cliente confiara en el artesano que mostraba limitaciones honestamente? ¿Y qué pierde una sustentación que solo defiende y nunca reconoce nada?',
+  },
+
+  triangulo: {
+    dussel: {
+      autor: 'Enrique Dussel',
+      lente: 'lente del nosotros',
+      cita: 'La honestidad técnica es ciudadanía intelectual — defenderla en público es práctica democrática.',
+      preguntaEspejo:
+        '¿Estoy dispuesto a mostrar limitaciones de mi trabajo en público, o tiendo a esconderlas con discurso fluido?',
+    },
+    estoico: {
+      autor: 'Marco Aurelio',
+      lente: 'lente del cuidado interior',
+      cita: 'Reconocer lo que no sabes ante una audiencia es virtud rara — más alta que el dominio aparente.',
+      preguntaEspejo:
+        '¿Cuántas veces este año he dicho "no sé" o "esto no funcionó" en una presentación? ¿Eso me hace menos creíble o más?',
+    },
+    floridi: {
+      autor: 'Luciano Floridi',
+      lente: 'lente de la infoesfera',
+      cita: 'En una infoesfera saturada de certezas vacías, la honestidad técnica es escasez valiosa.',
+      preguntaEspejo:
+        '¿Mi sustentación contribuye al mar de certezas infladas o aporta honestidad técnica que diferencia?',
+    },
+  },
+
+  cincoDimensiones: {
+    personal:
+      'Cerraste el periodo con sustentación honesta — habilidad rara en el mundo adulto, entrenada aquí.',
+    emocional:
+      'Sentiste el nervio de mostrar limitaciones en público y lo sostuviste — eso entrena humildad madura, no sumisa.',
+    ciudadana:
+      'La sustentación con honestidad técnica es base de la deliberación democrática: defender y reconocer límites a la vez.',
+    local:
+      'Heredaste el ritual del mostrador del artesano: presentar la pieza con sus aciertos y sus límites visibles.',
+    intergeneracional:
+      'El artesano frente a su maestro y tú frente al curso comparten gramática: defender el oficio sin esconder lo que falta.',
+  },
 };
 
 export default contenido;

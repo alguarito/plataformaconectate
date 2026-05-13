@@ -59,6 +59,51 @@ const contenido: ContenidoGuia = {
     transferencia: 'Esta semana: en MakeCode diseña un saluda automático completo con LED + sonido + texto y pruébalo con 3 personas distintas. ¿Lo entienden todas igual? Ajusta hasta que sí.',
     cierre: 'Las campanas y los actuadores digitales hacen lo mismo: dar voz a una decisión que la comunidad necesita escuchar. Diseñar es ordenar percepciones con respeto.',
   },
+
+  saberAncestral: {
+    saber:
+      'Las campanas del pueblo en el Valle, el Pacífico y los Andes nunca fueron decorativas. Cada toque tenía código sonoro: tres campanadas largas = misa, repique alegre = boda, doble lento = funeral, tañido suelto = aviso de incendio. Todo el pueblo conocía el código y respondía adecuadamente. Los actuadores digitales (LEDs, buzzer, pantalla) heredan ese principio: cada secuencia de salida es código convencional que comunica algo específico. Diseñar una coreografía de LEDs es heredar el oficio del campanero.',
+    fuente: 'Códigos sonoros de campanas en pueblos colombianos del Valle, Pacífico y Andes',
+    preguntaPuente:
+      '¿Cómo entendía todo el pueblo el código de las campanas sin que alguien lo enseñara formalmente? ¿Y qué hace que un patrón de LEDs digitales comunique bien o mal?',
+  },
+
+  triangulo: {
+    dussel: {
+      autor: 'Enrique Dussel',
+      lente: 'lente del nosotros',
+      cita: 'Toda señal automática educa o aliena — depende de si la comunidad puede leer su código o no.',
+      preguntaEspejo:
+        '¿Mi diseño de actuadores comunica con códigos que la comunidad entiende, o exige conocimiento técnico para descifrarlo?',
+    },
+    estoico: {
+      autor: 'Marco Aurelio',
+      lente: 'lente del cuidado interior',
+      cita: 'La disciplina del oficio se nota en la consistencia de la señal — el campanero no improvisa.',
+      preguntaEspejo:
+        '¿Mis respuestas automáticas son consistentes o varían sin lógica? ¿Cuál de las dos da más confianza al usuario?',
+    },
+    floridi: {
+      autor: 'Luciano Floridi',
+      lente: 'lente de la infoesfera',
+      cita: 'Las señales digitales que diseñamos hoy son las campanas de la infoesfera contemporánea.',
+      preguntaEspejo:
+        '¿Mis notificaciones, alertas y respuestas automáticas educan al usuario o lo bombardean? ¿Qué pensarían los antiguos campaneros de mi diseño?',
+    },
+  },
+
+  cincoDimensiones: {
+    personal:
+      'Aprendiste que diseñar señales automáticas es responsabilidad comunicativa — cada parpadeo le habla a alguien.',
+    emocional:
+      'Resististe la tentación del "más colores = mejor diseño". Entendiste que la consistencia silenciosa comunica más que la espectacularidad.',
+    ciudadana:
+      'Tus actuadores bien diseñados son códigos comunitarios — pequeñas piezas que mejoran convivencia cotidiana.',
+    local:
+      'Heredaste el oficio del campanero: cada señal tiene código, cada código sostiene confianza, cada confianza sostiene comunidad.',
+    intergeneracional:
+      'Las campanas que organizaron la vida del pueblo y tus actuadores digitales comparten ética: comunicar con disciplina, no con ruido.',
+  },
 };
 
 export default contenido;

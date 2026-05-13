@@ -59,6 +59,51 @@ const contenido: ContenidoGuia = {
     transferencia: 'Esta semana: encuentra una regla escrita (en redes, en un reglamento, en una promoción) que use "y" u "o". Construye su tabla de verdad. ¿Es coherente? ¿Hay casos no contemplados?',
     cierre: 'El juego de las abuelas y la lógica formal comparten propósito: la palabra dada se sostiene cuando es coherente consigo misma.',
   },
+
+  saberAncestral: {
+    saber:
+      'El juego de "verdadero o falso" que las abuelas del Valle y el Pacífico jugaban con los nietos no era pasatiempo: era entrenamiento de coherencia. Una abuela decía afirmaciones y los niños evaluaban si eran verdaderas, falsas o contradictorias. "Llueve y no llueve" — eso es contradicción, no se sostiene. "Si llueve, traigo paraguas" — eso es regla con dos casos posibles. La lógica formal con tablas de verdad codifica lo que el juego ancestral entrenaba sin nombres técnicos.',
+    fuente: 'Juego de "verdadero o falso" en cocinas y patios del Valle y el Pacífico',
+    preguntaPuente:
+      '¿Qué hacía que el juego de las abuelas funcionara como entrenamiento cognitivo? ¿Y qué pasa hoy cuando las reglas de redes sociales o reglamentos contienen contradicciones lógicas que nadie detecta?',
+  },
+
+  triangulo: {
+    dussel: {
+      autor: 'Enrique Dussel',
+      lente: 'lente del nosotros',
+      cita: 'Detectar contradicciones en las reglas que rigen mi vida es ejercicio liberador, no académico.',
+      preguntaEspejo:
+        '¿Qué regla en mi colegio, mi familia o mi trabajo contiene contradicciones que nadie ha nombrado? ¿Qué cambia si las pongo en tabla de verdad?',
+    },
+    estoico: {
+      autor: 'Marco Aurelio',
+      lente: 'lente del cuidado interior',
+      cita: 'La coherencia entre lo que dices y lo que haces es la mayor forma de virtud silenciosa.',
+      preguntaEspejo:
+        '¿Mis propias afirmaciones diarias serían coherentes si las pusiera en tabla de verdad? ¿Dónde me contradigo sin notarlo?',
+    },
+    floridi: {
+      autor: 'Luciano Floridi',
+      lente: 'lente de la infoesfera',
+      cita: 'La coherencia lógica es la base de la confianza en cualquier infoesfera — desde la familia hasta la democracia.',
+      preguntaEspejo:
+        '¿Cuántas reglas que sigo a diario tienen coherencia interna probada? ¿Cuántas las acepté sin verificar?',
+    },
+  },
+
+  cincoDimensiones: {
+    personal:
+      'Aprendiste a probar la coherencia lógica de cualquier regla — herramienta para defenderte de reglamentos mal escritos.',
+    emocional:
+      'Sentiste la satisfacción de detectar una contradicción que estaba a la vista pero nadie había nombrado.',
+    ciudadana:
+      'La lógica formal aplicada a reglamentos, leyes y promociones es defensa ciudadana cotidiana.',
+    local:
+      'Heredaste el juego de las abuelas: probar la coherencia de la palabra antes de aceptarla.',
+    intergeneracional:
+      'El juego de patio y la lógica matemática comparten gramática. La palabra dada se sostiene cuando es coherente consigo misma — antes y ahora.',
+  },
 };
 
 export default contenido;

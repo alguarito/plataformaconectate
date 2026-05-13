@@ -59,6 +59,51 @@ const contenido: ContenidoGuia = {
     transferencia: 'Esta semana: elige UN proceso real (timbre, asistencia, calificaciones, cafetería) y escríbelo como pseudocódigo + diagrama de flujo. Compártelo con alguien y mejora donde haya confusión.',
     cierre: 'La receta de la abuela y el diagrama ISO comparten algo: cuando se escribe bien, cualquiera puede seguirla. La claridad del orden es ética del trabajo compartido.',
   },
+
+  saberAncestral: {
+    saber:
+      'La receta del sancocho, del ajiaco, del mote, de la chicha — cada una era un algoritmo paso a paso transmitido de abuela a nieta. "Primero pones agua hasta tal altura. Si la carne es de res, déjala media hora; si es de cerdo, una hora completa. Cuando hierva, agregas el plátano". Esa estructura con pasos, condiciones y secuencias es pseudocódigo antes del pseudocódigo. La cocina campesina colombiana es archivo vivo de algoritmos que se ejecutan tres veces al día.',
+    fuente: 'Recetas tradicionales del campo colombiano (sancocho, ajiaco, mote, chicha)',
+    preguntaPuente:
+      '¿Qué hacía que la receta de la abuela funcionara cuando la seguía alguien que nunca había cocinado? ¿Y qué cambia cuando un algoritmo digital mal escrito le pasa lo mismo a un usuario nuevo?',
+  },
+
+  triangulo: {
+    dussel: {
+      autor: 'Enrique Dussel',
+      lente: 'lente del nosotros',
+      cita: 'El pseudocódigo democratiza el código — permite que el no programador opine sobre lo que las máquinas deciden por él.',
+      preguntaEspejo:
+        '¿Qué algoritmos rigen mi vida sin que yo pueda entenderlos? ¿Qué cambiaría si pudiera leerlos en pseudocódigo claro?',
+    },
+    estoico: {
+      autor: 'Marco Aurelio',
+      lente: 'lente del cuidado interior',
+      cita: 'La claridad del orden es virtud — el algoritmo bien escrito respeta a quien lo lee.',
+      preguntaEspejo:
+        'Cuando escribo instrucciones (a un compañero, a un equipo), ¿soy tan claro como la abuela con su receta? ¿O dejo huecos que el otro tiene que adivinar?',
+    },
+    floridi: {
+      autor: 'Luciano Floridi',
+      lente: 'lente de la infoesfera',
+      cita: 'La transparencia algorítmica es la base de la confianza en una infoesfera dominada por código.',
+      preguntaEspejo:
+        '¿Los algoritmos que uso (redes, apps, IA) tienen versión legible en pseudocódigo? ¿Qué dice esa opacidad sobre el poder que ceden?',
+    },
+  },
+
+  cincoDimensiones: {
+    personal:
+      'Aprendiste a escribir instrucciones que cualquiera puede seguir — habilidad fundamental para enseñar, dirigir, colaborar.',
+    emocional:
+      'Resististe la tentación de dar "instrucciones cortas" — entendiste que la claridad respeta al lector aunque al autor le tome más tiempo.',
+    ciudadana:
+      'Exigir versiones en pseudocódigo de algoritmos que toman decisiones públicas (becas, ingresos, créditos) es ciudadanía algorítmica.',
+    local:
+      'Heredaste el archivo de algoritmos de la cocina campesina colombiana — saberes que llevan siglos siendo ejecutados con éxito.',
+    intergeneracional:
+      'La receta de la abuela y el diagrama de flujo ISO comparten lógica. Lo que cambia es el medio, no la ética de la claridad.',
+  },
 };
 
 export default contenido;

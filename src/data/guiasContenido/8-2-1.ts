@@ -62,6 +62,51 @@ const contenido: ContenidoGuia = {
     transferencia: 'Esta semana: en MakeCode escribe un programa con condicional anidada (if-else-if) que clasifique datos reales (ej: edad → categoría, nota → estado). Pruébalo con 5 casos distintos.',
     cierre: 'El juicio del herrero y la condicional anidada hacen lo mismo: cruzar varias condiciones antes de actuar. La diferencia: el herrero lo aprende con años; el código lo replica en milisegundos.',
   },
+
+  saberAncestral: {
+    saber:
+      'El oficio del herrero del Valle no era solo golpear metal. Antes de cada golpe, cruzaba múltiples condiciones mentales: ¿el color del hierro está al punto (amarillo cereza, no naranja, no rojo)? ¿Suena bien al primer toque? ¿El yunque está estable? ¿La tenaza sujeta firme? Si CUALQUIERA fallaba, no golpeaba. Esa lógica AND con varias condiciones simultáneas evitaba accidentes y herramientas mal hechas. El if-else-if anidado y los operadores AND/OR/NOT codifican lo que el herrero aprendía en años de oficio.',
+    fuente: 'Oficio del herrero en el Valle del Cauca — siglos XIX-XX',
+    preguntaPuente:
+      '¿Qué hacía el herrero antes de cada golpe? ¿Y qué pasa cuando un programa decide sin cruzar bien las condiciones (alarma que se dispara por una vela, semáforo que se queda en rojo)?',
+  },
+
+  triangulo: {
+    dussel: {
+      autor: 'Enrique Dussel',
+      lente: 'lente del nosotros',
+      cita: 'Toda regla lógica excluye casos — saber a quién deja afuera es ética del programador.',
+      preguntaEspejo:
+        '¿Qué casos reales no captura bien mi condicional? ¿Qué personas o situaciones quedan invisibles para mi lógica?',
+    },
+    estoico: {
+      autor: 'Marco Aurelio',
+      lente: 'lente del cuidado interior',
+      cita: 'Cruzar varias condiciones antes de actuar es virtud — la decisión apresurada es origen del error.',
+      preguntaEspejo:
+        'Cuando decido algo importante, ¿cruzo varias condiciones o salto a la primera respuesta posible? ¿Cuál de las dos posturas requiere más oficio?',
+    },
+    floridi: {
+      autor: 'Luciano Floridi',
+      lente: 'lente de la infoesfera',
+      cita: 'La lógica AND/OR/NOT es gramática básica del razonamiento en la infoesfera contemporánea.',
+      preguntaEspejo:
+        '¿Estoy entrenando mi razonamiento lógico cotidiano (defensa contra reglas mal diseñadas) o solo aprendiendo operadores para el examen?',
+    },
+  },
+
+  cincoDimensiones: {
+    personal:
+      'Aprendiste a cruzar condiciones antes de actuar — disciplina cognitiva que aplica a código y a vida adulta.',
+    emocional:
+      'Resististe la tentación de simplificar reglas hasta el absurdo. La lógica robusta exige paciencia y atención al caso límite.',
+    ciudadana:
+      'Detectar reglas mal diseñadas en reglamentos y leyes es defensa ciudadana concreta — la lógica formal entrenada en clase escala.',
+    local:
+      'Heredaste el juicio del herrero del Valle: cruzar varias condiciones antes del golpe definitivo.',
+    intergeneracional:
+      'El oficio que el herrero aprendía con los años, el código lo replica en milisegundos. Lo que cambia es el medio, no la lógica.',
+  },
 };
 
 export default contenido;

@@ -199,6 +199,51 @@ const contenido: ContenidoGuia = {
     cierre:
       'La fórmula del abuelo — el ancla heredada — sigue viva en cada $ que escribes. Es disciplina técnica y, también, soberanía cultural.',
   },
+
+  saberAncestral: {
+    saber:
+      'En cocinas, talleres y oficios del Valle, las "fórmulas heredadas" eran instrucciones precisas con elementos fijos y variables. La receta del sancocho tenía base fija (sal, ajo, comino) y variable (qué carne, qué tubérculos según temporada). La receta del herrero para templar el acero tenía temperatura fija pero tiempo variable. Los abuelos sabían anclar lo no negociable y dejar libre lo contextual. Esa misma lógica vive en las referencias absolutas ($) y relativas de Excel — el oficio de la fórmula reusable tiene siglos.',
+    fuente: 'Recetas y fórmulas heredadas de oficios colombianos (cocina, herrería, sastrería)',
+    preguntaPuente:
+      '¿Qué de la receta heredada de tu familia se mantiene siempre igual y qué cambia según el contexto? ¿Cómo decidían tus mayores qué anclar y qué dejar libre?',
+  },
+
+  triangulo: {
+    dussel: {
+      autor: 'Enrique Dussel',
+      lente: 'lente del nosotros',
+      cita: 'Lo que no se negocia es el principio ético; lo que varía es la aplicación al contexto.',
+      preguntaEspejo:
+        '¿Qué constantes éticas no negocio en mi vida (las anclo con "$") y qué decisiones dejo abiertas al contexto?',
+    },
+    estoico: {
+      autor: 'Marco Aurelio',
+      lente: 'lente del cuidado interior',
+      cita: 'La sabiduría consiste en saber qué depende de ti (anclas) y qué no (variables).',
+      preguntaEspejo:
+        'En las fórmulas de mi vida, ¿qué he confundido — anclando lo que debería variar o variando lo que debería anclar?',
+    },
+    floridi: {
+      autor: 'Luciano Floridi',
+      lente: 'lente de la infoesfera',
+      cita: 'Una fórmula bien diseñada es código reusable; reusable es ético — no obliga a reinventar lo ya pensado.',
+      preguntaEspejo:
+        '¿Mis fórmulas resuelven UN problema o son patrones reusables que sirven a otros casos? ¿Estoy contribuyendo a una infoesfera más cooperativa?',
+    },
+  },
+
+  cincoDimensiones: {
+    personal:
+      'Aprendiste a anclar lo no negociable y dejar libre lo contextual — habilidad cognitiva que aplica a Excel y a la vida.',
+    emocional:
+      'Resististe la tentación de copiar fórmulas sin pensar — entendiste que el criterio precede a la técnica.',
+    ciudadana:
+      'Las fórmulas reusables son cooperación silenciosa: el que las escribe bien le facilita la vida al que las hereda.',
+    local:
+      'Heredaste el oficio de la receta colombiana: ancla lo esencial, varía lo contextual, transmite la lógica.',
+    intergeneracional:
+      'La receta del sancocho de tu abuela y la fórmula $A$1 de Excel comparten lógica. Hoy heredas en formato digital lo que el oficio enseñó por siglos.',
+  },
 };
 
 export default contenido;

@@ -199,6 +199,51 @@ const contenido: ContenidoGuia = {
     cierre:
       'El archivo de la parroquia y la hoja de Excel son lo mismo: memoria autorizada de una comunidad. Cuidarlo es trabajo de archivero, oficio noble.',
   },
+
+  saberAncestral: {
+    saber:
+      'El archivo de la parroquia colombiana mantenía la memoria de un pueblo durante siglos: bautizos, matrimonios, defunciones, ventas de tierra. Cada registro tenía formato uniforme (fecha, nombre, padre, madre, padrino), cada folio tenía firma del párroco, y cada cambio se anotaba al margen para que el archivero del futuro supiera quién corrigió qué. Esa disciplina —el archivero como cuidador paciente de la memoria comunitaria— es lo que hereda Excel cuando lo usamos bien.',
+    fuente: 'Archivo parroquial colombiano (siglos XVIII-XX)',
+    preguntaPuente:
+      '¿Qué del oficio del archivero parroquial sigue siendo necesario en Excel hoy? ¿Y qué se pierde cuando uno borra datos sin documentar el cambio?',
+  },
+
+  triangulo: {
+    dussel: {
+      autor: 'Enrique Dussel',
+      lente: 'lente del nosotros',
+      cita: 'Toda limpieza de datos es decisión política sobre qué memoria se conserva y cuál se borra.',
+      preguntaEspejo:
+        'Cuando elimino "datos sucios" o "duplicados", ¿estoy borrando errores o también voces que no encajan en mi formato? ¿Cómo lo distingo?',
+    },
+    estoico: {
+      autor: 'Marco Aurelio',
+      lente: 'lente del cuidado interior',
+      cita: 'El cuidado paciente de lo pequeño es virtud invisible que sostiene lo grande.',
+      preguntaEspejo:
+        '¿Me canso documentando cambios pequeños o entiendo que esa disciplina es lo que diferencia mi trabajo del trabajo apurado?',
+    },
+    floridi: {
+      autor: 'Luciano Floridi',
+      lente: 'lente de la infoesfera',
+      cita: 'La trazabilidad de los cambios es la base de la confianza informacional.',
+      preguntaEspejo:
+        '¿Mis hojas de cálculo permiten que alguien reconstruya por qué quedaron así, o son cajas negras que solo yo entiendo?',
+    },
+  },
+
+  cincoDimensiones: {
+    personal:
+      'Asumiste un rol que pocos ejercen: archivero/a de tu propia información. Disciplina que separa amateur de profesional.',
+    emocional:
+      'Resististe la prisa de "borrar y ya" — entendiste que documentar es lentitud productiva, no burocracia inútil.',
+    ciudadana:
+      'Aplicaste transparencia a tu propio trabajo. Esa práctica escala: a equipos, a instituciones, a la vida pública.',
+    local:
+      'Heredaste el oficio del archivero parroquial colombiano —paciente, riguroso, fiel— y lo aplicaste en formato digital.',
+    intergeneracional:
+      'Los registros parroquiales de hace 300 años permiten que hoy un colombiano rastree su árbol familiar. Tu disciplina hoy puede servir mañana de la misma forma.',
+  },
 };
 
 export default contenido;

@@ -156,6 +156,51 @@ const contenido: ContenidoGuia = {
     transferencia: 'Esta semana: revisa 3 gráficos en redes o noticias. Identifica si el eje empieza en 0, si tiene fuente, si el tipo es apropiado. Comparte con un compañero los engaños que detectes.',
     cierre: 'El cuento gráfico del abuelo y tu gráfico de Excel comparten propósito: hacer visible lo invisible. Cuidar el medio es cuidar la verdad.',
   },
+
+  saberAncestral: {
+    saber:
+      'Antes del gráfico de barras existieron las pictografías ancestrales: los petroglifos del Valle, los mapas en piedra de los Andes, los dibujos en arena de los pescadores afro-pacíficos para mostrar corrientes, los esquemas que la abuela trazaba en el suelo con un palo para explicar el patrón de la cosecha. Visualizar datos es un gesto humano antiguo — el software solo cambió el medio. La diferencia entre gráfico honesto y gráfico tramposo también es antigua: el comerciante que ajustaba la balanza tramposa tiene primo en el publicista que corta el eje y.',
+    fuente: 'Pictografías y esquemas tradicionales del Valle, los Andes y el Pacífico colombiano',
+    preguntaPuente:
+      '¿Qué hacía que el dibujo en arena del pescador afro-pacífico comunicara verdad a quien lo miraba? ¿Y qué hace que muchos gráficos de redes hoy comuniquen engaño aunque tengan números reales?',
+  },
+
+  triangulo: {
+    dussel: {
+      autor: 'Enrique Dussel',
+      lente: 'lente del nosotros',
+      cita: 'El gráfico engañoso es la balanza tramposa moderna — ambas explotan la confianza del que mira.',
+      preguntaEspejo:
+        '¿He compartido gráficos en redes sin verificar el eje, la fuente o el tipo? ¿A quién perjudicó esa difusión silenciosa?',
+    },
+    estoico: {
+      autor: 'Marco Aurelio',
+      lente: 'lente del cuidado interior',
+      cita: 'Comunicar bien es responsabilidad de quien emite, no solo capacidad de quien recibe.',
+      preguntaEspejo:
+        'Cuando produzco un gráfico, ¿pienso primero en mi audiencia o en lo que quiero impresionar? ¿Cuál de las dos cosas dura más en la confianza?',
+    },
+    floridi: {
+      autor: 'Luciano Floridi',
+      lente: 'lente de la infoesfera',
+      cita: 'La visualización honesta es la primera línea de defensa contra la degradación informacional.',
+      preguntaEspejo:
+        '¿Mis gráficos aportan claridad a la infoesfera o le suman ruido? ¿Estoy entrenando mi ojo para detectar el engaño visual?',
+    },
+  },
+
+  cincoDimensiones: {
+    personal:
+      'Aprendiste a elegir el tipo de gráfico según la pregunta — habilidad de comunicador honesto, no decorador de datos.',
+    emocional:
+      'Reconociste la tentación del gráfico vistoso que oculta — y elegiste claridad sobre espectáculo.',
+    ciudadana:
+      'Tu ojo crítico ante gráficos de noticias y publicidad es defensa contra la desinformación visual cotidiana.',
+    local:
+      'Heredaste la lógica de la pictografía ancestral: hacer visible lo invisible con honestidad, no con efecto.',
+    intergeneracional:
+      'El dibujo en arena del pescador y tu gráfico de Excel comparten ética: el medio es responsable de la verdad que comunica.',
+  },
 };
 
 export default contenido;

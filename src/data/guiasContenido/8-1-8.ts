@@ -156,6 +156,51 @@ const contenido: ContenidoGuia = {
     transferencia: 'Esta semana: en una hoja real (lista, presupuesto, registro), aplica al menos UNA validación de datos y UN formato condicional. Documenta qué error previniste.',
     cierre: 'La hoja autovalidada es semáforo digital: cuida al usuario antes de que se equivoque. Es ética del diseño aplicada a la herramienta cotidiana.',
   },
+
+  saberAncestral: {
+    saber:
+      'El semáforo del salón comunal del barrio en el Valle: tres colores, tres reglas claras, todos los entienden. Verde = pasa, amarillo = atención, rojo = espera. Esa lógica simple sostuvo asambleas, juegos, festividades durante décadas. La validación de datos en Excel hereda ese principio comunitario: reglas visibles antes del error. El formato condicional es lo mismo: pintar el dato según su valor para que la mirada lo lea sin tener que calcular.',
+    fuente: 'Salón comunal del barrio y códigos visuales comunitarios del Valle',
+    preguntaPuente:
+      '¿Qué hace que el semáforo del salón comunal funcione para gente que apenas sabe leer? ¿Qué del diseño que cuida al usuario antes del error podemos llevar a Excel hoy?',
+  },
+
+  triangulo: {
+    dussel: {
+      autor: 'Enrique Dussel',
+      lente: 'lente del nosotros',
+      cita: 'El diseño que cuida a quien usa la herramienta es ética material, no estética opcional.',
+      preguntaEspejo:
+        '¿A quién protejo cuando agrego validación a mi hoja de cálculo? ¿Y a quién dejé sin protección por flojera de no diseñarla?',
+    },
+    estoico: {
+      autor: 'Marco Aurelio',
+      lente: 'lente del cuidado interior',
+      cita: 'Prevenir el error es virtud invisible — más alta que la corrección posterior.',
+      preguntaEspejo:
+        '¿Estoy diseñando para corregir errores después o para prevenirlos antes? ¿Cuál de las dos posturas requiere más oficio?',
+    },
+    floridi: {
+      autor: 'Luciano Floridi',
+      lente: 'lente de la infoesfera',
+      cita: 'La calidad informacional se diseña con barreras visibles antes que con correcciones reactivas.',
+      preguntaEspejo:
+        '¿Mis hojas de cálculo previenen errores o esperan que el usuario sea perfecto? ¿Cuál es la diferencia ética entre las dos posturas?',
+    },
+  },
+
+  cincoDimensiones: {
+    personal:
+      'Aprendiste a diseñar herramientas que cuidan al usuario — habilidad profesional rara, valiosa, transferible a cualquier sistema.',
+    emocional:
+      'Resististe la lógica del "ya está, que el usuario se cuide" y elegiste la disciplina del diseño preventivo.',
+    ciudadana:
+      'Diseñar con validación es respetar a quien recibe la herramienta. Esa ética escala: de Excel a sistemas públicos, a apps, a leyes.',
+    local:
+      'Heredaste la lógica del semáforo del salón comunal — tres reglas claras que cuidan a todos, no solo a los expertos.',
+    intergeneracional:
+      'Los códigos visuales comunitarios que la abuela entendía sin leer son los mismos que el formato condicional automatiza hoy.',
+  },
 };
 
 export default contenido;

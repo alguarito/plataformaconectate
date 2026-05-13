@@ -156,6 +156,51 @@ const contenido: ContenidoGuia = {
     transferencia: 'Esta semana ejecuta TU mini-estudio: pregunta acotada, instrumento honesto, 20+ encuestados, análisis con funciones, gráfico, conclusión prudente, recomendación accionable.',
     cierre: 'El consejo de productores estudiaba antes de decidir. Tú haces lo mismo: tu palabra ante la administración tiene peso porque está sustentada en datos honestos.',
   },
+
+  saberAncestral: {
+    saber:
+      'En los mercados campesinos del Valle, antes de fijar precios para la temporada, el consejo de productores hacía un estudio: cuántos cargaron este año, cuántos quedaron sin vender el anterior, qué precios manejaron los otros mercados, qué demandó la ciudad. No era encuesta académica — era método heredado para decidir antes de comprometer la cosecha. Tu mini-estudio del colegio cumple la misma función: pregunta acotada, datos reales, análisis honesto, recomendación accionable. La estadística aplicada del campo lleva siglos siendo aliada de la decisión comunitaria.',
+    fuente: 'Consejos de productores en mercados campesinos del Valle del Cauca',
+    preguntaPuente:
+      '¿Qué hacía que las decisiones del consejo de productores resistieran las temporadas? ¿Y qué pierde una decisión escolar o ciudadana hecha sin estudio previo?',
+  },
+
+  triangulo: {
+    dussel: {
+      autor: 'Enrique Dussel',
+      lente: 'lente del nosotros',
+      cita: 'El estudio comunitario es la forma rigurosa de la palabra colectiva — antes de decidir, escuchar con datos.',
+      preguntaEspejo:
+        '¿A quién doy voz en mi mini-estudio? ¿Quiénes podrían quedar afuera de mi muestra y por qué me importaría incluirlos?',
+    },
+    estoico: {
+      autor: 'Marco Aurelio',
+      lente: 'lente del cuidado interior',
+      cita: 'La conclusión prudente reconoce sus propios límites — y por eso convence.',
+      preguntaEspejo:
+        '¿Estoy dispuesto a nombrar lo que mi estudio NO dice, o solo voy a defender lo que sí dice?',
+    },
+    floridi: {
+      autor: 'Luciano Floridi',
+      lente: 'lente de la infoesfera',
+      cita: 'Un mini-estudio honesto es ladrillo de infoesfera saludable — ruido reducido, decisión iluminada.',
+      preguntaEspejo:
+        '¿Mi estudio contribuye al conocimiento compartido de mi comunidad o solo cumple con la tarea académica? ¿Cuál es la diferencia?',
+    },
+  },
+
+  cincoDimensiones: {
+    personal:
+      'Aplicaste 8 sesiones de aprendizaje en UN producto integrador con voz propia — eso es phronesis encarnada.',
+    emocional:
+      'Resististe la tentación de afirmar más allá de los datos. Reconocer límites es madurez intelectual, no debilidad.',
+    ciudadana:
+      'Tu mini-estudio puede mejorar algo real del colegio. La estadística aplicada a tu comunidad es ciudadanía concreta.',
+    local:
+      'Heredaste el método del consejo de productores del Valle — estudiar antes de decidir cuando hay algo importante en juego.',
+    intergeneracional:
+      'El mercado campesino que estudiaba precios antes de la temporada y tu mini-estudio escolar comparten ética: decisión con evidencia.',
+  },
 };
 
 export default contenido;

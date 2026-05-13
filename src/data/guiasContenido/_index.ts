@@ -120,3 +120,31 @@ export function totalEnriquecidas(): number {
 export function listaEnriquecidas(): { grado: number; periodo: number; sesion: number }[] {
   return TODAS.map((g) => ({ grado: g.grado, periodo: g.periodo, sesion: g.sesion }));
 }
+
+/**
+ * Nivel de adopción del contrato editorial MILC v3 de una guía:
+ *  - 'pro':     contrato completo (saber + ruta + actividades + triángulo + 5d).
+ *               Es la profundidad de G9·P1+P2 y G11·P1.
+ *  - 'bloques': los 3 bloques filosóficos (saber + triángulo + 5d) sobre una
+ *               estructura pre-MILC. Es la migración A aplicada en G8·P1+P2.
+ *  - 'legacy':  hay .ts pero sin los bloques MILC v3 (escasos G6/G8·P3 sin migrar).
+ *  - 'none':    sin contenido enriquecido (cae a recurso de Drive / scaffolding).
+ */
+export type NivelMilc = 'pro' | 'bloques' | 'legacy' | 'none';
+
+export function getMilcLevel(
+  grado: number,
+  periodo: number,
+  sesion: number,
+): NivelMilc {
+  const g = getContenidoGuia(grado, periodo, sesion);
+  if (!g) return 'none';
+  const tieneSaber = !!g.saberAncestral;
+  const tieneTri = !!g.triangulo;
+  const tiene5d = !!g.cincoDimensiones;
+  const tieneRuta = !!g.mapaRuta && g.mapaRuta.length > 0;
+  const tieneActs = !!g.actividades && g.actividades.length > 0;
+  if (tieneSaber && tieneTri && tiene5d && tieneRuta && tieneActs) return 'pro';
+  if (tieneSaber && tieneTri && tiene5d) return 'bloques';
+  return 'legacy';
+}

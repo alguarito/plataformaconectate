@@ -20,7 +20,7 @@ import {
   viewUrlFor,
   isMejorada,
 } from '../../../../data/recursos';
-import { getContenidoGuia } from '../../../../data/guiasContenido/_index';
+import { getContenidoGuia, getMilcLevel } from '../../../../data/guiasContenido/_index';
 
 export function getStaticPaths() {
   const paths: any[] = [];
@@ -103,6 +103,38 @@ const viewUrl = tienePdfLocal
   : (recurso && !ocultarPDF ? viewUrlFor(recurso, base) : '');
 
 const esMejorada = isMejorada(recurso);
+const milcLevel = getMilcLevel(grado.numero, periodo.numero, sesion);
+// Etiqueta de badge editorial:
+//  - 'pro':     contrato MILC v3 completo → "MILC v3 · PRO" en dorado
+//  - 'bloques': los 3 bloques filosóficos → "MILC v3" en verde
+//  - 'legacy' con esMejorada=true:        → "MILC v2" (gradiente original)
+//  - otherwise:                           → sin badge
+const milcBadge: { texto: string; estilo: string; title: string } | null =
+  milcLevel === 'pro'
+    ? {
+        texto: '✨ MILC v3 · PRO',
+        estilo:
+          'background: linear-gradient(135deg, #E5B400 0%, #FF6B35 50%, #5A0038 100%); color: white;',
+        title:
+          'Contrato MILC v3 completo: saber ancestral + mapa de ruta + 4 actividades + triángulo + 5 dimensiones',
+      }
+    : milcLevel === 'bloques'
+      ? {
+          texto: '✨ MILC v3',
+          estilo:
+            'background: linear-gradient(135deg, #5A0038 0%, #58A923 50%, #0093A5 100%); color: white;',
+          title:
+            'Contrato MILC v3 (bloques filosóficos): saber ancestral + triángulo + 5 dimensiones',
+        }
+      : milcLevel === 'legacy' && esMejorada
+        ? {
+            texto: 'Guía MILC v2',
+            estilo:
+              'background: linear-gradient(135deg, #5A0038 0%, #E5B400 50%, #0093A5 100%); color: white;',
+            title:
+              'Versión MILC v2 — apertura ancestral, pensamiento computacional, 5 dimensiones, Triángulo Dussel-Estoicismo-Floridi',
+          }
+        : null;
 
 // Navegación previa/siguiente. La S11 (cosecha o examen) se accede también
 // desde la card del periodo; pero permitimos prev/next lineal hasta totalGuias.
@@ -161,13 +193,13 @@ const nextSesion = sesion < periodo.totalGuias ? sesion + 1 : null;
           <span class="text-xs font-bold uppercase tracking-widest opacity-80">
             Sesión {sesion} · {periodo.titulo}{enriquecida?.subtema ? ` · ${enriquecida.subtema}` : ''}
           </span>
-          {esMejorada && (
+          {milcBadge && (
             <span
               class="inline-flex items-center gap-1.5 ml-2 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider"
-              style="background: linear-gradient(135deg, #5A0038 0%, #E5B400 50%, #0093A5 100%); color: white;"
-              title="Versión MILC v2 — apertura ancestral, pensamiento computacional, 5 dimensiones, Triángulo Dussel-Estoicismo-Floridi"
+              style={milcBadge.estilo}
+              title={milcBadge.title}
             >
-              ✨ Guía MILC v2
+              {milcBadge.texto}
             </span>
           )}
           <h1 class="heading-giant text-balance mt-2">

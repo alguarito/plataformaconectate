@@ -59,6 +59,51 @@ const contenido: ContenidoGuia = {
     transferencia: 'Esta semana: en MakeCode (simulador online gratis) construye un programa con UN sensor y UN actuador. Comparte el link con un compañero y prueben en distintos ambientes.',
     cierre: 'Las antenas del abuelo y el sensor digital comparten algo: leer el entorno con disciplina antes de reaccionar. La diferencia es que el sensor también puede dormir tranquilo y despertar al evento.',
   },
+
+  saberAncestral: {
+    saber:
+      'Los abuelos del campo colombiano tenían antenas naturales muy finas: leían el cielo para predecir lluvia (color de nubes, dirección del viento, comportamiento de hormigas), leían el río para saber si crecería (color del agua, sonido al chocar contra las piedras), leían el ganado para saber si venía enfermedad (cómo se paraban, qué pasto comían). El sensor digital codifica esa lógica: capturar señal del entorno y activar una respuesta. El sensor de luz, temperatura o movimiento es la antena del abuelo en circuito.',
+    fuente: 'Lectura ambiental tradicional en el campo colombiano (cielo, río, ganado)',
+    preguntaPuente:
+      '¿Qué hacía que el abuelo predijera la lluvia mejor que muchos meteorólogos en pueblos sin radar? ¿Y qué nuevo problema aparece cuando delegamos toda la lectura del entorno a sensores?',
+  },
+
+  triangulo: {
+    dussel: {
+      autor: 'Enrique Dussel',
+      lente: 'lente del nosotros',
+      cita: 'Los sensores que decidimos instalar deciden qué realidad cuenta para el sistema — y cuál queda invisible.',
+      preguntaEspejo:
+        '¿Qué del entorno no mido con sensores en mi proyecto y debería medir? ¿Qué realidad estoy dejando fuera del sistema?',
+    },
+    estoico: {
+      autor: 'Marco Aurelio',
+      lente: 'lente del cuidado interior',
+      cita: 'Leer el entorno con disciplina antes de reaccionar es virtud — la respuesta impulsiva es origen del desastre.',
+      preguntaEspejo:
+        '¿Mis decisiones cotidianas las tomo después de leer bien el entorno o reacciono a la primera señal sin verificar?',
+    },
+    floridi: {
+      autor: 'Luciano Floridi',
+      lente: 'lente de la infoesfera',
+      cita: 'Cada sensor instalado es una decisión sobre qué entra al universo informacional y qué queda afuera.',
+      preguntaEspejo:
+        '¿Estoy diseñando sensores que iluminan problemas reales de mi comunidad, o solo sensores que producen métricas vendibles?',
+    },
+  },
+
+  cincoDimensiones: {
+    personal:
+      'Aprendiste que un sensor no es magia — es decisión consciente sobre qué del mundo cuenta para tu sistema.',
+    emocional:
+      'Resististe la tentación de "más sensores = mejor sistema". Entendiste que medir bien lo que importa vence a medir todo sin criterio.',
+    ciudadana:
+      'Diseñar sensores con criterio ético es ciudadanía técnica: incluyes o excluyes realidades con cada decisión de qué medir.',
+    local:
+      'Heredaste la lectura ambiental del abuelo: leer el entorno con disciplina antes de reaccionar.',
+    intergeneracional:
+      'Las antenas naturales del abuelo y los sensores digitales comparten oficio. Lo que cambia es la herramienta, no la atención al mundo.',
+  },
 };
 
 export default contenido;

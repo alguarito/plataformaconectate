@@ -48,6 +48,51 @@ const contenido: ContenidoGuia = {
     transferencia: 'Esta semana: revisa la privacidad de tus cuentas. Pásalas a privada si no lo están. Identifica y memoriza tu adulto de confianza. Memoriza Línea 141 ICBF.',
     cierre: 'La advertencia de los mayores ("no aceptes del extraño") sobrevive en cada bloqueo, en cada cuenta privada, en cada NO al enviar una foto. La sabiduría ancestral protege en formato digital.',
   },
+
+  saberAncestral: {
+    saber:
+      'En las calles de pueblos del Valle, el Pacífico y los Andes, los mayores enseñaban tres reglas para el espacio público: no aceptes regalos de extraños, no vayas solo a lugares apartados con quien apenas conoces, avisa a un adulto de confianza si algo te incomoda. Esas tres reglas, repetidas durante generaciones, salvaron a miles de niños del abuso. El grooming digital opera con la misma lógica del depredador antiguo: ganar confianza, aislar, pedir intimidad, amenazar con vergüenza. La advertencia de los mayores no envejeció — solo cambió de plaza física a plaza digital. La Ley 1336 colombiana penaliza esos delitos online; los principios son los mismos que los del consejo de la abuela.',
+    fuente: 'Reglas de los mayores sobre el extraño en el espacio público — Valle, Pacífico, Andes',
+    preguntaPuente:
+      '¿Qué reglas te enseñaron los mayores de tu familia sobre extraños en la calle? ¿Qué de esas reglas aplica directamente a "extraños en redes" hoy?',
+  },
+
+  triangulo: {
+    dussel: {
+      autor: 'Enrique Dussel',
+      lente: 'lente del nosotros',
+      cita: 'La vergüenza con que el agresor controla a la víctima es la misma desde hace siglos — romperla con palabra adulta es liberación.',
+      preguntaEspejo:
+        '¿He guardado silencio sobre algo en redes por vergüenza o miedo a la reacción? ¿Quién es mi adulto de confianza al que sí podría contarle?',
+    },
+    estoico: {
+      autor: 'Epicteto',
+      lente: 'lente del cuidado interior',
+      cita: 'Lo que no depende de ti es el extraño que te escribe; lo que sí depende es si lo respondes, lo bloqueas, o lo reportas.',
+      preguntaEspejo:
+        '¿Qué decisiones digitales sí dependen totalmente de mí (no aceptar, bloquear, reportar) y cuántas ejerzo con disciplina estoica?',
+    },
+    floridi: {
+      autor: 'Luciano Floridi',
+      lente: 'lente de la infoesfera',
+      cita: 'La privacidad bien diseñada es la primera línea de defensa de la dignidad informacional del adolescente.',
+      preguntaEspejo:
+        '¿Mis cuentas están realmente privadas o "casi privadas"? ¿Y mis fotos compartidas en chats — están protegidas o circulan libremente en capturas?',
+    },
+  },
+
+  cincoDimensiones: {
+    personal:
+      'Aprendiste a reconocer las 5 etapas del grooming y los riesgos del sexting — habilidades que pueden cambiar tu vida o la de un amigo.',
+    emocional:
+      'Resististe la pulsión de la "validación rápida" del extraño en redes — entendiste que la atención no pedida no es regalo, es señal.',
+    ciudadana:
+      'Conocer la Ley 1336 colombiana es alfabetización jurídica básica — derechos que tu generación tiene y muchos no usan por no saberlos.',
+    local:
+      'Heredaste el consejo de los mayores sobre el espacio público — el principio sobrevive en plaza física y plaza digital.',
+    intergeneracional:
+      'La abuela que decía "no aceptes del extraño" y tú al bloquear una cuenta sospechosa comparten ética. Lo que cambia es la calle, no la regla.',
+  },
 };
 
 export default contenido;

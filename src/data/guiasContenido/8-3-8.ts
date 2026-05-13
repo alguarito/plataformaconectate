@@ -48,6 +48,51 @@ const contenido: ContenidoGuia = {
     transferencia: 'Esta semana: identifica UNA persona de tu familia o barrio con saber popular (oficio, receta, técnica). Pídele permiso para grabarla. Produce video respetando los principios.',
     cierre: 'Carnavales y tejedurías sobreviven en cada video que reconoce sin exotizar. La estética de la liberación es política digital.',
   },
+
+  saberAncestral: {
+    saber:
+      'El Carnaval de Negros y Blancos en Pasto, el Carnaval de Barranquilla, las tejedurías wayuu en La Guajira, las balsas de guadua del Pacífico, los retablos de los maestros vereda — todas son expresiones de la estética popular colombiana que durante siglos fueron tratadas como "folclor exótico" por la mirada externa. Pero quien las hace, quien las hereda, sabe que son política: dignidad, memoria, resistencia. La estética de la liberación de Dussel nombra eso: belleza como acto político de los pueblos que han sido silenciados. Producir contenido digital sobre cultura popular sin exotizar (sin "rescatar al pueblito", sin postal turística) es heredar esa ética.',
+    fuente: 'Carnavales del Pacífico y el Caribe, tejedurías wayuu, retablos veredas colombianos',
+    preguntaPuente:
+      '¿Cuándo has visto un video o una foto de tu región producido por gente de afuera que se sintió mal — como "exótico" o "pintoresco"? ¿Qué decisión específica del autor te molestó?',
+  },
+
+  triangulo: {
+    dussel: {
+      autor: 'Enrique Dussel',
+      lente: 'lente del nosotros',
+      cita: 'La estética de la liberación es la belleza que el pueblo produce sobre sí mismo — no la que otros producen sobre él.',
+      preguntaEspejo:
+        '¿Mis videos sobre mi región los hago yo desde dentro o reproduzco la mirada turística que aprendí de internet? ¿Cuál de las dos posturas honra a quien aparece?',
+    },
+    estoico: {
+      autor: 'Marco Aurelio',
+      lente: 'lente del cuidado interior',
+      cita: 'Honrar lo que filmas pidiendo permiso es virtud antigua — la prisa por publicar es lo nuevo.',
+      preguntaEspejo:
+        '¿Cuántas veces he grabado a alguien sin permiso explícito porque "estaba en público"? ¿Qué pasaría si esa persona viera mi post mañana?',
+    },
+    floridi: {
+      autor: 'Luciano Floridi',
+      lente: 'lente de la infoesfera',
+      cita: 'Cada video producido sobre una cultura modifica la infoesfera global de esa cultura — para bien o para mal.',
+      preguntaEspejo:
+        '¿Mis publicaciones sobre el Valle, el Pacífico o los Andes aportan a una infoesfera más rica de mi región, o reproducen el cliché que ya existe?',
+    },
+  },
+
+  cincoDimensiones: {
+    personal:
+      'Aprendiste a distinguir entre reconocer y exotizar — habilidad ética rara en una era de turismo masivo y "creator economy".',
+    emocional:
+      'Resististe la facilidad de la postal — entendiste que producir contenido con respeto exige más trabajo que producir con efecto.',
+    ciudadana:
+      'Cada video tuyo que honra cultura popular sin exotizarla es resistencia a la mirada extractiva que domina redes.',
+    local:
+      'Heredaste la estética de los carnavales, tejedurías y oficios populares colombianos — política y belleza fusionadas.',
+    intergeneracional:
+      'El artesano wayuu que enseña su técnica a la nieta y tu próximo video sobre ella comparten propósito: que la memoria popular siga viva.',
+  },
 };
 
 export default contenido;

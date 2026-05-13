@@ -205,6 +205,51 @@ const contenido: ContenidoGuia = {
     cierre:
       'Sustentar es darle voz a algo. La voz del consejo de mayores se hace, hoy, también voz digital. El círculo se cierra: lo ancestral camina con lo contemporáneo cuando ambos se escuchan.',
   },
+
+  saberAncestral: {
+    saber:
+      'En la tradición de las "palabras de cierre" del consejo de mayores —los cabildos indígenas, las mingas afro-pacíficas, las asambleas de campesinos del Valle— al cerrar un ciclo de trabajo (cosecha, año, proyecto comunitario) el vocero más experimentado decía: "esto hicimos, esto aprendimos, esto queda pendiente". No era resumen — era ritual. Tu cierre de grado 8 hereda esa lógica: portafolio que muestra lo hecho, sustentación que defiende lo aprendido, triángulo de pensamiento que nombra lo que sigues pensando. El círculo se cierra cuando lo ancestral camina con lo contemporáneo en la misma palabra.',
+    fuente: 'Palabras de cierre en cabildos, mingas y asambleas tradicionales colombianas',
+    preguntaPuente:
+      '¿Cómo cerraba el consejo de tus abuelos un año de trabajo? ¿Y qué de esa práctica sobrevive en tu propio cierre de grado 8?',
+  },
+
+  triangulo: {
+    dussel: {
+      autor: 'Enrique Dussel',
+      lente: 'lente del nosotros',
+      cita: 'Cerrar bien un ciclo es declarar públicamente lo aprendido — y eso es ciudadanía intelectual desde el primer ciclo.',
+      preguntaEspejo:
+        '¿Estoy cerrando este grado con voz propia o solo cumpliendo la tarea? ¿Qué cambia si lo asumo como ritual de oficio, no como nota?',
+    },
+    estoico: {
+      autor: 'Marco Aurelio',
+      lente: 'lente del cuidado interior',
+      cita: 'No es lo que dices al cerrar — es la coherencia entre lo dicho y lo que sostienes después lo que define el cierre.',
+      preguntaEspejo:
+        '¿Lo que sustento hoy en el cierre de grado 8 voy a sostenerlo con actos en el grado 9? ¿O quedará como discurso bonito sin consecuencia?',
+    },
+    floridi: {
+      autor: 'Luciano Floridi',
+      lente: 'lente de la infoesfera',
+      cita: 'El portafolio digital es la memoria persistente del propio camino — cuídalo como cuidarías una bitácora de vida.',
+      preguntaEspejo:
+        '¿Mi portafolio refleja honestamente lo que aprendí en grado 8, o oculta lo que me costó? ¿Cuál de las dos versiones me servirá más en el futuro?',
+    },
+  },
+
+  cincoDimensiones: {
+    personal:
+      'Cerraste el grado 8 con sustentación, portafolio y triángulo de pensamiento — ritual completo de oficio académico.',
+    emocional:
+      'Sentiste la satisfacción y el nervio de presentar públicamente lo trabajado durante un año. Habilidad escasa que entrenaste.',
+    ciudadana:
+      'Practicaste palabra pública con evidencia y reconocimiento de límites. Esa habilidad es base de la vida democrática adulta.',
+    local:
+      'Heredaste el ritual de cierre del consejo de mayores: presentar lo hecho con dignidad, lo aprendido con humildad, lo pendiente con honestidad.',
+    intergeneracional:
+      'El cabildo que cerraba el año con palabras del vocero y tu cierre digital de grado 8 comparten gramática. El círculo se cierra cuando ambos se escuchan.',
+  },
 };
 
 export default contenido;

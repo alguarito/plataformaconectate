@@ -48,6 +48,51 @@ const contenido: ContenidoGuia = {
     transferencia: 'Esta semana: completa tu proyecto integrador. Ensaya la presentación. Confirma fecha de socialización con la junta o entidad relevante. Da seguimiento al llamado a la acción.',
     cierre: 'Los gritos colectivos del pueblo y la presentación multimedia comparten propósito: amplificar voces para movilizar cambio. La voz comunitaria es ancestral; el medio es nuevo.',
   },
+
+  saberAncestral: {
+    saber:
+      'Las asambleas barriales en el Valle, las mingas en los resguardos andinos, los cabildos afro-pacíficos siempre tuvieron una forma de "voz comunitaria con propósito político": un vocero hablaba en nombre del consejo, presentaba el problema concreto, proponía acción colectiva, escuchaba ajuste. No era discurso individual — era amplificación de la voz del nosotros. Tu proyecto integrador hereda exactamente esa lógica: identificar un problema real del barrio (no genérico), recoger voces afectadas, producir una pieza multimedia que las amplifique, presentarla ante quien tiene poder para cambiar algo. La voz comunitaria es ancestral; el video y el podcast son medios nuevos.',
+    fuente: 'Asambleas barriales del Valle, mingas andinas, cabildos afro-pacíficos colombianos',
+    preguntaPuente:
+      '¿Cuándo has visto a un grupo de tu barrio o colegio organizarse para cambiar algo concreto? ¿Qué hicieron que sí funcionó y qué hicieron que no?',
+  },
+
+  triangulo: {
+    dussel: {
+      autor: 'Enrique Dussel',
+      lente: 'lente del nosotros',
+      cita: 'La voz que se sustenta en la víctima invisible es la única que el sistema teme.',
+      preguntaEspejo:
+        '¿Mi proyecto da voz a alguien que no la tiene en la conversación pública del colegio? ¿O reproduce las voces que ya se escuchan?',
+    },
+    estoico: {
+      autor: 'Marco Aurelio',
+      lente: 'lente del cuidado interior',
+      cita: 'Hablar para cambiar algo concreto es virtud — hablar para sentirse hablando es ego.',
+      preguntaEspejo:
+        '¿Mi proyecto busca una acción específica de alguien con poder, o solo "concientizar" sin nadie que tenga que decidir?',
+    },
+    floridi: {
+      autor: 'Luciano Floridi',
+      lente: 'lente de la infoesfera',
+      cita: 'La voz comunitaria amplificada por medios digitales es la nueva forma de la deliberación democrática.',
+      preguntaEspejo:
+        '¿Mi pieza multimedia llegará a quien debe escucharla (junta, rector, alcaldía), o solo a quien ya está de acuerdo?',
+    },
+  },
+
+  cincoDimensiones: {
+    personal:
+      'Aplicaste todo el periodo en UN proyecto con propósito comunitario — paso decisivo hacia la madurez como productor digital.',
+    emocional:
+      'Resististe la tentación del proyecto "para la nota" — elegiste uno con potencial de cambiar algo real.',
+    ciudadana:
+      'Tu proyecto integrador es ciudadanía digital concreta: voz comunitaria amplificada con medios contemporáneos.',
+    local:
+      'Heredaste la lógica de las asambleas, mingas y cabildos colombianos — voz colectiva organizada con propósito político.',
+    intergeneracional:
+      'El vocero ancestral del cabildo y tu pieza multimedia comparten función: amplificar la voz del nosotros para movilizar cambio.',
+  },
 };
 
 export default contenido;

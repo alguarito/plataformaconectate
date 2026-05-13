@@ -48,6 +48,51 @@ const contenido: ContenidoGuia = {
     transferencia: 'Esta semana: memoriza la Línea 141 ICBF. Si ves o vives ciberbullying, aplica los pasos: capturar evidencia + acompañar a víctima + reportar a adulto.',
     cierre: 'El consejo del mayor y la Línea 141 comparten esencia: la comunidad protege a sus víctimas. La sabiduría ancestral sobrevive en los protocolos modernos.',
   },
+
+  saberAncestral: {
+    saber:
+      'En los pueblos del Valle y el Pacífico, cuando un niño o niña era víctima de abuso o pelea, la comunidad activaba protocolos no escritos pero claros: el mayor del barrio era avisado, las madres se acompañaban, el agresor era nombrado en público y enfrentado por el consejo. La víctima no quedaba sola, el silencio no era opción, el agresor no se quedaba sin consecuencia. La Línea 141 del ICBF y los protocolos de ciberbullying heredan esa lógica comunitaria: identificar víctima, acompañar, denunciar, romper el silencio. La protección colectiva es ancestral; lo nuevo es el medio digital donde ocurre el abuso.',
+    fuente: 'Consejo de mayores y protocolos de protección comunitaria en pueblos del Valle y el Pacífico',
+    preguntaPuente:
+      '¿Cómo respondía la comunidad de tus abuelos cuando un niño era víctima de bullying o abuso? ¿Y qué hace tu generación cuando ese mismo abuso ocurre en pantallas?',
+  },
+
+  triangulo: {
+    dussel: {
+      autor: 'Enrique Dussel',
+      lente: 'lente del nosotros',
+      cita: 'La indiferencia ante la víctima reproduce la violencia que pretende ignorar.',
+      preguntaEspejo:
+        '¿En cuántos chats grupales he visto bullying y no he intervenido? ¿Qué cambia si la próxima vez intervengo, aunque sea con un mensaje privado a la víctima?',
+    },
+    estoico: {
+      autor: 'Marco Aurelio',
+      lente: 'lente del cuidado interior',
+      cita: 'No te perturbe el insulto del que no respeta — pero acompaña a quien sí lo sufre.',
+      preguntaEspejo:
+        'Cuando recibo un comentario hiriente en redes, ¿reacciono con impulso o con calma estoica? ¿Y cuando lo recibe alguien más, soy testigo o aliado?',
+    },
+    floridi: {
+      autor: 'Luciano Floridi',
+      lente: 'lente de la infoesfera',
+      cita: 'La capacidad de proteger a las víctimas en la infoesfera es prueba del nivel ético de una sociedad digital.',
+      preguntaEspejo:
+        '¿Conozco los canales reales de denuncia (Línea 141, plataformas) o solo los teóricos? ¿Estoy preparado para activarlos si algo le pasa a alguien cercano?',
+    },
+  },
+
+  cincoDimensiones: {
+    personal:
+      'Aprendiste a identificar ciberbullying con criterio — habilidad que aplica a tu propia vida digital y a la de tus pares.',
+    emocional:
+      'Resististe la tentación del silencio o la complicidad pasiva. La protección activa exige coraje cotidiano.',
+    ciudadana:
+      'Conocer la Línea 141 y los protocolos de denuncia es ciudadanía digital concreta — protección de derechos en pantalla.',
+    local:
+      'Heredaste la lógica del consejo de mayores: la comunidad protege a sus víctimas sin esperar permiso.',
+    intergeneracional:
+      'El abuelo que intervenía en la riña del barrio y tú frente al chat tóxico comparten ética: el silencio ante el abuso es complicidad.',
+  },
 };
 
 export default contenido;

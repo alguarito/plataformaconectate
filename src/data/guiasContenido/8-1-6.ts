@@ -156,6 +156,51 @@ const contenido: ContenidoGuia = {
     transferencia: 'Esta semana revisa una factura, un recibo o una cuenta de cafetería. ¿Los descuentos están bien calculados? ¿Hay algún error de orden? Aplica PEMDAS en la vida real.',
     cierre: 'La receta de la chicha y la fórmula de Excel comparten algo: el orden no es negociable. Equivocarse cuesta dinero, tiempo o sabor.',
   },
+
+  saberAncestral: {
+    saber:
+      'La chicha del abuelo en el Valle se hacía con orden: germinar el maíz, molerlo, cocer, fermentar, colar. Cada paso depende del anterior. Saltarse un paso o cambiar el orden no daba "chicha distinta" — daba algo incomible. Las recetas heredadas son algoritmos con jerarquía estricta. PEMDAS en Excel es lo mismo: paréntesis, exponentes, multiplicación/división, adición/sustracción. El orden no es preferencia — es estructura.',
+    fuente: 'Receta tradicional de la chicha de maíz en el Valle del Cauca',
+    preguntaPuente:
+      '¿Qué pasa cuando la abuela cambia el orden de pasos de una receta heredada? ¿Y qué pasa cuando Excel calcula con PEMDAS sin que te des cuenta?',
+  },
+
+  triangulo: {
+    dussel: {
+      autor: 'Enrique Dussel',
+      lente: 'lente del nosotros',
+      cita: 'Las jerarquías ocultas en las herramientas técnicas no son neutras — saberlas es defenderse.',
+      preguntaEspejo:
+        '¿Qué jerarquías invisibles en mis cálculos cotidianos (descuentos, intereses) decidieron por mí sin que yo lo notara?',
+    },
+    estoico: {
+      autor: 'Marco Aurelio',
+      lente: 'lente del cuidado interior',
+      cita: 'El orden de las acciones decide el resultado tanto como las acciones mismas.',
+      preguntaEspejo:
+        'En las fórmulas de mi vida, ¿estoy aplicando el orden correcto o sumando descuentos que en realidad se aplican en secuencia?',
+    },
+    floridi: {
+      autor: 'Luciano Floridi',
+      lente: 'lente de la infoesfera',
+      cita: 'PEMDAS es la gramática silenciosa de la infoesfera matemática — sin ella, calcular es adivinar.',
+      preguntaEspejo:
+        '¿Estoy aprendiendo PEMDAS como gramática para no ser engañado, o solo como regla del examen?',
+    },
+  },
+
+  cincoDimensiones: {
+    personal:
+      'Aprendiste que el orden importa tanto como las operaciones — habilidad cognitiva que aplica a Excel, a la vida, a la cocina.',
+    emocional:
+      'Resististe la tentación de sumar porcentajes (10% + 20% = 30%) porque entendiste que la matemática real es secuencial, no aditiva.',
+    ciudadana:
+      'Verificar el orden de cálculo en facturas y promociones es defensa del consumidor. Sabes leer lo que la promoción esconde.',
+    local:
+      'Heredaste el orden riguroso de la receta de la chicha — cocinar y calcular comparten la misma lógica algorítmica.',
+    intergeneracional:
+      'La abuela cocinera, el abuelo herrero y tu Excel comparten gramática del orden. Lo que cambia es el medio, no la ley.',
+  },
 };
 
 export default contenido;

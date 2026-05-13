@@ -156,6 +156,51 @@ const contenido: ContenidoGuia = {
     transferencia: 'Mañana sustenta tu mini-estudio en 4 minutos. Cronométrate. Pide retroalimentación honesta a un compañero. Mejora antes de la próxima sustentación.',
     cierre: 'La asamblea del cabildo y la sustentación digital comparten una verdad: la palabra dada en público se sostiene con evidencia. La phronesis es habilidad de ciudadano informado.',
   },
+
+  saberAncestral: {
+    saber:
+      'La asamblea trimestral del cabildo indígena —Misak, Nasa, Kogui, Wayuu— era ritual antiguo: cada miembro presentaba lo trabajado, escuchaba preguntas, recibía crítica con humildad, ajustaba con la sabiduría colectiva. No era examen — era ejercicio de palabra pública adulta. Sustentar tu mini-estudio en 4 minutos hereda esa lógica: defender lo hecho, reconocer límites, escuchar mejoras. La phronesis no se queda en la cabeza del estudioso — se vuelve palabra ante los pares.',
+    fuente: 'Asambleas trimestrales en cabildos indígenas colombianos (Misak, Nasa, Kogui, Wayuu)',
+    preguntaPuente:
+      '¿Qué hacía que la palabra del miembro del cabildo se sostuviera ante la asamblea? ¿Y qué pierde tu mini-estudio si no lo sustentas en voz alta ante otros?',
+  },
+
+  triangulo: {
+    dussel: {
+      autor: 'Enrique Dussel',
+      lente: 'lente del nosotros',
+      cita: 'La palabra pública sustentada con evidencia es ciudadanía intelectual — base de toda democracia real.',
+      preguntaEspejo:
+        '¿Estoy entrenando mi capacidad de defender ideas con datos ante un grupo, o tiendo a esconderme cuando hay que hablar?',
+    },
+    estoico: {
+      autor: 'Marco Aurelio',
+      lente: 'lente del cuidado interior',
+      cita: 'Recibir crítica con humildad no es sumisión — es la virtud más rara del orador.',
+      preguntaEspejo:
+        'Cuando recibo retroalimentación crítica sobre mi trabajo, ¿la escucho como insulto o como regalo? ¿Cuál de las dos posturas me hace crecer?',
+    },
+    floridi: {
+      autor: 'Luciano Floridi',
+      lente: 'lente de la infoesfera',
+      cita: 'La sustentación oral con evidencia es práctica fundamental de la infoesfera democrática.',
+      preguntaEspejo:
+        '¿Cuántas veces este año he defendido en voz alta una idea con datos? ¿Suficientes para entrenar la habilidad o demasiado pocas?',
+    },
+  },
+
+  cincoDimensiones: {
+    personal:
+      'Cerraste el periodo dándole voz pública a tu trabajo — habilidad que la mayoría de adultos no entrena.',
+    emocional:
+      'Sentiste el nervio de hablar ante el grupo y lo sostuviste — entrenamiento real de presencia profesional.',
+    ciudadana:
+      'Practicaste palabra pública sustentada con datos. Esa habilidad es base de la deliberación democrática.',
+    local:
+      'Heredaste el ritual de la asamblea del cabildo: presentar, escuchar, ajustar, sin pretender certeza absoluta.',
+    intergeneracional:
+      'El miembro del cabildo Misak que sustentaba la cosecha y tú con tu mini-estudio comparten gramática: palabra pública con evidencia.',
+  },
 };
 
 export default contenido;

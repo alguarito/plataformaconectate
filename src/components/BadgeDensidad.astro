@@ -12,6 +12,7 @@
  * Si no hay datos de densidad, no renderiza nada.
  */
 import { getDensidadPeriodo, NIVEL_LABEL, NIVEL_COLOR } from '../data/densidad';
+import { getMilcLevel } from '../data/guiasContenido/_index';
 
 interface Props {
   grado: number;
@@ -23,7 +24,21 @@ interface Props {
 }
 
 const { grado, periodo, sesion, variant = 'compact', class: className = '' } = Astro.props;
-const d = getDensidadPeriodo(grado, periodo, sesion);
+const dRaw = getDensidadPeriodo(grado, periodo, sesion);
+
+// Bonus de estrellas según nivel MILC v3:
+//  - 'pro':     siempre 5 estrellas (contrato completo).
+//  - 'bloques': +1 estrella sobre el cálculo por bytes del PDF (tope 5).
+//  - 'legacy' / 'none': sin bonus.
+const milcLevel = getMilcLevel(grado, periodo, sesion);
+const d = dRaw
+  ? (() => {
+      let stars = dRaw.stars;
+      if (milcLevel === 'pro') stars = 5;
+      else if (milcLevel === 'bloques') stars = Math.min(5, stars + 1);
+      return { ...dRaw, stars };
+    })()
+  : undefined;
 ---
 
 {

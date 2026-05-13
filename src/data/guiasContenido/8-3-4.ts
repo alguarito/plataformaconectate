@@ -48,6 +48,51 @@ const contenido: ContenidoGuia = {
     transferencia: 'Esta semana: revisa 5 imágenes de tus redes sociales. ¿Cuáles fueron editadas éticamente y cuáles cruzaron la línea? Aplica la regla "¿alteré el contenido o solo la legibilidad?".',
     cierre: 'El fotógrafo de plaza y el editor digital comparten oficio: cuidar la imagen sin mentir sobre su contenido. La ética es ancestral; las herramientas son nuevas.',
   },
+
+  saberAncestral: {
+    saber:
+      'El fotógrafo de plaza en pueblos del Valle, Cundinamarca y Boyacá del siglo XX hacía retoque a mano: con lápiz suave aclaraba una sombra fuerte, con pincel limpiaba una mancha del negativo, con cuchilla corregía una raya. Pero había línea ética estricta: nunca borrar a una persona del retrato familiar, nunca adelgazar al modelo, nunca cambiar el escenario real. El retoque cuidaba legibilidad; la manipulación mentía. La edición digital hereda esa línea: ajustar luz, contraste y recorte está bien; borrar personas, alterar cuerpos, falsificar contextos está mal. La ética visual es ancestral.',
+    fuente: 'Fotógrafos de plaza en pueblos del Valle, Cundinamarca y Boyacá (siglo XX)',
+    preguntaPuente:
+      '¿Por qué el fotógrafo de plaza retocaba pero nunca mentía sobre el contenido de la foto? ¿Y qué pasa hoy cuando una imagen editada en redes cruza la línea ética sin que nadie lo note?',
+  },
+
+  triangulo: {
+    dussel: {
+      autor: 'Enrique Dussel',
+      lente: 'lente del nosotros',
+      cita: 'La imagen manipulada que circula sin advertencia es violencia visual silenciosa.',
+      preguntaEspejo:
+        '¿He compartido imágenes editadas como si fueran "tal cual"? ¿Qué efecto tuvo eso en quien las vio?',
+    },
+    estoico: {
+      autor: 'Marco Aurelio',
+      lente: 'lente del cuidado interior',
+      cita: 'La línea entre mejorar y mentir se cruza fácil — la virtud está en no acercarse a ella.',
+      preguntaEspejo:
+        'Cuando edito una imagen mía, ¿estoy ajustando legibilidad o alterando contenido? ¿Cuál de las dos posturas puedo defender en 5 años?',
+    },
+    floridi: {
+      autor: 'Luciano Floridi',
+      lente: 'lente de la infoesfera',
+      cita: 'La integridad de la imagen es base de la confianza en la infoesfera visual contemporánea.',
+      preguntaEspejo:
+        '¿Mi feed reproduce la cultura del retoque indistinguible o aporta a una infoesfera más honesta?',
+    },
+  },
+
+  cincoDimensiones: {
+    personal:
+      'Aprendiste a distinguir edición ética de manipulación — habilidad cognitiva que aplica a tu propia producción visual diaria.',
+    emocional:
+      'Resististe la tentación de "mejorar la imagen" cruzando la línea — entendiste que la ética visual exige paciencia.',
+    ciudadana:
+      'Detectar manipulaciones en imágenes de prensa, publicidad y redes es defensa ciudadana cotidiana.',
+    local:
+      'Heredaste la línea ética del fotógrafo de plaza: cuidar la imagen sin mentir sobre lo que muestra.',
+    intergeneracional:
+      'El fotógrafo de los años 50 y el editor de Photoshop comparten dilema. Lo que cambia es la herramienta, no la línea ética.',
+  },
 };
 
 export default contenido;

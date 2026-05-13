@@ -48,6 +48,51 @@ const contenido: ContenidoGuia = {
     transferencia: 'Esta semana: en Canva o PowerPoint diseña 5 diapositivas aplicando los 4 principios (jerarquía, contraste, espacio en blanco, alineación). Compártelo con un compañero antes de presentar.',
     cierre: 'Los retablos coloniales y las diapositivas digitales comparten propósito: ordenar la mirada para enseñar. La elegancia es disciplina, no decoración.',
   },
+
+  saberAncestral: {
+    saber:
+      'Los retablos coloniales de las iglesias del Valle, Cartago, Popayán y Bogotá eran sistemas visuales pedagógicos: cada panel contaba un fragmento de la historia bíblica, con jerarquía visual estricta (figura central grande, secundarias a los lados, narrativa de abajo hacia arriba). El analfabeta entendía la historia mirando, no leyendo. La diapositiva moderna hereda esa lógica: jerarquía clara, espacio negativo que respira, decisión consciente sobre qué ve primero el ojo.',
+    fuente: 'Retablos coloniales en iglesias del Valle, Popayán, Cartago y Bogotá',
+    preguntaPuente:
+      '¿Por qué un retablo del siglo XVII seguía enseñando 300 años después aunque las modas cambiaran? ¿Y qué hace que muchas diapositivas digitales se vean "viejas" en 2 años?',
+  },
+
+  triangulo: {
+    dussel: {
+      autor: 'Enrique Dussel',
+      lente: 'lente del nosotros',
+      cita: 'El diseño que respeta al lector analfabeto, al lector con prisa, al lector con baja visión, es diseño justo.',
+      preguntaEspejo:
+        '¿Mis diapositivas respetan al lector apurado, al de fondo de la sala, al que no maneja bien el español?',
+    },
+    estoico: {
+      autor: 'Marco Aurelio',
+      lente: 'lente del cuidado interior',
+      cita: 'La disciplina del espacio en blanco es virtud silenciosa — agregar es fácil, quitar es oficio.',
+      preguntaEspejo:
+        'Cuando diseño, ¿agrego o quito? ¿Qué pongo en mis diapositivas que en realidad sobra?',
+    },
+    floridi: {
+      autor: 'Luciano Floridi',
+      lente: 'lente de la infoesfera',
+      cita: 'En una infoesfera saturada visualmente, la sobriedad bien hecha se distingue.',
+      preguntaEspejo:
+        '¿Mis diseños se distinguen por sobriedad o se pierden en el ruido visual contemporáneo?',
+    },
+  },
+
+  cincoDimensiones: {
+    personal:
+      'Aprendiste que diseño no es decoración — es decisión de cómo se ordena la mirada del otro.',
+    emocional:
+      'Resististe la tentación de "llenar la diapositiva" — elegiste la sobriedad como ética profesional.',
+    ciudadana:
+      'Diseñar respetando al lector analfabeto, mayor o con baja visión es ciudadanía visual concreta.',
+    local:
+      'Heredaste la pedagogía visual del retablo colonial: enseñar al que mira, no solo al que lee.',
+    intergeneracional:
+      'Los retablos del siglo XVII y tus diapositivas comparten oficio. Lo que cambia es la herramienta, no la disciplina.',
+  },
 };
 
 export default contenido;

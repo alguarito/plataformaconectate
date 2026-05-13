@@ -48,6 +48,51 @@ const contenido: ContenidoGuia = {
     transferencia: 'Esta semana: graba un audio de 1 minuto sobre tu proyecto, edita pausas largas, normaliza volumen, exporta MP3. Compártelo con un compañero y pide retroalimentación honesta.',
     cierre: 'La voz del cantor del pueblo y el podcast digital comparten disciplina: cuidar voz, pausas, ritmo. La diferencia es la herramienta; la ética del cuidado es la misma.',
   },
+
+  saberAncestral: {
+    saber:
+      'El cantor del pueblo —el versador del Pacífico, el decimero del Valle, el copletero del Caribe, el juglar de las plazas andinas— era oficio de voz cuidada. Antes de cantar, ensayaba: aclaraba la garganta, medía la respiración, escuchaba el tono del público para ajustar volumen. Cada pausa tenía función: dejar al oyente respirar, dejar caer la frase, marcar el remate. Esa disciplina de la voz cantada y del silencio se aplica idéntica al podcast y al audio digital: capturar limpio, editar pausas largas, normalizar volumen, dejar caer el silencio que la frase necesita.',
+    fuente: 'Cantores y versadores del Pacífico, el Valle, el Caribe y los Andes',
+    preguntaPuente:
+      '¿Qué hacía el versador del Pacífico antes de cada décima? ¿Y qué pierde un audio digital grabado de afán sin edición de pausas y volumen?',
+  },
+
+  triangulo: {
+    dussel: {
+      autor: 'Enrique Dussel',
+      lente: 'lente del nosotros',
+      cita: 'La voz propia con acento local es soberanía cultural — neutralizarla para "sonar profesional" es rendición.',
+      preguntaEspejo:
+        '¿En mis audios mantengo mi acento del Valle o lo neutralizo buscando un "español genérico" que no es mío?',
+    },
+    estoico: {
+      autor: 'Marco Aurelio',
+      lente: 'lente del cuidado interior',
+      cita: 'La paciencia en la edición es virtud invisible — 1 minuto bien editado vale 10 mal grabados.',
+      preguntaEspejo:
+        '¿Estoy dispuesto a invertir 15 minutos editando 1 minuto de audio, o prefiero publicar rápido y mal?',
+    },
+    floridi: {
+      autor: 'Luciano Floridi',
+      lente: 'lente de la infoesfera',
+      cita: 'La calidad del audio en la infoesfera respeta el tiempo y oído del que escucha.',
+      preguntaEspejo:
+        '¿Mis audios respetan a quien los escucha o los publican sin edición porque "se entiende igual"?',
+    },
+  },
+
+  cincoDimensiones: {
+    personal:
+      'Aprendiste que la edición de audio enseña paciencia — habilidad transferible a cualquier oficio que requiera pulir antes de entregar.',
+    emocional:
+      'Resististe la tentación de publicar al primer take — entendiste que el cuidado es regalo al oyente.',
+    ciudadana:
+      'Producir audios cuidados aporta a una infoesfera sonora menos saturada de ruido.',
+    local:
+      'Heredaste el oficio del versador del Pacífico y el decimero del Valle: voz cuidada, pausas con función, ritmo respetuoso.',
+    intergeneracional:
+      'El cantor del pueblo y el podcaster digital comparten ética del cuidado vocal. Lo que cambia es la herramienta, no la disciplina.',
+  },
 };
 
 export default contenido;

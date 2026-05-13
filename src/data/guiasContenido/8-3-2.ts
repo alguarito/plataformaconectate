@@ -48,6 +48,51 @@ const contenido: ContenidoGuia = {
     transferencia: 'Esta semana: en una presentación tuya, cuenta cuántas animaciones tienes. Si son más de 3 por diapositiva, recorta hasta dejar solo las que agreguen claridad real.',
     cierre: 'El titiritero y el animador digital comparten oficio: mover lo justo, en el momento justo. La disciplina del movimiento es elegancia.',
   },
+
+  saberAncestral: {
+    saber:
+      'El oficio del titiritero en las plazas del Valle y el Caribe colombiano era disciplina del movimiento: cada figura entraba en su tiempo, gesticulaba lo justo, salía sin alargar la escena. Si el titiritero hacía bailar a todas las figuras a la vez, el público se perdía y la historia se rompía. Las animaciones e hipervínculos digitales heredan esa disciplina: mover lo necesario, cuando es necesario, sin sobrecargar al espectador. Un slide con 15 animaciones por minuto es un escenario con 10 títeres bailando simultáneamente.',
+    fuente: 'Oficio del titiritero en plazas del Valle y el Caribe colombiano',
+    preguntaPuente:
+      '¿Qué hacía que la función del titiritero del pueblo enganchara al público durante horas? ¿Y qué hace que una presentación con muchas animaciones canse en 5 minutos?',
+  },
+
+  triangulo: {
+    dussel: {
+      autor: 'Enrique Dussel',
+      lente: 'lente del nosotros',
+      cita: 'Toda animación gratuita es ruido — respeta la atención del que mira como respetarías su tiempo.',
+      preguntaEspejo:
+        '¿Las animaciones de mi presentación sirven a la historia o son adorno que distrae?',
+    },
+    estoico: {
+      autor: 'Marco Aurelio',
+      lente: 'lente del cuidado interior',
+      cita: 'Mover lo justo en el momento justo es virtud — el espectáculo continuo es síntoma de inseguridad.',
+      preguntaEspejo:
+        'Cuando dudo de mi contenido, ¿agrego animaciones para llenar ese vacío? ¿Qué cambia si confío en lo dicho sin decorarlo?',
+    },
+    floridi: {
+      autor: 'Luciano Floridi',
+      lente: 'lente de la infoesfera',
+      cita: 'El minimalismo en animaciones es respeto al ancho de banda atencional del espectador moderno.',
+      preguntaEspejo:
+        '¿Mis presentaciones digitales respetan el tiempo y atención del que las recibe, o las saturan con efectos?',
+    },
+  },
+
+  cincoDimensiones: {
+    personal:
+      'Aprendiste que la disciplina del movimiento es elegancia — mover lo justo es decisión madura.',
+    emocional:
+      'Resististe la tentación de "compensar contenido débil con efectos llamativos" — elegiste sustancia sobre espectáculo.',
+    ciudadana:
+      'Respetar la atención del espectador es ciudadanía digital concreta en una era de saturación visual.',
+    local:
+      'Heredaste el oficio del titiritero: cada figura en su tiempo, ninguna por demás.',
+    intergeneracional:
+      'El titiritero de la plaza y el animador digital comparten ética. Lo que cambia es la herramienta, no la disciplina del movimiento.',
+  },
 };
 
 export default contenido;

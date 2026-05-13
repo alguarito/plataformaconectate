@@ -48,6 +48,51 @@ const contenido: ContenidoGuia = {
     transferencia: 'Esta semana: redacta TU gancho inicial (30 segundos) y TU cierre memorable. Pruébalos con un compañero. Pregúntale: "¿qué recordarías 24 horas después?".',
     cierre: 'El cuento del fogón sobrevive en cada presentación TED memorable: gancho, conflicto, solución, cierre que perdura. La narrativa es ancestral; el medio es nuevo.',
   },
+
+  saberAncestral: {
+    saber:
+      'El cuento del fogón en el campo colombiano —pacífico, andino, llanero— era ritual nocturno: la abuela o el abuelo armaban historia con principio (algo cotidiano, anclaje), nudo (un conflicto inesperado), desenlace (resolución con enseñanza). Los niños escuchaban dos horas sin reloj. ¿Por qué funcionaba? Porque la estructura narrativa enganchaba al cuerpo y a la mente al mismo tiempo. Las presentaciones TED-style heredan exactamente esa gramática: gancho corto, conflicto claro, resolución con huella. La narrativa no es habilidad moderna — es la más antigua de las técnicas de comunicación humana.',
+    fuente: 'Cuento del fogón en hogares campesinos del Pacífico, los Andes y los Llanos',
+    preguntaPuente:
+      '¿Qué hacía que los niños del campo escucharan dos horas el cuento del fogón sin pedir descanso? ¿Y qué hace que muchas presentaciones digitales cansen en 7 minutos?',
+  },
+
+  triangulo: {
+    dussel: {
+      autor: 'Enrique Dussel',
+      lente: 'lente del nosotros',
+      cita: 'La narrativa propia es soberanía sobre la propia historia — contar es resistir.',
+      preguntaEspejo:
+        '¿Las historias que cuento en mis presentaciones vienen de mi lugar y mi voz, o reproduzco narrativas prestadas del norte global?',
+    },
+    estoico: {
+      autor: 'Marco Aurelio',
+      lente: 'lente del cuidado interior',
+      cita: 'La estructura narrativa clara es virtud — improvisar 7 minutos sin estructura es desprecio del oyente.',
+      preguntaEspejo:
+        'Cuando preparo una presentación, ¿le doy estructura narrativa o improviso confiando en que "se me va a ocurrir"?',
+    },
+    floridi: {
+      autor: 'Luciano Floridi',
+      lente: 'lente de la infoesfera',
+      cita: 'En la infoesfera saturada, la narrativa que perdura es la que respeta la gramática ancestral del cuento.',
+      preguntaEspejo:
+        '¿Mis presentaciones perduran en la memoria del oyente o se diluyen como información sin forma?',
+    },
+  },
+
+  cincoDimensiones: {
+    personal:
+      'Aprendiste que la narrativa es habilidad transferible — sirve a presentaciones, ensayos, conversaciones difíciles, defensa de ideas.',
+    emocional:
+      'Resististe la tentación de "soltar información" y elegiste la disciplina narrativa que respeta al oyente.',
+    ciudadana:
+      'Contar bien historias es ciudadanía cultural concreta: cada cuento bien contado preserva memoria comunitaria.',
+    local:
+      'Heredaste la gramática del cuento del fogón: principio, conflicto, desenlace con huella.',
+    intergeneracional:
+      'La abuela cuentera y el orador TED comparten oficio. Lo que cambia es el medio, no la estructura.',
+  },
 };
 
 export default contenido;

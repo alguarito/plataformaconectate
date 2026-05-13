@@ -199,6 +199,51 @@ const contenido: ContenidoGuia = {
     cierre:
       'La disciplina del tendero — cada cosa en su columna — se vuelve hábito digital cuando la repites. Hoy es práctica; mañana, costumbre.',
   },
+
+  saberAncestral: {
+    saber:
+      'El cuaderno del tendero de barrio en el Valle era una hoja de cálculo antes de que existieran las hojas de cálculo. Cada columna tenía su tipo: fecha, producto, cantidad, precio unitario, total. Confundir libras con unidades, o pesos con dólares, no era error pequeño — era pérdida real al final del mes. El tendero aprendía con la práctica que cada dato tiene su naturaleza y su lugar.',
+    fuente: 'Cuaderno del tendero de barrio en el Valle del Cauca',
+    preguntaPuente:
+      '¿Qué del cuaderno del tendero (cada cosa en su columna, cada tipo respetado) podemos aplicar a Excel hoy? ¿Y qué nuevo problema aparece cuando una hoja electrónica nos deja mezclar tipos sin avisarnos?',
+  },
+
+  triangulo: {
+    dussel: {
+      autor: 'Enrique Dussel',
+      lente: 'lente del nosotros',
+      cita: 'Cada tipo de dato tiene origen — y reconocerlo es ya un acto político.',
+      preguntaEspejo:
+        '¿De dónde vienen los datos que estoy organizando en mi hoja? ¿A quién sirvió primero esa información antes de llegar a mí?',
+    },
+    estoico: {
+      autor: 'Marco Aurelio',
+      lente: 'lente del cuidado interior',
+      cita: 'Lo cotidiano bien hecho es la base de lo extraordinario; cuida la columna antes que el resultado.',
+      preguntaEspejo:
+        '¿Estoy dispuesto a invertir 5 minutos en formatear bien las columnas o prefiero apresurarme y rehacer el trabajo después?',
+    },
+    floridi: {
+      autor: 'Luciano Floridi',
+      lente: 'lente de la infoesfera',
+      cita: 'La calidad informacional empieza por el tipo de dato bien declarado en su origen.',
+      preguntaEspejo:
+        '¿Mis hojas de cálculo aportan calidad informacional a quien las recibe, o son ruido tipográfico disfrazado de datos?',
+    },
+  },
+
+  cincoDimensiones: {
+    personal:
+      'Aprendiste que la diferencia entre amateur y profesional con Excel es disciplina con los tipos de dato — no inteligencia bruta.',
+    emocional:
+      'Resististe la tentación del "ya está, sigamos" — entendiste que el orden inicial te ahorra frustración después.',
+    ciudadana:
+      'Una hoja de cálculo limpia respeta a quien la lee. Esa cortesía editorial es ciudadanía digital concreta.',
+    local:
+      'Heredaste el oficio del tendero del Valle: cada cosa en su columna, cada tipo respetado, cada total verificable.',
+    intergeneracional:
+      'El cuaderno de la abuela y tu Excel comparten el mismo principio. Lo que cambia es la herramienta, no la disciplina.',
+  },
 };
 
 export default contenido;

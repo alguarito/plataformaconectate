@@ -205,6 +205,51 @@ const contenido: ContenidoGuia = {
     cierre:
       'La phronesis no es saber más datos: es saber qué preguntarles. Pesar el grano antes de venderlo es la misma sabiduría que mirar los datos antes de decidir.',
   },
+
+  saberAncestral: {
+    saber:
+      'El oficio de pesar el grano en las plazas del Valle exigía dos saberes: la balanza calibrada y el ojo del comerciante. La balanza daba el número; el ojo decidía qué hacer con ese número — si el grano estaba seco, si el costal venía con tierra adentro, si valía pagar o renegociar. El dato no era el final, era el principio de la decisión. La phronesis (sabiduría práctica griega) y el oficio del comerciante del Valle comparten esa lógica: medir es solo la mitad del trabajo.',
+    fuente: 'Oficio del comerciante y la balanza en las plazas del Valle del Cauca',
+    preguntaPuente:
+      '¿Qué del oficio de pesar el grano de los abuelos podemos llevar al análisis digital de datos? ¿Qué pierde el que solo mira el número sin saber preguntar por el contexto?',
+  },
+
+  triangulo: {
+    dussel: {
+      autor: 'Enrique Dussel',
+      lente: 'lente del nosotros',
+      cita: 'El dato sin pregunta sobre quién quedó afuera reproduce la exclusión que oculta.',
+      preguntaEspejo:
+        '¿Quién no aparece en los datos que estoy mirando? ¿Qué decisión cambiaría si esos invisibles estuvieran contados?',
+    },
+    estoico: {
+      autor: 'Marco Aurelio',
+      lente: 'lente del cuidado interior',
+      cita: 'No te perturben los datos que no controlas; ocúpate de cómo los lees y qué decides con ellos.',
+      preguntaEspejo:
+        '¿Qué de los datos depende de mí (qué pregunto, cómo decido) y qué no? ¿Estoy concentrando energía en lo que sí depende?',
+    },
+    floridi: {
+      autor: 'Luciano Floridi',
+      lente: 'lente de la infoesfera',
+      cita: 'La phronesis digital es la virtud informacional de nuestro tiempo — saber qué preguntar al dato antes de calcular.',
+      preguntaEspejo:
+        '¿Estoy entrenando mi phronesis digital o solo aprendiendo a calcular más rápido? ¿Qué dato consumí hoy sin preguntar quién lo generó?',
+    },
+  },
+
+  cincoDimensiones: {
+    personal:
+      'Aprendiste que un dato no es decisión — es insumo. La prudencia es lo que conecta el número con la acción.',
+    emocional:
+      'Resististe la tentación de la respuesta rápida. Distinguir lo que el dato dice de lo que no dice es paciencia entrenable.',
+    ciudadana:
+      'Reconociste que ignorar datos es irresponsable, pero confiar ciegamente es ingenuo. Esa distinción es ciudadanía digital adulta.',
+    local:
+      'Conectaste el oficio del comerciante del Valle con tu próximo análisis en Excel — saberes que dialogan, no que se reemplazan.',
+    intergeneracional:
+      'La phronesis griega y la prudencia del abuelo en la plaza son la misma virtud, en distinto idioma. Hoy la heredas en formato digital.',
+  },
 };
 
 export default contenido;

@@ -199,6 +199,51 @@ const contenido: ContenidoGuia = {
     cierre:
       'El recuento de la cosecha no era para celebrar — era para decidir qué cambiar. Tus 4 funciones son las mismas: total, promedio, máximo, mínimo... y una decisión.',
   },
+
+  saberAncestral: {
+    saber:
+      'En las veredas del Valle, el Pacífico y los Andes, terminada la cosecha la familia (o la cooperativa) hacía recuento: total de bultos, promedio por mata, máximo de la mejor parcela, mínimo de la peor. No era estadística académica — eran 4 cifras prácticas para decidir qué sembrar el próximo ciclo, a quién apoyar, qué parcela rotar. Esos 4 números son exactamente SUMA, PROMEDIO, MAX y MIN — Excel solo automatizó un saber milenario del campo.',
+    fuente: 'Recuento de la cosecha en veredas del Valle, Pacífico y Andes colombianos',
+    preguntaPuente:
+      '¿Cómo decidía la abuela qué cambiar después del recuento de la cosecha? ¿Y qué pierde la decisión cuando solo miramos el promedio sin saber el mínimo y el máximo?',
+  },
+
+  triangulo: {
+    dussel: {
+      autor: 'Enrique Dussel',
+      lente: 'lente del nosotros',
+      cita: 'El promedio puede esconder al que no produce o al que se sobreexige; ver el rango es justicia analítica.',
+      preguntaEspejo:
+        'Cuando reporto un "promedio" del curso o del equipo, ¿estoy invisibilizando a quien está abajo o arriba del centro? ¿Qué cambia si reporto también MIN y MAX?',
+    },
+    estoico: {
+      autor: 'Marco Aurelio',
+      lente: 'lente del cuidado interior',
+      cita: 'El número que no lleva a decisión es vanidad estadística.',
+      preguntaEspejo:
+        '¿Mis cálculos llevan a una decisión concreta o me los muestro para sentirme productivo? ¿Cuál fue la última decisión real que tomé desde un dato?',
+    },
+    floridi: {
+      autor: 'Luciano Floridi',
+      lente: 'lente de la infoesfera',
+      cita: 'Las 4 funciones básicas son la infraestructura cognitiva mínima para decidir en la infoesfera de datos.',
+      preguntaEspejo:
+        '¿Estoy entrenando mi alfabetización estadística cotidiana o solo aprendo fórmulas para el examen? ¿Cuál de las 4 uso menos y por qué?',
+    },
+  },
+
+  cincoDimensiones: {
+    personal:
+      'Aprendiste a leer un conjunto de datos con criterio adulto: no solo el centro, también los extremos que requieren atención.',
+    emocional:
+      'Sentiste que reportar solo "promedio" puede ser cómodo pero injusto. La phronesis exige nombrar también lo invisibilizado.',
+    ciudadana:
+      'Reconociste que reportar bien datos es acto ético: a quién haces visible y a quién dejas en la sombra.',
+    local:
+      'Heredaste la lógica del recuento campesino: 4 cifras para decidir qué cambiar el próximo ciclo.',
+    intergeneracional:
+      'La abuela contadora de cosecha y tú con Excel comparten el mismo objetivo: datos que llevan a decisiones reales.',
+  },
 };
 
 export default contenido;

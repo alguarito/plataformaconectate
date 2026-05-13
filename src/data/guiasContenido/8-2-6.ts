@@ -50,6 +50,51 @@ const contenido: ContenidoGuia = {
     transferencia: 'Esta semana: en MakeCode programa un sensor con umbral inicial, prueba en 3 ambientes distintos (casa, colegio, exterior) y documenta cómo ajustaste el umbral en cada uno.',
     cierre: 'El reloj de sol y el sensor digital comparten el mismo principio: la tecnología útil se calibra al lugar. La universalidad genérica es enemiga de la utilidad real.',
   },
+
+  saberAncestral: {
+    saber:
+      'El reloj de sol del campesino del Valle se construía calibrándolo al lugar: latitud específica, dirección del norte verdadero, marca de la hora del almuerzo según la sombra real. Un reloj de sol llevado de un pueblo a otro requería re-calibración — la universalidad genérica no servía. El sensor digital hereda esa lógica: medir luz, temperatura o movimiento sin calibrar al ambiente real produce datos basura. La calibración no es opcional — es la diferencia entre dato útil y ruido.',
+    fuente: 'Relojes de sol campesinos en haciendas y veredas del Valle del Cauca',
+    preguntaPuente:
+      '¿Por qué el reloj de sol funcionaba mejor que un reloj de bolsillo en algunos contextos rurales? ¿Y qué cambia cuando trasladas un umbral de sensor de un ambiente al otro sin recalibrarlo?',
+  },
+
+  triangulo: {
+    dussel: {
+      autor: 'Enrique Dussel',
+      lente: 'lente del nosotros',
+      cita: 'La tecnología genérica colonizadora desprecia el lugar — la tecnología situada lo honra.',
+      preguntaEspejo:
+        '¿Mi sensor está calibrado al territorio donde se va a usar, o al "ambiente promedio" que ningún lugar real es?',
+    },
+    estoico: {
+      autor: 'Marco Aurelio',
+      lente: 'lente del cuidado interior',
+      cita: 'Adaptar la herramienta al contexto es virtud — copiarla sin ajuste es pereza disfrazada de método.',
+      preguntaEspejo:
+        '¿Cuánto tiempo invierto calibrando mis herramientas al contexto real, o las aplico tal cual vienen?',
+    },
+    floridi: {
+      autor: 'Luciano Floridi',
+      lente: 'lente de la infoesfera',
+      cita: 'Un sensor mal calibrado produce ruido informacional — y el ruido es peor que la ausencia de dato.',
+      preguntaEspejo:
+        '¿Cuántas decisiones cotidianas tomo con datos no calibrados? ¿Qué cambia si reconozco que algunos son ruido y no señal?',
+    },
+  },
+
+  cincoDimensiones: {
+    personal:
+      'Aprendiste que calibrar no es paso opcional — es lo que separa dato útil de ruido. Habilidad transferible a cualquier herramienta de la vida.',
+    emocional:
+      'Resististe la tentación de "ya está, está midiendo, sigamos". Entendiste que medir bien exige paciencia previa.',
+    ciudadana:
+      'Diseñar tecnología calibrada al territorio respeta a las comunidades que la usan. Es soberanía técnica práctica.',
+    local:
+      'Heredaste el oficio del relojero de sol: cada herramienta se hace para un lugar específico, no para un genérico ideal.',
+    intergeneracional:
+      'El reloj de sol del abuelo y el sensor digital comparten la lógica del lugar. La técnica que sirve es la que se calibra.',
+  },
 };
 
 export default contenido;

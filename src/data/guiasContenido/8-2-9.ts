@@ -50,6 +50,51 @@ const contenido: ContenidoGuia = {
     transferencia: 'Esta semana: ejecuta TU proyecto de monitoreo. 7 días de lecturas (simuladas o reales), tabla, gráfico, recomendación. Compártelo con un compañero antes de la sustentación.',
     cierre: 'El logos campesino y el proyecto digital comparten propósito: leer el mundo para cuidarlo. La tecnología que sirve es la que se calibra al territorio y a la comunidad.',
   },
+
+  saberAncestral: {
+    saber:
+      'Los "lectores del cielo" del campo colombiano leían el ambiente con disciplina diaria: dirección del viento, humedad del aire al amanecer, comportamiento del ganado al ordeñe, color de la luz al atardecer. No era superstición — era método empírico repetido por generaciones para servir a la comunidad. Cuando se anunciaba lluvia, todo el pueblo se preparaba. Tu proyecto de monitoreo de la huerta hereda ese logos campesino: leer el ambiente con disciplina, no para presumir tecnología, sino para servir a quien depende de ese ambiente.',
+    fuente: 'Lectores del cielo campesinos en haciendas, veredas y resguardos colombianos',
+    preguntaPuente:
+      '¿Qué hacía que el lector del cielo del abuelo sirviera realmente a la comunidad? ¿Y qué cambia cuando un proyecto técnico busca lucirse sin cuidar a quién sirve?',
+  },
+
+  triangulo: {
+    dussel: {
+      autor: 'Enrique Dussel',
+      lente: 'lente del nosotros',
+      cita: 'Tecnología que no sirve a la comunidad es tecnología que sirve a otra cosa — y vale la pena nombrar a cuál.',
+      preguntaEspejo:
+        '¿Mi proyecto de monitoreo sirve a alguien concreto del colegio o del barrio, o solo cumple la tarea académica?',
+    },
+    estoico: {
+      autor: 'Marco Aurelio',
+      lente: 'lente del cuidado interior',
+      cita: 'La tecnología útil exige humildad — calibrarse al territorio, no imponer el modelo genérico.',
+      preguntaEspejo:
+        '¿Estoy diseñando mi proyecto para mi contexto real o copiando un modelo genérico de internet?',
+    },
+    floridi: {
+      autor: 'Luciano Floridi',
+      lente: 'lente de la infoesfera',
+      cita: 'Un proyecto de monitoreo bien diseñado es ladrillo de infoesfera comunitaria saludable.',
+      preguntaEspejo:
+        '¿Mi proyecto aporta datos útiles a alguien o produce dashboards bonitos que nadie usa?',
+    },
+  },
+
+  cincoDimensiones: {
+    personal:
+      'Aplicaste el periodo completo en UN proyecto con propósito comunitario — paso decisivo hacia la madurez técnica.',
+    emocional:
+      'Resististe la tentación del proyecto "para que se vea bien" — elegiste el que sirve a alguien real.',
+    ciudadana:
+      'Tu monitoreo de la huerta es ciudadanía tecnológica concreta: tu técnica al servicio de una necesidad real.',
+    local:
+      'Heredaste el logos campesino del lector del cielo: leer el ambiente para cuidarlo, no para presumir.',
+    intergeneracional:
+      'El abuelo lector de signos y tu micro:bit comparten propósito: servir a quien depende del territorio común.',
+  },
 };
 
 export default contenido;

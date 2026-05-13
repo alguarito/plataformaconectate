@@ -50,6 +50,51 @@ const contenido: ContenidoGuia = {
     transferencia: 'Esta semana: en MakeCode programa un sistema con 2 variables, lógica compuesta y filtro temporal. Valida con 3 escenarios (normal, alerta, falsa alarma) y documenta los resultados.',
     cierre: 'Las señales de los pájaros y el sistema digital de alerta comparten un principio: la naturaleza no avisa siempre, pero cuando avisa, hay que escuchar. La precisión es ética del cuidado.',
   },
+
+  saberAncestral: {
+    saber:
+      'En el campo del Valle, el Pacífico y los Andes, antes de que llegara la radio meteorológica los campesinos leían las señales naturales con precisión asombrosa: las hormigas marchando en fila indicaban lluvia próxima, el vuelo bajo de las golondrinas anunciaba tormenta, el canto del torcaz a deshora avisaba cambio brusco de tiempo. Esas señales NO eran predictores únicos — eran parte de un sistema de alertas en capas que el campesino sabía cruzar antes de decidir si cosechaba o esperaba. Los sistemas de alerta digital con lógica compuesta heredan esa misma estructura: nunca una sola señal, siempre combinaciones validadas.',
+    fuente: 'Lectura de señales naturales en el campo colombiano',
+    preguntaPuente:
+      '¿Por qué el campesino no decidía cosechar con una sola señal de pájaros? ¿Y qué pasa cuando un sistema digital de alerta dispara con una sola variable sin validar contexto?',
+  },
+
+  triangulo: {
+    dussel: {
+      autor: 'Enrique Dussel',
+      lente: 'lente del nosotros',
+      cita: 'Una alerta es promesa de cuidado — la falsa alarma erosiona la confianza de la comunidad.',
+      preguntaEspejo:
+        '¿Mis sistemas de alerta protegen a quien los escucha, o lo agotan con falsas alarmas hasta que deja de prestar atención?',
+    },
+    estoico: {
+      autor: 'Marco Aurelio',
+      lente: 'lente del cuidado interior',
+      cita: 'La precisión en el aviso es virtud silenciosa — más alta que el espectáculo de la alarma frecuente.',
+      preguntaEspejo:
+        'En las alertas que diseño (digitales o personales), ¿priorizo precisión o frecuencia? ¿Cuál de las dos sostiene la confianza?',
+    },
+    floridi: {
+      autor: 'Luciano Floridi',
+      lente: 'lente de la infoesfera',
+      cita: 'En una infoesfera saturada de notificaciones, la alerta precisa es la nueva forma del cuidado.',
+      preguntaEspejo:
+        '¿Cuántas notificaciones recibo al día y cuántas me llevan a una acción real? ¿Qué dice eso sobre el diseño de las apps que uso?',
+    },
+  },
+
+  cincoDimensiones: {
+    personal:
+      'Aprendiste a combinar señales antes de actuar — habilidad cognitiva que aplica al código y a las decisiones humanas.',
+    emocional:
+      'Resististe la tentación de la alerta fácil — entendiste que la precisión cuida a quien recibe el mensaje.',
+    ciudadana:
+      'Diseñar alertas comunitarias con lógica compuesta (huerta, salón, casa) es ciudadanía técnica concreta.',
+    local:
+      'Heredaste la lectura del campesino: cruzar varias señales naturales antes de decidir cosecha o espera.',
+    intergeneracional:
+      'Las señales de los pájaros y los sistemas digitales de alerta comparten ética: precisión como cuidado.',
+  },
 };
 
 export default contenido;

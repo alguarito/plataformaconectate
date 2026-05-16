@@ -28,6 +28,11 @@ PERIODOS_POR_GRADO = {
         2: "P2 · Diseño editorial digital ",
         3: "P3 · Datos: registro a insight",
     },
+    8: {
+        1: "P1 · Datos con phronesis      ",
+        2: "P2 · Lógica y micro:bit       ",
+        3: "P3 · Multimedia y ciberética  ",
+    },
 }
 
 # Fallback genérico si el grado no está en el mapa explícito.

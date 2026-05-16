@@ -1,0 +1,399 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra para todas las guias MILC v3
+% Ver scripts/generadores/build-guia-milc.py para la lista completa de
+% claves esperadas. El script valida que no queden placeholders sin
+% reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1.75cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\hyphenpenalty=200
+\exhyphenpenalty=200
+\pretolerance=400
+\tolerance=2000
+\setlength{\emergencystretch}{1em}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0066FF}
+\definecolor{milcGradeDark}{HTML}{003D99}
+\definecolor{milcGradeSoft}{HTML}{D6E8FF}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Tecnología e Informática · Grado 11}
+\rhead{\small Guía 21 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{\textbf{\textrightarrow}}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+\begin{document}
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[white] (current page.south west) rectangle (current page.north east);
+  \path[fill=milcGradePrimary,rounded corners=16mm]
+    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
+    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
+    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+
+  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
+    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
+    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
+    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
+    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
+    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
+  \end{scope}
+
+  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{124}{124}\selectfont 11};
+  \draw[milcGradeText,line width=1.7pt]
+    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+
+  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+    {
+     {\sffamily\bfseries\fontsize{19}{22}\selectfont Ideación ---\\un problema real\\de mi comunidad}\\[4mm]
+     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 21-11-TIC}\\[2mm]
+     {\sffamily\fontsize{13}{16}\selectfont Período 3 · Proyecto final emprendedor}\\[5mm]
+     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
+     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+    };
+
+  \path[fill=milcGradeSoft,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=3.15cm]current page.south east);
+  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=3.15cm]current page.south east);
+  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.0cm]current page.south)
+    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
+    \textcolor{milcGradeDark}{\bfseries Producto:} Lista de 10 problemas observados en Cartago/Valle del Cauca + 1 problema elegido con justificación de 1 párrafo (dolor concreto, a quién afecta, por qué a ti) + ficha de oportunidad inicial con 5 campos (problema, afectados, causa visible, consecuencia medible, hipótesis de solución)};
+\end{tikzpicture}
+\mbox{}
+\newpage
+
+\section*{Apertura: Ideación --- un problema real de mi comunidad}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+En los pueblos del Valle del Cauca, los oficios no nacían de la imaginación de un emprendedor genial: nacían de \textbf{escuchar la queja del vecino}. El \textbf{tendero} abría tienda porque la abuela del barrio caminaba dos horas para comprar panela; el \textbf{ebanista} ponía taller porque las casas nuevas necesitaban puertas que duraran; la \textbf{partera} aprendía el oficio porque las mujeres morían dando a luz lejos del hospital. El emprendimiento campesino y barrial empezaba con tres prácticas: (1) \textbf{caminar} el territorio escuchando lo que falta; (2) \textbf{nombrar} con claridad el dolor concreto, no la idea abstracta; (3) \textbf{responder} con un oficio reproducible, no con una solución improvisada. No había \emph{startup} ni \emph{pitch}: había necesidad real más oficio que respondía. Esa tradición se traduce hoy en una palabra fea pero exacta: \emph{ideación basada en observación}.
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+La \textbf{ideación} en emprendimiento contemporáneo es exactamente lo opuesto de \emph{``se me ocurrió una idea genial''}. Es la práctica disciplinada de \textbf{observar problemas reales antes de proponer soluciones}. Los métodos modernos (Design Thinking, Lean Startup, Customer Discovery) ponen la observación al inicio y la idea al final, no al revés. La regla profesional: \textbf{enamórate del problema, no de la solución}. Un problema bien definido tiene 5 partes: (1) \emph{quién} lo sufre con nombre y oficio; (2) \emph{qué duele} en términos medibles (tiempo perdido, dinero gastado, oportunidad cerrada); (3) \emph{cuándo} ocurre el dolor (frecuencia); (4) \emph{por qué} aún no se ha resuelto; (5) \emph{qué hace} la persona hoy para sobrellevarlo. Si las 5 partes no están claras, todavía no tienes problema: tienes una idea suelta.
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{¿Cómo sabía el tendero del barrio que su oficio era necesario antes de abrir la tienda? ¿Y qué pierde un estudiante de grado 11 cuando arranca su proyecto emprendedor con \emph{``se me ocurrió una idea''} en lugar de \emph{``observé este dolor concreto en mi comunidad''}?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar podrás: (1) \textbf{identificar} 10 problemas reales observados en Cartago, en tu casa, colegio o barrio, sin censurarlos por dificultad; (2) \textbf{analizar} cada problema con la rejilla de 5 partes (quién, qué duele, cuándo, por qué no resuelto, qué hace hoy); (3) \textbf{evaluar} los 10 candidatos con 3 criterios objetivos (dolor real, viabilidad de medición, cercanía); (4) \textbf{crear} la ficha de oportunidad de 1 problema elegido con justificación honesta de por qué a ti, no a otro estudiante.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Diseño, implementación y sustentación de un proyecto de impacto local (MEN, T\&I)\\
+Referentes & Dussel (analéctica · sur global) · Lean Startup · Floridi · Estoicismo\\
+Producto final & Lista de 10 problemas observados en Cartago/Valle del Cauca + 1 problema elegido con justificación de 1 párrafo (dolor concreto, a quién afecta, por qué a ti) + ficha de oportunidad inicial con 5 campos (problema, afectados, causa visible, consecuencia medible, hipótesis de solución)\\
+\end{tabularx}
+\normalsize
+
+\puente{Antes de empezar, mira el viaje completo. Este periodo cierra el bachillerato técnico: construirás un \textbf{proyecto emprendedor} de punta a punta. Hoy abrimos con lo más difícil y lo más subestimado: \textbf{elegir el problema correcto}. Las próximas 9 sesiones (validación, modelo, prototipo, marca, finanzas, pitch, sustentación) dependen de la calidad de la elección de hoy.}
+
+\begin{titlebox}{milcGradeDark}
+Ruta MILC: así vamos a aprender
+\end{titlebox}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escuta\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Antes de teorizar, vas a hacer una \emph{caminata mental} por tu territorio. Vas a anotar 10 problemas observados con tus propios ojos en Cartago, sin filtrar todavía por viabilidad ni por idea de solución. La regla: solo dolores que has \textbf{visto pasar}, no dolores que crees que existen.}
+
+\begin{titlebox}{milcVerde}
+Fase 1 · Escuta
+\end{titlebox}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- 10 problemas observados en mi territorio} (20 min · individual). Sin filtrar todavía por viabilidad ni por idea de solución, anota 10 problemas reales que has \emph{visto pasar} en Cartago en los últimos 6 meses. Tres reglas: (1) problemas \textbf{observados}, no leídos en internet ni copiados de otro emprendimiento; (2) cada problema con \textbf{una persona concreta} que lo sufra (un familiar, un vecino, un docente, un compañero); (3) sin proponer todavía solución, solo describir el dolor en 1-2 líneas. Cubre 3 escenarios: tu casa (3 problemas), tu colegio o barrio (4 problemas), tu ciudad o un microemprendimiento que conoces (3 problemas).
+\end{softbox}
+
+\checkbox Anoté 10 problemas observados directamente, sin copiar de internet.\\
+\checkbox Cada problema tiene una persona concreta que lo sufre.\\
+\checkbox {'No propuse solución todavía': 'solo describí el dolor.'}
+
+\begin{infoband}{milcVerde}
+\textbf{Lo que va al cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1 --- 10 problemas observados». \textbf{Formato:} tabla 10 filas × 3 columnas (Problema observado~|~Persona concreta que lo sufre~|~Dónde lo vi pasar). \textbf{Extensión:} 1 página de cuaderno. \textbf{Sabes que terminaste cuando} tienes 10 dolores reales con nombres reales, no temas abstractos.
+\end{infoband}
+
+\puente{Ya tienes 10 candidatos. Ahora vas a entender la \textbf{anatomía} de un problema bien definido: las 5 partes obligatorias, los errores típicos (problema vago, problema importado de internet, problema sin afectados nombrables) y la diferencia entre \emph{problema} y \emph{tema}.}
+
+\begin{titlebox}{milcTurquesa}
+Fase 2 · Sistematización con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+Diez candidatos sin orden son ruido. Para elegir bien necesitas la \textbf{anatomía del problema profesional}: las 5 partes que separan un dolor real de una idea suelta. Esta sección descompone el oficio para que tu elección de hoy sostenga las 9 sesiones siguientes.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
+1. Descomposición & Un problema bien definido se descompone en 5 partes: (1) \textbf{Afectado}: persona concreta con oficio y contexto (no \emph{``los jóvenes''}, sino \emph{``María, vendedora de empanadas del parque, 47 años''}). (2) \textbf{Dolor medible}: tiempo, dinero, frecuencia (no \emph{``pierde plata''}, sino \emph{``pierde 30 mil pesos a la semana en mercancía que se daña''}). (3) \textbf{Frecuencia}: diaria, semanal, mensual; problemas raros no merecen oficio entero. (4) \textbf{Causa visible}: por qué el problema persiste hoy (no es ignorancia ni pereza; es un sistema que falla). (5) \textbf{Apaño actual}: qué hace la persona hoy para sobrellevarlo (esto revela el verdadero costo).\\
+2. Reconocimiento de patrones & El patrón profesional se llama \textbf{``problema vs tema''}: un \emph{tema} es \emph{``la educación en Cartago''}; un \emph{problema} es \emph{``Carlos, docente de la sede rural, gasta 4 horas semanales transcribiendo notas a mano porque no hay sistema digital''}. La diferencia: el tema invita a ensayo filosófico; el problema invita a oficio. Tu proyecto necesita problema, no tema. La phronesis del emprendedor consiste en \textbf{bajar de la nube del tema a la tierra del problema}.\\
+3. Abstracción & Lo esencial cabe en una pregunta: \emph{¿puedo llamar por teléfono a la persona afectada esta semana?}. Si la respuesta es no, todavía no tienes problema. Tienes una hipótesis. La validación de la próxima sesión exige al menos 5 personas reales contactables. Sin nombres concretos hoy, no hay validación posible mañana.\\
+4. Algoritmo conceptual & Algoritmo de evaluación: (1) revisa tus 10 candidatos; (2) marca con check los que tienen afectado nombrable; (3) marca con check los que tienen dolor medible en tiempo o dinero; (4) marca con check los que ocurren al menos una vez por semana; (5) descarta los que no tienen 3 marcas; (6) entre los que quedan, elige el que más te \emph{importa a ti} (no el más fácil, no el más rentable, el que te exige el oficio que quieres aprender).\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcTurquesa}{Anatomía del problema bien definido}
+\textbf{Afectado:} nombre + oficio + edad. \\[1mm] \textbf{Dolor:} cuánto cuesta (tiempo o dinero). \\[1mm] \textbf{Frecuencia:} cada cuánto ocurre. \\[1mm] \textbf{Causa visible:} qué sostiene el problema hoy. \\[1mm] \textbf{Apaño actual:} qué hace la persona para sobrellevarlo.
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+(1) Problema sin afectado nombrable (\emph{``los jóvenes no leen''}): no se puede validar. (2) Problema importado de TikTok o internet: no es tu observación. (3) Tema en lugar de problema (\emph{``la salud mental''}): demasiado amplio para 10 sesiones. (4) Problema sin dolor medible: no podrás demostrar mejora. (5) Solución disfrazada de problema (\emph{``la falta de una app de delivery''} no es problema; es ya tu hipótesis de solución; el problema sería \emph{``los tenderos del barrio pierden ventas porque no tienen forma de avisar a sus clientes regulares''}). (6) Problema que no te importa a ti: lo abandonarás en la sesión 5.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+\textbf{Lo que va al cuaderno (Actividad 2 · ANALIZA).} Título: «Actividad 2 --- Anatomía del problema». \textbf{Formato:} para tus 10 candidatos, columna de evaluación con 3 marcas (afectado nombrable, dolor medible, frecuencia semanal o mayor). Al final, lista de los que pasaron las 3 marcas. \textbf{Sabes que terminaste cuando} tienes una lista corta de 2-4 finalistas justificada con datos, no con corazonadas.
+\end{infoband}
+
+\puente{Tienes el método. Toca elegir: aplicar los 3 criterios objetivos a tus 10 candidatos, descartar los 9 más débiles con honestidad, y redactar la ficha de oportunidad del problema ganador. Es trabajo de selección, no de adición.}
+
+\begin{titlebox}{milcMagenta}
+Fase 3 · Praxis con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\textbf{Actividad 3 · EVALÚA + CREA --- Ficha de oportunidad del problema elegido} (25 min · individual). Hora de elegir y redactar. De los finalistas que pasaron las 3 marcas, elige uno aplicando un cuarto criterio: \emph{¿este problema me importa a mí?}. Luego redacta la ficha de oportunidad con 5 campos completos y la justificación honesta de por qué te lo quedas tú.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
+Descomposición & Tu ficha de oportunidad se descompone en 5 campos: (1) \textbf{Problema}: 1 oración con afectado + dolor + frecuencia. (2) \textbf{Afectados}: nombres concretos (al menos 3 personas que podrías llamar esta semana). (3) \textbf{Causa visible}: por qué el problema persiste hoy (sistema, costo, desconocimiento, etc.). (4) \textbf{Consecuencia medible}: tiempo o dinero perdido por semana o mes. (5) \textbf{Hipótesis de solución inicial}: 1-2 líneas con la dirección, sin comprometerse todavía (la validación de S2 puede cambiarla).\\
+Patrones & Sigue el patrón \textbf{``primero ficha, después idea''}: nunca escribas la hipótesis de solución antes de los otros 4 campos. Si la solución sale primero, el problema se distorsionará para encajar con la solución. Esa disciplina de orden es lo que diferencia al emprendedor novato del profesional.\\
+Abstracción & La justificación de \emph{``por qué a ti''} se redacta en 3 ingredientes: (1) \textbf{Relación}: tu vínculo personal con el problema (lo viste en tu casa, en tu barrio, en alguien cercano). (2) \textbf{Curiosidad}: por qué te genera ganas de aprender el oficio asociado. (3) \textbf{Compromiso}: qué estás dispuesto a invertir (tiempo, dinero, conversaciones difíciles) para resolverlo en estas 10 sesiones. Sin estos 3 ingredientes, el proyecto se cae en la sesión 5.\\
+Algoritmo de armado & Algoritmo: (1) marca con asterisco tu finalista emocional; (2) llena los 5 campos de la ficha en orden; (3) redacta la justificación con los 3 ingredientes; (4) léela en voz alta y pregúntate \emph{¿es honesta?}; (5) si dudas, pídele a un compañero o familiar que la lea y diga si suena real; (6) ajusta hasta que suene a observación, no a tarea.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcMagenta}{Checklist antes de entregar la ficha}
+\checkbox 10 problemas observados con persona concreta en cada uno. \\[1mm] \checkbox Filtro de 3 marcas aplicado a los 10. \\[1mm] \checkbox 1 problema elegido entre los finalistas. \\[1mm] \checkbox Ficha de oportunidad con los 5 campos completos. \\[1mm] \checkbox Justificación con relación + curiosidad + compromiso. \\[1mm] \checkbox Al menos 3 personas contactables nombradas. \\[1mm] \checkbox Ficha leída en voz alta y ajustada por honestidad.
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Problema.} \textit{[Afectado] sufre [dolor medible] cada [frecuencia] porque [causa visible].} \\[1mm] \textbf{Afectados.} \textit{Tres personas con nombre + oficio + cómo contactarlas.} \\[1mm] \textbf{Causa visible.} \textit{Por qué el sistema actual produce este dolor.} \\[1mm] \textbf{Consecuencia medible.} \textit{X horas o X pesos perdidos por semana.} \\[1mm] \textbf{Hipótesis inicial.} \textit{Posible dirección de solución, sin compromiso todavía.}
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+\textbf{Lo que va al cuaderno (Actividad 3 · EVALÚA + CREA).} Título: «Actividad 3 --- Ficha de oportunidad». \textbf{Formato:} ficha con los 5 campos + párrafo de justificación de \emph{por qué a ti}. \textbf{Extensión:} 1 página de cuaderno. \textbf{Sabes que terminaste cuando} podrías llamar a uno de los afectados esta tarde sin avergonzarte de la ficha.
+\end{infoband}
+
+\puente{Lo que sigue resume \emph{qué} entregas hoy: 10 problemas observados + 1 elegido con ficha de 5 campos completos + justificación de 1 párrafo de \emph{por qué a ti}. El criterio principal: que un emprendedor o consultor leyendo tu ficha pueda decir \emph{``este problema existe y vale la pena resolverlo''} sin pedirte explicaciones adicionales.}
+
+\begin{titlebox}{milcMostaza}
+Producto de la sesión
+\end{titlebox}
+\textbf{10 problemas observados + ficha de oportunidad del problema elegido + justificación}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) 10 problemas observados con persona concreta. (2) Filtro de 3 marcas aplicado a los 10 candidatos. (3) 1 problema elegido entre finalistas. (4) Ficha con 5 campos completos. (5) Justificación honesta con los 3 ingredientes. (6) Al menos 3 personas reales contactables.
+\end{softbox}
+
+\puente{Antes de cerrar, mira la elección desde las cinco dimensiones humanas. Elegir un problema real es respeto por el oficio entero; elegir un problema cómodo es engañar al periodo entero.}
+
+\begin{titlebox}{milcVino}
+Fase 4 · Evaluación liberadora — cinco dimensiones
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Y para terminar, tres voces sobre la observación y la elección. Dussel sobre los dolores que el sistema invisibiliza, Marco Aurelio sobre la disciplina de mirar sin ilusión, Floridi sobre la responsabilidad ética de elegir qué problema atender en un mundo lleno de necesidades.}
+
+\begin{titlebox}{milcGradeDark}
+Triángulo de pensamiento · cierre filosófico
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{``Los problemas que el sistema invisibiliza son los que más merecen oficio.''}
+
+Tu elección de hoy es ética. Cuando ordenas tus 10 candidatos, el sistema te invita a quedarte con el más \emph{rentable} o el más \emph{visible}. La filosofía de la liberación pide otra cosa: mirar también los dolores que nadie cuenta porque las víctimas no tienen voz pública (la abuela que camina dos horas por la panela, el tendero que pierde clientes por no tener celular, la madre soltera que no puede dejar al niño para ir al médico). La phronesis del emprendedor consiste en \textbf{no confundir lo invisible con lo inexistente}.
+
+\textbf{De mis 10 problemas, ¿cuál elegí por rentabilidad y cuál por dolor humano real? ¿Mi elección honra a quien sufre o a mi comodidad?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
+\textit{``Mira las cosas como son, no como te gustaría que fueran.''}
+
+Es tentador inflar el problema elegido para que parezca grande, o reducirlo para que parezca fácil. La disciplina estoica recomienda lo contrario: \emph{describe el problema como es, ni más grande ni más pequeño}. Esa precisión es virtud técnica. El emprendedor que se engaña con su propio problema construye una solución sobre arena. La validación de la próxima sesión castiga sin piedad esa autoindulgencia.
+
+\textbf{En mi ficha, ¿estoy describiendo el problema como lo vi, o como me conviene que sea para que mi idea funcione?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{``Elegir qué problema atender es la primera decisión ética del oficio digital.''}
+
+En un mundo lleno de necesidades, cada hora invertida en un problema es una hora no invertida en otro. La ética digital contemporánea exige conciencia de esa elección: \emph{¿por qué este problema y no otro?, ¿a quién beneficia mi atención?, ¿quién queda sin atender por mi elección?}. Tu justificación honesta de \emph{por qué a ti} no es relleno: es la declaración ética que abre el periodo. Te entrena en una práctica profesional que rige toda carrera técnica del siglo XXI.
+
+\textbf{¿Mi proyecto atiende un problema porque importa, o porque era el más conveniente para sacar la nota? ¿Soy capaz de declararlo con honestidad?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{titlebox}{milcVino}
+Compromiso final
+\end{titlebox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
+Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
+Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
+Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
+Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
+Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
+\end{tabularx}
+\normalsize
+
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Lleva la ficha de oportunidad lista y los datos de contacto de al menos 3 personas afectadas: en la sesión 2 vas a hacer entrevistas reales y necesitas \textbf{poder llamarlas esta semana}. La validación no se puede improvisar el día anterior. Empieza hoy.
+\end{infoband}
+
+\end{document}

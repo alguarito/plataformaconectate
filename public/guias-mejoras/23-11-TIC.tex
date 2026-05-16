@@ -1,0 +1,399 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra para todas las guias MILC v3
+% Ver scripts/generadores/build-guia-milc.py para la lista completa de
+% claves esperadas. El script valida que no queden placeholders sin
+% reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1.75cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\hyphenpenalty=200
+\exhyphenpenalty=200
+\pretolerance=400
+\tolerance=2000
+\setlength{\emergencystretch}{1em}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0066FF}
+\definecolor{milcGradeDark}{HTML}{003D99}
+\definecolor{milcGradeSoft}{HTML}{D6E8FF}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Tecnología e Informática · Grado 11}
+\rhead{\small Guía 23 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{\textbf{\textrightarrow}}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+\begin{document}
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[white] (current page.south west) rectangle (current page.north east);
+  \path[fill=milcGradePrimary,rounded corners=16mm]
+    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
+    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
+    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+
+  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
+    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
+    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
+    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
+    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
+    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
+  \end{scope}
+
+  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{124}{124}\selectfont 11};
+  \draw[milcGradeText,line width=1.7pt]
+    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+
+  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+    {
+     {\sffamily\bfseries\fontsize{19}{22}\selectfont Modelo de negocio ---\\el lienzo\\de tu proyecto}\\[4mm]
+     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 23-11-TIC}\\[2mm]
+     {\sffamily\fontsize{13}{16}\selectfont Período 3 · Proyecto final emprendedor}\\[5mm]
+     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
+     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+    };
+
+  \path[fill=milcGradeSoft,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=3.15cm]current page.south east);
+  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=3.15cm]current page.south east);
+  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.0cm]current page.south)
+    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
+    \textcolor{milcGradeDark}{\bfseries Producto:} Business Model Canvas completo, en una hoja, con los 9 bloques llenos y construidos a partir de los hallazgos de las 5 entrevistas de la sesión 2 (segmento, propuesta de valor, canales, relación con clientes, fuentes de ingreso, recursos clave, actividades clave, socios clave, estructura de costos) + tabla de 3 supuestos críticos por verificar antes de prototipar};
+\end{tikzpicture}
+\mbox{}
+\newpage
+
+\section*{Apertura: Modelo de negocio --- el lienzo de tu proyecto}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+En la galería de mercado de Cartago y en las plazas del Pacífico, el oficio más antiguo del mundo opera todos los sábados sin que nadie lo llame \emph{``modelo de negocio''}: el \textbf{trueque}. La señora trae racimo de plátano y se va con pescado; el pescador llega con corvinas y vuelve con queso; el quesero baja con cuajada y sube con frutas. Ese intercambio ancestral tiene una arquitectura silenciosa que cualquier emprendedor moderno reconocería: hay un \textbf{segmento} (quién intercambia con quién), una \textbf{propuesta de valor} (qué da cada uno), un \textbf{canal} (la plaza, el día, la hora), una \textbf{relación} (la confianza acumulada de años), una \textbf{moneda implícita} (volumen, calidad, frescura) y unos \textbf{recursos clave} (terreno, semilla, embarcación, conocimiento). El \textbf{Business Model Canvas} moderno no inventa nada nuevo: \textbf{ordena en 9 casillas lo que el trueque hacía intuitivamente}. La diferencia es la escala y la urgencia de hacerlo explícito.
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+El \textbf{Business Model Canvas} (Alex Osterwalder, 2010) es la herramienta visual más usada del mundo para diseñar un modelo de negocio en una sola hoja. Sus 9 bloques se organizan en 4 zonas: \textbf{Frente} (lo que el cliente ve y vive): segmento, propuesta de valor, canales, relación. \textbf{Atrás} (lo que la empresa hace para entregar): recursos clave, actividades clave, socios clave. \textbf{Base} (la economía): estructura de costos, fuentes de ingreso. La regla profesional: \textbf{el Canvas no es planeación, es hipótesis}. Cada uno de los 9 bloques es una afirmación que aún debes verificar con el mundo. Los emprendedores novatos llenan el Canvas como si fuera un examen; los profesionales lo llenan sabiendo que \textbf{2 o 3 bloques contienen los supuestos más críticos} y la siguiente sesión los pondrá a prueba. Sin Canvas no hay claridad estratégica; pero el Canvas sin validación es solo un cuadro bonito.
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{¿Qué arquitectura silenciosa del trueque ancestral aún sostiene los modelos de negocio modernos, y por qué el Canvas se llama \emph{lienzo} (canvas) y no \emph{plan}? ¿Qué pasa cuando un estudiante llena el Canvas sin haber hecho las entrevistas de la sesión 2?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar podrás: (1) \textbf{analizar} los 9 bloques del Canvas y cómo se relacionan entre sí; (2) \textbf{explicar} la diferencia entre Canvas (hipótesis visual) y plan de negocio tradicional (documento de 50 páginas); (3) \textbf{crear} tu Canvas en una hoja con los 9 bloques llenos a partir de la evidencia de las entrevistas de la sesión 2; (4) \textbf{evaluar} cuáles son los 3 supuestos más críticos de tu modelo (los que, si fallan, todo se cae) para llevarlos a verificación.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Diseño, implementación y sustentación de un proyecto de impacto local (MEN, T\&I)\\
+Referentes & Dussel (analéctica · sur global) · Lean Startup · Floridi · Estoicismo\\
+Producto final & Business Model Canvas completo, en una hoja, con los 9 bloques llenos y construidos a partir de los hallazgos de las 5 entrevistas de la sesión 2 (segmento, propuesta de valor, canales, relación con clientes, fuentes de ingreso, recursos clave, actividades clave, socios clave, estructura de costos) + tabla de 3 supuestos críticos por verificar antes de prototipar\\
+\end{tabularx}
+\normalsize
+
+\puente{Antes de empezar, mira el viaje completo. En la sesión 1 elegiste un problema; en la sesión 2 lo validaste con 5 entrevistas. Hoy diseñas la \textbf{arquitectura económica} de tu solución en 9 casillas. Las próximas sesiones tomarán este Canvas como mapa para construir prototipo (S4), marca (S5-S6), finanzas (S7), pitch (S8) y sustentación (S9-S10).}
+
+\begin{titlebox}{milcGradeDark}
+Ruta MILC: así vamos a aprender
+\end{titlebox}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escuta\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Antes de teorizar, vas a hacer una \emph{lectura honesta} de tu síntesis de la sesión 2. Vas a extraer 3 cosas: quién es exactamente el cliente, qué dolor preciso le quitas y qué pista de canal apareció en las entrevistas. Esos 3 elementos ya tienen 3 bloques del Canvas pre-llenados con evidencia real.}
+
+\begin{titlebox}{milcVerde}
+Fase 1 · Escuta
+\end{titlebox}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · ANALIZA --- Pre-llenado del Canvas desde mis entrevistas} (15 min · individual). Toma la síntesis de la sesión 2 y extrae con marcador 3 elementos para pre-llenar el Canvas: (1) \textbf{Segmento concreto}: ¿qué tienen en común los 5 entrevistados que sufren el problema? (oficio, edad, ubicación, contexto). (2) \textbf{Dolor verificado}: la frase textual que más se repitió en las entrevistas describiendo el dolor. (3) \textbf{Pista de canal}: ¿dónde están estas personas?, ¿cómo se enteran de cosas nuevas? (esto ya apareció en las entrevistas si preguntaste bien). No llenes todavía los 9 bloques: solo estos 3 elementos base.
+\end{softbox}
+
+\checkbox Definí el segmento con 3-4 rasgos concretos (no \emph{``los jóvenes''}).\\
+\checkbox Tengo una frase textual del entrevistado que describe el dolor.\\
+\checkbox Tengo una pista real de canal (no inventada).
+
+\begin{infoband}{milcVerde}
+\textbf{Lo que va al cuaderno (Actividad 1 · ANALIZA).} Título: «Actividad 1 --- Pre-llenado del Canvas». \textbf{Formato:} ficha con 3 campos llenos (segmento, dolor verificado con cita, pista de canal). \textbf{Sabes que terminaste cuando} estos 3 elementos vienen de evidencia, no de tu cabeza.
+\end{infoband}
+
+\puente{Ya tienes el material crudo. Ahora vas a entender la \textbf{anatomía del Canvas}: los 9 bloques, su orden de llenado correcto (no se llena de izquierda a derecha) y los 5 errores típicos (Canvas hecho desde la idea de la solución, segmento difuso, propuesta de valor genérica, ingresos sin números, costos olvidados).}
+
+\begin{titlebox}{milcTurquesa}
+Fase 2 · Sistematización con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+El Canvas tiene 9 bloques, pero no se llena leyendo de izquierda a derecha. Tiene un \textbf{orden profesional} de llenado y unos errores recurrentes que delatan al novato. Vamos a descomponer la herramienta para que tu lienzo de hoy resista la lectura de un asesor.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
+1. Descomposición & Los 9 bloques se distribuyen en 4 zonas: (1) \textbf{Zona del cliente} (frente): \emph{Segmento de cliente} (¿quién?), \emph{Propuesta de valor} (¿qué dolor le quitas o qué ganancia le das?), \emph{Canales} (¿cómo lo alcanzas?), \emph{Relación con clientes} (¿cómo interactúan tú y él?). (2) \textbf{Zona económica} (base): \emph{Fuentes de ingreso} (¿por qué te paga?, ¿cuánto?, ¿cómo?), \emph{Estructura de costos} (¿qué te cuesta entregar?). (3) \textbf{Zona operativa} (atrás): \emph{Recursos clave} (¿qué necesitas tener?), \emph{Actividades clave} (¿qué haces tú?), \emph{Socios clave} (¿quién hace lo que tú no haces?).\\
+2. Reconocimiento de patrones & El \textbf{orden profesional de llenado} es: (1) Segmento → (2) Propuesta de valor → (3) Canales → (4) Relación → (5) Fuentes de ingreso → (6) Recursos clave → (7) Actividades clave → (8) Socios clave → (9) Estructura de costos. Empezar por el segmento es regla de oro: si el segmento es difuso, todo el Canvas será difuso. Los novatos suelen empezar por la propuesta de valor (\emph{``mi idea es…''}) y por eso construyen para un cliente que no existe.\\
+3. Abstracción & Lo esencial cabe en una pregunta: \emph{¿hay coherencia entre los 9 bloques?}. Coherencia significa que la propuesta de valor encaja con el dolor del segmento, los canales son donde el segmento está, los recursos clave alcanzan para sostener las actividades clave, y los ingresos cubren los costos. Un Canvas coherente se lee como una historia: \emph{para [segmento], que sufre [dolor], ofrecemos [propuesta] que llega por [canales], cobramos [ingresos] y nos cuesta [costos]}.\\
+4. Algoritmo conceptual & Algoritmo: (1) dibuja el Canvas en una hoja apaisada con 9 cuadros; (2) llena Segmento con 3-4 rasgos; (3) escribe la Propuesta de valor en 1 frase \emph{``ayudamos a X a Y para que Z''}; (4) anota 2-3 Canales reales (no \emph{``redes sociales''}: TikTok, WhatsApp Business, voz a voz en la plaza); (5) define 1 tipo de Relación (transaccional, suscripción, atención personal); (6) define Fuente de ingreso con número aproximado; (7) lista Recursos, Actividades y Socios; (8) cierra con Costos; (9) léelo completo y verifica coherencia.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcTurquesa}{Anatomía del Canvas profesional}
+\textbf{Segmento:} ¿quién es el cliente exacto? \\[1mm] \textbf{Propuesta de valor:} ¿qué dolor le quitas? \\[1mm] \textbf{Canales:} ¿cómo lo alcanzas? \\[1mm] \textbf{Relación:} ¿cómo interactúan? \\[1mm] \textbf{Ingresos:} ¿cómo y cuánto te paga? \\[1mm] \textbf{Recursos clave:} ¿qué necesitas tener? \\[1mm] \textbf{Actividades clave:} ¿qué haces tú? \\[1mm] \textbf{Socios clave:} ¿quién hace lo que tú no? \\[1mm] \textbf{Costos:} ¿qué te cuesta entregar?
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+(1) Empezar por la propuesta de valor antes que por el segmento: produce Canvas para clientes ficticios. (2) Segmento genérico (\emph{``los jóvenes''}, \emph{``las empresas''}): inservible para tomar decisiones. (3) Propuesta de valor sin verbo de cambio (\emph{``una app de…''} no es propuesta de valor; \emph{``ahorra 4 horas semanales a los tenderos''} sí lo es). (4) Canales inventados sin evidencia (poner \emph{``redes sociales''} cuando ningún entrevistado mencionó usar Instagram). (5) Ingresos sin número (decir \emph{``cobraremos''} sin saber cuánto). (6) Costos olvidados o subestimados (no incluir el tiempo del propio emprendedor). (7) Canvas hecho de un solo intento, sin revisarlo en voz alta para detectar incoherencias.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+\textbf{Lo que va al cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2 --- Anatomía del Canvas». \textbf{Formato:} (a) lista de los 9 bloques con 1 pregunta clave por bloque; (b) orden profesional de llenado numerado; (c) los 7 errores comunes con marca del que más temes cometer. \textbf{Sabes que terminaste cuando} podrías explicarle el Canvas a un familiar sin abrir esta guía.
+\end{infoband}
+
+\puente{Tienes el método. Toca dibujar el Canvas en una hoja y llenar los 9 bloques con frases concretas, no genéricas. Termina identificando los 3 supuestos más críticos: los bloques cuya falsedad rompería todo el modelo y que la sesión 4 (prototipo) tendrá que verificar primero.}
+
+\begin{titlebox}{milcMagenta}
+Fase 3 · Praxis con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\textbf{Actividad 3 · CREA + EVALÚA --- Mi Canvas + 3 supuestos críticos} (35 min · individual). Hora de construir. Dibujas tu Canvas en una hoja apaisada, llenas los 9 bloques en orden profesional, lo lees completo en voz alta para verificar coherencia y cierras identificando los 3 supuestos más críticos: aquellos bloques cuya falsedad haría caer todo el modelo.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
+Descomposición & Tu Canvas se construye en 5 pasos: (1) dibujar en hoja apaisada los 9 cuadros con sus nombres; (2) llenar en el orden profesional (Segmento → ... → Costos); (3) usar frases cortas y concretas (3-7 palabras por idea, con post-its mentales); (4) anclar cada bloque a evidencia de las entrevistas cuando sea posible; (5) leer el Canvas completo como historia para verificar coherencia.\\
+Patrones & Sigue el patrón \textbf{``frase corta sobre párrafo largo''}: los Canvas profesionales se leen en 2 minutos. Si un bloque tiene un párrafo, está mal hecho. Cada bloque debería tener 3-5 ideas en frases cortas, separadas. Esa disciplina visual obliga a la precisión y revela cuando un bloque es relleno.\\
+Abstracción & Los 3 supuestos críticos se identifican preguntando: \emph{``si este bloque resulta falso, ¿cuánto se cae el modelo?''}. Los bloques que más suelen contener supuestos críticos son: (a) \textbf{Propuesta de valor}: supuesto de que el cliente quiere lo que tú ofreces; (b) \textbf{Canales}: supuesto de que sabes dónde encontrarlo; (c) \textbf{Fuentes de ingreso}: supuesto de que pagará lo que pides. Estos 3 son los blancos preferidos del prototipo de la sesión 4.\\
+Algoritmo de armado & Algoritmo: (1) terminado el Canvas, marca con asterisco los 3 bloques más débiles (los que llenaste con menos evidencia); (2) redacta cada supuesto crítico como afirmación falsable: \emph{``los tenderos pagarán 20 mil pesos al mes por este servicio''}; (3) anota cómo verificarías cada supuesto en 1 semana (oferta directa, demo pagada, intención escrita); (4) cierra con la frase: \emph{``si los 3 supuestos críticos sobreviven, mi modelo es sólido''}.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcMagenta}{Checklist antes de entregar el Canvas}
+\checkbox Canvas dibujado en hoja apaisada con los 9 bloques visibles. \\[1mm] \checkbox Bloques llenos en el orden profesional (Segmento primero). \\[1mm] \checkbox Frases cortas (3-7 palabras), no párrafos. \\[1mm] \checkbox Cada bloque anclado a evidencia de las entrevistas cuando aplica. \\[1mm] \checkbox Coherencia verificada leyendo el Canvas en voz alta. \\[1mm] \checkbox 3 supuestos críticos identificados con asterisco. \\[1mm] \checkbox Tabla con los 3 supuestos formulados como afirmaciones falsables + cómo verificarlos.
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Segmento.} \textit{3-4 rasgos concretos.} \\[1mm] \textbf{Propuesta de valor.} \textit{Ayudamos a X a Y para que Z.} \\[1mm] \textbf{Canales.} \textit{2-3 canales reales.} \\[1mm] \textbf{Relación.} \textit{Transaccional / suscripción / atención personal.} \\[1mm] \textbf{Ingresos.} \textit{Cómo cobras + monto aproximado.} \\[1mm] \textbf{Recursos clave.} \textit{Lista corta.} \\[1mm] \textbf{Actividades clave.} \textit{Lista corta.} \\[1mm] \textbf{Socios clave.} \textit{Lista corta.} \\[1mm] \textbf{Costos.} \textit{Lista corta con números.}
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+\textbf{Lo que va al cuaderno (Actividad 3 · CREA + EVALÚA).} Título: «Actividad 3 --- Mi Canvas + supuestos críticos». \textbf{Formato:} (a) Canvas dibujado en hoja apaisada (pegada o adjunta al cuaderno); (b) tabla 3×3 con los 3 supuestos críticos (Supuesto~|~Bloque del Canvas~|~Cómo verificarlo en 1 semana). \textbf{Sabes que terminaste cuando} podrías presentarle el Canvas a tu familia en 2 minutos y entender qué vas a probar primero.
+\end{infoband}
+
+\puente{Lo que sigue resume \emph{qué} entregas hoy: Canvas en una hoja con los 9 bloques llenos + tabla de 3 supuestos críticos. El criterio principal: que un asesor financiero leyendo tu Canvas pueda decir en 3 minutos \emph{``entendí qué vendes, a quién, cómo se entera, cómo te paga y cuánto te cuesta''}.}
+
+\begin{titlebox}{milcMostaza}
+Producto de la sesión
+\end{titlebox}
+\textbf{Canvas con 9 bloques llenos + 3 supuestos críticos formulados como afirmaciones falsables}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) 9 bloques llenos con frases cortas y concretas. (2) Orden profesional de llenado seguido (Segmento primero). (3) Bloques anclados a evidencia de las entrevistas. (4) Coherencia verificada en voz alta. (5) 3 supuestos críticos identificados. (6) Plan de verificación de 1 semana para cada supuesto.
+\end{softbox}
+
+\puente{Antes de cerrar, mira el modelo desde las cinco dimensiones humanas. Diseñar el modelo con respeto al cliente es ética del oficio; diseñarlo extrayendo valor sin devolverlo es la peor versión del emprendimiento contemporáneo.}
+
+\begin{titlebox}{milcVino}
+Fase 4 · Evaluación liberadora — cinco dimensiones
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Y para terminar, tres voces sobre el valor y la economía. Dussel sobre los modelos que liberan o extraen, Aristóteles sobre la phronesis económica (el justo medio entre lucro y servicio), Floridi sobre la transparencia del modelo como ética profesional.}
+
+\begin{titlebox}{milcGradeDark}
+Triángulo de pensamiento · cierre filosófico
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{``Todo modelo de negocio decide si libera al cliente o lo extrae; no hay diseño económico neutro.''}
+
+Tu Canvas es una toma de posición ética antes que comercial. Hay modelos que liberan (te dan valor real por un pago justo) y modelos que extraen (capturan tu atención, tu tiempo o tu dinero sin devolver proporción). La filosofía de la liberación pide que el Canvas declare con honestidad de qué lado estás: ¿la propuesta de valor mejora la vida del segmento o explota su vulnerabilidad? La phronesis del emprendedor consiste en construir modelos que devuelven valor proporcional a lo que extraen.
+
+\textbf{Mi Canvas, ¿libera o extrae? ¿La propuesta de valor mejora la vida del segmento o aprovecha su falta de opciones?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Séneca · cuidado interior}
+\textit{``No hay viento favorable para quien no sabe a qué puerto va; pero tampoco hay sostenibilidad para quien navega ignorando los costos.''}
+
+Es tentador inflar la fuente de ingresos para que el Canvas \emph{cierre} con números bonitos, o ignorar los costos para que el modelo parezca rentable. La sabiduría estoica recomienda el justo medio: ni un modelo que solo busca lucro (extracción sin servicio), ni un modelo que solo sirve sin sostenerse (servicio sin futuro). Tu Canvas debería poder sostenerse 3 años sin sacrificar al cliente ni al emprendedor.
+
+\textbf{¿Mi Canvas se sostiene económicamente sin volverse extractivo? ¿Estoy cobrando justo o estoy regalando trabajo?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{``La transparencia del modelo es la nueva forma de la ética profesional contemporánea.''}
+
+Un Canvas que el cliente nunca podría ver sin sentirse engañado no es un modelo sostenible: es un modelo opaco. La ética digital contemporánea exige que el emprendedor pueda mostrar su Canvas al cliente y este lo apruebe sin escándalo. Esa transparencia es virtud técnica y comercial. Los modelos opacos sobreviven a corto plazo y se derrumban cuando la información se vuelve pública.
+
+\textbf{Si mi cliente viera mi Canvas completo (con costos, márgenes y socios), ¿se sentiría respetado o engañado?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{titlebox}{milcVino}
+Compromiso final
+\end{titlebox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
+Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
+Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
+Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
+Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
+Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
+\end{tabularx}
+\normalsize
+
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Llega con el Canvas terminado y los 3 supuestos críticos formulados. En la sesión 4 vas a construir el \textbf{prototipo mínimo viable} que verifique uno o varios de esos supuestos. El Canvas se honra construyendo lo que prueba sus afirmaciones, no archivándolo en una carpeta.
+\end{infoband}
+
+\end{document}

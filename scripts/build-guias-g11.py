@@ -42,6 +42,11 @@ CONTENT_DIR = ROOT / "content" / "guias" / str(GRADO)
 
 # Paleta institucional por grado (sincronizada con src/data/grados.ts).
 COLORES_POR_GRADO = {
+    8: {  # bento-orange
+        "COLOR_PORTADA_PRIMARY": "FF6600",
+        "COLOR_PORTADA_DARK": "9A3E00",
+        "COLOR_PORTADA_SOFT": "FFE4D0",
+    },
     9: {  # bento-purple
         "COLOR_PORTADA_PRIMARY": "7C3AED",
         "COLOR_PORTADA_DARK": "4C1D95",
@@ -72,6 +77,23 @@ PERIODOS_POR_GRADO = {
             "PERIODO_NOMBRE": "Período 3 · Proyecto final emprendedor",
             "DBA": "Diseño, implementación y sustentación de un proyecto de impacto local (MEN, T\\&I)",
             "REFERENTES": "Dussel (analéctica · sur global) · Lean Startup · Floridi · Estoicismo",
+        },
+    },
+    8: {
+        1: {
+            "PERIODO_NOMBRE": "Período 1 · Análisis de datos con phronesis",
+            "DBA": "Tratamiento de datos cuantitativos con criterio ético (MEN, T\\&I)",
+            "REFERENTES": "Phronesis aristotélica · Floridi (ética del dato) · Estoicismo (ver lo que es)",
+        },
+        2: {
+            "PERIODO_NOMBRE": "Período 2 · Lógica, algoritmos y computación física",
+            "DBA": "Pensamiento computacional aplicado a sistemas de control con sensores y actuadores (MEN, T\\&I)",
+            "REFERENTES": "Pensamiento computacional · MakeCode / micro:bit · Logos como razón universal",
+        },
+        3: {
+            "PERIODO_NOMBRE": "Período 3 · Multimedia, narrativa y ciberseguridad",
+            "DBA": "Producción multimedia ética y comportamiento responsable en entornos digitales (MEN, T\\&I)",
+            "REFERENTES": "Dussel (estética de la liberación) · Ley 1336 · Floridi (infoesfera)",
         },
     },
     9: {

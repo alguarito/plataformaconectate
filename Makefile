@@ -135,6 +135,24 @@ guia-clean:  ## Borra archivos auxiliares de LaTeX (.aux, .log, .out)
 	@find $(OUT_DIR) -maxdepth 1 \( -name "*.aux" -o -name "*.log" -o -name "*.out" \) -delete
 	@echo "▸ Limpieza completa."
 
+# ─── Web TS ─────────────────────────────────────────────────────────────────
+
+.PHONY: guia-web
+guia-web:  ## Genera contenido enriquecido TS desde YAML SSOT (src/data/guiasContenido)
+ifeq ($(CLAVE),)
+	@GRADO=$(GRADO) $(PYTHON) scripts/build-guias-web-ts.py
+else
+	@$(PYTHON) scripts/build-guias-web-ts.py $(GRADO) $(CLAVE)
+endif
+
+.PHONY: guia-web-force
+guia-web-force:  ## Igual a guia-web pero sobrescribe TS existentes
+ifeq ($(CLAVE),)
+	@GRADO=$(GRADO) $(PYTHON) scripts/build-guias-web-ts.py --force
+else
+	@$(PYTHON) scripts/build-guias-web-ts.py $(GRADO) $(CLAVE) --force
+endif
+
 # ─── Web ────────────────────────────────────────────────────────────────────
 
 .PHONY: dev

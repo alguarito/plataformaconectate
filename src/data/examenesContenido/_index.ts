@@ -13,8 +13,14 @@ import { claveExamen } from './_schema';
 
 import e11_1 from './11-1';
 
+import e11_2 from './11-2';
+
+import e11_3 from './11-3';
+
 const TODOS: ContenidoExamen[] = [
   e11_1,
+  e11_2,
+  e11_3,
 ];
 
 const MAPA = new Map<string, ContenidoExamen>();

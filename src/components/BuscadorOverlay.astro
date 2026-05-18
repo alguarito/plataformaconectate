@@ -44,19 +44,27 @@ for (const g of grados) {
   }
 }
 
+// Grados en construcción no entran al índice de búsqueda: el currículum
+// no está liberado y enlazar a sus guías rompe la promesa de "no dar acceso".
+const gradosEnConstruccion = new Set(
+  grados.filter((g) => g.enConstruccion).map((g) => g.numero),
+);
+
 const indice: ItemIndice[] = [
-  ...recursos.map((r) => ({
-    tipo: 'guia' as const,
-    grado: r.grado,
-    periodo: r.periodo,
-    sesion: r.sesion,
-    titulo: r.titulo,
-    contexto: `P${r.periodo} · Sesión ${r.sesion}`,
-    href: `${base}/grado-${r.grado}/periodo-${r.periodo}/guia-${r.sesion}`,
-    k: normalizar(r.titulo),
-    bgClass: colorPorPeriodo[`${r.grado}-${r.periodo}`] ?? 'bg-bento-blue',
-  })),
-  ...grados.flatMap((g) =>
+  ...recursos
+    .filter((r) => !gradosEnConstruccion.has(r.grado))
+    .map((r) => ({
+      tipo: 'guia' as const,
+      grado: r.grado,
+      periodo: r.periodo,
+      sesion: r.sesion,
+      titulo: r.titulo,
+      contexto: `P${r.periodo} · Sesión ${r.sesion}`,
+      href: `${base}/grado-${r.grado}/periodo-${r.periodo}/guia-${r.sesion}`,
+      k: normalizar(r.titulo),
+      bgClass: colorPorPeriodo[`${r.grado}-${r.periodo}`] ?? 'bg-bento-blue',
+    })),
+  ...grados.filter((g) => !g.enConstruccion).flatMap((g) =>
     g.periodos.map((p) => {
       const proy = proyectos.find((pr) => pr.grado === g.numero && pr.periodo === p.numero);
       const reto = proy?.retoCentral ?? p.titulo;

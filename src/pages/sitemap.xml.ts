@@ -32,9 +32,13 @@ export const GET: APIRoute = async ({ site }) => {
   for (const g of grados) {
     urls.push({
       loc: `${fullBase}/grado-${g.numero}`,
-      priority: 0.9,
+      priority: g.enConstruccion ? 0.3 : 0.9,
       changefreq: 'monthly',
     });
+    // Mientras el grado esté en construcción no indexamos sus rutas internas:
+    // las páginas de períodos/guías/proyectos existen pero no se promocionan
+    // en el sitemap para evitar que motores y buscadores las muestren.
+    if (g.enConstruccion) continue;
     for (const p of g.periodos) {
       urls.push({
         loc: `${fullBase}/grado-${g.numero}/periodo-${p.numero}`,

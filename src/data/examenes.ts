@@ -127,14 +127,16 @@ export const examenes: RecursoExamen[] = [
   {
     "grado": 11,
     "periodo": 2,
-    "pdfId": "1JV6yLokb10l5z5xjSNeySZDQIKw0Ac0R",
-    "archivo": "examen-2-11-TIC.pdf"
+    "local": true,
+    "archivo": "examen-2-11-TIC.pdf",
+    "pdfId_archivo": "1JV6yLokb10l5z5xjSNeySZDQIKw0Ac0R"
   },
   {
     "grado": 11,
     "periodo": 3,
-    "pdfId": "1w3qk0w-RAM1joAVXeIAANiJgbASu5F-U",
-    "archivo": "examen-3-11-TIC.pdf"
+    "local": true,
+    "archivo": "examen-3-11-TIC.pdf",
+    "pdfId_archivo": "1w3qk0w-RAM1joAVXeIAANiJgbASu5F-U"
   }
 ];
 

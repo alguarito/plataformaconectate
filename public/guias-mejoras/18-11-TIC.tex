@@ -1,0 +1,399 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra para todas las guias MILC v3
+% Ver scripts/generadores/build-guia-milc.py para la lista completa de
+% claves esperadas. El script valida que no queden placeholders sin
+% reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1.75cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\hyphenpenalty=200
+\exhyphenpenalty=200
+\pretolerance=400
+\tolerance=2000
+\setlength{\emergencystretch}{1em}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0066FF}
+\definecolor{milcGradeDark}{HTML}{003D99}
+\definecolor{milcGradeSoft}{HTML}{D6E8FF}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Tecnología e Informática · Grado 11}
+\rhead{\small Guía 18 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{\textbf{\textrightarrow}}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+\begin{document}
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[white] (current page.south west) rectangle (current page.north east);
+  \path[fill=milcGradePrimary,rounded corners=16mm]
+    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
+    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
+    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+
+  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
+    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
+    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
+    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
+    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
+    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
+  \end{scope}
+
+  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{124}{124}\selectfont 11};
+  \draw[milcGradeText,line width=1.7pt]
+    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+
+  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+    {
+     {\sffamily\bfseries\fontsize{19}{22}\selectfont KPIs ---\\métricas\\que importan}\\[4mm]
+     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 18-11-TIC}\\[2mm]
+     {\sffamily\fontsize{13}{16}\selectfont Período 2 · Automatización y procesos}\\[5mm]
+     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
+     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+    };
+
+  \path[fill=milcGradeSoft,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
+    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
+    \textcolor{milcGradeDark}{\bfseries Producto:} 1 tabla con 5 KPIs del proceso del periodo (cada uno con nombre, fórmula, fuente del dato, frecuencia de medición y valor objetivo) + 1 dashboard simple en hoja de cálculo o Looker Studio que muestre su evolución mes a mes con gráficos legibles};
+\end{tikzpicture}
+\mbox{}
+\newpage
+
+\section*{Apertura: KPIs --- métricas que importan en un proceso}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+Antes de las hojas Excel, los oficios contaban lo que importaba: el \textbf{cosechero} contaba \emph{cuántos racimos por semana}, el \textbf{panadero} llevaba conteo de \emph{cuántos panes por día}, la \textbf{tejedora Wayuu} sabía \emph{cuántas mantas terminadas al mes}, el \textbf{lechero} medía \emph{cuántos litros al día y qué porcentaje de merma}. Esos números no eran adorno: guiaban decisiones. Cuando los racimos caían 20\%, se cambiaba el riego; cuando la merma de leche subía 10\%, se revisaba el enfriamiento. La sabiduría del oficio cabía en \emph{4-6 números bien elegidos}. Hoy esa misma sabiduría se llama \emph{KPI} (\emph{Key Performance Indicator}): \textbf{si no se cuenta, no se mejora}.
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+Un \textbf{KPI} es una métrica numérica que mide el rendimiento de un proceso en una dimensión que importa para decidir. Un KPI bien diseñado cumple \textbf{5 reglas (SMART)}: (1) \textbf{Específico}: nombra exactamente qué mide; (2) \textbf{Medible}: tiene fórmula y fuente de dato verificables; (3) \textbf{Accionable}: si sube o baja, hay decisión clara que tomar; (4) \textbf{Relevante}: cambia algo importante del proceso; (5) \textbf{Temporal}: tiene frecuencia de medición y valor objetivo. Los KPIs típicos de un proceso son 4-6 (\textbf{nunca 20}: si todo es KPI, nada es KPI). Las herramientas más usadas en Colombia para mostrarlos: \texttt{Google Sheets} con gráficos integrados, \texttt{Looker Studio} (gratuito, ex-Data Studio), \texttt{Power BI} (Microsoft, gratuito personal).
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{¿Cómo sabía el lechero que el porcentaje de merma era un número que valía la pena contar, y que el color del cuaderno no lo era? ¿Y qué pierde un emprendedor novato cuando construye un dashboard con 25 métricas en lugar de elegir las 5 que sí mueven el proceso?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar podrás: (1) \textbf{identificar} las 5 reglas SMART de un KPI bien diseñado; (2) \textbf{analizar} qué de tu proceso del periodo merece convertirse en KPI y qué no; (3) \textbf{explicar} con tus palabras cómo cada KPI conecta con una decisión concreta; (4) \textbf{evaluar} tu dashboard preguntándote si un emprendedor real podría tomar decisiones leyendo solo esos 5 números.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Diseño y mejora de procesos digitales con criterio ético (MEN, T\&I)\\
+Referentes & Pensamiento computacional · Lean / Kaizen · Floridi (ética informacional)\\
+Producto final & 1 tabla con 5 KPIs del proceso del periodo (cada uno con nombre, fórmula, fuente del dato, frecuencia de medición y valor objetivo) + 1 dashboard simple en hoja de cálculo o Looker Studio que muestre su evolución mes a mes con gráficos legibles\\
+\end{tabularx}
+\normalsize
+
+\puente{Antes de empezar, mira el viaje completo. Mapeaste el proceso (S1), lo diagramaste (S2), capturaste su información (S3), estructuraste la base (S4), automatizaste el trigger (S5), aplicaste IA (S6), construiste un bot (S7). Hoy mides si todo eso \emph{funcionó}: 5 KPIs que digan, con número, si el proceso está sano o necesita intervención.}
+
+\begin{titlebox}{milcGradeDark}
+Ruta MILC: así vamos a aprender
+\end{titlebox}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escuta\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Antes de teorizar, vas a ver 2 dashboards reales (uno con 5 KPIs claros, otro con 25 métricas confusas) y vas a intentar contestar 3 preguntas operativas en cada uno. La diferencia entre 5 segundos y 5 minutos es la lección.}
+
+\begin{titlebox}{milcVerde}
+Fase 1 · Escuta
+\end{titlebox}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- Dashboard claro vs dashboard ruidoso} (15 min · individual). El docente comparte 2 dashboards reales o capturas: uno con 5 KPIs bien elegidos, otro con 25 métricas mezcladas. Para cada uno intenta responder en 3 minutos: \emph{(1) ¿qué intervenir primero esta semana?}, \emph{(2) ¿qué decisión tomarías si fueras dueño del proceso?}, \emph{(3) ¿qué información te falta?}. Cronometra y anota tu nivel de confianza en cada respuesta.
+\end{softbox}
+
+\checkbox Intenté las 3 preguntas en ambos dashboards.\\
+\checkbox Cronometré tiempo y anoté mi nivel de confianza por respuesta.\\
+\checkbox Identifiqué qué hizo legible al dashboard de 5 KPIs frente al de 25 métricas.
+
+\begin{infoband}{milcVerde}
+\textbf{Lo que va al cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1 --- Dashboard claro vs ruidoso». \textbf{Formato:} tabla 2 filas × 4 columnas (Tiempo~|~Decisión propuesta~|~Confianza (1-5)~|~Información que falta). \textbf{Sabes que terminaste cuando} reconoces honestamente que 5 KPIs bien elegidos vencen a 25 mal elegidos.
+\end{infoband}
+
+\puente{Ya viste el contraste. Ahora vas a entender la \textbf{anatomía} del KPI bien diseñado: las 5 reglas SMART, los errores típicos (KPIs vanidosos, KPIs sin decisión, KPIs que no se pueden medir), la diferencia entre métrica y KPI, y por qué 4-6 es el rango profesional.}
+
+\begin{titlebox}{milcTurquesa}
+Fase 2 · Sistematización con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+Las 5 reglas SMART transforman un número cualquiera en un KPI accionable. Vamos a descomponerlas con los pilares del pensamiento computacional para que cada KPI de tu dashboard pase la prueba profesional.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
+1. Descomposición & El KPI se descompone en 5 reglas (SMART): (1) \textbf{Específico}: \emph{``ventas''} no, \emph{``ventas brutas semanales en COP''} sí. (2) \textbf{Medible}: existe fórmula reproducible y fuente de dato verificable (\emph{``SUMA columna monto, hoja Ventas, semana actual''}). (3) \textbf{Accionable}: si el KPI baja, hay una acción específica que tomar; si no la hay, el KPI es decorativo. (4) \textbf{Relevante}: conecta con un cuello de botella, un objetivo de negocio o una promesa al usuario. (5) \textbf{Temporal}: frecuencia (diaria, semanal, mensual) + valor objetivo + tolerancia.\\
+2. Reconocimiento de patrones & Todo dashboard sigue el patrón \textbf{``4-6 KPIs, no 25''}: si hay 20 métricas, ninguna manda. El cerebro humano no prioriza más de 5-7 variables a la vez. Reducir a 5 KPIs es disciplina ética: obliga al diseñador a decidir qué importa de verdad y qué es ruido. \emph{Si todo es prioritario, nada es prioritario}.\\
+3. Abstracción & Lo esencial cabe en una pregunta: \emph{¿qué decisión cambia si este KPI sube o baja 20\%?}. Si la respuesta es \emph{``ninguna''}, el KPI es vanidoso (\emph{vanity metric}). Los KPIs vanidosos típicos: \emph{seguidores en redes, visitas a la web, número de likes}. Suben sin que el negocio mejore. Los KPIs accionables: \emph{conversión, retención, costo por adquisición, tasa de error, tiempo de respuesta}.\\
+4. Algoritmo conceptual & Algoritmo para definir un KPI: (1) identifica una decisión recurrente del proceso; (2) pregunta qué número, si cambia, te haría tomar la decisión distinto; (3) define la fórmula exacta y la fuente; (4) define la frecuencia de medición y el valor objetivo; (5) escribe la acción asociada (\emph{``si baja del 80\%, revisar X''}); (6) prueba durante 1 semana antes de oficializarlo en el dashboard.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcTurquesa}{Anatomía de un KPI bien diseñado}
+\textbf{Nombre:} específico, sin ambigüedad. \\[1mm] \textbf{Fórmula:} cálculo reproducible. \\[1mm] \textbf{Fuente:} hoja, sistema o medición de donde sale el dato. \\[1mm] \textbf{Frecuencia:} diaria / semanal / mensual. \\[1mm] \textbf{Valor objetivo:} a qué número apuntar. \\[1mm] \textbf{Tolerancia:} cuánto puede oscilar antes de alarmar. \\[1mm] \textbf{Decisión asociada:} qué hacer si está fuera del rango.
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+(1) KPI vanidoso (\emph{``seguidores''} sin conversión): el número crece sin que el proceso mejore. (2) KPI sin decisión: nadie sabe qué hacer si cambia. (3) Fórmula ambigua (\emph{``ventas''} sin especificar bruto/neto, periodo, fuente): produce reportes inconsistentes. (4) 20 KPIs en el mismo dashboard: nadie prioriza, nadie actúa. (5) Sin valor objetivo: el KPI flota sin referencia y solo se contempla.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+\textbf{Lo que va al cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2 --- Anatomía del KPI». \textbf{Formato:} ficha con las 5 reglas SMART + 5 errores comunes con marca 🚨 del que más temes + 1 KPI redactado completo de tu proceso. \textbf{Sabes que terminaste cuando} podrías corregir un dashboard ajeno señalando \emph{``este KPI es vanidoso''}, \emph{``este no tiene decisión''}, \emph{``este no es medible''}.
+\end{infoband}
+
+\puente{Tienes el método. Toca aplicarlo: definir 5 KPIs para tu proceso del periodo, calcular sus valores actuales, configurar un dashboard en Sheets o Looker Studio, y dejar para cada KPI su valor objetivo y su decisión asociada.}
+
+\begin{titlebox}{milcMagenta}
+Fase 3 · Praxis con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\textbf{Actividad 3 · ANALIZA + EVALÚA --- 5 KPIs + dashboard de tu proceso} (30 min · individual). Hora de aplicar. Vas a definir 5 KPIs SMART del proceso del periodo, calcular sus valores actuales y construir un dashboard simple en Sheets o Looker Studio.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
+Descomposición & Tu producto se descompone en 5 piezas: (1) tabla de 5 KPIs con las 7 partes de anatomía cada uno; (2) cálculo del valor actual de cada KPI usando los datos reales de tu hoja de Sesión 4; (3) valor objetivo y tolerancia definidos para cada KPI; (4) dashboard en Sheets (con gráficos integrados) o Looker Studio que muestre los 5 KPIs con su evolución mensual; (5) 1 frase por KPI explicando qué decisión dispara.\\
+Patrones & Sigue el patrón \textbf{``cada KPI nombra a su dueño''}: para cada KPI declara quién es responsable de revisarlo y de actuar cuando se sale del rango. Sin dueño, el KPI nunca produce acción.\\
+Abstracción & Cada decisión asociada debe ser concreta: \emph{``si conversión cae bajo 5\%, hacer 3 entrevistas a clientes esta semana''} es decisión; \emph{``si conversión cae, mejorar''} no es. La concreción de la decisión es el cierre del oficio.\\
+Algoritmo de armado & Algoritmo: (1) revisa tu proceso de Sesión 1; (2) identifica 5 decisiones recurrentes; (3) define el KPI que dispara cada decisión; (4) calcula valor actual con los datos de tu hoja; (5) define objetivo y tolerancia; (6) construye el dashboard con gráficos; (7) revisa que los 5 KPIs juntos cuenten la salud del proceso completo.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcMagenta}{Checklist antes de entregar el dashboard}
+\checkbox 5 KPIs definidos con las 7 partes de anatomía. \\[1mm] \checkbox Cada KPI pasa la prueba SMART. \\[1mm] \checkbox Valor actual calculado con datos reales de tu hoja. \\[1mm] \checkbox Valor objetivo + tolerancia + dueño definidos. \\[1mm] \checkbox Dashboard con gráficos legibles (no más de 5 visualizaciones). \\[1mm] \checkbox 1 frase por KPI con la decisión que dispara. \\[1mm] \checkbox Un emprendedor podría leer el dashboard en 30 segundos.
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Proceso medido.} \textit{Nombre + dueño + dónde se ejecuta.} \\[1mm] \textbf{KPI 1.} \textit{Nombre + fórmula + fuente + frecuencia + objetivo + tolerancia + decisión + dueño.} \\[1mm] \textbf{KPI 2.} \textit{Lo mismo.} \\[1mm] \textbf{KPI 3.} \textit{Lo mismo.} \\[1mm] \textbf{KPI 4.} \textit{Lo mismo.} \\[1mm] \textbf{KPI 5.} \textit{Lo mismo.} \\[1mm] \textbf{Dashboard.} \textit{URL + 5 gráficos legibles.}
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+\textbf{Lo que va al cuaderno (Actividad 3 · ANALIZA + EVALÚA).} Título: «Actividad 3 --- 5 KPIs + dashboard». \textbf{Formato:} ficha con 5 KPIs estructurados + pantallazo del dashboard + URL pegada + 1 línea de decisión por KPI. \textbf{Extensión:} 1-2 páginas de cuaderno. \textbf{Sabes que terminaste cuando} compartiste el dashboard con un compañero o emprendedor y supo decir en 30 segundos qué intervenir esta semana.
+\end{infoband}
+
+\puente{Lo que sigue resume \emph{qué} entregas hoy: 1 tabla con 5 KPIs SMART + 1 dashboard con gráficos + 1 decisión por KPI. El criterio principal: que un emprendedor real, al ver tu dashboard 30 segundos, pueda decidir \textbf{qué intervenir esta semana}.}
+
+\begin{titlebox}{milcMostaza}
+Producto de la sesión
+\end{titlebox}
+\textbf{5 KPIs SMART + dashboard con evolución mensual}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) 5 KPIs con las 7 partes de anatomía. (2) Cada KPI pasa la prueba SMART. (3) Valores actuales calculados con datos reales. (4) Valor objetivo + tolerancia + dueño por KPI. (5) Dashboard legible en 30 segundos.
+\end{softbox}
+
+\puente{Antes de cerrar, mira los KPIs desde las cinco dimensiones humanas. Medir bien es respeto por la realidad; medir mal es invitar a decisiones basadas en humo numérico.}
+
+\begin{titlebox}{milcVino}
+Fase 4 · Evaluación liberadora — cinco dimensiones
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Y para terminar, tres voces sobre los KPIs. Dussel sobre las métricas que invisibilizan a las víctimas, Marco Aurelio sobre la disciplina de medir lo que importa, Floridi sobre el dashboard como infraestructura cognitiva organizacional.}
+
+\begin{titlebox}{milcGradeDark}
+Triángulo de pensamiento · cierre filosófico
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{``Toda métrica decide qué resultados se ven y qué consecuencias quedan fuera del reporte.''}
+
+Cuando mides \emph{``conversión a clientes''} pero no mides \emph{``personas a quienes se les negó el servicio''}, las personas excluidas dejan de existir en tu dashboard. Cuando mides \emph{``ventas por sucursal''} pero no \emph{``trabajadores con sobrecarga''}, la sobrecarga se vuelve invisible. La phronesis del KPI exige preguntar siempre: \emph{¿qué consecuencias humanas no aparecen en mi tabla y por qué?}. Un dashboard ético siempre incluye 1-2 KPIs que protejan a las personas detrás del proceso, no solo al resultado del proceso.
+
+\textbf{¿Mis 5 KPIs incluyen al menos 1 que proteja a las personas que sostienen el proceso (trabajadores, usuarios vulnerables, comunidad afectada)? ¿O todos miden solo resultados para el dueño?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
+\textit{``Lo que se mide con disciplina mejora; lo que se mide con vanidad solo crece sin sentido.''}
+
+Es tentador medir todo lo que la herramienta permite medir (\emph{``500 métricas''}). La sabiduría estoica recomienda lo contrario: \emph{elegir 5 con criterio es virtud profesional; medir 500 sin criterio es ego}. La disciplina del KPI consiste en \emph{no medir lo que no se va a usar para decidir}. Esa restricción dura entrena al analista en lo que el filósofo llama \emph{prosoché}: atención disciplinada.
+
+\textbf{¿Resistí la tentación de meter 20 métricas \emph{``por si acaso''}? ¿Mis 5 KPIs son los 5 más importantes o solo los 5 más fáciles de calcular?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{``El dashboard es la infraestructura cognitiva con que las organizaciones contemporáneas se ven a sí mismas.''}
+
+Toda organización pública o privada que tome decisiones basadas en datos lo hace a través de un dashboard. Aprender a diseñarlos con criterio a los 16 años es alfabetización profesional decisiva: el lenguaje con el que la administración contemporánea conoce sus propios procesos. Quien diseña dashboards forma la mirada con la que las organizaciones se piensan.
+
+\textbf{¿Cuántas decisiones organizacionales que vi esta semana se tomaron mirando un dashboard? ¿Cuánto cambia mi posición si yo soy quien decide qué muestra ese dashboard?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{titlebox}{milcVino}
+Compromiso final
+\end{titlebox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
+Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
+Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
+Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
+Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
+Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
+\end{tabularx}
+\normalsize
+
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima semana.} Mide los 5 KPIs durante 5 días y registra qué decisión real tomarías cada día con base en cada uno. Si en 5 días ningún KPI dispara una decisión, alguno está mal elegido. La phronesis del KPI se entrena con datos diarios, no con dashboards estáticos.
+\end{infoband}
+
+\end{document}

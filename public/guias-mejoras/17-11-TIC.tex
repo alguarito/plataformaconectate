@@ -1,0 +1,399 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra para todas las guias MILC v3
+% Ver scripts/generadores/build-guia-milc.py para la lista completa de
+% claves esperadas. El script valida que no queden placeholders sin
+% reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1.75cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\hyphenpenalty=200
+\exhyphenpenalty=200
+\pretolerance=400
+\tolerance=2000
+\setlength{\emergencystretch}{1em}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0066FF}
+\definecolor{milcGradeDark}{HTML}{003D99}
+\definecolor{milcGradeSoft}{HTML}{D6E8FF}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Tecnología e Informática · Grado 11}
+\rhead{\small Guía 17 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{\textbf{\textrightarrow}}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+\begin{document}
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[white] (current page.south west) rectangle (current page.north east);
+  \path[fill=milcGradePrimary,rounded corners=16mm]
+    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
+    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
+    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+
+  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
+    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
+    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
+    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
+    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
+    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
+  \end{scope}
+
+  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{124}{124}\selectfont 11};
+  \draw[milcGradeText,line width=1.7pt]
+    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+
+  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+    {
+     {\sffamily\bfseries\fontsize{19}{22}\selectfont Chatbots ---\\sin código\\flujos de conversación}\\[4mm]
+     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 17-11-TIC}\\[2mm]
+     {\sffamily\fontsize{13}{16}\selectfont Período 2 · Automatización y procesos}\\[5mm]
+     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
+     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+    };
+
+  \path[fill=milcGradeSoft,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
+    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
+    \textcolor{milcGradeDark}{\bfseries Producto:} 1 bot conversacional funcional construido en ManyChat o Landbot (planes gratuitos) con un mínimo de 5 ramas lógicas, captura de información estructurada hacia hoja de cálculo, mensaje de bienvenida cordial y \emph{escape humano} explícito (botón o frase que entrega la conversación a una persona real)};
+\end{tikzpicture}
+\mbox{}
+\newpage
+
+\section*{Apertura: Chatbots sin código --- flujos de conversación}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+El \textbf{loro} que repetía las palabras del dueño, el \textbf{muñeco oracular} de los abuelos al que se le hacían preguntas y respondía con frases ensayadas, las \textbf{tarjeticas de respuesta rápida} del comerciante de plaza que tenía 7 frases listas para 7 preguntas frecuentes (\emph{``¿cuánto cuesta?''}, \emph{``¿hay descuento?''}, \emph{``¿lo trae a domicilio?''}): todos son antecesores del chatbot. Compartían una sabiduría: \emph{cuando la pregunta se repite, la respuesta se prepara}. La \textbf{tendera del barrio} respondía 50 veces al día \emph{``no, el yogurt llegó dañado, devuélvalo''}; el chatbot moderno responde lo mismo, pero a 5.000 personas al mismo tiempo. Es el \emph{loro escalable}.
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+Un \textbf{chatbot} es un sistema conversacional que responde mensajes siguiendo un \emph{flujo} de preguntas y respuestas predefinidas (con o sin IA). Las plataformas \emph{sin código} más usadas en Colombia son: (1) \textbf{ManyChat} (especializado en WhatsApp Business e Instagram); (2) \textbf{Landbot} (más visual, para webs y WhatsApp); (3) \textbf{Tidio} (chat web + WhatsApp); (4) \textbf{Chatfuel} (Facebook Messenger). Un buen flujo conversacional tiene: bienvenida cordial, opciones claras (botones o respuestas rápidas), recopilación de información estructurada, ramificación lógica según respuestas, y --- regla innegociable --- un \textbf{escape humano} explícito (\emph{``escribe AGENTE para hablar con una persona''}). Sin escape, el bot deja de ser servicio y se vuelve trampa.
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{¿Cómo sabía la tendera qué 7 preguntas frecuentes valía la pena memorizar y cuáles no? ¿Y qué pierde un emprendedor novato cuando arma un chatbot infinito sin botón de escape, que atrapa al cliente en un laberinto del que no puede salir?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar podrás: (1) \textbf{identificar} las 5 partes de un flujo conversacional bien diseñado y sus reglas mínimas; (2) \textbf{explicar} con tus palabras la diferencia entre flujo lineal y flujo con ramificación, y cuándo conviene cada uno; (3) \textbf{crear} un bot funcional en ManyChat o Landbot con 5 ramas + escape humano + captura a hoja; (4) \textbf{evaluar} la calidad del bot probándolo con 3 personas reales y midiendo \emph{tasa de finalización} y \emph{frustración subjetiva}.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Diseño y mejora de procesos digitales con criterio ético (MEN, T\&I)\\
+Referentes & Pensamiento computacional · Lean / Kaizen · Floridi (ética informacional)\\
+Producto final & 1 bot conversacional funcional construido en ManyChat o Landbot (planes gratuitos) con un mínimo de 5 ramas lógicas, captura de información estructurada hacia hoja de cálculo, mensaje de bienvenida cordial y \emph{escape humano} explícito (botón o frase que entrega la conversación a una persona real)\\
+\end{tabularx}
+\normalsize
+
+\puente{Antes de empezar, mira el viaje completo. En la sesión 5 automatizaste triggers; en la 6 aprendiste a clasificar mensajes con IA. Hoy unes ambas en una sola interfaz conversacional: el chatbot. Es el momento donde la automatización deja de ser \emph{``detrás del escenario''} y se vuelve \emph{frente al cliente}.}
+
+\begin{titlebox}{milcGradeDark}
+Ruta MILC: así vamos a aprender
+\end{titlebox}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escuta\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Antes de teorizar, vas a conversar con 2 chatbots reales (uno bueno, uno malo) y a anotar cuál te resolvió y cuál te frustró. Esa experiencia de usuario es la mejor escuela de diseño conversacional.}
+
+\begin{titlebox}{milcVerde}
+Fase 1 · Escuta
+\end{titlebox}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- Conversa con 2 bots reales} (15 min · individual). El docente comparte 2 chatbots reales activos (uno bien hecho de una empresa colombiana, otro mal hecho que da vueltas sin resolver). Mantén una conversación de 5 minutos con cada uno intentando resolver una consulta concreta. Anota: cuánto demoraste, cuántas veces te repetiste, si te atascaste en un bucle, si hubo escape humano disponible, si tu problema se resolvió.
+\end{softbox}
+
+\checkbox Mantuve conversación real con los 2 bots durante al menos 5 minutos cada uno.\\
+\checkbox {'Anoté para cada uno': 'tiempo, repeticiones, bucles, escape disponible, resolución.'}\\
+\checkbox Identifiqué al menos 2 diferencias concretas de diseño entre el bot bueno y el malo.
+
+\begin{infoband}{milcVerde}
+\textbf{Lo que va al cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1 --- Conversa con 2 bots». \textbf{Formato:} tabla 2 filas (un bot por fila) × 5 columnas (Tiempo~|~Repeticiones~|~Bucles~|~Escape humano~|~Resuelto). Al final 2 líneas con diferencias clave. \textbf{Sabes que terminaste cuando} puedes describir qué hace bueno o malo a un chatbot sin recurrir a vocabulario técnico.
+\end{infoband}
+
+\puente{Ya viste el contraste. Ahora vas a entender la \textbf{anatomía} del flujo bien diseñado: bienvenida, ramificación, captura de información, escape humano, despedida; y los errores típicos: laberinto sin salida, opciones ambiguas, captura excesiva de datos, ausencia de fallback.}
+
+\begin{titlebox}{milcTurquesa}
+Fase 2 · Sistematización con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+Un flujo conversacional bien diseñado parece simple pero tiene reglas estrictas. Vamos a descomponerlas con los pilares del pensamiento computacional para que cada decisión del flujo tenga razón profesional, no improvisación.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
+1. Descomposición & El flujo se descompone en 5 partes: (1) \textbf{Bienvenida}: 1-2 frases cordiales que dicen quién es el bot y qué puede hacer. (2) \textbf{Opciones iniciales}: 3-5 botones que cubren las consultas más frecuentes. (3) \textbf{Ramificación}: cada opción lleva a un sub-flujo distinto (lineal o con sub-opciones). (4) \textbf{Captura de información}: cuando el bot pide datos del usuario (nombre, email, pedido) se guardan en hoja de cálculo. (5) \textbf{Cierre + escape humano}: cada rama termina con resolución o con \emph{``escribe AGENTE''} para hablar con persona real.\\
+2. Reconocimiento de patrones & Todo flujo sigue el patrón \textbf{``profundidad máxima de 3 niveles''}: si el usuario tiene que apretar más de 3 botones para llegar a su respuesta, el flujo está mal diseñado. Cada nivel multiplica la tasa de abandono. La regla del oficio: \emph{tres clicks o escape}.\\
+3. Abstracción & Lo esencial cabe en una regla: \emph{el escape humano es derecho del usuario, no decisión del diseñador}. Cada rama del flujo debe tener salida hacia un humano disponible. Sin escape, el chatbot deja de ser servicio y se vuelve obstáculo. Esta regla es ética antes que técnica.\\
+4. Algoritmo conceptual & Algoritmo para construir un flujo: (1) lista las 5-7 consultas más frecuentes del proceso real; (2) prioriza por volumen; (3) diseña la pantalla de bienvenida con 3-5 botones; (4) construye cada rama hasta profundidad 3; (5) agrega escape humano en cada rama; (6) conecta captura a hoja; (7) prueba personalmente la conversación 3 veces.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcTurquesa}{Anatomía de un flujo conversacional}
+\textbf{Bienvenida:} 1-2 frases con identidad del bot. \\[1mm] \textbf{Menú principal:} 3-5 botones u opciones rápidas. \\[1mm] \textbf{Ramas:} hasta profundidad 3, cada una con propósito claro. \\[1mm] \textbf{Captura:} pregunta datos cuando es necesario y los guarda en hoja. \\[1mm] \textbf{Cierre:} resolución o escape humano explícito. \\[1mm] \textbf{Fallback:} qué dice el bot cuando no entiende (no \emph{``error''}, sino \emph{``permite que te conecte con un humano''}).
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+(1) Bucles infinitos: rama que regresa al menú sin avanzar. (2) Opciones ambiguas (\emph{``más''}, \emph{``otro''}): el usuario no sabe qué eligen. (3) Sin escape humano: el usuario queda atrapado. (4) Captura excesiva (pedir 12 datos para responder \emph{``¿qué horario tienen?''}): el usuario abandona. (5) Profundidad mayor a 3 niveles: pérdida de paciencia exponencial.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+\textbf{Lo que va al cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2 --- Anatomía del flujo». \textbf{Formato:} ficha con las 5 partes + 5 errores comunes con marca 🚨 del que más temes + 1 boceto a mano alzada del flujo de tu bot. \textbf{Sabes que terminaste cuando} podrías auditar un chatbot ajeno señalando con vocabulario técnico qué falla.
+\end{infoband}
+
+\puente{Tienes el método. Toca aplicarlo: elegir plataforma (ManyChat o Landbot, ambas gratuitas), diseñar el flujo con 5 ramas + escape humano + conexión a hoja, probarlo personalmente, ajustar y compartir URL pública.}
+
+\begin{titlebox}{milcMagenta}
+Fase 3 · Praxis con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\textbf{Actividad 3 · CREA --- Tu chatbot funcional} (30 min · individual). Hora de aplicar. Eliges plataforma (ManyChat o Landbot, ambas gratuitas con cuenta), diseñas el flujo con 5 ramas + escape humano + captura a hoja, lo pruebas tú mismo, ajustas y lo compartes con compañeros.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
+Descomposición & Tu bot se descompone en 5 piezas: (1) cuenta gratuita en ManyChat o Landbot; (2) flujo con bienvenida, menú y 5 ramas claras; (3) captura de al menos 2 datos en hoja enlazada; (4) escape humano configurado en cada rama; (5) 3 conversaciones de prueba documentadas con captura.\\
+Patrones & Sigue el patrón \textbf{``cortesía + brevedad + escape''}: cada mensaje del bot debe ser cordial, breve y debe tener al menos 1 opción de avance + 1 opción de escape. Ningún mensaje del bot debe quedar sin salida.\\
+Abstracción & Cada rama termina con resolución (\emph{``listo, tu pedido se registró''}) o con escape (\emph{``te conecto con un asesor''}). Nunca con \emph{``opción inválida, vuelve al menú''} sin salida humana. Ese es el bot tramposo.\\
+Algoritmo de armado & Algoritmo: (1) crea cuenta; (2) elige plantilla (FAQ, captura de leads, pedidos); (3) personaliza bienvenida; (4) configura 5 ramas con sus respuestas; (5) agrega botón \emph{``Hablar con humano''} en cada rama; (6) enlaza captura a hoja (Google Sheets); (7) prueba 3 veces como usuario; (8) comparte URL pública.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcMagenta}{Checklist antes de entregar el bot}
+\checkbox Bienvenida cordial con identidad clara. \\[1mm] \checkbox 3-5 botones en el menú principal. \\[1mm] \checkbox 5 ramas con profundidad máxima de 3 niveles. \\[1mm] \checkbox Captura de al menos 2 datos enlazada a hoja. \\[1mm] \checkbox Escape humano disponible en cada rama. \\[1mm] \checkbox 3 conversaciones de prueba completadas exitosamente. \\[1mm] \checkbox URL pública lista para compartir.
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Bot.} \textit{Nombre + propósito + dueño del proceso.} \\[1mm] \textbf{Bienvenida.} \textit{Frase exacta.} \\[1mm] \textbf{Menú principal.} \textit{3-5 botones con texto exacto.} \\[1mm] \textbf{Rama 1-5.} \textit{Cada una con sub-flujo + escape humano + captura si aplica.} \\[1mm] \textbf{Hoja enlazada.} \textit{URL + columnas que recibe.} \\[1mm] \textbf{Pruebas.} \textit{3 conversaciones reales.}
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+\textbf{Lo que va al cuaderno (Actividad 3 · CREA).} Título: «Actividad 3 --- Mi chatbot funcional». \textbf{Formato:} pantallazos del flujo + URL pública + checklist marcado + 1 línea por rama explicando qué consulta resuelve. \textbf{Extensión:} 1-2 páginas de cuaderno. \textbf{Sabes que terminaste cuando} compartiste el bot con 3 compañeros y los 3 terminaron la conversación con problema resuelto o con conexión a humano.
+\end{infoband}
+
+\puente{Lo que sigue resume \emph{qué} entregas hoy: 1 bot conversacional funcional + URL pública + captura del flujo + 3 conversaciones de prueba. El criterio principal: que un usuario externo termine la conversación con \textbf{problema resuelto} o con \textbf{conexión a un humano} --- nunca atrapado.}
+
+\begin{titlebox}{milcMostaza}
+Producto de la sesión
+\end{titlebox}
+\textbf{1 chatbot conversacional con 5 ramas + escape humano + captura a hoja}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) Bienvenida cordial e identidad clara. (2) 5 ramas con profundidad máxima de 3 niveles. (3) Captura enlazada a hoja. (4) Escape humano en cada rama. (5) 3 pruebas exitosas con conversaciones reales.
+\end{softbox}
+
+\puente{Antes de cerrar, mira el chatbot desde las cinco dimensiones humanas. Conversar bien es respeto por el tiempo del cliente; conversar mal es robo escalado de minutos a miles de personas.}
+
+\begin{titlebox}{milcVino}
+Fase 4 · Evaluación liberadora — cinco dimensiones
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Y para terminar, tres voces sobre la conversación automatizada. Dussel sobre los bots que excluyen al cliente vulnerable, Marco Aurelio sobre la cortesía como virtud técnica, Floridi sobre el chatbot como infraestructura de atención del XXI.}
+
+\begin{titlebox}{milcGradeDark}
+Triángulo de pensamiento · cierre filosófico
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{``Todo chatbot decide quién recibe respuesta humana y quién queda atrapado en el laberinto del menú.''}
+
+Un chatbot sin escape humano deja a las personas de mayor edad, con menor alfabetización digital o con consultas complejas en una trampa: dan vueltas, no resuelven, abandonan. La phronesis del diseño exige que el escape humano sea visible, fácil y disponible en todo momento. Quien diseña un bot sin escape excluye a quienes más necesitan atención personal: la población vulnerable no entra en los 5 botones del menú.
+
+\textbf{¿Mi bot ofrece escape humano en cada rama o solo en el menú principal? ¿Quién quedaría atrapado si el escape estuviera oculto o demasiado lejos del flujo?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
+\textit{``La cortesía es virtud técnica antes que adorno social.''}
+
+Es tentador escribir mensajes técnicos secos (\emph{``ingrese cédula''}, \emph{``opción no válida''}). La sabiduría estoica recomienda lo contrario: \emph{la cortesía en cada mensaje del bot es respeto al usuario que escribe del otro lado}. Un \emph{``por favor''}, un \emph{``gracias''}, un \emph{``te entendí''} no son adornos: son la diferencia entre un servicio que cuida y uno que procesa. La cortesía a escala es virtud política.
+
+\textbf{¿Los mensajes de mi bot tratan al usuario como persona o como código a procesar? ¿Qué pasaría si los leo en voz alta a mi abuela: ¿le sonarían cordiales?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{``Los chatbots son la primera línea de atención al ciudadano en la economía digital contemporánea.''}
+
+Bancos, EPS, alcaldías, plataformas educativas: la mayoría de la atención al ciudadano contemporáneo inicia con un chatbot. Diseñarlos con criterio a los 16 años es alfabetización profesional decisiva: el lenguaje con el que las organizaciones reciben a las personas. Quien diseña bots cuida o daña al ciudadano antes de que llegue al humano detrás.
+
+\textbf{¿Cuántos chatbots me atendieron esta semana? ¿Cuántos me ayudaron y cuántos me obligaron a abandonar? ¿Qué aprendí del diseño respondiéndolos?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{titlebox}{milcVino}
+Compromiso final
+\end{titlebox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
+Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
+Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
+Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
+Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
+Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
+\end{tabularx}
+\normalsize
+
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima semana.} Comparte tu bot con 3 personas reales (familiares, vecinos, compañeros) y mide la tasa de finalización: \emph{¿cuántos terminaron con problema resuelto?, ¿cuántos abandonaron?, ¿cuántos usaron el escape humano?}. Ajusta el flujo según los resultados. La phronesis del bot se entrena con conversaciones reales.
+\end{infoband}
+
+\end{document}

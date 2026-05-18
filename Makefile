@@ -196,6 +196,28 @@ else
 	@$(PYTHON) scripts/build-examenes-web-ts.py $(CLAVE)
 endif
 
+# ─── Proyectos integradores ─────────────────────────────────────────────────
+
+.PHONY: proyecto-build
+proyecto-build:  ## Compila proyecto(s) YAML → PDF (modelo entregable-céntrico MILC v3)
+ifeq ($(CLAVE),)
+	@$(PYTHON) scripts/build-proyectos.py
+else
+	@$(PYTHON) scripts/build-proyectos.py $(CLAVE)
+endif
+
+.PHONY: proyecto-show
+proyecto-show:  ## Abre el PDF del proyecto CLAVE en Preview (CLAVE=grado-periodo)
+	@if [ -z "$(CLAVE)" ]; then \
+		echo "✗ Falta CLAVE. Ejemplo: make proyecto-show CLAVE=11-1"; \
+		exit 1; \
+	fi
+	@$(eval GRADO_PR := $(word 1,$(subst -, ,$(CLAVE))))
+	@$(eval PERIODO_PR := $(word 2,$(subst -, ,$(CLAVE))))
+	@$(eval PDF := public/proyectos/proyecto-$(PERIODO_PR)-$(GRADO_PR)-TIC.pdf)
+	@if [ -f "$(PDF)" ]; then open "$(PDF)"; else \
+		echo "✗ No existe $(PDF). Corre primero: make proyecto-build CLAVE=$(CLAVE)"; exit 1; fi
+
 # ─── Web TS ─────────────────────────────────────────────────────────────────
 
 .PHONY: guia-web

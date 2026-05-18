@@ -3,35 +3,43 @@
 Cada proyecto vive en un archivo YAML bajo `content/proyectos/{grado}-{periodo}.yaml`
 donde la clave sigue el patrón `{grado}-{periodo}` (ej. `11-1.yaml`).
 
-Solo se modelan proyectos de los grados **8°, 9°, 10° y 11°**. Mientras 6° y 7°
-estén marcados como `enConstruccion: true` en `src/data/grados.ts`, sus PDFs
-actuales (`proyecto-{p}-{g}-TIC.pdf` en `public/proyectos/`) se conservan en el
-estado anterior sin migración.
+Solo se modelan proyectos de **8°, 9°, 10° y 11°**. Mientras 6° y 7° estén
+marcados como `enConstruccion: true`, sus PDFs actuales se conservan sin
+migración.
 
-El motor `scripts/build-proyectos.py` lee estos archivos y produce **dos salidas
-desde la misma fuente**:
+El motor `scripts/build-proyectos.py` lee estos archivos y produce **dos
+salidas desde la misma fuente**:
 
-- **PDF del proyecto integrador** en `public/proyectos/proyecto-{periodo}-{grado}-TIC.pdf`
-  (vía xelatex · plantilla de trabajo con espacios para responder en aula).
-- **Contenido web enriquecido** en `src/data/proyectosContenido/{grado}-{periodo}.ts`
-  (vía generador TS · alimenta la página `/proyecto` con datos del schema sin
-  duplicar la información en `src/data/proyectos.ts`).
+- **PDF del proyecto** (6-8 páginas) en `public/proyectos/proyecto-{periodo}-{grado}-TIC.pdf`
+- **Contenido web** en `src/data/proyectosContenido/{grado}-{periodo}.ts`
 
-> **Single source of truth.** Si editas el `.yaml`, ambos formatos se regeneran
-> al correr el build. Nunca edites el `.tex`, el `.pdf` ni el `.ts` directamente.
+> **Single source of truth.** Edita el YAML; nunca el `.tex`, el `.pdf` o el `.ts`.
+
+## Filosofía del modelo
+
+A diferencia del proyecto MILC clásico de **fases abstractas** (Escuta,
+Sistematización, Praxis, Evaluación), este modelo es **entregable-céntrico**:
+
+- El proyecto es un **brief sintético**: reto + insumos + entregables + rúbrica.
+- Cada entregable es una **unidad cerrada** con qué se entrega, cómo se hace,
+  qué reflexión se incrusta dentro del producto, y criterios observables.
+- Las reflexiones del **triángulo de pensamiento** (Dussel, Estoico, Floridi)
+  NO son ensayos académicos sueltos: son **párrafos visibles dentro de los
+  productos** (en el sitio web, en el manual de marca, en el reporte de datos).
+- La rúbrica tiene **un criterio por entregable**, no por fase abstracta.
+
+Esto produce un proyecto más operativo, más corto, y donde las reflexiones
+tienen consecuencias prácticas para el equipo (sostener lo declarado).
 
 ## Diferencia entre proyecto, guía y examen
 
-| | **Guía** | **Examen formal** | **Proyecto integrador** |
+| | **Guía** | **Examen** | **Proyecto** |
 |---|---|---|---|
-| Propósito | Aprender una sesión específica | Verificar transferencia | Aplicar todo el periodo |
-| Duración | 1-2 sesiones de aula | 45 minutos | 4-6 semanas (final del periodo) |
-| Estructura | 10 sesiones secuenciales | 5 preguntas curadas | 4 fases MILC (Escuta → Sistematización → Praxis → Evaluación) |
-| Producto | Anotaciones en cuaderno | Respuestas en PDF impreso | Prototipo, propuesta o solución concreta |
-| Modalidad | Individual o equipo | Individual | Equipo (preferido) |
-
-El proyecto es la **cima del periodo**: integra los 10 aprendizajes de las guías
-y se evalúa con rúbrica formal.
+| Propósito | Aprender 1 sesión | Verificar transferencia | Aplicar todo el periodo |
+| Duración | 1-2 sesiones | 45 minutos | 4-6 semanas |
+| Estructura | 10 sesiones secuenciales | 5 preguntas | 3-5 entregables concretos |
+| Producto | Anotaciones | Respuestas en PDF | Productos publicables (URL, PDF, video) |
+| Reflexiones | Triángulo al final | Pregunta reflexiva | Incrustadas en cada entregable |
 
 ## Estructura del archivo YAML
 
@@ -42,9 +50,8 @@ grado: 11                 # int · obligatorio · 8-11
 periodo: 1                # int · obligatorio · 1-3
 completo: true            # bool · obligatorio · si false, no se compila
 
-titulo: "..."             # str · obligatorio · título completo del proyecto
-titulo_portada: |         # str · obligatorio · versión corta con saltos
-  Proyecto integrador ---
+titulo: "..."             # str · obligatorio · título completo
+titulo_portada: |         # str · obligatorio · versión con saltos para portada
   Presencia digital
   empresarial con IA
 
@@ -52,252 +59,155 @@ titulo_portada: |         # str · obligatorio · versión corta con saltos
 autor: "Dr. Álvaro Cárdenas Orozco"
 dba: "..."                # str · DBA del MEN o equivalente
 estrategia: "..."         # str · ej. "Design Thinking + ABP"
-foco_diseno: "..."        # str · qué se diseña en el proyecto
-producto_final: "..."     # str · qué entrega el equipo al cerrar
-duracion_semanas: 5       # int · 4-6 típicamente
+duracion_semanas: 5       # int · 4-6
+modalidad: "equipo"       # str · "individual" | "parejas" | "equipo"
 
-# ─── Anclaje MILC (igual que guías y exámenes) ─────────────────────
-apertura:
-  saber_ancestral: |      # 1-2 párrafos · ancla del periodo a un oficio del Valle/Pacífico
-  contexto: |             # 1 párrafo · por qué este proyecto cierra el periodo
-  pregunta_marco: |       # 1 línea · pregunta paraguas del proyecto
+# ─── El reto (la pieza más potente) ────────────────────────────────
+reto: |                   # str · 1-2 frases potentes que sintetizan el reto
+                          #       Ej: "Diseñar y publicar tu presencia digital
+                          #       profesional como editor responsable, con IA
+                          #       como asistente y al menos 30% de intervención
+                          #       humana visible."
 
-# ─── Sentido del proyecto ──────────────────────────────────────────
-sentido: |                # str · texto MILC sobre por qué existe el proyecto
-reto_central: |           # str · UNA frase potente que define el reto
+# ─── Insumos concretos (qué necesita el equipo para arrancar) ──────
+insumos:                  # list · 4-8 insumos concretos · herramientas/datos
+                          #       /plantillas/ejemplos reales (no abstractos)
+  - "Plantilla HTML/CSS responsive (link incluido)"
+  - "Cuenta gratis Netlify o Vercel para deploy"
+  - "Acceso a IA generativa: Claude, Gemini, ChatGPT"
+  - "Ejemplos de 3 portafolios referentes (links)"
 
-# ─── Aprendizajes integrados (los 10 del periodo) ──────────────────
-aprendizajes:             # lista · idealmente 10 (uno por sesión)
+# ─── Anclaje ancestral (1 párrafo, no sección completa) ────────────
+anclaje: |                # str · 1 párrafo · oficio del Valle/Pacífico que
+                          #       dialoga con el reto del proyecto
+
+# ─── Aprendizajes del periodo que se ponen a prueba ────────────────
+aprendizajes:             # list · idealmente 10 (uno por sesión)
   - sesion: 1
     titulo: "..."
   - sesion: 2
     titulo: "..."
   # ... hasta sesion 10
 
-# ─── Marco conceptual ──────────────────────────────────────────────
-conceptos_clave: "..."    # str · "Tema central: X"
-competencias: "..."       # str · competencias del periodo
+# ─── Entregables (la columna vertebral · 3-5 entregables) ──────────
+entregables:              # list · 3-5 entregables obligatorios
+  - numero: 1
+    titulo: "..."         # str · título corto y accionable
 
-desempenos:
-  cognitivo: |            # str · qué comprende
-  procedimental: |        # str · qué hace
-  actitudinal: |          # str · qué actitud asume
+    que_entregas: |       # str · descripción concreta del producto
+                          #       (formato, longitud, plataforma)
 
-# ─── Fases del proyecto (lista ordenada, 3-5 fases) ────────────────
-# El número y nombre de las fases es configurable según el tipo de
-# proyecto. La estructura MILC clásica de 4 fases (Escuta · Sistematización ·
-# Praxis · Evaluación liberadora) es la sugerida por defecto, pero un
-# proyecto emprendedor (G11·P3) podría tener Ideación · Validación ·
-# MVP · Pitch · Cierre = 5 fases; un proyecto técnico simple (G8·P1)
-# podría tener Problema · Diseño · Sustentación = 3 fases.
-#
-# Cada fase tiene su propio color institucional asignado en orden
-# (verde, turquesa, magenta, vino, mostaza). El builder rota la paleta.
-fases:                    # list · obligatorio · 3-5 entradas en orden
-  - id: "escuta"          # str · slug interno (escuta, sistematizacion, ...)
-    titulo: "Fase 1 · Escuta y empatía"
-    proposito: |          # str · propósito MILC de la fase
-    checks:               # lista · 3 mínimo · checks observables
+    como_se_hace:         # list · 3-5 pasos accionables, no abstractos
+      - "Paso 1 concreto"
+      - "Paso 2 concreto"
+      - "..."
+
+    reflexion:            # obligatorio · 1 reflexión incrustada en el producto
+      lente: "dussel"     # str · "dussel" | "estoico" | "floridi"
+      titulo: |           # str · cómo se titula la sección dentro del producto
+      consigna: |         # str · qué reflexión escribe el equipo + DÓNDE
+                          #       queda visible en el producto (no anexo)
+
+    criterios:            # list · 3-5 criterios observables (no opinables)
       - "..."
       - "..."
-      - "..."
-    preguntas:            # lista · 2 mínimo · campos abiertos para el equipo
-      - "Problema o necesidad detectada"
-      - "Usuarios o personas afectadas"
-      - "Pregunta de proyecto"
-    artefacto:            # OBLIGATORIO en cada fase · drawbox/recurso visual
-      titulo: "Mapa de empatía"
-      descripcion: |      # str · qué se dibuja o esquematiza
-      altura_cm: 5.2      # int · opcional · altura del drawbox (default 5cm)
 
-  - id: "sistematizacion"
-    titulo: "Fase 2 · Sistematización e investigación"
-    proposito: |
-    checks: [...]
-    preguntas:
-      - "Tres hallazgos de investigación"
-      - "Criterios que debe cumplir la solución"
-    artefacto:
-      titulo: "Diagrama de hallazgos"
-      descripcion: |
-
-  - id: "praxis"
-    titulo: "Fase 3 · Praxis, diseño y prototipo"
-    proposito: |
-    checks: [...]
-    preguntas:
-      - "Idea de solución o producto"
-      - "Materiales, herramientas, recursos"
-      - "Experimento, prueba o validación"
-      - "Mejora después de la prueba"
-    artefacto:
-      titulo: "Boceto del prototipo"
-      descripcion: |
-
-  - id: "evaluacion"
-    titulo: "Fase 4 · Evaluación liberadora"
-    proposito: |
-    checks: [...]
-    preguntas:
-      - "Lo más importante que aprendimos"
-      - "Nuestro producto ayuda porque"
-      - "Una mejora posible sería"
-    artefacto:
-      titulo: "Símbolo del proyecto"
-      descripcion: |
-
-# ─── Entregables mínimos ───────────────────────────────────────────
-entregables:              # lista · 4-6 entregables observables
-  - "Ficha de problema y pregunta de proyecto"
-  - "Evidencias de escuta"
-  - "Sistematización con conceptos y datos"
-  - "Producto final o prototipo"
-  - "Sustentación breve con reflexión ética"
-
-# ─── Rúbrica (4-6 criterios × 3 niveles) ───────────────────────────
-# Los criterios son personalizables según el tipo de proyecto. Por defecto
-# se usan los 5 estándar MILC; un proyecto emprendedor podría reemplazar
-# "Sistematización" por "Validación con clientes" y "Praxis y producto"
-# por "MVP funcional + métricas", etc.
-#
-# Regla: la suma de criterios reparte 5.0 puntos en total. Si hay 5
-# criterios, cada uno aporta 1.0; si hay 4, cada uno aporta 1.25; si hay 6,
-# cada uno aporta ~0.83. Se calcula automáticamente.
-rubrica:                  # list · obligatorio · 4-6 criterios
-  - criterio: "Problema y escuta"
-    nivel_5: "Problema real y bien sustentado con evidencia de campo"
-    nivel_3: "Problema comprensible con poca evidencia"
-    nivel_1: "Problema confuso o sin contexto"
-  - criterio: "Sistematización"
+# ─── Rúbrica (1 criterio por entregable + comunicación global) ─────
+# La suma de puntos es 5.0 distribuidos entre criterios según cantidad
+# de entregables. Si hay 4 entregables, cada uno aporta 1.0 punto y
+# se reserva 1.0 para "Comunicación + integración del triángulo".
+rubrica:
+  - entregable: 1
+    nivel_5: "Cumple los 3+ criterios con evidencia clara"
+    nivel_3: "Cumple parcialmente; falta evidencia en 1-2 criterios"
+    nivel_1: "Incompleto o sin evidencia verificable"
+  - entregable: 2
     nivel_5: "..."
     nivel_3: "..."
     nivel_1: "..."
-  # ... etc
-  # Mínimo 4 criterios, máximo 6.
+  # ... etc · uno por entregable
+  - entregable: "global"  # último criterio · transversal
+    titulo: "Comunicación, sustentación e integración del triángulo"
+    nivel_5: "..."
+    nivel_3: "..."
+    nivel_1: "..."
 
-# ─── Triángulo de pensamiento (explícito) ──────────────────────────
-# El triángulo se imprime visible en la última sección del proyecto, con
-# las 3 voces como apoyo argumentativo. Después de las 3 citas viene un
-# bloque de "actividades de integración" donde el equipo debe declarar
-# explícitamente cómo cada lente aparece en su propuesta.
-triangulo:
-  dussel:
-    cita: |               # str · cita o pregunta-espejo Dussel
-    invitacion: |         # str · cómo invitar al equipo a integrar esta lente
-                          #       en su propuesta (actividad concreta)
-  estoico:
-    cita: |               # cita o pregunta-espejo (Marco Aurelio / Epicteto / Séneca)
-    invitacion: |
-  floridi:
-    cita: |               # cita o pregunta-espejo de Floridi sobre infoesfera
-    invitacion: |
+# ─── Sustentación (cierre del proyecto) ────────────────────────────
+sustentacion:
+  duracion_min: 5         # int · típicamente 5 minutos
+  guion_sugerido:         # list · partes del guion
+    - "1 min · reto y por qué importa"
+    - "2 min · entregables principales con demo"
+    - "1 min · integración del triángulo (decisión tomada por cada lente)"
+    - "1 min · limitaciones reconocidas y plan de mejora"
 
-# Actividad final integradora del triángulo (obligatoria)
-integracion_triangulo:
-  consigna: |             # str · pide al equipo escribir 1 párrafo aplicando
-                          #       las 3 lentes a su proyecto
-  campos:                 # list · campos para que el equipo responda
-    - "Cómo Dussel ilumina mi proyecto (a quién dignifica, a quién deja fuera)"
-    - "Cómo el estoico ilumina mi proyecto (qué disciplina exige el oficio)"
-    - "Cómo Floridi ilumina mi proyecto (qué responsabilidad ética en la infoesfera)"
-    - "Una decisión concreta que tomamos por aplicar este triángulo"
+# ─── Declaración honesta de uso de IA ──────────────────────────────
+declaracion_ia: |         # str · consigna sobre cómo declarar uso de IA
+                          #       (modelos, porcentajes, qué se editó a mano)
 
-# ─── Cierre del proyecto ───────────────────────────────────────────
-cierre: |                 # str · invitación final hacia el siguiente periodo
+# ─── Cierre filosófico ─────────────────────────────────────────────
+cierre: |                 # str · 1-2 líneas · invitación al siguiente periodo
 ```
 
-## Reglas obligatorias del proyecto
+## Reglas obligatorias
 
-### Fases del proyecto (3-5, configurables)
+### Entregables (3-5)
 
-Cada fase tiene anatomía fija:
-- **Título** con color institucional asignado en orden.
-- **Propósito** en `softbox`.
-- **Checks** (3 mínimo) que el equipo verifica como hitos visibles.
-- **Preguntas abiertas** (2 mínimo) que el equipo responde con líneas en
-  blanco en el PDF.
-- **Artefacto visual obligatorio** (mapa, boceto, símbolo, lienzo) en
-  `drawbox` para dibujar. Cada fase tiene su artefacto.
+Cada entregable es una **página del PDF** con anatomía fija:
+1. **Qué entregas** (descripción del producto).
+2. **Cómo se hace** (3-5 pasos accionables).
+3. **💭 Reflexión integrada** con lente del triángulo (Dussel, Estoico o Floridi).
+   La reflexión va a una sección visible del producto final, no como ensayo aparte.
+4. **Criterios observables** (3-5 verificables sin opinión).
 
-El **número y nombre de las fases es configurable** según el tipo de proyecto:
-- **MILC clásico (4 fases)**: Escuta · Sistematización · Praxis · Evaluación.
-- **Proyecto emprendedor (5 fases)**: Ideación · Validación · MVP · Pitch · Cierre.
-- **Proyecto técnico simple (3 fases)**: Problema · Diseño · Sustentación.
-- **Proyecto comunitario (5 fases)**: Escuta · Diagnóstico · Co-diseño · Acción · Cierre.
+Reglas adicionales:
+- Al menos un entregable por **cada lente del triángulo** (Dussel + Estoico + Floridi).
+  Esto garantiza que las 3 lentes están incrustadas operativamente.
+- Si hay 3 entregables: uno por lente.
+- Si hay 4-5: el último entregable suele ser la sustentación + declaración IA.
 
-La paleta de colores rota automáticamente:
-1. Verde (`milcVerde`)
-2. Turquesa (`milcTurquesa`)
-3. Magenta (`milcMagenta`)
-4. Vino (`milcVino`)
-5. Mostaza (`milcMostaza`)
+### Rúbrica
 
-### Aprendizajes integrados
+- Tantos criterios como entregables (uno por entregable) + 1 criterio transversal
+  ("Comunicación, sustentación e integración del triángulo").
+- Cada criterio tiene niveles 5 / 3 / 1.
+- La suma de puntos es 5.0, distribuida automáticamente: cada criterio aporta
+  `5.0 / N_total_criterios`. Para 4 entregables + 1 transversal = 5 criterios →
+  1.0 cada uno.
 
-Lista de las 10 sesiones del periodo. Para grados con guías ya migradas,
-estos títulos se pueden auto-rellenar leyendo `content/guias/{grado}/{grado}-{periodo}-*.yaml`.
+### Anclaje ancestral
 
-### Rúbrica (4-6 criterios × 3 niveles)
-
-Los criterios son **personalizables** según el tipo de proyecto. Los 5
-criterios estándar MILC son:
-1. **Problema y escuta**
-2. **Sistematización**
-3. **Praxis y producto**
-4. **Comunicación**
-5. **Evaluación liberadora**
-
-Pero pueden reemplazarse parcial o totalmente. Ejemplos:
-- **Proyecto emprendedor**: Problema validado · MVP funcional · Métricas honestas · Pitch · Ética y privacidad.
-- **Proyecto técnico**: Diseño · Implementación · Validación · Documentación.
-- **Proyecto editorial**: Investigación · Edición · Diseño · Accesibilidad · Sustentación.
-
-Cada criterio tiene descriptores para nivel 5 (excelente), 3 (suficiente), 1 (insuficiente).
-**La suma de puntos siempre es 5.0**, distribuido automáticamente entre los criterios.
-
-### Triángulo de pensamiento (explícito + acción)
-
-A diferencia de las guías y exámenes (donde el triángulo es cierre filosófico),
-en el proyecto el triángulo es **acción concreta**:
-
-1. Se imprimen las **3 voces** con cita visible (Dussel, Estoico, Floridi).
-2. Cada lente trae una **invitación** específica a integrar esa mirada en el
-   propio proyecto.
-3. Después viene una **actividad integradora obligatoria** (`integracion_triangulo`)
-   donde el equipo debe escribir explícitamente cómo cada lente apareció en
-   su propuesta y qué decisión concreta tomaron por aplicarla.
-
-Esto convierte el triángulo de adorno reflexivo a parte operativa del producto
-final: la rúbrica puede evaluar si el equipo realmente integró las 3 lentes.
+1 párrafo (no sección completa) que conecta el reto del proyecto con un oficio
+del Valle/Pacífico. Coherente con el periodo (mismo anclaje que la guía S1 y
+el examen formal del periodo, si fuera posible).
 
 ## Validaciones del linter (`make proyecto-lint`)
 
 El linter falla si:
 - Falta cualquier campo obligatorio del schema.
-- `fases` tiene <3 o >5 entradas.
-- Alguna fase tiene <3 checks, <2 preguntas, o no declara `artefacto`.
-- Alguna fase no tiene `id` único.
-- La rúbrica tiene <4 o >6 criterios.
-- Algún criterio de la rúbrica no tiene los 3 niveles (5, 3, 1) declarados.
-- El triángulo no tiene las 3 voces (Dussel, Estoico, Floridi).
-- `integracion_triangulo.campos` tiene <3 entradas.
+- `entregables` tiene <3 o >5 entradas.
+- Algún entregable no tiene los 4 sub-bloques (que_entregas, como_se_hace,
+  reflexion, criterios).
+- Las 3 lentes del triángulo no están representadas en al menos un entregable
+  cada una.
+- `rubrica` no cubre los entregables (debe haber 1 entrada por entregable + 1
+  global).
+- Algún criterio de rúbrica no tiene niveles 5, 3 y 1.
 - `aprendizajes` tiene <5 entradas.
+- `insumos` tiene <3 entradas.
 
-Emite warnings (no errores) si:
-- `aprendizajes` tiene <10 entradas (incompleta cobertura del periodo).
-- `dba` o `competencias` están vacíos.
-- Alguna fase no tiene `descripcion` en el artefacto.
+Emite warnings si:
+- `aprendizajes` tiene <10 entradas (cobertura incompleta).
+- Algún entregable tiene <3 criterios o pasos.
 
-## Estilo gráfico del PDF
+## Estructura del PDF generado (6-8 páginas)
 
-- **Portada**: fondo institucional MILC (magenta + vino patrón) — coherente con
-  el estilo actual de los proyectos.
-- **Páginas interiores**: blancas, tipografía Helvetica Neue.
-- **Fases**: cada fase con su color (verde, turquesa, magenta, vino).
-- **Drawboxes**: marco coloreado del color de la fase, espacio para dibujar.
-- **Líneas para respuesta**: longitud según complejidad esperada (1-3 líneas
-  por pregunta).
-- **Rúbrica**: tabla con fila de cabecera vino, criterios por filas.
+| Pág | Sección | Notas |
+|---|---|---|
+| 1 | **Portada** | Estilo institucional MILC (cyan + magenta + ícono) |
+| 2 | **Brief del proyecto** | Reto + insumos + anclaje + aprendizajes en una vista |
+| 3-7 | **Entregables** (3-5 páginas) | Una página por entregable con la anatomía completa |
+| 8 | **Rúbrica + cierre** | Tabla de rúbrica + sustentación + declaración IA + cierre |
 
 ## Archivos generados
 
@@ -307,25 +217,13 @@ Emite warnings (no errores) si:
 | `public/proyectos/proyecto-{periodo}-{grado}-TIC.pdf` | navegador, impresora | builder |
 | `src/data/proyectosContenido/{grado}-{periodo}.ts` | página `/proyecto` | builder |
 
-## Migración desde `src/data/proyectos.ts`
-
-`src/data/proyectos.ts` actual contiene los 18 proyectos (incluye G6 y G7). Plan
-de migración:
-
-1. **G8-G11**: cada uno se migra a YAML SSOT con este schema. El nuevo TS en
-   `proyectosContenido/` reemplaza al registro correspondiente en `proyectos.ts`.
-2. **G6-G7**: se mantienen en `proyectos.ts` mientras esos grados sigan en
-   construcción. Cuando se reactiven, se migran al schema.
-3. La página `/proyecto` lee primero de `proyectosContenido/` (nuevo, si existe);
-   si no, cae a `proyectos.ts` (legacy).
-
 ## Roadmap
 
 | Pieza | Estado |
 |---|---|
-| 1. Schema declarativo | ✅ (este documento) |
+| 1. Schema declarativo (entregable-céntrico) | ✅ (este documento) |
 | 2. Template LaTeX + builder PDF | ⏳ |
 | 3. Generador TS del contenido web | ⏳ |
 | 4. Linter `make proyecto-lint` | ⏳ |
 | 5. Página `/proyecto` lee del nuevo schema | ⏳ |
-| 6. Migración editorial de los 12 proyectos (8-11) | ⏳ |
+| 6. Migración editorial de los 12 proyectos | ⏳ |

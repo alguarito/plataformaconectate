@@ -1,0 +1,399 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra para todas las guias MILC v3
+% Ver scripts/generadores/build-guia-milc.py para la lista completa de
+% claves esperadas. El script valida que no queden placeholders sin
+% reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1.75cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\hyphenpenalty=200
+\exhyphenpenalty=200
+\pretolerance=400
+\tolerance=2000
+\setlength{\emergencystretch}{1em}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0066FF}
+\definecolor{milcGradeDark}{HTML}{003D99}
+\definecolor{milcGradeSoft}{HTML}{D6E8FF}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Tecnología e Informática · Grado 11}
+\rhead{\small Guía 15 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{\textbf{\textrightarrow}}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+\begin{document}
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[white] (current page.south west) rectangle (current page.north east);
+  \path[fill=milcGradePrimary,rounded corners=16mm]
+    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
+    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
+    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+
+  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
+    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
+    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
+    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
+    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
+    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
+  \end{scope}
+
+  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{124}{124}\selectfont 11};
+  \draw[milcGradeText,line width=1.7pt]
+    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+
+  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+    {
+     {\sffamily\bfseries\fontsize{19}{22}\selectfont Automatización ---\\con triggers\\Zapier, Make, n8n}\\[4mm]
+     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 15-11-TIC}\\[2mm]
+     {\sffamily\fontsize{13}{16}\selectfont Período 2 · Automatización y procesos}\\[5mm]
+     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
+     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+    };
+
+  \path[fill=milcGradeSoft,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
+    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
+    \textcolor{milcGradeDark}{\bfseries Producto:} 1 flujo automático funcionando (Zap en Zapier, escenario en Make o workflow en n8n) que conecta 2 servicios reales mediante un trigger (ej. nueva fila en Sheet → enviar email; nuevo Form → registrar en CRM; mensaje WhatsApp → guardar en hoja), con captura de ejecución exitosa};
+\end{tikzpicture}
+\mbox{}
+\newpage
+
+\section*{Apertura: Automatización con triggers --- Zapier, Make, n8n}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+La \textbf{campana de la iglesia} de los pueblos del Valle era un sistema de triggers: cuando sonaba en cierto patrón, todo el pueblo sabía qué hacer (\emph{tres golpes y silencio = misa}; \emph{tañidos continuos rápidos = incendio o emergencia}; \emph{repique alegre = matrimonio o bautizo}). El sonido era el \emph{evento que dispara la cadena de acciones}: el sacristán prendía las velas, el padre tomaba la sotana, las cocineras del almuerzo bajaban el fuego. La \textbf{cocinera mayor} también gritaba \emph{``sancocho listo''} y desde ese grito se encadenaban acciones (servir, poner mesa, llamar comensales). Los \textbf{triggers digitales} son las campanas del XXI: un evento (un nuevo correo, una nueva fila, un mensaje) activa una secuencia automatizada sin tu intervención.
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+Un \textbf{trigger} (\emph{disparador}) es el evento que inicia una automatización. La estructura mínima es: \texttt{TRIGGER $\to$ ACCIÓN}. Los servicios más usados en Colombia son: (1) \textbf{Zapier} (\emph{zapier.com}, gratuito limitado, conecta 6.000+ apps), (2) \textbf{Make} (antes Integromat, más visual, plan gratuito generoso), (3) \textbf{n8n} (open source, autoinstalable, gratis si lo hospedas). Los triggers típicos: \emph{nueva fila en Google Sheets}, \emph{nuevo envío de Form}, \emph{nuevo email con asunto X}, \emph{nuevo mensaje en WhatsApp}, \emph{calendario: hora exacta}. Las acciones típicas: \emph{enviar email}, \emph{escribir fila en Sheet}, \emph{enviar WhatsApp}, \emph{crear tarea en Trello}, \emph{llamar a una API}. Aprender el patrón \texttt{trigger $\to$ acción} es la puerta de entrada a toda la automatización contemporánea sin código.
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{¿Cómo sabía el pueblo del Valle qué hacer al oír la campana sin que nadie diera la orden explícita? ¿Y qué pierde un emprendedor novato cuando hace todo a mano (copiar respuestas del Form a un Sheet, escribir emails uno a uno) en lugar de automatizar la cadena \texttt{trigger $\to$ acción}?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar podrás: (1) \textbf{analizar} qué tareas repetitivas de un proceso son candidatas a automatización; (2) \textbf{explicar} con tus palabras la diferencia entre trigger, acción y filtro, y cómo se enlazan; (3) \textbf{crear} un flujo automatizado funcional en Zapier, Make o n8n con al menos 1 trigger y 1 acción reales; (4) \textbf{evaluar} si la automatización ahorra tiempo real, qué errores podría producir, y qué supervisión humana requiere.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Diseño y mejora de procesos digitales con criterio ético (MEN, T\&I)\\
+Referentes & Pensamiento computacional · Lean / Kaizen · Floridi (ética informacional)\\
+Producto final & 1 flujo automático funcionando (Zap en Zapier, escenario en Make o workflow en n8n) que conecta 2 servicios reales mediante un trigger (ej. nueva fila en Sheet → enviar email; nuevo Form → registrar en CRM; mensaje WhatsApp → guardar en hoja), con captura de ejecución exitosa\\
+\end{tabularx}
+\normalsize
+
+\puente{Antes de empezar, mira el viaje completo. En la sesión 1 mapeaste un proceso; en la 2 lo diagramaste en BPMN; en la 3 capturaste su información con Form; en la 4 estructuraste su base de datos. Hoy automatizas la \emph{cadena de acciones} que se dispara cuando llega un nuevo dato. Es el corazón de la automatización: el momento en que la herramienta deja de ser un archivo y se vuelve un sistema vivo.}
+
+\begin{titlebox}{milcGradeDark}
+Ruta MILC: así vamos a aprender
+\end{titlebox}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escuta\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Antes de teorizar, vas a observar (en video o en vivo) un flujo automatizado real funcionando: alguien envía un Form $\to$ aparece fila en Sheet $\to$ llega email automático al responsable. Vas a anotar cuántos pasos hizo el humano y cuántos hizo el sistema. Esa relación es la métrica del valor real de la automatización.}
+
+\begin{titlebox}{milcVerde}
+Fase 1 · Escuta
+\end{titlebox}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · ANALIZA --- Observa un flujo en acción} (15 min · grupos de 3). El docente ejecuta en vivo (o muestra video) un flujo automatizado real: un compañero envía un Google Form, todos ven cómo en segundos aparece una fila en el Sheet enlazado y llega un email automático al responsable. Anota: \emph{¿cuántos pasos hizo el humano?, ¿cuántos hizo el sistema?, ¿cuánto tiempo se ahorró respecto a hacerlo manual?}. Discute con tu grupo qué tareas repetitivas de tu proceso de sesión 1 podrías automatizar igual.
+\end{softbox}
+
+\checkbox Anoté pasos del humano vs pasos del sistema en el flujo demostrado.\\
+\checkbox Estimé el tiempo ahorrado por ejecución y por mes (si se ejecuta 30 veces).\\
+\checkbox Identifiqué al menos 2 tareas de mi proceso de sesión 1 que serían candidatas a automatización.
+
+\begin{infoband}{milcVerde}
+\textbf{Lo que va al cuaderno (Actividad 1 · ANALIZA).} Título: «Actividad 1 --- Observa un flujo en acción». \textbf{Formato:} tabla 3 columnas (Tarea~|~Hace humano~|~Hace sistema) + 1 línea con tiempo ahorrado mensual estimado + 2 candidatos para automatización de tu proceso. \textbf{Sabes que terminaste cuando} reconoces qué tareas \emph{deben} seguir siendo humanas y cuáles \emph{deberían} ser sistema.
+\end{infoband}
+
+\puente{Ya viste el flujo. Ahora vas a entender la \textbf{anatomía} del trigger: cómo se elige bien, qué condiciones aplicar (filtros), qué acciones encadenar, cómo manejar errores y cuándo el flujo necesita supervisión humana.}
+
+\begin{titlebox}{milcTurquesa}
+Fase 2 · Sistematización con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+El patrón \texttt{trigger $\to$ acción} es simple en su núcleo y rico en sus variantes. Vamos a descomponerlo con los pilares del pensamiento computacional para que toda automatización tuya tenga arquitectura, no improvisación.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
+1. Descomposición & La automatización se descompone en 4 piezas: (1) \textbf{Trigger} (evento que dispara): \emph{nueva fila en Sheet}, \emph{nuevo Form}, \emph{nuevo email}, \emph{hora del día}, \emph{webhook}. (2) \textbf{Filtro} (condición que decide si continuar): \emph{``solo si el campo Ciudad = Cartago''}, \emph{``solo si monto $>$ 100.000''}. (3) \textbf{Acción} (qué hace el sistema): \emph{enviar email}, \emph{escribir en Sheet}, \emph{crear evento}, \emph{enviar WhatsApp}, \emph{llamar API}. (4) \textbf{Manejo de errores}: qué pasa si la acción falla; notificación al humano, reintento, registro.\\
+2. Reconocimiento de patrones & Toda automatización sigue el patrón \textbf{``trigger específico, filtro pertinente, acción única''}: un solo trigger por flujo, un filtro claro cuando aplique, una acción primaria (puede llevar acciones secundarias encadenadas). Triggers ambiguos producen flujos que se disparan cuando no deben; filtros vagos producen falsos positivos; acciones múltiples sin orden producen efectos cruzados.\\
+3. Abstracción & Lo esencial cabe en una regla: \emph{automatizar lo que ya está mapeado y validado a mano, nunca al revés}. Si todavía no sabes cómo se hace el proceso a mano paso a paso, automatizarlo es multiplicar errores. La automatización es \emph{aceleración de lo que ya entiendes}, no atajo para no entender.\\
+4. Algoritmo conceptual & Algoritmo: (1) revisa el BPMN de sesión 2; (2) identifica el primer paso repetitivo que sigue al trigger natural del proceso; (3) crea cuenta en Zapier o Make; (4) configura el trigger; (5) configura la acción; (6) prueba con datos reales; (7) agrega filtro si hay falsos positivos; (8) documenta el flujo en 1 línea para quien herede el sistema.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcTurquesa}{Anatomía de una automatización bien hecha}
+\textbf{Nombre:} qué hace el flujo en 1 frase. \\[1mm] \textbf{Trigger:} servicio + evento. \\[1mm] \textbf{Filtro:} condición si aplica. \\[1mm] \textbf{Acción principal:} servicio + qué hace. \\[1mm] \textbf{Acciones encadenadas:} (opcional) qué sigue. \\[1mm] \textbf{Manejo de error:} a quién notificar si falla. \\[1mm] \textbf{Frecuencia esperada:} cuántas veces al día/mes.
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+(1) Trigger demasiado amplio: \emph{``cualquier email''} en vez de \emph{``email con asunto X''}, produce ejecuciones falsas. (2) Sin filtro cuando se necesita: la acción se dispara para casos no deseados. (3) Acción no probada: el flujo \emph{``se activó''} pero la acción falló silenciosamente. (4) Sin manejo de errores: cuando algo falla, nadie se entera. (5) Automatizar antes de mapear: el flujo está bien pero el proceso no servía.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+\textbf{Lo que va al cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2 --- Anatomía del trigger». \textbf{Formato:} ficha con las 4 piezas (trigger, filtro, acción, manejo de error) aplicadas al flujo que vas a construir + 5 errores comunes con marca 🚨 del que más temes. \textbf{Sabes que terminaste cuando} puedes explicar a un compañero por qué cada pieza es necesaria sin recurrir a la herramienta.
+\end{infoband}
+
+\puente{Tienes el método. Toca aplicarlo: crear cuenta en Zapier (o Make), conectar 2 servicios reales (el Form de sesión 3 + email, o el Sheet de sesión 4 + WhatsApp), configurar el trigger, definir la acción, probar el flujo con datos reales y capturar la ejecución exitosa.}
+
+\begin{titlebox}{milcMagenta}
+Fase 3 · Praxis con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\textbf{Actividad 3 · CREA --- Tu primer flujo automatizado} (30 min · individual). Hora de crear. Vas a abrir Zapier (o Make o n8n según preferencia), conectar 2 servicios reales relacionados con tu proceso (típicamente: el Form de sesión 3 + email, o el Sheet de sesión 4 + WhatsApp/email), configurar el flujo y probarlo con 3 ejecuciones reales.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
+Descomposición & Tu flujo se descompone en 5 piezas: (1) cuenta gratuita en Zapier o Make; (2) trigger conectado al servicio de origen (Form, Sheet, email); (3) acción configurada en el servicio de destino (email, otro Sheet, WhatsApp); (4) 3 pruebas reales documentadas con captura; (5) 1 línea de documentación que explique qué hace el flujo.\\
+Patrones & Sigue el patrón \textbf{``probar con 1 dato real antes de activar para producción''}: nunca uses datos sintéticos para validar el flujo; usa al menos 1 ejecución con dato real. La diferencia entre lo que parece funcionar y lo que funciona la encuentras solo con datos reales.\\
+Abstracción & Cada acción debe ser reversible o tener manejo de error: si tu acción es \emph{``enviar 1.000 emails''}, una falla silenciosa puede mandar 1.000 emails equivocados. Para principiantes: empezar con acciones pequeñas (1 email, 1 fila) y escalar gradualmente.\\
+Algoritmo de armado & Algoritmo: (1) abre zapier.com y crea cuenta; (2) clic en \emph{Create Zap}; (3) elige el trigger (servicio + evento) y conecta tu cuenta; (4) elige la acción y conecta el servicio destino; (5) mapea los campos del trigger a la acción; (6) prueba; (7) activa; (8) ejecuta 3 veces con datos reales.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcMagenta}{Checklist antes de entregar el flujo}
+\checkbox Cuenta creada en Zapier/Make/n8n. \\[1mm] \checkbox 2 servicios conectados con OAuth o token. \\[1mm] \checkbox Trigger configurado con evento específico (no genérico). \\[1mm] \checkbox Acción configurada y probada con dato real. \\[1mm] \checkbox 3 ejecuciones exitosas documentadas con captura. \\[1mm] \checkbox 1 línea de documentación legible para quien hereda el sistema.
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Flujo.} \textit{Nombre + servicios involucrados.} \\[1mm] \textbf{Trigger.} \textit{Servicio + evento exacto.} \\[1mm] \textbf{Filtro.} \textit{Si aplica: columna + condición.} \\[1mm] \textbf{Acción.} \textit{Servicio + qué hace + mapeo de campos.} \\[1mm] \textbf{Pruebas.} \textit{3 ejecuciones reales + captura.}
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+\textbf{Lo que va al cuaderno (Actividad 3 · CREA).} Título: «Actividad 3 --- Mi primer flujo automatizado». \textbf{Formato:} pantallazos del flujo (trigger, acción, ejecuciones exitosas) + 1 línea de uso + tiempo ahorrado estimado. \textbf{Extensión:} 1-2 páginas de cuaderno. \textbf{Sabes que terminaste cuando} alguien externo a ti envía un dato real al trigger y la acción se ejecuta sin tu intervención.
+\end{infoband}
+
+\puente{Lo que sigue resume \emph{qué} entregas hoy: 1 flujo automatizado activo + captura de ejecución exitosa + 1 frase de uso. El criterio principal: que el flujo \textbf{funcione sin tu intervención} para al menos 3 ejecuciones consecutivas con datos reales.}
+
+\begin{titlebox}{milcMostaza}
+Producto de la sesión
+\end{titlebox}
+\textbf{1 flujo automatizado activo + 3 ejecuciones exitosas documentadas}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) Cuenta gratuita en Zapier/Make/n8n. (2) 2 servicios reales conectados. (3) Trigger específico (no genérico). (4) Acción probada con dato real. (5) 3 ejecuciones exitosas documentadas.
+\end{softbox}
+
+\puente{Antes de cerrar, mira la automatización desde las cinco dimensiones humanas. Automatizar bien libera tiempo humano para tareas humanas; automatizar mal multiplica errores a escala invisible.}
+
+\begin{titlebox}{milcVino}
+Fase 4 · Evaluación liberadora — cinco dimensiones
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Y para terminar, tres voces sobre triggers y automatización. Dussel sobre las automatizaciones que excluyen, Epicteto sobre los límites de delegar al sistema, Floridi sobre la automatización como infraestructura de la economía digital.}
+
+\begin{titlebox}{milcGradeDark}
+Triángulo de pensamiento · cierre filosófico
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{``Toda automatización decide qué errores se vuelven masivos y qué errores se quedan locales.''}
+
+Una automatización mal hecha puede enviar 1.000 emails con error de nombre, rechazar 500 solicitudes legítimas por filtro mal puesto, o invisibilizar 200 casos por no caber en la categoría. Lo que un humano detecta en la fila 3, el sistema lo repite hasta la fila 1.000. La phronesis de la automatización exige supervisión humana periódica: nunca \emph{``activar y olvidar''}.
+
+\textbf{¿Cuánto supervisarás mi flujo después de activarlo? ¿Quién detectará si empieza a fallar para casos que el filtro nunca contempló?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Epicteto · cuidado interior}
+\textit{``Lo que delegas al sistema dejas de aprender a hacer tú mismo.''}
+
+Es tentador automatizar todo \emph{``para no tener que pensarlo nunca más''}. La sabiduría estoica recomienda lo contrario: \emph{automatiza lo repetitivo que ya dominas, no lo complejo que aún no entiendes}. Quien automatiza sin haber aprendido a mano queda dependiente del flujo y pierde criterio cuando falla. La automatización libera tiempo para tareas humanas; no reemplaza el oficio.
+
+\textbf{¿Estoy automatizando tareas repetitivas que ya domino o estoy escondiendo bajo automatización procesos que aún no entiendo?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{``La automatización con triggers es la infraestructura invisible de la economía digital contemporánea.''}
+
+Cada vez que recibes un email automático de una compra, una notificación de un trámite o una respuesta al instante de una consulta, hay un trigger detrás. Aprender a construirlos a los 16 años es alfabetización profesional decisiva: el lenguaje con el que la economía digital ejecuta sus procesos. Quien no los entiende los recibe pasivamente; quien los entiende los diseña.
+
+\textbf{¿Cuántos triggers automáticos me afectaron esta semana sin que yo notara? ¿Cuánto cambia mi posición si yo soy quien los diseña, no quien solo los recibe?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{titlebox}{milcVino}
+Compromiso final
+\end{titlebox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
+Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
+Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
+Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
+Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
+Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
+\end{tabularx}
+\normalsize
+
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima semana.} Comparte tu flujo con 3 personas reales que envíen datos al trigger; revisa las 3 ejecuciones, detecta cualquier error y ajusta el flujo. La phronesis de la automatización se entrena con datos reales, no con datos sintéticos.
+\end{infoband}
+
+\end{document}

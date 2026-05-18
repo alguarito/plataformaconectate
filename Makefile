@@ -176,6 +176,26 @@ examen-edit:  ## Abre el YAML del examen CLAVE en \$$EDITOR
 		exit 1; \
 	fi
 
+.PHONY: examen-lint
+examen-lint:  ## Valida los exámenes YAML (estructura, banco, distribución Bloom)
+ifeq ($(CLAVE),)
+	@$(PYTHON) scripts/examenes-lint.py
+else
+	@$(PYTHON) scripts/examenes-lint.py $(CLAVE)
+endif
+
+.PHONY: examen-lint-strict
+examen-lint-strict:  ## Igual a examen-lint pero los warnings también fallan
+	@$(PYTHON) scripts/examenes-lint.py --strict
+
+.PHONY: examen-web
+examen-web:  ## Genera banco de práctica TS desde YAML (src/data/examenesContenido)
+ifeq ($(CLAVE),)
+	@$(PYTHON) scripts/build-examenes-web-ts.py
+else
+	@$(PYTHON) scripts/build-examenes-web-ts.py $(CLAVE)
+endif
+
 # ─── Web TS ─────────────────────────────────────────────────────────────────
 
 .PHONY: guia-web

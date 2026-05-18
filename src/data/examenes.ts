@@ -1,14 +1,29 @@
-// Auto-generado desde Drive (carpeta de exámenes)
-// Total: 18 exámenes (3 períodos × 6 grados)
+// Catálogo de exámenes finales (PDF) por grado y periodo.
 //
-// Cada examen es un PDF alojado en Google Drive que verifica la transferencia
-// de aprendizajes del período: aplicación, argumentación y síntesis.
+// Cada examen verifica la transferencia de aprendizajes del periodo: síntesis,
+// aplicación y argumentación.
+//
+// Dos formas de servirlos:
+//   - `local: true` (preferido) — el PDF se genera con `make examen-build` desde
+//     el YAML en content/examenes/ y vive en public/examenes-mejoras/. La página
+//     lo sirve directamente.
+//   - Drive PDF legacy — para grados/periodos que aún no migraron al YAML SSOT.
+//     Mantiene `pdfId` apuntando al archivo de Drive.
+//
+// Cuando un examen migra al YAML, su `pdfId_archivo` conserva el ID de Drive
+// original por si se quiere consultar el material previo.
 
 export interface RecursoExamen {
   grado: number;
   periodo: number;
-  pdfId: string;
+  /** Nombre del archivo PDF (e.g. "examen-1-11-TIC.pdf"). */
   archivo: string;
+  /** Si está presente, el examen se sirve desde Drive con este ID. */
+  pdfId?: string;
+  /** Si es true, el examen se sirve desde public/examenes-mejoras/{archivo}. */
+  local?: boolean;
+  /** Drive ID original conservado tras migración a YAML SSOT (referencia). */
+  pdfId_archivo?: string;
 }
 
 export const examenes: RecursoExamen[] = [
@@ -105,8 +120,9 @@ export const examenes: RecursoExamen[] = [
   {
     "grado": 11,
     "periodo": 1,
-    "pdfId": "13Vj6V4bPcm3FUX9Io59dVyLc6o2pBYFy",
-    "archivo": "examen-1-11-TIC.pdf"
+    "local": true,
+    "archivo": "examen-1-11-TIC.pdf",
+    "pdfId_archivo": "13Vj6V4bPcm3FUX9Io59dVyLc6o2pBYFy"
   },
   {
     "grado": 11,
@@ -125,6 +141,32 @@ export const examenes: RecursoExamen[] = [
 export function getExamen(grado: number, periodo: number): RecursoExamen | undefined {
   return examenes.find((e) => e.grado === grado && e.periodo === periodo);
 }
+
+/**
+ * URL para mostrar el PDF embebido en un iframe.
+ * - Local: el PDF se sirve desde `/examenes-mejoras/{archivo}`.
+ * - Drive: vista de preview de Google Drive.
+ */
+export function examenPreviewUrlFor(e: RecursoExamen, baseUrl = ''): string {
+  if (e.local) return `${baseUrl}/examenes-mejoras/${e.archivo}`;
+  return e.pdfId ? `https://drive.google.com/file/d/${e.pdfId}/preview` : '';
+}
+
+/** URL para descargar el PDF (botón "Descargar"). */
+export function examenDownloadUrlFor(e: RecursoExamen, baseUrl = ''): string {
+  if (e.local) return `${baseUrl}/examenes-mejoras/${e.archivo}`;
+  return e.pdfId ? `https://drive.google.com/uc?export=download&id=${e.pdfId}` : '';
+}
+
+/** URL para abrir el PDF en pestaña nueva ("Abrir en Drive" o "Abrir PDF"). */
+export function examenViewUrlFor(e: RecursoExamen, baseUrl = ''): string {
+  if (e.local) return `${baseUrl}/examenes-mejoras/${e.archivo}`;
+  return e.pdfId ? `https://drive.google.com/file/d/${e.pdfId}/view` : '';
+}
+
+// ─── Helpers legacy (solo Drive) ─────────────────────────────────────
+// Mantenidos por compatibilidad. Las nuevas llamadas deben usar los
+// helpers `*For(e, base)` que soportan ambos modos.
 
 export function examenPreviewUrl(id: string): string {
   return `https://drive.google.com/file/d/${id}/preview`;

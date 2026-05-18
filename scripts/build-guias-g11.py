@@ -52,6 +52,11 @@ COLORES_POR_GRADO = {
         "COLOR_PORTADA_DARK": "4C1D95",
         "COLOR_PORTADA_SOFT": "EDE9FE",
     },
+    10: {  # bento-pink
+        "COLOR_PORTADA_PRIMARY": "FF2D87",
+        "COLOR_PORTADA_DARK": "9F1B56",
+        "COLOR_PORTADA_SOFT": "FFE0EE",
+    },
     11: {  # bento-blue
         "COLOR_PORTADA_PRIMARY": "0066FF",
         "COLOR_PORTADA_DARK": "003D99",
@@ -94,6 +99,23 @@ PERIODOS_POR_GRADO = {
             "PERIODO_NOMBRE": "Período 3 · Multimedia, narrativa y ciberseguridad",
             "DBA": "Producción multimedia ética y comportamiento responsable en entornos digitales (MEN, T\\&I)",
             "REFERENTES": "Dussel (estética de la liberación) · Ley 1336 · Floridi (infoesfera)",
+        },
+    },
+    10: {
+        1: {
+            "PERIODO_NOMBRE": "Período 1 · Escritura abierta con IA",
+            "DBA": "Producción editorial mediada por IA con criterio ético y técnico (MEN, T\\&I)",
+            "REFERENTES": "Ley 23 de 1982 · Floridi (ética de la IA generativa) · Dussel (autoría con dignidad)",
+        },
+        2: {
+            "PERIODO_NOMBRE": "Período 2 · Informes técnicos y comunicación profesional con IA",
+            "DBA": "Comunicación profesional con asistencia de IA y herramientas ofimáticas gratuitas (MEN, T\\&I)",
+            "REFERENTES": "Markdown como estándar abierto · Google Workspace · Estoicismo (claridad)",
+        },
+        3: {
+            "PERIODO_NOMBRE": "Período 3 · Ofimática con IA: contabilidad, datos y emprendimiento",
+            "DBA": "Aplicación de ofimática asistida por IA a contabilidad básica y emprendimiento (MEN, T\\&I)",
+            "REFERENTES": "Lean Startup · Phronesis financiera · Ética del dato empresarial",
         },
     },
     9: {

@@ -102,20 +102,23 @@ export const examenes: RecursoExamen[] = [
   {
     "grado": 10,
     "periodo": 1,
-    "pdfId": "14BcdzCpDzvEppaV3jFWudPcmdNRMhphT",
-    "archivo": "examen-1-10-TIC.pdf"
+    "local": true,
+    "archivo": "examen-1-10-TIC.pdf",
+    "pdfId_archivo": "14BcdzCpDzvEppaV3jFWudPcmdNRMhphT"
   },
   {
     "grado": 10,
     "periodo": 2,
-    "pdfId": "1S83Jw6SGy67-vIyBrw3IlYGHq91XACae",
-    "archivo": "examen-2-10-TIC.pdf"
+    "local": true,
+    "archivo": "examen-2-10-TIC.pdf",
+    "pdfId_archivo": "1S83Jw6SGy67-vIyBrw3IlYGHq91XACae"
   },
   {
     "grado": 10,
     "periodo": 3,
-    "pdfId": "1JsrmRJdWeSurSKF2CV7XM1BCi_H6YGGX",
-    "archivo": "examen-3-10-TIC.pdf"
+    "local": true,
+    "archivo": "examen-3-10-TIC.pdf",
+    "pdfId_archivo": "1JsrmRJdWeSurSKF2CV7XM1BCi_H6YGGX"
   },
   {
     "grado": 11,

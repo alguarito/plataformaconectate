@@ -40,9 +40,9 @@
 \definecolor{milcNegro}{HTML}{241816}
 \definecolor{milcGris}{HTML}{F7F7F4}
 \definecolor{milcLinea}{HTML}{E8E2DD}
-\definecolor{milcGradePrimary}{HTML}{0093A5}
-\definecolor{milcGradeDark}{HTML}{00525C}
-\definecolor{milcGradeSoft}{HTML}{E0F3F5}
+\definecolor{milcGradePrimary}{HTML}{FF6600}
+\definecolor{milcGradeDark}{HTML}{9A3E00}
+\definecolor{milcGradeSoft}{HTML}{FFE4D0}
 \definecolor{milcGradeAccent}{HTML}{CFE7FF}
 \definecolor{milcGradeText}{HTML}{FFFFFF}
 \color{milcNegro}
@@ -85,6 +85,22 @@
   fontupper=\small\RaggedRight
 }
 
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{\textbf{\textrightarrow}}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
 \newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
 \newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
 \newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
@@ -124,9 +140,9 @@
 
   \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Variables, umbrales y calibración: interpretar lecturas de sensores}\\[4mm]
+     {\sffamily\bfseries\fontsize{19}{22}\selectfont Sensores con variables,\\umbrales\\y calibración}\\[4mm]
      {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 16-8-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Periodo Segundo}\\[5mm]
+     {\sffamily\fontsize{13}{16}\selectfont Período 2 · Lógica, algoritmos y computación física}\\[5mm]
      {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
      {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
     };
@@ -139,37 +155,39 @@
     ([xshift=-1.35cm,yshift=3.15cm]current page.south east);
   \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.0cm]current page.south)
     {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} Sensor calibrado en MakeCode + tabla de 5 lecturas con su contexto + decisión sobre el umbral final con justificación.};
+    \textcolor{milcGradeDark}{\bfseries Producto:} Programa en MakeCode que lea el sensor de luz (o temperatura) y dispare 3 alertas distintas según umbrales calibrados (oscuro, normal, brillante; o frío, ambiente, caliente) usando variables nombradas para guardar las lecturas + bitácora de calibración con al menos 5 mediciones de baseline en distintos momentos o lugares + ajuste de los umbrales después de la calibración con justificación escrita de 3 líneas por umbral};
 \end{tikzpicture}
 \mbox{}
 \newpage
 
-\section*{Apertura: Variables, umbrales y calibración: interpretar lecturas de sensores}
+\section*{Apertura: Sensores con variables, umbrales y calibración}
 
 \begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
-El \textbf{reloj de sol del campesino}: el palo proyecta sombra y se calibra según la estación. En verano la sombra es corta al mediodía; en invierno, larga. Sin calibración, lees mal el tiempo. Los abuelos no usaban reloj genérico — adaptaban el reloj a su latitud, a su estación, a su parcela. La calibración es saber ancestral antes de ser técnica.
+En las comunidades del Pacífico colombiano, las curanderas y parteras tenían un instrumento de diagnóstico que las antecede por siglos: \textbf{su propia mano} convertida en termómetro. La mano de una curandera experimentada distinguía con precisión 3 estados del cuerpo: \emph{normal} (frente tibia, no más caliente que la propia mano), \emph{fiebre leve} (frente claramente más caliente que la mano, pero la persona habla con claridad), \emph{fiebre fuerte} (frente como brasa, respiración acelerada, mirada perdida). Esa diferenciación no era arbitraria: era el resultado de \textbf{calibración constante}. La curandera había puesto su mano en cientos de frentes a lo largo de su vida: niños sanos, niños enfermos, mujeres en parto, ancianos. Esa colección de toques producía un \textbf{baseline personal}: \emph{``así se siente lo normal en mi mano''}. A partir de ese baseline, podía decir con certeza cuándo había cruzado el umbral hacia la alarma. Esa práctica es ancestral pero rigurosa: \textbf{el umbral es marca personal calibrada con la experiencia, no número arbitrario}. La medicina basada en evidencia formaliza después lo que la curandera practicó siempre.
 \end{softbox}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
-Los \textbf{sensores electrónicos} entregan números en bruto. Para que esos números signifiquen algo (calor, oscuridad, ruido) hay que \textbf{interpretarlos} con variables, definir \textbf{umbrales} (puntos de corte) y \textbf{calibrar} al contexto físico. Sin calibración, una alarma de incendio puede dispararse con la luz del día.
+Los sensores del micro:bit (sesión 4) devuelven \textbf{valores continuos}: el sensor de luz va de 0 (oscuridad total) a 255 (luz fuerte); la temperatura es un número en grados Celsius. La pregunta no es solo \emph{``¿hay luz?''}, sino \emph{``¿cuánta luz hay y a partir de qué nivel disparo la alerta?''}. La respuesta a esa pregunta se llama \textbf{umbral}: el valor que separa una zona de acción de otra. Los umbrales no son universales: dependen del contexto. Un umbral de \emph{``oscuro''} en un aula iluminada puede ser 150; el mismo umbral en una sala con cortinas cerradas podría ser 50. La regla profesional del oficio: \textbf{los umbrales se calibran, no se inventan}. Calibrar significa tomar varias lecturas en condiciones reales antes de decidir el valor del umbral. Las \textbf{variables} en MakeCode (categoría Variables → \emph{establecer variable}) permiten guardar valores leídos para compararlos después: \texttt{establecer nivel\_luz = nivel de luz}; \texttt{si nivel\_luz $<$ umbral\_oscuro entonces mostrar ícono}. Sin variables y sin calibración, el programa toma decisiones con datos sin contexto.
 \end{softbox}
 
 \begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
-\textit{¿Qué del reloj de sol del campesino —su disciplina de calibrar al lugar y la estación— podemos llevar a los sensores que programamos?}
+\textit{¿Qué sabía la curandera al construir su termómetro personal con años de práctica, que el programador novato olvida cuando inventa un umbral con un número al azar (\emph{``si luz menor a 100, alarma''})? ¿Y por qué calibrar antes de decidir el umbral ahorra horas de programa que reacciona en momentos equivocados?}
 \end{softbox}
 
 \begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
-Al terminar podrás \textbf{usar variables} para guardar lecturas, \textbf{definir umbrales} con criterio, \textbf{calibrar} al ambiente real, \textbf{filtrar ruido} y \textbf{documentar el rango} de funcionamiento esperado.
+Al terminar podrás: (1) \textbf{identificar} la diferencia entre eventos discretos (botón presionado) y valores continuos (nivel de luz, temperatura), y por qué los continuos exigen umbrales; (2) \textbf{aplicar} variables en MakeCode para guardar lecturas y compararlas con umbrales calibrados; (3) \textbf{analizar} una bitácora de calibración para detectar el rango normal y proponer umbrales razonables; (4) \textbf{evaluar} el programa probándolo en al menos 3 condiciones distintas y ajustando los umbrales si fallan.
 \end{softbox}
 
 \small
 \begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
 \rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
-DBA & Aplica variables, umbrales y calibración para interpretar lecturas de sensores en contextos reales.\\
-Referentes & MEN Tecnología · CSTA Standards · Modelo MILC · Dussel (territorio) · Epicteto (lo que depende de mí) · Floridi (cuidado del bien común)\\
-Producto final & Sensor calibrado en MakeCode + tabla de 5 lecturas con su contexto + decisión sobre el umbral final con justificación.\\
+DBA & Pensamiento computacional aplicado a sistemas de control con sensores y actuadores (MEN, T\&I)\\
+Referentes & Pensamiento computacional · MakeCode / micro:bit · Logos como razón universal\\
+Producto final & Programa en MakeCode que lea el sensor de luz (o temperatura) y dispare 3 alertas distintas según umbrales calibrados (oscuro, normal, brillante; o frío, ambiente, caliente) usando variables nombradas para guardar las lecturas + bitácora de calibración con al menos 5 mediciones de baseline en distintos momentos o lugares + ajuste de los umbrales después de la calibración con justificación escrita de 3 líneas por umbral\\
 \end{tabularx}
 \normalsize
+
+\puente{Antes de empezar, mira el viaje completo. En la sesión 4 leíste sensores; en la sesión 5 los conectaste con actuadores. Hoy aprendes a \emph{calibrar} los sensores para que reaccionen al \textbf{contexto real}, no a números arbitrarios. La sesión 7 (depuración) y la 8 (alertas con lógica compuesta) construyen sobre los umbrales calibrados de hoy.}
 
 \begin{titlebox}{milcGradeDark}
 Ruta MILC: así vamos a aprender
@@ -182,139 +200,99 @@ Ruta MILC: así vamos a aprender
 \end{tabularx}
 
 
+\puente{Antes de teorizar, vas a hacer un \emph{ejercicio de calibración a mano}: tu docente proyecta una lista de 5 niveles de luz medidos en el aula a distintas horas del día (mañana, recreo, tarde, etc.) y tú estimas dónde pondrías el umbral de \emph{``oscuro''} para una alarma de bibliotecario que avise cuando faltan luces.}
+
 \begin{titlebox}{milcVerde}
 Fase 1 · Escuta
 \end{titlebox}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
-Miguel programa el sensor de luz del micro:bit para encender un LED cuando \textit{``está oscuro''}. Pero al probarlo en pleno día se enciende. Revisa el código: la lógica está bien. ¿Qué falla? El \textbf{umbral}: lo dejó en valor por defecto de la documentación, pero su cuarto tiene poca luz natural. Necesita calibrar AL ambiente real, no al genérico.
+\textbf{Actividad 1 · IDENTIFICA --- Ejercicio de calibración a mano} (15 min · individual). Tu docente proyecta o entrega esta lista de mediciones simuladas del sensor de luz en el aula a distintas horas: \emph{``7:00 = 120; 9:30 = 180; 12:00 = 210; 14:00 = 195; 17:00 = 65''}. Para una alarma de \emph{``faltan luces''} que se active solo cuando el aula está realmente oscura, decide: ¿qué valor pondrías como umbral?, ¿por qué?, ¿qué pasaría con cada uno de los 5 momentos del día si pones umbral 100?, ¿y si pones umbral 150?. Anota tu decisión justificada.
 \end{softbox}
 
-\checkbox Recuerdo una vez que un dispositivo (sensor, alarma, app) se activó cuando no debía.\\
-\checkbox Identifico la diferencia entre lectura del sensor y umbral de decisión.\\
-\checkbox Distingo entre calibración fija y calibración adaptativa al contexto.
-
-\textbf{Una vez un sensor o alarma se activó cuando no debía, y la causa fue:}\\[1mm]
-\linead{\linewidth}\\[1mm]
-\linead{\linewidth}
-
-\textbf{El umbral correcto para ese caso habría sido:}\\[1mm]
-\linead{\linewidth}\\[1mm]
-\linead{\linewidth}
-
-\textbf{Lo que aprendí sobre calibrar al contexto real es:}\\[1mm]
-\linead{\linewidth}\\[1mm]
-\linead{\linewidth}
+\checkbox Analicé las 5 mediciones del aula.\\
+\checkbox Decidí un umbral con justificación.\\
+\checkbox Verifiqué cómo afectaría a cada momento del día.
 
 \begin{infoband}{milcVerde}
-\textbf{Saber más.} La palabra \textit{calibrar} viene del árabe \textit{qalib} (molde) y del latín \textit{libra} (balanza). Significa ajustar al estándar correcto. Tu sensor calibrado es un instrumento confiable; sin calibrar, es ruido digital.
+\textbf{Lo que va al cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1 --- Calibración a mano». \textbf{Formato:} tabla con las 5 mediciones + 2 umbrales probados (100 y 150) + decisión final con justificación de 2 líneas. \textbf{Sabes que terminaste cuando} ves que el umbral no es número al azar: es decisión con consecuencias.
 \end{infoband}
+
+\puente{Ya hiciste el ejercicio. Ahora vas a entender la \textbf{anatomía de variables, umbrales y calibración}: cómo declarar una variable, cómo construir una bitácora de calibración, cómo decidir el umbral con criterio, los 5 errores típicos de programadores que inventan umbrales sin calibrar.}
 
 \begin{titlebox}{milcTurquesa}
 Fase 2 · Sistematización con pensamiento computacional
 \end{titlebox}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
-El pensamiento computacional descompone el sistema en lectura cruda, variable, rango, ruido y umbral. Reconoce patrones de calibración, abstrae la regla \textit{el sensor lee, tú interpretas} y diseña un algoritmo de calibración progresiva.
+El ejercicio te enseñó por qué el umbral importa. Ahora necesitas la \textbf{anatomía técnica}: cómo se programa con variables, cómo se construye una bitácora de calibración, cómo se decide el umbral.
 \end{softbox}
 
 \small
 \begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
 \rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & Descomponer la lectura: ¿qué número entrega el sensor? ¿qué representa físicamente? ¿qué rango es posible (0-255, 0-1023)?\\
-2. Reconocimiento de patrones & Reconocer patrones: lecturas estables (poco ruido) vs lecturas fluctuantes (mucho ruido). Filtros: promediar varias lecturas reduce ruido.\\
-3. Abstracción & Abstracción: el umbral es UNA decisión, no varias. Lo que diferencia ``mucho'' de ``poco'' depende del contexto.\\
-4. Algoritmo conceptual & Algoritmo: \textbf{1)} medir 10-20 lecturas en distintas condiciones · \textbf{2)} identificar rango real · \textbf{3)} calcular promedio y rango · \textbf{4)} elegir umbral · \textbf{5)} probar con casos extremos · \textbf{6)} ajustar.\\
+1. Descomposición & Las \textbf{variables} en MakeCode (categoría Variables) tienen 2 bloques principales: (1) \texttt{establecer (nombre) a (valor)}: asigna un valor a una variable. Ej. \texttt{establecer nivel\_luz a nivel de luz}. (2) \texttt{cambiar (nombre) por (valor)}: incrementa o decrementa. Las variables deben tener \textbf{nombres descriptivos} (no \emph{x, y}, sino \emph{nivel\_luz, temperatura\_aula, umbral\_oscuro}). Eso hace el código legible.\\
+2. Reconocimiento de patrones & Una \textbf{bitácora de calibración} tiene 4 columnas: (a) \textbf{Momento}: cuándo se hizo la medición (hora, condición del aula). (b) \textbf{Lectura}: valor exacto que dio el sensor. (c) \textbf{Condición real}: ¿el aula estaba oscura, iluminada, etc.? (d) \textbf{Observación}: notas (la cortina estaba abierta, había sol directo, etc.). 5 mediciones mínimo dan suficiente baseline para decidir umbrales.\\
+3. Abstracción & El método para \textbf{decidir umbrales} con la bitácora: (a) ordena las lecturas de menor a mayor. (b) identifica el rango \emph{normal} (la zona donde se concentran la mayoría). (c) el umbral inferior va por debajo del menor valor normal; el superior por encima del mayor valor normal. Ej. si tus lecturas son 65, 120, 180, 195, 210, el rango normal es 120-210; los umbrales podrían ser \emph{oscuro: $<$100}, \emph{brillante: $>$220}, normal en medio.\\
+4. Algoritmo conceptual & Algoritmo: (1) leer sensor 5 veces en condiciones distintas. (2) llenar bitácora. (3) identificar rango normal. (4) decidir umbrales. (5) programar variables y comparaciones. (6) probar en condiciones reales. (7) si el programa reacciona en momentos equivocados, ajustar umbral. (8) documentar el ajuste.\\
 \end{tabularx}
 \normalsize
 
-\begin{drawbox}{milcTurquesa}{Anatomía de un sensor calibrado}
-\textbf{Lectura cruda:} número del sensor (ej: nivel\_luz = 180). \\
-\textbf{Variable:} guardamos la lectura para usarla. \\
-\textbf{Rango real:} en TU ambiente, valores entre X y Y. No usar el rango teórico genérico. \\
-\textbf{Ruido:} fluctuaciones momentáneas (sombra de mano, ráfaga). Filtrar con promedio. \\
-\textbf{Umbral:} valor que separa ``poco'' de ``mucho'' EN tu ambiente. \\
-\textbf{Histéresis:} dos umbrales (uno para activar, otro para desactivar) para evitar oscilaciones. \\
-\textbf{Documentación:} qué representa el umbral, en qué contexto se calibró.
+\begin{drawbox}{milcTurquesa}{Anatomía de variables y umbrales}
+\textbf{Variable:} establecer (nombre) a (valor). \\[1mm] \textbf{Nombre:} descriptivo, no x/y. \\[1mm] \textbf{Bitácora:} momento + lectura + condición + observación. \\[1mm] \textbf{Umbral inferior:} por debajo del rango normal. \\[1mm] \textbf{Umbral superior:} por encima del rango normal.
 \end{drawbox}
 
 \begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
-\begin{itemize}
-\item Usar umbral genérico de la documentación $\rightarrow$ calibrar al contexto real (cuarto, salón, exterior).
-\item No filtrar ruido $\rightarrow$ una sombra activa la alarma; promediar 5 lecturas reduce el problema.
-\item Umbral único en sistemas con histéresis $\rightarrow$ usar dos umbrales (40 para activar, 60 para desactivar).
-\item No documentar la calibración $\rightarrow$ otro programador (o tu yo futuro) no entenderá por qué pusiste 50.
-\item Calibrar una sola vez $\rightarrow$ revisar periódicamente porque las condiciones cambian (estación, mudanza, decoración).
-\end{itemize}
+(1) \textbf{Umbral inventado sin calibrar}: produce alarmas en momentos equivocados. (2) \textbf{Variables con nombres x, y, z}: hace el código ilegible. (3) \textbf{Bitácora con 1-2 mediciones}: insuficiente para decidir umbral. (4) \textbf{Umbrales muy cercanos al rango normal}: produce falsos positivos constantes. (5) \textbf{No ajustar después de pruebas}: cuando el umbral falla en la realidad, hay que cambiarlo.
 \end{softbox}
 
-\textbf{El umbral inicial que pondría para mi sensor de luz en mi cuarto sería:}\\[1mm]
-\linead{\linewidth}\\[1mm]
-\linead{\linewidth}
+\begin{infoband}{milcTurquesa}
+\textbf{Lo que va al cuaderno (Actividad 2 · APLICA).} Título: «Actividad 2 --- Variables y umbrales». \textbf{Formato:} (a) los 2 bloques de variables; (b) plantilla de bitácora de calibración; (c) los 5 errores con marca del que más temes. \textbf{Sabes que terminaste cuando} sabes cómo declarar una variable y cómo decidir un umbral.
+\end{infoband}
 
-\textbf{Después de medir 5 lecturas reales, ajustaría el umbral a:}\\[1mm]
-\linead{\linewidth}\\[1mm]
-\linead{\linewidth}
+\puente{Tienes el método. Toca aplicarlo: programar la lectura del sensor con variables, calibrar con 5 mediciones reales, decidir los 3 umbrales (oscuro/normal/brillante o frío/ambiente/caliente), ajustar y verificar.}
 
 \begin{titlebox}{milcMagenta}
 Fase 3 · Praxis con pensamiento computacional
 \end{titlebox}
 
 \begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
-Calibrar un sensor es ejercicio de phronesis tecnológica. Decomponemos la lectura, reconocemos patrones, abstraemos el umbral y seguimos un algoritmo de calibración progresiva.
+\textbf{Actividad 3 · ANALIZA + EVALÚA --- Programa con 3 umbrales calibrados} (40 min · individual). Hora de aplicar. Calibras con 5 mediciones reales, defines 3 umbrales y programas el micro:bit para que reaccione con 3 alertas distintas según el nivel del sensor.
 \end{softbox}
 
 \small
 \begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
 \rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & Sistema: 1) lectura cruda · 2) variable · 3) rango medido · 4) ruido filtrado · 5) umbral elegido · 6) prueba en casos extremos.\\
-Patrones & Patrones de buena calibración: tabla de lecturas, contexto documentado, umbral razonado.\\
-Abstracción & Función esencial: el sensor responde correctamente al evento real, no a ruido o casos imposibles.\\
-Algoritmo de armado & Pasos: medir 10 lecturas reales $\rightarrow$ tabular $\rightarrow$ elegir umbral $\rightarrow$ probar $\rightarrow$ documentar.\\
+Descomposición & Tu trabajo se construye en 5 pasos: (1) elegir el sensor (luz o temperatura). (2) hacer 5 mediciones reales en condiciones distintas del aula (cortinas abiertas, recreo, mañana, tarde, cubriendo el micro:bit). (3) llenar la bitácora. (4) decidir los 3 umbrales (zona inferior, normal, superior). (5) programar con variables y 3 ramas de if-else.\\
+Patrones & Sigue el patrón \textbf{``calibrar primero, programar después''}: el programa final tarda 5 minutos en escribirse cuando los umbrales ya están decididos. Lo que toma tiempo es \textbf{la calibración}: las 5 mediciones reales en condiciones distintas. Esa inversión inicial evita debugging interminable después.\\
+Abstracción & Las 3 alertas pueden ser visuales (íconos distintos: luna para oscuro, sol para brillante, equis para normal) o sonoras (notas graves/medias/agudas). La regla: las 3 deben ser distinguibles a primera vista o primer oído. Si las 3 alertas se parecen, el usuario no podrá interpretar qué pasa.\\
+Algoritmo de armado & Algoritmo: (1) elegir sensor. (2) calibrar con 5 mediciones. (3) llenar bitácora. (4) decidir umbrales. (5) programar variables. (6) escribir if-else con 3 ramas. (7) asignar alerta distintiva a cada rama. (8) probar en condiciones reales. (9) ajustar si falla.\\
 \end{tabularx}
 \normalsize
 
-\begin{drawbox}{milcMagenta}{Checklist del sensor calibrado}
-\checkbox 5 lecturas reales con contexto documentado.\\
-\checkbox Rango real identificado (mínimo y máximo).\\
-\checkbox Umbral elegido con justificación.\\
-\checkbox Prueba con caso extremo (oscuridad total, luz directa).\\
-\checkbox Filtro de ruido (promediar lecturas).\\
-\checkbox Documentación de qué representa el umbral.
+\begin{drawbox}{milcMagenta}{Checklist antes de entregar}
+\checkbox 5 mediciones reales hechas en condiciones distintas. \\[1mm] \checkbox Bitácora completa con las 4 columnas. \\[1mm] \checkbox 3 umbrales decididos con justificación. \\[1mm] \checkbox Variables con nombres descriptivos. \\[1mm] \checkbox Programa con 3 ramas if-else funcionales. \\[1mm] \checkbox 3 alertas distinguibles entre sí. \\[1mm] \checkbox Probado en al menos 3 condiciones reales. \\[1mm] \checkbox Ajuste documentado si fue necesario.
 \end{drawbox}
 
 \begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
-\textbf{Sensor:} nivel\_luz del micro:bit (rango 0-255). \\
-\textbf{5 lecturas con contexto:} \\
-\quad - cuarto con luz apagada: 12 \\
-\quad - cuarto con luz encendida: 95 \\
-\quad - cuarto en día nublado: 60 \\
-\quad - cuarto con sol directo: 200 \\
-\quad - cuarto con sombra: 40 \\
-\textbf{Análisis:} rango 12-200, mucha variabilidad. \\
-\textbf{Umbral elegido:} 50 (separa ``oscuro'' de ``con luz''). \\
-\textbf{Filtro:} promedio de 3 lecturas para evitar sombras momentáneas.
+\textbf{Sensor.} \textit{Luz o temperatura.} \\[1mm] \textbf{Bitácora.} \textit{5 mediciones + observaciones.} \\[1mm] \textbf{Umbrales.} \textit{Inferior, normal, superior con justificación.} \\[1mm] \textbf{Variables.} \textit{Nombres descriptivos.} \\[1mm] \textbf{Programa.} \textit{If-else con 3 ramas + 3 alertas.} \\[1mm] \textbf{Pruebas y ajustes.} \textit{Lo que funcionó y lo que se cambió.}
 \end{softbox}
 
-\textbf{Mi sensor calibrado: lecturas + umbral + filtro:}\\[1mm]
-\linead{\linewidth}\\[1mm]
-\linead{\linewidth}\\[1mm]
-\linead{\linewidth}
+\begin{infoband}{milcMagenta}
+\textbf{Lo que va al cuaderno (Actividad 3 · ANALIZA + EVALÚA).} Título: «Actividad 3 --- Programa calibrado». \textbf{Formato:} (a) bitácora completa; (b) umbrales decididos con justificación; (c) referencia al código MakeCode; (d) resultados de pruebas y ajustes. \textbf{Sabes que terminaste cuando} el programa responde correctamente en al menos 3 condiciones reales distintas.
+\end{infoband}
+
+\puente{Lo que sigue resume \emph{qué} entregas hoy: programa con 3 umbrales calibrados + bitácora de 5 mediciones + justificación de los umbrales. El criterio principal: que el programa funcione bien en las condiciones reales del aula, no solo en el simulador.}
 
 \begin{titlebox}{milcMostaza}
 Producto de la sesión
 \end{titlebox}
-\textbf{Sensor calibrado + tabla de 5 lecturas + umbral justificado}.
+\textbf{Programa con 3 umbrales calibrados + bitácora + justificación}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
-\begin{itemize}
-\item 5 lecturas reales con contexto.
-\item Rango identificado.
-\item Umbral con justificación.
-\item Filtro de ruido implementado.
-\item Prueba con casos extremos.
-\item Documentación clara.
-\end{itemize}
+(1) 5 mediciones reales en condiciones distintas. (2) Variables con nombres descriptivos. (3) 3 umbrales decididos con justificación. (4) 3 alertas distinguibles. (5) Probado en condiciones reales. (6) Ajuste documentado si fue necesario.
 \end{softbox}
+
+\puente{Antes de cerrar, mira la calibración desde las cinco dimensiones humanas. Calibrar con mediciones reales es respeto por el oficio; inventar umbrales sin medir es atajo que produce alarmas falsas o silenciosas.}
 
 \begin{titlebox}{milcVino}
 Fase 4 · Evaluación liberadora — cinco dimensiones
@@ -342,36 +320,38 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 \end{infoband}
 
 
+\puente{Y para terminar, tres voces sobre el ajuste al contexto. Dussel sobre los sistemas que se ajustan al usuario o le imponen un estándar ajeno, Marco Aurelio sobre la disciplina de calibrar antes de decidir, Floridi sobre los sistemas contextuales como ética del oficio digital.}
+
 \begin{titlebox}{milcGradeDark}
 Triángulo de pensamiento · cierre filosófico
 \end{titlebox}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{``El sur global piensa desde su propia herida y desde ahí ofrece mundo.''}
+\textit{``Un sistema que se ajusta al contexto del usuario es liberador; uno que impone su umbral universal es opresor.''}
 
-El umbral genérico de Silicon Valley no sirve para tu cuarto, tu colegio, tu Cartago. La calibración es soberanía técnica: adaptar la tecnología al territorio propio, no al estándar importado.
+Un umbral copiado de internet (\emph{``luz menor a 100 = oscuro''}) impone una norma universal que no respeta el contexto. Tu aula de Cartago no tiene la misma luminosidad que un aula de Bogotá ni la misma que un aula de Quibdó. Calibrar es el acto de \textbf{respetar el contexto del usuario}. La filosofía de la liberación pide esa adaptación: el sistema se ajusta al lugar, no el lugar al sistema.
 
-\textbf{¿Qué de tu calibración refleja tu territorio (luz natural, ruido ambiente, temperatura local) y no un estándar genérico?}
+\textbf{¿Mis umbrales reflejan el contexto real del aula, o son números copiados que ignoran el lugar?}
 \end{softbox}
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Epicteto · cuidado interior}
-\textit{``Algunas cosas dependen de nosotros y otras no — distinguir esto es la libertad.''}
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
+\textit{``Calibrar antes de decidir es virtud; inventar umbrales sin medir es vanidad disfrazada de seguridad.''}
 
-Lo que el sensor lee no depende de ti (es el ambiente). El umbral que eliges sí depende de ti. Calibrar bien es ejercer libertad analítica: separar lo que controlas de lo que no.
+Es tentador escribir \texttt{umbral = 100} sin haber medido nada. La disciplina estoica recomienda lo opuesto: \emph{mide antes de decidir}. La curandera no inventaba marcas en su mano: las construía con años de toques. Tú no puedes esperar años, pero 5 mediciones reales toman 10 minutos y sostienen un programa profesional.
 
-\textbf{¿Qué del sistema depende de ti (umbral, filtro, documentación) y qué no depende (lectura del entorno)?}
+\textbf{¿Mis umbrales se basan en mediciones reales, o son números que sonaban bien?}
 \end{softbox}
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{``El cuidado de los datos es una forma contemporánea de cuidar a las personas.''}
+\textit{``Los sistemas contextuales son la nueva ética del oficio digital frente a los sistemas que asumen un usuario universal.''}
 
-Un sensor de salud mal calibrado puede dar alarmas falsas o, peor, no detectar el evento real. Calibrar bien no es lujo técnico — es responsabilidad ética cuando hay vidas detrás del sistema.
+En la era de la información, los sistemas suelen asumir un usuario universal (\emph{``típica frecuencia de uso''}, \emph{``típica condición ambiente''}). La ética digital exige sistemas contextuales: que se ajusten al usuario y al lugar concretos. Tu programa calibrado es ejemplo de ese principio: \textbf{el sistema se ajusta al contexto, no al revés}. Esa práctica se entrena hoy con un sensor y mañana se aplica a sistemas que sirven a comunidades reales.
 
-\textbf{Si tu sensor se aplicara a un caso real (alarma de salud, alerta de incendio), ¿la calibración pasaría una auditoría?}
+\textbf{¿Mi programa se ajusta al contexto del aula, o asume un \emph{aula universal} que no existe?}
 \end{softbox}
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
@@ -413,7 +393,7 @@ Mi firma: & \linead{9cm}\\
 \normalsize
 
 \begin{infoband}{milcGradeDark}
-\textbf{Próxima sesión.} Aprenderemos a depurar la lógica de control: probar casos esperados, contrarios y límites. La calibración se vuelve disciplina sistemática.
+\textbf{Para la próxima sesión.} Llega con tu programa calibrado y la bitácora. En la sesión 7 vas a aprender a \textbf{depurar errores} cuando el programa no hace lo que esperas: el oficio del relojero aplicado al código. Los umbrales calibrados de hoy te servirán como referencia cuando el programa falle por razones distintas a los umbrales.
 \end{infoband}
 
 \end{document}

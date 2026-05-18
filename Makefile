@@ -135,6 +135,47 @@ guia-clean:  ## Borra archivos auxiliares de LaTeX (.aux, .log, .out)
 	@find $(OUT_DIR) -maxdepth 1 \( -name "*.aux" -o -name "*.log" -o -name "*.out" \) -delete
 	@echo "▸ Limpieza completa."
 
+# ─── Exámenes finales (PDF) ─────────────────────────────────────────────────
+
+.PHONY: examen-build
+examen-build:  ## Compila la(s) examen(es) YAML → PDF (vía xelatex 2 pasadas)
+ifeq ($(CLAVE),)
+	@$(PYTHON) scripts/build-examenes.py
+else
+	@$(PYTHON) scripts/build-examenes.py $(CLAVE)
+endif
+
+.PHONY: examen-show
+examen-show:  ## Abre el PDF del examen CLAVE en Preview (requiere CLAVE=grado-periodo)
+	@if [ -z "$(CLAVE)" ]; then \
+		echo "✗ Falta CLAVE. Ejemplo: make examen-show CLAVE=11-1"; \
+		exit 1; \
+	fi
+	@$(eval GRADO_EX := $(word 1,$(subst -, ,$(CLAVE))))
+	@$(eval PERIODO_EX := $(word 2,$(subst -, ,$(CLAVE))))
+	@$(eval PDF := public/examenes-mejoras/examen-$(PERIODO_EX)-$(GRADO_EX)-TIC.pdf)
+	@if [ -f "$(PDF)" ]; then \
+		echo "▸ Abriendo $(PDF)…"; \
+		open "$(PDF)"; \
+	else \
+		echo "✗ No existe $(PDF). Corre primero: make examen-build CLAVE=$(CLAVE)"; \
+		exit 1; \
+	fi
+
+.PHONY: examen-edit
+examen-edit:  ## Abre el YAML del examen CLAVE en \$$EDITOR
+	@if [ -z "$(CLAVE)" ]; then \
+		echo "✗ Falta CLAVE. Ejemplo: make examen-edit CLAVE=11-1"; \
+		exit 1; \
+	fi
+	@$(eval YAML := content/examenes/$(CLAVE).yaml)
+	@if [ -f "$(YAML)" ]; then \
+		$${EDITOR:-code} "$(YAML)"; \
+	else \
+		echo "✗ No existe $(YAML)"; \
+		exit 1; \
+	fi
+
 # ─── Web TS ─────────────────────────────────────────────────────────────────
 
 .PHONY: guia-web

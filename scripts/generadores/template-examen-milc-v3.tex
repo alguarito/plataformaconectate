@@ -1,0 +1,319 @@
+% TEMPLATE-EXAMEN-MILC-v3.tex - plantilla maestra para los exámenes finales
+% MILC v3 de Plataforma Conéctate (grados 8°-11°).
+%
+% Ver scripts/build-examenes.py para la lista completa de claves esperadas.
+% El script valida que no queden placeholders sin reemplazar antes de
+% escribir el archivo final.
+%
+% Diferencias clave respecto a template-milc-v3-conectate.tex (guías):
+%   - Portada NEGRA (#000000), texto blanco. Coherente con el card del
+%     bento del periodo en la web.
+%   - Solo 5 preguntas (concreto · contexto · práctico ×2 · reflexivo).
+%   - Cabecera con clave examen y "Pregunta N de 5".
+%   - Espacio para respuesta del estudiante después de cada ítem.
+%   - Aprendizajes cubiertos visibles al inicio.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1.75cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\hyphenpenalty=200
+\exhyphenpenalty=200
+\pretolerance=400
+\tolerance=2000
+\setlength{\emergencystretch}{1em}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+% Paleta institucional MILC (compartida con guías).
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+
+% Paleta del PERIODO (chip de color en portada + acentos).
+\definecolor{milcPeriodoPrimary}{HTML}{<<<COLOR_PERIODO_PRIMARY>>>}
+\definecolor{milcPeriodoDark}{HTML}{<<<COLOR_PERIODO_DARK>>>}
+\definecolor{milcPeriodoSoft}{HTML}{<<<COLOR_PERIODO_SOFT>>>}
+
+% Fondo negro absoluto para la portada (coherente con bento card web).
+\definecolor{examenFondo}{HTML}{000000}
+\definecolor{examenTexto}{HTML}{FFFFFF}
+\definecolor{examenTextoSubtle}{HTML}{B8B8B8}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Examen final · Tecnología e Informática · Grado <<<GRADO>>>}
+\rhead{\small Examen <<<CLAVE>>> · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+% ─── Macros visuales ────────────────────────────────────────────────
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Cabecera de pregunta: número en chip + título imperativo.
+\newtcolorbox{cabecerapregunta}[2]{
+  enhanced,colback=milcPeriodoSoft,colframe=milcPeriodoDark,
+  borderline west={4pt}{0pt}{milcPeriodoDark},
+  arc=2mm,boxrule=0pt,left=5mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=10pt,after skip=4pt,
+  title={#1},coltitle=white,
+  colbacktitle=milcPeriodoDark,fonttitle=\sffamily\bfseries\large,
+  fontupper=\sffamily\bfseries\large\color{milcNegro},
+  attach boxed title to top left={xshift=4mm,yshift=-3mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+% Caja "voces" para el ítem reflexivo (las 3 lentes visibles).
+\newtcolorbox{vozbox}[2]{
+  enhanced,colback=white,colframe=#1,
+  arc=2mm,boxrule=.5pt,left=4mm,right=4mm,top=2mm,bottom=2mm,
+  before skip=4pt,after skip=4pt,
+  title={#2},coltitle=white,colbacktitle=#1,
+  fonttitle=\sffamily\bfseries\small,
+  fontupper=\itshape\small\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+% Líneas para que el estudiante escriba sus respuestas.
+\newcommand{\respuesta}[1]{%
+  \par\vspace{2mm}%
+  \foreach \n in {1,...,#1}{%
+    \noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}%
+  }%
+  \color{milcNegro}%
+}
+
+% ─── Portada ─────────────────────────────────────────────────────────
+
+\begin{document}
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+  % Fondo negro absoluto (toda la página).
+  \fill[examenFondo] (current page.south west) rectangle (current page.north east);
+
+  % Chip institucional arriba a la izquierda.
+  \node[anchor=north west,text=examenTexto] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{11}{13}\selectfont EXAMEN FINAL};
+  \node[anchor=north west,text=examenTextoSubtle] at ([xshift=2.0cm,yshift=-2.45cm]current page.north west)
+    {\sffamily\bfseries\fontsize{9}{11}\selectfont GRADO <<<GRADO>>>° · PERÍODO <<<PERIODO>>> · TECNOLOGÍA E INFORMÁTICA};
+
+  % Chip de color del periodo arriba a la derecha (acento sutil).
+  \begin{scope}[shift={([xshift=-2.5cm,yshift=-2.15cm]current page.north east)}]
+    \fill[milcPeriodoPrimary,rounded corners=2mm] (-1.5,-.4) rectangle (1.5,.4);
+    \node[text=white] at (0,0) {\sffamily\bfseries\fontsize{9}{11}\selectfont APLICACIÓN · SESIÓN 10};
+  \end{scope}
+
+  % Título principal grande (centrado, blanco).
+  \node[anchor=west,text=examenTexto,text width=17cm,align=left] at ([xshift=2.0cm,yshift=-9.5cm]current page.north west)
+    {\sffamily\bfseries\fontsize{36}{42}\selectfont <<<TITULO_PORTADA>>>};
+
+  % Subtítulo (gris claro).
+  \node[anchor=west,text=examenTextoSubtle,text width=17cm,align=left] at ([xshift=2.0cm,yshift=-14.5cm]current page.north west)
+    {\sffamily\fontsize{14}{18}\selectfont Síntesis · Aplicación · Argumentación.\\Verifica la transferencia de lo aprendido en las 10 sesiones del período.};
+
+  % Pie con metadatos (duración, fecha, ponderación, autor).
+  \path[draw=examenTextoSubtle,line width=.4pt]
+    ([xshift=2.0cm,yshift=4.0cm]current page.south west) --
+    ([xshift=-2.0cm,yshift=4.0cm]current page.south east);
+
+  \node[anchor=west,text=examenTexto,text width=17cm,align=left] at ([xshift=2.0cm,yshift=3.0cm]current page.south west)
+    {\sffamily\bfseries\fontsize{11}{14}\selectfont DURACIÓN \quad\textcolor{examenTextoSubtle}{<<<DURACION_MIN>>> min} \hspace{1.0cm} APLICACIÓN \quad\textcolor{examenTextoSubtle}{<<<FECHA_APLICACION>>>} \hspace{1.0cm} PONDERACIÓN \quad\textcolor{examenTextoSubtle}{<<<PONDERACION>>>\%}};
+
+  \node[anchor=west,text=examenTextoSubtle,text width=17cm,align=left] at ([xshift=2.0cm,yshift=1.9cm]current page.south west)
+    {\sffamily\fontsize{10}{12}\selectfont Institución Educativa Sor María Juliana · Cartago, Valle del Cauca\\Autor: Dr. Álvaro Cárdenas Orozco · Metodología MILC v3};
+\end{tikzpicture}
+\mbox{}
+\newpage
+
+% ─── Datos del estudiante (página 2) ─────────────────────────────────
+
+\section*{Datos del estudiante}
+
+\noindent
+\begin{tabularx}{\linewidth}{@{}p{3.5cm}Y@{}}
+Nombre completo: & \color{milcLinea}\rule{\linewidth}{0.5pt}\color{milcNegro}\\[3mm]
+Grado y grupo: & \color{milcLinea}\rule{\linewidth}{0.5pt}\color{milcNegro}\\[3mm]
+Fecha: & \color{milcLinea}\rule{\linewidth}{0.5pt}\color{milcNegro}\\[3mm]
+Firma: & \color{milcLinea}\rule{\linewidth}{0.5pt}\color{milcNegro}\\
+\end{tabularx}
+
+\vspace{4mm}
+
+% ─── Instrucciones ───────────────────────────────────────────────────
+
+\begin{softbox}{milcPeriodoDark}{milcPeriodoSoft}{Instrucciones}
+<<<INSTRUCCIONES>>>
+\end{softbox}
+
+% ─── Anclaje MILC: contexto + saber ancestral ────────────────────────
+
+\begin{softbox}{milcVino}{milcGris}{Saber ancestral del período}
+<<<SABER_ANCESTRAL>>>
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Contexto del examen}
+<<<CONTEXTO>>>
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-marco}
+\textit{<<<PREGUNTA_MARCO>>>}
+\end{softbox}
+
+% ─── Aprendizajes cubiertos ──────────────────────────────────────────
+
+\section*{Aprendizajes que entran al examen}
+
+\begin{infoband}{milcPeriodoDark}
+<<<APRENDIZAJES_LISTA>>>
+\end{infoband}
+
+\newpage
+
+% ─── Pregunta 1 · Concreto (¿Qué aprendí?) ───────────────────────────
+
+\begin{cabecerapregunta}{Pregunta 1 de 5 · Concreto}{¿Qué aprendí?}
+<<<CONCRETO_ENUNCIADO>>>
+\end{cabecerapregunta}
+
+\begin{infoband}{milcVerde}
+\textbf{Criterio.} <<<CONCRETO_CRITERIO>>>
+\end{infoband}
+
+\respuesta{6}
+
+\newpage
+
+% ─── Pregunta 2 · Contexto (saber ancestral) ─────────────────────────
+
+\begin{cabecerapregunta}{Pregunta 2 de 5 · Contexto}{Conecta el oficio con el código.}
+<<<CONTEXTO_ENUNCIADO>>>
+\end{cabecerapregunta}
+
+\begin{infoband}{milcVerde}
+\textbf{Criterio.} <<<CONTEXTO_CRITERIO>>>
+\end{infoband}
+
+\respuesta{6}
+
+\newpage
+
+% ─── Pregunta 3 · Práctico 1 ─────────────────────────────────────────
+
+\begin{cabecerapregunta}{Pregunta 3 de 5 · Práctico}{Aplica lo que aprendiste.}
+<<<PRACTICO_1_ENUNCIADO>>>
+\end{cabecerapregunta}
+
+<<<PRACTICO_1_CONTEXTO_BLOQUE>>>
+
+<<<PRACTICO_1_OPCIONES_BLOQUE>>>
+
+\begin{infoband}{milcVerde}
+\textbf{Criterio.} <<<PRACTICO_1_CRITERIO>>>
+\end{infoband}
+
+\respuesta{8}
+
+\newpage
+
+% ─── Pregunta 4 · Práctico 2 ─────────────────────────────────────────
+
+\begin{cabecerapregunta}{Pregunta 4 de 5 · Práctico}{Aplica lo que aprendiste.}
+<<<PRACTICO_2_ENUNCIADO>>>
+\end{cabecerapregunta}
+
+<<<PRACTICO_2_CONTEXTO_BLOQUE>>>
+
+<<<PRACTICO_2_OPCIONES_BLOQUE>>>
+
+\begin{infoband}{milcVerde}
+\textbf{Criterio.} <<<PRACTICO_2_CRITERIO>>>
+\end{infoband}
+
+\respuesta{8}
+
+\newpage
+
+% ─── Pregunta 5 · Reflexivo (triángulo de pensamiento) ───────────────
+
+\begin{cabecerapregunta}{Pregunta 5 de 5 · Reflexivo}{Aplica el triángulo de pensamiento.}
+<<<REFLEXIVO_ENUNCIADO>>>
+\end{cabecerapregunta}
+
+\begin{vozbox}{milcVino}{Dussel · lente del nosotros}
+<<<VOZ_DUSSEL>>>
+\end{vozbox}
+
+\begin{vozbox}{milcMostaza}{Estoico · lente del cuidado interior}
+<<<VOZ_ESTOICO>>>
+\end{vozbox}
+
+\begin{vozbox}{milcTurquesa}{Floridi · lente de la infoesfera}
+<<<VOZ_FLORIDI>>>
+\end{vozbox}
+
+\begin{infoband}{milcVerde}
+\textbf{Criterio.} <<<REFLEXIVO_CRITERIO>>>
+\end{infoband}
+
+\respuesta{8}
+
+\newpage
+
+% ─── Cierre ──────────────────────────────────────────────────────────
+
+\section*{Cierre del período}
+
+\begin{softbox}{milcPeriodoDark}{milcPeriodoSoft}{Una última invitación}
+<<<CIERRE>>>
+\end{softbox}
+
+\vspace{8mm}
+
+\begin{center}
+\textcolor{milcPeriodoDark}{\sffamily\bfseries\large
+Institución Educativa Sor María Juliana
+}\\[1mm]
+\textcolor{milcNegro}{\sffamily\small
+Cartago, Valle del Cauca · Tecnología e Informática · Dr. Álvaro Cárdenas Orozco
+}
+\end{center}
+
+\end{document}

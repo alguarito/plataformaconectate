@@ -23,6 +23,11 @@ PERIODOS_POR_GRADO = {
         2: "P2 · Automatización y procesos ",
         3: "P3 · Proyecto final emprendedor",
     },
+    10: {
+        1: "P1 · Escritura inversa con IA  ",
+        2: "P2 · Ofimática empresarial + IA",
+        3: "P3 · Contabilidad y emprend.   ",
+    },
     9: {
         1: "P1 · Historia de la técnica   ",
         2: "P2 · Diseño editorial digital ",

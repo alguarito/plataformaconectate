@@ -13,6 +13,13 @@ export interface Grado {
   bgClass: string;
   icono: string;
   periodos: Periodo[];
+  /**
+   * Cuando es true, el grado se muestra como "en construcción": tarjeta
+   * deshabilitada en la home, navegación atenuada y página propia con
+   * mensaje en lugar de la lista de períodos. El curriculum aún no está
+   * disponible para uso en aula.
+   */
+  enConstruccion?: boolean;
 }
 
 export const grados: Grado[] = [
@@ -23,6 +30,7 @@ export const grados: Grado[] = [
       'Identidad digital, netiqueta, hardware, software y procesador de texto. Bases para habitar la sala de sistemas con responsabilidad.',
     bgClass: 'bg-bento-blue',
     icono: '💡',
+    enConstruccion: true,
     periodos: [
       {
         numero: 1,
@@ -57,6 +65,7 @@ export const grados: Grado[] = [
       'Microsoft 365, fundamentos de algoritmia con bloques y primer contacto con la Inteligencia Artificial.',
     bgClass: 'bg-bento-lime',
     icono: '🤖',
+    enConstruccion: true,
     periodos: [
       {
         numero: 1,

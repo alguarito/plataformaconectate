@@ -12,6 +12,16 @@ const gradosConTotales = grados.map((g) => ({
   totalGuias: g.periodos.reduce((sum, p) => sum + p.totalGuias, 0),
   totalPeriodos: g.periodos.length,
 }));
+
+// Mientras 6° y 7° están en construcción, ordena los grados activos primero
+// para que el "large" del bento sea el primer grado con curriculum disponible.
+// Dentro de cada grupo conserva el orden numérico.
+gradosConTotales.sort((a, b) => {
+  const aDisp = a.enConstruccion ? 1 : 0;
+  const bDisp = b.enConstruccion ? 1 : 0;
+  if (aDisp !== bDisp) return aDisp - bDisp;
+  return a.numero - b.numero;
+});
 ---
 
 <BaseLayout imagen="/og/home.png">
@@ -62,6 +72,7 @@ const gradosConTotales = grados.map((g) => ({
             size={i === 0 ? 'large' : 'normal'}
             totalGuias={g.totalGuias}
             totalPeriodos={g.totalPeriodos}
+            enConstruccion={g.enConstruccion}
           />
         ))}
       </div>

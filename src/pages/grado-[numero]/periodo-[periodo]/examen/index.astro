@@ -1,13 +1,15 @@
 ---
 import BaseLayout from '../../../../layouts/BaseLayout.astro';
 import CompartirWhatsApp from '../../../../components/CompartirWhatsApp.astro';
+import LabQuiz from '../../../../components/LabQuiz.astro';
 import { grados } from '../../../../data/grados';
 import {
   getExamen,
-  examenPreviewUrl,
-  examenDownloadUrl,
-  examenViewUrl,
+  examenPreviewUrlFor,
+  examenDownloadUrlFor,
+  examenViewUrlFor,
 } from '../../../../data/examenes';
+import { getContenidoExamen } from '../../../../data/examenesContenido/_index';
 
 export function getStaticPaths() {
   const paths: any[] = [];
@@ -26,10 +28,17 @@ const { grado, periodo } = Astro.props;
 const base = import.meta.env.BASE_URL;
 
 const examen = getExamen(grado.numero, periodo.numero);
-const pdfId = examen?.pdfId ?? '';
-const previewUrl = pdfId ? examenPreviewUrl(pdfId) : '';
-const downloadUrl = pdfId ? examenDownloadUrl(pdfId) : '';
-const viewUrl = pdfId ? examenViewUrl(pdfId) : '';
+// Acepta dos formas de servir el PDF: local (generado desde YAML) o Drive.
+const tienePDF = !!examen && (examen.local || !!examen.pdfId);
+const previewUrl = examen ? examenPreviewUrlFor(examen, base) : '';
+const downloadUrl = examen ? examenDownloadUrlFor(examen, base) : '';
+const viewUrl = examen ? examenViewUrlFor(examen, base) : '';
+
+// Contenido web del examen (banco de práctica). Si existe, la página
+// muestra LabQuiz para que el estudiante practique entre clases sin
+// que ese intento cuente para la nota. Si no existe, se muestra solo
+// el PDF (compatibilidad con exámenes que aún no migraron al YAML).
+const examenWeb = getContenidoExamen(grado.numero, periodo.numero);
 ---
 
 <BaseLayout
@@ -86,7 +95,7 @@ const viewUrl = pdfId ? examenViewUrl(pdfId) : '';
         </div>
       </div>
 
-      {pdfId && (
+      {tienePDF && (
         <>
           <!-- Acciones rápidas -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-10">
@@ -114,9 +123,9 @@ const viewUrl = pdfId ? examenViewUrl(pdfId) : '';
             >
               <div class="text-5xl">📂</div>
               <div class="flex-1">
-                <span class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">Drive</span>
-                <div class="font-black text-xl leading-tight mt-1">Abrir en Drive</div>
-                <div class="text-sm mt-1" style="color: var(--fg-muted);">Versión completa del docente</div>
+                <span class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">{examen?.local ? 'PDF' : 'Drive'}</span>
+                <div class="font-black text-xl leading-tight mt-1">{examen?.local ? 'Abrir en pestaña nueva' : 'Abrir en Drive'}</div>
+                <div class="text-sm mt-1" style="color: var(--fg-muted);">{examen?.local ? 'Versión imprimible MILC v3' : 'Versión completa del docente'}</div>
               </div>
               <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
@@ -171,7 +180,7 @@ const viewUrl = pdfId ? examenViewUrl(pdfId) : '';
         </>
       )}
 
-      {!pdfId && (
+      {!tienePDF && (
         <div class="bento-card-color bg-bento-yellow mb-10 flex items-start gap-4">
           <div class="text-5xl">📝</div>
           <div>
@@ -181,6 +190,25 @@ const viewUrl = pdfId ? examenViewUrl(pdfId) : '';
             </p>
           </div>
         </div>
+      )}
+
+      {examenWeb && (
+        <section class="mb-10">
+          <div class="mb-6 flex items-end justify-between flex-wrap gap-3">
+            <div>
+              <span class="chip-bento mb-3 bg-bento-lime text-neutral-950">Práctica antes del examen</span>
+              <h2 class="heading-huge text-balance max-w-2xl">
+                Banco de práctica.
+              </h2>
+              <p class="text-base md:text-lg leading-relaxed mt-3 max-w-2xl" style="color: var(--fg-muted);">
+                {examenWeb.bancoPractica.preguntas.length} preguntas de opción múltiple para que llegues preparado.
+                <strong style="color: var(--fg);">No cuenta para la nota</strong> — practica las veces que quieras.
+              </p>
+            </div>
+          </div>
+
+          <LabQuiz data={examenWeb.bancoPractica} id={`examen-banco-${grado.numero}-${periodo.numero}`} />
+        </section>
       )}
 
       <!-- Estructura del examen -->

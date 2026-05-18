@@ -29,6 +29,12 @@ import e9_2 from './9-2';
 
 import e9_3 from './9-3';
 
+import e8_1 from './8-1';
+
+import e8_2 from './8-2';
+
+import e8_3 from './8-3';
+
 const TODOS: ContenidoExamen[] = [
   e11_1,
   e11_2,
@@ -39,6 +45,9 @@ const TODOS: ContenidoExamen[] = [
   e9_1,
   e9_2,
   e9_3,
+  e8_1,
+  e8_2,
+  e8_3,
 ];
 
 const MAPA = new Map<string, ContenidoExamen>();

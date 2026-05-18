@@ -84,20 +84,23 @@ export const examenes: RecursoExamen[] = [
   {
     "grado": 9,
     "periodo": 1,
-    "pdfId": "1JuRK7X__xeyeLVXjvCnjKHHc6tYyZHgd",
-    "archivo": "examen-1-9-TIC.pdf"
+    "local": true,
+    "archivo": "examen-1-9-TIC.pdf",
+    "pdfId_archivo": "1JuRK7X__xeyeLVXjvCnjKHHc6tYyZHgd"
   },
   {
     "grado": 9,
     "periodo": 2,
-    "pdfId": "1Od87KfodnXD1Lc6AuMr2jqJrF7l6lC-z",
-    "archivo": "examen-2-9-TIC.pdf"
+    "local": true,
+    "archivo": "examen-2-9-TIC.pdf",
+    "pdfId_archivo": "1Od87KfodnXD1Lc6AuMr2jqJrF7l6lC-z"
   },
   {
     "grado": 9,
     "periodo": 3,
-    "pdfId": "1TQe-nrjNucLvTp4IWdhfEAyXY2T9jCwD",
-    "archivo": "examen-3-9-TIC.pdf"
+    "local": true,
+    "archivo": "examen-3-9-TIC.pdf",
+    "pdfId_archivo": "1TQe-nrjNucLvTp4IWdhfEAyXY2T9jCwD"
   },
   {
     "grado": 10,

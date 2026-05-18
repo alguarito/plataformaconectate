@@ -40,9 +40,9 @@
 \definecolor{milcNegro}{HTML}{241816}
 \definecolor{milcGris}{HTML}{F7F7F4}
 \definecolor{milcLinea}{HTML}{E8E2DD}
-\definecolor{milcGradePrimary}{HTML}{0093A5}
-\definecolor{milcGradeDark}{HTML}{00525C}
-\definecolor{milcGradeSoft}{HTML}{E0F3F5}
+\definecolor{milcGradePrimary}{HTML}{FF6600}
+\definecolor{milcGradeDark}{HTML}{9A3E00}
+\definecolor{milcGradeSoft}{HTML}{FFE4D0}
 \definecolor{milcGradeAccent}{HTML}{CFE7FF}
 \definecolor{milcGradeText}{HTML}{FFFFFF}
 \color{milcNegro}
@@ -85,6 +85,22 @@
   fontupper=\small\RaggedRight
 }
 
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{\textbf{\textrightarrow}}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
 \newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
 \newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
 \newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
@@ -124,9 +140,9 @@
 
   \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Pseudocódigo y diagramas de flujo para lógica de control}\\[4mm]
+     {\sffamily\bfseries\fontsize{19}{22}\selectfont Algoritmos ---\\del pseudocódigo\\al diagrama de flujo}\\[4mm]
      {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 13-8-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Periodo Segundo}\\[5mm]
+     {\sffamily\fontsize{13}{16}\selectfont Período 2 · Lógica, algoritmos y computación física}\\[5mm]
      {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
      {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
     };
@@ -139,37 +155,39 @@
     ([xshift=-1.35cm,yshift=3.15cm]current page.south east);
   \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.0cm]current page.south)
     {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} Pseudocódigo + diagrama de flujo de un proceso real del colegio (ej: timbre de cambio de clase con condiciones).};
+    \textcolor{milcGradeDark}{\bfseries Producto:} 1 algoritmo cotidiano (preparar arepa, llegar al colegio, decidir qué ropa usar, hacer cabello, lavar tenis) escrito en pseudocódigo claro de al menos 8 pasos con uso de variables y al menos 1 if-else + traducción del mismo algoritmo a diagrama de flujo usando los 4 símbolos correctos (óvalo inicio/fin, rectángulo proceso, rombo decisión, paralelogramo entrada/salida) + breve descripción de 5 líneas explicando cómo se conectan los dos formatos};
 \end{tikzpicture}
 \mbox{}
 \newpage
 
-\section*{Apertura: Pseudocódigo y diagramas de flujo para lógica de control}
+\section*{Apertura: Algoritmos --- del pseudocódigo al diagrama de flujo}
 
 \begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
-La \textbf{receta de la abuela paso a paso}: \textit{``primero pones la olla, luego agua, luego sal, ESPERAS hervor, AHÍ agregas el arroz''}. Es algoritmo en lengua humana, sin código. La cocina campesina es archivo de algoritmos heredados — el pseudocódigo es esa receta antes de volverse programa.
+En las cocinas del Valle del Cauca y en las casas de los abuelos del Pacífico, las recetas no se escribían: se transmitían. Pero cualquier abuela que enseñaba a hacer arepa o sancocho seguía un orden inquebrantable que cualquier nieto reconoce: \textbf{primero esto, después aquello, si pasa esto otra cosa}. \emph{``Primero pelas el plátano. Después lo cortas en rodajas. Si está verde, lo fríes. Si está maduro, lo asas. Si quedan pedazos, los muelo''}. La receta tiene 4 piezas silenciosas que cualquier algoritmo profesional reconocería: (1) \textbf{Secuencia}: el orden de los pasos importa (no se puede cortar antes de pelar). (2) \textbf{Decisión}: a veces hay dos caminos según una condición (verde → freír / maduro → asar). (3) \textbf{Repetición}: a veces hay que hacer lo mismo varias veces (\emph{``revuelve hasta que esté liso''}). (4) \textbf{Entrada y salida}: la materia prima entra (plátano), el plato sale (frito o asado). La sabiduría de la receta ancestral es la \textbf{forma natural del algoritmo}: la programación moderna no inventó esta estructura, solo le dio nombres formales.
 \end{softbox}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
-El \textbf{pseudocódigo} es lenguaje intermedio entre español y código: instrucciones paso a paso con palabras clave (SI, SI NO, MIENTRAS, REPETIR). El \textbf{diagrama de flujo} dibuja esos pasos con símbolos estándar (rombo de decisión, rectángulo de proceso, óvalo de inicio/fin).
+Un \textbf{algoritmo} es una secuencia ordenada de pasos finitos que resuelve un problema. Se puede expresar de varias formas: (1) \textbf{Pseudocódigo}: lenguaje cercano al humano pero estructurado, con instrucciones claras. Ejemplo: \texttt{LEER edad; SI edad >= 18 ENTONCES MOSTRAR ``mayor''; SINO MOSTRAR ``menor''}. (2) \textbf{Diagrama de flujo}: representación visual con cajas y flechas, usando 4 símbolos estándar: \textbf{óvalo} para inicio/fin, \textbf{rectángulo} para procesos, \textbf{rombo} para decisiones, \textbf{paralelogramo} para entrada/salida de datos. Las flechas indican el orden. La regla profesional del pensamiento computacional: \textbf{antes de programar, escribir el algoritmo en pseudocódigo o diagrama}. Saltarse esta etapa lleva a código desordenado y errores difíciles de depurar. Los dos formatos son complementarios: el pseudocódigo es preciso, el diagrama es visual; juntos comunican la lógica a personas técnicas y no técnicas.
 \end{softbox}
 
 \begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
-\textit{¿Qué de la receta paso a paso de la abuela —su disciplina narrativa— podemos llevar al pseudocódigo y al diagrama de flujo?}
+\textit{¿Qué sabía la abuela al transmitir la receta del sancocho con orden estricto, que el programador novato olvida cuando salta a escribir código sin pensar el algoritmo? ¿Y por qué un diagrama de flujo bien hecho permite explicar un algoritmo a alguien que no programa?}
 \end{softbox}
 
 \begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
-Al terminar podrás \textbf{escribir pseudocódigo claro} con palabras clave estándar, \textbf{dibujar diagramas de flujo} con símbolos correctos, \textbf{traducir} entre los dos formatos y \textbf{prepararte} para escribir código real (en MakeCode, Python, etc.).
+Al terminar podrás: (1) \textbf{identificar} las 4 estructuras básicas de un algoritmo (secuencia, decisión, repetición, entrada/salida) en una receta o tarea cotidiana; (2) \textbf{explicar} la diferencia entre pseudocódigo y diagrama de flujo y cuándo conviene cada uno; (3) \textbf{crear} un algoritmo en pseudocódigo y traducirlo a diagrama de flujo con los 4 símbolos correctos; (4) \textbf{evaluar} un algoritmo ajeno detectando si los pasos están ordenados, si las decisiones cubren todos los casos y si los símbolos del diagrama son correctos.
 \end{softbox}
 
 \small
 \begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
 \rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
-DBA & Diseña pseudocódigo y diagramas de flujo como pasos previos al código en cualquier lenguaje.\\
-Referentes & MEN Tecnología · ISO 5807 (símbolos de diagrama de flujo) · Modelo MILC · Dussel (estética del orden) · Marco Aurelio (claridad presente)\\
-Producto final & Pseudocódigo + diagrama de flujo de un proceso real del colegio (ej: timbre de cambio de clase con condiciones).\\
+DBA & Pensamiento computacional aplicado a sistemas de control con sensores y actuadores (MEN, T\&I)\\
+Referentes & Pensamiento computacional · MakeCode / micro:bit · Logos como razón universal\\
+Producto final & 1 algoritmo cotidiano (preparar arepa, llegar al colegio, decidir qué ropa usar, hacer cabello, lavar tenis) escrito en pseudocódigo claro de al menos 8 pasos con uso de variables y al menos 1 if-else + traducción del mismo algoritmo a diagrama de flujo usando los 4 símbolos correctos (óvalo inicio/fin, rectángulo proceso, rombo decisión, paralelogramo entrada/salida) + breve descripción de 5 líneas explicando cómo se conectan los dos formatos\\
 \end{tabularx}
 \normalsize
+
+\puente{Antes de empezar, mira el viaje completo. En las sesiones 1-2 aprendiste a decidir con AND/OR/NOT y a verificar con tablas de verdad. Hoy aprendes a \emph{escribir y dibujar} la lógica completa en formato profesional. Las próximas sesiones (sensores, actuadores, micro:bit) tomarán tus pseudocódigos como punto de partida para programar.}
 
 \begin{titlebox}{milcGradeDark}
 Ruta MILC: así vamos a aprender
@@ -182,140 +200,99 @@ Ruta MILC: así vamos a aprender
 \end{tabularx}
 
 
+\puente{Antes de teorizar, vas a hacer un \emph{ejercicio del abuelo}: piensa en algo que sepas hacer bien y enséñalo por escrito con orden de pasos (la receta de algo, la rutina de la mañana, cómo preparar el morral). Esa transmisión escrita ya es algoritmo en lenguaje natural.}
+
 \begin{titlebox}{milcVerde}
 Fase 1 · Escuta
 \end{titlebox}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
-Andrés debe explicar a un compañero CÓMO calcular el promedio de 5 notas pero sin usar Excel — solo en papel y palabras claras. Su primer intento es \textit{``sumas todo y divides''}. El compañero pregunta \textit{``¿qué sumo primero?''} Andrés se da cuenta que debe ser MÁS específico: \textit{``primero pides la primera nota, la guardas, luego la segunda, la sumas, ...''}. Eso es pseudocódigo.
+\textbf{Actividad 1 · IDENTIFICA --- Ejercicio del abuelo} (15 min · individual). Escribe en una hoja, paso a paso, cómo se hace algo que dominas: preparar un sándwich, alistar el morral del día siguiente, hacer un nudo de corbata, lavar los tenis. Reglas: (1) numera los pasos en orden. (2) usa frases cortas y claras. (3) si en algún paso hay una decisión (\emph{``si está sucio entonces lavar; si no, guardar''}), marca esa rama. (4) no te saltes ningún paso por obvio. La regla: si un extraterrestre leyera tu lista, debería poder ejecutarla.
 \end{softbox}
 
-\checkbox Recuerdo una vez que tuve que explicar paso a paso un proceso a alguien y me costó.\\
-\checkbox Identifico la diferencia entre describir un proceso y enumerarlo paso a paso.\\
-\checkbox Distingo cuándo conviene pseudocódigo (palabras) vs diagrama de flujo (visual).
-
-\textbf{Una explicación paso a paso que tuve que dar fue:}\\[1mm]
-\linead{\linewidth}\\[1mm]
-\linead{\linewidth}
-
-\textbf{Lo que más me costó fue:}\\[1mm]
-\linead{\linewidth}\\[1mm]
-\linead{\linewidth}
-
-\textbf{Si tuviera que escribirlo en pseudocódigo, las palabras clave serían:}\\[1mm]
-\linead{\linewidth}\\[1mm]
-\linead{\linewidth}
+\checkbox Escribí los pasos en orden numerado.\\
+\checkbox Identifiqué al menos 1 punto de decisión.\\
+\checkbox Mi lista podría ser ejecutada por alguien sin contexto.
 
 \begin{infoband}{milcVerde}
-\textbf{Saber más.} La norma ISO 5807 (1985) estandariza los símbolos de diagramas de flujo: óvalos para inicio/fin, rectángulos para procesos, rombos para decisiones, paralelogramos para entrada/salida, flechas para conexión. Es lengua común para programadores de todo el mundo.
+\textbf{Lo que va al cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1 --- Receta del abuelo». \textbf{Formato:} pasos numerados (al menos 8) + decisión marcada. \textbf{Sabes que terminaste cuando} otro estudiante podría ejecutar tu lista paso a paso.
 \end{infoband}
+
+\puente{Ya tienes el ejercicio. Ahora vas a entender la \textbf{anatomía formal}: las 4 estructuras básicas, el pseudocódigo con convenciones, los 4 símbolos del diagrama de flujo, los 5 errores típicos del aprendiz que delatan falta de pensamiento previo.}
 
 \begin{titlebox}{milcTurquesa}
 Fase 2 · Sistematización con pensamiento computacional
 \end{titlebox}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
-El pensamiento computacional descompone el proceso en pasos atómicos, reconoce patrones de control de flujo (decisión, repetición), abstrae la regla \textit{cada paso es atómico y secuencial} y diseña un algoritmo expresable en dos formatos.
+Tu lista del abuelo ya es algoritmo en lenguaje natural. Ahora necesitas la \textbf{anatomía formal} del oficio computacional: las 4 estructuras, las convenciones del pseudocódigo, los 4 símbolos del diagrama de flujo.
 \end{softbox}
 
 \small
 \begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
 \rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & Descompón el proceso en pasos atómicos: cada paso hace UNA cosa. Si un paso hace dos, divídelo.\\
-2. Reconocimiento de patrones & Patrones: secuencia (uno tras otro), decisión (SI...SI NO), repetición (MIENTRAS, REPETIR n veces).\\
-3. Abstracción & Abstracción: el algoritmo es la receta sin importar el lenguaje. Pseudocódigo y diagrama son dos vestidos del mismo algoritmo.\\
-4. Algoritmo conceptual & Algoritmo: \textbf{1)} identificar inicio y fin · \textbf{2)} listar pasos atómicos · \textbf{3)} marcar decisiones (rombo) · \textbf{4)} marcar repeticiones · \textbf{5)} dibujar flujo · \textbf{6)} traducir a pseudocódigo.\\
+1. Descomposición & Las 4 estructuras básicas se descomponen así: (1) \textbf{Secuencia}: pasos en orden, uno tras otro (\texttt{PASO 1; PASO 2; PASO 3}). (2) \textbf{Decisión} (selección): \texttt{SI condición ENTONCES PASO\_A SINO PASO\_B} (sesión 1). (3) \textbf{Repetición} (iteración): \texttt{REPETIR n VECES} o \texttt{MIENTRAS condición} para hacer lo mismo varias veces. (4) \textbf{Entrada/Salida}: \texttt{LEER variable} para recibir datos del usuario, \texttt{MOSTRAR variable} para devolver resultados. Estas 4 estructuras combinadas pueden expresar cualquier algoritmo posible.\\
+2. Reconocimiento de patrones & Las convenciones del \textbf{pseudocódigo} son simples: (a) palabras clave en MAYÚSCULA (SI, ENTONCES, SINO, MIENTRAS, REPETIR, LEER, MOSTRAR). (b) variables en minúscula descriptiva (edad, nombre, temperatura). (c) indentación para mostrar jerarquía (lo que está dentro de un SI va indentado). (d) un paso por línea. (e) usar punto y coma o cambio de línea para separar pasos. No hay sintaxis estricta: lo importante es que sea claro.\\
+3. Abstracción & Los \textbf{4 símbolos} del diagrama de flujo son universales: (1) \textbf{Óvalo}: inicio y fin del algoritmo. Siempre 1 inicio y al menos 1 fin. (2) \textbf{Rectángulo}: proceso (cálculo, asignación, paso de acción). (3) \textbf{Rombo}: decisión. Tiene 1 entrada y 2 salidas (sí/no, verdadero/falso). (4) \textbf{Paralelogramo}: entrada o salida de datos. Las flechas conectan los símbolos en orden. Un diagrama bien hecho se lee de arriba abajo (o izquierda a derecha) y no tiene flechas cruzadas innecesariamente.\\
+4. Algoritmo conceptual & Algoritmo para escribir un algoritmo: (1) define la tarea en 1 frase. (2) identifica entrada (datos que necesitas) y salida (resultado esperado). (3) lista pasos en orden. (4) identifica decisiones (puntos donde el algoritmo elige camino). (5) escribe en pseudocódigo. (6) traduce a diagrama. (7) prueba mentalmente con un caso de entrada y verifica que llegas al resultado.\\
 \end{tabularx}
 \normalsize
 
-\begin{drawbox}{milcTurquesa}{Anatomía del pseudocódigo y el diagrama}
-\textbf{Pseudocódigo:} INICIO, palabras clave (LEER, ESCRIBIR, SI...ENTONCES...SI NO, MIENTRAS, FIN). \\
-\textbf{Diagrama de flujo:} óvalo (inicio/fin), rectángulo (proceso), rombo (decisión), paralelogramo (E/S), flechas (orden). \\
-\textbf{Variables:} se ``leen'' del usuario o se calculan; se ``escriben'' al final. \\
-\textbf{Decisión:} pregunta SI/NO con dos caminos. \\
-\textbf{Repetición:} bloque que se ejecuta mientras una condición sea verdadera. \\
-\textbf{Validación:} simular el flujo a mano antes de programar.
+\begin{drawbox}{milcTurquesa}{Anatomía del algoritmo}
+\textbf{4 estructuras:} secuencia / decisión / repetición / E/S. \\[1mm] \textbf{Pseudocódigo:} palabras clave + indentación. \\[1mm] \textbf{4 símbolos:} óvalo / rectángulo / rombo / paralelogramo. \\[1mm] \textbf{Flujo:} arriba-abajo o izquierda-derecha. \\[1mm] \textbf{1 inicio, 1+ fin.}
 \end{drawbox}
 
 \begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
-\begin{itemize}
-\item Pasos no atómicos $\rightarrow$ ``calcular y mostrar'' son DOS pasos: calcular, después mostrar.
-\item Olvidar inicio/fin $\rightarrow$ todo diagrama empieza con óvalo de inicio y termina con óvalo de fin.
-\item Mezclar pseudocódigo en español con código real $\rightarrow$ pseudocódigo es claro, no código de un lenguaje específico.
-\item Decisiones sin dos caminos $\rightarrow$ todo rombo tiene salida SI y salida NO.
-\item Bucles sin condición de salida $\rightarrow$ \texttt{MIENTRAS} debe terminar; si no, es bucle infinito.
-\end{itemize}
+(1) \textbf{Saltarse pasos obvios}: el algoritmo asume que el ejecutor sabe lo que no se dijo. (2) \textbf{Mezclar símbolos en diagrama}: usar rectángulo donde debe ir rombo, o viceversa. (3) \textbf{Diagrama sin inicio o sin fin}: confunde al lector. (4) \textbf{Decisiones sin todas las ramas}: rombo con solo una salida deja al algoritmo sin camino. (5) \textbf{Flechas cruzadas sin necesidad}: produce diagramas ilegibles; conviene reorganizar.
 \end{softbox}
 
-\textbf{Mi pseudocódigo del cálculo del promedio de 5 notas sería:}\\[1mm]
-\linead{\linewidth}\\[1mm]
-\linead{\linewidth}
+\begin{infoband}{milcTurquesa}
+\textbf{Lo que va al cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2 --- Anatomía del algoritmo». \textbf{Formato:} (a) las 4 estructuras con ejemplo; (b) los 4 símbolos dibujados con su uso; (c) los 5 errores con marca del que más temes. \textbf{Sabes que terminaste cuando} podrías dibujar un diagrama desde cero sin abrir esta guía.
+\end{infoband}
 
-\textbf{Mi diagrama de flujo tendría estos elementos:}\\[1mm]
-\linead{\linewidth}\\[1mm]
-\linead{\linewidth}
+\puente{Tienes el método. Toca aplicarlo: eliges 1 tarea cotidiana, la escribes en pseudocódigo claro (8+ pasos, variables, 1+ if-else), la traduces a diagrama de flujo con los 4 símbolos, y escribes 5 líneas explicando cómo se conectan los dos formatos.}
 
 \begin{titlebox}{milcMagenta}
 Fase 3 · Praxis con pensamiento computacional
 \end{titlebox}
 
 \begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
-Construir pseudocódigo + diagrama es ejercicio de claridad disciplinada. Decomponemos el proceso, reconocemos patrones, abstraemos el algoritmo y lo expresamos en dos formatos.
+\textbf{Actividad 3 · CREA + EVALÚA --- Algoritmo en pseudocódigo + diagrama de flujo} (40 min · individual). Hora de crear. Eliges 1 tarea cotidiana, la escribes en pseudocódigo de 8+ pasos con variables y al menos 1 if-else, y la traduces a diagrama de flujo con los 4 símbolos correctos.
 \end{softbox}
 
 \small
 \begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
 \rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & Producto: 1) descripción del proceso real · 2) pseudocódigo · 3) diagrama de flujo · 4) prueba con datos reales.\\
-Patrones & Patrones de buenos algoritmos: pasos atómicos, decisiones claras, condiciones de salida en bucles.\\
-Abstracción & Función esencial: alguien que NO sepa programar puede leer tu pseudocódigo y entenderlo.\\
-Algoritmo de armado & Pasos: elegir proceso real $\rightarrow$ listar pasos $\rightarrow$ identificar decisiones/repeticiones $\rightarrow$ pseudocódigo $\rightarrow$ diagrama $\rightarrow$ prueba mental.\\
+Descomposición & Tu algoritmo se construye en 5 pasos: (1) elegir tarea concreta (preparar arepa, decidir ropa según clima, hacer la maleta del fin de semana, planificar la ruta al colegio). (2) identificar entrada (qué necesitas saber) y salida (qué se entrega). (3) escribir pseudocódigo de 8+ pasos con uso de variables (clima, tiempo\_disponible, etc.) y al menos 1 if-else. (4) traducir a diagrama de flujo con los 4 símbolos. (5) escribir 5 líneas explicando cómo se conectan los dos formatos (qué se ve mejor en cada uno).\\
+Patrones & Sigue el patrón \textbf{``pseudocódigo primero, diagrama después''}: el pseudocódigo te obliga a pensar la lógica; el diagrama te obliga a verificar el flujo visual. Si haces el diagrama primero, las cajas tienden a ser vagas. Si haces el pseudocódigo primero, el diagrama queda preciso.\\
+Abstracción & Las herramientas para hacer el diagrama: (a) papel y lápiz (lo más rápido para borrador). (b) \textbf{draw.io} (gratis, en línea, símbolos profesionales). (c) Google Slides o PowerPoint con formas básicas. (d) Lucidchart (gratis con cuenta). Para esta sesión es válido cualquiera; lo importante es que los símbolos sean los 4 estándar.\\
+Algoritmo de armado & Algoritmo: (1) elegir tarea. (2) escribir pseudocódigo. (3) verificar con caso de entrada. (4) hacer borrador del diagrama. (5) digitalizar el diagrama (opcional pero recomendado). (6) escribir las 5 líneas de conexión. (7) revisar con un compañero (¿entiende el algoritmo solo viendo el diagrama?).\\
 \end{tabularx}
 \normalsize
 
-\begin{drawbox}{milcMagenta}{Checklist del proceso del colegio}
-\checkbox Proceso real del colegio elegido (timbre, asistencia, cafetería, etc.).\\
-\checkbox Pseudocódigo con INICIO, FIN y palabras clave estándar.\\
-\checkbox Al menos 1 decisión (SI...SI NO).\\
-\checkbox Diagrama de flujo con símbolos ISO 5807.\\
-\checkbox Equivalencia: pseudocódigo y diagrama dicen lo mismo.\\
-\checkbox Prueba mental con un caso concreto.
+\begin{drawbox}{milcMagenta}{Checklist antes de entregar}
+\checkbox Tarea elegida concreta y cotidiana. \\[1mm] \checkbox Pseudocódigo con 8+ pasos. \\[1mm] \checkbox Al menos 1 variable usada. \\[1mm] \checkbox Al menos 1 if-else. \\[1mm] \checkbox Diagrama de flujo con los 4 símbolos. \\[1mm] \checkbox 1 inicio (óvalo) y al menos 1 fin (óvalo). \\[1mm] \checkbox Sin flechas cruzadas innecesariamente. \\[1mm] \checkbox 5 líneas explicando la conexión entre formatos.
 \end{drawbox}
 
 \begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
-\textbf{Proceso:} Cambio de clase del colegio. \\
-\textbf{Pseudocódigo:} \\
-\quad INICIO \\
-\quad LEER hora\_actual \\
-\quad SI hora\_actual = hora\_de\_cambio ENTONCES \\
-\quad\quad SONAR timbre \\
-\quad\quad ESCRIBIR ``cambio de clase'' \\
-\quad SI NO \\
-\quad\quad ESPERAR 1 minuto \\
-\quad FIN SI \\
-\quad FIN \\
-\textbf{Diagrama:} óvalo INICIO $\rightarrow$ paralelogramo LEER hora $\rightarrow$ rombo (¿es hora de cambio?) $\rightarrow$ SI: rectángulo SONAR + escribir; NO: rectángulo ESPERAR $\rightarrow$ óvalo FIN.
+\textbf{Tarea.} \textit{Una sola, concreta, cotidiana.} \\[1mm] \textbf{Entrada.} \textit{Datos que recibo.} \\[1mm] \textbf{Salida.} \textit{Resultado que produzco.} \\[1mm] \textbf{Pseudocódigo.} \textit{8+ pasos, variables, 1+ if-else.} \\[1mm] \textbf{Diagrama.} \textit{Con los 4 símbolos.} \\[1mm] \textbf{Conexión.} \textit{Cómo se complementan los formatos.}
 \end{softbox}
 
-\textbf{Mi pseudocódigo + diagrama del proceso del colegio:}\\[1mm]
-\linead{\linewidth}\\[1mm]
-\linead{\linewidth}\\[1mm]
-\linead{\linewidth}
+\begin{infoband}{milcMagenta}
+\textbf{Lo que va al cuaderno (Actividad 3 · CREA + EVALÚA).} Título: «Actividad 3 --- Algoritmo + diagrama». \textbf{Formato:} (a) pseudocódigo con sus 8+ pasos; (b) diagrama de flujo dibujado o pegado; (c) 5 líneas de conexión. \textbf{Sabes que terminaste cuando} podrías delegar la ejecución del algoritmo a alguien con solo tu diagrama.
+\end{infoband}
+
+\puente{Lo que sigue resume \emph{qué} entregas hoy: 1 algoritmo en pseudocódigo + 1 diagrama de flujo + descripción de conexión. El criterio principal: que un compañero pueda ejecutar mentalmente tu algoritmo y llegar al resultado correcto, mirando solo el diagrama.}
 
 \begin{titlebox}{milcMostaza}
 Producto de la sesión
 \end{titlebox}
-\textbf{Pseudocódigo + diagrama de flujo de proceso real del colegio}.
+\textbf{Algoritmo en pseudocódigo + diagrama de flujo + descripción de conexión}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
-\begin{itemize}
-\item Proceso real del entorno escolar elegido.
-\item Pseudocódigo legible para no-programadores.
-\item Diagrama con símbolos ISO 5807 correctos.
-\item Al menos 1 decisión y/o 1 repetición.
-\item Equivalencia entre pseudocódigo y diagrama.
-\item Prueba mental documentada.
-\end{itemize}
+(1) Pseudocódigo con 8+ pasos claros. (2) Uso de al menos 1 variable. (3) Al menos 1 if-else. (4) Diagrama de flujo con los 4 símbolos correctos. (5) Flujo legible (arriba-abajo o izquierda-derecha). (6) Descripción de cómo se complementan los formatos.
 \end{softbox}
+
+\puente{Antes de cerrar, mira el algoritmo desde las cinco dimensiones humanas. Escribir el pseudocódigo antes de programar es respeto por el oficio; saltar a programar es desperdicio que produce errores caros.}
 
 \begin{titlebox}{milcVino}
 Fase 4 · Evaluación liberadora — cinco dimensiones
@@ -343,36 +320,38 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 \end{infoband}
 
 
+\puente{Y para terminar, tres voces sobre la planeación del oficio. Dussel sobre los algoritmos que liberan o atrapan a sus usuarios, Epicteto sobre la disciplina de planear antes de actuar, Floridi sobre el algoritmo claro como ética del oficio digital.}
+
 \begin{titlebox}{milcGradeDark}
 Triángulo de pensamiento · cierre filosófico
 \end{titlebox}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{``La belleza estética nace donde una voz silenciada encuentra forma.''}
+\textit{``Un algoritmo claro libera al ejecutor; un algoritmo opaco lo somete a la voluntad oculta del programador.''}
 
-El pseudocódigo es democratizador: alguien sin saber programar puede leerlo y opinar. La belleza del orden algorítmico está en que abre la programación a quien antes estaba excluido por lenguaje técnico.
+Cuando tu algoritmo está escrito con claridad (pseudocódigo legible + diagrama explícito), cualquiera puede revisarlo, ajustarlo, criticarlo. La filosofía de la liberación pide esa transparencia. Cuando el algoritmo es opaco, solo el programador lo entiende y el ejecutor depende de él. La phronesis del oficio consiste en \textbf{escribir algoritmos que liberen, no que aten}.
 
-\textbf{Si tu pseudocódigo se lo enseñas a un familiar mayor, ¿podría seguirlo y opinar sobre el proceso?}
+\textbf{¿Mi algoritmo es lo suficientemente claro para que otro lo modifique sin pedirme ayuda?}
 \end{softbox}
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
-\textit{``El presente es lo único que poseemos. Cuídalo.''}
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Epicteto · cuidado interior}
+\textit{``Planear antes de actuar es virtud del oficio; improvisar es debilidad disfrazada de espontaneidad.''}
 
-Cada paso atómico bien escrito hoy te ahorra horas de depuración mañana. La claridad presente del pseudocódigo es disciplina estoica aplicada al código.
+Es tentador saltar a programar sin escribir pseudocódigo. La disciplina estoica recomienda lo opuesto: \emph{planea antes de actuar}. Escribir el algoritmo en pseudocódigo y diagrama te ahorra horas de debug posterior. La phronesis del oficio honra al programador que dedica 15 minutos a planear antes de escribir 2 horas de código.
 
-\textbf{¿Qué proceso de tu vida (estudio, organización personal) mejoraría si lo escribieras como pseudocódigo?}
+\textbf{¿Estoy planeando con pseudocódigo antes de actuar, o salto directo al código sin pensar?}
 \end{softbox}
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{``Cada decisión de información tiene peso ético.''}
+\textit{``El algoritmo claro y revisable es la nueva ética del oficio digital en la era automatizada.''}
 
-Un algoritmo con un paso ambiguo puede ser interpretado de formas distintas por programadores distintos. El pseudocódigo claro es ética del trabajo en equipo.
+En la era de la automatización, los algoritmos deciden por nosotros (filtros de redes, recomendaciones, créditos). La ética digital exige que esos algoritmos sean revisables: cualquier persona técnica debe poder leer el pseudocódigo o ver el diagrama y entender cómo se decide. Tu hoja de hoy te entrena en esa práctica que rige toda profesión técnica del siglo XXI.
 
-\textbf{Si tu pseudocódigo lo lee otro programador en otro país, ¿produciría el mismo programa?}
+\textbf{¿Mi pseudocódigo permite revisar la lógica, o oculta la decisión bajo código complejo?}
 \end{softbox}
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
@@ -414,7 +393,7 @@ Mi firma: & \linead{9cm}\\
 \normalsize
 
 \begin{infoband}{milcGradeDark}
-\textbf{Próxima sesión.} Aprenderemos sensores básicos: luz, temperatura. La receta del abuelo se vuelve lectura del entorno físico.
+\textbf{Para la próxima sesión.} Llega con tu algoritmo (pseudocódigo + diagrama). En la sesión 4 vas a programar tu primer programa real en \textbf{MakeCode} para el micro:bit, usando sensores que perciben el mundo. Los algoritmos en papel de hoy son la base; el código que reacciona al entorno de mañana se monta sobre esa planeación.
 \end{infoband}
 
 \end{document}

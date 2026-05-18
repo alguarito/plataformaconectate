@@ -33,6 +33,11 @@ PERIODOS_POR_GRADO = {
         2: "P2 · Lógica y micro:bit       ",
         3: "P3 · Multimedia y ciberética  ",
     },
+    10: {
+        1: "P1 · Escritura abierta con IA ",
+        2: "P2 · Informes y comunicación  ",
+        3: "P3 · Ofimática y emprendimien.",
+    },
 }
 
 # Fallback genérico si el grado no está en el mapa explícito.

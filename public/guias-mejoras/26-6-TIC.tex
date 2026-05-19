@@ -1,0 +1,407 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra para todas las guias MILC v3
+% Ver scripts/generadores/build-guia-milc.py para la lista completa de
+% claves esperadas. El script valida que no queden placeholders sin
+% reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1.75cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\hyphenpenalty=200
+\exhyphenpenalty=200
+\pretolerance=400
+\tolerance=2000
+\setlength{\emergencystretch}{1em}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0066FF}
+\definecolor{milcGradeDark}{HTML}{003D99}
+\definecolor{milcGradeSoft}{HTML}{D6E8FF}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Tecnología e Informática · Grado 6}
+\rhead{\small Guía 26 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{\textbf{\textrightarrow}}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+\begin{document}
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[white] (current page.south west) rectangle (current page.north east);
+  \path[fill=milcGradePrimary,rounded corners=16mm]
+    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
+    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
+    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+
+  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
+    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
+    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
+    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
+    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
+    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
+  \end{scope}
+
+  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{124}{124}\selectfont 6};
+  \draw[milcGradeText,line width=1.7pt]
+    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+
+  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+    {
+     {\sffamily\bfseries\fontsize{19}{22}\selectfont Encabezado y\\pie de página ---\\terminar el\\documento como\\un profesional}\\[4mm]
+     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 26-6-TIC}\\[2mm]
+     {\sffamily\fontsize{13}{16}\selectfont Período 3 · Procesador de texto e Internet}\\[5mm]
+     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
+     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+    };
+
+  \path[fill=milcGradeSoft,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
+    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
+    \textcolor{milcGradeDark}{\bfseries Producto:} Un \textbf{mini-informe de 2 páginas} sobre cualquier tema (puede ser tu colegio, tu barrio, una materia favorita), formateado con: \textbf{(a) encabezado} arriba (con tu nombre, grado y materia); \textbf{(b) pie de página} con la fecha y la frase \emph{``Plataforma Conéctate''}; \textbf{(c) número de página} en la esquina inferior derecha (1, 2); \textbf{(d) portada de 1 página adicional} con título grande, tu nombre, fecha, grado; (e) el cuerpo del informe en las 2 páginas siguientes. Más \textbf{en el cuaderno}: boceto del layout con los 4 elementos etiquetados.};
+\end{tikzpicture}
+\mbox{}
+\newpage
+
+\section*{Apertura: Encabezado, pie de página y números --- terminar el documento como un profesional}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+\textbf{Cuando doña Mercedes hacía un cuaderno especial, le ponía marco al trabajo.} En la escuela rural de la vereda La Plata de Cartago, doña Mercedes la maestra exigía que los cuadernos del campo tuvieran \textbf{el nombre arriba} (\emph{``Cuaderno de Lengua, Pedro Martínez, grado 5°''}) y \textbf{la fecha abajo} (\emph{``Año 1985''}). En cada hoja, los niños debían escribir \textbf{su nombre arriba} (\emph{el encabezado}) y \textbf{el número de la hoja abajo} (\emph{el pie}). Eso no era manía: era \emph{darle marco al trabajo}. Si un cuaderno se caía o un niño olvidaba el suyo, todos podían identificarlo en segundos. Si una hoja se desprendía, se podía colocar de nuevo gracias al número. \textbf{Doña Mercedes enseñaba con eso un saber profundo: todo trabajo serio tiene marco}. Hoy en digital los procesadores te dan herramientas para hacer ese marco: encabezado, pie de página y números. Y se aplican a CUALQUIER documento de varias páginas que vayas a entregar en tu vida.
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+Cuando un documento tiene \textbf{más de 1 página}, necesita \textbf{3 elementos de marco}. \textbf{(1) Encabezado} (\emph{header}): la franja arriba de cada página, donde van tu nombre, materia, fecha o título del documento. Se ve en TODAS las páginas. \textbf{(2) Pie de página} (\emph{footer}): la franja abajo de cada página, donde va información secundaria (fecha de impresión, nombre del colegio, frase de cierre). \textbf{(3) Número de página}: el contador que dice qué página estás viendo (1, 2, 3...). Se inserta en el encabezado o el pie. \textbf{Estos 3 elementos te ahorran problemas:} si entregas 5 hojas y se desordenan, el número resuelve. Si el profe pierde tu trabajo entre 30 entregas, el encabezado con tu nombre lo identifica. Es como ponerle marco a un cuadro: \emph{el contenido sigue siendo el cuadro, pero el marco le da presencia}.
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{Tu profe acumula \textbf{30 trabajos impresos} en su mesa. Las hojas se mezclan en el escritorio. ¿\textbf{Cómo se asegura el profe} de identificar el tuyo? ¿Y si tu trabajo tenía 4 hojas y se desordenaron, cómo sabe qué hoja iba primero?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar la clase: (1) podrás \textbf{identificar} los 3 elementos de marco (encabezado, pie, número); (2) sabrás \textbf{aplicar} los 3 en Word/Docs; (3) podrás \textbf{distinguir} entre portada y página de contenido; (4) habrás \textbf{creado} un mini-informe de 2 páginas con todos los elementos.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Produce contenidos digitales y valida información de fuentes web (MEN, T\&I 6°)\\
+Referentes & Saber ancestral de la maestra rural · Lectura crítica · Soberanía informacional\\
+Producto final & Un \textbf{mini-informe de 2 páginas} sobre cualquier tema (puede ser tu colegio, tu barrio, una materia favorita), formateado con: \textbf{(a) encabezado} arriba (con tu nombre, grado y materia); \textbf{(b) pie de página} con la fecha y la frase \emph{``Plataforma Conéctate''}; \textbf{(c) número de página} en la esquina inferior derecha (1, 2); \textbf{(d) portada de 1 página adicional} con título grande, tu nombre, fecha, grado; (e) el cuerpo del informe en las 2 páginas siguientes. Más \textbf{en el cuaderno}: boceto del layout con los 4 elementos etiquetados.\\
+\end{tabularx}
+\normalsize
+
+\puente{Hoy haces 4 cosas: descubres dónde están encabezado y pie en Word, aprendes a insertarlos, agregas números de página, y armas tu informe de 2 páginas.}
+
+\begin{titlebox}{milcGradeDark}
+Ruta MILC: así vamos a aprender
+\end{titlebox}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escuta\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Empezamos con un documento bien formateado para identificar sus 3 elementos de marco.}
+
+\begin{titlebox}{milcVerde}
+Fase 1 · Escuta
+\end{titlebox}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- Encuentra los 3 elementos de marco} (10 min · individual). El profe te muestra un documento profesional (puede ser una hoja impresa, una circular del colegio o una imagen en pantalla). Tu tarea: en el cuaderno, dibuja una hoja A4 (rectángulo) y \textbf{marca con flechas} dónde aparecen estos 3 elementos: \emph{encabezado}, \emph{pie de página}, \emph{número de página}. Si encuentras los 3, ponte \texttt{¡EXCELENTE!} al lado. Si solo encuentras 2, escribe cuál falta. \emph{Si no tienes documento físico hoy}, dibuja basado en cómo crees que se ve un documento profesional.
+\end{softbox}
+
+\checkbox Dibujé una hoja A4 en el cuaderno.\\
+\checkbox Marqué con flechas los 3 elementos (encabezado, pie, número).\\
+\checkbox Identifiqué cuántos elementos vi en el documento del profe.
+
+\begin{infoband}{milcVerde}
+\textbf{Lo que va al cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1 --- Los 3 elementos de marco». \textbf{Formato:} dibujo de hoja A4 con 3 flechas y nombres. \textbf{Extensión:} 1/3 de página. \textbf{Sabes que terminaste cuando} tienes los 3 elementos ubicados en tu dibujo con su nombre.
+\end{infoband}
+
+\puente{Después aprendes los 3 caminos en Word para encabezado, pie y números.}
+
+\begin{titlebox}{milcTurquesa}
+Fase 2 · Sistematización con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+Ya viste dónde van. Ahora aprendes \textbf{cómo insertarlos} en Word y cuándo usar cada uno.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
+1. Descomposición & \textbf{Encabezado --- la franja de arriba.} En Word: \texttt{Insertar → Encabezado → escoge un estilo simple} (\emph{En blanco} es lo más limpio). Aparece un área en gris en la parte superior de la página: ahí escribes. \textbf{Qué poner:} tu nombre, grado, materia, título del trabajo. Ejemplo típico: \emph{``María Cárdenas · Grado 6B · Tecnología''}. \emph{Importante:} lo que escribes aparece en TODAS las páginas del documento. Por eso es genial: lo configuras una vez y se aplica a todo.\\
+2. Reconocimiento de patrones & \textbf{Pie de página --- la franja de abajo.} En Word: \texttt{Insertar → Pie de página → En blanco}. Aparece un área en gris en la parte inferior. \textbf{Qué poner:} fecha de entrega, nombre del colegio, frase corta, número de página. Ejemplo: \emph{``I.E. Sor María Juliana · Cartago · Mayo 2026''}. Igual que el encabezado: aparece en todas las páginas.\\
+3. Abstracción & \textbf{Número de página.} En Word: \texttt{Insertar → Número de página → escoge posición} (más común: \emph{Parte inferior, esquina derecha}). El número se inserta automáticamente y se actualiza solo cuando agregas o quitas páginas. \textbf{Pista profesional:} si el documento tiene portada, normalmente no se numera la portada. La página 1 es la primera página de contenido.\\
+4. Algoritmo conceptual & \textbf{Diferencia entre portada y página de contenido.} La \textbf{portada} es la primera página, con título grande, nombre, fecha, grado. NO lleva texto del informe. Las \textbf{páginas de contenido} son las que siguen. Estructura típica: \emph{página 1 (portada) + páginas 2 y 3 (contenido) + página 4 (cierre o referencias)}. En documentos cortos (1-2 páginas), no es obligatorio tener portada separada. En informes formales, sí.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcTurquesa}{3 elementos de marco + portada}
+\textbf{Encabezado:} arriba, en todas las páginas. Nombre + grado + materia. \\[1mm]
+\textbf{Pie de página:} abajo, en todas las páginas. Fecha + colegio + frase. \\[1mm]
+\textbf{Número de página:} esquina inferior derecha. Empieza en 1 (sin contar portada). \\[1mm]
+\textbf{Portada:} primera página separada, sin encabezado/pie de contenido.
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{Errores frecuentes con encabezado y pie.} (1) \emph{Olvidar el nombre en el encabezado}: 30 trabajos en la mesa del profe = ninguno se sabe de quién es. (2) \emph{Numerar la portada como página 1}: técnicamente la portada es 0 o sin número. La página 1 es la primera de contenido. (3) \emph{Mismo texto en encabezado y pie}: redundante. Encabezado para identificación; pie para datos secundarios. (4) \emph{Encabezado en mayúsculas con tamaño grande}: queda gritando. Tamaño 10-11 en encabezado y pie es lo profesional. (5) \emph{Información distinta en encabezado de cada página}: tiene que ser lo mismo en todas (eso es lo que el encabezado hace bien).
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+\textbf{Lo que va al cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2 --- Caminos para insertar encabezado, pie y números». \textbf{Formato:} 3 bloques con el camino en Word (Insertar → ... → ...) + qué poner en cada uno. \textbf{Extensión:} 3 bloques. \textbf{Sabes que terminaste cuando} podrías guiar a un compañero paso por paso a insertar los 3.
+\end{infoband}
+
+\puente{Con todo claro, creas tu mini-informe completo con portada y 2 páginas.}
+
+\begin{titlebox}{milcMagenta}
+Fase 3 · Praxis con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\textbf{Actividad 3 · APLICA --- Tu mini-informe de 2 páginas con marco completo} (32 min · individual). Vas a crear un mini-informe profesional sobre un tema libre. Estructura: \emph{Portada (1 página) + Contenido (2 páginas)}. Con encabezado, pie de página y números.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
+Descomposición & \textbf{Paso 1 --- Escoge tu tema.} En el cuaderno escribe el tema y 3 puntos clave que vas a desarrollar. Tema sugerido: \emph{``Mi materia favorita''}, \emph{``Una persona admiro''}, \emph{``Algo que me gustaría aprender''}, lo que tú quieras. 3 puntos clave que vas a desarrollar en el cuerpo.\\
+Patrones & \textbf{Paso 2 --- Portada (página 1).} Abre documento nuevo. En la primera página: título grande centrado tamaño 28 + tu nombre completo + grado + materia + fecha. Aplica formato bonito (negrita, color azul oscuro). La portada \emph{no lleva} encabezado, pie ni número de página. Al final de la portada, presiona \texttt{Ctrl + Enter} para saltar a una nueva página.\\
+Abstracción & \textbf{Paso 3 --- Encabezado para páginas 2 y 3.} En la página 2 (donde está el cursor), ve a \texttt{Insertar → Encabezado → En blanco}. Escribe: \emph{``[Tu nombre completo] · Grado 6[letra] · Tecnología''}. Tamaño 10, color gris oscuro, alineación derecha. Sal del modo encabezado haciendo doble clic en el cuerpo.\\
+Algoritmo de armado & \textbf{Paso 4 --- Pie de página + número.} Ve a \texttt{Insertar → Pie de página → En blanco}. Escribe a la izquierda: \emph{``I.E. Sor María Juliana --- Cartago --- Mayo 2026''}. Después ve a \texttt{Insertar → Número de página → Parte inferior, esquina derecha}. Aparece el número 1 en la página 2 y 2 en la página 3. Si la portada también recibió número, configura para que no se numere (es una opción avanzada; el profe te puede ayudar).\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcMagenta}{Antes de mostrar tu mini-informe}
+\checkbox La portada tiene título grande, nombre, grado, fecha. \\[1mm]
+\checkbox La portada NO tiene encabezado, pie ni número de página. \\[1mm]
+\checkbox Las páginas 2 y 3 tienen encabezado con mi nombre, grado y materia. \\[1mm]
+\checkbox Las páginas 2 y 3 tienen pie con datos institucionales. \\[1mm]
+\checkbox Las páginas 2 y 3 tienen número de página en esquina inferior derecha. \\[1mm]
+\checkbox El documento está guardado con nombre correcto.
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Estructura del informe.} \textit{Página 1 (portada):} título grande + nombre + grado + fecha. \textit{Página 2:} encabezado (nombre·grado·materia) + título de sección + 2 párrafos + pie con datos colegio + número 1. \textit{Página 3:} encabezado igual + cierre del tema + pie + número 2. \textit{Guardado:} 2026-mi-mini-informe.docx.
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+\textbf{Lo que va al cuaderno (Actividad 3 · APLICA).} Título: «Actividad 3 --- Mi mini-informe de 2 páginas con marco completo». \textbf{Formato:} dibujo de las 3 páginas del documento etiquetando los 3 elementos en cada una. \textbf{Extensión:} 1 página del cuaderno. \textbf{Sabes que terminaste cuando} cada página del documento tiene los elementos correctos en el lugar correcto.
+\end{infoband}
+
+\puente{El producto es ese informe + el boceto en el cuaderno.}
+
+\begin{titlebox}{milcMostaza}
+Producto de la sesión
+\end{titlebox}
+\textbf{Mini-informe de 2 páginas + portada con marco profesional completo}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) La portada está separada y sin elementos de marco. (2) Las páginas 2 y 3 tienen encabezado con identificación. (3) Las páginas 2 y 3 tienen pie de página con datos institucionales. (4) Las páginas 2 y 3 tienen número de página. (5) El contenido del informe ocupa 2 páginas con texto formateado.
+\end{softbox}
+
+\puente{Antes de salir, verificas que los 3 elementos aparecen en las páginas correctas.}
+
+\begin{titlebox}{milcVino}
+Fase 4 · Evaluación liberadora — cinco dimensiones
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con 3 voces que te ayudan a entender por qué el marco habla antes que el contenido.}
+
+\begin{titlebox}{milcGradeDark}
+Triángulo de pensamiento · cierre filosófico
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{````Nada existe sin marco. Sin marco la pintura es un papel. Sin marco el documento es ruido. El marco da existencia.''''}
+
+Un documento sin marco \textbf{flota sin contexto}: ¿quién lo escribió?, ¿cuándo?, ¿de qué tema?, ¿para qué materia?. El marco (encabezado + pie + número) responde esas preguntas \emph{de un vistazo}. Doña Mercedes lo entendía: el cuaderno con nombre, fecha y página era \textbf{un cuaderno con identidad}. Sin esos datos, era un papel cualquiera.
+
+\textbf{¿Mis trabajos tienen marco o flotan sin contexto?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio (emperador que documentaba con disciplina) · cuidado interior}
+\textit{````La disciplina pequeña hace al trabajo grande visible. Quien marca cada hoja con su nombre se respeta y respeta a quien lo lee.''''}
+
+Poner encabezado y pie toma \textbf{30 segundos por documento}, pero comunica \emph{respeto} y \emph{profesionalismo}. Un profe que recibe 30 trabajos con marco trabaja mejor que uno que recibe 30 sin nombre. \emph{Tu pequeña disciplina les ahorra horas a los demás}. Eso es ética en pequeño.
+
+\textbf{Las pequeñas disciplinas (marco, formato, organización), ¿las cumplo o las dejo para otra vez?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{````Un documento con marco es un objeto profesional. Un documento sin marco es un borrador. La diferencia es 30 segundos de configuración.''''}
+
+Hay una diferencia entre \emph{escribir} y \emph{producir un documento profesional}. \textbf{Lo primero es contenido}; \textbf{lo segundo es contenido + marco}. En tu vida adulta, lo que entregas en universidad, trabajo, proyectos, va a juzgarse por las dos cosas. \emph{Hoy aprendiste cómo invertir 30 segundos para subir el nivel}.
+
+\textbf{¿Estoy entregando contenido o estoy entregando documentos profesionales?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{titlebox}{milcVino}
+Compromiso final
+\end{titlebox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
+Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
+Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
+Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
+Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
+Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
+\end{tabularx}
+\normalsize
+
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Esta semana, en cualquier documento de más de 1 página que entregues, agrega los 3 elementos de marco. La próxima clase salimos del procesador de texto e iniciamos la \textbf{segunda mitad del periodo}: \emph{Internet}. Vas a entender cómo funciona la red por dentro y cómo viajan los datos cuando navegas. Hoy cerraste el módulo de Word; la próxima abrimos el de Internet.
+\end{infoband}
+
+\end{document}

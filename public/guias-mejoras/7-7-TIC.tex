@@ -1,0 +1,411 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra para todas las guias MILC v3
+% Ver scripts/generadores/build-guia-milc.py para la lista completa de
+% claves esperadas. El script valida que no queden placeholders sin
+% reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1.75cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\hyphenpenalty=200
+\exhyphenpenalty=200
+\pretolerance=400
+\tolerance=2000
+\setlength{\emergencystretch}{1em}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{84CC16}
+\definecolor{milcGradeDark}{HTML}{4D7C0F}
+\definecolor{milcGradeSoft}{HTML}{ECFCCB}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Tecnología e Informática · Grado 7}
+\rhead{\small Guía 7 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{\textbf{\textrightarrow}}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+\begin{document}
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[white] (current page.south west) rectangle (current page.north east);
+  \path[fill=milcGradePrimary,rounded corners=16mm]
+    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
+    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
+    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+
+  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
+    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
+    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
+    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
+    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
+    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
+  \end{scope}
+
+  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{124}{124}\selectfont 7};
+  \draw[milcGradeText,line width=1.7pt]
+    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+
+  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+    {
+     {\sffamily\bfseries\fontsize{19}{22}\selectfont Comentarios\\y sugerencias ---\\revisar el\\trabajo ajeno\\con respeto}\\[4mm]
+     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 7-7-TIC}\\[2mm]
+     {\sffamily\fontsize{13}{16}\selectfont Período 1 · Trabajo colaborativo en la nube}\\[5mm]
+     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
+     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+    };
+
+  \path[fill=milcGradeSoft,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
+    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
+    \textcolor{milcGradeDark}{\bfseries Producto:} \textbf{(a) Una revisión real} del documento de un compañero: abres su archivo (que él te compartió con \emph{``Puede comentar''}) y agregas \textbf{5 comentarios constructivos} usando la fórmula \emph{``observación + razón + propuesta''}; \textbf{(b) tu propio archivo} revisado por un compañero con sus 5 comentarios; \textbf{(c) en el cuaderno}: análisis de \emph{cuáles comentarios aceptaste y por qué}. Más \textbf{manual del revisor responsable} con 5 reglas firmadas.};
+\end{tikzpicture}
+\mbox{}
+\newpage
+
+\section*{Apertura: Comentarios y sugerencias --- revisar el trabajo ajeno con respeto}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+\textbf{En la minga del Valle del Cauca, había una persona especial: el ``mirador''.} Mientras los 30 trabajadores cosechaban el café en sus surcos, alguien con más experiencia caminaba por todos los surcos \textbf{revisando el trabajo}. No cosechaba: \emph{revisaba}. Veía si los granos verdes se estaban escogiendo bien, si las canastas se llenaban en el orden correcto, si alguien estaba dejando café maduro caer al suelo. \emph{No criticaba a gritos}: se acercaba al trabajador, le decía suavemente: \emph{``Mire, don Pedro, este surco que dejó atrás todavía tiene granos rojos''}. Pedro miraba, asentía, volvía a pasar por ese surco. \textbf{El mirador no estaba para humillar, estaba para mejorar el trabajo del equipo}. Esa figura --- el revisor que ayuda sin herir --- es exactamente lo que necesitas ser cuando comentas el trabajo de un compañero en un documento. Hoy aprendes a comentar bien.
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+\textbf{Comentar} en Microsoft Word/Excel/PowerPoint es agregar \textbf{notas al margen} del documento que no cambian el texto, solo lo señalan. Otra persona puede leer la nota y decidir si aplica la sugerencia. \textbf{La diferencia con editar:} editar cambia el documento directamente; comentar deja una nota que el dueño puede aceptar o rechazar. \textbf{Cómo se hace en Word:} selecciona el texto sobre el que quieres comentar → clic derecho → \emph{Nuevo comentario}. Aparece un cuadrito amarillo al lado. Ahí escribes tu observación. El dueño verá tu nombre y la nota. Puede responder al comentario (\emph{``gracias, lo cambio''}, \emph{``prefiero dejarlo como está''}) o marcarlo como \emph{resuelto}. \textbf{Los comentarios son la forma profesional de retroalimentar}: en universidades, en trabajos, en libros antes de imprimir. Aprenderlos ahora te diferencia.
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{Si un compañero te entrega su ensayo para que se lo revises y tú le dices: \emph{``está mal''}, ¿\textbf{qué aprende} él de tu revisión? Si en cambio le dices: \emph{``este párrafo es confuso porque mezclas 2 ideas. Te sugiero separarlo en 2 párrafos''}, ¿qué cambia?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar la clase: (1) podrás \textbf{identificar} la diferencia entre comentarios destructivos y constructivos; (2) sabrás \textbf{aplicar} la fórmula ``observación + razón + propuesta''; (3) podrás \textbf{evaluar} la calidad de un comentario; (4) habrás \textbf{revisado} un documento ajeno con 5 comentarios bien escritos.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Utiliza herramientas digitales para trabajar de manera colaborativa con otros (MEN, T\&I 7°)\\
+Referentes & Saber ancestral de la minga · Microsoft 365 y OneDrive · Coautoría asincrónica\\
+Producto final & \textbf{(a) Una revisión real} del documento de un compañero: abres su archivo (que él te compartió con \emph{``Puede comentar''}) y agregas \textbf{5 comentarios constructivos} usando la fórmula \emph{``observación + razón + propuesta''}; \textbf{(b) tu propio archivo} revisado por un compañero con sus 5 comentarios; \textbf{(c) en el cuaderno}: análisis de \emph{cuáles comentarios aceptaste y por qué}. Más \textbf{manual del revisor responsable} con 5 reglas firmadas.\\
+\end{tabularx}
+\normalsize
+
+\puente{Hoy haces 4 cosas: distingues comentarios constructivos vs destructivos, aprendes la fórmula, revisas un documento ajeno, recibes revisión del tuyo.}
+
+\begin{titlebox}{milcGradeDark}
+Ruta MILC: así vamos a aprender
+\end{titlebox}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escuta\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Empezamos analizando 6 comentarios reales y diciendo cuáles son útiles.}
+
+\begin{titlebox}{milcVerde}
+Fase 1 · Escuta
+\end{titlebox}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · ANALIZA --- 6 comentarios, ¿útil o destructivo?} (10 min · individual). Lee estos 6 comentarios que un revisor podría dejar en el trabajo de un compañero. Marca \textbf{ÚTIL (U) o DESTRUCTIVO (D)} en el cuaderno. \emph{(1) ``Está horrible''. (2) ``Este párrafo confunde porque mezclas 2 ideas. Sugiero separarlo''. (3) ``Lo escribiste mal y no se entiende nada''. (4) ``Buen punto en la introducción, agregaría 1 ejemplo concreto''. (5) ``No vale la pena que sigas escribiendo, mejor cambia de tema''. (6) ``El cierre se siente débil, ¿qué tal terminar con una pregunta abierta?''}.
+\end{softbox}
+
+\checkbox Leí los 6 comentarios.\\
+\checkbox Marqué U o D en cada uno.\\
+\checkbox Pensé qué hace diferente a un comentario útil de uno destructivo.
+
+\begin{infoband}{milcVerde}
+\textbf{Lo que va al cuaderno (Actividad 1 · ANALIZA).} Título: «Actividad 1 --- 6 comentarios analizados». \textbf{Formato:} lista numerada con U/D + 1 razón corta por qué. \textbf{Extensión:} 6 líneas. \textbf{Sabes que terminaste cuando} reconoces que los útiles dan algo concreto (razón + propuesta).
+\end{infoband}
+
+\puente{Después aprendes la fórmula y las 5 reglas del revisor responsable.}
+
+\begin{titlebox}{milcTurquesa}
+Fase 2 · Sistematización con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+Los comentarios útiles tienen \textbf{algo en común}: dan información concreta + razón + propuesta. Los destructivos solo emiten juicio sin ayudar. Ahora aprendes la fórmula exacta para escribir comentarios siempre útiles.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
+1. Descomposición & \textbf{La fórmula de 3 partes para todo comentario útil.} \textbf{(1) Observación específica:} \emph{qué viste exactamente}. No \emph{``está mal''} sino \emph{``este párrafo no se entiende''}. \textbf{(2) Razón:} \emph{por qué creíste eso}. No \emph{``no se entiende''} sino \emph{``porque mezclas 2 ideas en la misma oración''}. \textbf{(3) Propuesta concreta:} \emph{qué sugieres en cambio}. No \emph{``arréglalo''} sino \emph{``sugiero separarlo en 2 párrafos cortos''}. \textbf{Ejemplo completo:} \emph{``Este párrafo (observación) confunde porque mezclas 2 ideas (razón). Sugiero separarlo en 2 párrafos cortos (propuesta).''}. Los 3 elementos son necesarios. Faltando uno, el comentario se vuelve menos útil.\\
+2. Reconocimiento de patrones & \textbf{Las 5 reglas del revisor responsable.} (1) \textbf{Comenta el trabajo, no a la persona.} \emph{``Este párrafo es confuso''} sí; \emph{``eres confuso''} NO. (2) \textbf{Empieza por algo positivo.} Antes de criticar, reconoce qué está bien (\emph{``buena introducción''}, \emph{``ejemplo claro''}). Eso te abre la puerta para la crítica. (3) \textbf{Sé específico, no general.} \emph{``Mejóralo''} NO sirve; \emph{``cambia el verbo de la línea 3''} SÍ. (4) \textbf{Sugiere, no impongas.} Usa \emph{``sugiero''}, \emph{``te propongo''}, no \emph{``tienes que''}. El dueño decide. (5) \textbf{Limita la cantidad.} Si dejas 30 comentarios, el dueño se siente atacado. \emph{Máximo 5-8 comentarios por sesión de revisión}. Prioriza los más importantes.\\
+3. Abstracción & \textbf{Las 2 formas de comentar en Word.} \textbf{(1) Comentario simple:} clic derecho sobre el texto seleccionado → \emph{Nuevo comentario}. Aparece un cuadrito amarillo al lado con tu nombre y la nota. El dueño puede responder o marcar como resuelto. \textbf{(2) Modo Sugerencia (Tracked Changes):} en Word completo (escritorio), hay un modo donde tus cambios al texto aparecen como \emph{sugerencias} (con líneas tachadas o resaltado). El dueño revisa cada sugerencia y decide \emph{Aceptar} o \emph{Rechazar}. En Word Online de 7° grado, lo más usado es el comentario simple.\\
+4. Algoritmo conceptual & \textbf{Cómo recibir comentarios sin tomarlo a mal.} Cuando otro te revisa, tu reacción importa. \textbf{Reglas básicas:} (a) \emph{No respondas con rabia, aunque el comentario te duela}. (b) \emph{Lee TODOS los comentarios antes de responder}. (c) \emph{Pregunta si no entiendes} (\emph{``¿podrías explicarme qué quisiste decir?''}). (d) \emph{Decide cuáles aplicar:} no estás obligado a aplicar todos. Algunas sugerencias mejoran tu trabajo; otras son cuestión de estilo personal. (e) \emph{Agradece la revisión}, aunque haya dolido. La gente que te revisa con cuidado te está dando algo valioso.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcTurquesa}{Fórmula + 5 reglas + 2 formas}
+\textbf{Fórmula:} Observación + Razón + Propuesta. \\[1mm]
+\textbf{5 reglas:} \\[1mm]
+\textbf{1.} Comenta trabajo, no persona. \\[1mm]
+\textbf{2.} Empieza por algo positivo. \\[1mm]
+\textbf{3.} Sé específico. \\[1mm]
+\textbf{4.} Sugiere, no impongas. \\[1mm]
+\textbf{5.} Máximo 5-8 comentarios. \\[1mm]
+\textbf{2 formas:} comentario simple (margen) · modo sugerencia (cambios trackeados).
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{Errores frecuentes al comentar.} (1) \emph{Insultar a la persona} (\emph{``eres torpe''}) en lugar del trabajo. (2) \emph{Dejar comentarios vagos} (\emph{``está mal''}, \emph{``mejóralo''}) que no ayudan. (3) \emph{Comentar TODO} --- el dueño se abruma y desestima la crítica útil. (4) \emph{No firmar ni dar contexto} --- el dueño no sabe quién comentó. (5) \emph{Asumir mala intención} cuando el otro recibe tus comentarios mal: la mayoría reacciona inicialmente con dolor; dale tiempo. (6) \emph{Borrar tus comentarios cuando el dueño los acepta} --- mejor marcarlos como \emph{resueltos} (quedan visibles en historial).
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+\textbf{Lo que va al cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2 --- Fórmula + 5 reglas del revisor». \textbf{Formato:} bloque A con la fórmula y un ejemplo bueno + un ejemplo malo. Bloque B con las 5 reglas. \textbf{Extensión:} 8 líneas. \textbf{Sabes que terminaste cuando} podrías corregir un comentario destructivo y convertirlo en útil.
+\end{infoband}
+
+\puente{Con todo claro, intercambias documentos con un compañero y se hacen revisión mutua.}
+
+\begin{titlebox}{milcMagenta}
+Fase 3 · Praxis con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\textbf{Actividad 3 · APLICA --- Revisión mutua con un compañero} (30 min · pareja). Vas a intercambiar uno de tus archivos de Word con un compañero. Tú revisas el de él, él revisa el tuyo. Cada uno deja 5 comentarios usando la fórmula y las 5 reglas. Al final, miras qué comentarios aceptas o no.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
+Descomposición & \textbf{Paso 1 --- Forma pareja con un compañero.} Habla con uno (puede ser uno de los del equipo de la S6, o uno nuevo). Acuerden: \emph{``yo te comparto mi Word con permiso comentar, tú me compartes el tuyo igual''}. Cada uno escoge el archivo más sólido que tenga (el de la minga digital de S4, o el colaborativo de S6).\\
+Patrones & \textbf{Paso 2 --- Compártanse los archivos con permiso ``Puede comentar''.} En OneDrive, abre tu archivo → Compartir → escribe el correo del compañero → cambia el nivel a \textbf{``Puede comentar''} (no editar). Envía. Espera que él haga lo mismo contigo.\\
+Abstracción & \textbf{Paso 3 --- Abre el archivo de tu compañero.} Te llega un correo con el enlace. Haz clic. Se abre el documento en modo lectura (puedes comentar pero no escribir).\\
+Algoritmo de armado & \textbf{Paso 4 --- Haz 5 comentarios usando la fórmula.} Lee el documento completo primero. Identifica \textbf{los 5 puntos que más vale la pena comentar} (no escojas los 5 primeros; escoge los 5 más importantes). Para cada uno: selecciona el texto, clic derecho, \emph{Nuevo comentario}. Escribe siguiendo la fórmula: \emph{(observación) (razón) (propuesta)}. \emph{Empieza con un comentario positivo en el primer punto que comentes}. Aplica las 5 reglas en cada comentario.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcMagenta}{Antes de cerrar la S7}
+\checkbox Intercambié archivos con un compañero con permiso 'Puede comentar'. \\[1mm]
+\checkbox Dejé 5 comentarios en el documento del compañero. \\[1mm]
+\checkbox Cada comentario sigue la fórmula (observación + razón + propuesta). \\[1mm]
+\checkbox Mi compañero dejó comentarios en mi archivo y los revisé. \\[1mm]
+\checkbox Decidí cuáles aceptar y cuáles rechazar. \\[1mm]
+\checkbox Mi manual del revisor responsable está firmado.
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Estructura.} \textit{Paso 1:} formar pareja. \textit{Paso 2:} compartir con 'Puede comentar'. \textit{Paso 3:} abrir archivo ajeno. \textit{Paso 4:} 5 comentarios con fórmula. \textit{Paso 5:} recibir y decidir. \textit{Paso 6:} reflexión + manual + firma.
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+\textbf{Lo que va al cuaderno (Actividad 3 · APLICA).} Título: «Actividad 3 --- Mi primera revisión mutua». \textbf{Formato:} datos de la pareja + análisis de comentarios recibidos + manual del revisor responsable. \textbf{Extensión:} 1 página. \textbf{Sabes que terminaste cuando} tu archivo tiene comentarios resueltos o respondidos.
+\end{infoband}
+
+\puente{El producto son los 5 comentarios en el documento ajeno + tu propio archivo revisado + manual del revisor.}
+
+\begin{titlebox}{milcMostaza}
+Producto de la sesión
+\end{titlebox}
+\textbf{Revisión mutua de documentos · 5 comentarios constructivos · manual del revisor firmado}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) Hay 5 comentarios en el documento del compañero siguiendo la fórmula. (2) El estudiante recibió 5 comentarios en su propio documento. (3) Los comentarios fueron procesados (aceptados o respondidos con criterio). (4) El análisis en cuaderno menciona cuáles aceptó y por qué. (5) El manual del revisor responsable tiene 5 reglas firmadas.
+\end{softbox}
+
+\puente{Antes de salir, revisa que tus 5 comentarios cumplen la fórmula y las 5 reglas.}
+
+\begin{titlebox}{milcVino}
+Fase 4 · Evaluación liberadora — cinco dimensiones
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con 3 voces sobre por qué revisar con respeto es la mejor forma de ayudar.}
+
+\begin{titlebox}{milcGradeDark}
+Triángulo de pensamiento · cierre filosófico
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{````Criticar bien es un acto de amor. Criticar mal es un acto de violencia. La fórmula los separa.''''}
+
+El mirador de la minga \textbf{amaba el trabajo del equipo}: por eso se tomaba el trabajo de revisar. Si no le hubiera importado, habría dejado los errores pasar y el café perdido. Comentar el trabajo de un compañero con cuidado es \emph{cuidarlo}, no atacarlo. La fórmula (observación + razón + propuesta) es la diferencia entre ayudar y herir. Lo mismo aplica a tus amigos, a tu familia, a tu futuro equipo profesional.
+
+\textbf{¿Cuando crítico a otros, mi tono comunica cuidado o violencia?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio (emperador que recibía consejos diariamente) · cuidado interior}
+\textit{````Quien sabe recibir crítica es más libre que quien solo sabe darla. Las dos disciplinas son necesarias.''''}
+
+Marco Aurelio era el emperador romano. Tenía \emph{poder absoluto}, pero \textbf{pedía consejo todos los días} a sus asesores. ¿Por qué? Porque sabía que \emph{recibir crítica con humildad lo hacía mejor gobernante}. Tú no eres emperador (todavía), pero la misma virtud aplica: \emph{quien recibe revisión sin amargarse mejora; quien la rechaza se estanca}. Hoy entrenaste esa virtud doble: dar y recibir crítica con respeto.
+
+\textbf{¿Cómo reacciono cuando me critican? ¿Con apertura o con defensa inmediata?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{````Las culturas que dominan el comentario constructivo dominan la innovación. Las que no, se estancan.''''}
+
+Los equipos profesionales que producen \emph{cosas excelentes} tienen una cosa en común: \textbf{retroalimentan mucho y bien}. Los que producen mediocre suelen evitar la crítica (\emph{``no quiero que se enojen''}) o hacerlo mal (\emph{``está pésimo''}). \emph{La diferencia entre los dos resultados está en la calidad del comentario}. Aprender hoy a comentar bien te coloca en el primer grupo.
+
+\textbf{¿En mis grupos suelo dar comentarios constructivos o me quedo callado/destructivo?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{titlebox}{milcVino}
+Compromiso final
+\end{titlebox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
+Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
+Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
+Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
+Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
+Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
+\end{tabularx}
+\normalsize
+
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Esta semana, si revisas el trabajo de un familiar (un hermano, un compañero), aplica la fórmula. Verás que la persona reacciona mejor. La próxima clase aprendes sobre \textbf{versiones e historial}: cómo OneDrive guarda automáticamente cada cambio para que NUNCA pierdas trabajo, incluso si lo dañas por error.
+\end{infoband}
+
+\end{document}

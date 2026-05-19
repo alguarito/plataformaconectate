@@ -1,0 +1,406 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra para todas las guias MILC v3
+% Ver scripts/generadores/build-guia-milc.py para la lista completa de
+% claves esperadas. El script valida que no queden placeholders sin
+% reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1.75cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\hyphenpenalty=200
+\exhyphenpenalty=200
+\pretolerance=400
+\tolerance=2000
+\setlength{\emergencystretch}{1em}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{84CC16}
+\definecolor{milcGradeDark}{HTML}{4D7C0F}
+\definecolor{milcGradeSoft}{HTML}{ECFCCB}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Tecnología e Informática · Grado 7}
+\rhead{\small Guía 22 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{\textbf{\textrightarrow}}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+\begin{document}
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[white] (current page.south west) rectangle (current page.north east);
+  \path[fill=milcGradePrimary,rounded corners=16mm]
+    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
+    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
+    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+
+  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
+    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
+    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
+    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
+    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
+    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
+  \end{scope}
+
+  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{124}{124}\selectfont 7};
+  \draw[milcGradeText,line width=1.7pt]
+    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+
+  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+    {
+     {\sffamily\bfseries\fontsize{19}{22}\selectfont ¿Qué es\\la IA? ---\\definición,\\historia y\\casos diarios}\\[4mm]
+     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 22-7-TIC}\\[2mm]
+     {\sffamily\fontsize{13}{16}\selectfont Período 3 · Inteligencia Artificial}\\[5mm]
+     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
+     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+    };
+
+  \path[fill=milcGradeSoft,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
+    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
+    \textcolor{milcGradeDark}{\bfseries Producto:} En el cuaderno: \textbf{(a) definición de IA con tus palabras}; \textbf{(b) mini-línea de tiempo} con 5 hitos históricos (1950 Turing, 1956 conferencia Dartmouth, 1997 Deep Blue vence a Kasparov, 2012 deep learning revolución, 2022 ChatGPT); \textbf{(c) mapa de la IA en mi día}: lista de 10 momentos donde uso IA sin darme cuenta (TikTok, Google, traductor, etc.); \textbf{(d) reflexión} sobre cómo se siente saber que ya convives con IA hace años.};
+\end{tikzpicture}
+\mbox{}
+\newpage
+
+\section*{Apertura: ¿Qué es la IA? --- definición, historia y casos cotidianos}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+\textbf{Mientras tus abuelos vivían los oficios de Cartago (relojero, costurera, tejedora), en 1950 un matemático inglés llamado Alan Turing escribió un artículo titulado ``¿Pueden las máquinas pensar?''.} Turing era ya famoso por haber roto el código nazi durante la Segunda Guerra Mundial, salvando miles de vidas. Cuando se sentó a escribir aquel artículo, no había computadores como los de hoy: existían máquinas enormes que llenaban un cuarto y hacían cálculos lentos. Pero Turing imaginaba el futuro. Propuso una pregunta filosófica: \emph{``si una máquina puede mantener una conversación con un humano sin que el humano se dé cuenta de que es máquina, ¿no es eso pensar?''}. Esa pregunta abrió un campo: \textbf{la Inteligencia Artificial}. Han pasado 76 años. Y lo que Turing imaginó como teoría --- una máquina que conversa como humano --- \textbf{hoy es ChatGPT}. La IA es más vieja de lo que crees. Tú llegas a un campo con 76 años de historia, no a una moda de ayer.
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+\textbf{Definición simple de IA:} \emph{tecnología que permite a las máquinas hacer tareas que requieren ``inteligencia'' --- aprender, razonar, decidir, comunicarse}. \emph{``Inteligencia''} entre comillas porque \textbf{la IA no piensa como nosotros}: procesa datos a gran escala, encuentra patrones, predice. Pero no tiene conciencia, no tiene emociones reales, no entiende como un humano entiende. \textbf{Hitos clave de la historia de la IA:} \emph{1950}: Turing propone el ``Test de Turing''. \emph{1956}: conferencia de Dartmouth, nace el término \emph{``Artificial Intelligence''}. \emph{1997}: el programa Deep Blue de IBM vence al campeón mundial de ajedrez Garry Kasparov. \emph{2012}: la revolución del \emph{deep learning} (redes neuronales profundas). \emph{2022}: ChatGPT sale al público y la IA conversacional se vuelve masiva. \textbf{La IA está en muchos lugares de tu vida diaria}: cuando Google sugiere búsquedas, cuando TikTok te recomienda videos, cuando el traductor convierte español a inglés, cuando la cámara del celular reconoce rostros. \textbf{Llevas años conviviendo con IA sin saberlo}. Este periodo te abre los ojos.
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{Si hoy te quitaran TODA la IA de tu día (Google sin sugerencias, TikTok sin recomendaciones, traductor sin existir, Maps sin rutas optimizadas), ¿\textbf{cuánto cambiaría tu vida}?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar la clase: (1) podrás \textbf{identificar} qué es la IA con tus palabras; (2) sabrás \textbf{explicar} 5 hitos históricos clave; (3) podrás \textbf{aplicar} la idea de IA a 10 momentos cotidianos; (4) habrás \textbf{creado} tu mapa personal de IA en el día.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Reconoce los fundamentos, usos y límites éticos de la Inteligencia Artificial (MEN, T\&I 7°)\\
+Referentes & Saber ancestral del consejero · Modelos de lenguaje · Ética algorítmica y prompting\\
+Producto final & En el cuaderno: \textbf{(a) definición de IA con tus palabras}; \textbf{(b) mini-línea de tiempo} con 5 hitos históricos (1950 Turing, 1956 conferencia Dartmouth, 1997 Deep Blue vence a Kasparov, 2012 deep learning revolución, 2022 ChatGPT); \textbf{(c) mapa de la IA en mi día}: lista de 10 momentos donde uso IA sin darme cuenta (TikTok, Google, traductor, etc.); \textbf{(d) reflexión} sobre cómo se siente saber que ya convives con IA hace años.\\
+\end{tabularx}
+\normalsize
+
+\puente{Hoy haces 4 cosas: defines IA con tus palabras, conoces 5 hitos históricos, mapeas IA en tu día, reflexionas.}
+
+\begin{titlebox}{milcGradeDark}
+Ruta MILC: así vamos a aprender
+\end{titlebox}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escuta\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Empezamos imaginando un día completamente sin IA.}
+
+\begin{titlebox}{milcVerde}
+Fase 1 · Escuta
+\end{titlebox}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- Un día sin IA} (10 min · individual). En el cuaderno, imagina este escenario: \emph{``Hoy te despiertas y descubres que toda la IA del mundo desapareció. Las máquinas siguen funcionando pero sin el componente de IA. ¿Qué cambia?''}. Responde estas \textbf{5 preguntas}: \emph{(1) ¿Funciona tu celular?}. \emph{(2) ¿Funciona Google igual?}. \emph{(3) ¿Cómo cambia TikTok sin recomendaciones?}. \emph{(4) ¿El traductor funciona?}. \emph{(5) ¿El GPS te lleva al colegio?}. Imagina con detalle. Las respuestas te van a mostrar cuánta IA hay en tu día sin que lo notes.
+\end{softbox}
+
+\checkbox Imaginé el escenario sin IA.\\
+\checkbox Respondí las 5 preguntas con calma.\\
+\checkbox Reconocí cuánto depende mi día de la IA.
+
+\begin{infoband}{milcVerde}
+\textbf{Lo que va al cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1 --- Un día sin IA». \textbf{Formato:} 5 respuestas cortas. \textbf{Extensión:} 5-6 líneas. \textbf{Sabes que terminaste cuando} reconoces que la IA está más presente de lo que creías.
+\end{infoband}
+
+\puente{Después aprendes la definición + breve historia + 10 ejemplos.}
+
+\begin{titlebox}{milcTurquesa}
+Fase 2 · Sistematización con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+Ya viste cuánto depende tu día de la IA. Ahora aprende la \textbf{definición precisa} y los \textbf{hitos históricos} clave.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
+1. Descomposición & \textbf{Definición técnica de IA.} \emph{Conjunto de técnicas informáticas que permiten a las máquinas realizar tareas que tradicionalmente requerían inteligencia humana}: aprender de ejemplos, reconocer patrones, tomar decisiones, comunicarse en lenguaje natural, ver y entender imágenes, jugar a niveles expertos. \textbf{La IA no es ``magia'' ni ``robots conscientes''}: es matemática + estadística + computación + grandes cantidades de datos. \textbf{Es una herramienta poderosa, pero herramienta al fin}.\\
+2. Reconocimiento de patrones & \textbf{Los 5 hitos históricos clave.} \textbf{(1) 1950 --- Alan Turing.} Publica \emph{``Computing Machinery and Intelligence''} y propone el famoso \emph{Test de Turing}: una máquina es ``inteligente'' si puede engañar a un humano haciéndole creer que también es humano. \textbf{(2) 1956 --- Dartmouth Conference.} John McCarthy y otros se reúnen y acuñan el término \emph{``Artificial Intelligence''}. Nace el campo formal. \textbf{(3) 1997 --- Deep Blue vs Kasparov.} El programa de IBM vence al campeón mundial de ajedrez Garry Kasparov. Primera vez que una máquina derrota al humano más experto en su juego.\\
+3. Abstracción & \textbf{Los hitos 4 y 5.} \textbf{(4) 2012 --- Revolución del deep learning.} Un equipo de la Universidad de Toronto (Geoff Hinton, Ilya Sutskever, Alex Krizhevsky) gana una competencia de visión por computador usando \emph{redes neuronales profundas}. Cambia el campo para siempre: a partir de ahí, las grandes empresas invierten millones. \textbf{(5) 2022 --- ChatGPT al público.} OpenAI lanza ChatGPT, accesible a cualquier persona con internet. En 2 meses tiene 100 millones de usuarios. La IA conversacional se vuelve masiva. \emph{Tú llegas a la historia justo después de este hito}: a los 12-13 años ya estás aprendiendo lo que apenas se inventó hace 4 años.\\
+4. Algoritmo conceptual & \textbf{10 momentos de IA en tu día (lista de muestra).} (1) Cuando Google completa tu búsqueda al escribir. (2) Cuando TikTok elige el siguiente video. (3) Cuando WhatsApp sugiere palabras al escribir. (4) Cuando el banco aprueba un retiro al instante. (5) Cuando Maps recalcula la ruta por tráfico. (6) Cuando Spotify recomienda canciones nuevas. (7) Cuando el traductor convierte idiomas. (8) Cuando Instagram filtra fotos con efectos. (9) Cuando el corrector ortográfico subraya palabras. (10) Cuando Siri o Google Assistant responden a tu voz. \textbf{¿Cuántos de estos usas al día?}.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcTurquesa}{Definición + 5 hitos + 10 ejemplos cotidianos}
+\textbf{Definición:} máquinas que hacen tareas inteligentes (aprender, razonar, decidir, comunicarse). \\[1mm]
+\textbf{5 hitos:} 1950 Turing · 1956 Dartmouth · 1997 Deep Blue · 2012 deep learning · 2022 ChatGPT. \\[1mm]
+\textbf{10 ejemplos cotidianos:} Google · TikTok · WhatsApp · banco · Maps · Spotify · traductor · Instagram · corrector · Siri/Assistant.
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{Mitos sobre la IA que escucharás.} (1) \emph{``La IA es nueva, salió con ChatGPT''} --- Falso. Tiene 76 años de historia. (2) \emph{``La IA piensa como nosotros''} --- Falso. Procesa datos, no piensa con conciencia. (3) \emph{``La IA solo está en computadores grandes''} --- Falso. Está en tu celular, en tu nevera moderna, en las luces inteligentes. (4) \emph{``La IA es perfecta y nunca falla''} --- Falso. Comete errores, sesgo, alucinaciones. (5) \emph{``Solo los programadores usan IA''} --- Falso. La usan profesores, médicos, escritores, artistas, estudiantes. Todos los días.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+\textbf{Lo que va al cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2 --- Definición + 5 hitos». \textbf{Formato:} bloque A con definición de IA en MIS palabras (3 líneas). Bloque B con mini-línea de tiempo: 5 fechas con su evento clave. \textbf{Extensión:} 10 líneas. \textbf{Sabes que terminaste cuando} podrías explicarle a un primo qué es IA y por qué importa.
+\end{infoband}
+
+\puente{Con todo claro, mapeas 10 momentos de IA en tu día.}
+
+\begin{titlebox}{milcMagenta}
+Fase 3 · Praxis con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\textbf{Actividad 3 · APLICA --- Mapa de IA en mi día} (28 min · individual). Vas a mapear 10+ momentos donde tú interactúas con IA sin darte cuenta. Es ejercicio de \emph{abrir los ojos} a un mundo que ya está rodeándote.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
+Descomposición & \textbf{Paso 1 --- Encabezado y plantilla.} En una hoja del cuaderno, título: \textbf{``Mapa de IA en mi día''}. Debajo, tabla de \textbf{12 filas y 3 columnas}. Encabezados: \emph{(1) Momento del día (hora aproximada)}, \emph{(2) Acción que hago}, \emph{(3) Cómo entra la IA en ese momento}.\\
+Patrones & \textbf{Paso 2 --- Recorre tu día de ayer mentalmente.} Empieza por la mañana. Mira las 24 horas. Para cada momento que uses dispositivo digital, anota: hora aproximada + acción + cómo entra IA. \emph{Ejemplo 1: 6 am, abro WhatsApp para ver mensajes, el corrector ortográfico (IA) corrige mientras escribo respuestas. Ejemplo 2: 7 am, Maps me sugiere ruta al cole, la IA calcula tráfico en tiempo real}.\\
+Abstracción & \textbf{Paso 3 --- Llena las 12 filas.} Apunta al menos 12 momentos. Si pasas más tiempo en el celular, encontrarás 20-30 momentos sin esfuerzo. \emph{Pista}: TikTok solo te da 5 momentos de IA (cada video que aparece es una decisión de la IA).\\
+Algoritmo de armado & \textbf{Paso 4 --- Cuenta los momentos por categoría.} Debajo de la tabla, agrupa los momentos por categoría: \emph{redes sociales}, \emph{buscar información}, \emph{comunicación}, \emph{navegación}, \emph{entretenimiento}. ¿Cuántos por categoría? ¿Dónde más IA hay en tu día?\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcMagenta}{Antes de cerrar la S2}
+\checkbox La definición de IA está escrita con MIS palabras. \\[1mm]
+\checkbox La mini-línea de tiempo tiene los 5 hitos clave. \\[1mm]
+\checkbox El mapa tiene 12+ momentos de IA en mi día. \\[1mm]
+\checkbox Conté los momentos por categoría. \\[1mm]
+\checkbox Hay reflexión personal de 4-5 líneas. \\[1mm]
+\checkbox La línea de tiempo termina en 2026 con 'yo aquí'.
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Estructura.} \textit{Arriba:} título + nombre. \textit{Mitad superior:} mini-línea de tiempo con 5 hitos. \textit{Centro:} tabla 12x3 con momentos de IA. \textit{Debajo:} conteo por categorías. \textit{Final:} reflexión personal + firma + 'yo aquí 2026'.
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+\textbf{Lo que va al cuaderno (Actividad 3 · APLICA).} Título: «Actividad 3 --- Mi mapa de IA en el día». \textbf{Formato:} línea de tiempo + tabla 12x3 + conteo + reflexión. \textbf{Extensión:} 1 página completa. \textbf{Sabes que terminaste cuando} ves la cantidad real de IA que ya está en tu día.
+\end{infoband}
+
+\puente{El producto es el mapa + definición + línea de tiempo + reflexión.}
+
+\begin{titlebox}{milcMostaza}
+Producto de la sesión
+\end{titlebox}
+\textbf{Mapa de IA en mi día · 12 momentos · 5 hitos históricos · reflexión personal · firmado}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) Tiene definición de IA en palabras propias del estudiante. (2) Línea de tiempo con los 5 hitos correctamente fechados. (3) Mínimo 12 momentos de IA cotidiana identificados. (4) Conteo por categorías está hecho. (5) Reflexión personal firmada.
+\end{softbox}
+
+\puente{Antes de salir, cuenta cuántos momentos de IA detectaste (suelen ser más de 10).}
+
+\begin{titlebox}{milcVino}
+Fase 4 · Evaluación liberadora — cinco dimensiones
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con 3 voces sobre por qué entender la IA es entender el mundo de hoy.}
+
+\begin{titlebox}{milcGradeDark}
+Triángulo de pensamiento · cierre filosófico
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{````Conocer el nombre de lo que te rodea es el primer paso para dejar de ser usado por ello. Aprender qué es la IA es ya un acto de soberanía.''''}
+
+\textbf{Hasta ayer, la IA era cosa invisible en tu vida}. Estaba ahí, decidiendo qué TikTok te recomendaba, qué Google te sugería, qué traducción aparecía --- pero \emph{no la veías}. Hoy la nombras. \emph{Nombrar lo que te rodea es el primer paso para no ser controlado por ello}. Mucha gente vive sin saber que existe IA en su día; tú ya no. Esa toma de conciencia es soberanía digital.
+
+\textbf{¿Cuántas otras cosas en mi vida cotidiana funcionan sin que sepa su nombre o cómo operan?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio (emperador que se preguntaba por la naturaleza de las cosas) · cuidado interior}
+\textit{````Antes de juzgar si algo es bueno o malo, conoce su naturaleza. La IA no es magia ni monstruo: es matemática a gran escala.''''}
+
+Hay gente que \textbf{teme a la IA} (la pinta como monstruo que viene a destruirnos) y gente que la \textbf{idolatra} (la trata como dios infalible). Las dos posturas son perezosas: \emph{no se han tomado el tiempo de entender la naturaleza de la IA}. Lo sabio es: ni miedo, ni adoración. \emph{Conocer su naturaleza --- matemática + datos + algoritmos + electricidad --- te permite usarla con criterio}, ni rendido a sus pies ni huyendo de ella.
+
+\textbf{¿Estoy en el grupo del miedo, en el de la adoración, o en el del conocimiento sereno?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{````Vivir con IA sin entenderla es como vivir con electricidad sin saber qué es: sirve, pero te electrocutas a veces. Entenderla te protege.''''}
+
+Tus abuelos vivieron la electrificación rural. Al principio, la electricidad parecía mágica. Después aprendieron: hay cables vivos, hay cortos circuitos, hay que tener cuidado. \textbf{Hoy estás en la fase ``mágica''} de la IA. La próxima fase es la \emph{alfabetización}: entender qué es, cuándo conviene, cuándo desconfiar, cómo cuidarse. Aprenderla en grado 7 te ahorra años de tropiezos en tu vida adulta.
+
+\textbf{¿Estoy en la fase mágica con la IA o ya empiezo a alfabetizarme?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{titlebox}{milcVino}
+Compromiso final
+\end{titlebox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
+Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
+Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
+Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
+Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
+Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
+\end{tabularx}
+\normalsize
+
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Esta semana, cuando uses cualquier app, observa si hay IA detrás (recomendaciones, sugerencias, autocompletados). Anota mentalmente cuántas veces. La próxima clase aprendes los \textbf{tipos de IA}: estrecha vs general, modelos de lenguaje vs visión vs predicción. Vas a poder clasificar cada IA que veas.
+\end{infoband}
+
+\end{document}

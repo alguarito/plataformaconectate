@@ -1,0 +1,409 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra para todas las guias MILC v3
+% Ver scripts/generadores/build-guia-milc.py para la lista completa de
+% claves esperadas. El script valida que no queden placeholders sin
+% reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1.75cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\hyphenpenalty=200
+\exhyphenpenalty=200
+\pretolerance=400
+\tolerance=2000
+\setlength{\emergencystretch}{1em}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0066FF}
+\definecolor{milcGradeDark}{HTML}{003D99}
+\definecolor{milcGradeSoft}{HTML}{D6E8FF}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Tecnología e Informática · Grado 6}
+\rhead{\small Guía 30 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{\textbf{\textrightarrow}}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+\begin{document}
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[white] (current page.south west) rectangle (current page.north east);
+  \path[fill=milcGradePrimary,rounded corners=16mm]
+    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
+    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
+    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+
+  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
+    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
+    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
+    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
+    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
+    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
+  \end{scope}
+
+  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{124}{124}\selectfont 6};
+  \draw[milcGradeText,line width=1.7pt]
+    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+
+  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+    {
+     {\sffamily\bfseries\fontsize{19}{22}\selectfont Mi primer\\documento\\informativo ---\\todo lo\\aprendido}\\[4mm]
+     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 30-6-TIC}\\[2mm]
+     {\sffamily\fontsize{13}{16}\selectfont Período 3 · Procesador de texto e Internet}\\[5mm]
+     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
+     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+    };
+
+  \path[fill=milcGradeSoft,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
+    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
+    \textcolor{milcGradeDark}{\bfseries Producto:} Un \textbf{documento informativo de 2 páginas + portada} (3 páginas en total) sobre un tema de tu elección. \textbf{Debe contener:} portada con título grande + tu nombre + grado + fecha; encabezado + pie de página + numeración en las páginas de contenido; \textbf{4 párrafos} con formato (negrita, justificación, sangría); \textbf{1 lista} (con viñetas o numerada); \textbf{1 tabla} (3+ filas); \textbf{1 imagen} con pie y texto fluyendo; \textbf{3 fuentes citadas} al final, cada una con evaluación CRAAP rápida (notas 0-5). Más \textbf{en el cuaderno}: lista de los 10 elementos del documento marcados como \emph{aplicado/no aplicado} (autoevaluación con rúbrica).};
+\end{tikzpicture}
+\mbox{}
+\newpage
+
+\section*{Apertura: Mi primer documento informativo --- producto que reúne todo lo aprendido}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+\textbf{Cuando doña Mercedes la maestra rural de la vereda La Plata de Cartago veía a un alumno terminar el cuaderno del año, hacía un ritual.} El último día, los niños del campo presentaban su \textbf{``trabajo de cosecha''}: el mejor de todo lo aprendido en el año. \emph{``Hoy van a mostrarme TODO lo que aprendieron en una sola tarea''}, decía. Si habían visto escritura, debía estar la mejor escritura. Si habían visto dibujo, el mejor dibujo. Si habían visto matemáticas, el mejor cálculo. Era el día en que \textbf{cada estudiante demostraba que la suma de todo el año había crecido a algo nuevo}. Hoy es tu día de cosecha del periodo 3. Vas a hacer \textbf{un documento que reúna todo lo aprendido}: el procesador de texto, el formato, las listas, las tablas, las imágenes, los encabezados, la búsqueda con operadores, la evaluación de fuentes. No es decoración: es la prueba de que el oficio ya es tuyo. \emph{El relojero arma su primer reloj completo después de meses de aprender pieza por pieza}. Tú haces tu primer documento informativo.
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+Un \textbf{documento informativo} es un texto que \emph{enseña algo verídico} a quien lo lee. No es opinión ni ensayo: es \emph{información organizada, con fuentes citadas, presentada con criterio}. Los documentos informativos son lo que entregas en tareas de colegio, en informes en la universidad, en reportes en el trabajo. \textbf{Lo que aprendiste en este periodo} se combina aquí en un solo entregable: \emph{Word/Docs} (S2), \emph{formato profesional} (S3), \emph{listas estructuradas} (S4), \emph{tablas e imágenes} (S5), \emph{encabezado y pie} (S6), \emph{conceptos sobre internet} (S7), \emph{búsqueda con operadores} (S8), \emph{evaluación de fuentes con CRAAP} (S9). Hoy haces tu primer documento que \textbf{aplica los 10 elementos juntos}. Te llevará 50 minutos, pero saldrás con un documento que muestra al profe \emph{y a ti mismo} que terminaste el periodo con oficio.
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{Si tu profe te dijera \emph{``muéstrame en UN solo trabajo todo lo que aprendiste en el periodo 3''}, ¿\textbf{podrías hacerlo}? ¿Cuáles 10 elementos meterías en ese documento?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar la clase: (1) podrás \textbf{integrar} los 10 elementos aprendidos en el periodo; (2) sabrás \textbf{aplicar} cada uno en un solo documento; (3) habrás \textbf{evaluado} tu propio trabajo con rúbrica; (4) podrás \textbf{citar} las 3 fuentes con evaluación CRAAP rápida.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Produce contenidos digitales y valida información de fuentes web (MEN, T\&I 6°)\\
+Referentes & Saber ancestral de la maestra rural · Lectura crítica · Soberanía informacional\\
+Producto final & Un \textbf{documento informativo de 2 páginas + portada} (3 páginas en total) sobre un tema de tu elección. \textbf{Debe contener:} portada con título grande + tu nombre + grado + fecha; encabezado + pie de página + numeración en las páginas de contenido; \textbf{4 párrafos} con formato (negrita, justificación, sangría); \textbf{1 lista} (con viñetas o numerada); \textbf{1 tabla} (3+ filas); \textbf{1 imagen} con pie y texto fluyendo; \textbf{3 fuentes citadas} al final, cada una con evaluación CRAAP rápida (notas 0-5). Más \textbf{en el cuaderno}: lista de los 10 elementos del documento marcados como \emph{aplicado/no aplicado} (autoevaluación con rúbrica).\\
+\end{tabularx}
+\normalsize
+
+\puente{Hoy haces 4 cosas: escoges tema, buscas y evalúas 3 fuentes con CRAAP, escribes el documento con los 10 elementos, y haces autoevaluación.}
+
+\begin{titlebox}{milcGradeDark}
+Ruta MILC: así vamos a aprender
+\end{titlebox}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escuta\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Empezamos eligiendo un tema que de verdad te interese investigar.}
+
+\begin{titlebox}{milcVerde}
+Fase 1 · Escuta
+\end{titlebox}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- Elige tu tema} (8 min · individual). En el cuaderno, responde estas 3 preguntas para definir el tema del documento. \emph{(1) ¿Qué tema me da curiosidad de investigar? (puede ser: el volcán Nevado del Ruiz, los ríos de Colombia, una persona admiro, mi mascota favorita, mi deporte, mi región, una receta tradicional de Cartago).} \emph{(2) ¿Por qué este tema? (en 1 línea).} \emph{(3) ¿Qué 4 puntos clave quiero contar sobre el tema? (lista de 4 ideas).}. Esto te da \textbf{el esqueleto} del documento antes de empezar a escribir.
+\end{softbox}
+
+\checkbox Respondí las 3 preguntas con honestidad.\\
+\checkbox Elegí un tema que me interese, no uno aburrido.\\
+\checkbox Tengo 4 puntos clave para desarrollar.
+
+\begin{infoband}{milcVerde}
+\textbf{Lo que va al cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1 --- Tema y plan del documento». \textbf{Formato:} 3 respuestas + lista de 4 puntos. \textbf{Extensión:} 6-7 líneas. \textbf{Sabes que terminaste cuando} podrías empezar a escribir el documento sin volver a pensar el tema.
+\end{infoband}
+
+\puente{Después aprendes la estructura del documento (portada + 2 páginas + fuentes).}
+
+\begin{titlebox}{milcTurquesa}
+Fase 2 · Sistematización con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+Ahora aprendes \textbf{la estructura} del documento y el \textbf{checklist} de los 10 elementos que debes incluir. Antes de escribir, conoce el mapa.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
+1. Descomposición & \textbf{La estructura del documento informativo.} \textbf{Página 1 (portada):} título grande centrado, tu nombre completo, grado, materia, fecha, sin encabezado/pie. \textbf{Página 2 (contenido 1):} encabezado arriba (tu nombre + grado + materia), título de sección, 2 párrafos del tema, 1 imagen con pie + texto fluyendo, pie de página + \#1. \textbf{Página 3 (contenido 2):} encabezado igual, 2 párrafos más, 1 lista (viñetas o numerada), 1 tabla, sección de \textbf{Fuentes citadas} al final con las 3 fuentes evaluadas, pie + \#2.\\
+2. Reconocimiento de patrones & \textbf{Los 10 elementos que debe tener (la rúbrica).} \textbf{Procesador y archivo:} (1) Documento creado en Word/Docs guardado con nombre correcto. \textbf{Formato:} (2) Título en negrita, centrado, tamaño 18 azul; (3) Párrafos justificados con sangría primera línea; (4) Énfasis controlado (1 subrayado + 1 negrita por párrafo). \textbf{Estructura visual:} (5) 1 lista con mínimo 3 ítems formato gramatical paralelo; (6) 1 tabla con encabezado en negrita; (7) 1 imagen con pie en cursiva tamaño 10 y ajuste cuadrado. \textbf{Marco:} (8) Portada separada (1 página) + encabezado + pie + numeración en páginas 2 y 3. \textbf{Información y fuentes:} (9) Información del tema en 4 párrafos con datos verificables; (10) 3 fuentes citadas al final con evaluación CRAAP rápida (notas).\\
+3. Abstracción & \textbf{Las 5 etapas del proceso (cómo se hace en 50 minutos).} \textbf{Etapa 1 (5 min):} Planificación --- definir tema, escribir 4 puntos clave en el cuaderno (lo hiciste en Actividad 1). \textbf{Etapa 2 (10 min):} Investigación --- buscar 3 fuentes con operadores (S8) y evaluarlas con CRAAP (S9). \textbf{Etapa 3 (20 min):} Escritura del primer borrador --- los 4 párrafos del contenido, sin formato todavía. \textbf{Etapa 4 (10 min):} Formato y elementos visuales --- portada, encabezado, pie, lista, tabla, imagen. \textbf{Etapa 5 (5 min):} Cierre --- sección de fuentes, autoevaluación con rúbrica.\\
+4. Algoritmo conceptual & \textbf{Pista profesional: revisar antes de entregar.} Cuando termines, no entregues de una. \textbf{Léelo completo de principio a fin}. Busca: errores ortográficos, oraciones que no se entienden, datos que no recuerdas si verificaste. Corrige lo que veas. \emph{Doña Mercedes decía: ``Trabajo entregado, trabajo bien revisado''}. Mejor 30 minutos extra de revisión que entregar un trabajo con errores que después dan pena.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcTurquesa}{10 elementos + estructura}
+\textbf{Estructura:} portada + 2 páginas contenido + sección fuentes. \\[1mm]
+\textbf{10 elementos:} archivo correcto · título formateado · párrafos formateados · énfasis controlado · lista · tabla · imagen · marco completo · información verificable · fuentes CRAAP.
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{Errores frecuentes en el documento de cosecha.} (1) \emph{Olvidar la portada}: empezar directo con contenido. La portada da presencia profesional. (2) \emph{No citar fuentes}: el documento se siente \emph{``inventado''}. Mínimo 3 fuentes citadas. (3) \emph{Lista sin formato paralelo}: mezclar verbos y sustantivos. (4) \emph{Imagen sin pie}: el lector no sabe qué muestra. (5) \emph{Encabezado solo en página 1}: el encabezado debe aparecer en TODAS las páginas de contenido (2 y 3). (6) \emph{Tabla sin encabezado en negrita}: la fila de encabezado debe diferenciarse. (7) \emph{No autoevaluar}: entregar sin verificar los 10 elementos. La rúbrica te ayuda a entregar completo.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+\textbf{Lo que va al cuaderno (Actividad 2 · APLICA).} Título: «Actividad 2 --- Plan de mi documento». \textbf{Formato:} en 1 página dibuja un boceto de las 3 páginas del documento. Indica qué va en cada zona. Lista los 10 elementos al lado, dejando una casilla vacía al frente de cada uno (para marcar después). \textbf{Extensión:} 1 página completa. \textbf{Sabes que terminaste cuando} tu boceto puede guiarte sin tener que volver a esta guía.
+\end{infoband}
+
+\puente{Con la estructura clara, escribes el documento aplicando los 10 elementos del periodo.}
+
+\begin{titlebox}{milcMagenta}
+Fase 3 · Praxis con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\textbf{Actividad 3 · CREA --- Tu documento informativo de cosecha} (50 min · individual). Vas a producir el documento con los 10 elementos. Sigue las 5 etapas del proceso. Es el trabajo más completo del periodo --- y te queda como muestra de todo lo que ahora sabes hacer.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
+Descomposición & \textbf{Paso 1 --- Investiga (10 min).} Aplica S8 (búsquedas con operadores) y S9 (CRAAP) para encontrar 3 fuentes sobre tu tema. Anota los enlaces o nombres en el cuaderno. Para cada una, evalúa CRAAP rápido (notas de 0 a 5 en los 5 criterios). Quédate con las 2-3 que mejor califiquen.\\
+Patrones & \textbf{Paso 2 --- Crea el documento + portada (8 min).} Abre Word/Docs. \textbf{Portada (página 1):} título grande centrado tamaño 28 en negrita azul oscuro, tu nombre, grado, materia (Tecnología), fecha. Estética simple. \texttt{Ctrl+Enter} para saltar a página 2.\\
+Abstracción & \textbf{Paso 3 --- Páginas 2 y 3: contenido (25 min).} En página 2: \textbf{encabezado} con tu nombre + grado + materia (tamaño 10, alineación derecha). \textbf{Título de sección}: nombre del tema en tamaño 16 negrita. Escribe 2 párrafos justificados con sangría. Inserta 1 \textbf{imagen} de fuente libre (Pixabay) con ajuste cuadrado + pie en cursiva tamaño 10. En página 3: continúa con 2 párrafos más, 1 \textbf{lista} (con viñetas o numerada), 1 \textbf{tabla} (mínimo 3 filas, encabezado en negrita). Aplica énfasis controlado.\\
+Algoritmo de armado & \textbf{Paso 4 --- Pie de página + numeración (3 min).} En cualquiera de las páginas 2 o 3, inserta pie de página: \emph{``I.E. Sor María Juliana --- Cartago --- Mayo 2026''}. Inserta números de página en esquina inferior derecha. Configura para que la portada no se numere (la página 1 es la página de contenido, no la portada).\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcMagenta}{Antes de mostrar tu cosecha (los 10 elementos)}
+\checkbox Documento creado y guardado con nombre correcto. \\[1mm]
+\checkbox Título formateado (negrita centrada azul tamaño 18). \\[1mm]
+\checkbox Párrafos justificados con sangría. \\[1mm]
+\checkbox Énfasis controlado (1-2 negritas/subrayados por párrafo). \\[1mm]
+\checkbox 1 lista con mínimo 3 ítems formato paralelo. \\[1mm]
+\checkbox 1 tabla con encabezado en negrita. \\[1mm]
+\checkbox 1 imagen con pie y ajuste cuadrado. \\[1mm]
+\checkbox Portada + encabezado + pie + numeración (páginas 2 y 3). \\[1mm]
+\checkbox Información verificable en 4 párrafos. \\[1mm]
+\checkbox 3 fuentes citadas con CRAAP al final.
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Estructura del documento.} \textit{P1 (portada):} título 28pt + nombre + grado + fecha. \textit{P2:} encabezado + título sección + 2 párrafos + imagen con pie + pie+ \#1. \textit{P3:} encabezado + 2 párrafos + lista + tabla + fuentes CRAAP + pie + \#2. \textit{Cuaderno:} boceto + lista 10 elementos marcados.
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+\textbf{Lo que va al cuaderno (Actividad 3 · CREA).} Título: «Actividad 3 --- Mi documento de cosecha del periodo 3». \textbf{Formato:} boceto de las 3 páginas + lista de 10 elementos con marca + nota final. \textbf{Extensión:} 1 página entera. \textbf{Sabes que terminaste cuando} marcaste los 10 elementos y tu nota de autoevaluación es 8/10 o más.
+\end{infoband}
+
+\puente{El producto es ese documento + autoevaluación con rúbrica + 3 fuentes citadas.}
+
+\begin{titlebox}{milcMostaza}
+Producto de la sesión
+\end{titlebox}
+\textbf{Documento informativo de 3 páginas con 10 elementos del periodo · cosecha}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) Los 10 elementos del checklist están aplicados (mínimo 8 de 10). (2) Tiene portada + 2 páginas de contenido + sección de fuentes. (3) El tema está investigado con 3 fuentes citadas y evaluadas CRAAP. (4) El formato es consistente y profesional. (5) El estudiante hace autoevaluación honesta en el cuaderno.
+\end{softbox}
+
+\puente{Antes de salir, marca cuáles de los 10 elementos están y cuáles faltan.}
+
+\begin{titlebox}{milcVino}
+Fase 4 · Evaluación liberadora — cinco dimensiones
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con 3 voces que te ayudan a entender por qué reunir el oficio en un solo trabajo es prueba de aprendizaje real.}
+
+\begin{titlebox}{milcGradeDark}
+Triángulo de pensamiento · cierre filosófico
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{````Aprender en partes está bien. Pero solo al armar el rompecabezas completo sabes si de verdad aprendiste.''''}
+
+Durante este periodo viste 8 sesiones distintas: Word, formato, listas, tablas, imágenes, marco, internet, búsqueda, fuentes. Cada una sola parecía un pedazo aislado. \textbf{El documento de hoy es el rompecabezas armado}. Si puedes hacerlo completo con los 10 elementos, no es que \emph{``aprendiste''} cada parte: es que \emph{integraste el oficio}. Esa integración es la verdadera meta del aprendizaje.
+
+\textbf{¿Cuántos elementos integré sin pensar y cuántos tuve que volver a revisar? Eso me dice qué tan asentado está el oficio.}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio (emperador que valoraba el trabajo terminado) · cuidado interior}
+\textit{````Lo terminado vale más que lo perfecto. Termina bien lo que empieces; perfecciona en el siguiente.''''}
+
+Tu documento de hoy no va a ser perfecto, y eso está bien. \textbf{Lo importante es que esté terminado con los 10 elementos integrados}. Después, mes a mes, irás perfeccionando: tu próximo documento será mejor que este, y el siguiente mejor que ese. Pero \emph{el primero terminado vale más que el imaginario perfecto que nunca empiezas}.
+
+\textbf{¿Voy a entregar lo terminado, o me voy a quedar esperando perfeccionarlo sin entregar nada?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{````El documento es la cosecha del pensamiento. Lo que no se documenta, no se conserva. Lo que no se conserva, se olvida.''''}
+
+Lo que aprendiste este periodo, \textbf{si no lo documentas en un trabajo concreto, se va a olvidar}. Por eso la cosecha del periodo no es \emph{``otra tarea''}: es la forma de \emph{conservar lo que ahora sabes}. Tu documento de cosecha, guardado en tu carpeta del periodo 3, será una prueba para tu yo de 30 años: \emph{``en 6° grado ya sabía hacer esto''}. Eso te da identidad como aprendiente.
+
+\textbf{¿Estoy conservando lo que aprendo en documentos que puedo revisar, o lo dejo flotar en la memoria que se pierde?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{titlebox}{milcVino}
+Compromiso final
+\end{titlebox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
+Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
+Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
+Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
+Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
+Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
+\end{tabularx}
+\normalsize
+
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Guarda tu documento de cosecha en lugar seguro. La próxima sesión es la \textbf{Sesión 11 (cosecha formal del periodo)}: te autoevaluás con rúbrica visible, revisas el examen integrador del periodo 3, y te preparas para mirar atrás todo el año. Hoy mostraste que el oficio ya es tuyo. La próxima sesión consolidamos formalmente lo aprendido.
+\end{infoband}
+
+\end{document}

@@ -1,0 +1,409 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra para todas las guias MILC v3
+% Ver scripts/generadores/build-guia-milc.py para la lista completa de
+% claves esperadas. El script valida que no queden placeholders sin
+% reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1.75cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\hyphenpenalty=200
+\exhyphenpenalty=200
+\pretolerance=400
+\tolerance=2000
+\setlength{\emergencystretch}{1em}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0066FF}
+\definecolor{milcGradeDark}{HTML}{003D99}
+\definecolor{milcGradeSoft}{HTML}{D6E8FF}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Tecnología e Informática · Grado 6}
+\rhead{\small Guía 29 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{\textbf{\textrightarrow}}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+\begin{document}
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[white] (current page.south west) rectangle (current page.north east);
+  \path[fill=milcGradePrimary,rounded corners=16mm]
+    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
+    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
+    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+
+  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
+    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
+    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
+    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
+    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
+    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
+  \end{scope}
+
+  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{124}{124}\selectfont 6};
+  \draw[milcGradeText,line width=1.7pt]
+    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+
+  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+    {
+     {\sffamily\bfseries\fontsize{19}{22}\selectfont Evaluar\\fuentes ---\\distinguir\\lo verdadero\\de lo inventado}\\[4mm]
+     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 29-6-TIC}\\[2mm]
+     {\sffamily\fontsize{13}{16}\selectfont Período 3 · Procesador de texto e Internet}\\[5mm]
+     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
+     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+    };
+
+  \path[fill=milcGradeSoft,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
+    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
+    \textcolor{milcGradeDark}{\bfseries Producto:} Una \textbf{comparación de 3 fuentes} sobre un mismo tema (puede ser ``el volcán Nevado del Ruiz'', ``Simón Bolívar'', ``mi colegio''). Para cada fuente analizas con \textbf{los 5 criterios CRAAP}: \emph{Currency} (actualidad), \emph{Relevance} (relevancia), \emph{Authority} (autoridad), \emph{Accuracy} (exactitud), \emph{Purpose} (propósito). Por cada criterio das \emph{una nota de 0 a 5}. Al final declaras cuál fuente es la mejor y justificas con 3 razones. Más \textbf{en el cuaderno}: lista de 8 banderas rojas (warning signs) que indican que una fuente NO es confiable.};
+\end{tikzpicture}
+\mbox{}
+\newpage
+
+\section*{Apertura: Evaluar fuentes --- distinguir lo verdadero de lo inventado en internet}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+\textbf{Doña Mercedes la maestra rural de la vereda La Plata de Cartago decía: ``No todas las cartas dicen verdad.''} En los años 70, llegaban a la vereda \textbf{cartas con promesas extrañas}: \emph{``Pague 100 pesos y reciba 1.000''}, \emph{``Su familia ha ganado un terreno en La Guajira''}. Algunos campesinos, sin medios para verificar, caían en la trampa. Doña Mercedes les enseñaba \textbf{a desconfiar y verificar}: \emph{``¿Quién mandó la carta? ¿Tiene sello oficial? ¿Tiene nombre de remitente real? ¿Suena demasiado bueno para ser cierto? Si dudas, ve a la alcaldía y pregunta''}. Esa regla \emph{``verificar antes de creer''} salvó dinero y dignidad a muchas familias. Hoy en internet pasa lo mismo: \textbf{hay páginas que mienten, exageran, manipulan, o están vencidas}. Aprender a distinguir lo confiable de lo no confiable es la otra mitad de la alfabetización digital. Buscar bien (S8) te lleva a páginas. \textbf{Evaluar fuentes} te dice cuáles creer.
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+\textbf{Evaluar una fuente} significa preguntarte si la página que estás leyendo dice información confiable. Los bibliotecarios universitarios crearon una herramienta llamada \textbf{CRAAP} (acrónimo en inglés) con \textbf{5 criterios}: \textbf{(1) Currency (Actualidad)}: ¿de cuándo es la información? Una página de 1995 sobre tecnología está vencida. \textbf{(2) Relevance (Relevancia)}: ¿es del nivel y tema que necesito? Una tesis universitaria no sirve para una tarea de 6° grado. \textbf{(3) Authority (Autoridad)}: ¿quién la escribió? ¿es experto en el tema? Un blog anónimo NO es lo mismo que el sitio del Ministerio. \textbf{(4) Accuracy (Exactitud)}: ¿tiene errores ortográficos, contradicciones, datos sin fuente? Cuanto más sólido, mejor. \textbf{(5) Purpose (Propósito)}: ¿por qué existe la página? ¿para informar, vender, convencer? Un sitio comercial puede sesgar la verdad. \textbf{Aplicar CRAAP toma 3 minutos por fuente}, y te ahorra horas de citar mentiras.
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{Buscas \emph{``Simón Bolívar fechas''} en Google. Aparecen 3 resultados: \emph{(1) una página de Wikipedia con muchos detalles}, \emph{(2) un blog personal de un señor cualquiera con su opinión}, \emph{(3) un sitio del Ministerio de Educación de Colombia con cronología oficial}. ¿\textbf{En cuál confías más para tu tarea}? ¿Por qué? ¿La 1, la 2, la 3, o las 3?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar la clase: (1) podrás \textbf{identificar} los 5 criterios CRAAP; (2) sabrás \textbf{aplicar} cada criterio a una fuente; (3) podrás \textbf{evaluar} 3 fuentes y elegir la mejor con justificación; (4) habrás \textbf{creado} una lista personal de 8 banderas rojas.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Produce contenidos digitales y valida información de fuentes web (MEN, T\&I 6°)\\
+Referentes & Saber ancestral de la maestra rural · Lectura crítica · Soberanía informacional\\
+Producto final & Una \textbf{comparación de 3 fuentes} sobre un mismo tema (puede ser ``el volcán Nevado del Ruiz'', ``Simón Bolívar'', ``mi colegio''). Para cada fuente analizas con \textbf{los 5 criterios CRAAP}: \emph{Currency} (actualidad), \emph{Relevance} (relevancia), \emph{Authority} (autoridad), \emph{Accuracy} (exactitud), \emph{Purpose} (propósito). Por cada criterio das \emph{una nota de 0 a 5}. Al final declaras cuál fuente es la mejor y justificas con 3 razones. Más \textbf{en el cuaderno}: lista de 8 banderas rojas (warning signs) que indican que una fuente NO es confiable.\\
+\end{tabularx}
+\normalsize
+
+\puente{Hoy haces 4 cosas: aprendes los 5 criterios CRAAP, los aplicas a 3 fuentes sobre un tema, eliges la mejor con justificación, y armas tu lista de banderas rojas.}
+
+\begin{titlebox}{milcGradeDark}
+Ruta MILC: así vamos a aprender
+\end{titlebox}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escuta\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Empezamos comparando 3 fuentes ficticias para reconocer la mejor.}
+
+\begin{titlebox}{milcVerde}
+Fase 1 · Escuta
+\end{titlebox}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · ANALIZA --- 3 fuentes para escoger} (12 min · individual). Lee la descripción de estas 3 fuentes (ficticias pero típicas) sobre el tema \emph{``El volcán Nevado del Ruiz''}. \textbf{Fuente A:} Página de la \emph{Universidad Nacional de Colombia, departamento de Geología}, fecha 2024, con datos científicos y referencias a estudios. \textbf{Fuente B:} Blog personal de un señor llamado \emph{``Pedro74''}, año 2009, dice que el volcán \emph{``va a explotar pronto''} pero no cita estudios. Tiene errores ortográficos. \textbf{Fuente C:} Página de \emph{Wikipedia en español}, fecha 2023, con cronología completa, fuentes citadas al final, escrita por varios voluntarios. \textbf{En el cuaderno responde:} \emph{(1) ¿Cuál fuente usarías para tu tarea?} \emph{(2) ¿En qué orden las confías?} \emph{(3) ¿Por qué descartarías la B?}.
+\end{softbox}
+
+\checkbox Leí las 3 fuentes con calma.\\
+\checkbox Respondí las 3 preguntas con mi intuición.\\
+\checkbox Identifiqué cuál fuente es la menos confiable y por qué.
+
+\begin{infoband}{milcVerde}
+\textbf{Lo que va al cuaderno (Actividad 1 · ANALIZA).} Título: «Actividad 1 --- 3 fuentes sobre el Nevado del Ruiz». \textbf{Formato:} 3 respuestas cortas a las 3 preguntas. \textbf{Extensión:} 3 líneas. \textbf{Sabes que terminaste cuando} puedes explicar por qué confías más en una que en otra.
+\end{infoband}
+
+\puente{Después aprendes los 5 criterios con preguntas concretas para aplicar.}
+
+\begin{titlebox}{milcTurquesa}
+Fase 2 · Sistematización con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+Tu intuición fue probablemente acertada. Ahora aprendes \textbf{el método CRAAP} para evaluar cualquier fuente en internet de manera sistemática.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
+1. Descomposición & \textbf{C --- Currency (Actualidad).} ¿De cuándo es la información? Para temas que cambian rápido (tecnología, salud, ciencia), \emph{menos de 3 años} es ideal. Para temas que no cambian mucho (historia, geografía básica), \emph{10 años está bien}. \textbf{Pregunta clave:} ¿está fechada? Si una página no tiene fecha, ya es una señal de duda. \textbf{R --- Relevance (Relevancia).} ¿La página responde a tu pregunta y a tu nivel? Una tesis universitaria sobre el volcán es \emph{válida pero compleja} para 6° grado. Una página infantil sobre el volcán es \emph{válida pero superficial}. La relevancia es nivelar.\\
+2. Reconocimiento de patrones & \textbf{A --- Authority (Autoridad).} ¿Quién la escribió? ¿Tiene credibilidad en el tema? \emph{Mucho:} Universidades, museos, ministerios, periódicos serios, expertos con nombre y apellido. \emph{Poco:} Blogs personales anónimos, sitios sin información de quién los hace, redes sociales. \textbf{Pregunta clave:} ¿hay nombre y credenciales del autor? \textbf{A --- Accuracy (Exactitud).} ¿La información es verificable? ¿Hay fuentes citadas? ¿Otros sitios confiables dicen lo mismo? \emph{Sospechosa:} datos sin fuente, errores ortográficos, contradicciones, números muy redondos. \textbf{Pregunta clave:} ¿podría verificar al menos 1 dato en otro sitio?\\
+3. Abstracción & \textbf{P --- Purpose (Propósito).} ¿Por qué existe la página? \emph{Sano:} para informar, para enseñar, para divulgar conocimiento. \emph{Sospechoso:} para vender, para asustar, para convencerte de algo, para hacerte hacer clic. Una página comercial puede mentir un poco para vender. Una página política puede sesgar para convencer. \textbf{Pregunta clave:} ¿quién gana algo si yo creo esto? Si la respuesta es \emph{``alguien gana dinero''} o \emph{``alguien gana votos''}, duda.\\
+4. Algoritmo conceptual & \textbf{Las 8 banderas rojas que indican que una fuente NO es confiable.} (1) \emph{Sin fecha visible}. (2) \emph{Sin autor o autor anónimo}. (3) \emph{Sin enlaces a fuentes o estudios}. (4) \emph{Errores ortográficos abundantes}. (5) \emph{Lenguaje exagerado:} \emph{``inmediato''}, \emph{``urgente''}, \emph{``increíble''}, \emph{``escándalo''}. (6) \emph{Imágenes sin pie ni atribución}. (7) \emph{Mucha publicidad o pop-ups}. (8) \emph{Pide pago o registro para leer información básica}. Si una página tiene 3+ banderas rojas, busca otra fuente.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcTurquesa}{CRAAP + 8 banderas rojas}
+\textbf{C} - Currency: ¿fecha reciente? \\[1mm]
+\textbf{R} - Relevance: ¿nivel y tema apropiados? \\[1mm]
+\textbf{A} - Authority: ¿autor con credenciales? \\[1mm]
+\textbf{A} - Accuracy: ¿datos verificables? \\[1mm]
+\textbf{P} - Purpose: ¿para informar o para vender? \\[1mm]
+\textbf{8 banderas rojas:} sin fecha · sin autor · sin fuentes · errores · exageración · imágenes sin atribuir · mucha publicidad · pide pago.
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{Errores frecuentes al evaluar fuentes.} (1) \emph{``El primer resultado de Google es el mejor''} --- Falso. Es solo el más popular. (2) \emph{``Wikipedia no se puede citar''} --- Discutible. Wikipedia es buen \emph{punto de partida}, no la fuente final. Cita la fuente original que Wikipedia menciona al final. (3) \emph{``Si una página es bonita, es confiable''} --- Falso. El diseño no garantiza la verdad. (4) \emph{``Si dice .gov o .edu, es 100\% confiable''} --- Probable pero no garantizado. Hasta los gobiernos cometen errores. (5) \emph{``Si está en inglés, es más serio''} --- Falso. Hay sitios en español muy confiables y sitios en inglés muy malos.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+\textbf{Lo que va al cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2 --- 5 criterios CRAAP + 8 banderas rojas». \textbf{Formato:} bloque A con los 5 criterios y su pregunta clave. Bloque B con la lista de 8 banderas rojas. \textbf{Extensión:} 5 + 8 líneas. \textbf{Sabes que terminaste cuando} podrías evaluar cualquier página en 3 minutos.
+\end{infoband}
+
+\puente{Con CRAAP claro, evalúas 3 fuentes reales sobre un tema que escojas.}
+
+\begin{titlebox}{milcMagenta}
+Fase 3 · Praxis con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\textbf{Actividad 3 · EVALÚA --- 3 fuentes reales sobre un tema} (30 min · individual). Vas a tomar un tema y a buscar 3 fuentes sobre él (en clase si tienes computador, en casa si no). Después aplicas CRAAP a cada una y decides cuál es la mejor.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
+Descomposición & \textbf{Paso 1 --- Escoge el tema.} Algo que te interese investigar. Puede ser: \emph{el volcán Nevado del Ruiz}, \emph{Simón Bolívar}, \emph{cómo se hace una piñata}, \emph{el río Cauca}, \emph{tu colegio}, \emph{Cristiano Ronaldo}. Anota en el cuaderno: \emph{``Tema: ...''}.\\
+Patrones & \textbf{Paso 2 --- Busca 3 fuentes.} En Google (con los operadores de S8), busca tu tema. \textbf{Escoge 3 fuentes distintas:} ideal que sean tipos diferentes (una de Wikipedia, una de gobierno o universidad, una de blog o sitio comercial). Apunta el enlace o nombre. Si no tienes computador, usa las 3 fuentes ficticias del Actividad 1.\\
+Abstracción & \textbf{Paso 3 --- Tabla de evaluación.} En el cuaderno, dibuja una tabla de \textbf{4 columnas y 7 filas}. Columnas: \emph{Criterio · Fuente A · Fuente B · Fuente C}. Filas: \emph{(1) Currency (0-5) · (2) Relevance · (3) Authority · (4) Accuracy · (5) Purpose · (6) TOTAL (suma) · (7) Banderas rojas que tiene}.\\
+Algoritmo de armado & \textbf{Paso 4 --- Califica con CRAAP.} Para cada fuente, da \textbf{una nota de 0 a 5} en cada criterio. \emph{0 = falla total; 5 = excelente}. Suma los 5 criterios al final (total máximo 25). En la fila 7, anota qué banderas rojas detectaste (\emph{``sin fecha''}, \emph{``muchos anuncios''}, etc.).\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcMagenta}{Antes de mostrar tu evaluación}
+\checkbox Anoté el tema y las 3 fuentes que evalué. \\[1mm]
+\checkbox La tabla tiene 4 columnas y 7 filas completas. \\[1mm]
+\checkbox Cada fuente tiene 5 notas (de 0 a 5) y su suma. \\[1mm]
+\checkbox Identifiqué banderas rojas en al menos 1 fuente. \\[1mm]
+\checkbox Declaré una fuente ganadora con 3 razones justificadas. \\[1mm]
+\checkbox Hice mi lista personal de 8 banderas rojas firmada.
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Estructura.} \textit{Arriba:} tema + 3 fuentes nombradas. \textit{Tabla 4 × 7:} criterio + 3 fuentes evaluadas + total + banderas rojas. \textit{Debajo:} fuente ganadora + 3 razones. \textit{Final:} lista personal de 8 banderas rojas firmada.
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+\textbf{Lo que va al cuaderno (Actividad 3 · EVALÚA).} Título: «Actividad 3 --- Evaluación CRAAP de 3 fuentes». \textbf{Formato:} tabla 4x7 + fuente ganadora justificada + lista de 8 banderas rojas. \textbf{Extensión:} 1 página completa. \textbf{Sabes que terminaste cuando} podrías defender ante el profe por qué confías en una fuente y desconfías de otra.
+\end{infoband}
+
+\puente{El producto es la tabla de evaluación + lista de 8 banderas rojas + ganadora justificada.}
+
+\begin{titlebox}{milcMostaza}
+Producto de la sesión
+\end{titlebox}
+\textbf{Evaluación CRAAP de 3 fuentes + lista de 8 banderas rojas · firmada}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) Las 3 fuentes están identificadas con nombre y tipo. (2) La tabla CRAAP tiene los 5 criterios calificados de 0 a 5. (3) El TOTAL de cada fuente está calculado. (4) La fuente ganadora está justificada con 3 razones. (5) La lista de 8 banderas rojas es personal y firmada.
+\end{softbox}
+
+\puente{Antes de salir, verificas que cada fuente tiene los 5 criterios calificados de 0 a 5.}
+
+\begin{titlebox}{milcVino}
+Fase 4 · Evaluación liberadora — cinco dimensiones
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con 3 voces que te ayudan a entender por qué dudar antes de creer es virtud, no debilidad.}
+
+\begin{titlebox}{milcGradeDark}
+Triángulo de pensamiento · cierre filosófico
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{````Dudar antes de creer no es desconfianza enferma. Es respeto a la verdad.''''}
+
+Doña Mercedes enseñaba a los niños del campo a \textbf{dudar de las cartas extrañas} antes de creer. No era \emph{paranoia}: era \emph{cuidado}. Hoy en internet, \emph{quien no duda, miente sin saber}. Cita información falsa, repite mentiras, se convierte en cómplice de la desinformación. \emph{Dudar antes de creer es disciplina de ciudadano alfabetizado}. La pereza intelectual es el contrario.
+
+\textbf{¿Estoy en la cómoda actitud de creer todo lo que leo, o tengo la disciplina de verificar antes?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio (emperador que escribía solo lo verificable) · cuidado interior}
+\textit{````Antes de afirmar, pregunta: ¿esto es cierto? Si no puedes responder, calla hasta saber.''''}
+
+\textbf{El estoico no repite lo que oyó sin verificar}. Si no sabe, calla; si verifica, afirma con seguridad. Aplicado a internet: \emph{no copio en mi tarea lo primero que veo}. Verifico al menos en 2 fuentes distintas. Si las 2 coinciden, la información es probable verdadera. Si una contradice a la otra, busco una tercera. Esa pequeña disciplina te ahorra entregar mentiras como tarea.
+
+\textbf{¿Estoy entregando información que no he verificado, o me esfuerzo en confirmar antes de afirmar?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{````En la era de la información, el verdadero analfabetismo no es no saber leer. Es no saber distinguir lo verdadero de lo falso.''''}
+
+Tu abuela quizá no sabía usar Google, pero en su pueblo de Cartago sabía a quién creerle: a doña Mercedes, a don Lucho, no al pregonero exagerado. \emph{Sabía evaluar fuentes humanas}. Tú necesitas el mismo saber, pero en internet. \textbf{Ese saber es ya tan importante como saber leer}. Una sociedad sin evaluadores de fuentes está condenada a la mentira.
+
+\textbf{¿Estoy formando criterio para evaluar fuentes o me estoy convirtiendo en repetidor pasivo de información?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{titlebox}{milcVino}
+Compromiso final
+\end{titlebox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
+Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
+Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
+Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
+Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
+Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
+\end{tabularx}
+\normalsize
+
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Esta semana, cada vez que veas una noticia o una afirmación sorprendente en internet, aplica CRAAP rápido (15 segundos en tu cabeza). Verás cuántas no pasan. La próxima sesión es la \textbf{cosecha del periodo (S10)}: vas a crear un \emph{documento informativo de 2 páginas} aplicando TODO lo aprendido: Word + listas + tabla + imágenes + encabezado/pie + búsqueda con operadores + evaluación de fuentes. Hoy aprendiste a verificar; la próxima clase produces algo con todo el oficio.
+\end{infoband}
+
+\end{document}

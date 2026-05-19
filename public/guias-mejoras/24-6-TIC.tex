@@ -1,0 +1,408 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra para todas las guias MILC v3
+% Ver scripts/generadores/build-guia-milc.py para la lista completa de
+% claves esperadas. El script valida que no queden placeholders sin
+% reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1.75cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\hyphenpenalty=200
+\exhyphenpenalty=200
+\pretolerance=400
+\tolerance=2000
+\setlength{\emergencystretch}{1em}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0066FF}
+\definecolor{milcGradeDark}{HTML}{003D99}
+\definecolor{milcGradeSoft}{HTML}{D6E8FF}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Tecnología e Informática · Grado 6}
+\rhead{\small Guía 24 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{\textbf{\textrightarrow}}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+\begin{document}
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[white] (current page.south west) rectangle (current page.north east);
+  \path[fill=milcGradePrimary,rounded corners=16mm]
+    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
+    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
+    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+
+  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
+    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
+    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
+    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
+    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
+    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
+  \end{scope}
+
+  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{124}{124}\selectfont 6};
+  \draw[milcGradeText,line width=1.7pt]
+    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+
+  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+    {
+     {\sffamily\bfseries\fontsize{19}{22}\selectfont Listas y\\numeración ---\\ordenar\\la información\\con criterio}\\[4mm]
+     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 24-6-TIC}\\[2mm]
+     {\sffamily\fontsize{13}{16}\selectfont Período 3 · Procesador de texto e Internet}\\[5mm]
+     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
+     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+    };
+
+  \path[fill=milcGradeSoft,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
+    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
+    \textcolor{milcGradeDark}{\bfseries Producto:} Un \textbf{documento de Word} (o Docs) que muestra los \textbf{3 tipos de listas} (con viñetas, numeradas y multinivel jerárquica). El documento tiene: \textbf{(a) lista con viñetas} de tus 10 cosas favoritas, \textbf{(b) lista numerada} de los 8 pasos para hacer algo que sepas (preparar arepas, organizar el morral, etc.), y \textbf{(c) lista multinivel} de tus materias del colegio con sus 3 temas principales cada una. Más \textbf{en el cuaderno}: comparación de un párrafo confuso vs el mismo en lista limpia.};
+\end{tikzpicture}
+\mbox{}
+\newpage
+
+\section*{Apertura: Listas, viñetas y numeración --- ordenar la información para que se entienda}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+\textbf{Cuando doña Mercedes mandaba la lista de tareas del campo, no hablaba revuelto.} En la vereda La Plata de Cartago, los lunes la maestra rural ponía en el tablero la lista de la semana, una al lado de la otra, no en una sola masa. \emph{``Lunes: traer cartulina. Martes: estudiar tablas. Miércoles: prueba de lectura. Jueves: traer botella vacía para experimento. Viernes: limpieza del salón.''}. Cada cosa con su día, cada día con su tarea. \textbf{Si lo hubiera dicho todo seguido en un párrafo}, los niños se habrían confundido y olvidado la mitad. \emph{``Cuando son muchas cosas, en lista''}, decía doña Mercedes. La cocinera del barrio hacía igual con la lista del mercado. El campesino con la lista de semillas. \textbf{La lista no es decoración: es una herramienta de pensamiento ordenado}. Hoy aprendes a hacer listas en digital, con las mismas reglas que doña Mercedes usaba en su tablero.
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+Una \textbf{lista} es un conjunto de cosas presentadas \emph{en líneas separadas, una debajo de otra}, en vez de en un párrafo seguido. Los procesadores de texto ofrecen \textbf{3 tipos}. \textbf{(1) Lista con viñetas (bullets):} cada ítem lleva un punto, círculo o cuadrado al frente. Sirve cuando \emph{no importa el orden}. \textbf{(2) Lista numerada:} cada ítem lleva un número (1, 2, 3...) o letra (a, b, c...). Sirve cuando \emph{el orden sí importa} (pasos, jerarquías). \textbf{(3) Lista multinivel (jerárquica):} listas dentro de listas, con sangría. Sirve cuando un ítem se divide en sub-ítems. Cada tipo tiene un \textbf{atajo} en Word: \texttt{Inicio} → \texttt{Viñetas} / \texttt{Numeración} / \texttt{Lista multinivel}. Conocer cuándo usar cada una te hace \textbf{2 veces más claro} en tus documentos.
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{Si te dan a leer un examen con preguntas separadas por punto y línea aparte, vs un examen con todas las preguntas en una sola masa de texto, ¿\textbf{cuál te tomas el tiempo de hacer bien}? ¿Por qué?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar la clase: (1) podrás \textbf{identificar} los 3 tipos de listas; (2) sabrás \textbf{explicar} cuándo usar cada una; (3) podrás \textbf{aplicar} listas en Word/Docs con su atajo; (4) habrás \textbf{creado} un documento con los 3 tipos demostrados.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Produce contenidos digitales y valida información de fuentes web (MEN, T\&I 6°)\\
+Referentes & Saber ancestral de la maestra rural · Lectura crítica · Soberanía informacional\\
+Producto final & Un \textbf{documento de Word} (o Docs) que muestra los \textbf{3 tipos de listas} (con viñetas, numeradas y multinivel jerárquica). El documento tiene: \textbf{(a) lista con viñetas} de tus 10 cosas favoritas, \textbf{(b) lista numerada} de los 8 pasos para hacer algo que sepas (preparar arepas, organizar el morral, etc.), y \textbf{(c) lista multinivel} de tus materias del colegio con sus 3 temas principales cada una. Más \textbf{en el cuaderno}: comparación de un párrafo confuso vs el mismo en lista limpia.\\
+\end{tabularx}
+\normalsize
+
+\puente{Hoy haces 4 cosas: comparas un párrafo confuso con su lista, aprendes los 3 tipos con sus reglas de uso, escribes tus listas reales, y armas el documento.}
+
+\begin{titlebox}{milcGradeDark}
+Ruta MILC: así vamos a aprender
+\end{titlebox}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escuta\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Empezamos con un párrafo confuso que vas a reescribir como lista.}
+
+\begin{titlebox}{milcVerde}
+Fase 1 · Escuta
+\end{titlebox}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · ANALIZA --- Reescribe un párrafo como lista} (12 min · individual). Lee este párrafo confuso: \emph{``Para preparar arepas necesitas masa de maíz, agua tibia, sal, queso si quieres rellenas, aceite para la sartén, una cuchara para mezclar, las manos limpias, una mesa o tabla para amasar, un sartén o budare, y una espátula para voltearlas. Primero mezclas la masa con agua y sal, después amasas hasta que quede uniforme, después haces bolitas, después las aplastas en forma redonda, después las pones en el sartén caliente y las dejas dorar por los dos lados.''}. \textbf{En el cuaderno:} reescribe ese párrafo en \textbf{2 listas separadas}: una de \emph{ingredientes y herramientas} (con viñetas) y otra de \emph{pasos} (numerada). Cuenta cuánto te tomó leer el párrafo y cuánto entender tu reescritura.
+\end{softbox}
+
+\checkbox Leí el párrafo entero y noté lo confuso que es.\\
+\checkbox {'Hice las 2 listas': 'ingredientes (viñetas) + pasos (numerada).'}\\
+\checkbox Comparé el tiempo de lectura entre los dos.
+
+\begin{infoband}{milcVerde}
+\textbf{Lo que va al cuaderno (Actividad 1 · ANALIZA).} Título: «Actividad 1 --- De párrafo confuso a 2 listas limpias». \textbf{Formato:} 2 listas separadas con sus encabezados. \textbf{Extensión:} 2 listas (1 con 9 viñetas + 1 con 5 pasos numerados). \textbf{Sabes que terminaste cuando} tu reescritura se entiende en la mitad del tiempo que el párrafo original.
+\end{infoband}
+
+\puente{Después aprendes los 3 tipos de listas y los 3 atajos clave.}
+
+\begin{titlebox}{milcTurquesa}
+Fase 2 · Sistematización con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+Lo que acabaste de hacer es la \textbf{magia de las listas}: tomas algo confuso y lo transformas en algo claro en segundos. Ahora vas a aprender cuándo usar cada uno de los 3 tipos.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
+1. Descomposición & \textbf{Tipo 1 --- Lista con viñetas (\emph{bullets}).} Cada ítem lleva un símbolo al inicio: punto, círculo, cuadrado, guion. \textbf{Cuándo usarla:} cuando \emph{el orden NO importa}. Ejemplos: una lista de cosas favoritas, una lista de ingredientes, una lista de características. \emph{En Word:} pestaña \texttt{Inicio} → ícono de \texttt{viñetas} (3 líneas con puntos). O atajo \texttt{Ctrl + Shift + L}. \textbf{Pista:} las viñetas se ven más informales que las numeradas.\\
+2. Reconocimiento de patrones & \textbf{Tipo 2 --- Lista numerada.} Cada ítem lleva un número (1, 2, 3...) o letra (a, b, c...). \textbf{Cuándo usarla:} cuando \emph{el orden SÍ importa}. Ejemplos: pasos de una receta, una secuencia histórica, posiciones en un ranking, niveles de jerarquía. \emph{En Word:} pestaña \texttt{Inicio} → ícono de \texttt{numeración} (3 líneas con 1.2.3). \textbf{Pista:} si cambias el orden y se vuelve incorrecto, era numerada.\\
+3. Abstracción & \textbf{Tipo 3 --- Lista multinivel (jerárquica).} Listas dentro de listas, con sangría. Ítems mayores en el nivel 1, sub-ítems en nivel 2, etc. \textbf{Cuándo usarla:} cuando un ítem se subdivide. Ejemplo: \emph{1. Materias del colegio --- 1.1. Tecnología --- 1.1.1. Hardware, 1.1.2. Software --- 1.2. Matemáticas --- 1.2.1. Geometría, etc.}. \emph{En Word:} ícono de \texttt{lista multinivel}. Después usas la tecla \texttt{Tab} para meter el ítem un nivel adentro, \texttt{Shift+Tab} para sacarlo.\\
+4. Algoritmo conceptual & \textbf{Las 4 reglas de oro de las listas.} (1) \textbf{Mínimo 3 ítems para hacer una lista.} Menos = un párrafo está bien. (2) \textbf{Todos los ítems en el mismo formato gramatical.} Si el primero empieza con verbo (\emph{``Buscar...''}), todos empiezan con verbo. (3) \textbf{Sin puntuación al final de cada ítem corto.} Solo si son frases completas. (4) \textbf{Una lista pura}: o todos con viñetas, o todos numerados, no mezcles dentro de la misma lista.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcTurquesa}{3 tipos de listas + 4 reglas de oro}
+\textbf{3 tipos:} \\[1mm]
+\textbf{1.} Viñetas (orden no importa). \\[1mm]
+\textbf{2.} Numerada (orden sí importa). \\[1mm]
+\textbf{3.} Multinivel (jerarquía con sub-ítems). \\[1mm]
+\textbf{4 reglas:} mínimo 3 ítems · formato gramatical igual · puntuación coherente · una lista pura.
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{Errores frecuentes al hacer listas.} (1) \emph{Lista de 2 ítems}: no se justifica, mejor en párrafo. (2) \emph{Mezclar verbos e infinitivos}: \emph{``Buscar, comprar, lo encontré''} se ve descuidado. (3) \emph{Usar numeración para cosas sin orden}: si pongo \emph{``1. perro, 2. gato, 3. pájaro''} y se podrían intercambiar, debería ser con viñetas. (4) \emph{No usar sangría en multinivel}: pierde la jerarquía. (5) \emph{Listas dentro de párrafos con puntos}: \emph{``Las materias son: 1) mate, 2) historia, 3) inglés''}. Mejor partir el párrafo y hacer la lista separada.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+\textbf{Lo que va al cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2 --- Los 3 tipos de listas con ejemplo». \textbf{Formato:} 3 bloques. Cada bloque: nombre del tipo + cuándo se usa + ejemplo corto tuyo. \textbf{Extensión:} 3 bloques de 3 líneas. \textbf{Sabes que terminaste cuando} podrías decidir en 5 segundos cuál tipo usar para cualquier información que te den.
+\end{infoband}
+
+\puente{Con todo claro, abres el procesador y creas tu documento con los 3 tipos.}
+
+\begin{titlebox}{milcMagenta}
+Fase 3 · Praxis con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\textbf{Actividad 3 · APLICA --- Documento con los 3 tipos de listas} (28 min · individual). Vas a abrir el procesador y crear un documento que demuestra \textbf{los 3 tipos de listas} con ejemplos reales tuyos. Esto va a quedar como tu \emph{plantilla de listas} para usar en el futuro.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
+Descomposición & \textbf{Paso 1 --- Documento nuevo.} Abre Word o Docs. Crea documento nuevo. Título: \textbf{``Mis listas --- 3 tipos demostrados''}. Formato: tamaño 18, centrado, negrita, color azul oscuro (aplica lo aprendido en S3).\\
+Patrones & \textbf{Paso 2 --- Lista con viñetas (10 cosas que te gustan).} Subtítulo: \textbf{``Mis 10 cosas favoritas''}. Tamaño 14, negrita. Debajo, en lista con viñetas, escribe \textbf{10 cosas que te gustan} (pueden ser comidas, lugares, actividades, materias, juegos). Aplica las 4 reglas de oro: mismo formato gramatical (todas sustantivos, por ejemplo). En Word, después de cada ítem presiona Enter y sigue.\\
+Abstracción & \textbf{Paso 3 --- Lista numerada (8 pasos para hacer algo).} Subtítulo: \textbf{``Cómo hago [algo que sé hacer]''}. Tamaño 14, negrita. Debajo, lista numerada de 8 pasos para hacer algo que sepas: preparar arepas, organizar el morral, lavar tu ropa, jugar un juego, hacer un peinado, lo que quieras. \emph{Cada paso debe empezar con verbo en infinitivo}: \emph{``Lavar...''}, \emph{``Mezclar...''}, \emph{``Acomodar...''}.\\
+Algoritmo de armado & \textbf{Paso 4 --- Lista multinivel (materias y temas).} Subtítulo: \textbf{``Mis materias y temas de este periodo''}. Tamaño 14, negrita. Debajo, lista multinivel: nivel 1 = nombre de cada materia (Tecnología, Matemáticas, Sociales, Lenguaje --- 4 materias). Nivel 2 = 3 temas principales que estás viendo en cada una. Para meter al nivel 2 presionas \texttt{Tab} al inicio del ítem. Para volver al nivel 1, presionas \texttt{Shift+Tab}.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcMagenta}{Antes de mostrar tu documento}
+\checkbox El documento tiene título formateado (negrita centrada azul oscuro). \\[1mm]
+\checkbox Hay 3 subtítulos (uno por lista) en tamaño 14. \\[1mm]
+\checkbox Lista con viñetas tiene exactamente 10 ítems. \\[1mm]
+\checkbox Lista numerada tiene 8 pasos, todos empezando con verbo. \\[1mm]
+\checkbox Lista multinivel tiene 4 materias × 3 temas (12 sub-ítems). \\[1mm]
+\checkbox Está guardado con nombre correcto en la carpeta de Tecnología.
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Estructura del documento.} \textit{Título:} negrita + centrado + azul oscuro. \textit{Sección 1:} subtítulo + lista de viñetas con 10 cosas favoritas. \textit{Sección 2:} subtítulo + lista numerada con 8 pasos. \textit{Sección 3:} subtítulo + lista multinivel con 4 materias × 3 temas. \textit{Guardado:} 2026-mis-3-listas.docx.
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+\textbf{Lo que va al cuaderno (Actividad 3 · APLICA).} Título: «Actividad 3 --- Mis 3 listas en digital». \textbf{Formato:} planificación de las 3 listas + boceto del documento + reflexión final. \textbf{Extensión:} 1 página. \textbf{Sabes que terminaste cuando} podrías mostrar tu documento al profe y él vería los 3 tipos de listas claros.
+\end{infoband}
+
+\puente{El producto es ese documento + la reescritura del párrafo en el cuaderno.}
+
+\begin{titlebox}{milcMostaza}
+Producto de la sesión
+\end{titlebox}
+\textbf{Documento con 3 tipos de listas demostradas (viñetas, numerada, multinivel)}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) Hay las 3 listas claramente diferenciadas con subtítulos. (2) La lista con viñetas tiene 10 ítems con formato gramatical igual. (3) La numerada tiene 8 pasos empezando con verbo. (4) La multinivel tiene jerarquía con sangría visible (4 materias × 3 temas). (5) Está guardado con nombre correcto en la carpeta del periodo.
+\end{softbox}
+
+\puente{Antes de salir, verificas que las 3 listas están bien aplicadas (no usaste numerada cuando era viñetas).}
+
+\begin{titlebox}{milcVino}
+Fase 4 · Evaluación liberadora — cinco dimensiones
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con 3 voces que te ayudan a entender por qué ordenar es respeto al lector y al pensamiento.}
+
+\begin{titlebox}{milcGradeDark}
+Triángulo de pensamiento · cierre filosófico
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{````Quien sabe ordenar lo que tiene en la cabeza, lo sabe comunicar al mundo. Quien no, lo guarda solo para sí.''''}
+
+\textbf{Hacer una lista te obliga a ordenar mentalmente lo que sabes}. Antes de hacer la lista de \emph{``cómo hago arepas''}, tuviste que pensar: \emph{``¿cuáles son los pasos en realidad?''}. Esa reflexión te enseña algo de TI: cuánto sabes, qué te falta, qué orden tiene sentido. \emph{Hacer listas es pensar despacio}. Doña Mercedes lo sabía: enseñaba a hacer listas para enseñar a pensar.
+
+\textbf{¿Cuál fue la lista que más me costó hacer? ¿Por qué creo que me costó?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio (emperador que ordenaba sus pensamientos diarios) · cuidado interior}
+\textit{````Cuando algo te abruma, hazlo una lista. Lo que parece imposible junto, se vuelve posible en 5 pasos numerados.''''}
+
+Cuando tienes muchas tareas y te sientes abrumado, escribir una \textbf{lista numerada} de lo que tienes que hacer convierte el caos en un mapa. \emph{Lo abrumador deja de serlo cuando se ve por partes}. Esta habilidad la vas a necesitar toda la vida: en exámenes, trabajos, decisiones importantes. La lista no resuelve el problema, pero te quita el peso de tenerlo todo en la cabeza.
+
+\textbf{¿Qué cosa que tengo pendiente sentiría más ligera si la convirtiera en lista?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{````La lista es la primera tecnología cognitiva. Antes del libro, antes del computador, ya existía la lista.''''}
+
+\textbf{Las listas son tan antiguas que se encuentran tablillas de barro de hace 5000 años con listas} (de vacas, de granos, de impuestos). Los primeros documentos de la humanidad fueron listas. Hoy, en la era de internet, siguen siendo igual de poderosas. \emph{Las cosas que se mantienen 5000 años no se mantienen por accidente}: las listas funcionan porque son la forma más eficiente de organizar información.
+
+\textbf{¿Estoy aprovechando una herramienta de 5000 años que sigue siendo la mejor disponible?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{titlebox}{milcVino}
+Compromiso final
+\end{titlebox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
+Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
+Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
+Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
+Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
+Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
+\end{tabularx}
+\normalsize
+
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Esta semana, en cualquier documento que escribas, busca si algo se entiende mejor como lista. Cuando lo veas, hazlo. La próxima clase aprendes a \textbf{insertar tablas e imágenes}: las herramientas para incorporar contenido visual y datos estructurados a tus documentos.
+\end{infoband}
+
+\end{document}

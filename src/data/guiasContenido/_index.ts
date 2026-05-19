@@ -170,6 +170,17 @@ import g7_1_7 from './7-1-7';
 import g7_1_8 from './7-1-8';
 import g7_1_9 from './7-1-9';
 
+import g7_2_1 from './7-2-1';
+import g7_2_10 from './7-2-10';
+import g7_2_2 from './7-2-2';
+import g7_2_3 from './7-2-3';
+import g7_2_4 from './7-2-4';
+import g7_2_5 from './7-2-5';
+import g7_2_6 from './7-2-6';
+import g7_2_7 from './7-2-7';
+import g7_2_8 from './7-2-8';
+import g7_2_9 from './7-2-9';
+
 const TODAS: ContenidoGuia[] = [
   g6_1_1, g6_1_11,
   g6_2_1, g6_2_11,
@@ -196,6 +207,7 @@ const TODAS: ContenidoGuia[] = [
   g6_2_10, g6_2_2, g6_2_3, g6_2_4, g6_2_5, g6_2_6, g6_2_7, g6_2_8, g6_2_9,
   g6_3_10, g6_3_2, g6_3_3, g6_3_4, g6_3_5, g6_3_6, g6_3_7, g6_3_8, g6_3_9,
   g7_1_1, g7_1_10, g7_1_2, g7_1_3, g7_1_4, g7_1_5, g7_1_6, g7_1_7, g7_1_8, g7_1_9,
+  g7_2_1, g7_2_10, g7_2_2, g7_2_3, g7_2_4, g7_2_5, g7_2_6, g7_2_7, g7_2_8, g7_2_9,
 ];
 
 const MAPA = new Map<string, ContenidoGuia>();

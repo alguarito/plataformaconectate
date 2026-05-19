@@ -1,0 +1,405 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra para todas las guias MILC v3
+% Ver scripts/generadores/build-guia-milc.py para la lista completa de
+% claves esperadas. El script valida que no queden placeholders sin
+% reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1.75cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\hyphenpenalty=200
+\exhyphenpenalty=200
+\pretolerance=400
+\tolerance=2000
+\setlength{\emergencystretch}{1em}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0066FF}
+\definecolor{milcGradeDark}{HTML}{003D99}
+\definecolor{milcGradeSoft}{HTML}{D6E8FF}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Tecnología e Informática · Grado 6}
+\rhead{\small Guía 11 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{\textbf{\textrightarrow}}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+\begin{document}
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[white] (current page.south west) rectangle (current page.north east);
+  \path[fill=milcGradePrimary,rounded corners=16mm]
+    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
+    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
+    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+
+  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
+    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
+    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
+    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
+    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
+    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
+  \end{scope}
+
+  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{124}{124}\selectfont 6};
+  \draw[milcGradeText,line width=1.7pt]
+    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+
+  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+    {
+     {\sffamily\bfseries\fontsize{19}{22}\selectfont Apertura\\periodo 2 ---\\las máquinas\\que nos\\rodean}\\[4mm]
+     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 11-6-TIC}\\[2mm]
+     {\sffamily\fontsize{13}{16}\selectfont Período 2 · Hardware y software}\\[5mm]
+     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
+     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+    };
+
+  \path[fill=milcGradeSoft,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
+    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
+    \textcolor{milcGradeDark}{\bfseries Producto:} Un \textbf{inventario de las máquinas inteligentes} que tú usas o ves cada día: \textbf{tabla en el cuaderno de 10 máquinas} (computador, celular, cajero, microondas, lavadora moderna, etc.), con columnas para \emph{nombre, dónde está, qué hace, qué partes le conozco}. Más \textbf{lista de 5 preguntas} que esperas que el periodo 2 te responda sobre las máquinas (puede ser \emph{``¿cómo funciona por dentro mi celular?''}, \emph{``¿por qué se calientan los computadores?''}). Más \textbf{compromiso firmado} de cuidar la sala de sistemas durante el periodo.};
+\end{tikzpicture}
+\mbox{}
+\newpage
+
+\section*{Apertura: Apertura periodo 2 --- las máquinas que nos rodean por dentro}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+\textbf{Antes de que las máquinas modernas llegaran a Cartago, había maestros de oficio en cada cuadra que entendían sus herramientas por dentro.} El \textbf{relojero} don Lucho, en su vitrina de la calle 14, conocía cada engranaje del reloj. La \textbf{costurera} doña Carmen, sentada en su Singer, entendía por qué a veces se rompía el hilo y cómo arreglarlo. El \textbf{panadero} don Aurelio, frente a su horno de leña, sabía a qué temperatura crecía la masa. \textbf{Cada uno conocía su máquina por dentro}, no solo por fuera. Por eso resolvían problemas, no quedaban esclavos del aparato. Hoy nuestras máquinas se llaman \emph{computador}, \emph{celular}, \emph{cajero electrónico}. Son más complejas que el reloj de don Lucho, pero el principio es el mismo: \textbf{quien las entiende por dentro es libre; quien solo las usa es dependiente}. Este periodo 2 es tu entrada al oficio de \emph{entender las máquinas inteligentes}. No vas a aprender a programar (eso vendrá en otros grados): vas a aprender qué hay adentro, cómo funciona, cómo cuidarlo, cómo elegirlo.
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+En el \textbf{Periodo 2 (Hardware y software)} vas a recorrer 10 sesiones organizadas así: \textbf{(S1) Hoy: Apertura del periodo.} \textbf{(S2) ¿Qué es un computador? --- las 4 funciones básicas.} \textbf{(S3) El gabinete por dentro --- CPU, RAM, disco.} \textbf{(S4) Periféricos --- entrada, salida, mixtos.} \textbf{(S5) Hardware vs software --- el cuerpo y las instrucciones.} \textbf{(S6) El sistema operativo --- el gerente del computador.} \textbf{(S7) Archivos y carpetas --- organizar mi biblioteca digital.} \textbf{(S8) Mantenimiento básico --- cuidar el equipo.} \textbf{(S9) Postura y vida útil --- cuidarme yo.} \textbf{(S10) Mi computador ideal --- ficha técnica con criterio.} Al final del periodo serás capaz de \emph{abrir un computador, nombrar sus piezas, explicar qué hace cada una, mantenerlo, y elegir uno con presupuesto}. Esa habilidad la usarás toda tu vida adulta.
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{Cuando una persona dice \emph{``mi computador está lento, le voy a meter más RAM''}, ¿\textbf{sabes lo que dijo}? ¿Sabes qué es RAM? ¿Por qué meter más ayudaría? Si no, este periodo te lo va a enseñar.}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar la clase: (1) podrás \textbf{identificar} la ruta del periodo 2 (los 10 temas); (2) sabrás \textbf{explicar} por qué entender las máquinas por dentro te hace más libre; (3) podrás \textbf{aplicar} 5 reglas de cuidado de la sala de sistemas; (4) habrás \textbf{creado} un inventario de las máquinas que conoces + pregunta-radar.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Identifica componentes y sistemas tecnológicos en su entorno (MEN, T\&I 6°)\\
+Referentes & Saber ancestral del relojero · Sistemas como cadena de oficios · Diagnóstico paso a paso\\
+Producto final & Un \textbf{inventario de las máquinas inteligentes} que tú usas o ves cada día: \textbf{tabla en el cuaderno de 10 máquinas} (computador, celular, cajero, microondas, lavadora moderna, etc.), con columnas para \emph{nombre, dónde está, qué hace, qué partes le conozco}. Más \textbf{lista de 5 preguntas} que esperas que el periodo 2 te responda sobre las máquinas (puede ser \emph{``¿cómo funciona por dentro mi celular?''}, \emph{``¿por qué se calientan los computadores?''}). Más \textbf{compromiso firmado} de cuidar la sala de sistemas durante el periodo.\\
+\end{tabularx}
+\normalsize
+
+\puente{Hoy haces 4 cosas: recuerdas las máquinas que usas, descubres la ruta del P2, firmas el compromiso de cuidar la sala, y planteas tu pregunta-radar.}
+
+\begin{titlebox}{milcGradeDark}
+Ruta MILC: así vamos a aprender
+\end{titlebox}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escuta\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Empezamos con un inventario de 10 máquinas inteligentes de tu vida.}
+
+\begin{titlebox}{milcVerde}
+Fase 1 · Escuta
+\end{titlebox}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- Inventario de las máquinas que conoces} (12 min · individual). En el cuaderno, dibuja una tabla de \textbf{10 filas y 4 columnas}. Encabezados: \emph{Nombre de la máquina}, \emph{¿Dónde está? (casa, cole, calle)}, \emph{¿Qué hace?}, \emph{¿Qué partes le conozco?}. Llena \textbf{10 máquinas inteligentes} que veas o uses normalmente. Sugerencias: \emph{tu celular, computador del colegio, microondas de casa, cajero automático del banco, caja registradora del supermercado, neveras nuevas, lavadora moderna, parlante Bluetooth, smart TV, GPS del carro}. Si tienes otras, las pones tú. En la última columna sé honesto: si no le conoces ninguna parte, escribe \emph{``ninguna''}; si conoces algo, anótalo.
+\end{softbox}
+
+\checkbox Hice la tabla con 4 columnas en el cuaderno.\\
+\checkbox Listé 10 máquinas reales que veo o uso.\\
+\checkbox Para cada una, anoté las partes que ya conozco (aunque sean pocas).
+
+\begin{infoband}{milcVerde}
+\textbf{Lo que va al cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1 --- Inventario de mis máquinas». \textbf{Formato:} tabla 10x4 con datos reales. \textbf{Extensión:} 10 filas. \textbf{Sabes que terminaste cuando} sabes cuántas máquinas inteligentes te rodean cada día (suelen ser muchas más de las que crees).
+\end{infoband}
+
+\puente{Después aprendes la ruta del periodo 2 y las reglas de la sala de sistemas.}
+
+\begin{titlebox}{milcTurquesa}
+Fase 2 · Sistematización con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+Tu inventario muestra que \textbf{vives rodeado de máquinas inteligentes} (probablemente más de 10). Pero muy pocas de ellas las entiendes por dentro. Eso es lo que este periodo busca cambiar. Conoce la ruta y las reglas.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
+1. Descomposición & \textbf{La ruta del periodo 2 --- los 10 temas.} \emph{(S1) Hoy: Apertura.} \emph{(S2) ¿Qué es un computador? Las 4 funciones.} \emph{(S3) El gabinete por dentro.} \emph{(S4) Periféricos.} \emph{(S5) Hardware vs software.} \emph{(S6) Sistema operativo.} \emph{(S7) Archivos y carpetas.} \emph{(S8) Mantenimiento.} \emph{(S9) Postura y vida útil.} \emph{(S10) Mi computador ideal.} \emph{(S11) Cosecha + evaluación.} El periodo conecta hardware (lo físico), software (lo invisible), uso responsable (mantenimiento + ergonomía) y criterio de compra (computador ideal).\\
+2. Reconocimiento de patrones & \textbf{Por qué entender máquinas te hace libre.} En el siglo XXI, vives rodeado de tecnología. La mayoría de la gente \emph{usa} sin entender: aprieta botones y espera que funcione. Cuando algo falla, dependen de un técnico, de un youtuber, de un vendedor. Cuando alguien quiere venderles algo, no saben si vale la pena. \textbf{Entender las máquinas por dentro te quita esa dependencia}: puedes resolver problemas básicos, decidir con criterio cuando compras, y no caer en estafas. Es como saber leer en una sociedad letrada. Quien no sabe, depende. Quien sabe, decide.\\
+3. Abstracción & \textbf{Las 5 reglas de la sala de sistemas (no negociables).} (1) \textbf{Manos limpias y secas} antes de tocar teclado o ratón. (2) \textbf{No comer ni beber} cerca del computador. (3) \textbf{Cuidar la postura} (espalda recta, pantalla a nivel de ojos, codos 90°). (4) \textbf{Apagar correctamente} desde el menú, nunca con el botón de fuerza. (5) \textbf{Reportar daños}: si algo no funciona o está suelto, decir al profe inmediatamente. Estas 5 reglas multiplican la vida útil de la sala y respetan el trabajo de quienes vendrán después de ti.\\
+4. Algoritmo conceptual & \textbf{Las 4 herramientas del oficio en P2.} (1) \textbf{El cuaderno físico}: para diagramas, planos, tablas, notas. Es el principal. (2) \textbf{El computador real}: para ver, abrir el explorador, mirar la sala. (3) \textbf{Imágenes y diagramas}: muchos temas del P2 se entienden mejor con dibujos (gabinete por dentro, viaje de la información). (4) \textbf{Comparación y analogía}: \emph{relojero = ingeniero de hardware; costurera = programadora}. Las analogías te entrenan a entender lo nuevo desde lo conocido.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcTurquesa}{Ruta P2 + 5 reglas de la sala}
+\textbf{Ruta P2:} S1 (Apertura) → S2 (4 funciones) → S3 (Gabinete) → S4 (Periféricos) → S5 (HW vs SW) → S6 (SO) → S7 (Archivos) → S8 (Mantenimiento) → S9 (Postura) → S10 (Computador ideal). \\[1mm]
+\textbf{5 reglas:} manos limpias · sin comer · postura · apagado correcto · reportar daños.
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{Errores frecuentes al iniciar P2.} (1) \emph{``Hardware es solo para técnicos''} --- Falso. Es ciudadanía: cualquiera que use computador o celular debería entender lo básico. (2) \emph{``No necesito saber las piezas, solo usar''} --- Cierto a corto plazo, pero te hace dependiente a largo plazo. Quien sabe las piezas resuelve problemas en minutos en lugar de horas. (3) \emph{``Si me sé el nombre del computador, ya sé todo''} --- Falso. Hay marcas, modelos, componentes. Diferenciarlos es saber realmente. (4) \emph{``La sala de sistemas no se cuida, ya es del colegio''} --- Falso. Tu yo del próximo año la heredará. Si la dañas hoy, te perjudicas a ti mismo después.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+\textbf{Lo que va al cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2 --- Ruta y reglas del periodo 2». \textbf{Formato:} bloque A con los 10 temas del P2 (lista). Bloque B con las 5 reglas de la sala (lista con palomita si te comprometes). \textbf{Extensión:} 15 líneas. \textbf{Sabes que terminaste cuando} podrías recitar los 10 temas y las 5 reglas sin abrir el cuaderno.
+\end{infoband}
+
+\puente{Con todo claro, completas tu inventario, eliges tus 5 preguntas, y firmas el compromiso.}
+
+\begin{titlebox}{milcMagenta}
+Fase 3 · Praxis con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\textbf{Actividad 3 · CREA --- Pregunta-radar + compromiso del periodo} (25 min · individual). Vas a definir las 5 preguntas que te llevas al periodo 2 y firmar el compromiso de cuidar la sala. Es el contrato que firmas como aprendiz del oficio.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
+Descomposición & \textbf{Paso 1 --- Tu inventario ya está listo.} Repasa la tabla de 10 máquinas que hiciste en Actividad 1. Marca con un círculo las \textbf{3 que más te dan curiosidad} entender por dentro.\\
+Patrones & \textbf{Paso 2 --- Tus 5 preguntas-radar.} En una hoja nueva del cuaderno escribe el título: \textbf{``Mis 5 preguntas del periodo 2''}. Debajo, lista numerada de 5 preguntas que esperas que el periodo te responda. Pueden venir de tu inventario o de cosas que siempre te preguntaste. Ejemplos: \emph{``¿Cómo funciona el celular por dentro?''}, \emph{``¿Por qué se calientan los computadores?''}, \emph{``¿Para qué sirve la RAM?''}, \emph{``¿Cuál computador me conviene comprar?''}. Las preguntas son TUYAS, no copies.\\
+Abstracción & \textbf{Paso 3 --- Las 5 reglas de la sala con tu firma.} Debajo de las preguntas, escribe el título: \textbf{``Mi compromiso con la sala de sistemas''}. Reproduce las 5 reglas (manos limpias, sin comer, postura, apagado correcto, reportar daños). Al lado de cada una, ponle palomita ✓ si te comprometes. Si dudas, mejor no firmar y hablar con el profe.\\
+Algoritmo de armado & \textbf{Paso 4 --- Tu compromiso con el oficio.} Debajo de las reglas, escribe esta frase: \textbf{``Me comprometo a entender las máquinas que uso, no solo a usarlas. A traer mi cuaderno cada clase. A preguntar cuando algo no esté claro.''}. Subráyala.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcMagenta}{Antes de cerrar la S1 del periodo 2}
+\checkbox La tabla de inventario tiene 10 máquinas. \\[1mm]
+\checkbox Marqué con círculo las 3 máquinas que más me dan curiosidad. \\[1mm]
+\checkbox Tengo 5 preguntas-radar reales mías. \\[1mm]
+\checkbox Las 5 reglas de la sala están firmadas. \\[1mm]
+\checkbox Está la sesión 1 con encabezado y registro de las 3 actividades. \\[1mm]
+\checkbox Firmé con nombre y fecha.
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Estructura.} \textit{Hoja 1:} tabla 10 máquinas inventariadas. \textit{Hoja 2:} 5 preguntas-radar + 5 reglas firmadas + compromiso del oficio subrayado. \textit{Hoja 3:} sesión 1 con encabezado fijo + registro de actividades.
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+\textbf{Lo que va al cuaderno (Actividad 3 · CREA).} Título: «Actividad 3 --- Mis preguntas-radar + compromiso del P2». \textbf{Formato:} 2 hojas (inventario + preguntas/compromiso) + sesión 1 registrada. \textbf{Extensión:} 2 hojas + sesión. \textbf{Sabes que terminaste cuando} tu cuaderno está listo para empezar la S2 sin organizar nada más.
+\end{infoband}
+
+\puente{El producto es ese inventario + pregunta-radar + compromiso firmado.}
+
+\begin{titlebox}{milcMostaza}
+Producto de la sesión
+\end{titlebox}
+\textbf{Inventario + 5 preguntas + compromiso del periodo 2 · firmado}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) El inventario tiene 10 máquinas reales con sus 4 datos cada una. (2) Las 5 preguntas-radar son personales y honestas. (3) Las 5 reglas de la sala tienen firma de compromiso. (4) La sesión 1 tiene encabezado fijo y registro de las 3 actividades. (5) Está firmado y fechado.
+\end{softbox}
+
+\puente{Antes de salir, verifica que el inventario tiene 10 máquinas reales tuyas y las 5 preguntas son sinceras.}
+
+\begin{titlebox}{milcVino}
+Fase 4 · Evaluación liberadora — cinco dimensiones
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con 3 voces que te ayudan a entender por qué conocer las máquinas es ciudadanía moderna.}
+
+\begin{titlebox}{milcGradeDark}
+Triángulo de pensamiento · cierre filosófico
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{````El campesino que entiende su tierra es libre. El que solo la trabaja sin entenderla, vive con miedo de perderla.''''}
+
+Lo mismo aplica a las máquinas. \textbf{El que entiende su computador es libre frente a él}: resuelve problemas, escoge piezas, no se deja engañar. \emph{El que solo lo usa sin entender vive con miedo}: miedo a dañarlo, miedo a comprar mal, miedo a que se le pierda algo. \textbf{Este periodo es para que dejes de tener miedo y empieces a tener criterio}. Como el campesino que conoce su parcela.
+
+\textbf{¿Vivo con miedo de las máquinas que uso, o con criterio? ¿Qué cosa me dejaría de dar miedo si la entendiera mejor?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio (emperador que entendía sus instrumentos) · cuidado interior}
+\textit{````Saber el nombre y la función de cada herramienta que usas es la primera virtud del que actúa bien en el mundo.''''}
+
+\textbf{Marco Aurelio era emperador romano}, pero también conocía a fondo sus herramientas: la pluma, el papiro, la armadura, el caballo. Sabía que \emph{nadie puede actuar bien con herramientas que no entiende}. Tú no eres emperador (todavía), pero usas máquinas que en sus tiempos parecerían magia. Este periodo te entrena en esa virtud antigua: \emph{nombrar y comprender lo que uso}.
+
+\textbf{¿Cuántas herramientas uso todos los días sin saber su nombre ni su función? ¿Cómo me afecta eso?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{````En el siglo XXI, no entender hardware es como en el siglo XX no saber leer. Te excluye de decisiones importantes en tu propia vida.''''}
+
+Floridi lo dice fuerte porque es real: \textbf{una persona que no entiende mínimamente cómo funciona su computador y su celular va a tomar peores decisiones} (compra equipos equivocados, se deja estafar, no entiende noticias técnicas, no participa en decisiones sobre tecnología). \emph{Este periodo es alfabetización del siglo XXI}. No es opcional. Por eso vale la pena dedicarle atención.
+
+\textbf{¿Estoy convirtiéndome en ciudadano técnicamente alfabetizado, o me quedo en el grupo de los que aprietan botones sin saber?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{titlebox}{milcVino}
+Compromiso final
+\end{titlebox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
+Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
+Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
+Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
+Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
+Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
+\end{tabularx}
+\normalsize
+
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Trae el cuaderno con el inventario + preguntas + compromiso firmado. La próxima clase es la S2: \emph{¿Qué es un computador? Las 4 funciones básicas}. Vas a entender cómo cualquier máquina inteligente sigue el mismo patrón (entrada, proceso, almacenamiento, salida). Después de esa clase, vas a reconocer el patrón en tu celular, en el cajero, en el microondas. Hoy te recibiste como aprendiz del oficio de hardware; la próxima clase empezamos.
+\end{infoband}
+
+\end{document}

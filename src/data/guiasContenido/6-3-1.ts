@@ -1,10 +1,9 @@
 /**
  * Contenido enriquecido para Grado 6 · Período 3 · Sesión 1
- * (sesión global 23 — APERTURA MILC del periodo 3).
+ * (sesión global 21).
  *
- * Tema: Aceleración + embajador MILC + auto-check #5 + brief final del proyecto.
- * Aplica PATRON_S1_apertura.md · variante P3·S1 Aceleración.
- * Capítulo 3 del hilo: "comunicar y sustentar".
+ * Auto-generado desde content/guias/6/6-3-1.yaml por
+ * scripts/build-guias-web-ts.py. Edita el YAML, no este archivo.
  */
 import type { ContenidoGuia } from './_schema';
 
@@ -12,235 +11,160 @@ const contenido: ContenidoGuia = {
   grado: 6,
   periodo: 3,
   sesion: 1,
-  titulo:
-    'Aceleración MILC · El año que se cierra: Word, Internet, mi sustentación del Escuta y mi carta a 6° del próximo año',
-  ocultarPDF: true,
-  sinStepper: true,
-  resumen:
-    'Habitamos la sala digital con dignidad — capítulo 3: comunicar y sustentar. Hoy un compañero explica MILC al curso (embajador), revisas tu trayectoria con auto-check #5 y recibes el brief final del proyecto Escuta para sustentarlo en P3·S11.',
+  titulo: 'Apertura periodo 3 — el oficio de escribir y buscar con criterio',
+  resumen: 'En el Periodo 3 (Procesador de texto e Internet) vas a recorrer 10 sesiones que cubren dos grandes mitades.',
   duracionMin: 90,
-  subtema: 'Apertura · Aceleración · Word, Internet, sustentación',
-
+  subtema: 'Apertura periodo 3 — el oficio de escribir y buscar con criterio',
   preLectura: {
-    porQueImporta:
-      'Las próximas 11 sesiones son la última recta del año. Si llegas con plan, el cierre te dignifica. Si llegas a improvisar, el año pierde sentido. Hoy decides cómo entras a la última recta.',
-    preguntaDetonante:
-      'Si tuvieras que convencer a un estudiante de 5° de que ConectaTE vale la pena, ¿qué le dirías? Hoy un compañero hace algo parecido — explica MILC al curso entero.',
+    porQueImporta: 'El producto es la reflexión + 5 preguntas-radar + compromiso firmado.',
+    preguntaDetonante: 'Si tu profe te pidiera entregar "un informe de 2 páginas sobre el río Cauca, formateado con tabla, imagen, fuentes citadas", ¿sabrías hacerlo con confianza? Si la respuesta es "no del todo", este periodo es para ti.',
     activacion: {
-      titulo: 'Círculo de la palabra · Aceleración',
-      descripcion:
-        'Cada estudiante dice en una frase qué quiere cosechar antes de cerrar el año. El docente cierra invocando el último tramo del telar del Pacífico: "ya hay tela, falta solo cerrarla con dignidad".',
-      duracionMin: 5,
+      titulo: 'Diagnóstico honesto de tu escritura y búsqueda',
+      descripcion: 'Actividad 1 · IDENTIFICA — Diagnóstico honesto de tu escritura y búsqueda (12 min · individual).',
+      duracionMin: 10
     },
     conexion: {
-      anterior:
-        'Vienes de P2 con el Escuta digitalizado y el equipo bajo control. Ahora le das forma escrita y voz pública.',
-      siguiente:
-        'En la S2 entras al procesador de texto (Word/Docs) — la herramienta con la que redactarás el informe final del Escuta.',
-    },
+      anterior: 'Hoy haces 4 cosas: reflexionas sobre tu escritura y búsqueda actuales, conoces la ruta del P3, firmas el compromiso, y defines tus preguntas-radar.',
+      siguiente: 'La próxima clase es S2: ¿Qué es un procesador de texto?.'
+    }
   },
-
   conceptosClave: [
     {
-      categoria: '🔍 Las 5 dimensiones MILC · ahora son ejes del cierre',
-      termino: 'Desarrollo personal',
-      definicion:
-        'Es el eje del último periodo. Mide qué de ti cambió tanto que se nota fuera del aula.',
-      ejemplo:
-        'Tu mamá nota que ahora cuidas el computador de la casa sin que ella te lo recuerde.',
-      emoji: '💚',
-    },
-    {
-      categoria: '🔍 Las 5 dimensiones MILC · ahora son ejes del cierre',
-      termino: 'Control emocional',
-      definicion:
-        'Eje crítico para la sustentación pública: regular el nervio antes de hablar en público.',
-      ejemplo:
-        'Practicas tu vitrina varias veces para que el nervio del día no te tumbe.',
-      emoji: '🟡',
-    },
-    {
-      categoria: '🔍 Las 5 dimensiones MILC · ahora son ejes del cierre',
-      termino: 'Reflexión ciudadana',
-      definicion:
-        'En P3 te exige separar fuente confiable de ruido — eso es ciudadanía digital activa.',
-      ejemplo:
-        'Antes de incluir un dato sobre Cartago en tu informe, verificas con dos fuentes oficiales.',
-      emoji: '🤝',
-    },
-    {
-      categoria: '🔍 Las 5 dimensiones MILC · ahora son ejes del cierre',
-      termino: 'Reflexión local',
-      definicion:
-        'Cómo tu Escuta dice algo concreto del Valle del Cauca — territorio, comunidad, historia local.',
-      ejemplo:
-        'Tu informe nombra el barrio o vereda del entrevistado, no solo "Cartago" en general.',
-      emoji: '🏘️',
-    },
-    {
-      categoria: '🔍 Las 5 dimensiones MILC · ahora son ejes del cierre',
-      termino: 'Vínculo intergeneracional',
-      definicion:
-        'El año cierra con tu carta a un estudiante de 6° del próximo año — esa carta vive aquí.',
-      ejemplo:
-        'En P3·S11 escribirás esa carta. Hoy empiezas a pensar qué quieres entregar.',
-      emoji: '🌳',
-    },
-    {
-      categoria: '🛠️ Lo nuevo en P3',
       termino: 'Procesador de texto',
-      definicion:
-        'Word/Google Docs — la herramienta que dará forma final escrita a tu Escuta.',
-      ejemplo:
-        'Redactarás portada, introducción, transcripción de la entrevista, reflexión y bibliografía.',
-      emoji: '📝',
+      definicion: 'Programa para escribir documentos digitales: Microsoft Word, Google Docs, LibreOffice Writer. La herramienta principal de la primera mitad del periodo 3.',
+      ejemplo: 'Para una tarea, abres Word, escribes 3 párrafos, aplicas formato (negrita, alineación), guardas con nombre claro en la carpeta correcta. Eso aprenderás en S2 a S6.',
+      emoji: '📝'
     },
     {
-      categoria: '🛠️ Lo nuevo en P3',
       termino: 'Búsqueda crítica',
-      definicion:
-        'Distinguir fuente confiable (autor, fecha, propósito) de ruido informacional.',
-      ejemplo:
-        'Un blog anónimo sobre "historia de Cartago" no es lo mismo que el archivo histórico de la Alcaldía.',
-      emoji: '🔍',
+      definicion: 'Habilidad de buscar información en internet usando operadores (comillas, site:, filetype:) y de evaluar las fuentes encontradas con criterio (método CRAAP). Habilidad clave del siglo XXI.',
+      ejemplo: 'En vez de buscar "Bolívar" suelto, buscas "Simón Bolívar" site:colombiaaprende.edu.co filetype:pdf. Encuentras justo lo que necesitas en segundos. Eso aprenderás en S7 a S9.',
+      emoji: '🔎'
     },
     {
-      categoria: '🛠️ Lo nuevo en P3',
-      termino: 'Sustentación pública',
-      definicion:
-        'Defender en voz alta lo aprendido — con hilo, evidencias, tiempo dosificado y respuestas a preguntas.',
-      ejemplo:
-        'En P3·S11 sustentas 5 minutos a tu curso, con tu adulto mayor invitado en primera fila.',
-      emoji: '🎤',
+      termino: 'Voz propia',
+      definicion: 'Capacidad de escribir o expresar ideas con palabras y estructura inventadas por uno, no copiadas. Es lo opuesto a plagio. Se entrena con práctica deliberada de escritura.',
+      ejemplo: 'Doña Mercedes decía: "primero pensar, después escribir". Antes de copiar, piensa con tus palabras qué quieres decir. Eso te entrena en voz propia.',
+      emoji: '🗣️'
     },
+    {
+      termino: '5 reglas éticas de internet',
+      definicion: 'Las normas mínimas de uso responsable de internet: citar fuentes, verificar antes de creer, no compartir sin verificar, respetar derechos de autor, usar para sumar (no para restar). Marco moral del periodo 3.',
+      ejemplo: 'Antes de usar una imagen de Google, verifica si es libre (Pixabay sí, página comercial probablemente no). Antes de compartir una noticia escandalosa, verifica en otra fuente. Eso es ética.',
+      emoji: '⚖️'
+    },
+    {
+      termino: 'Pregunta-radar del P3',
+      definicion: 'Pregunta personal sobre escritura digital o búsqueda crítica que el estudiante define al inicio del periodo. Las 10 sesiones la van respondiendo gradualmente.',
+      ejemplo: 'Tu pregunta-radar del P3 podría ser "¿cómo cito correctamente las fuentes que uso?" Las sesiones S5 (imágenes con pie) y S9 (CRAAP) la responderán.',
+      emoji: '🧭'
+    }
   ],
-
   laboratorios: [
     {
-      tipo: 'visualizacion',
-      titulo: 'Embajador MILC + auto-check #5 + brief final + bosquejo del triángulo propio',
-      instrucciones:
-        'Seis pasos del 70% hands-on. Sales con: brief final del Escuta firmado, cronograma del P3, auto-check con histórico, bosquejo del triángulo propio y entrada de aceleración en el diario.',
-      pasos: [
-        {
-          titulo: 'Paso 1 · Embajador MILC estudiantil (5 min)',
-          texto:
-            'Un estudiante voluntario o asignado explica al curso qué es MILC en 3 minutos — con sus palabras. Si lo logra, MILC se naturalizó. El docente solo escucha.',
-        },
-        {
-          titulo: 'Paso 2 · Auto-check MILC #5 con histórico graficado (10 min)',
-          texto:
-            'Quinto registro del año. En el diario dibujas las 5 líneas con todos los puntos: #1, #2, #3, #4, #5. Identificas la dimensión más alta y la más baja. Esa más baja es tu foco para P3.',
-        },
-        {
-          titulo: 'Paso 3 · Brief final del proyecto Escuta (15 min)',
-          texto:
-            'Recibes el documento brief con: cronograma de las 11 sesiones, criterios de éxito, rúbrica de sustentación. Lo lees con tu equipo (si aplica) y firmas el compromiso.',
-        },
-        {
-          titulo: 'Paso 4 · Bosquejo del triángulo propio (10 min)',
-          texto:
-            'Empiezas a escribir TU versión del triángulo Dussel-Estoicismo-Floridi. Solo bosquejo — lo afinarás en P3·S11. Una línea por cada uno, en lápiz, en tu diario.',
-        },
-        {
-          titulo: 'Paso 5 · Conexión vertical con grado 7° (10 min)',
-          texto:
-            'El docente presenta brevemente qué viene en grado 7°: trabajo colaborativo en la nube + algoritmia + IA. Tú escribes en el diario qué de P3 te servirá.',
-        },
-        {
-          titulo: 'Paso 6 · Marcar el mapa + entrada de aceleración (5 min)',
-          texto:
-            'Marca de arranque P3 en la cartelera. Entrada del diario con la pregunta-pauta: "¿Qué cosa concreta voy a entregar el último día del año?"',
-        },
-      ],
-    },
-    {
       tipo: 'quiz',
-      titulo: 'Mini-quiz · Aceleración hacia el cierre del año',
-      instrucciones: '5 preguntas que miden si entendiste qué viene y qué se espera de ti.',
+      titulo: '¿Llegaste bien al periodo 3?',
+      instrucciones: '5 preguntas para verificar que conoces la ruta del P3 y firmaste el compromiso ético.',
       preguntas: [
         {
-          enunciado: 'En P3 mi proyecto Escuta entrará a su forma final como:',
+          enunciado: '¿Cuáles son las 2 grandes mitades del periodo 3?',
           opciones: [
-            'Audio crudo sin editar',
-            'Esquema en cuaderno',
-            'Documento escrito en Word/Docs con sustentación pública',
-            'Un tweet de 280 caracteres',
-          ],
-          respuestaIndex: 2,
-          feedbackCorrecto:
-            '✅ Forma final = documento escrito + sustentación. La voz del entrevistado pasa a texto + presentación.',
-          feedbackIncorrecto:
-            '❌ El cierre no es audio crudo ni nota corta: es un documento bien hecho que te permite sustentar en público.',
-        },
-        {
-          enunciado: 'Ante una fuente web "te cuento por qué los antiguos sabían más", el criterio es:',
-          opciones: [
-            'Creer porque suena profundo',
-            'Compartir si me gustó',
-            'Verificar autor, fecha, fuentes citadas y propósito',
-            'Imprimir y pegar en el cuaderno',
-          ],
-          respuestaIndex: 2,
-          feedbackCorrecto:
-            '✅ Cuatro criterios mínimos: autor identificable, fecha visible, fuentes citadas, propósito declarado.',
-          feedbackIncorrecto:
-            '❌ Que algo suene bonito o nos guste no lo hace verdadero. La búsqueda crítica exige verificar.',
-        },
-        {
-          enunciado: 'Mi auto-check histórico (#1→#5) me sirve para:',
-          opciones: [
-            'Jactarme con compañeros',
-            'Borrarlo y empezar de cero',
-            'Saber qué dimensión todavía me falta y planear el cierre',
-            'Olvidar lo que pasó',
-          ],
-          respuestaIndex: 2,
-          feedbackCorrecto:
-            '✅ La gráfica longitudinal es tu mapa de crecimiento. Donde está plana o baja, ahí pones energía en P3.',
-          feedbackIncorrecto:
-            '❌ El auto-check no es para presumir ni para olvidar. Es brújula para tu cierre.',
-        },
-        {
-          enunciado: 'Que un estudiante explique MILC al curso es señal de que:',
-          opciones: [
-            'El docente no quiere trabajar',
-            'Hay pereza colectiva',
-            'El método se naturalizó: ya es lenguaje propio del estudiante',
-            'Lo están suplantando al docente',
-          ],
-          respuestaIndex: 2,
-          feedbackCorrecto:
-            '✅ Cuando un estudiante puede explicar el método, dejó de ser jerga y se hizo lenguaje. Eso es naturalización.',
-          feedbackIncorrecto:
-            '❌ El embajador estudiantil es señal de aprendizaje profundo, no de falla del docente. Cuando el estudiante puede enseñar, ha aprendido.',
-        },
-        {
-          enunciado: 'En grado 7° aprenderás a colaborar en la nube y a dar instrucciones a una IA. ¿Qué de P3 te servirá?',
-          opciones: [
-            'Nada',
-            'La búsqueda crítica + redactar bien + sustentar con hilo',
-            'Solo Word',
-            'Solo el correo',
+            'Word + Excel.',
+            'Procesador de texto (S2-S6) + Internet/búsqueda crítica (S7-S9), con cierre integrador en S10.',
+            'Sólo internet.',
+            'Sólo cuaderno.'
           ],
           respuestaIndex: 1,
-          feedbackCorrecto:
-            '✅ Las tres habilidades se llevan limpio a 7°: criterio de fuente + redacción + sustentación. La IA exige las tres.',
-          feedbackIncorrecto:
-            '❌ P3 te entrega habilidades que en 7° serán fundamentales: pensar críticamente las fuentes, escribir bien, sustentar lo que dices.',
+          feedbackCorrecto: 'Sí. Primera mitad: escribir digital (Word, formato, tablas). Segunda mitad: buscar críticamente (operadores, CRAAP). S10 cierra todo.',
+          feedbackIncorrecto: '2 mitades: procesador de texto (S2-S6) + búsqueda crítica (S7-S9). S10 cierra integrando. Ese es el plan del periodo.'
         },
-      ],
-    },
+        {
+          enunciado: 'Doña Mercedes la maestra rural decía \'¿qué primero?\'',
+          opciones: [
+            'Escribir muy rápido.',
+            'Primero pensar, después escribir.',
+            'Buscar en Wikipedia primero.',
+            'Copiar de otro lado.'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Sí. Primero pensar (ordenar ideas en cuaderno), después escribir (en digital). Esa secuencia te entrena en voz propia y evita el bloqueo del papel en blanco.',
+          feedbackIncorrecto: '"Primero pensar, después escribir". Doña Mercedes lo decía hace 50 años. Sigue siendo verdad: la escritura sin pensamiento es ruido.'
+        },
+        {
+          enunciado: 'Cuál es UNA de las 5 reglas éticas de internet del P3?',
+          opciones: [
+            'Compartir todo lo que veas.',
+            'Citar siempre tus fuentes.',
+            'Copiar sin permiso.',
+            'Creerle al primer resultado.'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Bien. Citar fuentes es regla 1. Otras: verifica, no comparta sin verificar, respeta derechos, usa para sumar. 5 reglas mínimas.',
+          feedbackIncorrecto: 'Citar fuentes es regla 1 del P3. Las 5: cita · verifica · no comparta sin verificar · respeta derechos · usa para sumar. Son ética básica.'
+        },
+        {
+          enunciado: '¿Por qué escribir bien y buscar bien son habilidades \'rentables\' del siglo XXI?',
+          opciones: [
+            'Porque te pagan por hacerlo.',
+            'Porque las vas a usar en universidad, trabajo, decisiones de vida adulta. Son alfabetización del siglo XXI.',
+            'Porque las exigen los videojuegos.',
+            'Porque son fáciles.'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Sí. En tu vida adulta dependerás de escribir y buscar bien: tareas universitarias, postular trabajos, defender derechos, criar hijos. Son alfabetización.',
+          feedbackIncorrecto: 'Son alfabetización del siglo XXI. Quien las domina decide; quien no, depende. Tu vida adulta te las exigirá todos los días.'
+        },
+        {
+          enunciado: 'Tu pregunta-radar del periodo es \'¿cómo cito fuentes correctamente?\'. ¿Qué sesiones te ayudarán?',
+          opciones: [
+            'Ninguna.',
+            'S5 (imágenes con pie), S9 (evaluar fuentes con CRAAP), y S10 (documento con fuentes citadas).',
+            'Solo S1 que es hoy.',
+            'Solo una clase fuera del colegio.'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Bien. La pregunta sobre fuentes la responden varias sesiones: S5 enseña a poner pie de imágenes, S9 evalúa fuentes con CRAAP, S10 te hace citar en documento real.',
+          feedbackIncorrecto: 'S5 (imágenes con pie) + S9 (CRAAP de fuentes) + S10 (documento con fuentes citadas). Varias sesiones convergen en responder esa pregunta.'
+        }
+      ]
+    }
   ],
-
   postLectura: {
-    reflexion:
-      '¿Qué dimensión MILC va a definir si tu cierre del año vale la pena? ¿Qué acto concreto vas a hacer ESTA semana para moverla?',
-    transferencia:
-      'Esta semana practica con un familiar tu primera versión de la sustentación del Escuta — 3 minutos cronómetro. Pídele 1 fortaleza + 1 mejora.',
-    cierre:
-      'Capítulo 3 abierto: Dussel diría que llega el momento de hacer pública la voz de quien casi nadie escuchaba. Epicteto diría que el cierre digno depende de actos pequeños cada sesión, no del último día. Floridi diría que dar forma escrita a una voz oral es transformar información en bien común duradero.',
+    reflexion: '¿Estoy produciendo voz propia o solo consumiendo voces ajenas?',
+    transferencia: 'La próxima clase es S2: ¿Qué es un procesador de texto?.',
+    cierre: 'Al terminar la clase: (1) podrás identificar la ruta del periodo 3 (las 2 mitades); (2) sabrás explicar por qué escribir y buscar bien son habilidades adultas; (3) podrás aplicar 5 reglas de uso ético de internet; (4) habrás creado reflexión personal + 5 preguntas + compromiso.'
   },
+  saberAncestral: {
+    saber: 'Doña Mercedes la maestra rural de la vereda La Plata de Cartago enseñaba dos cosas: a escribir bien y a leer críticamente. En su escuelita del campo, los niños aprendían a ordenar las ideas en el cuaderno antes de escribir ("primero pensar, después escribir", decía). Y aprendían a verificar las noticias que llegaban de fuera ("no todo lo que dice el periódico es verdad", repetía). Ese saber doble — escribir bien y leer crítico — la convirtió en figura respetada de la vereda durante décadas. Sus exalumnos, ya adultos, sabían escribir cartas formales, redactar peticiones, y desconfiar de promesas falsas. Hoy, 50 años después, ese mismo saber doble sigue siendo el más útil, pero la herramienta cambió: ya no es solo cuaderno y periódico, ahora también es Word, Google Docs, Wikipedia, redes sociales. El periodo 3 te entrena en el mismo oficio de doña Mercedes, con las herramientas de tu tiempo.',
+    preguntaPuente: 'Si tu profe te pidiera entregar "un informe de 2 páginas sobre el río Cauca, formateado con tabla, imagen, fuentes citadas", ¿sabrías hacerlo con confianza? Si la respuesta es "no del todo", este periodo es para ti.'
+  },
+  triangulo: {
+    dussel: {
+      autor: 'Enrique Dussel (filósofo de la voz propia)',
+      lente: 'lente del nosotros',
+      cita: '"Escribir con tu voz es decir: existo, pienso, tengo algo que aportar. Eso es soberanía."',
+      preguntaEspejo: '¿Estoy produciendo voz propia o solo consumiendo voces ajenas?'
+    },
+    estoico: {
+      autor: 'Marco Aurelio (emperador que escribía con disciplina)',
+      lente: 'lente del cuidado interior',
+      cita: '"Escribir es pensar despacio. Buscar es elegir despacio. Las dos disciplinas hacen al ciudadano libre."',
+      preguntaEspejo: '¿Me estoy entrenando en escribir y buscar despacio, o sigo el ritmo apurado de los demás?'
+    },
+    floridi: {
+      autor: 'Luciano Floridi (filósofo italiano de la era de la información)',
+      lente: 'lente de la infoesfera',
+      cita: '"En el siglo XXI, no saber escribir bien y no saber buscar bien es como en el siglo XX no saber leer. Te excluye de decisiones importantes."',
+      preguntaEspejo: '¿Estoy desarrollando las habilidades que mi yo de 25 años va a necesitar para una vida digna?'
+    }
+  },
+  cincoDimensiones: {
+    personal: 'Al terminar la clase: (1) podrás identificar la ruta del periodo 3 (las 2 mitades); (2) sabrás explicar por qué escribir y buscar bien son habilidades adultas; (3) podrás aplicar 5 reglas de uso ético…',
+    emocional: 'Escribir y buscar son disciplinas lentas en un mundo rápido.',
+    ciudadana: 'Mucha gente vive sin escribir nunca su propia voz: copia, repite, replica.',
+    local: 'Antes de salir, verifica que tus 5 preguntas son sinceras (no copiadas).',
+    intergeneracional: 'Tu vida adulta dependerá de escribir y buscar bien: para postular trabajos, hacer trabajos universitarios, defender derechos, votar con criterio, criar hijos en una era digital.'
+  }
 };
 
 export default contenido;

@@ -64,7 +64,6 @@ export const grados: Grado[] = [
       'Microsoft 365, fundamentos de algoritmia con bloques y primer contacto con la Inteligencia Artificial.',
     bgClass: 'bg-bento-lime',
     icono: '🤖',
-    enConstruccion: true,
     periodos: [
       {
         numero: 1,

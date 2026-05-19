@@ -3,9 +3,10 @@
 Cada examen vive en un archivo YAML bajo `content/examenes/{grado}-{periodo}.yaml`
 donde la clave sigue el patrón `{grado}-{periodo}` (ej. `8-1.yaml`).
 
-Solo se modelan exámenes de los grados **8°, 9°, 10° y 11°**. Mientras 6° y 7°
-estén marcados como `enConstruccion: true` en `src/data/grados.ts`, no entran
-al pipeline.
+Se modelan exámenes de los grados **6°, 7°, 8°, 9°, 10° y 11°**. Con G6 y G7
+ya abiertos al público, los 18 exámenes (6 grados × 3 periodos) entran al
+pipeline. La calibración de los exámenes de 6° y 7° usa lenguaje más
+accesible (frases cortas, ejemplos contextualizados, vocabulario directo).
 
 El motor `scripts/build-examenes.py` lee estos archivos y produce **dos salidas
 desde la misma fuente**:
@@ -41,7 +42,7 @@ sumativo y evita problemas de deshonestidad académica.
 ```yaml
 # ─── Metadata ──────────────────────────────────────────────────────
 clave: "8-1"              # str · obligatorio · formato {grado}-{periodo}
-grado: 8                  # int · obligatorio · 8-11
+grado: 8                  # int · obligatorio · 6-11
 periodo: 1                # int · obligatorio · 1-3
 completo: true            # bool · obligatorio · si false, no se compila
 

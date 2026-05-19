@@ -3,9 +3,10 @@
 Cada proyecto vive en un archivo YAML bajo `content/proyectos/{grado}-{periodo}.yaml`
 donde la clave sigue el patrón `{grado}-{periodo}` (ej. `11-1.yaml`).
 
-Solo se modelan proyectos de **8°, 9°, 10° y 11°**. Mientras 6° y 7° estén
-marcados como `enConstruccion: true`, sus PDFs actuales se conservan sin
-migración.
+Se modelan proyectos de **6°, 7°, 8°, 9°, 10° y 11°**. Con G6 y G7 ya abiertos
+al público, los 18 proyectos (6 grados × 3 periodos) entran al pipeline. La
+calibración de los proyectos de 6° y 7° usa lenguaje accesible y entregables
+más simples (sin requerir herramientas profesionales complejas).
 
 El motor `scripts/build-proyectos.py` lee estos archivos y produce **dos
 salidas desde la misma fuente**:

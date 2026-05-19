@@ -1,0 +1,408 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra para todas las guias MILC v3
+% Ver scripts/generadores/build-guia-milc.py para la lista completa de
+% claves esperadas. El script valida que no queden placeholders sin
+% reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1.75cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\hyphenpenalty=200
+\exhyphenpenalty=200
+\pretolerance=400
+\tolerance=2000
+\setlength{\emergencystretch}{1em}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0066FF}
+\definecolor{milcGradeDark}{HTML}{003D99}
+\definecolor{milcGradeSoft}{HTML}{D6E8FF}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Tecnología e Informática · Grado 6}
+\rhead{\small Guía 10 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{\textbf{\textrightarrow}}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+\begin{document}
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[white] (current page.south west) rectangle (current page.north east);
+  \path[fill=milcGradePrimary,rounded corners=16mm]
+    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
+    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
+    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+
+  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
+    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
+    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
+    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
+    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
+    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
+  \end{scope}
+
+  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{124}{124}\selectfont 6};
+  \draw[milcGradeText,line width=1.7pt]
+    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+
+  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+    {
+     {\sffamily\bfseries\fontsize{19}{22}\selectfont Mi presentación\\digital ---\\2 minutos\\para mostrar\\lo aprendido}\\[4mm]
+     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 10-6-TIC}\\[2mm]
+     {\sffamily\fontsize{13}{16}\selectfont Período 1 · Comunicación e identidad digital}\\[5mm]
+     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
+     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+    };
+
+  \path[fill=milcGradeSoft,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
+    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
+    \textcolor{milcGradeDark}{\bfseries Producto:} Una \textbf{mini presentación de 2 minutos} que tú expones de pie ante el grupo. La presentación tiene 4 partes: \textbf{(1) quién soy --- tarjeta de identidad digital (15 seg)}, \textbf{(2) cómo cuido mi correo y mi privacidad (45 seg)}, \textbf{(3) cómo me protejo de riesgos y comunico bien (45 seg)}, \textbf{(4) un compromiso firmado para el resto del año (15 seg)}. Apoyo en \textbf{una sola hoja del cuaderno} con los puntos clave (sin leerla, solo como soporte). Te calificas tú y te califica un compañero usando la rúbrica de la guía.};
+\end{tikzpicture}
+\mbox{}
+\newpage
+
+\section*{Apertura: Mi presentación digital --- 2 minutos para mostrar lo que aprendí}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+\textbf{En las casas de la abuela, contar lo aprendido era de respeto.} Cuando un niño volvía del primer viaje a Cali, lo sentaban en la mesa del domingo y le decían: \emph{``Cuente, mijo, qué aprendió''}. No era examen: era forma de honrar el aprendizaje. La familia escuchaba con atención, hacía preguntas, y al final el niño se sentía mayor. \textbf{Lo que se aprende y no se cuenta se olvida; lo que se aprende y se cuenta, queda}. En el centro de Cartago hasta hace poco los abuelos hacían lo mismo: los nietos volvían de la escuela y antes de jugar tenían que contar UNA cosa nueva. Ese hábito fortalece la memoria y el carácter al mismo tiempo. Hoy te toca a ti: \textbf{contar en 2 minutos lo que aprendiste en este primer periodo de Tecnología}.
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+Hoy es la sesión de \textbf{síntesis}. No es examen ni evaluación final --- esa es la próxima clase (sesión 11). Hoy preparas y presentas una \textbf{mini exposición personal} de 2 minutos donde muestras: quién eres digitalmente, cómo cuidas tu correo y tu privacidad, cómo te proteges y comunicas bien. Lo importante no es decir todo lo que viste --- es escoger 4 ideas claras y comunicarlas \textbf{con voz propia y propósito}. Esta habilidad (presentar tu pensamiento ante otros en pocos minutos) se llama \textbf{pitch} en inglés y se usa toda la vida: en universidad, en trabajo, en proyectos sociales. Hoy haces tu primer pitch.
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{Si tu mamá te preguntara esta tarde \emph{``mijo, ¿qué aprendiste este periodo en tecnología?''}, ¿\textbf{podrías responderle en 2 minutos seguidos} sin enredarte? Esta clase te prepara para eso.}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar la clase: (1) podrás \textbf{identificar} los 4 momentos clave de un pitch de 2 minutos; (2) sabrás \textbf{aplicar} las reglas de hablar en público (postura, voz, mirada); (3) habrás \textbf{creado} tu guion de presentación en 1 hoja; (4) habrás \textbf{evaluado} la presentación de un compañero con rúbrica.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Reconoce principios y conceptos propios de la tecnología, relacionando artefactos con su utilización segura (MEN, T\&I 6°)\\
+Referentes & Saber ancestral del pregonero · Pensamiento computacional inicial · Cuidado de la palabra\\
+Producto final & Una \textbf{mini presentación de 2 minutos} que tú expones de pie ante el grupo. La presentación tiene 4 partes: \textbf{(1) quién soy --- tarjeta de identidad digital (15 seg)}, \textbf{(2) cómo cuido mi correo y mi privacidad (45 seg)}, \textbf{(3) cómo me protejo de riesgos y comunico bien (45 seg)}, \textbf{(4) un compromiso firmado para el resto del año (15 seg)}. Apoyo en \textbf{una sola hoja del cuaderno} con los puntos clave (sin leerla, solo como soporte). Te calificas tú y te califica un compañero usando la rúbrica de la guía.\\
+\end{tabularx}
+\normalsize
+
+\puente{Hoy haces 4 cosas: aprendes la estructura del pitch, escribes tu guion, ensayas con un compañero, y presentas al grupo.}
+
+\begin{titlebox}{milcGradeDark}
+Ruta MILC: así vamos a aprender
+\end{titlebox}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escuta\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Empezamos identificando los 4 momentos que toda presentación buena tiene.}
+
+\begin{titlebox}{milcVerde}
+Fase 1 · Escuta
+\end{titlebox}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- Los 4 momentos del pitch} (10 min · individual). Imagina que un youtuber famoso visita el colegio y te dice: \emph{``Tienes 2 minutos para contarme qué eres como persona digital y qué aprendiste este periodo. Empieza''}. En el cuaderno escribe \textbf{los 4 momentos} que TÚ usarías para organizar esos 2 minutos. Sin copiar de la guía. Pon: \emph{Momento 1 (15 seg): ...}, \emph{Momento 2 (45 seg): ...}, etc. Después compara con los 4 que vas a aprender en la siguiente actividad.
+\end{softbox}
+
+\checkbox Imaginé al youtuber y los 2 minutos.\\
+\checkbox Escribí los 4 momentos con mi propio orden.\\
+\checkbox Respeté los tiempos (15-45-45-15 segundos).
+
+\begin{infoband}{milcVerde}
+\textbf{Lo que va al cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1 --- Mis 4 momentos del pitch». \textbf{Formato:} 4 viñetas con tiempo y contenido. \textbf{Extensión:} 4 líneas. \textbf{Sabes que terminaste cuando} la suma de tiempos da 2 minutos justos.
+\end{infoband}
+
+\puente{Después de la estructura, aprendes las 3 reglas de hablar bien en público (postura, voz, mirada).}
+
+\begin{titlebox}{milcTurquesa}
+Fase 2 · Sistematización con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+Compara tu propuesta con los 4 momentos que se usan en cualquier pitch de 2 minutos. Es probable que tengas 2 o 3 igual de lo que vas a leer --- esa coincidencia es buena, significa que ya pensabas bien.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
+1. Descomposición & \textbf{Momento 1 --- ABRO con quién soy (15 segundos).} Como en una carta: te presentas. Nombre, grado, una frase corta tuya. \textbf{No leas} la tarjeta de identidad digital --- usa una frase corta basada en ella. Ejemplo: \emph{``Soy Lara, de sexto B. En internet me cuido como me cuidaría mi abuela: con criterio.''}.\\
+2. Reconocimiento de patrones & \textbf{Momento 2 --- CUIDO mis datos y mi privacidad (45 segundos).} Cuenta 3 cosas concretas: (a) cómo configuras tu correo institucional, (b) qué app reconfiguraste en privacidad esta semana, (c) un permiso que le quitaste a una app y por qué. \textbf{No es teoría}, son ejemplos tuyos.\\
+3. Abstracción & \textbf{Momento 3 --- ME PROTEJO y comunico bien (45 segundos).} Cuenta 3 cosas: (a) las 5 señales de alerta que aprendiste a reconocer, (b) cuáles son tus 3 adultos de confianza (sin dar los nombres si no quieres), (c) los 3 filtros que pasas antes de publicar. Hablas con seguridad porque ya escribiste todo eso en tu cuaderno.\\
+4. Algoritmo conceptual & \textbf{Momento 4 --- CIERRO con compromiso (15 segundos).} Termina con tu compromiso firmado: \emph{``Yo me comprometo a [acción concreta] durante el resto del año. Esa es mi promesa.''}. La acción concreta puede ser \emph{``revisar la privacidad de mis apps cada primer sábado del mes''} o \emph{``pasar por mis 3 filtros antes de publicar''}. Lo que tú decidas.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcTurquesa}{Estructura del pitch de 2 minutos}
+\textbf{0:00-0:15} · ABRO --- quién soy en 1 frase. \\[1mm]
+\textbf{0:15-1:00} · CUIDO --- 3 ejemplos de privacidad y datos. \\[1mm]
+\textbf{1:00-1:45} · ME PROTEJO --- 5 señales, 3 adultos, 3 filtros. \\[1mm]
+\textbf{1:45-2:00} · CIERRO --- mi compromiso firmado. \\[1mm]
+\textbf{Total: 2:00 minutos.}
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{Errores que cometen los chicos al hablar en público por primera vez.} (1) \textbf{Leer todo} de la hoja --- la audiencia se aburre. La hoja es soporte, no guion completo. (2) \textbf{Mirar al piso o al techo} --- mira a las personas, una persona por momento. (3) \textbf{Hablar bajito o muy rápido} --- voz normal, pausa entre ideas, respiración tranquila. (4) \textbf{Disculparse al inicio} (\emph{``No sé si lo voy a hacer bien''}) --- llegas, te paras, hablas. (5) \textbf{Memorizar palabra por palabra} --- aprende las ideas, no las palabras. Si te equivocas en una palabra, sigues.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+\textbf{Lo que va al cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2 --- Las 3 reglas para hablar en público». \textbf{Formato:} 3 viñetas con regla + ejemplo personal. \textbf{Extensión:} 3 líneas de 2 frases cada una. \textbf{Sabes que terminaste cuando} sabes qué vas a hacer con tu cuerpo, voz y mirada cuando te toque pararte.
+\end{infoband}
+
+\puente{Con la estructura y las reglas, escribes tu guion de 1 hoja y ensayas con un compañero.}
+
+\begin{titlebox}{milcMagenta}
+Fase 3 · Praxis con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\textbf{Actividad 3 · APLICA --- Tu guion + ensayo + presentación} (35 min en total: 15 min guion, 5 min ensayo, 15 min presentaciones del grupo). Vas a hacer 3 cosas en orden. Primero escribes tu \textbf{guion en 1 hoja} con los 4 momentos en frases cortas. Después \textbf{ensayas} 1 vez con un compañero (él te escucha, tú lo escuchas a él). Después \textbf{presentas} ante el grupo, 2 minutos.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
+Descomposición & \textbf{Paso 1 --- Hoja de soporte (no guion completo).} En una hoja del cuaderno escribe los 4 momentos en bloques separados. Para cada momento NO escribas el texto completo --- escribe \textbf{las palabras clave} (4-5 por momento). Ejemplo, Momento 2: \emph{``configurar correo / quitar GPS a TikTok / privado por defecto''}. Esas palabras clave te recuerdan qué decir sin que tengas que leer.\\
+Patrones & \textbf{Paso 2 --- Practica las 3 reglas de hablar en público.} \emph{Regla 1 (postura):} de pie, pies firmes, manos relajadas (no en los bolsillos). \emph{Regla 2 (voz):} habla un poco más fuerte de lo normal, con pausas. \emph{Regla 3 (mirada):} no mires el piso, mira a 3 compañeros distintos durante los 2 minutos --- 30 segundos cada uno aproximadamente.\\
+Abstracción & \textbf{Paso 3 --- Ensayo en parejas.} Tú le presentas a un compañero (él toma tiempo con el celular). Después él te presenta a ti. \textbf{No corrijan el contenido}; solo díganse 1 cosa que estuvo bien y 1 cosa para mejorar. Ejemplo: \emph{``Buena tu voz, pero me miraste solo a mí. Trata de mirar a 2 más.''}.\\
+Algoritmo de armado & \textbf{Paso 4 --- Presentación ante el grupo.} Cuando te toque, vas al frente, te paras tranquilo, respiras una vez, y empiezas con el Momento 1 (quién eres). El profe lleva el tiempo. Si te equivocas en una palabra, no pares: sigues. Si te ríes o te pones nervioso, está bien --- eso le pasa a todos la primera vez.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcMagenta}{Antes de pararte al frente}
+\checkbox Tengo la hoja de soporte con los 4 momentos. \\[1mm]
+\checkbox Las palabras clave de cada momento son 4-5 (no es un texto completo). \\[1mm]
+\checkbox Practiqué con un compañero al menos una vez. \\[1mm]
+\checkbox Sé qué voy a decir en cada uno de los 4 momentos. \\[1mm]
+\checkbox Tengo un compromiso concreto para el cierre. \\[1mm]
+\checkbox Estoy listo para mirar a 3 personas distintas durante la exposición.
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Hoja de soporte (1 hoja).} \textit{Bloque 1 (15 seg).} Palabras clave del Momento 1. \textit{Bloque 2 (45 seg).} Palabras clave del Momento 2. \textit{Bloque 3 (45 seg).} Palabras clave del Momento 3. \textit{Bloque 4 (15 seg).} Mi compromiso. \textbf{Cada bloque: 4-5 palabras, no más.}
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+\textbf{Lo que va al cuaderno (Actividad 3 · APLICA).} Título: «Actividad 3 --- Mi pitch de 2 minutos». \textbf{Formato:} hoja de soporte con 4 bloques + autoevaluación al final. \textbf{Extensión:} 1 hoja + 4 líneas de autoevaluación. \textbf{Sabes que terminaste cuando} podrías hacer tu pitch a tu mamá esta noche sin abrir el cuaderno.
+\end{infoband}
+
+\puente{El producto es la presentación de 2 minutos ante el grupo + la hoja de soporte.}
+
+\begin{titlebox}{milcMostaza}
+Producto de la sesión
+\end{titlebox}
+\textbf{Pitch de 2 minutos + hoja de soporte + autoevaluación}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) El pitch dura entre 1:45 y 2:15 minutos (cerca de los 2 minutos). (2) Hace los 4 momentos en orden (abro, cuido, protejo, cierro). (3) Usa ejemplos concretos suyos (no teoría). (4) Aplica las 3 reglas (postura, voz, mirada a 3 personas). (5) Cierra con un compromiso concreto y firmado.
+\end{softbox}
+
+\puente{Te autoevalúas y otro compañero te evalúa con la misma rúbrica de 5 criterios.}
+
+\begin{titlebox}{milcVino}
+Fase 4 · Evaluación liberadora — cinco dimensiones
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con 3 voces que te ayudan a entender por qué saber hablar de lo que sabes te abre puertas.}
+
+\begin{titlebox}{milcGradeDark}
+Triángulo de pensamiento · cierre filosófico
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{````Saber sin decirlo, no es saber. Decirlo con tu voz lo termina de hacer tuyo.''''}
+
+Hay personas que saben muchas cosas pero no las pueden contar. Esa sabiduría está incompleta. \textbf{Lo que aprendiste este periodo solo se vuelve realmente tuyo cuando lo cuentas con tu voz}, frente a otros. Por eso este pitch no es \emph{``otra tarea''}: es la cosecha. Las plantas crecen en el patio, pero la cosecha se trae a la mesa.
+
+\textbf{¿Estoy guardando lo que sé para mí, o lo estoy compartiendo para hacerlo realmente mío?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio (emperador romano que escribió sobre la voz propia) · cuidado interior}
+\textit{````Habla más de lo que has hecho que de lo que vas a hacer. Lo hecho ya te respalda.''''}
+
+En tu pitch no estás \textbf{prometiendo} cosas: estás \textbf{contando lo que ya hiciste}. Hiciste la tarjeta. Configuraste el correo. Auditaste apps. Escribiste el decálogo. \textbf{Eso ya está hecho}. Cuando hablas de cosas ya hechas, hablas con seguridad, porque la prueba es tu cuaderno. La voz se afirma cuando lo dicho ya está respaldado.
+
+\textbf{¿Estoy hablando de lo que hice (con respaldo) o solo de lo que prometo hacer?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{````En 2 minutos no se puede decir todo. Se puede decir lo más importante. La habilidad es escoger.''''}
+
+Aprendiste mucho este periodo --- mucho más de lo que cabe en 2 minutos. \textbf{La habilidad valiosa no es saber todo: es saber escoger qué decir cuando el tiempo es corto}. Esa habilidad la vas a necesitar siempre: para una entrevista, para presentar un proyecto, para defender una idea. Hoy fue tu primer pitch. Vendrán muchos más.
+
+\textbf{Si solo tuviera 2 minutos para que mi audiencia se quedara con UNA idea, ¿cuál escogería?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{titlebox}{milcVino}
+Compromiso final
+\end{titlebox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
+Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
+Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
+Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
+Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
+Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
+\end{tabularx}
+\normalsize
+
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} La sesión 11 (la próxima) es la \textbf{evaluación de cosecha} del periodo: te miras todo lo que hiciste, te autoevalúas con rúbrica, vemos el examen final del periodo, y miras al periodo 2 que empieza. Hoy mostraste lo que sabes. La próxima clase consolidas y te preparas para el siguiente capítulo de tu vida digital.
+\end{infoband}
+
+\end{document}

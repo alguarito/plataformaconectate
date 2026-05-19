@@ -1,0 +1,411 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra para todas las guias MILC v3
+% Ver scripts/generadores/build-guia-milc.py para la lista completa de
+% claves esperadas. El script valida que no queden placeholders sin
+% reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1.75cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\hyphenpenalty=200
+\exhyphenpenalty=200
+\pretolerance=400
+\tolerance=2000
+\setlength{\emergencystretch}{1em}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0066FF}
+\definecolor{milcGradeDark}{HTML}{003D99}
+\definecolor{milcGradeSoft}{HTML}{D6E8FF}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Tecnología e Informática · Grado 6}
+\rhead{\small Guía 5 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{\textbf{\textrightarrow}}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+\begin{document}
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[white] (current page.south west) rectangle (current page.north east);
+  \path[fill=milcGradePrimary,rounded corners=16mm]
+    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
+    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
+    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+
+  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
+    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
+    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
+    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
+    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
+    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
+  \end{scope}
+
+  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{124}{124}\selectfont 6};
+  \draw[milcGradeText,line width=1.7pt]
+    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+
+  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+    {
+     {\sffamily\bfseries\fontsize{19}{22}\selectfont Historia de\\los medios ---\\del pregonero\\al WhatsApp}\\[4mm]
+     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 5-6-TIC}\\[2mm]
+     {\sffamily\fontsize{13}{16}\selectfont Período 1 · Comunicación e identidad digital}\\[5mm]
+     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
+     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+    };
+
+  \path[fill=milcGradeSoft,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
+    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
+    \textcolor{milcGradeDark}{\bfseries Producto:} Una \textbf{línea de tiempo dibujada en hoja completa} del cuaderno, con \textbf{8 medios de comunicación} en orden cronológico (1850 hasta hoy). Cada medio lleva: año aproximado, dibujo pequeño, 1 frase de qué hacía, y \textbf{una flecha que conecta dos medios diciendo qué se conservó} (saludo, asunto, firma, audiencia, etc.). Más \textbf{una conclusión escrita} de 3-4 líneas: ¿qué cambió y qué sigue igual desde el pregonero hasta WhatsApp?};
+\end{tikzpicture}
+\mbox{}
+\newpage
+
+\section*{Apertura: Historia de los medios --- del pregonero al chat de WhatsApp}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+\textbf{Tu bisabuela escuchaba radio --- y antes de la radio escuchaba al pregonero.} Si pudieras viajar al Cartago de 1920, no había radio en cada casa. Había \textbf{el pregonero} en el centro, había \textbf{el periódico} (\emph{El Diario del Valle}) que pasaba el cartero los lunes, y había \textbf{las cartas familiares} que viajaban semanas. Después, en los años 40, llegó la radio: la gente se reunía alrededor del aparato a oír noticias y radionovelas. En los años 60 entró la televisión en blanco y negro, y las familias del barrio se juntaban en la casa del único vecino que la tenía. En los 90 llegó internet a los café-internet. En el 2010 explotó WhatsApp. \textbf{Cada paso de esa historia trajo algo nuevo, pero también guardó algo del paso anterior.} La radio guardó la voz del pregonero. WhatsApp guarda el saludo de la carta. Internet no nació de la nada: es el último capítulo de una historia muy larga.
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+Un \textbf{medio de comunicación} es cualquier herramienta que las personas usan para mandarse mensajes a distancia o a muchas personas a la vez. Hoy hay muchos --- WhatsApp, TikTok, YouTube, Instagram --- pero \textbf{todos vienen de medios más antiguos}. Saber esa historia te ayuda a entender 2 cosas: (1) las cosas que parecen \emph{``modernas''} muchas veces vienen de hace siglos --- el asunto del correo viene de la carta postal; (2) cada medio nuevo trae \emph{problemas nuevos} pero también \emph{cuidados antiguos} que ya conocemos. Hoy vas a recorrer 8 medios desde 1850 hasta hoy y vas a descubrir el hilo que los une.
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{Si tu bisabuela viviera, ¿\textbf{le explicarías} qué es WhatsApp? ¿Cómo lo harías? ¿Con qué medio antiguo lo compararías para que entienda?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar la clase: (1) podrás \textbf{identificar} 8 medios de comunicación importantes en orden cronológico; (2) sabrás \textbf{analizar} qué cambió y qué se conservó entre dos medios; (3) habrás \textbf{creado} una línea de tiempo personal con dibujos y conexiones; (4) podrás \textbf{explicar} a tu bisabuela qué es WhatsApp usando una analogía de medios antiguos.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Reconoce principios y conceptos propios de la tecnología, relacionando artefactos con su utilización segura (MEN, T\&I 6°)\\
+Referentes & Saber ancestral del pregonero · Pensamiento computacional inicial · Cuidado de la palabra\\
+Producto final & Una \textbf{línea de tiempo dibujada en hoja completa} del cuaderno, con \textbf{8 medios de comunicación} en orden cronológico (1850 hasta hoy). Cada medio lleva: año aproximado, dibujo pequeño, 1 frase de qué hacía, y \textbf{una flecha que conecta dos medios diciendo qué se conservó} (saludo, asunto, firma, audiencia, etc.). Más \textbf{una conclusión escrita} de 3-4 líneas: ¿qué cambió y qué sigue igual desde el pregonero hasta WhatsApp?\\
+\end{tabularx}
+\normalsize
+
+\puente{Hoy haces 4 cosas: imaginas viajar en el tiempo, descubres los 8 medios principales, analizas qué se conservó, y dibujas tu línea de tiempo.}
+
+\begin{titlebox}{milcGradeDark}
+Ruta MILC: así vamos a aprender
+\end{titlebox}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escuta\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Empezamos con un viaje mental al Cartago de tu bisabuela.}
+
+\begin{titlebox}{milcVerde}
+Fase 1 · Escuta
+\end{titlebox}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- Viaje al Cartago de 1920} (10 min · individual). Cierra los ojos un momento e imagina: estás en Cartago, año 1920. No hay celulares, no hay radio en tu casa, no hay televisión, no hay internet. Tu prima vive en Pereira. \textbf{¿Cómo le mandarías un mensaje?}. Después abre los ojos y \textbf{en el cuaderno} responde estas 3 preguntas con tus palabras: (1) ¿Qué medio usarías para mandarle un mensaje urgente? (2) ¿Cuánto tardaría en llegar? (3) ¿Cómo sabrías si lo recibió? Imagina con calma, no busques en internet.
+\end{softbox}
+
+\checkbox Cerré los ojos e imaginé el viaje al pasado.\\
+\checkbox Respondí las 3 preguntas con mis palabras.\\
+\checkbox No me ayudé de internet ni del compañero.
+
+\begin{infoband}{milcVerde}
+\textbf{Lo que va al cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1 --- Viaje a 1920». \textbf{Formato:} 3 preguntas con sus respuestas, en bloques cortos. \textbf{Extensión:} 3 párrafos de 2-3 líneas cada uno. \textbf{Sabes que terminaste cuando} te imaginaste tan bien la escena que pudiste responder sin dudar.
+\end{infoband}
+
+\puente{Después del viaje, ves los 8 medios principales con sus fechas y características.}
+
+\begin{titlebox}{milcTurquesa}
+Fase 2 · Sistematización con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+Lo que imaginaste te conecta con el primer eslabón. Ahora vas a recorrer \textbf{8 medios de comunicación clave} desde 1850 hasta hoy. No tienes que memorizar las fechas exactas; lo importante es el orden y qué hacía cada uno.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
+1. Descomposición & \textbf{1. Carta postal (siglo XIX, antes de 1900).} Mensajes en papel que viajaban en barco, en tren o en mula. Llegar a Pereira desde Cartago podía tardar 1 semana. \textbf{Lo que aportó:} la idea de \emph{destinatario, asunto, saludo y firma} --- las 5 partes del correo de hoy. \textbf{2. Telégrafo (1844 en EEUU, 1865 en Colombia).} Mensajes cortos que viajaban por cables eléctricos. Cada palabra costaba dinero, entonces se escribía con palabras pegadas: \emph{``LLEGOBIEN HERMANOENFERMO VENPRONTO''}. \textbf{Lo que aportó:} la idea de \emph{abreviar para enviar rápido} --- abuelo del SMS y del chat.\\
+2. Reconocimiento de patrones & \textbf{3. Teléfono fijo (1876, Alexander Graham Bell).} Hablar con otra persona a distancia, en tiempo real, por voz. \textbf{Lo que aportó:} la idea de \emph{conversación a distancia} --- abuelo de las videollamadas. En Cartago llegó masivamente en los años 60. \textbf{4. Radio (años 1920 en Colombia).} Una sola persona habla y muchas personas escuchan al mismo tiempo. \textbf{Lo que aportó:} la idea de \emph{audiencia masiva} --- abuelo de TikTok y YouTube.\\
+3. Abstracción & \textbf{5. Televisión (1954 en Colombia).} Como la radio, pero con imagen. La gente se sentaba a verla. \textbf{Lo que aportó:} la idea de \emph{ver + oír al mismo tiempo} --- abuelo del video. \textbf{6. Internet temprano (años 1990).} Computadores que se conectan unos con otros. En Cartago llegaron los café-internet en el 2000. \textbf{Lo que aportó:} la idea de \emph{cualquiera puede publicar} --- antes solo periódicos y TV publicaban.\\
+4. Algoritmo conceptual & \textbf{7. Celular y SMS (años 2000).} El teléfono móvil reemplazó al fijo. Mensajes de texto cortos. \textbf{Lo que aportó:} la idea de \emph{tener el medio en el bolsillo} --- el medio ya no está en una sala, está contigo. \textbf{8. Redes sociales y WhatsApp (2009-hoy).} Mezcla todo: voz como teléfono, imagen como TV, audiencia masiva como radio, texto como carta. \textbf{Lo que aportan:} la idea de \emph{participar como audiencia y como emisor a la vez} --- ya no solo escuchas, también respondes.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcTurquesa}{Línea de tiempo de los medios}
+\textbf{1850} · Carta postal --- 1 semana de viaje. \\[1mm]
+\textbf{1865} · Telégrafo en Colombia --- minutos, pero caro. \\[1mm]
+\textbf{1876} · Teléfono fijo --- voz en tiempo real. \\[1mm]
+\textbf{1920s} · Radio --- audiencia masiva. \\[1mm]
+\textbf{1954} · Televisión --- voz e imagen. \\[1mm]
+\textbf{1990s} · Internet --- todos publican. \\[1mm]
+\textbf{2000s} · Celular y SMS --- medio en el bolsillo. \\[1mm]
+\textbf{2009+} · Redes sociales y WhatsApp --- todo mezclado.
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{Confusiones frecuentes sobre la historia de los medios.} (1) \emph{``Internet inventó la comunicación masiva''} --- Falso, la radio y la TV ya la habían inventado. (2) \emph{``Antes de WhatsApp nadie sabía abreviar''} --- Falso, el telégrafo abreviaba hace 150 años. (3) \emph{``Las redes sociales son lo más nuevo que existe''} --- Cierto pero engañoso: las redes son \emph{una mezcla} de medios anteriores, no algo completamente nuevo. (4) \emph{``Las cartas son cosa muerta''} --- Falso, el correo electrónico es una carta y se sigue usando todos los días.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+\textbf{Lo que va al cuaderno (Actividad 2 · ANALIZA).} Título: «Actividad 2 --- Comparando dos medios». \textbf{Formato:} tabla de 3 columnas. Columna 1: característica. Columna 2: cómo era en la \emph{carta postal} de 1900. Columna 3: cómo es en \emph{WhatsApp} de hoy. Compara 5 características: velocidad, costo, audiencia, qué se conserva, qué se pierde. \textbf{Extensión:} 5 filas. \textbf{Sabes que terminaste cuando} ves claro qué cambió y qué se conservó entre los dos medios.
+\end{infoband}
+
+\puente{Con los 8 medios claros, dibujas tu propia línea de tiempo con conexiones.}
+
+\begin{titlebox}{milcMagenta}
+Fase 3 · Praxis con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\textbf{Actividad 3 · CREA --- Tu línea de tiempo personal} (25 min · individual). Vas a dibujar en \textbf{una hoja completa del cuaderno} una línea de tiempo con los 8 medios de comunicación, en orden cronológico. No es solo una lista: vas a agregar dibujos pequeños y \textbf{flechas que conectan medios} mostrando qué se conservó del uno al otro.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
+Descomposición & \textbf{Paso 1.} Pon la hoja \emph{horizontal} (apaisada). Dibuja \textbf{una línea horizontal larga} en el centro. En el extremo izquierdo escribe \textbf{1850}, en el extremo derecho escribe \textbf{2026}. Marca con líneas verticales pequeñas las fechas: 1850, 1865, 1876, 1920, 1954, 1990, 2000, 2010.\\
+Patrones & \textbf{Paso 2.} En cada marca de fecha escribe \textbf{el nombre del medio} (Carta, Telégrafo, Teléfono, Radio, TV, Internet, SMS, WhatsApp). Alterna: unos arriba de la línea, otros abajo, para que no se amontonen.\\
+Abstracción & \textbf{Paso 3.} Al lado de cada nombre dibuja \textbf{un ícono pequeño} de ese medio: un sobre para la carta, una bocina para el teléfono, una antena para la radio, un televisor cuadrado para la TV, un computador para internet, un celular para SMS, un círculo verde con el rayo para WhatsApp. Dibujos simples, no tienen que estar perfectos.\\
+Algoritmo de armado & \textbf{Paso 4.} Bajo cada nombre escribe \textbf{una frase corta} (máximo 8 palabras) de qué hacía ese medio. Ejemplo: \emph{``Carta: viaja en mula, 1 semana''}, \emph{``Radio: una voz, miles oyendo''}.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcMagenta}{Antes de mostrar la línea de tiempo}
+\checkbox La línea ocupa una hoja completa horizontal. \\[1mm]
+\checkbox Están los 8 medios con su fecha y nombre. \\[1mm]
+\checkbox Cada medio tiene un ícono dibujado. \\[1mm]
+\checkbox Cada medio tiene una frase corta de lo que hacía. \\[1mm]
+\checkbox Hay al menos 4 flechas de conexión con su palabra. \\[1mm]
+\checkbox Está la conclusión personal de 3-4 líneas firmada.
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Estructura del eje}: 1850 --- 1865 --- 1876 --- 1920s --- 1954 --- 1990s --- 2000s --- 2010+. \textbf{Cada medio}: fecha + nombre + ícono + frase corta. \textbf{Flechas}: conectan medio antiguo con moderno, llevan una palabra (lo que se conservó). \textbf{Conclusión}: 3-4 líneas en la esquina inferior derecha.
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+\textbf{Lo que va al cuaderno (Actividad 3 · CREA).} Título: «Actividad 3 --- Mi línea de tiempo de los medios». \textbf{Formato:} hoja entera horizontal con línea de tiempo, dibujos pequeños, flechas y conclusión. \textbf{Extensión:} 1 hoja entera. \textbf{Sabes que terminaste cuando} podrías explicársela a tu bisabuela y ella entendería en 1 minuto cómo llegamos de su carta postal a tu WhatsApp.
+\end{infoband}
+
+\puente{El producto es esa línea de tiempo dibujada y la conclusión sobre qué se conservó.}
+
+\begin{titlebox}{milcMostaza}
+Producto de la sesión
+\end{titlebox}
+\textbf{Línea de tiempo de los medios · 8 medios con conexiones · firmada}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) La línea ocupa una hoja entera horizontal. (2) Están los 8 medios en orden cronológico correcto. (3) Cada medio tiene fecha, nombre, ícono y frase corta. (4) Hay mínimo 4 flechas de conexión entre medios antiguos y modernos. (5) La conclusión final responde qué cambió y qué se conservó.
+\end{softbox}
+
+\puente{Antes de salir, miras tu línea y verificas que están los 8 medios y las flechas de conexión.}
+
+\begin{titlebox}{milcVino}
+Fase 4 · Evaluación liberadora — cinco dimensiones
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con 3 voces que te ayudan a entender por qué saber historia te protege en el presente.}
+
+\begin{titlebox}{milcGradeDark}
+Triángulo de pensamiento · cierre filosófico
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{````El que no sabe de dónde viene una herramienta, fácil cae en pensar que la herramienta lo gobierna a él, y no al revés.''''}
+
+Cuando \textbf{sabes que WhatsApp viene de la carta postal}, dejas de tratarlo como magia. Es un medio. Tiene reglas viejas (el saludo, la firma, el destinatario). Tú lo manejas, no él a ti. \textbf{La historia te devuelve poder sobre la herramienta}: te muestra que los humanos llevan 200 años pasándose mensajes y que tú no eres la primera generación con ese desafío.
+
+\textbf{¿Uso las herramientas digitales con criterio, o dejo que ellas me usen a mí porque no sé de dónde vienen?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio (emperador que escribió sobre lo que cambia y lo que no) · cuidado interior}
+\textit{````Las formas cambian rápido. Lo que cuenta --- el saludo, la honestidad, el respeto --- es lo mismo desde hace milenios.''''}
+
+Mira tu línea de tiempo: \textbf{las formas cambiaron} --- mula, cable, ondas, satélite, fibra óptica --- pero \textbf{lo importante sigue igual}. Se saluda, se identifica el destinatario, se firma, se respeta al otro. Si dominas eso, dominas cualquier medio nuevo que aparezca dentro de 10 años. La forma cambiará otra vez. Lo bueno --- el respeto --- no.
+
+\textbf{¿Estoy aprendiendo lo que dura, o solo lo que está de moda esta semana?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{````Cada generación cree que su medio es el más importante. Después llega otro medio y se vuelven el medio anterior. La sabiduría es ver venir el cambio.''''}
+
+Tu bisabuela vivió un mundo \textbf{sin radio}. Tu abuela vivió un mundo \textbf{sin TV}. Tu mamá vivió un mundo \textbf{sin WhatsApp}. Tú vas a vivir un mundo \textbf{sin algún medio que apenas se va a inventar}. La pregunta no es \emph{``qué medio voy a usar siempre''}: la pregunta es \emph{``cómo aprendo a aprender medios nuevos sin enredarme''}. La línea de tiempo te enseña eso.
+
+\textbf{¿Estoy aprendiendo a \textbf{cambiarme} de medio cuando llegue uno nuevo, o me voy a quedar pegado al que conozco hoy?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{titlebox}{milcVino}
+Compromiso final
+\end{titlebox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
+Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
+Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
+Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
+Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
+Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
+\end{tabularx}
+\normalsize
+
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Guarda tu línea de tiempo en el cuaderno. Esta semana, observa: ¿cuántos medios distintos usaste en un día? Cuéntalos. La próxima clase vas a aprender sobre tu \textbf{huella digital}: el rastro de cosas que dejas cuando navegas, posteas y juegas. Hoy viste la historia. La próxima clase vas a ver el presente: lo que va quedando con tu nombre.
+\end{infoband}
+
+\end{document}

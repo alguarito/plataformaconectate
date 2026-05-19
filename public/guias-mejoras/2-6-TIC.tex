@@ -1,0 +1,407 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra para todas las guias MILC v3
+% Ver scripts/generadores/build-guia-milc.py para la lista completa de
+% claves esperadas. El script valida que no queden placeholders sin
+% reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1.75cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\hyphenpenalty=200
+\exhyphenpenalty=200
+\pretolerance=400
+\tolerance=2000
+\setlength{\emergencystretch}{1em}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0066FF}
+\definecolor{milcGradeDark}{HTML}{003D99}
+\definecolor{milcGradeSoft}{HTML}{D6E8FF}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Tecnología e Informática · Grado 6}
+\rhead{\small Guía 2 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{\textbf{\textrightarrow}}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+\begin{document}
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[white] (current page.south west) rectangle (current page.north east);
+  \path[fill=milcGradePrimary,rounded corners=16mm]
+    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
+    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
+    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+
+  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
+    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
+    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
+    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
+    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
+    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
+  \end{scope}
+
+  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{124}{124}\selectfont 6};
+  \draw[milcGradeText,line width=1.7pt]
+    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+
+  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+    {
+     {\sffamily\bfseries\fontsize{19}{22}\selectfont Mi identidad\\digital ---\\quién soy en la red}\\[4mm]
+     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 2-6-TIC}\\[2mm]
+     {\sffamily\fontsize{13}{16}\selectfont Período 1 · Comunicación e identidad digital}\\[5mm]
+     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
+     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+    };
+
+  \path[fill=milcGradeSoft,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
+    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
+    \textcolor{milcGradeDark}{\bfseries Producto:} Una \textbf{tarjeta de identidad digital} hecha en el cuaderno, con tu nombre, tu foto-dibujo, 3 cosas que te gusta hacer, 2 cosas que cuidas (que NO le cuentas a desconocidos), y \textbf{1 frase que te describa que tú mismo escribas} (no la copies de internet). Producto físico, no digital todavía. Lo muestras al final de la clase.};
+\end{tikzpicture}
+\mbox{}
+\newpage
+
+\section*{Apertura: Mi identidad digital --- cómo me presento en la red sin perderme}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+\textbf{¿Sabes qué hacía el pregonero del barrio?} Antes de los celulares, en cada cuadra del centro de Cartago caminaba el pregonero. Tocaba una campanita y gritaba: \emph{``Reunión del barrio el sábado, traer ladrillos para arreglar el parque.''} Llevaba mensajes casa a casa. Su voz lo identificaba: \textbf{ese pregonero era ese pregonero}. Si dañaba un mensaje, lo conocían y le decían: \emph{``Don Aurelio, esa noticia no la entregó bien.''} Si la entregaba bien, lo buscaban para más. \textbf{Su nombre y su voz eran su identidad}. La cuidaba porque la necesitaba para vivir. En internet pasa parecido: lo que firmas con tu nombre se queda. Si lo cuidas, te abre puertas. Si no, también se queda. Solo que en internet, mucha más gente te ve.
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+Tu \textbf{identidad digital} es el grupo de cosas que la gente puede ver de ti cuando te buscan en la red. No es solo tu nombre. Es: \textbf{tu foto, tu apodo, lo que escribes, lo que comentas, los videos que subes, los grupos donde estás}. Cada vez que pones algo en internet, agregas un pedacito a esa identidad. Algunas cosas se borran fácil. Otras no. Por eso esta sesión es importante: \textbf{antes de poner algo en la red, decide tú qué quieres que esa identidad cuente de ti}. Empezamos hoy con un ejercicio muy concreto: vas a hacer una \emph{tarjeta de identidad digital} en tu cuaderno. Sin computador, sin celular. Solo lápiz.
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{Si alguien te buscara en internet hoy mismo, ¿qué \textbf{cosas tuyas} encontraría? ¿Te gusta lo que vería?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar la clase: (1) podrás \textbf{decir con tus palabras} qué es identidad digital; (2) sabrás \textbf{distinguir} cosas que sí se cuentan en la red de cosas que no; (3) habrás \textbf{hecho} tu tarjeta de identidad digital en el cuaderno.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Reconoce principios y conceptos propios de la tecnología, relacionando artefactos con su utilización segura (MEN, T\&I 6°)\\
+Referentes & Saber ancestral del pregonero · Pensamiento computacional inicial · Cuidado de la palabra\\
+Producto final & Una \textbf{tarjeta de identidad digital} hecha en el cuaderno, con tu nombre, tu foto-dibujo, 3 cosas que te gusta hacer, 2 cosas que cuidas (que NO le cuentas a desconocidos), y \textbf{1 frase que te describa que tú mismo escribas} (no la copies de internet). Producto físico, no digital todavía. Lo muestras al final de la clase.\\
+\end{tabularx}
+\normalsize
+
+\puente{Hoy vas a hacer 3 cosas: leer un poco, pensar un poco y dibujar tu tarjeta de identidad digital.}
+
+\begin{titlebox}{milcGradeDark}
+Ruta MILC: así vamos a aprender
+\end{titlebox}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escuta\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Empezamos con un juego mental: imagina que un primo lejano te busca en internet por primera vez.}
+
+\begin{titlebox}{milcVerde}
+Fase 1 · Escuta
+\end{titlebox}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- Imagina al primo curioso} (10 min · individual). Cierra los ojos un momento. Imagina esto: un primo tuyo de otra ciudad, al que casi no conoces, escucha que estás en Cartago y \textbf{te busca en internet}. Ahora abre los ojos y \textbf{escribe en el cuaderno} qué cosas crees que encontraría sobre ti: \emph{¿Una foto? ¿Tu nombre? ¿Algún video tuyo? ¿Comentarios en juegos? ¿Tu Tik Tok? ¿Nada?}. \textbf{Anota 5 cosas} que crees que tu primo encontraría. No tienen que ser todas verdaderas; pueden ser cosas que tú \emph{sospechas} que hay.
+\end{softbox}
+
+\checkbox Cerré los ojos y pensé en el primo.\\
+\checkbox Escribí 5 cosas que él encontraría de mí.\\
+\checkbox No me dio pena escribir las verdaderas.
+
+\begin{infoband}{milcVerde}
+\textbf{Lo que va al cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1 --- El primo curioso». \textbf{Formato:} lista numerada de 5 cosas. \textbf{Extensión:} 5 viñetas cortas, una línea cada una. \textbf{Sabes que terminaste cuando} tienes 5 cosas escritas y ninguna te dio risa o pena al escribirla.
+\end{infoband}
+
+\puente{Después de pensar en el primo, vas a aprender 4 reglas para cuidar tu identidad digital sin esfuerzo.}
+
+\begin{titlebox}{milcTurquesa}
+Fase 2 · Sistematización con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+Lo que acabaste de hacer es mirar tu identidad digital actual. Ahora vas a aprender \textbf{4 reglas} para cuidarla. Son simples y van a servirte toda la vida.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
+1. Descomposición & \textbf{Regla 1 --- Tu nombre completo no se regala.} Tu nombre y apellidos completos son tuyos. No los pongas en sitios desconocidos. Para juegos y apps usa un \emph{apodo}: \texttt{LaraDelValle12} es mejor que \texttt{Lara Cárdenas Martínez}.\\
+2. Reconocimiento de patrones & \textbf{Regla 2 --- Las fotos quedan.} Una foto que subes hoy puede aparecer en 10 años. Antes de subir una foto: ¿la mostrarías en clase? Si la respuesta es no, no la subas.\\
+3. Abstracción & \textbf{Regla 3 --- Lo que escribes te firma.} Cada comentario, cada mensaje, lleva tu nombre o apodo. Si vas a escribir algo, léelo dos veces y pregunta: \emph{``¿Esto suena a mí o suena raro?''}.\\
+4. Algoritmo conceptual & \textbf{Regla 4 --- Lo importante NO se cuenta en internet.} Tu dirección, tu colegio exacto, los horarios que llegas a casa, fotos donde se ve el uniforme: esas cosas se cuentan en persona, a quien conoces de verdad.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcTurquesa}{Las 4 reglas para recordar}
+\textbf{Regla 1.} Mi nombre completo no se regala. \\[1mm]
+\textbf{Regla 2.} Las fotos quedan. \\[1mm]
+\textbf{Regla 3.} Lo que escribo me firma. \\[1mm]
+\textbf{Regla 4.} Lo importante se cuenta en persona.
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{Errores que cometen tus compañeros (y a veces tú también).} (1) Usar el nombre completo en juegos en línea --- los adultos malos buscan así. (2) Subir fotos donde se ve el uniforme del colegio --- cualquiera sabe dónde estás cada día. (3) Compartir contraseña con \emph{``mi mejor amigo''} --- la amistad cambia, la contraseña queda. (4) Aceptar solicitudes de gente que no conoces porque ``tienen muchos amigos en común''.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+\textbf{Lo que va al cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2 --- Las 4 reglas con mis palabras». \textbf{Formato:} las 4 reglas re-escritas \emph{con tu propia voz}, una por línea. Después dibuja 1 ícono al lado de cada una (lo que quieras). \textbf{Extensión:} 4 frases cortas + 4 íconos. \textbf{Sabes que terminaste cuando} podrías explicarle las 4 reglas a un hermano menor sin abrir el cuaderno.
+\end{infoband}
+
+\puente{Con las 4 reglas, dibujas tu propia tarjeta de identidad en el cuaderno.}
+
+\begin{titlebox}{milcMagenta}
+Fase 3 · Praxis con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\textbf{Actividad 3 · CREA --- Mi tarjeta de identidad digital} (30 min · individual). Hora de hacer la tarjeta. Vas a usar \textbf{una hoja del cuaderno completa}, no media. Vas a dibujar, escribir y firmar. Sigue los 6 pasos con calma. No hay prisa.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
+Descomposición & \textbf{Paso 1.} En la parte superior de la hoja escribe en grande: \textbf{``Mi identidad digital''}. Debajo, tu nombre real (porque esta tarjeta es para ti, no para subir a internet).\\
+Patrones & \textbf{Paso 2.} Dibuja un cuadro grande en el centro de la hoja. Adentro dibuja un \textbf{retrato tuyo} (un dibujo, no foto). No tiene que estar perfecto. La idea es que se parezca a ti, no a alguien más.\\
+Abstracción & \textbf{Paso 3.} Al lado del retrato, escribe \textbf{3 cosas que te gusta hacer}. Pueden ser cualquier cosa: jugar fútbol, dibujar mangas, oír reguetón, cocinar con tu abuela, hablar con tu hermana. Cosas reales, no las que ``deberías'' decir.\\
+Algoritmo de armado & \textbf{Paso 4.} Debajo, escribe \textbf{2 cosas que cuidas}. Son cosas que NO le cuentas a desconocidos. Ejemplo: tu dirección, una historia familiar, una contraseña, un secreto pequeño. No las escribas explícitas en la tarjeta, escribe solo \textbf{el tema}: \emph{``mi dirección''}, \emph{``mi familia''}.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcMagenta}{Antes de pegar la tarjeta}
+\checkbox La tarjeta cabe en una hoja entera del cuaderno. \\[1mm]
+\checkbox Hay un retrato tuyo dibujado. \\[1mm]
+\checkbox Están 3 cosas que te gusta hacer (cosas reales). \\[1mm]
+\checkbox Están 2 cosas que cuidas (solo el tema, no el contenido). \\[1mm]
+\checkbox La frase que te describe la escribiste tú. \\[1mm]
+\checkbox Firmaste con nombre y fecha.
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Estructura de la tarjeta.} \textit{Arriba:} título + tu nombre. \textit{Centro:} retrato dibujado. \textit{Lado derecho:} 3 cosas que te gustan. \textit{Abajo:} 2 cosas que cuidas + 1 frase tuya. \textit{Esquina:} firma + fecha.
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+\textbf{Lo que va al cuaderno (Actividad 3 · CREA).} Título: «Actividad 3 --- Mi tarjeta de identidad digital». \textbf{Formato:} dibujo de hoja completa con texto y retrato. \textbf{Extensión:} 1 página entera del cuaderno. \textbf{Sabes que terminaste cuando} muestras la tarjeta al profe y él dice ``esa eres tú''.
+\end{infoband}
+
+\puente{El producto es esa tarjeta: la pegas en la primera página del cuaderno de Tecnología.}
+
+\begin{titlebox}{milcMostaza}
+Producto de la sesión
+\end{titlebox}
+\textbf{Tarjeta de identidad digital · firmada y pegada en el cuaderno}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) La tarjeta ocupa una hoja completa. (2) Tiene los 5 elementos (título, retrato, gustos, cuidados, frase). (3) La frase que describe al estudiante fue inventada por él/ella. (4) Está firmada con nombre y fecha. (5) Cumple las 4 reglas aprendidas hoy (no datos sensibles visibles).
+\end{softbox}
+
+\puente{Antes de terminar, miras tu tarjeta y te preguntas: \emph{``Si mi mamá viera esto, ¿le gustaría cómo me presento?''}}
+
+\begin{titlebox}{milcVino}
+Fase 4 · Evaluación liberadora — cinco dimensiones
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Y para cerrar, 3 voces antiguas tienen algo que decirte sobre cuidar la palabra propia.}
+
+\begin{titlebox}{milcGradeDark}
+Triángulo de pensamiento · cierre filosófico
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{````Mi voz cuenta tanto como cualquier otra. Mi nombre vale lo mismo que cualquier nombre.''''}
+
+Hay un montón de gente en internet con nombres famosos, con miles de seguidores, con voces muy ruidosas. Pero \textbf{tu voz también cuenta}. Tu identidad digital no necesita parecerse a la de un youtuber para tener valor. Vale por ser tuya. Cuídala como vale.
+
+\textbf{¿Estoy intentando parecer alguien más en internet, o estoy contando quién soy de verdad?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio (un emperador romano que escribió cartas sobre cómo vivir bien) · cuidado interior}
+\textit{````Lo que escribes hoy queda. Escribe entonces como si lo fueras a leer dentro de 10 años.''''}
+
+Hay cosas que escribes hoy de las que dentro de 10 años te vas a arrepentir. Otras te van a gustar leerlas. La diferencia está en cuidar lo que escribes, no en cuántos likes te dan ahora. Antes de subir algo, pregúntate: \emph{``¿Yo en 10 años, leyendo esto, me sentiría orgulloso?''}.
+
+\textbf{¿Lo que voy a escribir aguanta el paso del tiempo, o me daría pena dentro de unos años?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{````Internet es una conversación enorme entre muchas voces. Tú también eres una de esas voces.''''}
+
+Cada vez que escribes algo en internet, lo metes a una conversación gigante donde millones de personas hablan. Tu identidad digital es \textbf{tu manera de meterte a esa conversación}. Puedes meterte con respeto o gritando. Las dos formas cuentan, pero hacen mundos distintos.
+
+\textbf{Cuando me meto a internet, ¿estoy aportando algo o solo agregando ruido?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{titlebox}{milcVino}
+Compromiso final
+\end{titlebox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
+Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
+Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
+Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
+Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
+Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
+\end{tabularx}
+\normalsize
+
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Llega con tu \textbf{tarjeta pegada en la primera página del cuaderno}. La próxima clase activas tu correo institucional --- la primera dirección que firmas como tuya. Lo que aprendiste hoy te va a servir: el correo lleva tu nombre. Cuídalo como cuidas tu tarjeta.
+\end{infoband}
+
+\end{document}

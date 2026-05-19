@@ -1,0 +1,413 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra para todas las guias MILC v3
+% Ver scripts/generadores/build-guia-milc.py para la lista completa de
+% claves esperadas. El script valida que no queden placeholders sin
+% reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1.75cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\hyphenpenalty=200
+\exhyphenpenalty=200
+\pretolerance=400
+\tolerance=2000
+\setlength{\emergencystretch}{1em}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0066FF}
+\definecolor{milcGradeDark}{HTML}{003D99}
+\definecolor{milcGradeSoft}{HTML}{D6E8FF}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Tecnología e Informática · Grado 6}
+\rhead{\small Guía 4 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{\textbf{\textrightarrow}}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+\begin{document}
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[white] (current page.south west) rectangle (current page.north east);
+  \path[fill=milcGradePrimary,rounded corners=16mm]
+    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
+    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
+    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+
+  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
+    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
+    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
+    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
+    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
+    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
+  \end{scope}
+
+  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{124}{124}\selectfont 6};
+  \draw[milcGradeText,line width=1.7pt]
+    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+
+  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+    {
+     {\sffamily\bfseries\fontsize{19}{22}\selectfont Netiqueta ---\\los 10 acuerdos\\para llevarte bien\\en internet}\\[4mm]
+     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 4-6-TIC}\\[2mm]
+     {\sffamily\fontsize{13}{16}\selectfont Período 1 · Comunicación e identidad digital}\\[5mm]
+     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
+     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+    };
+
+  \path[fill=milcGradeSoft,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
+    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
+    \textcolor{milcGradeDark}{\bfseries Producto:} Un \textbf{cartel personal de los 10 acuerdos de netiqueta} dibujado en hoja completa del cuaderno. Cada acuerdo va con \textbf{un ejemplo de cumplirlo} y \textbf{un ejemplo de romperlo} con tus propias palabras. Más \textbf{una promesa firmada} al final: \emph{``Me comprometo a respetar estos 10 acuerdos en todos los chats, juegos y redes en que esté.''} Lo muestras antes de salir.};
+\end{tikzpicture}
+\mbox{}
+\newpage
+
+\section*{Apertura: Netiqueta --- los 10 acuerdos para llevarte bien en internet}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+\textbf{Hay reglas que no están escritas pero todos las saben.} En tu casa hay normas que nadie te enseñó por escrito: no se grita en la mesa, no se interrumpe al que está hablando, se saluda al entrar. Esas reglas tu mamá o tu abuela no te las leyeron de un libro: las aprendiste viendo. En las cuadras del centro de Cartago pasaba parecido: cuando llegaba el pregonero, los niños se callaban. Era una regla no escrita pero todos la respetaban porque así el mensaje llegaba completo. Si alguien gritaba o se reía, otra persona le decía: \emph{``Cállese mijo, déjelo hablar''}. \textbf{Esas reglas no escritas se llaman acuerdos de convivencia}. En internet también existen --- pero como nadie te las enseña por verlas, te las tienen que enseñar a propósito. Se llaman \textbf{netiqueta}: la etiqueta (las reglas de cortesía) en la red.
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+\textbf{Netiqueta} viene de juntar dos palabras: \emph{net} (red en inglés) + \emph{etiqueta} (reglas de cortesía). Son los acuerdos para tratarte bien con otros cuando estás en chats, juegos, comentarios, correos y grupos. \textbf{No son una ley:} nadie te lleva a la cárcel si las rompes. Son algo más fuerte: \textbf{son la forma en que la gente decide si quiere o no juntarse contigo en línea}. Quien las cumple acumula confianza y respeto. Quien las rompe va perdiendo gente. Hoy vas a aprender 10 acuerdos básicos. Son pocos, son claros y van a servirte en cada chat de Roblox, cada grupo de WhatsApp, cada comentario de TikTok, cada correo institucional, durante toda tu vida en línea.
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{Cuando alguien escribe \textbf{``ESTÁS TODO LOCO''} en mayúsculas en un chat de juego, ¿\textbf{cómo te sientes}? ¿Sientes que te están hablando bonito o sientes que te están gritando?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar la clase: (1) podrás \textbf{identificar} los 10 acuerdos de netiqueta; (2) sabrás \textbf{explicar} con tus palabras por qué cada uno cuida la convivencia; (3) habrás \textbf{evaluado} 6 mensajes reales y dirás si cumplen o rompen los acuerdos; (4) habrás \textbf{creado} tu cartel personal con tus propios ejemplos.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Reconoce principios y conceptos propios de la tecnología, relacionando artefactos con su utilización segura (MEN, T\&I 6°)\\
+Referentes & Saber ancestral del pregonero · Pensamiento computacional inicial · Cuidado de la palabra\\
+Producto final & Un \textbf{cartel personal de los 10 acuerdos de netiqueta} dibujado en hoja completa del cuaderno. Cada acuerdo va con \textbf{un ejemplo de cumplirlo} y \textbf{un ejemplo de romperlo} con tus propias palabras. Más \textbf{una promesa firmada} al final: \emph{``Me comprometo a respetar estos 10 acuerdos en todos los chats, juegos y redes en que esté.''} Lo muestras antes de salir.\\
+\end{tabularx}
+\normalsize
+
+\puente{Hoy haces 4 cosas: lees situaciones reales, descubres los 10 acuerdos, evalúas mensajes, y haces tu cartel.}
+
+\begin{titlebox}{milcGradeDark}
+Ruta MILC: así vamos a aprender
+\end{titlebox}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escuta\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Empezamos viendo 3 situaciones de chats que tal vez te suenan familiares.}
+
+\begin{titlebox}{milcVerde}
+Fase 1 · Escuta
+\end{titlebox}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · ANALIZA --- Tres situaciones que ya viste} (10 min · individual). Lee estas 3 escenas y en el cuaderno escribe \textbf{qué se hizo mal} en cada una. No tienes que saber los nombres técnicos; cuéntalo con tus palabras. \textbf{Escena A:} En un grupo de WhatsApp del salón, alguien escribe a las 11 de la noche: \emph{``oigan quien tiene la tarea de mate'' --- ``oigan respondan'' --- ``oigan estoy preguntando algo''} (tres mensajes seguidos). \textbf{Escena B:} En Roblox, un jugador escribe en el chat: \emph{``ERES UN MAL JUGADOR APRENDE A JUGAR INÚTIL''}. \textbf{Escena C:} En un grupo de TikTok, alguien comparte una foto de un compañero del salón que se cayó, sin pedirle permiso, con risas.
+\end{softbox}
+
+\checkbox Leí las 3 escenas con calma.\\
+\checkbox Identifiqué qué se hizo mal en cada una.\\
+\checkbox Lo escribí con mis palabras, no copié de otro lado.
+
+\begin{infoband}{milcVerde}
+\textbf{Lo que va al cuaderno (Actividad 1 · ANALIZA).} Título: «Actividad 1 --- Tres escenas para mirar». \textbf{Formato:} 3 párrafos cortos, uno por escena. Cada párrafo dice qué se hizo mal y qué hubieras hecho tú. \textbf{Extensión:} 3 párrafos de 3-4 líneas cada uno. \textbf{Sabes que terminaste cuando} si un compañero leyera tu cuaderno, entendería tu opinión sin que tú la explicaras.
+\end{infoband}
+
+\puente{Después de las situaciones, aprendes los 10 acuerdos exactos con su nombre.}
+
+\begin{titlebox}{milcTurquesa}
+Fase 2 · Sistematización con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+Las 3 escenas que acabaste de leer rompen 3 acuerdos distintos. Pero hay más. En total son \textbf{10 acuerdos básicos de netiqueta} que todo estudiante de tu edad debería conocer. Los vas a aprender ahora.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
+1. Descomposición & \textbf{1. Saluda y despídete.} Como en la vida real: empiezas con un saludo (\emph{``Buenos días''}, \emph{``Hola''}) y terminas con una despedida (\emph{``Gracias''}, \emph{``Hasta mañana''}). No mandes mensajes pelados. \textbf{2. No grites con mayúsculas.} ESCRIBIR TODO EN MAYÚSCULAS es gritar. Solo se usa para una palabra que necesita énfasis, no para frases enteras. \textbf{3. No spam.} No mandes el mismo mensaje 5 veces seguidas. Si nadie responde, espera; si es urgente, llama por teléfono.\\
+2. Reconocimiento de patrones & \textbf{4. Cuida los horarios.} No mandes mensajes a horas raras (11 de la noche a 7 de la mañana) salvo emergencia real. Hay personas durmiendo. \textbf{5. Respeta lo que se dice en privado.} Si alguien te cuenta algo en chat privado, no lo compartas con el grupo sin permiso. \textbf{6. No publiques fotos de otros sin pedirles permiso.} Aunque la foto sea graciosa. Aunque la persona ``no se vaya a dar cuenta''. Pedir permiso es regla básica.\\
+3. Abstracción & \textbf{7. Piensa antes de escribir.} En la vida real, las palabras se las lleva el viento. En internet, las palabras quedan. Antes de enviar algo molesto o brusco, lee otra vez: \emph{``¿De verdad quiero decir esto así?''}. \textbf{8. No insultes ni humilles, ni en broma.} Lo que en persona puede ser broma, en pantalla suele leerse como insulto. No hay tono de voz, no hay sonrisa. Mejor evítalo.\\
+4. Algoritmo conceptual & \textbf{9. Si algo está mal, no lo reenvíes.} Cadenas falsas, fotos íntimas de alguien, noticias raras, retos peligrosos. \textbf{Reenviarlo te hace parte del problema}. La regla es: si lo dudas, no lo mandes. \textbf{10. Habla con un adulto cuando te asustes.} Si alguien en internet te molesta, te amenaza, te pide fotos raras, te dice cosas que te hacen sentir mal --- cuéntale a un adulto de confianza (mamá, papá, profe, abuela). No estás solo.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcTurquesa}{Los 10 acuerdos de netiqueta}
+\textbf{1.} Saluda y despídete. \\[1mm]
+\textbf{2.} No grites con mayúsculas. \\[1mm]
+\textbf{3.} No spam (no mandes lo mismo 5 veces). \\[1mm]
+\textbf{4.} Cuida los horarios (nada de mensajes a las 11pm). \\[1mm]
+\textbf{5.} Lo privado se queda privado. \\[1mm]
+\textbf{6.} No publiques fotos de otros sin permiso. \\[1mm]
+\textbf{7.} Piensa antes de escribir. \\[1mm]
+\textbf{8.} No insultes ni humilles, ni en broma. \\[1mm]
+\textbf{9.} Si algo está mal, no lo reenvíes. \\[1mm]
+\textbf{10.} Cuéntale a un adulto cuando algo te asuste.
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{Mitos sobre netiqueta que vas a oír de tus compañeros.} (1) \emph{``Si no contesta es porque es altanero''} --- No. Hay clases, vidas, sueño. Esperar es respeto. (2) \emph{``Si no escribo en mayúsculas no se nota lo que digo''} --- Sí se nota. Usa una palabra puntual en mayúscula, no frases enteras. (3) \emph{``Si yo lo recibí, lo puedo reenviar''} --- Falso. Solo porque te lo mandaron no significa que ya es público. (4) \emph{``Si alguien me molesta, le respondo con otro insulto''} --- Eso enciende más el problema. La salida es bloquear o avisar a un adulto. (5) \emph{``Es solo internet, no es real''} --- Es muy real. Lo que pasa en pantalla afecta cómo te sientes y cómo te ven.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+\textbf{Lo que va al cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2 --- Los 10 acuerdos con mis palabras». \textbf{Formato:} lista numerada del 1 al 10, cada acuerdo en una sola línea, escrito con \emph{tu propia voz}, no copiado. \textbf{Extensión:} 10 líneas. \textbf{Sabes que terminaste cuando} podrías recitar los 10 sin abrir el cuaderno.
+\end{infoband}
+
+\puente{Con los 10 acuerdos en mente, dibujas tu cartel personal en el cuaderno.}
+
+\begin{titlebox}{milcMagenta}
+Fase 3 · Praxis con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\textbf{Actividad 3 · CREA --- Tu cartel personal de netiqueta} (25 min · individual). Vas a hacer en una hoja completa del cuaderno un \textbf{cartel personal} con los 10 acuerdos. Cada acuerdo lleva 2 ejemplos pequeños: uno de \textbf{cumplir} y uno de \textbf{romper} el acuerdo. Vas a inventar los ejemplos tú; no los copies del libro. Al final, firmas el cartel con tu nombre como una promesa.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
+Descomposición & \textbf{Paso 1.} En la parte superior de la hoja escribe el título grande: \textbf{``Mis 10 acuerdos de netiqueta''} y debajo: \emph{``Promesa de [tu nombre], grado 6[tu letra], año 2026''}. Subraya el título.\\
+Patrones & \textbf{Paso 2.} Divide la hoja en \textbf{10 cuadritos} (2 columnas, 5 filas, por ejemplo) o haz una lista bien ordenada. Cada cuadrito o renglón es para 1 acuerdo. Numéralos del 1 al 10.\\
+Abstracción & \textbf{Paso 3.} En cada cuadrito escribe: arriba el \textbf{nombre del acuerdo} (corto, máximo 5 palabras). Abajo \textbf{un ejemplo de cumplirlo} (\emph{``Cumpliendo: ...''}) y \textbf{un ejemplo de romperlo} (\emph{``Rompiendo: ...''}). Los ejemplos los inventas tú, deben ser cosas que pasan en tu vida.\\
+Algoritmo de armado & \textbf{Paso 4.} Para los acuerdos que tienen que ver con grupos del colegio (por ejemplo el acuerdo 3 o el 6), trata de que el ejemplo sea del salón de 6° o de una situación que ya viste o que podría pasar. Esto hace tu cartel \emph{tuyo}.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcMagenta}{Antes de mostrar tu cartel}
+\checkbox El cartel ocupa una hoja entera del cuaderno. \\[1mm]
+\checkbox Están los 10 acuerdos numerados del 1 al 10. \\[1mm]
+\checkbox Cada acuerdo tiene un ejemplo de cumplir y uno de romper. \\[1mm]
+\checkbox Los ejemplos los inventaste tú (no son copias). \\[1mm]
+\checkbox Cada acuerdo tiene un ícono pequeño. \\[1mm]
+\checkbox La promesa está firmada con nombre y fecha.
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Plantilla de cada cuadrito.} \textit{Número}: 1 al 10. \textit{Nombre del acuerdo}: máximo 5 palabras. \textit{Cumpliendo}: 1 frase. \textit{Rompiendo}: 1 frase. \textit{Ícono pequeño}: el que tú quieras.
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+\textbf{Lo que va al cuaderno (Actividad 3 · CREA).} Título: «Actividad 3 --- Mis 10 acuerdos de netiqueta». \textbf{Formato:} hoja completa del cuaderno con 10 cuadritos, ejemplos y firma. \textbf{Extensión:} 1 hoja entera. \textbf{Sabes que terminaste cuando} cualquier compañero de otro salón podría leerlo y entenderlo sin que tú lo expliques.
+\end{infoband}
+
+\puente{El producto es el cartel firmado: lo guardas como compromiso tuyo.}
+
+\begin{titlebox}{milcMostaza}
+Producto de la sesión
+\end{titlebox}
+\textbf{Cartel personal de los 10 acuerdos de netiqueta · firmado}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) El cartel ocupa una página completa. (2) Están los 10 acuerdos en orden del 1 al 10. (3) Cada acuerdo tiene su ejemplo de cumplirlo y de romperlo. (4) Los ejemplos son inventados por el estudiante, contextualizados. (5) El cartel está firmado y con fecha.
+\end{softbox}
+
+\puente{Antes de salir, revisas que tu cartel tiene los 10 acuerdos, los ejemplos y la firma.}
+
+\begin{titlebox}{milcVino}
+Fase 4 · Evaluación liberadora — cinco dimensiones
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con 3 voces que te ayudan a entender por qué el respeto pesa más en pantalla que cara a cara.}
+
+\begin{titlebox}{milcGradeDark}
+Triángulo de pensamiento · cierre filosófico
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{````Antes de hablar a otro, primero hay que reconocer que el otro es persona como tú.''''}
+
+En internet no ves la cara del otro. No ves si está cansado, si llora, si tiene un mal día. \textbf{Por eso la regla es más fuerte ahí}: tratar al otro como persona, no como avatar. Cada nombre que aparece en un chat es un ser humano del otro lado. Saludarlo, escribirle con cuidado, no humillarlo --- eso es reconocer a la persona.
+
+\textbf{Cuando escribo en línea, ¿\textbf{recuerdo que el del otro lado es una persona} o trato a las personas como si fueran nombres en una pantalla?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Epicteto (un esclavo romano que se hizo famoso enseñando a vivir con calma) · cuidado interior}
+\textit{````No es lo que te dicen lo que te hace daño, es cómo respondes a lo que te dicen.''''}
+
+Si alguien te escribe algo molesto en un chat, lo que te enciende es \emph{cómo reaccionas tú}, no lo que dijo el otro. \textbf{Tienes 3 caminos:} (1) responder con otro insulto y encender el problema, (2) ignorar y bloquear, (3) avisarle a un adulto si es serio. Los caminos 2 y 3 son los inteligentes. La rabia se enfría con un vaso de agua, no escribiendo.
+
+\textbf{Cuando algo me molesta en línea, ¿\textbf{respondo de una vez} o tomo un momento antes de escribir?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{````Cada mensaje que envías deja huella. La gente recordará no lo que dijiste, sino cómo lo dijiste.''''}
+
+De todos los mensajes que envíes en tu vida, \textbf{la gente se acordará más del tono que del contenido}. Pueden no recordar exactamente qué pediste, pero recordarán si pediste con respeto o si llegaste empujando. La netiqueta no es debilidad: es saber que el tono pesa.
+
+\textbf{Si la gente solo recordara cómo me hablo en internet, ¿\textbf{qué pensarían} de mí?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{titlebox}{milcVino}
+Compromiso final
+\end{titlebox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
+Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
+Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
+Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
+Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
+Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
+\end{tabularx}
+\normalsize
+
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Guarda tu cartel en el cuaderno. Esta semana, cada vez que entres a un chat, mira mentalmente uno de los 10 acuerdos y pregúntate: \emph{``¿Lo estoy cumpliendo?''}. La próxima clase vamos a viajar al pasado: vas a descubrir \textbf{cómo eran los medios de comunicación} antes de internet --- desde el pregonero hasta la radio y la televisión --- y por qué esta historia te ayuda a entender mejor TikTok y WhatsApp.
+\end{infoband}
+
+\end{document}

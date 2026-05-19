@@ -1,10 +1,9 @@
 /**
  * Contenido enriquecido para Grado 6 · Período 2 · Sesión 1
- * (sesión global 12 — APERTURA MILC del periodo 2).
+ * (sesión global 11).
  *
- * Tema: Re-encuentro MILC + tour físico de un equipo + auto-check #3 + brief Escuta refinado.
- * Aplica PATRON_S1_apertura.md · variante P2·S1 Re-encuentro.
- * Capítulo 2 del hilo: "equiparme y cuidar".
+ * Auto-generado desde content/guias/6/6-2-1.yaml por
+ * scripts/build-guias-web-ts.py. Edita el YAML, no este archivo.
  */
 import type { ContenidoGuia } from './_schema';
 
@@ -12,235 +11,160 @@ const contenido: ContenidoGuia = {
   grado: 6,
   periodo: 2,
   sesion: 1,
-  titulo:
-    'Re-encuentro MILC · Lo que cosechamos en P1, lo que viene con el hardware y mi proyecto Escuta sigue creciendo',
-  ocultarPDF: true,
-  sinStepper: true,
-  resumen:
-    'Habitamos la sala digital con dignidad — capítulo 2: equiparme y cuidar. Te re-encuentras con el método MILC, abrimos un equipo para que veas qué hay dentro y refinamos tu proyecto Escuta para la fase de digitalización.',
+  titulo: 'Apertura periodo 2 — las máquinas que nos rodean por dentro',
+  resumen: 'En el Periodo 2 (Hardware y software) vas a recorrer 10 sesiones organizadas así: (S1) Hoy: Apertura del periodo.',
   duracionMin: 90,
-  subtema: 'Apertura · Re-encuentro · Hardware y software',
-
+  subtema: 'Apertura periodo 2 — las máquinas que nos rodean por dentro',
   preLectura: {
-    porQueImporta:
-      'Sin saber qué hay dentro del computador, dependes de quien te lo quiera vender caro o reparar mal. Saber abrir la caja negra es una forma de libertad — y de cuidado del recurso de tu colegio.',
-    preguntaDetonante:
-      'Si tu computador se apagara en plena sustentación final del Escuta, ¿sabrías nombrar qué pieza pudo fallar antes de avisar al docente? Hoy empezamos a saberlo.',
+    porQueImporta: 'El producto es ese inventario + pregunta-radar + compromiso firmado.',
+    preguntaDetonante: 'Cuando una persona dice "mi computador está lento, le voy a meter más RAM", ¿sabes lo que dijo? ¿Sabes qué es RAM? ¿Por qué meter más ayudaría? Si no, este periodo te lo va a enseñar.',
     activacion: {
-      titulo: 'Círculo de la palabra · Re-encuentro',
-      descripcion:
-        'Cada estudiante dice en una frase qué se llevó del periodo 1. El docente cierra invocando el compadrazgo del Norte del Valle: "volvemos a vernos después de la primera siembra".',
-      duracionMin: 5,
+      titulo: 'Inventario de las máquinas que conoces',
+      descripcion: 'Actividad 1 · IDENTIFICA — Inventario de las máquinas que conoces (12 min · individual).',
+      duracionMin: 10
     },
     conexion: {
-      anterior:
-        'En P1 trabajaste comunicación, identidad digital y entrevistaste a tu adulto mayor. Hoy ese audio necesita un equipo que lo guarde bien.',
-      siguiente:
-        'En la S2 entras a la arquitectura del computador — el computador como sistema de procesamiento.',
-    },
+      anterior: 'Hoy haces 4 cosas: recuerdas las máquinas que usas, descubres la ruta del P2, firmas el compromiso de cuidar la sala, y planteas tu pregunta-radar.',
+      siguiente: 'Trae el cuaderno con el inventario + preguntas + compromiso firmado.'
+    }
   },
-
   conceptosClave: [
     {
-      categoria: '🧭 MILC en mis palabras (lo que ya sé del método)',
-      termino: 'Pre-lectura',
-      definicion:
-        'El bloque que te calienta antes de leer — caso, pregunta, mini-actividad. Lo viviste 10 veces en P1.',
-      ejemplo:
-        'En P1·S5 (historia de los medios) la pre-lectura te puso a imaginar Cartago en 1850. Eso te activó.',
-      emoji: '📖',
-    },
-    {
-      categoria: '🧭 MILC en mis palabras (lo que ya sé del método)',
-      termino: 'Conceptos clave',
-      definicion:
-        'Las palabras nuevas con definición + ejemplo + emoji. Las viste en cada guía.',
-      ejemplo:
-        'Phishing, huella pasiva, netiqueta — todos vinieron así.',
-      emoji: '🔑',
-    },
-    {
-      categoria: '🧭 MILC en mis palabras (lo que ya sé del método)',
-      termino: 'Laboratorio',
-      definicion:
-        'El hands-on — quiz, simulador, taller, vitrina. Lo más recordado del periodo.',
-      ejemplo:
-        'La vitrina de P1·S11 fue el laboratorio más importante del primer ciclo.',
-      emoji: '🧪',
-    },
-    {
-      categoria: '🧭 MILC en mis palabras (lo que ya sé del método)',
-      termino: 'Post-lectura',
-      definicion:
-        'Cierre con reflexión, transferencia y triángulo Dussel-Estoicismo-Floridi.',
-      ejemplo:
-        'Cada guía cierra invocando a los tres pensadores con frases cortas.',
-      emoji: '📝',
-    },
-    {
-      categoria: '🧭 MILC en mis palabras (lo que ya sé del método)',
-      termino: 'Triángulo de pensamiento',
-      definicion:
-        'Las tres voces que cierran cada guía — pensar desde el Otro (Dussel), desde sí mismo (Estoicismo) y desde la información (Floridi).',
-      ejemplo:
-        'En P3·S11 los reescribirás con tus propias palabras.',
-      emoji: '🔺',
-    },
-    {
-      categoria: '🛠️ Lo que vamos a abrir en P2',
       termino: 'Hardware',
-      definicion:
-        'La parte del computador que se TOCA — pantalla, teclado, CPU, memoria, disco, cables.',
-      ejemplo:
-        'Si tu micrófono USB no funciona, el problema puede ser hardware (puerto dañado).',
-      emoji: '🖥️',
+      definicion: 'Todo lo que se puede tocar en el computador y otras máquinas inteligentes: la pantalla, el teclado, los chips por dentro, los cables. Si lo puedes golpear o llevar en la mano, es hardware.',
+      ejemplo: 'El teclado, monitor, ratón, gabinete, parlante: todo eso es hardware. Lo aprendes a fondo durante el periodo 2.',
+      emoji: '💻'
     },
     {
-      categoria: '🛠️ Lo que vamos a abrir en P2',
       termino: 'Software',
-      definicion:
-        'La parte que se EJECUTA — sistema operativo, programas, navegador. No se toca, se usa.',
-      ejemplo:
-        'Word, Windows, Chrome — todos son software.',
-      emoji: '💾',
+      definicion: 'Las instrucciones y archivos que viven dentro del hardware. No se tocan, pero existen guardados en memoria. Sistema operativo, programas, apps, archivos: todo es software.',
+      ejemplo: 'Windows, Word, Chrome, WhatsApp, tus fotos: todos son software. Necesitan hardware para existir y funcionar.',
+      emoji: '📦'
     },
     {
-      categoria: '🛠️ Lo que vamos a abrir en P2',
-      termino: 'Mantenimiento',
-      definicion:
-        'El cuidado que decide cuánto dura el equipo y cómo te responde cuando lo necesitas.',
-      ejemplo:
-        'Limpiar el teclado, no comer cerca, cerrar programas que no usas — eso es mantenimiento básico.',
-      emoji: '🔧',
+      termino: 'Sala de sistemas',
+      definicion: 'El espacio físico del colegio donde están los computadores. Tiene reglas de cuidado: manos limpias, sin comer, postura correcta, apagado adecuado, reportar daños. Cuidarla es respetar a quienes vendrán después.',
+      ejemplo: 'Cada vez que entras a la sala de sistemas, miras alrededor: ¿hay un cable suelto? ¿algún equipo descuidado? Reportarlo al profe es parte del cuidado colectivo.',
+      emoji: '🏛️'
     },
+    {
+      termino: 'Inventario de máquinas',
+      definicion: 'Lista de las máquinas inteligentes que usas o ves cada día. Te ayuda a darte cuenta de que vives rodeado de tecnología (computador, celular, cajeros, electrodomésticos modernos, GPS).',
+      ejemplo: 'Mi inventario podría ser: celular, computador del cole, microondas, cajero del banco, smart TV de la casa, GPS del bus, parlante Bluetooth, lavadora, nevera nueva, caja registradora. Suelen ser muchas más de las que uno nota.',
+      emoji: '📋'
+    },
+    {
+      termino: 'Pregunta-radar del periodo',
+      definicion: 'Pregunta personal que tú escoges al inicio del periodo. Espera respuesta durante las 10 sesiones. En P2 puede ser sobre máquinas: cómo funcionan, por qué se calientan, qué computador conviene comprar.',
+      ejemplo: 'Tu pregunta-radar del P2 podría ser \'¿qué computador debería comprar?\' Las sesiones del periodo (especialmente S10) te darán las herramientas para responderla con criterio.',
+      emoji: '🧭'
+    }
   ],
-
   laboratorios: [
     {
-      tipo: 'visualizacion',
-      titulo: 'Re-encuentro MILC + tour físico del equipo + brief Escuta refinado',
-      instrucciones:
-        'Seis pasos en el 70% hands-on. Sales con: contrato pedagógico revisado, ficha técnica del equipo asignado y segundo brief del proyecto Escuta.',
-      pasos: [
-        {
-          titulo: 'Paso 1 · Vitrina cruzada del P1 (10 min)',
-          texto:
-            'Tres estudiantes voluntarios muestran 90 seg de su Escuta. Naturaliza el lenguaje MILC: el curso oye palabras como "huella pasiva", "netiqueta", "control emocional" en boca de pares — no del docente.',
-        },
-        {
-          titulo: 'Paso 2 · Revisión del contrato pedagógico (5 min)',
-          texto:
-            'Releen los 5 acuerdos firmados en P1·S1. Cada uno marca: ✅ cumplido / 🔁 me costó / ❌ aún no. Honestidad, no rendimiento.',
-        },
-        {
-          titulo: 'Paso 3 · Tour físico de un equipo abierto (20 min)',
-          texto:
-            'El docente trae un PC desarmado o usa simulador 3D. Los estudiantes nombran al menos 5 partes: pantalla, CPU, RAM, disco, fuente de poder. Toman foto y la pegan en su cuaderno.',
-        },
-        {
-          titulo: 'Paso 4 · Auto-check MILC #3 (5 min)',
-          texto:
-            'Línea base del periodo 2. Compara con #2 (cosecha P1). Si una dimensión bajó, escribe en el diario una frase con la causa.',
-        },
-        {
-          titulo: 'Paso 5 · Segundo brief del proyecto Escuta (10 min)',
-          texto:
-            'Refinas el plan: ahora el audio del Escuta debe digitalizarse en el equipo que aprenderás a cuidar. Escribes en el diario en qué carpeta lo guardarás y qué respaldo tendrás.',
-        },
-        {
-          titulo: 'Paso 6 · Marcar el mapa del año (5 min)',
-          texto:
-            'Pegas en la cartelera la marca de inicio P2 y haces visible la conexión P1→P2 con un hilo de color.',
-        },
-      ],
-    },
-    {
       tipo: 'quiz',
-      titulo: 'Mini-quiz · Re-encuentro con MILC + apertura al hardware',
-      instrucciones: '5 preguntas. Mide qué tan natural se te volvió el lenguaje MILC.',
+      titulo: '¿Llegaste bien al periodo 2?',
+      instrucciones: '5 preguntas para verificar que conoces la ruta y firmaste el compromiso.',
       preguntas: [
         {
-          enunciado: '"Hardware" se diferencia de "software" porque:',
+          enunciado: '¿Por qué entender el hardware del computador te hace más libre?',
           opciones: [
-            'Hardware es más caro',
-            'Software es más viejo',
-            'Hardware se toca, software se ejecuta',
-            'Hardware es bonito',
-          ],
-          respuestaIndex: 2,
-          feedbackCorrecto:
-            '✅ Exacto. Tocas el teclado (hardware), ejecutas Word (software).',
-          feedbackIncorrecto:
-            '❌ La diferencia no es precio ni edad: es naturaleza. Hardware = físico (se toca). Software = lógico (se ejecuta).',
-        },
-        {
-          enunciado: 'Si tu computador es lento, lo prudente antes de quejarte es:',
-          opciones: [
-            'Pegarle al monitor',
-            'Reiniciar 10 veces seguidas',
-            'Mirar si hay muchos programas abiertos y cuántos años tiene el equipo',
-            'Pedir cambio inmediato',
-          ],
-          respuestaIndex: 2,
-          feedbackCorrecto:
-            '✅ Phronesis (sabiduría práctica): observas antes de actuar. Muchos programas abiertos + equipo viejo = lentitud explicable.',
-          feedbackIncorrecto:
-            '❌ Pegarle, reiniciar a ciegas o exigir cambio sin diagnóstico no resuelve nada. Primero observas.',
-        },
-        {
-          enunciado: '¿Por qué digitalizar el Escuta exige saber de hardware?',
-          opciones: [
-            'Por puro trámite',
-            'Porque tu archivo de audio depende del micrófono, almacenamiento y software del equipo',
-            'Sin razón clara',
-            'Por moda',
+            'Porque puedes presumir de saber mucho.',
+            'Porque resuelves problemas sin depender de técnicos, decides con criterio cuando compras, no te dejas engañar.',
+            'Porque ya no necesitas usarlo.',
+            'Porque ahorra electricidad.'
           ],
           respuestaIndex: 1,
-          feedbackCorrecto:
-            '✅ Correcto. Si tu audio se daña, sabrás dónde mirar: micrófono (entrada), disco (guardado), programa (edición).',
-          feedbackIncorrecto:
-            '❌ Digitalizar no es solo "subir a la nube": tu audio pasa por hardware (micrófono, disco) y software (programa de grabación). Saber esto te da control.',
+          feedbackCorrecto: 'Sí. Entender te quita dependencia. El que sabe decide; el que no sabe depende. Esa es la libertad técnica del siglo XXI.',
+          feedbackIncorrecto: 'Entender te hace libre: decides cuando compras, resuelves problemas básicos, no te estafan. Sin entender, dependes de otros para todo.'
         },
         {
-          enunciado: 'Mi auto-check #2 vs #3 me dice:',
+          enunciado: 'Cuál es una de las 5 reglas de la sala de sistemas?',
           opciones: [
-            'Nada útil',
-            'Que perdí el periodo',
-            'Cómo crecí en una dimensión y dónde aún falta',
-            'Que la prueba está mal hecha',
+            'Puedo comer chocolate frente al computador.',
+            'Apagar el computador con el botón de fuerza.',
+            'Manos limpias y secas antes de tocar teclado o ratón.',
+            'Usar el computador descalzo.'
           ],
           respuestaIndex: 2,
-          feedbackCorrecto:
-            '✅ El auto-check longitudinal es la evidencia más valiosa que tendrás del año.',
-          feedbackIncorrecto:
-            '❌ El auto-check no es para descalificarte ni para descalificarlo. Es para ver tu trayectoria.',
+          feedbackCorrecto: 'Bien. Manos limpias y secas: una de las 5 reglas. La humedad y la suciedad dañan electrónica. Pequeña disciplina, gran ahorro.',
+          feedbackIncorrecto: 'Manos limpias y secas es regla 1. Otras: sin comer, buena postura, apagado correcto, reportar daños. Cuidar la sala es ciudadanía.'
         },
         {
-          enunciado: 'Mi abuela usaba un computador en 1995. ¿Qué pieza de las que veremos en P2 ya existía entonces?',
+          enunciado: 'Tu primo dice \'mi computador está lento, le voy a comprar más RAM\'. ¿Sabes qué le quiere meter?',
           opciones: [
-            'Ninguna',
-            'Solo el teclado',
-            'CPU, memoria RAM, disco duro, teclado, monitor — la arquitectura básica',
-            'Solo el monitor',
+            'No tengo idea, suena difícil.',
+            'Una memoria que ayuda al equipo a tener más programas abiertos a la vez. Lo aprenderás en P2.',
+            'Le va a comprar un programa nuevo.',
+            'Algo decorativo.'
           ],
-          respuestaIndex: 2,
-          feedbackCorrecto:
-            '✅ Correcto. La arquitectura fundamental (CPU + RAM + almacenamiento + entrada/salida) lleva décadas. Lo que cambia son las velocidades y tamaños.',
-          feedbackIncorrecto:
-            '❌ La arquitectura fundamental del computador (CPU + RAM + almacenamiento + I/O) ya existía en 1995 y antes. Lo que cambia son cifras, no estructura.',
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Bien. La RAM es la memoria de trabajo del computador. Más RAM = más programas abiertos sin lentitud. Lo verás en S3 del periodo 2.',
+          feedbackIncorrecto: 'RAM es memoria de trabajo. Más RAM permite más programas abiertos sin que se trabe. Lo aprenderás en detalle en S3 del P2.'
         },
-      ],
-    },
+        {
+          enunciado: '¿Cuántos temas tiene el periodo 2 según la ruta presentada?',
+          opciones: [
+            '5 temas.',
+            '10 sesiones de S1 a S10 + S11 de cosecha.',
+            '20 temas.',
+            'Solo 1 tema.'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Sí. P2 tiene 10 sesiones (S1 a S10) más S11 de cosecha. Cada sesión es un tema cerrado pero conectado con los anteriores.',
+          feedbackIncorrecto: '10 sesiones (S1 a S10) más S11 de cosecha. Es el patrón de los 3 periodos del año. Conoces la ruta = caminas con mapa.'
+        },
+        {
+          enunciado: 'Tu pregunta-radar del periodo es \'¿cuál computador me conviene comprar?\'. ¿Qué sesión te ayudará más a responderla?',
+          opciones: [
+            'Ninguna.',
+            'S10 (Mi computador ideal), pero también todas las anteriores porque te dan el contexto.',
+            'Solo la S1 que es hoy.',
+            'Una clase fuera del colegio.'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Exacto. S10 es la sesión específica, pero las anteriores te dan el contexto (hardware, software, mantenimiento) para tomar la decisión con criterio.',
+          feedbackIncorrecto: 'S10 (Mi computador ideal) responde directo. Las anteriores te dan contexto para no decidir a ciegas. Todo el periodo te prepara para esa pregunta.'
+        }
+      ]
+    }
   ],
-
   postLectura: {
-    reflexion:
-      '¿Qué te sorprendió al ver un equipo abierto por dentro? ¿Qué creías que tenía y no tenía, o al revés?',
-    transferencia:
-      'Esta semana mira el computador de tu casa o el de un familiar. Identifica al menos 3 partes externas y averigua cuántos años tiene. Anótalo en tu diario.',
-    cierre:
-      'Capítulo 2 abierto: Dussel diría que saber qué hay dentro de la máquina te emancipa de quien la quiere vender cara. Epicteto diría que lo que cuidas a tiempo no te sorprende después. Floridi diría que el hardware es el cuerpo de la información — y todo cuerpo merece cuidado.',
+    reflexion: '¿Vivo con miedo de las máquinas que uso, o con criterio? ¿Qué cosa me dejaría de dar miedo si la entendiera mejor?',
+    transferencia: 'Trae el cuaderno con el inventario + preguntas + compromiso firmado.',
+    cierre: 'Al terminar la clase: (1) podrás identificar la ruta del periodo 2 (los 10 temas); (2) sabrás explicar por qué entender las máquinas por dentro te hace más libre; (3) podrás aplicar 5 reglas de cuidado de la sala de sistemas; (4) habrás creado un inventario de las máquinas que co…'
   },
+  saberAncestral: {
+    saber: 'Antes de que las máquinas modernas llegaran a Cartago, había maestros de oficio en cada cuadra que entendían sus herramientas por dentro. El relojero don Lucho, en su vitrina de la calle 14, conocía cada engranaje del reloj. La costurera doña Carmen, sentada en su Singer, entendía por qué a veces se rompía el hilo y cómo arreglarlo. El panadero don Aurelio, frente a su horno de leña, sabía a qué temperatura crecía la masa. Cada uno conocía su máquina por dentro, no solo por fuera. Por eso resolvían problemas, no quedaban esclavos del aparato. Hoy nuestras máquinas se llaman computador, celular, cajero electrónico. Son más complejas que el reloj de don Lucho, pero el principio es el mismo: quien las entiende por dentro es libre; quien solo las usa es dependiente. Este periodo 2 es tu entrada al oficio de entender las máquinas inteligentes. No vas a aprender a programar (eso vendrá en otros grados): vas a aprender qué hay adentro, cómo funciona, cómo cuidarlo, cómo elegirlo.',
+    preguntaPuente: 'Cuando una persona dice "mi computador está lento, le voy a meter más RAM", ¿sabes lo que dijo? ¿Sabes qué es RAM? ¿Por qué meter más ayudaría? Si no, este periodo te lo va a enseñar.'
+  },
+  triangulo: {
+    dussel: {
+      autor: 'Enrique Dussel (filósofo del saber popular)',
+      lente: 'lente del nosotros',
+      cita: '"El campesino que entiende su tierra es libre. El que solo la trabaja sin entenderla, vive con miedo de perderla."',
+      preguntaEspejo: '¿Vivo con miedo de las máquinas que uso, o con criterio? ¿Qué cosa me dejaría de dar miedo si la entendiera mejor?'
+    },
+    estoico: {
+      autor: 'Marco Aurelio (emperador que entendía sus instrumentos)',
+      lente: 'lente del cuidado interior',
+      cita: '"Saber el nombre y la función de cada herramienta que usas es la primera virtud del que actúa bien en el mundo."',
+      preguntaEspejo: '¿Cuántas herramientas uso todos los días sin saber su nombre ni su función? ¿Cómo me afecta eso?'
+    },
+    floridi: {
+      autor: 'Luciano Floridi (filósofo italiano de la era digital)',
+      lente: 'lente de la infoesfera',
+      cita: '"En el siglo XXI, no entender hardware es como en el siglo XX no saber leer. Te excluye de decisiones importantes en tu propia vida."',
+      preguntaEspejo: '¿Estoy convirtiéndome en ciudadano técnicamente alfabetizado, o me quedo en el grupo de los que aprietan botones sin saber?'
+    }
+  },
+  cincoDimensiones: {
+    personal: 'Al terminar la clase: (1) podrás identificar la ruta del periodo 2 (los 10 temas); (2) sabrás explicar por qué entender las máquinas por dentro te hace más libre; (3) podrás aplicar 5 reglas de cuidad…',
+    emocional: 'Marco Aurelio era emperador romano, pero también conocía a fondo sus herramientas: la pluma, el papiro, la armadura, el caballo.',
+    ciudadana: 'Lo mismo aplica a las máquinas.',
+    local: 'Antes de salir, verifica que el inventario tiene 10 máquinas reales tuyas y las 5 preguntas son sinceras.',
+    intergeneracional: 'Floridi lo dice fuerte porque es real: una persona que no entiende mínimamente cómo funciona su computador y su celular va a tomar peores decisiones (compra equipos equivocados, se deja estafar, no en…'
+  }
 };
 
 export default contenido;

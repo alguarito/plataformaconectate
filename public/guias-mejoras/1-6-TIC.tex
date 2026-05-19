@@ -1,0 +1,406 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra para todas las guias MILC v3
+% Ver scripts/generadores/build-guia-milc.py para la lista completa de
+% claves esperadas. El script valida que no queden placeholders sin
+% reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1.75cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\hyphenpenalty=200
+\exhyphenpenalty=200
+\pretolerance=400
+\tolerance=2000
+\setlength{\emergencystretch}{1em}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0066FF}
+\definecolor{milcGradeDark}{HTML}{003D99}
+\definecolor{milcGradeSoft}{HTML}{D6E8FF}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Tecnología e Informática · Grado 6}
+\rhead{\small Guía 1 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{\textbf{\textrightarrow}}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+\begin{document}
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[white] (current page.south west) rectangle (current page.north east);
+  \path[fill=milcGradePrimary,rounded corners=16mm]
+    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
+    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
+    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+
+  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
+    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
+    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
+    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
+    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
+    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
+  \end{scope}
+
+  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{124}{124}\selectfont 6};
+  \draw[milcGradeText,line width=1.7pt]
+    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+
+  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+    {
+     {\sffamily\bfseries\fontsize{19}{22}\selectfont Bienvenida ---\\cómo aprenderemos\\Tecnología\\este año}\\[4mm]
+     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 1-6-TIC}\\[2mm]
+     {\sffamily\fontsize{13}{16}\selectfont Período 1 · Comunicación e identidad digital}\\[5mm]
+     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
+     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+    };
+
+  \path[fill=milcGradeSoft,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
+    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
+    \textcolor{milcGradeDark}{\bfseries Producto:} Tu \textbf{cuaderno inaugural de Tecnología} listo para todo el año: portada con tu nombre + grado + año + materia (formato libre pero claro); índice de las \textbf{10 sesiones del periodo 1} (vas a llenar los títulos según la ruta que conozcas hoy); \textbf{compromiso firmado} de 5 acuerdos para trabajar bien este año (asistencia, cuaderno, respeto digital, esfuerzo, ayuda mutua). Más \textbf{en el cuaderno}: una pregunta que te llevas para investigar durante el periodo.};
+\end{tikzpicture}
+\mbox{}
+\newpage
+
+\section*{Apertura: Bienvenida a Tecnología --- cómo aprenderemos este año}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+\textbf{En los talleres de Cartago, recibir a un aprendiz nuevo era ritual.} Cuando un muchacho del campo llegaba donde el relojero don Lucho, donde la costurera doña Carmen o donde el panadero don Aurelio, \textbf{el primer día no se trabajaba}. Se conversaba. El maestro le mostraba el taller, le explicaba las herramientas, le decía qué se esperaba de él, qué horario, qué ritmo. \emph{``Aprenda primero a estar en el taller; después aprenderá el oficio''}, decía don Lucho a sus nuevos aprendices. Sin ese día de \textbf{bienvenida y orientación}, el aprendiz se sentía perdido y se iba la primera semana. Con ese día, se quedaba 5 años aprendiendo. \textbf{Nuestra sala de Tecnología es ese taller. Tú eres el aprendiz nuevo}. Hoy no vamos a empezar con Word, ni con internet, ni con hardware. Hoy nos conocemos, vemos el taller, hacemos el pacto. La próxima clase ya empieza el oficio.
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+Este año en \textbf{Tecnología e Informática} vas a recorrer 3 grandes territorios. \textbf{Periodo 1 (Comunicación e identidad digital):} cómo presentarte en internet, cómo usar correo, cómo cuidarte de riesgos. \textbf{Periodo 2 (Hardware y software):} cómo funciona el computador por dentro y por fuera. \textbf{Periodo 3 (Procesador de texto e Internet):} cómo escribir documentos profesionales y cómo buscar información con criterio. En cada periodo tendrás \textbf{10 sesiones} (la 1 es esta apertura y la 10 cosecha lo aprendido) más una sesión 11 de cierre formal. Cada sesión sigue una estructura MILC: \textbf{saber ancestral} (cómo se hacía antes en Cartago), \textbf{saber contemporáneo} (lo técnico), \textbf{3 actividades} (escuchar, explicar, hacer), y \textbf{triángulo de pensamiento}. Tu cuaderno es la herramienta principal. El computador es el laboratorio. Aprender bien aquí te abre puertas para toda tu vida adulta.
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{Si tuvieras que explicarle a tu mamá \emph{en qué consiste el grado 6° en Tecnología}, ¿\textbf{cómo lo harías} con lo que sabes hasta ahora? ¿Tienes una idea, o esperas que el año te lo muestre poco a poco?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar la clase: (1) podrás \textbf{identificar} la ruta del periodo 1 (los 10 temas); (2) sabrás \textbf{explicar} qué es el método MILC con tus palabras; (3) podrás \textbf{aplicar} las 5 reglas del cuaderno y del aula; (4) habrás \textbf{firmado} tu compromiso del año.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Reconoce principios y conceptos propios de la tecnología, relacionando artefactos con su utilización segura (MEN, T\&I 6°)\\
+Referentes & Saber ancestral del pregonero · Pensamiento computacional inicial · Cuidado de la palabra\\
+Producto final & Tu \textbf{cuaderno inaugural de Tecnología} listo para todo el año: portada con tu nombre + grado + año + materia (formato libre pero claro); índice de las \textbf{10 sesiones del periodo 1} (vas a llenar los títulos según la ruta que conozcas hoy); \textbf{compromiso firmado} de 5 acuerdos para trabajar bien este año (asistencia, cuaderno, respeto digital, esfuerzo, ayuda mutua). Más \textbf{en el cuaderno}: una pregunta que te llevas para investigar durante el periodo.\\
+\end{tabularx}
+\normalsize
+
+\puente{Hoy haces 4 cosas: te presentas al curso, descubres la ruta del periodo, firmas el compromiso, y dejas el cuaderno listo.}
+
+\begin{titlebox}{milcGradeDark}
+Ruta MILC: así vamos a aprender
+\end{titlebox}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escuta\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Empezamos con un círculo de la palabra: cada uno dice qué espera del año.}
+
+\begin{titlebox}{milcVerde}
+Fase 1 · Escuta
+\end{titlebox}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- Círculo de la palabra} (10 min · individual + grupo). Sentados en U o en círculo, cada estudiante responde 3 preguntas en voz alta (1 frase corta cada una): \emph{(1) ¿Cómo te llamas y de qué barrio vienes?} \emph{(2) ¿Qué esperas de la materia de Tecnología este año?} \emph{(3) ¿Qué te gustaría aprender a hacer en el computador?}. El profe escribe en el tablero \textbf{3 palabras clave} que se repitan entre las respuestas (ejemplo: \emph{``jugar''}, \emph{``Word''}, \emph{``internet''}). Esas palabras se vuelven tu radar del año. \textbf{En el cuaderno:} apunta tus 3 respuestas. Después escribe las 3 palabras clave del grupo.
+\end{softbox}
+
+\checkbox Respondí las 3 preguntas en voz alta.\\
+\checkbox Escuché las respuestas de los demás.\\
+\checkbox Anoté en el cuaderno mis respuestas y las 3 palabras del grupo.
+
+\begin{infoband}{milcVerde}
+\textbf{Lo que va al cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1 --- Círculo de la palabra». \textbf{Formato:} mis 3 respuestas en bloques + las 3 palabras clave del grupo. \textbf{Extensión:} 4 líneas. \textbf{Sabes que terminaste cuando} tienes registro escrito de quién eres y qué esperas, no solo en la cabeza.
+\end{infoband}
+
+\puente{Después conoces la ruta del periodo 1 (los 10 temas) y las reglas del trabajo.}
+
+\begin{titlebox}{milcTurquesa}
+Fase 2 · Sistematización con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+Ahora conoce \textbf{la ruta del periodo 1} y las reglas del trabajo. Esto convierte la materia de \emph{misterio} en \emph{mapa}.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
+1. Descomposición & \textbf{La ruta del periodo 1 --- los 10 temas.} \emph{(S1) Hoy: Bienvenida.} \emph{(S2) Mi identidad digital.} \emph{(S3) Mi correo institucional.} \emph{(S4) Netiqueta: 10 acuerdos.} \emph{(S5) Historia de los medios.} \emph{(S6) Mi huella digital.} \emph{(S7) Privacidad y datos personales.} \emph{(S8) Riesgos digitales.} \emph{(S9) Comunicación responsable.} \emph{(S10) Mi presentación digital.} \emph{(S11) Cosecha y evaluación.} Cada una de S2 a S10 es \textbf{una sesión de 60-90 minutos} con un producto en el cuaderno. Si cumples las 10, sales del periodo 1 con la base sólida.\\
+2. Reconocimiento de patrones & \textbf{El método MILC explicado simple.} Cada sesión empieza con un \textbf{saber ancestral} (cómo se hacía algo en Cartago antes), pasa por \textbf{3 actividades} (una de identificar, una de explicar, una de hacer), cierra con un \textbf{triángulo de pensamiento} (3 voces filosóficas: Dussel, Marco Aurelio o un estoico, y Floridi). \emph{No es decoración:} cada parte tiene un propósito. La ancestral te conecta con tu raíz; las actividades te entrenan en el oficio; el triángulo te entrena a pensar con voces que no son las tuyas. Al final, eres más libre y más sabio.\\
+3. Abstracción & \textbf{Las 5 reglas del cuaderno y del aula.} \textbf{(1) Cuaderno propio:} 1 cuaderno solo para Tecnología, con cada sesión en página nueva, encabezado fijo. \textbf{(2) Asistencia:} las sesiones se construyen unas sobre otras. Si faltas una, te toca recuperarla solo. \textbf{(3) Respeto digital:} dentro y fuera del aula. Las reglas que aprenderás (netiqueta, privacidad) las aplicas también en tu día. \textbf{(4) Esfuerzo proporcional al objetivo:} no se pide perfección, se pide intento honesto. \textbf{(5) Ayuda mutua:} si terminas, ayuda al de al lado. Si no entiendes, pregunta sin pena. Aquí no se compite; se aprende juntos.\\
+4. Algoritmo conceptual & \textbf{Encabezado fijo del cuaderno (cópialo en cada sesión nueva).} En la primera línea de cada sesión escribe: \emph{``Guía: 6° · Periodo [N] · Guía [N]''}. Segunda línea: \emph{``Tema: [título de la guía]''}. Tercera línea: \emph{``Fecha: \_\_/\_\_/2026''}. Esto te entrena en disciplina y le permite a tu yo de fin de año encontrar cualquier sesión en 30 segundos.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcTurquesa}{Ruta P1 + método MILC + 5 reglas}
+\textbf{Ruta P1:} S1 (Bienvenida) → S2 (Identidad digital) → S3 (Correo) → S4 (Netiqueta) → S5 (Historia medios) → S6 (Huella) → S7 (Privacidad) → S8 (Riesgos) → S9 (Comunicación) → S10 (Presentación). \\[1mm]
+\textbf{Método MILC:} saber ancestral + 3 actividades + triángulo. \\[1mm]
+\textbf{5 reglas:} cuaderno propio · asistencia · respeto digital · esfuerzo honesto · ayuda mutua.
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{Errores frecuentes del primer día que te cuestan todo el año.} (1) \emph{No traer cuaderno propio o usar uno compartido con otra materia} --- todo se desorganiza rápido. (2) \emph{Faltar a la S1 pensando ``es solo bienvenida''} --- te pierdes la ruta y el pacto, y te cuesta meses ponerte al día. (3) \emph{Empezar sin compromiso firmado} --- no hay claridad de lo que se espera de ti. (4) \emph{Pensar que la materia es solo ``computador''} --- buena parte del oficio se hace en cuaderno físico. El computador es laboratorio, no televisor. (5) \emph{No preguntar cuando algo no está claro} --- las dudas iniciales se acumulan en confusiones grandes.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+\textbf{Lo que va al cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2 --- La ruta del periodo y mi compromiso». \textbf{Formato:} 2 bloques. Bloque A: lista numerada de los 10 temas del periodo. Bloque B: las 5 reglas con marca SÍ/NO si me comprometo con cada una. \textbf{Extensión:} 15 líneas. \textbf{Sabes que terminaste cuando} podrías decirle a tu mamá los 10 temas que vas a ver este periodo.
+\end{infoband}
+
+\puente{Con todo claro, organizas tu cuaderno y firmas el compromiso.}
+
+\begin{titlebox}{milcMagenta}
+Fase 3 · Praxis con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\textbf{Actividad 3 · APLICA --- Tu cuaderno inaugural + compromiso firmado} (30 min · individual). Vas a dejar tu cuaderno LISTO para empezar el año. Es trabajo manual: portada, índice y compromiso, todo a mano.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
+Descomposición & \textbf{Paso 1 --- Portada del cuaderno.} En la \textbf{primera hoja} (la de adentro de la tapa o la primera página) escribe en grande: \textbf{``Cuaderno de Tecnología e Informática''}. Debajo: tu nombre completo, grado y letra (6A, 6B, 6C, etc.), I.E. Sor María Juliana, año 2026. Decora la portada como tú quieras (dibujos, colores), pero el nombre y el grado deben ser legibles a 1 metro.\\
+Patrones & \textbf{Paso 2 --- Índice del periodo 1.} En la \textbf{segunda hoja} escribe \textbf{``Índice --- Periodo 1''}. Debajo, lista numerada de las 10 sesiones del periodo (S1 a S10) con sus títulos cortos. Deja \textbf{una columna a la derecha vacía} con encabezado \emph{``Fecha de la sesión''} --- la llenarás cada vez que veas una sesión. Esto te da una vista del periodo completo.\\
+Abstracción & \textbf{Paso 3 --- Compromiso del año.} En la \textbf{tercera hoja} escribe el título \textbf{``Mi compromiso del año en Tecnología''}. Debajo, escribe las 5 reglas (cuaderno propio, asistencia, respeto digital, esfuerzo honesto, ayuda mutua) y al lado de cada una, una palomita ✓ si te comprometes a cumplirla. Si dudas con alguna, conversa con el profe antes de firmar.\\
+Algoritmo de armado & \textbf{Paso 4 --- Pregunta-radar.} Debajo del compromiso, escribe: \textbf{``Pregunta que me llevo para investigar este periodo''}. Después escribe \emph{1 pregunta tuya} que esperarías que se respondiera durante el periodo 1. Ejemplo: \emph{``¿Cómo me protejo de adultos extraños en internet?''}, o \emph{``¿De dónde sale realmente WhatsApp?''}. Esta pregunta te orienta durante las 10 sesiones.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcMagenta}{Antes de salir de la sala}
+\checkbox Mi cuaderno tiene portada con nombre, grado, año, materia. \\[1mm]
+\checkbox Hay un índice del periodo 1 con los 10 temas. \\[1mm]
+\checkbox Las 5 reglas del compromiso están firmadas. \\[1mm]
+\checkbox Tengo una pregunta-radar para el periodo. \\[1mm]
+\checkbox La sesión 1 tiene su encabezado y las 3 actividades registradas. \\[1mm]
+\checkbox Firmé con nombre y fecha al final.
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Estructura del cuaderno inaugural.} \textit{Hoja 1:} portada (nombre + grado + año + materia). \textit{Hoja 2:} índice P1 (10 temas + columna de fecha). \textit{Hoja 3:} compromiso (5 reglas con palomita + pregunta-radar). \textit{Hoja 4+:} sesión 1 con encabezado fijo + 3 actividades + firma.
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+\textbf{Lo que va al cuaderno (Actividad 3 · APLICA).} Título: «Actividad 3 --- Cuaderno inaugural firmado». \textbf{Formato:} portada + índice + compromiso + pregunta + sesión 1 registrada. \textbf{Extensión:} 3-4 hojas. \textbf{Sabes que terminaste cuando} tu cuaderno está listo para empezar la próxima clase sin perder tiempo organizando.
+\end{infoband}
+
+\puente{El producto es tu cuaderno inaugural + el compromiso firmado.}
+
+\begin{titlebox}{milcMostaza}
+Producto de la sesión
+\end{titlebox}
+\textbf{Cuaderno inaugural de Tecnología · portada + índice + compromiso firmado}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) La portada tiene nombre completo, grado, año y materia legibles. (2) El índice lista las 10 sesiones del periodo 1 con columna de fecha. (3) Las 5 reglas del compromiso tienen palomita o firma. (4) Hay 1 pregunta-radar personal escrita. (5) La S1 tiene su encabezado fijo y las 3 actividades registradas.
+\end{softbox}
+
+\puente{Antes de salir, miras tu cuaderno: ¿está listo para empezar la próxima clase sin perder tiempo?}
+
+\begin{titlebox}{milcVino}
+Fase 4 · Evaluación liberadora — cinco dimensiones
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con 3 voces que te ayudan a entender por qué llegar bien es la mitad del camino.}
+
+\begin{titlebox}{milcGradeDark}
+Triángulo de pensamiento · cierre filosófico
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{````Llegar a un aula con cuaderno propio, nombre escrito y compromiso firmado, es declararse persona que aprende.''''}
+
+Cuando ponees tu nombre en la portada y firmas el compromiso, no estás haciendo \emph{``trámite''}. Estás declarando: \emph{``yo soy estudiante de Tecnología este año, este es mi cuaderno, esta es mi voz''}. \textbf{Esa declaración es la primera forma de dignidad académica}. Los muchachos del taller de don Lucho hacían lo mismo cuando firmaban el contrato de aprendices. Tú hoy firmas el tuyo.
+
+\textbf{¿Llegué hoy como persona que aprende, o como persona que pasa por la sala?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio (emperador que escribió sobre cómo empezar cada año) · cuidado interior}
+\textit{````Cada principio importa. El que empieza bien camina largo. El que empieza distraído, llega tarde toda la temporada.''''}
+
+Marco Aurelio sabía que \textbf{el primer día marca el tono de los siguientes}. Si hoy llegas con cuaderno listo, atención puesta, compromiso firmado, has aprovechado bien la S1. Si llegas distraído, te demorará semanas ponerte al día. \emph{El primer día NO se recupera}. Por eso es la sesión más importante del periodo, aunque parezca solo bienvenida.
+
+\textbf{¿Le di a hoy la importancia que tiene, o lo traté como un día cualquiera?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{````Tecnología no se aprende sola. Se aprende con maestro, con compañeros, con cuaderno, con ritmo. La primera condición es haberlo entendido.''''}
+
+Algunos estudiantes creen que \emph{``aprender computadores se hace solo viendo YouTube''}. Falso. \textbf{Se aprende con todo el ecosistema}: maestro que orienta, compañeros que dan retroalimentación, cuaderno que estructura, ritmo semanal que asienta. La S1 de hoy te enseñó eso: \emph{el oficio se aprende juntos, no en solitario}. Por eso la asistencia, el cuaderno físico y el compromiso son esenciales.
+
+\textbf{¿Voy a tratar este año como solitario o como aprendizaje en comunidad?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{titlebox}{milcVino}
+Compromiso final
+\end{titlebox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
+Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
+Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
+Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
+Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
+Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
+\end{tabularx}
+\normalsize
+
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Trae tu \textbf{cuaderno listo} (portada + índice + compromiso firmado) y tu \textbf{lápiz/lapicero}. Mantén la pregunta-radar en la cabeza. La próxima clase empezamos el oficio: \emph{Mi identidad digital --- cómo me presento en la red sin perderme}. Vas a crear tu primera tarjeta de identidad digital. Hoy te recibiste como aprendiz; la próxima clase entras al taller.
+\end{infoband}
+
+\end{document}

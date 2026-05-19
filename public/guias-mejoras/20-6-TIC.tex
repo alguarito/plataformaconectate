@@ -1,0 +1,407 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra para todas las guias MILC v3
+% Ver scripts/generadores/build-guia-milc.py para la lista completa de
+% claves esperadas. El script valida que no queden placeholders sin
+% reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1.75cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\hyphenpenalty=200
+\exhyphenpenalty=200
+\pretolerance=400
+\tolerance=2000
+\setlength{\emergencystretch}{1em}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0066FF}
+\definecolor{milcGradeDark}{HTML}{003D99}
+\definecolor{milcGradeSoft}{HTML}{D6E8FF}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Tecnología e Informática · Grado 6}
+\rhead{\small Guía 20 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{\textbf{\textrightarrow}}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+\begin{document}
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[white] (current page.south west) rectangle (current page.north east);
+  \path[fill=milcGradePrimary,rounded corners=16mm]
+    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
+    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
+    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+
+  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
+    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
+    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
+    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
+    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
+    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
+  \end{scope}
+
+  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{124}{124}\selectfont 6};
+  \draw[milcGradeText,line width=1.7pt]
+    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+
+  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+    {
+     {\sffamily\bfseries\fontsize{19}{22}\selectfont Mi computador\\ideal ---\\diseñar la\\máquina que\\yo necesito}\\[4mm]
+     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 20-6-TIC}\\[2mm]
+     {\sffamily\fontsize{13}{16}\selectfont Período 2 · Hardware y software}\\[5mm]
+     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
+     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+    };
+
+  \path[fill=milcGradeSoft,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
+    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
+    \textcolor{milcGradeDark}{\bfseries Producto:} Una \textbf{ficha técnica de tu computador ideal} en una hoja del cuaderno, con: \textbf{(a) perfil de uso} (¿para qué lo necesitas? colegio, juegos, edición, ofimática), \textbf{(b) lista de componentes recomendados} (CPU, RAM, disco, GPU, monitor, periféricos), \textbf{(c) presupuesto aproximado} (puedes consultar precios en internet o estimar), \textbf{(d) justificación con criterio} de por qué escogiste cada componente, y \textbf{(e) sugerencia de software inicial} (sistema operativo + 5 programas que vas a usar). Cierre: \emph{``Si tuviera el dinero, este es el equipo que compraría, y sé por qué.''}.};
+\end{tikzpicture}
+\mbox{}
+\newpage
+
+\section*{Apertura: Mi computador ideal --- diseñar la máquina que yo necesito}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+\textbf{Don Lucho el relojero no vendía un solo modelo de reloj a todos sus clientes.} Cuando alguien entraba a la vitrina de la calle 14 de Cartago, lo primero que don Lucho hacía era \textbf{preguntar}: \emph{``¿Para qué lo quiere usted, mijo? ¿Para el trabajo? ¿Para regalar? ¿Para el campo o la ciudad?''}. Si era para un campesino que iba al cafetal, recomendaba uno \emph{resistente al sudor y al polvo}, sencillo. Si era para una secretaria, uno \emph{elegante de pulsera fina}. Si era para un abuelo que ya no veía bien, uno con \emph{números grandes}. \textbf{El relojero sabio sabe que no hay UN reloj para todos, hay EL reloj para cada quién}. Por eso preguntaba primero, vendía después. Hoy con los computadores pasa lo mismo. No hay UN computador mejor: hay \textbf{el computador correcto para lo que TÚ vas a hacer}. Diseñar tu equipo ideal es la prueba de fuego de todo lo aprendido en este periodo: combinar hardware, software, mantenimiento y ergonomía para decidir con criterio.
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+\textbf{Diseñar el computador ideal} no es elegir el más caro --- es elegir el que se adapta a TU uso. Hay \textbf{4 perfiles típicos} y cada uno requiere componentes distintos. \textbf{(1) Ofimática y colegio}: navegar, escribir documentos, ver videos educativos. Computador básico, RAM 8 GB, disco SSD 256 GB, sin tarjeta gráfica dedicada. \textbf{(2) Edición media}: editar fotos, videos cortos, presentaciones complejas. RAM 16 GB, SSD 512 GB, tarjeta gráfica básica. \textbf{(3) Gamer}: jugar juegos pesados (Fortnite, Minecraft con shaders, GTA V). RAM 16-32 GB, SSD 1 TB, tarjeta gráfica dedicada (GTX o RTX). \textbf{(4) Creador profesional}: editar videos largos, programación, modelado 3D. RAM 32 GB+, SSD 1 TB+, tarjeta gráfica de gama alta. \textbf{Saber tu perfil te ahorra dinero}: si solo vas a hacer tareas, no necesitas un computador gamer; si vas a jugar, no compres un básico. Esta clase te entrena en \emph{decidir con criterio} en vez de \emph{dejarte llevar por la publicidad}.
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{Si tus papás te dijeran \emph{``escoge tu primer computador propio, tienes 2 millones de pesos''}, ¿\textbf{qué le preguntarías al vendedor} primero? ¿Sabrías qué componentes pedir?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar la clase: (1) podrás \textbf{identificar} tu propio perfil de uso; (2) sabrás \textbf{aplicar} criterios de hardware a los 4 perfiles; (3) podrás \textbf{evaluar} si una oferta de computador conviene o no; (4) habrás \textbf{creado} tu ficha técnica con justificación.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Identifica componentes y sistemas tecnológicos en su entorno (MEN, T\&I 6°)\\
+Referentes & Saber ancestral del relojero · Sistemas como cadena de oficios · Diagnóstico paso a paso\\
+Producto final & Una \textbf{ficha técnica de tu computador ideal} en una hoja del cuaderno, con: \textbf{(a) perfil de uso} (¿para qué lo necesitas? colegio, juegos, edición, ofimática), \textbf{(b) lista de componentes recomendados} (CPU, RAM, disco, GPU, monitor, periféricos), \textbf{(c) presupuesto aproximado} (puedes consultar precios en internet o estimar), \textbf{(d) justificación con criterio} de por qué escogiste cada componente, y \textbf{(e) sugerencia de software inicial} (sistema operativo + 5 programas que vas a usar). Cierre: \emph{``Si tuviera el dinero, este es el equipo que compraría, y sé por qué.''}.\\
+\end{tabularx}
+\normalsize
+
+\puente{Hoy haces 4 cosas: identificas tu perfil de uso, aprendes los 4 perfiles típicos y sus componentes, diseñas tu ficha técnica, y firmas tu propuesta.}
+
+\begin{titlebox}{milcGradeDark}
+Ruta MILC: así vamos a aprender
+\end{titlebox}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escuta\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Empezamos preguntándote: ¿para qué usarías TÚ el computador?}
+
+\begin{titlebox}{milcVerde}
+Fase 1 · Escuta
+\end{titlebox}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- ¿Cuál es TU perfil?} (10 min · individual). En el cuaderno, responde estas \textbf{5 preguntas} con sinceridad: \emph{(1) ¿Qué actividades haces más en el computador (escoge las 3 principales): hacer tareas, ver videos, jugar, editar fotos/videos, programar, otra?} \emph{(2) ¿Cuánto tiempo lo usas al día?} \emph{(3) ¿Necesitas que sea portátil para llevarlo al colegio?} \emph{(4) ¿Tu casa tiene buen internet o necesitas un equipo que aguante mucho local?} \emph{(5) ¿Te gusta jugar videojuegos pesados o solo casuales?}. Estas respuestas determinan tu perfil. Sé honesto: si no juegas mucho, no inventes que sí solo porque suena \emph{cool}.
+\end{softbox}
+
+\checkbox Respondí las 5 preguntas con honestidad.\\
+\checkbox Mis respuestas reflejan mi uso real, no un uso imaginado.\\
+\checkbox Identifiqué cuáles 3 actividades son las que más hago.
+
+\begin{infoband}{milcVerde}
+\textbf{Lo que va al cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1 --- Mi perfil de usuario». \textbf{Formato:} 5 preguntas respondidas en bloques cortos. \textbf{Extensión:} 5 respuestas de 1-2 líneas cada una. \textbf{Sabes que terminaste cuando} tu perfil queda claro: si alguien lee esto, sabe para qué usas el computador.
+\end{infoband}
+
+\puente{Después aprendes los 4 perfiles con sus componentes recomendados y rangos de precio.}
+
+\begin{titlebox}{milcTurquesa}
+Fase 2 · Sistematización con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+Las 5 respuestas te ubican en uno de los \textbf{4 perfiles típicos}. Conocer tu perfil te ayuda a saber qué hardware necesitas (y qué no). \textbf{No hay perfil mejor}: hay perfil correcto para cada quién.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
+1. Descomposición & \textbf{Perfil 1 --- Ofimática + colegio (el más común para 6° grado).} Usas el computador para tareas, Word, navegar, ver videos educativos, oír música. \textbf{Componentes ideales:} CPU intermedia (Intel Core i3 o i5; AMD Ryzen 3 o 5). RAM 8 GB (lo justo). Disco SSD 256 GB (rápido, suficiente). Sin tarjeta gráfica dedicada (la del CPU basta). Monitor 14-15 pulgadas (portátil) o 22 pulgadas (escritorio). \textbf{Rango de precio en Colombia 2026:} 1.500.000 a 2.500.000 pesos.\\
+2. Reconocimiento de patrones & \textbf{Perfil 2 --- Edición media (presentaciones, foto, videos cortos).} Usas el equipo para tareas Y edición ligera: fotos en Canva, videos cortos en CapCut, presentaciones con efectos. \textbf{Componentes ideales:} CPU media-alta (i5 o Ryzen 5). RAM 16 GB. Disco SSD 512 GB. Tarjeta gráfica básica integrada o dedicada de entrada (GTX 1650 o equivalente). Monitor de buena resolución (Full HD). \textbf{Rango de precio:} 2.500.000 a 4.000.000 pesos.\\
+3. Abstracción & \textbf{Perfil 3 --- Gamer (juegos pesados regulares).} Usas el equipo para jugar Fortnite, Roblox con shaders, Minecraft modeado, GTA V, juegos con gráficos exigentes. \textbf{Componentes ideales:} CPU alta (i5 o i7; Ryzen 5 o 7). RAM 16 GB mínimo, 32 GB ideal. Disco SSD 1 TB. \textbf{Tarjeta gráfica dedicada} (GTX 1660, RTX 3060 o superior). Monitor con buena tasa de refresco (75 Hz+). \textbf{Rango de precio:} 4.000.000 a 7.000.000 pesos.\\
+4. Algoritmo conceptual & \textbf{Perfil 4 --- Creador profesional (videos largos, programación, 3D).} Usas el equipo para edición de video largo en Premiere o DaVinci, programación, modelado 3D en Blender. \textbf{Componentes ideales:} CPU alta (i7 o i9; Ryzen 7 o 9). RAM 32 GB+. Disco SSD 1 TB + HDD 2 TB para almacenamiento. Tarjeta gráfica de gama alta (RTX 3070+ o equivalente). Monitor 27 pulgadas o doble monitor. \textbf{Rango de precio:} 7.000.000 a 12.000.000+ pesos. \emph{Este perfil rara vez se necesita en 6°}; es para adultos con trabajo específico.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcTurquesa}{4 perfiles + componentes clave}
+\textbf{P1 · Ofimática + colegio:} i3/i5, 8 GB RAM, SSD 256 GB, sin GPU. \\[1mm]
+\textbf{P2 · Edición media:} i5, 16 GB RAM, SSD 512 GB, GPU básica. \\[1mm]
+\textbf{P3 · Gamer:} i5/i7, 16-32 GB RAM, SSD 1 TB, GPU dedicada. \\[1mm]
+\textbf{P4 · Creador pro:} i7/i9, 32 GB+ RAM, SSD 1 TB+ HDD 2 TB, GPU alta.
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{Errores frecuentes al elegir computador.} (1) \emph{``Compro el más caro y ya''} --- Falso. El más caro suele ser más de lo que necesitas. Pagas por componentes que nunca usarás. (2) \emph{``Compro el más barato''} --- Falso al otro extremo. Si es muy básico, se vuelve lento en 6 meses y lo terminas cambiando. (3) \emph{``Solo importa la marca''} --- Falso. Lo que importa son los componentes (CPU, RAM, disco). Una marca \emph{cool} con malos componentes es peor que una marca menos famosa con buenos componentes. (4) \emph{``Me dejo llevar por la publicidad del vendedor''} --- Falso. El vendedor quiere ganar comisión. Tú quieres el equipo correcto para ti. Lleva tu perfil escrito y pide componentes específicos.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+\textbf{Lo que va al cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2 --- Los 4 perfiles con sus componentes». \textbf{Formato:} tabla de 4 filas, 5 columnas. Columnas: perfil, CPU, RAM, disco, GPU. \textbf{Extensión:} 4 filas. \textbf{Sabes que terminaste cuando} puedes decir en voz alta qué componentes necesita cada perfil.
+\end{infoband}
+
+\puente{Con todo claro, diseñas la ficha técnica de tu computador ideal con justificación.}
+
+\begin{titlebox}{milcMagenta}
+Fase 3 · Praxis con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\textbf{Actividad 3 · CREA --- Tu ficha técnica del computador ideal} (32 min · individual). En una hoja completa del cuaderno vas a hacer la \textbf{ficha técnica de TU computador ideal}. Combina lo aprendido en todo el periodo: hardware, software, mantenimiento, ergonomía. Esta es la cosecha del periodo 2.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
+Descomposición & \textbf{Paso 1 --- Título y mi perfil.} Arriba escribe: \textbf{``Mi computador ideal --- ficha técnica''} y debajo: \emph{``[Tu nombre], grado 6[tu letra], año 2026''}. Subraya el título. Luego escribe en un cuadro: \textbf{``Mi perfil:''} y completa con tu perfil de la Actividad 1 (ofimática, edición media, gamer, o mezcla). Sé honesto: \emph{``ofimática 60\% + gamer casual 40\%''} es válido.\\
+Patrones & \textbf{Paso 2 --- Lista de componentes.} En una tabla de \textbf{6 filas, 3 columnas}, lista los componentes principales. Columnas: \emph{componente}, \emph{lo que elijo}, \emph{por qué}. Filas: \emph{CPU, RAM, disco, GPU, monitor, periféricos}. Para cada uno, escribe qué eliges (ejemplo: \emph{``CPU: Intel Core i5''}) y por qué con tus palabras (\emph{``Porque necesito que abra Word, Chrome y Minecraft con shaders sin pegarse''}).\\
+Abstracción & \textbf{Paso 3 --- Presupuesto estimado.} Debajo de la tabla, escribe \textbf{``Presupuesto aproximado:''} con un rango (\emph{``$2.000.000 a $2.800.000 pesos colombianos''}). Si no sabes precios, mira el rango sugerido por perfil y ajusta. La idea es que sepas que un computador no son $300.000 pero tampoco $20.000.000.\\
+Algoritmo de armado & \textbf{Paso 4 --- Software inicial.} Lista los \textbf{5 programas} que vas a usar más en este equipo (más el sistema operativo). Ejemplo: \emph{Sistema operativo: Windows 11. Programas: (1) Microsoft Word, (2) Chrome, (3) Spotify, (4) Roblox, (5) CapCut.}. Esta lista te recuerda que el hardware sin software no sirve.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcMagenta}{Antes de mostrar tu ficha}
+\checkbox Mi perfil está descrito con honestidad arriba. \\[1mm]
+\checkbox La tabla de 6 componentes está completa con justificación. \\[1mm]
+\checkbox El presupuesto tiene rango (no precio único exacto). \\[1mm]
+\checkbox Lista de software inicial con SO + 5 programas. \\[1mm]
+\checkbox Mantenimiento y ergonomía mencionados al menos en 2 líneas. \\[1mm]
+\checkbox Justificación final firmada y fechada.
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Estructura.} \textit{Arriba:} título + mi perfil. \textit{Tabla:} 6 componentes (CPU/RAM/disco/GPU/monitor/periféricos) con elección y razón. \textit{Presupuesto:} rango en pesos. \textit{Software:} SO + 5 programas. \textit{Mantenimiento + ergonomía:} 2-3 líneas. \textit{Final:} justificación de 3-4 líneas + firma.
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+\textbf{Lo que va al cuaderno (Actividad 3 · CREA).} Título: «Actividad 3 --- Mi computador ideal». \textbf{Formato:} ficha técnica completa con perfil, componentes, precio, software, mantenimiento y justificación. \textbf{Extensión:} 1 hoja entera. \textbf{Sabes que terminaste cuando} podrías ir a una tienda con esta hoja y comprar el equipo correcto, sin que te vendan algo distinto.
+\end{infoband}
+
+\puente{El producto es esa ficha completa con perfil, componentes, presupuesto, justificación y software.}
+
+\begin{titlebox}{milcMostaza}
+Producto de la sesión
+\end{titlebox}
+\textbf{Ficha técnica del computador ideal · perfil + componentes + presupuesto + software · firmada}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) El perfil de usuario es honesto y específico. (2) Los 6 componentes están justificados por el perfil. (3) El presupuesto tiene rango realista. (4) El software inicial incluye SO + 5 programas. (5) La justificación final muestra criterio (no solo gusto).
+\end{softbox}
+
+\puente{Antes de salir, miras tu ficha: ¿coincide el perfil con los componentes? ¿La justificación tiene criterio?}
+
+\begin{titlebox}{milcVino}
+Fase 4 · Evaluación liberadora — cinco dimensiones
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con 3 voces que te ayudan a entender por qué decidir con criterio es libertad.}
+
+\begin{titlebox}{milcGradeDark}
+Triángulo de pensamiento · cierre filosófico
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{````Quien sabe qué necesita, escapa de la trampa del consumo. Quien no, compra lo que le venden, no lo que necesita.''''}
+
+La publicidad de computadores te dice \emph{``compra el último modelo''}, \emph{``el más rápido''}, \emph{``el más cool''}. Pero TÚ ahora sabes que \textbf{no necesitas el último modelo}: necesitas el que se adapta a tu perfil. \emph{Saber esto es libertad}: no te dejas llevar por el marketing, decides con criterio. Esa es la diferencia entre consumir y elegir.
+
+\textbf{¿Las cosas que quiero comprar las necesito, o me las quieren vender porque están de moda?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio (emperador que decidía con criterio) · cuidado interior}
+\textit{````Mide cada decisión por su propósito, no por el ruido a su alrededor.''''}
+
+Cuando vas a comprar un computador (o cualquier cosa importante), \textbf{el ruido es enorme}: vendedores, publicidad, youtubers, amigos que dicen \emph{``compra el mismo que yo''}. El sabio se detiene y pregunta: \emph{``¿para qué lo necesito yo?''}. Si tu respuesta es clara, decides bien. Si no, te enredan.
+
+\textbf{Mis últimas 3 compras importantes, ¿las decidí por mi propósito o por el ruido?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{````El equipo correcto te dura años. El equipo equivocado te genera el deseo de comprar otro en meses.''''}
+
+Si compras un computador que NO se adapta a tu uso, vas a sentir frustración: \emph{``es muy lento''}, \emph{``no me aguanta lo que quiero hacer''}. La frustración te lleva a querer comprar otro. \textbf{El equipo correcto te dura 5-8 años sin necesidad de cambio}. Decidir bien hoy es ahorrar dinero, tiempo y recursos del planeta durante años.
+
+\textbf{¿La compra que estoy pensando me va a durar años o me va a generar ganas de cambiar en meses?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{titlebox}{milcVino}
+Compromiso final
+\end{titlebox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
+Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
+Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
+Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
+Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
+Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
+\end{tabularx}
+\normalsize
+
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Guarda tu ficha. Si algún día tus papás o tú van a comprar un computador, esta hoja es tu guía. La próxima sesión (S11) es la \textbf{cosecha del periodo}: te autoevalúas con rúbrica, vemos el examen integrador y miramos al periodo 3 que empieza (Procesador de texto e Internet). Hoy cerraste el ciclo del hardware. La próxima clase cierras formalmente el periodo.
+\end{infoband}
+
+\end{document}

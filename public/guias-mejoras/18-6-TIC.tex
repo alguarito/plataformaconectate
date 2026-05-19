@@ -1,0 +1,406 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra para todas las guias MILC v3
+% Ver scripts/generadores/build-guia-milc.py para la lista completa de
+% claves esperadas. El script valida que no queden placeholders sin
+% reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1.75cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\hyphenpenalty=200
+\exhyphenpenalty=200
+\pretolerance=400
+\tolerance=2000
+\setlength{\emergencystretch}{1em}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0066FF}
+\definecolor{milcGradeDark}{HTML}{003D99}
+\definecolor{milcGradeSoft}{HTML}{D6E8FF}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Tecnología e Informática · Grado 6}
+\rhead{\small Guía 18 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{\textbf{\textrightarrow}}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+\begin{document}
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[white] (current page.south west) rectangle (current page.north east);
+  \path[fill=milcGradePrimary,rounded corners=16mm]
+    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
+    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
+    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+
+  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
+    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
+    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
+    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
+    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
+    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
+  \end{scope}
+
+  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{124}{124}\selectfont 6};
+  \draw[milcGradeText,line width=1.7pt]
+    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+
+  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+    {
+     {\sffamily\bfseries\fontsize{19}{22}\selectfont Mantenimiento\\básico ---\\cuidar el\\equipo como\\el relojero}\\[4mm]
+     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 18-6-TIC}\\[2mm]
+     {\sffamily\fontsize{13}{16}\selectfont Período 2 · Hardware y software}\\[5mm]
+     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
+     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+    };
+
+  \path[fill=milcGradeSoft,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
+    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
+    \textcolor{milcGradeDark}{\bfseries Producto:} Un \textbf{plan personal de mantenimiento} en una hoja del cuaderno con: \textbf{(a) tabla de 10 acciones de mantenimiento} clasificadas en \emph{físicas} (limpieza, ubicación, cables) y \emph{digitales} (actualizar, antivirus, papelera, copia de seguridad), \textbf{(b) calendario} con frecuencia recomendada (\emph{diaria, semanal, mensual, semestral}), y \textbf{(c) 3 acciones ejecutadas hoy en clase} con su evidencia en el cuaderno (qué hiciste, antes/después).};
+\end{tikzpicture}
+\mbox{}
+\newpage
+
+\section*{Apertura: Mantenimiento básico --- cuidar el computador como cuida el relojero}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+\textbf{Don Lucho el relojero limpiaba cada engranaje con paciencia y aceite especial.} Si entrabas a su vitrina de la calle 14 en Cartago, no veías solo herramientas: veías \textbf{frascos pequeños de aceite}, \textbf{paños de gamuza}, un \textbf{cepillito suave de pelo de camello} para limpiar piezas diminutas. Cuando una persona le traía un reloj que se atrasaba, lo primero que hacía don Lucho \textbf{no era cambiar pieza}: era \textbf{limpiarlo}. La mayoría de las veces, el reloj se atrasaba por polvo o aceite seco en los engranajes. \emph{``Mantenimiento, mijo, eso es lo que falta. Un reloj limpio dura toda la vida.''}, decía. Las personas que confiaban en don Lucho conservaban sus relojes 30, 40 años. Los que se los compraban a vendedores de la calle y nunca los limpiaban los gastaban en 2 años. \textbf{La diferencia no era la calidad del reloj; era el cuidado}. Los computadores funcionan igual. Un equipo \emph{mantenido} dura el doble que uno \emph{usado y nada más}.
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+\textbf{Mantenimiento} es el conjunto de acciones que haces para que tu computador (o celular) dure más tiempo, funcione más rápido, y se enferme menos. Hay 2 tipos. \textbf{Mantenimiento físico}: cuidar el hardware (limpieza, ubicación, manejo de cables, ventilación). \textbf{Mantenimiento digital}: cuidar el software (actualizaciones, antivirus, vaciar papelera, hacer copias de seguridad). Las dos son igual de importantes: si solo cuidas lo físico, tus archivos se corrompen; si solo cuidas lo digital, el hardware se ensucia y se calienta. \textbf{Lo bueno es que no toma mucho tiempo}: con 30 minutos al mes y 5 minutos al día, mantienes tu equipo en buen estado. Quien aprende esto en 6° grado se ahorra problemas serios en los próximos 10 años.
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{Tu computador del año pasado funcionaba rápido y ahora se demora una eternidad en abrir. \textbf{¿Por qué pasa eso}? ¿Se dañó el equipo o hay algo que dejaste de hacer?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar la clase: (1) podrás \textbf{identificar} 10 acciones de mantenimiento; (2) sabrás \textbf{aplicar} la frecuencia adecuada a cada una (diaria, semanal, mensual, semestral); (3) habrás \textbf{ejecutado} 3 acciones en clase; (4) podrás \textbf{evaluar} si un computador está bien mantenido o no.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Identifica componentes y sistemas tecnológicos en su entorno (MEN, T\&I 6°)\\
+Referentes & Saber ancestral del relojero · Sistemas como cadena de oficios · Diagnóstico paso a paso\\
+Producto final & Un \textbf{plan personal de mantenimiento} en una hoja del cuaderno con: \textbf{(a) tabla de 10 acciones de mantenimiento} clasificadas en \emph{físicas} (limpieza, ubicación, cables) y \emph{digitales} (actualizar, antivirus, papelera, copia de seguridad), \textbf{(b) calendario} con frecuencia recomendada (\emph{diaria, semanal, mensual, semestral}), y \textbf{(c) 3 acciones ejecutadas hoy en clase} con su evidencia en el cuaderno (qué hiciste, antes/después).\\
+\end{tabularx}
+\normalsize
+
+\puente{Hoy haces 4 cosas: clasificas 15 acciones, aprendes el calendario, ejecutas 3 acciones en clase, y armas tu plan personal.}
+
+\begin{titlebox}{milcGradeDark}
+Ruta MILC: así vamos a aprender
+\end{titlebox}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escuta\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Empezamos clasificando 15 acciones en físicas y digitales.}
+
+\begin{titlebox}{milcVerde}
+Fase 1 · Escuta
+\end{titlebox}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- Clasifica 15 acciones} (10 min · individual). En el cuaderno dibuja 2 columnas: \textbf{FÍSICAS} y \textbf{DIGITALES}. Después clasifica estas 15 acciones de mantenimiento en alguna de las 2: \emph{(1) limpiar la pantalla con paño suave; (2) actualizar Windows; (3) vaciar la papelera de reciclaje; (4) sacar el polvo del teclado con aire comprimido; (5) instalar un antivirus; (6) desconectar el cable de poder antes de mover el equipo; (7) hacer copia de seguridad en USB o Drive; (8) limpiar las pelusas del mouse; (9) cerrar programas que no usas; (10) ubicar el computador lejos del sol directo; (11) borrar archivos temporales; (12) ordenar los cables con velcro o canaleta; (13) escanear el disco con antivirus; (14) abrir el gabinete cada año para soplar polvo; (15) hacer mantenimiento del sistema (limpiador de Windows)}. Aplica la regla: \emph{si se hace con las manos (físico) o con clics (digital)}.
+\end{softbox}
+
+\checkbox Dibujé las 2 columnas en el cuaderno.\\
+\checkbox Clasifiqué las 15 acciones en una columna cada una.\\
+\checkbox Usé la regla del cuerpo (físico) vs los clics (digital).
+
+\begin{infoband}{milcVerde}
+\textbf{Lo que va al cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1 --- 15 acciones de mantenimiento». \textbf{Formato:} tabla de 2 columnas. \textbf{Extensión:} 15 acciones distribuidas. \textbf{Sabes que terminaste cuando} cada acción tiene su columna y la puedes explicar.
+\end{infoband}
+
+\puente{Después aprendes las 10 acciones esenciales con su frecuencia.}
+
+\begin{titlebox}{milcTurquesa}
+Fase 2 · Sistematización con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+Ya las clasificaste. Ahora aprende las \textbf{10 acciones esenciales} (5 físicas + 5 digitales) con la \textbf{frecuencia} con que se hacen. Hacer cada cosa en su momento te ahorra problemas grandes.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
+1. Descomposición & \textbf{Las 5 acciones físicas esenciales.} (1) \textbf{Limpieza de pantalla y teclado --- semanal.} Paño de microfibra húmedo (no mojado), nunca limpiavidrios directo. Para el teclado, aire comprimido o soplar fuerte. (2) \textbf{Ubicación correcta --- siempre.} Lejos del sol directo (calienta), lejos del agua (corto circuito), en superficie firme (no la cama, ahoga ventiladores), con espacio atrás (15 cm) para que ventile. (3) \textbf{Manejo de cables --- mensual.} Que no estén enredados ni en el piso a que los pateen. Usar velcro o canaleta. Desconectar antes de mover. (4) \textbf{Apagar correctamente --- diario.} Nunca apagar con el botón de fuerza: usar el menú \emph{Apagar}. Si no, el SO no cierra bien y se corrompen archivos. (5) \textbf{Limpieza interna del gabinete --- semestral.} Cada 6 meses, con un técnico o un adulto, soplar el polvo de los ventiladores. El polvo acumulado calienta y daña.\\
+2. Reconocimiento de patrones & \textbf{Las 5 acciones digitales esenciales.} (1) \textbf{Actualizar el SO y los programas --- mensual.} Windows Update, App Store, Play Store. Las actualizaciones arreglan errores y cierran agujeros de seguridad. (2) \textbf{Tener antivirus activo --- siempre.} Windows tiene \emph{Defender} integrado y es bueno. Escanear el disco completo \emph{una vez al mes}. (3) \textbf{Vaciar papelera de reciclaje --- semanal.} Verifica que no hay nada importante y haz clic derecho \emph{``Vaciar papelera''}. Libera espacio en el disco. (4) \textbf{Limpiar archivos temporales --- mensual.} Windows acumula \emph{cachés} de programas que ya no usas. Hay herramientas (\emph{Liberador de espacio}, \emph{Storage Sense}) que limpian. (5) \textbf{Copia de seguridad (\emph{backup}) --- semanal.} Copia tus archivos importantes (tareas, fotos, videos) en una memoria USB o en la nube (OneDrive, Google Drive). \textbf{Esta es la más importante}. El día que falle el disco, te salvará.\\
+3. Abstracción & \textbf{Calendario rápido del mantenimiento.} \textbf{Diario:} apagar correctamente, cerrar programas que no uses. \textbf{Semanal:} limpiar pantalla y teclado, vaciar papelera, hacer copia de seguridad. \textbf{Mensual:} actualizar SO y programas, escanear con antivirus, limpiar archivos temporales, revisar cables. \textbf{Semestral:} limpieza interna del gabinete (con adulto o técnico), revisión general del equipo, ordenar archivos.\\
+4. Algoritmo conceptual & \textbf{4 errores de mantenimiento que matan computadores.} (1) \emph{Tener el portátil en la cama o cojín} --- ahoga la ventilación; el equipo se calienta y se daña en 1 año. (2) \emph{Comer encima del teclado} --- migas + bebida = teclas pegadas + corto. (3) \emph{No hacer copia de seguridad} --- un disco que falla = año escolar perdido si no hubo copia. (4) \emph{Instalar programas de páginas raras} --- llenan el equipo de virus que lo dejan lento o lo dañan. Reglas opuestas: superficie firme, comer aparte, copiar todo lo importante, solo páginas oficiales.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcTurquesa}{10 acciones esenciales + calendario}
+\textbf{Físicas (5):} pantalla/teclado · ubicación · cables · apagar bien · soplar gabinete. \\[1mm]
+\textbf{Digitales (5):} actualizar · antivirus · papelera · temporales · copia de seguridad. \\[1mm]
+\textbf{Calendario:} diario, semanal, mensual, semestral.
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{Mitos sobre mantenimiento que escucharás.} (1) \emph{``Si el equipo va bien, no hay que hacer nada''} --- Falso. El mantenimiento previene, no espera daños. (2) \emph{``El antivirus consume RAM, mejor no lo usar''} --- Falso. Sin antivirus en 1 mes te entran 20 virus. (3) \emph{``Apagar y prender mil veces lo daña''} --- Cierto solo si apagas por fuerza. Apagar correctamente desde el menú es lo normal. (4) \emph{``Si tengo papelera grande, voy a perder archivos''} --- Falso. La papelera retiene hasta que la vacías. (5) \emph{``El backup es para empresas''} --- Falso. El backup es la diferencia entre perder tu año o no.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+\textbf{Lo que va al cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2 --- Las 10 acciones con su calendario». \textbf{Formato:} tabla de 10 filas, 3 columnas. Columna 1: acción. Columna 2: ¿física o digital? Columna 3: ¿con qué frecuencia? (diaria/semanal/mensual/semestral). \textbf{Extensión:} 10 filas. \textbf{Sabes que terminaste cuando} podrías decirle a tu mamá qué hacer este sábado en su computador.
+\end{infoband}
+
+\puente{Con el calendario claro, haces 3 acciones reales en clase y armas tu plan personal.}
+
+\begin{titlebox}{milcMagenta}
+Fase 3 · Praxis con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\textbf{Actividad 3 · APLICA --- Plan personal + 3 acciones ejecutadas} (30 min · individual o parejas). Vas a hacer 2 cosas. Primero, escribir tu \textbf{plan personal de mantenimiento} en el cuaderno. Después, \textbf{ejecutar 3 acciones reales} hoy en clase (si tienes computador disponible) o anotarlas para hacer en casa (si no).
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
+Descomposición & \textbf{Paso 1 --- Título y encabezado.} En la parte superior de la hoja escribe: \textbf{``Mi plan de mantenimiento''} y debajo: \emph{``[Tu nombre], año 2026''}. Subraya el título.\\
+Patrones & \textbf{Paso 2 --- Tabla de las 10 acciones (mitad superior).} Reproduce la tabla de la Actividad 2 pero con \emph{detalle propio}: en una nueva columna añade \emph{``cuándo la voy a hacer yo''} (por ejemplo: \emph{``los sábados en la mañana''}, \emph{``el primer domingo de cada mes''}). Esto convierte el conocimiento en compromiso real con tiempos asignados.\\
+Abstracción & \textbf{Paso 3 --- Las 3 acciones de hoy (mitad inferior izquierda).} Escoge 3 acciones que vas a \emph{ejecutar hoy} (si tienes computador en clase o si no, las anotas para ejecutar en casa esta semana). Recomendadas: \emph{(a) Vaciar papelera de reciclaje, (b) Actualizar 1 programa, (c) Hacer 1 copia de seguridad pequeña (5-10 archivos al Drive o USB)}.\\
+Algoritmo de armado & \textbf{Paso 4 --- Ejecuta las 3 acciones (si hay computador).} Para cada una: \emph{abre el programa o configuración}, \emph{realiza la acción}, \emph{escribe en el cuaderno qué hiciste y qué cambió}. Por ejemplo: \emph{``(a) Vacié papelera: tenía 25 archivos. Liberé 80 MB. La papelera ahora está vacía.''}.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcMagenta}{Antes de mostrar tu plan}
+\checkbox La tabla de 10 acciones tiene la frecuencia y mi compromiso de cuándo. \\[1mm]
+\checkbox Escogí 3 acciones para ejecutar hoy o esta semana. \\[1mm]
+\checkbox La tabla de evidencia (acción/antes/después) tiene 3 filas. \\[1mm]
+\checkbox La frase de cierre está subrayada. \\[1mm]
+\checkbox Está firmado con nombre y fecha. \\[1mm]
+\checkbox Si tuve computador, ejecuté al menos una acción de verdad.
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Estructura.} \textit{Arriba:} título + nombre. \textit{Mitad superior:} tabla 10 × 4 (acción, físico/digital, frecuencia, cuándo lo haré). \textit{Mitad inferior izquierda:} las 3 acciones de hoy listadas. \textit{Mitad inferior derecha:} tabla evidencia 3 × 3 (acción, antes, después). \textit{Esquina:} firma + frase subrayada.
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+\textbf{Lo que va al cuaderno (Actividad 3 · APLICA).} Título: «Actividad 3 --- Mi plan de mantenimiento + 3 acciones». \textbf{Formato:} plan completo en una hoja con 3 secciones (calendario, acciones, evidencia). \textbf{Extensión:} 1 hoja entera. \textbf{Sabes que terminaste cuando} si alguien te pregunta \emph{``¿cuándo le toca limpieza al equipo?''}, lo ves rápido en tu hoja.
+\end{infoband}
+
+\puente{El producto es ese plan firmado + las 3 acciones ejecutadas con evidencia.}
+
+\begin{titlebox}{milcMostaza}
+Producto de la sesión
+\end{titlebox}
+\textbf{Plan personal de mantenimiento + 3 acciones ejecutadas · firmado}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) El plan tiene las 10 acciones con frecuencia y compromiso de cuándo. (2) Están las 3 acciones del día listadas. (3) La tabla de evidencia tiene antes/después por cada acción. (4) El plan está firmado y fechado. (5) La frase de cierre está subrayada.
+\end{softbox}
+
+\puente{Antes de salir, verificas que tu plan tenga las 10 acciones con su frecuencia.}
+
+\begin{titlebox}{milcVino}
+Fase 4 · Evaluación liberadora — cinco dimensiones
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con 3 voces que te ayudan a entender por qué el mantenimiento es un acto de respeto al futuro.}
+
+\begin{titlebox}{milcGradeDark}
+Triángulo de pensamiento · cierre filosófico
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{````Cuidar lo que tienes es resistirte a la lógica del desecho.''''}
+
+Hay una idea moderna que dice: \emph{``si se daña, lo cambio''}. Pero los computadores son caros y los recursos del planeta son finitos. \textbf{Cuidar el equipo es una resistencia consciente}: respetas el trabajo de quien lo fabricó, el dinero de tus papás que lo compraron, y el planeta que dio los materiales. \emph{Don Lucho mantenía cada reloj durante décadas}. Ese saber es de profundo respeto al trabajo y a la tierra.
+
+\textbf{¿Trato mis cosas como bienes que duran o como objetos desechables?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio (emperador que practicaba la disciplina diaria) · cuidado interior}
+\textit{````El que cuida lo pequeño cada día, evita lo grande mañana.''''}
+
+\textbf{30 minutos al mes de mantenimiento te ahorran 3 días enteros de problemas} al año. Pero pocos lo hacen porque parece \emph{``aburrido''}. El sabio sabe que la disciplina pequeña genera resultados grandes. Limpiar el teclado el sábado en la mañana mientras escuchas música no es perder el tiempo: es invertirlo en tu yo del futuro.
+
+\textbf{¿Qué pequeña acción de mantenimiento estoy postergando que después se convertirá en un problema grande?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{````El equipo bien cuidado consume menos energía, dura más, y deja menos huella en el planeta.''''}
+
+Un computador que vive 8 años es \textbf{el doble de sostenible} que uno que vive 4. Cuidar tu equipo no es solo ahorrar dinero: es \emph{respetar la huella ecológica de la tecnología}. Cada equipo nuevo gasta agua, energía y minerales. Si mantienes el tuyo, evitas esa producción extra. \emph{Mantenimiento es ambientalismo en pequeño}.
+
+\textbf{¿Cómo se vería el mundo si todos cuidáramos nuestros equipos al doble del tiempo?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{titlebox}{milcVino}
+Compromiso final
+\end{titlebox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
+Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
+Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
+Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
+Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
+Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
+\end{tabularx}
+\normalsize
+
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Esta semana, ejecuta al menos 2 acciones de mantenimiento en tu equipo (o el de tu casa). Anota en el cuaderno qué hiciste y qué cambió. La próxima clase aprenderemos sobre \textbf{postura, ergonomía y vida útil}: cómo cuidarte TÚ mientras usas el computador, no solo cuidar al equipo. Si cuidas las 2 cosas, la relación con la tecnología es larga y sana.
+\end{infoband}
+
+\end{document}

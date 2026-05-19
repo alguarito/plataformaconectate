@@ -30,7 +30,6 @@ export const grados: Grado[] = [
       'Identidad digital, netiqueta, hardware, software y procesador de texto. Bases para habitar la sala de sistemas con responsabilidad.',
     bgClass: 'bg-bento-blue',
     icono: '💡',
-    enConstruccion: true,
     periodos: [
       {
         numero: 1,

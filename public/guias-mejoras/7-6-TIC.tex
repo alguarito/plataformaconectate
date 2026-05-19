@@ -1,0 +1,407 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra para todas las guias MILC v3
+% Ver scripts/generadores/build-guia-milc.py para la lista completa de
+% claves esperadas. El script valida que no queden placeholders sin
+% reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1.75cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\hyphenpenalty=200
+\exhyphenpenalty=200
+\pretolerance=400
+\tolerance=2000
+\setlength{\emergencystretch}{1em}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0066FF}
+\definecolor{milcGradeDark}{HTML}{003D99}
+\definecolor{milcGradeSoft}{HTML}{D6E8FF}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Tecnología e Informática · Grado 6}
+\rhead{\small Guía 7 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{\textbf{\textrightarrow}}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+\begin{document}
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[white] (current page.south west) rectangle (current page.north east);
+  \path[fill=milcGradePrimary,rounded corners=16mm]
+    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
+    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
+    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+
+  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
+    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
+    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
+    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
+    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
+    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
+  \end{scope}
+
+  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{124}{124}\selectfont 6};
+  \draw[milcGradeText,line width=1.7pt]
+    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+
+  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+    {
+     {\sffamily\bfseries\fontsize{19}{22}\selectfont Privacidad y\\datos personales ---\\cerrar las\\puertas con\\criterio}\\[4mm]
+     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 7-6-TIC}\\[2mm]
+     {\sffamily\fontsize{13}{16}\selectfont Período 1 · Comunicación e identidad digital}\\[5mm]
+     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
+     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+    };
+
+  \path[fill=milcGradeSoft,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
+    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
+    \textcolor{milcGradeDark}{\bfseries Producto:} Un \textbf{mapa de los 3 niveles de datos personales} en el cuaderno, con \textbf{10 datos tuyos clasificados} (públicos / semi-privados / privados). Más \textbf{una bitácora de configuración} de 2 apps que uses, donde anotas paso a paso \textbf{qué ajuste cambiaste y por qué}. Más \textbf{una promesa}: \emph{``Reviso la privacidad de mis apps cada mes durante este año.''} firmada con nombre y fecha.};
+\end{tikzpicture}
+\mbox{}
+\newpage
+
+\section*{Apertura: Privacidad y datos personales --- cerrar las puertas con criterio}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+\textbf{En el patio de tu abuela había muros, no por miedo: por respeto.} Si alguna vez fuiste a la casa de campo de un abuelo, viste que el patio tenía un cerco bajito, una verja, una puerta. No estaba ahí porque la abuela tuviera miedo. Estaba ahí porque \textbf{cada espacio tenía sus reglas}: el zaguán era para los vecinos, la sala para las visitas, el patio para la familia, el cuarto sólo para ella. Tres niveles distintos de \emph{quién puede entrar}. Cuando llegaba un desconocido, lo atendían en el zaguán; cuando llegaba un amigo, pasaba a la sala; cuando llegaba un hijo, iba directo al patio. \textbf{Era una arquitectura de la confianza}: las puertas decían quién entra y hasta dónde. En internet pasa lo mismo, solo que las puertas no son de madera, son \textbf{ajustes de configuración} en tus apps. Si no las cierras tú, todo el mundo entra hasta tu cuarto.
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+Un \textbf{dato personal} es cualquier información que diga algo de ti como persona. \textbf{No son todos iguales:} hay 3 niveles. \textbf{Datos públicos}: los que se pueden conocer sin problema (tu nombre, el grado en que estás, la ciudad donde vives). \textbf{Datos semi-privados}: solo amigos cercanos y familia deberían saberlos (tu número de celular, dónde estudias exacto, tu correo personal). \textbf{Datos privados}: nadie debería saberlos salvo tus padres o tú (contraseñas, número de cédula, dirección exacta, datos médicos, fotos íntimas). En Colombia hay incluso una \textbf{ley} (la Ley 1581 de 2012) que protege tus datos personales --- significa que ninguna empresa o persona puede recogerlos o usarlos sin permiso. Hoy vas a aprender a usar tus apps con criterio, decidiendo TÚ qué dato vive en cada nivel.
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{¿Tu nombre real se puede saber en internet? ¿Tu número de celular? ¿Tu dirección exacta? Si \textbf{los 3} están al mismo nivel, hay un problema. ¿Cuál es?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar la clase: (1) podrás \textbf{identificar} los 3 niveles de datos personales con ejemplos; (2) sabrás \textbf{aplicar} las 4 reglas del dato personal; (3) habrás \textbf{configurado} la privacidad de 2 apps que usas; (4) podrás \textbf{evaluar} si una app o sitio respeta tu privacidad.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Reconoce principios y conceptos propios de la tecnología, relacionando artefactos con su utilización segura (MEN, T\&I 6°)\\
+Referentes & Saber ancestral del pregonero · Pensamiento computacional inicial · Cuidado de la palabra\\
+Producto final & Un \textbf{mapa de los 3 niveles de datos personales} en el cuaderno, con \textbf{10 datos tuyos clasificados} (públicos / semi-privados / privados). Más \textbf{una bitácora de configuración} de 2 apps que uses, donde anotas paso a paso \textbf{qué ajuste cambiaste y por qué}. Más \textbf{una promesa}: \emph{``Reviso la privacidad de mis apps cada mes durante este año.''} firmada con nombre y fecha.\\
+\end{tabularx}
+\normalsize
+
+\puente{Hoy haces 4 cosas: clasificas 10 datos tuyos, aprendes las 4 reglas, configuras 2 apps, y firmas promesa.}
+
+\begin{titlebox}{milcGradeDark}
+Ruta MILC: así vamos a aprender
+\end{titlebox}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escuta\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Empezamos con un ejercicio rápido de clasificar 10 datos en 3 niveles.}
+
+\begin{titlebox}{milcVerde}
+Fase 1 · Escuta
+\end{titlebox}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- Clasifica 10 datos tuyos} (10 min · individual). En el cuaderno, dibuja 3 columnas. Encabezados: \textbf{PÚBLICO} (cualquiera puede saber), \textbf{SEMI-PRIVADO} (solo amigos cercanos y familia), \textbf{PRIVADO} (sólo padres y tú). Después clasifica estos \textbf{10 datos} en una de las 3 columnas: \emph{(1) tu nombre real, (2) tu apodo en juegos, (3) la ciudad donde vives, (4) tu colegio exacto, (5) tu número de celular, (6) tu dirección exacta, (7) tu fecha de cumpleaños, (8) tu cédula o tarjeta de identidad, (9) tu correo institucional, (10) la contraseña de tu correo}. No hay respuestas mal-mal, pero hay clasificaciones más cuidadosas que otras.
+\end{softbox}
+
+\checkbox Dibujé las 3 columnas en el cuaderno.\\
+\checkbox Clasifiqué los 10 datos en alguna de las 3 columnas.\\
+\checkbox Hice mis propias decisiones (no copié del compañero).
+
+\begin{infoband}{milcVerde}
+\textbf{Lo que va al cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1 --- Mis 10 datos personales clasificados». \textbf{Formato:} tabla de 3 columnas. \textbf{Extensión:} los 10 datos distribuidos. \textbf{Sabes que terminaste cuando} cada dato tiene una columna y tú puedes justificar la decisión en voz alta si te preguntan.
+\end{infoband}
+
+\puente{Después del ejercicio aprendes las 4 reglas que protegen los datos personales.}
+
+\begin{titlebox}{milcTurquesa}
+Fase 2 · Sistematización con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+Lo que acabaste de hacer fue \textbf{decidir tus niveles}. Ahora vas a aprender las \textbf{4 reglas} que se usan en cualquier país del mundo para cuidar los datos personales. Son reglas legales, no opiniones.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
+1. Descomposición & \textbf{Regla 1 --- Mínimo necesario.} Cuando una app o sitio te pide datos, dale \emph{solo los que la app necesita para funcionar}. Una app de juego no necesita tu dirección. Una linterna no necesita tu correo. Si pide más de lo necesario, sospecha. \textbf{Regla 2 --- Por defecto, privado.} Cuando instalas una app nueva, todos los ajustes deberían empezar en \emph{``privado''} y tú los abres a más gente solo si decides. La mayoría de apps hacen lo contrario (empiezan abiertas) --- por eso hay que cambiar los ajustes a mano.\\
+2. Reconocimiento de patrones & \textbf{Regla 3 --- Borra lo que ya no usas.} Si te bajaste una app y no la abriste en 3 meses, bórrala. Si tienes un correo viejo que no usas, ciérralo. Si tienes una cuenta de juego abandonada, elimínala. \textbf{Cada cuenta abierta es una puerta abierta}. Menos puertas = menos riesgo. \textbf{Regla 4 --- Tienes derecho a saber y a borrar.} La ley colombiana (Ley 1581 de 2012) dice que TÚ puedes pedirle a cualquier empresa \emph{``muéstrame qué datos míos tienes''} y también \emph{``bórralos''}. No es opcional para la empresa: es tu derecho.\\
+3. Abstracción & \textbf{Configuraciones que TODA app debería tener cerradas:} (1) Cuenta privada o cuenta pública --- empieza en privada. (2) ¿Quién puede mandarme mensajes? --- solo amigos. (3) ¿Quién puede etiquetarme en fotos? --- solo amigos o nadie. (4) ¿Se ve mi ubicación? --- desactivado. (5) ¿Quién puede ver mi número de teléfono? --- nadie. (6) ¿Pueden los buscadores encontrar mi perfil? --- no.\\
+4. Algoritmo conceptual & \textbf{Errores de privacidad que te pueden costar caro.} (1) Aceptar todas las cookies de cada sitio que abres --- son ojos que te siguen. (2) Vincular tu Instagram con tu Facebook con tu TikTok con tu Google: si te hackean uno, caen todos. (3) Subir foto del carnet del colegio o de la cédula a un chat --- nunca se sabe quién más lo verá. (4) Usar la misma contraseña en todo --- si te la roban en un sitio, caen todos. (5) Decir que sí a \emph{``compartir mi ubicación con todos''} sin saber lo que significa.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcTurquesa}{Las 4 reglas del dato personal}
+\textbf{Regla 1.} Mínimo necesario: solo das los datos que la app realmente necesita. \\[1mm]
+\textbf{Regla 2.} Por defecto, privado: empiezas cerrado y abres con criterio. \\[1mm]
+\textbf{Regla 3.} Borra lo que ya no usas: cuentas viejas son puertas abiertas. \\[1mm]
+\textbf{Regla 4.} Tienes derecho a saber y a borrar (Ley 1581 de 2012, Colombia).
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{Mitos sobre privacidad que escucharás.} (1) \emph{``Si tengo cuenta privada, ya estoy seguro''} --- Falso. Privacidad es muchos ajustes, no uno solo. (2) \emph{``Si no soy famoso, nadie me busca''} --- Falso. Los datos se venden por paquetes. Vales como dato. (3) \emph{``La ley no aplica a redes sociales''} --- Falso. La Ley 1581 aplica a TODA empresa que tenga datos tuyos en Colombia, incluso si está en otro país. (4) \emph{``Borrar es imposible''} --- Falso. Tienes derecho. A veces hay que insistir y pedir formalmente, pero se puede.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+\textbf{Lo que va al cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2 --- Las 4 reglas con un ejemplo mío». \textbf{Formato:} 4 párrafos cortos numerados. Cada uno: nombre de la regla (1 línea) + tu propio ejemplo de aplicarla en tu vida (1-2 líneas). \textbf{Extensión:} 4 párrafos de 2-3 líneas. \textbf{Sabes que terminaste cuando} cada regla tiene un ejemplo tuyo, no uno copiado del libro.
+\end{infoband}
+
+\puente{Con las 4 reglas en mente, abres 2 apps y cambias los ajustes con criterio.}
+
+\begin{titlebox}{milcMagenta}
+Fase 3 · Praxis con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\textbf{Actividad 3 · APLICA --- Configura la privacidad de 2 apps que usas} (30 min · individual o parejas). Vas a abrir el celular (o el computador), entrar a \textbf{2 apps que usas regularmente} (WhatsApp, Instagram, TikTok, Roblox --- escoge tú), e ir a sus ajustes de privacidad. Para cada app vas a hacer \textbf{una bitácora} en el cuaderno: qué ajuste cambiaste, qué estaba antes, qué quedó ahora, por qué cambió.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
+Descomposición & \textbf{Paso 1 --- Elige las 2 apps.} Las que más usas. Pueden ser WhatsApp, Instagram, TikTok, Roblox, Discord, Snapchat. En el cuaderno escribe \textbf{App 1: \_\_\_\_\_\_} y \textbf{App 2: \_\_\_\_\_\_}. Si no tienes ninguna app instalada, escoge YouTube y Gmail (vienen en todos los celulares).\\
+Patrones & \textbf{Paso 2 --- App 1, abrir ajustes.} Entra a la app. Busca el ícono de \emph{Ajustes} o \emph{Configuración} (suele ser un engrane o las 3 rayitas). Luego busca \emph{Privacidad}. En tu cuaderno escribe el camino que recorriste: \emph{``Abrí WhatsApp, toqué los 3 puntos arriba, fui a Ajustes, después a Privacidad''}.\\
+Abstracción & \textbf{Paso 3 --- App 1, revisa estos 4 ajustes.} En tu cuaderno haz una tabla con 4 columnas: \textbf{Ajuste} | \textbf{Estaba en} | \textbf{Cambié a} | \textbf{Por qué}. Revisa: (a) ¿quién ve mi foto de perfil? (b) ¿quién ve mi última conexión? (c) ¿quién me puede agregar a grupos? (d) ¿mi ubicación está activada? Llena las 4 filas.\\
+Algoritmo de armado & \textbf{Paso 4 --- App 2, mismo proceso.} Repite el Paso 2 y 3 con la otra app. Es probable que los nombres cambien (\emph{``Cuenta privada''}, \emph{``Quién puede comentar''}), pero las ideas son las mismas: quién ve qué.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcMagenta}{Antes de mostrar la bitácora}
+\checkbox Escogí 2 apps que uso de verdad. \\[1mm]
+\checkbox Para cada app, anoté el camino para llegar a Ajustes. \\[1mm]
+\checkbox Llené la tabla de 4 columnas (ajuste, estado antes, estado nuevo, por qué). \\[1mm]
+\checkbox Audité los permisos del celular. \\[1mm]
+\checkbox Quité al menos un permiso que no tenía sentido. \\[1mm]
+\checkbox Escribí la promesa y la firmé.
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Plantilla de la bitácora:} App 1: [nombre]. Camino: [pasos para llegar a privacidad]. Tabla: [4 filas con ajustes revisados]. \textbf{App 2}: igual. \textbf{Permisos del celular}: [apps a las que quité permisos]. \textbf{Promesa firmada}.
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+\textbf{Lo que va al cuaderno (Actividad 3 · APLICA).} Título: «Actividad 3 --- Mi bitácora de privacidad». \textbf{Formato:} 2 bloques (uno por app) con tabla de 4 columnas, más sección de permisos del celular, más promesa firmada. \textbf{Extensión:} 1 página y media. \textbf{Sabes que terminaste cuando} podrías mostrarle la bitácora a tu mamá y ella sabría qué cambiaste y por qué.
+\end{infoband}
+
+\puente{El producto es la bitácora de los cambios + la promesa de revisar cada mes.}
+
+\begin{titlebox}{milcMostaza}
+Producto de la sesión
+\end{titlebox}
+\textbf{Bitácora de privacidad de 2 apps + permisos del celular + promesa firmada}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) Hay 2 apps revisadas con sus 4 ajustes cada una. (2) Cada ajuste tiene su razón anotada. (3) Los permisos del celular fueron revisados. (4) Se quitó al menos un permiso innecesario. (5) La promesa está firmada con nombre completo y fecha.
+\end{softbox}
+
+\puente{Antes de salir, revisas que cada cambio que hiciste tenga su razón anotada.}
+
+\begin{titlebox}{milcVino}
+Fase 4 · Evaluación liberadora — cinco dimensiones
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con 3 voces que te ayudan a entender por qué la privacidad protege tu libertad.}
+
+\begin{titlebox}{milcGradeDark}
+Triángulo de pensamiento · cierre filosófico
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{````El que decide qué se sabe de él, es libre. El que entrega todo sin pensar, ya no lo es.''''}
+
+Cuando aceptas todos los permisos sin leer, cuando entregas todos tus datos sin pensar, estás \textbf{regalando libertad}. No se nota al principio. Pero a largo plazo te quedas sin decisión: las apps deciden por ti qué te muestran, qué te venden, qué te recomiendan. \textbf{Cuidar la privacidad es cuidar tu libertad de decidir.}
+
+\textbf{¿Estoy decidiendo yo qué se sabe de mí, o estoy dejando que las apps lo decidan por mí?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Epicteto (filósofo romano que estudió qué depende de ti y qué no) · cuidado interior}
+\textit{````Cuida lo que depende de ti --- tu palabra, tu casa, tu cuerpo, tus datos. Lo que no depende de ti, suéltalo.''''}
+
+No puedes controlar todo internet. Pero \textbf{sí puedes controlar} qué publicas, qué permisos das, qué apps usas y cómo las configuras. Eso depende de ti. Si gastas energía culpando a las empresas, pierdes tiempo. Si gastas energía configurando lo tuyo, ganas seguridad.
+
+\textbf{¿Estoy quejándome de cosas que no controlo, o estoy actuando sobre las que sí?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{````Los datos no son neutros. Quien los tiene, tiene poder sobre ti.''''}
+
+Cuando una empresa tiene muchos datos tuyos, no es solo \emph{``información''}: es \textbf{poder} para influenciar lo que ves, lo que compras, lo que piensas. Por eso cuidas tus datos: porque también estás cuidando \emph{quién tiene poder sobre tus decisiones}. La privacidad no es un capricho moderno, es defensa.
+
+\textbf{¿A quién le estoy dando poder sobre mis decisiones, simplemente por entregarle mis datos sin pensar?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{titlebox}{milcVino}
+Compromiso final
+\end{titlebox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
+Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
+Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
+Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
+Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
+Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
+\end{tabularx}
+\normalsize
+
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Esta semana, antes de instalar una app nueva, te haces 2 preguntas: ``¿qué datos pide?'' y ``¿los necesita de verdad?''. La próxima clase vas a aprender sobre \textbf{riesgos digitales}: ciberacoso, grooming, retos peligrosos. Hoy aprendiste a cerrar puertas. La próxima clase aprendes a reconocer las amenazas que vienen del otro lado.
+\end{infoband}
+
+\end{document}

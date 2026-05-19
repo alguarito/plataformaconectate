@@ -42,6 +42,16 @@ CONTENT_DIR = ROOT / "content" / "guias" / str(GRADO)
 
 # Paleta institucional por grado (sincronizada con src/data/grados.ts).
 COLORES_POR_GRADO = {
+    6: {  # bento-blue · grado de entrada al bachillerato
+        "COLOR_PORTADA_PRIMARY": "0066FF",
+        "COLOR_PORTADA_DARK": "003D99",
+        "COLOR_PORTADA_SOFT": "D6E8FF",
+    },
+    7: {  # bento-lime
+        "COLOR_PORTADA_PRIMARY": "84CC16",
+        "COLOR_PORTADA_DARK": "4D7C0F",
+        "COLOR_PORTADA_SOFT": "ECFCCB",
+    },
     8: {  # bento-orange
         "COLOR_PORTADA_PRIMARY": "FF6600",
         "COLOR_PORTADA_DARK": "9A3E00",
@@ -67,6 +77,40 @@ COLORES = COLORES_POR_GRADO.get(GRADO, COLORES_POR_GRADO[11])
 
 # Metadata por (grado, periodo): nombre del periodo, DBA, referentes.
 PERIODOS_POR_GRADO = {
+    6: {
+        1: {
+            "PERIODO_NOMBRE": "Período 1 · Comunicación e identidad digital",
+            "DBA": "Reconoce principios y conceptos propios de la tecnología, relacionando artefactos con su utilización segura (MEN, T\\&I 6°)",
+            "REFERENTES": "Saber ancestral del pregonero · Pensamiento computacional inicial · Cuidado de la palabra",
+        },
+        2: {
+            "PERIODO_NOMBRE": "Período 2 · Hardware y software",
+            "DBA": "Identifica componentes y sistemas tecnológicos en su entorno (MEN, T\\&I 6°)",
+            "REFERENTES": "Saber ancestral del relojero · Sistemas como cadena de oficios · Diagnóstico paso a paso",
+        },
+        3: {
+            "PERIODO_NOMBRE": "Período 3 · Procesador de texto e Internet",
+            "DBA": "Produce contenidos digitales y valida información de fuentes web (MEN, T\\&I 6°)",
+            "REFERENTES": "Saber ancestral de la maestra rural · Lectura crítica · Soberanía informacional",
+        },
+    },
+    7: {
+        1: {
+            "PERIODO_NOMBRE": "Período 1 · Pendiente de definir",
+            "DBA": "Pendiente",
+            "REFERENTES": "Pendiente",
+        },
+        2: {
+            "PERIODO_NOMBRE": "Período 2 · Pendiente de definir",
+            "DBA": "Pendiente",
+            "REFERENTES": "Pendiente",
+        },
+        3: {
+            "PERIODO_NOMBRE": "Período 3 · Pendiente de definir",
+            "DBA": "Pendiente",
+            "REFERENTES": "Pendiente",
+        },
+    },
     11: {
         1: {
             "PERIODO_NOMBRE": "Período 1 · Presencia y marca digital",

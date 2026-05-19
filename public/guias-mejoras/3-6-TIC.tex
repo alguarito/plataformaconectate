@@ -1,0 +1,408 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra para todas las guias MILC v3
+% Ver scripts/generadores/build-guia-milc.py para la lista completa de
+% claves esperadas. El script valida que no queden placeholders sin
+% reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1.75cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\hyphenpenalty=200
+\exhyphenpenalty=200
+\pretolerance=400
+\tolerance=2000
+\setlength{\emergencystretch}{1em}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0066FF}
+\definecolor{milcGradeDark}{HTML}{003D99}
+\definecolor{milcGradeSoft}{HTML}{D6E8FF}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Tecnología e Informática · Grado 6}
+\rhead{\small Guía 3 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{\textbf{\textrightarrow}}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+\begin{document}
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[white] (current page.south west) rectangle (current page.north east);
+  \path[fill=milcGradePrimary,rounded corners=16mm]
+    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
+    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
+    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+
+  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
+    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
+    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
+    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
+    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
+    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
+  \end{scope}
+
+  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{124}{124}\selectfont 6};
+  \draw[milcGradeText,line width=1.7pt]
+    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+
+  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+    {
+     {\sffamily\bfseries\fontsize{19}{22}\selectfont Mi correo\\institucional ---\\mi primera\\dirección propia}\\[4mm]
+     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 3-6-TIC}\\[2mm]
+     {\sffamily\fontsize{13}{16}\selectfont Período 1 · Comunicación e identidad digital}\\[5mm]
+     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
+     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+    };
+
+  \path[fill=milcGradeSoft,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
+    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
+    \textcolor{milcGradeDark}{\bfseries Producto:} \textbf{Correo institucional configurado y funcionando} (sabes el usuario, sabes la contraseña, sabes cómo abrirlo). Más \textbf{3 correos formales escritos en el cuaderno}: uno al profe de Tecnología, uno al coordinador del colegio, uno a un familiar lejano. Los 3 correos siguen las 5 partes que vas a aprender. Lo muestras antes de salir de la sala.};
+\end{tikzpicture}
+\mbox{}
+\newpage
+
+\section*{Apertura: Mi correo institucional --- la primera dirección que firmas como tuya}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+\textbf{Vuelve el pregonero, pero esta vez con cartas.} Antes de los celulares, las cartas viajaban semanas. Para que una carta llegara, tenía que llevar \textbf{una dirección clara}: \emph{``Señor Aurelio Martínez, casa de tapia blanca, frente al palo de mango, vereda La Plata, Cartago.''}. Si la dirección estaba mal escrita, la carta se perdía o llegaba tarde. El cartero, igual que el pregonero, conocía a las personas por sus direcciones: la dirección era casi parte del nombre. La gente cuidaba mucho cómo escribía esa dirección y a quién se la daba. \textbf{Una buena carta tenía cinco cosas:} a quién va, de parte de quién, sobre qué tema, el mensaje, y la firma. Hoy las cartas se llaman \textbf{correos electrónicos}, y siguen necesitando esas mismas cinco cosas para llegar bien.
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+Tu \textbf{correo institucional} es tu primera dirección propia en internet. Termina en \texttt{@sormariajuliana.edu.co} (o el dominio del colegio). No la elegiste por gusto: el colegio te la asignó porque eres parte de la institución. Por eso es \textbf{seria}, no es como un correo de juego. La vas a usar para: recibir tareas del profe, enviar trabajos, comunicarte con coordinación, registrarte en plataformas educativas. Y --- esto es importante --- vas a aprender a \textbf{escribir un correo formal} con las 5 partes correctas. Esa habilidad la vas a usar toda la vida: para pedir un trabajo, para escribirle a un profesor de universidad, para hacer un reclamo en serio.
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{Si tuvieras que escribirle al director del colegio para pedirle algo importante, ¿\textbf{cómo empezarías} el correo? ¿``Hola, qué más''? ¿``Buenas tardes''? ¿``Estimado señor director''? La respuesta importa.}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar la clase: (1) podrás \textbf{identificar} las 5 partes de un correo formal; (2) sabrás \textbf{explicar} con tus palabras por qué cada parte importa; (3) habrás \textbf{configurado} tu correo institucional con contraseña segura; (4) habrás \textbf{escrito 3 correos formales} en el cuaderno.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Reconoce principios y conceptos propios de la tecnología, relacionando artefactos con su utilización segura (MEN, T\&I 6°)\\
+Referentes & Saber ancestral del pregonero · Pensamiento computacional inicial · Cuidado de la palabra\\
+Producto final & \textbf{Correo institucional configurado y funcionando} (sabes el usuario, sabes la contraseña, sabes cómo abrirlo). Más \textbf{3 correos formales escritos en el cuaderno}: uno al profe de Tecnología, uno al coordinador del colegio, uno a un familiar lejano. Los 3 correos siguen las 5 partes que vas a aprender. Lo muestras antes de salir de la sala.\\
+\end{tabularx}
+\normalsize
+
+\puente{Hoy haces 4 cosas: lees un ejemplo de correo, aprendes las 5 partes, activas tu correo institucional, y escribes 3 correos formales.}
+
+\begin{titlebox}{milcGradeDark}
+Ruta MILC: así vamos a aprender
+\end{titlebox}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escuta\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Empezamos viendo un correo real para descubrir sus partes.}
+
+\begin{titlebox}{milcVerde}
+Fase 1 · Escuta
+\end{titlebox}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- Detectar las partes del correo} (10 min · individual). Lee con calma el siguiente correo de ejemplo. Después \textbf{en el cuaderno} dibuja un cuadro y adentro escribe las \textbf{5 partes que descubriste}. No tienes que saber los nombres técnicos todavía; descríbelas con tus palabras: \emph{``La parte de arriba que dice de qué trata el correo''}, \emph{``El saludo''}, etc. \textbf{Ejemplo a leer:} \texttt{Para: lcardenas@sormariajuliana.edu.co} · \texttt{Asunto: Permiso para faltar el viernes 22} · ``Buenos días profe Álvaro. Le escribo porque el viernes 22 tengo cita médica a las 9 de la mañana y voy a faltar a su clase. Me comprometo a ponerme al día con las actividades de la semana. Por favor avíseme qué debo traer la próxima clase. Muchas gracias por su atención. Atentamente, Lara Cárdenas Martínez, grado 6B.''
+\end{softbox}
+
+\checkbox Leí el correo de ejemplo completo.\\
+\checkbox Identifiqué 5 partes diferentes.\\
+\checkbox Las describí con mis palabras (no con palabras técnicas).
+
+\begin{infoband}{milcVerde}
+\textbf{Lo que va al cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1 --- Las partes del correo». \textbf{Formato:} 5 frases numeradas, una por parte que descubriste. \textbf{Extensión:} 5 líneas, una por parte. \textbf{Sabes que terminaste cuando} tienes 5 cosas escritas y sabes señalarlas en el correo de ejemplo.
+\end{infoband}
+
+\puente{Después de ver el ejemplo, vas a aprender las 5 partes con sus reglas exactas.}
+
+\begin{titlebox}{milcTurquesa}
+Fase 2 · Sistematización con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+Lo que descubriste solo es la base. Ahora vas a aprender los \textbf{nombres técnicos} de esas 5 partes y \textbf{una regla} para cada una. Son las mismas 5 partes que se usan en cualquier correo formal, desde un colegio hasta una empresa.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
+1. Descomposición & \textbf{Parte 1 --- Destinatario (``Para:'').} El correo de la persona que va a recibir. Regla: \textbf{revísalo dos veces} antes de enviar. Un punto o letra de más y el correo se va a un desconocido. Ejemplo: \texttt{lcardenas@sormariajuliana.edu.co}, no \texttt{lcardenas@sormariajuliana.com}.\\
+2. Reconocimiento de patrones & \textbf{Parte 2 --- Asunto.} Una frase corta que dice de qué trata el correo. Regla: \textbf{escribe el asunto pensando en el que recibe}, no en ti. Bien: \emph{``Permiso para faltar el viernes 22''}. Mal: \emph{``Hola profe''} o \emph{``Es urgente''}.\\
+3. Abstracción & \textbf{Parte 3 --- Saludo formal.} Cómo empiezas. Regla: \textbf{usa el nombre y el cargo}. Bien: \emph{``Buenos días profe Álvaro''}, \emph{``Estimada señora rectora''}. Mal: \emph{``Qué más''}, \emph{``Hola''} a secas.\\
+4. Algoritmo conceptual & \textbf{Parte 4 --- Cuerpo.} Lo que quieres decir. Regla: \textbf{tres bloques cortos}. Bloque 1: qué pides o cuentas. Bloque 2: por qué. Bloque 3: qué pides que pase ahora. No más de 5 líneas en total. Nadie quiere leer un correo larguísimo.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcTurquesa}{Las 5 partes del correo formal}
+\textbf{1. Destinatario} (``Para:'') --- a quién va. \\[1mm]
+\textbf{2. Asunto} --- de qué trata, en una línea. \\[1mm]
+\textbf{3. Saludo formal} --- nombre + cargo. \\[1mm]
+\textbf{4. Cuerpo} --- 3 bloques cortos, máximo 5 líneas. \\[1mm]
+\textbf{5. Despedida y firma} --- cortesía + tu nombre completo + curso.
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{Errores que se repiten cuando empiezas a escribir correos.} (1) Asunto vacío o solo ``Hola'' --- el que recibe no sabe de qué se trata. (2) Saludo informal a un adulto que no conoces --- \emph{``Hey profe''} no abre puertas. (3) Cuerpo enorme con muchas explicaciones --- la persona ocupada no termina de leer. (4) Firmar solo con apodo o nombre incompleto --- la persona no sabe quién escribió. (5) Escribir \textbf{TODO EN MAYÚSCULAS} --- en internet eso es como gritar.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+\textbf{Lo que va al cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2 --- Las 5 partes con sus reglas». \textbf{Formato:} tabla de 2 columnas. Columna 1: nombre de la parte. Columna 2: la regla con tus palabras (no copiada). \textbf{Extensión:} 5 filas (una por parte). \textbf{Sabes que terminaste cuando} podrías corregir el correo de un compañero solo mirando tu tabla.
+\end{infoband}
+
+\puente{Con las 5 partes claras, activas tu correo y escribes los 3 correos formales en el cuaderno.}
+
+\begin{titlebox}{milcMagenta}
+Fase 3 · Praxis con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\textbf{Actividad 3 · APLICA --- Tu correo activo + 3 correos formales} (35 min · individual). Vas a hacer 2 cosas. \textbf{Primero:} activar tu correo institucional en el computador (\textbf{Paso A}). \textbf{Segundo:} escribir 3 correos formales en el cuaderno (\textbf{Paso B}). El profe te entrega tu usuario y contraseña inicial. Sigue los pasos en orden y con calma.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
+Descomposición & \textbf{Paso A.1 --- Abre el navegador.} En el computador abre Chrome o Edge. En la barra de arriba escribe \texttt{gmail.com} y pulsa Enter. Si te pide cuenta, escribe el correo que te dio el profe: \texttt{tunombre@sormariajuliana.edu.co}.\\
+Patrones & \textbf{Paso A.2 --- Ingresa la contraseña inicial.} El profe te dio una contraseña temporal (ejemplo: \texttt{Sormaria2026}). Escríbela exactamente igual, respetando mayúsculas y números. Si te equivocas, pulsa \emph{``Olvidé mi contraseña''} y pide ayuda al profe.\\
+Abstracción & \textbf{Paso A.3 --- Cambia la contraseña inicial.} El sistema te pedirá una contraseña nueva. \textbf{Reglas de contraseña fuerte:} mínimo 8 caracteres, mezcla mayúsculas y minúsculas, agrega 2 números, agrega 1 signo (\texttt{!} o \texttt{?}). Ejemplo válido: \texttt{Mango2026!}. Ejemplo malo: \texttt{lara123}. \textbf{Escríbela en el cuaderno en una hoja aparte y no la muestres a nadie}.\\
+Algoritmo de armado & \textbf{Paso B.1 --- Correo 1 al profe de Tecnología.} En el cuaderno, escribe en formato de correo (las 5 partes) un mensaje al profe Álvaro pidiéndole que te recuerde la actividad de la próxima clase. Asunto sugerido: \emph{``Pregunta sobre la actividad de la próxima clase''}.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcMagenta}{Antes de mostrar al profe}
+\checkbox Mi correo institucional abre sin problemas. \\[1mm]
+\checkbox Cambié la contraseña por una fuerte (la anoté en hoja aparte). \\[1mm]
+\checkbox Los 3 correos están escritos en el cuaderno. \\[1mm]
+\checkbox Cada correo tiene las 5 partes (destinatario, asunto, saludo, cuerpo, firma). \\[1mm]
+\checkbox El asunto de cada correo dice de qué se trata sin abrir el correo. \\[1mm]
+\checkbox Firmé con nombre completo y grado.
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Plantilla del correo formal en el cuaderno.} \textit{Para:} (correo de la persona). \textit{Asunto:} (frase corta). \textit{Saludo:} ``Buenos días/tardes [nombre + cargo]''. \textit{Cuerpo:} 3 bloques cortos --- qué pasa, por qué, qué pides. \textit{Despedida:} ``Muchas gracias por su atención. Atentamente, [nombre completo], grado [tu curso]''.
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+\textbf{Lo que va al cuaderno (Actividad 3 · APLICA).} Título: «Actividad 3 --- Mi correo activo + 3 correos formales». \textbf{Formato:} en hoja aparte (privada): contraseña. En hoja del cuaderno: los 3 correos uno debajo del otro, con las 5 partes claras. \textbf{Extensión:} 1 página y media. \textbf{Sabes que terminaste cuando} cualquier compañero puede leer tu correo y entender exactamente qué pides.
+\end{infoband}
+
+\puente{El producto es doble: el correo configurado en el computador y los 3 correos escritos.}
+
+\begin{titlebox}{milcMostaza}
+Producto de la sesión
+\end{titlebox}
+\textbf{Correo institucional activo + 3 correos formales en el cuaderno}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) El correo institucional abre y la contraseña nueva es fuerte (8+ caracteres, mayúsculas, números, signo). (2) Los 3 correos están escritos completos en el cuaderno. (3) Cada uno tiene las 5 partes exactas (destinatario, asunto, saludo, cuerpo, despedida). (4) Los asuntos son frases que cuentan de qué trata, no genéricos. (5) El cuerpo de cada correo cabe en 5 líneas o menos.
+\end{softbox}
+
+\puente{Antes de salir, miras tus 3 correos y verificas que cada uno tiene las 5 partes completas.}
+
+\begin{titlebox}{milcVino}
+Fase 4 · Evaluación liberadora — cinco dimensiones
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con 3 voces que te ayudan a entender por qué la palabra escrita pesa más de lo que crees.}
+
+\begin{titlebox}{milcGradeDark}
+Triángulo de pensamiento · cierre filosófico
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{````Escribir con cortesía no es agacharse: es respetar al otro y respetarte a ti mismo.''''}
+
+Cuando escribes un correo formal, no estás siendo \emph{``ñoño''} ni perdiendo tu estilo. Estás haciendo lo contrario: estás diciendo \textbf{``yo merezco respeto y te respeto a ti''}. Por eso saludas, por eso firmas. Cuanto más serio el asunto, más cuidadoso el correo. Esa es la regla en cualquier lugar del mundo.
+
+\textbf{Cuando le escribo a un adulto, ¿le escribo como si yo mismo mereciera que me lean en serio?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Séneca (un romano que escribió cartas durante toda su vida) · cuidado interior}
+\textit{````Antes de enviar una carta, léela tres veces. La primera para corregir, la segunda para acortar, la tercera para asegurarte de que dice lo que querías decir.''''}
+
+Hace 2000 años, en Roma, ya se sabía esto: las cartas (hoy correos) se mandan después de leerse varias veces. Antes de pulsar ``enviar'', léelo. ¿Tiene las 5 partes? ¿Cabe en 5 líneas? ¿Suena cortés? \textbf{El que envía sin releer manda errores en serio.} El que relee, manda mensajes que funcionan.
+
+\textbf{¿Estoy enviando con prisa, o estoy revisando lo que digo antes de mandarlo?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{````Cada correo es una pequeña promesa: prometes que lo que dices es verdad y que estarás del otro lado para responder.''''}
+
+Cuando mandas un correo institucional, no es como un mensaje de WhatsApp que se borra. \textbf{Queda guardado, queda firmado, queda contigo.} Si pides algo, lo que dices te compromete. Por eso el correo institucional es serio: lo que escribes ahí es como tu palabra escrita.
+
+\textbf{Lo que estoy escribiendo en este correo, ¿lo voy a sostener si me preguntan después?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{titlebox}{milcVino}
+Compromiso final
+\end{titlebox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
+Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
+Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
+Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
+Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
+Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
+\end{tabularx}
+\normalsize
+
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Llega con tu correo activo y los 3 correos escritos en el cuaderno. La próxima clase vas a conocer la \textbf{netiqueta}: 10 acuerdos básicos para comportarte con respeto en internet. Lo que aprendiste hoy ya cuenta como netiqueta sin que te dieras cuenta: saludo, cortesía, cuidar lo que dices. Ahora vas a verlo completo.
+\end{infoband}
+
+\end{document}

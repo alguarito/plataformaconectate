@@ -56,8 +56,8 @@ def check_top(data: dict) -> tuple[list[str], list[str]]:
         if k not in data:
             errs.append(f"falta campo raíz `{k}`")
     # Tipos esperados.
-    if "grado" in data and data["grado"] not in (8, 9, 10, 11):
-        warns.append(f"grado={data['grado']} fuera de rango 8-11")
+    if "grado" in data and data["grado"] not in (6, 7, 8, 9, 10, 11):
+        warns.append(f"grado={data['grado']} fuera de rango 6-11")
     if "periodo" in data and data["periodo"] not in (1, 2, 3):
         errs.append(f"periodo={data['periodo']} fuera de rango 1-3")
     if "clave" in data:

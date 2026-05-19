@@ -96,19 +96,19 @@ PERIODOS_POR_GRADO = {
     },
     7: {
         1: {
-            "PERIODO_NOMBRE": "Período 1 · Pendiente de definir",
-            "DBA": "Pendiente",
-            "REFERENTES": "Pendiente",
+            "PERIODO_NOMBRE": "Período 1 · Trabajo colaborativo en la nube",
+            "DBA": "Utiliza herramientas digitales para trabajar de manera colaborativa con otros (MEN, T\\&I 7°)",
+            "REFERENTES": "Saber ancestral de la minga · Microsoft 365 y OneDrive · Coautoría asincrónica",
         },
         2: {
-            "PERIODO_NOMBRE": "Período 2 · Pendiente de definir",
-            "DBA": "Pendiente",
-            "REFERENTES": "Pendiente",
+            "PERIODO_NOMBRE": "Período 2 · Algoritmia y pensamiento computacional",
+            "DBA": "Construye algoritmos y diagramas de flujo para resolver problemas paso a paso (MEN, T\\&I 7°)",
+            "REFERENTES": "Saber ancestral del tejedor · Pensamiento computacional · Scratch",
         },
         3: {
-            "PERIODO_NOMBRE": "Período 3 · Pendiente de definir",
-            "DBA": "Pendiente",
-            "REFERENTES": "Pendiente",
+            "PERIODO_NOMBRE": "Período 3 · Inteligencia Artificial",
+            "DBA": "Reconoce los fundamentos, usos y límites éticos de la Inteligencia Artificial (MEN, T\\&I 7°)",
+            "REFERENTES": "Saber ancestral del consejero · Modelos de lenguaje · Ética algorítmica y prompting",
         },
     },
     11: {

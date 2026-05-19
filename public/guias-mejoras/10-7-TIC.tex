@@ -1,0 +1,411 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra para todas las guias MILC v3
+% Ver scripts/generadores/build-guia-milc.py para la lista completa de
+% claves esperadas. El script valida que no queden placeholders sin
+% reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1.75cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\hyphenpenalty=200
+\exhyphenpenalty=200
+\pretolerance=400
+\tolerance=2000
+\setlength{\emergencystretch}{1em}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{84CC16}
+\definecolor{milcGradeDark}{HTML}{4D7C0F}
+\definecolor{milcGradeSoft}{HTML}{ECFCCB}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Tecnología e Informática · Grado 7}
+\rhead{\small Guía 10 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{\textbf{\textrightarrow}}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+\begin{document}
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[white] (current page.south west) rectangle (current page.north east);
+  \path[fill=milcGradePrimary,rounded corners=16mm]
+    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
+    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
+    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+
+  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
+    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
+    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
+    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
+    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
+    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
+  \end{scope}
+
+  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{124}{124}\selectfont 7};
+  \draw[milcGradeText,line width=1.7pt]
+    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+
+  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+    {
+     {\sffamily\bfseries\fontsize{19}{22}\selectfont Cosecha\\del periodo ---\\mi primer\\proyecto\\colaborativo}\\[4mm]
+     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 10-7-TIC}\\[2mm]
+     {\sffamily\fontsize{13}{16}\selectfont Período 1 · Trabajo colaborativo en la nube}\\[5mm]
+     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
+     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+    };
+
+  \path[fill=milcGradeSoft,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
+    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
+    \textcolor{milcGradeDark}{\bfseries Producto:} Un \textbf{mini-proyecto colaborativo en equipo de 3 estudiantes} integrando todo lo aprendido en P1. \textbf{Entregables:} \textbf{(a) Documento Word colaborativo} de 2 páginas con encabezado + 3 secciones (una por integrante) + fuentes citadas; \textbf{(b) hoja Excel} con un dato cuantitativo del tema (mínimo 5 filas con fórmula PROMEDIO o SUMA); \textbf{(c) Presentación PowerPoint de 5 diapositivas} que resume el proyecto; \textbf{(d) Bitácora colaborativa} (Word compartido) con 3 entradas (una por integrante) sobre el proceso del equipo; \textbf{(e) reunión Teams} programada para sustentación de 10 minutos al profe. Todo guardado en una carpeta compartida en OneDrive.};
+\end{tikzpicture}
+\mbox{}
+\newpage
+
+\section*{Apertura: Cosecha del periodo --- mi primer proyecto colaborativo}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+\textbf{El último día de la minga grande no se trabajaba: se celebraba.} En la finca cafetera del Valle del Cauca, cuando los 30 trabajadores terminaban de cosechar el último cafetal, el dueño no decía \emph{``ya, váyanse''}. Decía: \textbf{``vengan al patio, ya hay almuerzo''}. Las cocineras habían preparado durante el día un sancocho grande con gallina, arroz, plátano, yuca. Todos se sentaban juntos a la mesa larga. Mientras comían, conversaban: \emph{``vimos que don Pedro fue el más rápido''}, \emph{``este año la cosecha fue mejor que la del año pasado''}, \emph{``hay que invitar al primo Aurelio el próximo sábado''}. \textbf{Ese almuerzo no era solo comida: era el cierre formal de la minga}. Donde \emph{se reconocía el trabajo, se evaluaba lo aprendido, se preparaba la siguiente}. Sin ese cierre, la minga quedaba incompleta. Hoy tu equipo de 3 cierra el periodo con su propia \emph{``minga digital''}: un mini-proyecto que reúne todo lo aprendido en P1, presentado al profe, archivado en OneDrive.
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+Esta es la \textbf{cosecha del periodo 1}. No es una sesión nueva de contenido: es la \emph{integración} de las 9 sesiones anteriores en un solo trabajo real. Tu equipo (los mismos 3 de S6, o uno nuevo si así lo deciden) produce un \textbf{mini-proyecto colaborativo} aplicando: \emph{(S2) Microsoft 365}, \emph{(S3) OneDrive con estructura de carpetas}, \emph{(S4) Word + Excel + PowerPoint}, \emph{(S5) compartir y permisos}, \emph{(S6) coautoría asincrónica}, \emph{(S7) comentarios y sugerencias}, \emph{(S8) versiones e historial}, \emph{(S9) Outlook y Teams}. El proyecto tiene tema libre pero debe ser \textbf{informativo} (no opinión): \emph{una región de Colombia, una tradición del Valle, una problemática social local, un avance científico, una figura admirable}. El criterio principal: que el equipo se haya organizado como minga --- con roles, tiempos, comunicación, reciprocidad. El profe evalúa tanto el producto final como el \emph{proceso}, leído en la bitácora colaborativa.
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{Ahora que tu equipo va a hacer un proyecto colaborativo real (no de práctica), ¿\textbf{cómo se diferenciará} de los trabajos en grupo de años anteriores? ¿Qué hábitos nuevos van a usar?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar la clase: (1) podrás \textbf{integrar} las 9 habilidades del periodo en un solo entregable; (2) sabrás \textbf{aplicar} el protocolo de equipo (roles + tiempos + comunicación); (3) podrás \textbf{evaluar} el proceso de tu equipo con bitácora; (4) habrás \textbf{entregado} el mini-proyecto al profe vía Outlook + reunión Teams.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Utiliza herramientas digitales para trabajar de manera colaborativa con otros (MEN, T\&I 7°)\\
+Referentes & Saber ancestral de la minga · Microsoft 365 y OneDrive · Coautoría asincrónica\\
+Producto final & Un \textbf{mini-proyecto colaborativo en equipo de 3 estudiantes} integrando todo lo aprendido en P1. \textbf{Entregables:} \textbf{(a) Documento Word colaborativo} de 2 páginas con encabezado + 3 secciones (una por integrante) + fuentes citadas; \textbf{(b) hoja Excel} con un dato cuantitativo del tema (mínimo 5 filas con fórmula PROMEDIO o SUMA); \textbf{(c) Presentación PowerPoint de 5 diapositivas} que resume el proyecto; \textbf{(d) Bitácora colaborativa} (Word compartido) con 3 entradas (una por integrante) sobre el proceso del equipo; \textbf{(e) reunión Teams} programada para sustentación de 10 minutos al profe. Todo guardado en una carpeta compartida en OneDrive.\\
+\end{tabularx}
+\normalsize
+
+\puente{Hoy haces 4 cosas: formas equipo y acuerdan tema, distribuyen roles, ejecutan los 5 entregables, sustentan al profe.}
+
+\begin{titlebox}{milcGradeDark}
+Ruta MILC: así vamos a aprender
+\end{titlebox}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escuta\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Empezamos planificando: equipo + tema + acuerdos.}
+
+\begin{titlebox}{milcVerde}
+Fase 1 · Escuta
+\end{titlebox}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- Equipo + tema + acuerdos} (10 min · equipo). En el cuaderno, respondan EN EQUIPO: \emph{(1) ¿Quiénes son los 3 integrantes? (nombres + correo institucional)}. \emph{(2) ¿Cuál es el tema del proyecto? (escojan algo informativo: una región, una tradición, una problemática, una figura. Tema concreto y acotado.)}. \emph{(3) ¿Cuál es el subtema de cada integrante? (3 subtemas claros)}. \emph{(4) ¿Cuáles son las 3 fuentes principales que van a usar? (apliquen CRAAP de G6)}. \emph{(5) ¿Cuándo termina cada integrante su parte? (3 tiempos acordados).} \emph{(6) ¿Cómo se comunican durante el proyecto? (Teams, WhatsApp con cuidado, presencial?)}.
+\end{softbox}
+
+\checkbox El equipo de 3 está conformado.\\
+\checkbox El tema es informativo, no opinión, acotado.\\
+\checkbox Cada integrante tiene su subtema y tiempo acordados.
+
+\begin{infoband}{milcVerde}
+\textbf{Lo que va al cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1 --- Acuerdo de proyecto P1». \textbf{Formato:} 6 respuestas en bloques. \textbf{Extensión:} 10-12 líneas. \textbf{Sabes que terminaste cuando} los 3 integrantes firman el acuerdo en sus respectivos cuadernos.
+\end{infoband}
+
+\puente{Después aprendes los 5 entregables y la rúbrica del proyecto.}
+
+\begin{titlebox}{milcTurquesa}
+Fase 2 · Sistematización con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+Ahora aprenden los \textbf{5 entregables} del proyecto y la rúbrica con la que el profe evaluará. Conocer la rúbrica desde el inicio te permite producir según los criterios.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
+1. Descomposición & \textbf{Entregable 1 --- Documento Word colaborativo (peso 30\%).} 2 páginas, 3 secciones (una por integrante), encabezado + pie + numeración, formato profesional, fuentes citadas al final. Aplica S3 (formato), S5 (tablas/imágenes), S6 (encabezados/pies) y S9 (evaluar fuentes) de G6 + S5 (compartir) y S6 (coautoría) de G7. \textbf{Entregable 2 --- Hoja Excel con dato cuantitativo (peso 15\%).} Mínimo 5 filas relacionadas con tu tema, encabezado en negrita, fórmula \texttt{=PROMEDIO()} o \texttt{=SUMA()} aplicada. Ejemplos según tema: cantidad de habitantes de 5 ciudades; cantidad de hectáreas cultivadas en 5 fincas; años de duración de 5 tradiciones; nacimientos por mes en una región.\\
+2. Reconocimiento de patrones & \textbf{Entregable 3 --- PowerPoint de cierre (peso 15\%).} 5 diapositivas que resumen el proyecto. \emph{D1 portada}: título + 3 nombres + grado + fecha. \emph{D2 introducción}: tema + por qué importa. \emph{D3 desarrollo}: las 3 ideas principales. \emph{D4 datos}: el dato del Excel presentado visualmente (con gráfico si quieren). \emph{D5 cierre}: conclusión + agradecimientos. Diseño profesional con un tema aplicado. \textbf{Entregable 4 --- Bitácora colaborativa (peso 20\%).} Word compartido aparte. 3 entradas (una por integrante) con esta estructura cada una: \emph{(a) ¿Qué hice yo en el proyecto?}, \emph{(b) ¿Qué funcionó del equipo?}, \emph{(c) ¿Qué se complicó y cómo lo resolvimos?}, \emph{(d) ¿Qué haría diferente la próxima vez?}. La bitácora es lo que demuestra el proceso, no solo el producto.\\
+3. Abstracción & \textbf{Entregable 5 --- Sustentación en Teams (peso 20\%).} Reunión programada con el profe de 10 minutos. Cada integrante habla 2-3 minutos sobre su sección. El profe puede hacer preguntas. Es ejercicio de hablar en público con apoyo de la PowerPoint. \emph{Atención}: TODOS los integrantes deben hablar; no se vale que uno solo presente.\\
+4. Algoritmo conceptual & \textbf{Rúbrica de 10 criterios del profe.} (1) Organización del equipo (roles claros desde el inicio). (2) Tema bien acotado y desarrollado. (3) Documento Word con formato profesional. (4) Excel con dato cuantitativo + fórmula aplicada. (5) PowerPoint con 5 diapositivas coherentes y diseño aplicado. (6) Fuentes citadas con criterio CRAAP. (7) Coautoría real (todos contribuyeron al Word). (8) Bitácora individual de cada integrante completa. (9) Sustentación con TODOS los integrantes hablando. (10) Carpeta OneDrive bien organizada con los 5 entregables. \emph{Total 100\%}. Cada criterio se evalúa de 1 a 5 (5 = excelente).\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcTurquesa}{5 entregables + rúbrica}
+\textbf{5 entregables:} \\[1mm]
+\textbf{1.} Word colaborativo (30\%). \\[1mm]
+\textbf{2.} Excel con dato (15\%). \\[1mm]
+\textbf{3.} PowerPoint cierre (15\%). \\[1mm]
+\textbf{4.} Bitácora colaborativa (20\%). \\[1mm]
+\textbf{5.} Sustentación Teams (20\%). \\[1mm]
+\textbf{Total:} 100\% · evaluado en 10 criterios.
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{Errores típicos en el proyecto integrador.} (1) \emph{No hacer acuerdo de roles claro al inicio} --- la minga se vuelve caos. (2) \emph{Un integrante hace todo y los otros 2 firman} --- 0 puntos para los que no aportaron, según rúbrica. (3) \emph{Olvidar la bitácora} --- es 20\% del peso, no es opcional. (4) \emph{Empezar PowerPoint antes que el Word} --- el Word es la base; PowerPoint resume el Word. (5) \emph{Buscar fuentes sin CRAAP} --- bajan los puntos del criterio 6. (6) \emph{Que un solo integrante sustente} --- baja el criterio 9. (7) \emph{No organizar la carpeta de OneDrive} --- baja el criterio 10. La organización cuenta.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+\textbf{Lo que va al cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2 --- 5 entregables + rúbrica de 10 criterios». \textbf{Formato:} bloque A con los 5 entregables (cada uno: descripción + peso). Bloque B con los 10 criterios. \textbf{Extensión:} 15 líneas. \textbf{Sabes que terminaste cuando} podrías evaluar el proyecto de otro equipo con la rúbrica solo mirando la hoja.
+\end{infoband}
+
+\puente{Con todo claro, ejecutan los 5 entregables en paralelo.}
+
+\begin{titlebox}{milcMagenta}
+Fase 3 · Praxis con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\textbf{Actividad 3 · CREA --- Ejecutar los 5 entregables} (1 sesión de 90 min + trabajo asíncrono durante la semana). Vas a ejecutar el mini-proyecto en equipo. Esta es la cosecha real. Pongan música, organícense, trabajen como minga digital.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
+Descomposición & \textbf{Paso 1 --- Carpeta compartida en OneDrive.} El integrante 1 (o quien se ofrezca) crea una carpeta en OneDrive: \texttt{2026-proyecto-P1-[tema]-equipo}. La comparte con los otros 2 integrantes y con el profe (con \emph{Puede editar} a integrantes y \emph{Puede ver} al profe inicialmente).\\
+Patrones & \textbf{Paso 2 --- Word colaborativo (40 min de trabajo distribuido).} Dentro de la carpeta, crear Word \texttt{2026-documento-principal}. \emph{Estructura:} encabezado en cada página + 3 secciones con sus 3 títulos. Cada integrante escribe SU sección. Aplican comentarios y sugerencias (S7) en las secciones de los compañeros (5 comentarios entre todos). Al final, revisión conjunta (S6: revisión conjunta) y aplicar cambios.\\
+Abstracción & \textbf{Paso 3 --- Excel y PowerPoint (30 min).} Mientras trabajan en Word de manera asíncrona, uno o dos miembros pueden ir trabajando Excel y PowerPoint en paralelo. \emph{Excel:} \texttt{2026-datos-proyecto}. 5+ filas relacionadas con el tema. Encabezado en negrita. Fórmula PROMEDIO o SUMA en una celda. Si quieren, gráfico automático. \emph{PowerPoint:} \texttt{2026-presentacion}. 5 diapositivas con la estructura propuesta. Tema visual aplicado. Imagen de Pixabay.\\
+Algoritmo de armado & \textbf{Paso 4 --- Bitácora colaborativa (15 min · individual).} Crear otro Word compartido: \texttt{2026-bitacora-equipo}. Cada integrante agrega SU entrada (no edita las de los otros). Cada entrada tiene los 4 puntos: \emph{qué hice}, \emph{qué funcionó}, \emph{qué se complicó}, \emph{qué haría diferente}. Sé honesto: la bitácora vale más por sinceridad que por edulcorar.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcMagenta}{Antes de cerrar el periodo 1 de grado 7}
+\checkbox Carpeta compartida en OneDrive con los 5 entregables. \\[1mm]
+\checkbox Word colaborativo con 3 secciones (una por integrante). \\[1mm]
+\checkbox Excel con 5+ filas + fórmula aplicada. \\[1mm]
+\checkbox PowerPoint de 5 diapositivas con tema visual. \\[1mm]
+\checkbox Bitácora colaborativa con 3 entradas individuales sinceras. \\[1mm]
+\checkbox Sustentación Teams realizada con todos los integrantes hablando. \\[1mm]
+\checkbox Correo final de entrega al profe con autoevaluación.
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Estructura del proyecto.} \textit{Paso 1:} carpeta compartida. \textit{Paso 2:} Word colaborativo (3 secciones + comentarios + revisión). \textit{Paso 3:} Excel + PowerPoint en paralelo. \textit{Paso 4:} bitácora colaborativa con 3 entradas. \textit{Paso 5:} reunión Teams con profe. \textit{Paso 6:} autoevaluación + correo final.
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+\textbf{Lo que va al cuaderno (Actividad 3 · CREA).} Título: «Actividad 3 --- Mi cosecha del periodo 1». \textbf{Formato:} datos del equipo + listado de los 5 entregables con su ubicación en OneDrive + autoevaluación con rúbrica + bitácora individual de 4 puntos. \textbf{Extensión:} 1-1.5 páginas. \textbf{Sabes que terminaste cuando} tu equipo entregó los 5 entregables Y sustentó ante el profe.
+\end{infoband}
+
+\puente{El producto es la carpeta compartida con los 5 entregables + reunión Teams al profe.}
+
+\begin{titlebox}{milcMostaza}
+Producto de la sesión
+\end{titlebox}
+\textbf{Proyecto colaborativo P1 · 5 entregables + sustentación · firmado y entregado al profe}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) Los 5 entregables están en la carpeta compartida de OneDrive. (2) El Word integra coautoría real (las 3 secciones se notan distintas pero coherentes). (3) El Excel tiene fórmula PROMEDIO o SUMA aplicada y propagada. (4) El PowerPoint tiene 5 diapositivas con tema visual y los 3 integrantes mencionados. (5) La bitácora colaborativa tiene 3 entradas con los 4 puntos cada una.
+\end{softbox}
+
+\puente{Antes de sustentar, autoevalúan con la rúbrica de 10 criterios.}
+
+\begin{titlebox}{milcVino}
+Fase 4 · Evaluación liberadora — cinco dimensiones
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con 3 voces sobre el oficio cumplido: la cosecha como rito.}
+
+\begin{titlebox}{milcGradeDark}
+Triángulo de pensamiento · cierre filosófico
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{````Lo que se completa con otros pesa más que lo que se completa solo. La obra colectiva nos hace más humanos.''''}
+
+Acabaste tu primer proyecto colaborativo digital. \textbf{No fue trivial}: requirió organización, comunicación, coautoría, reciprocidad. \emph{Esa es la misma forma en que se hacen los grandes proyectos del mundo}: Wikipedia, Linux, las series de Netflix, los reportajes de El Tiempo. Aprender a hacer un mini-proyecto colaborativo en 7° grado te conecta con esa tradición de obra colectiva. \emph{Te conviertes en aprendiz del oficio de hacer cosas juntos}. Esa habilidad será central toda tu vida adulta.
+
+\textbf{¿Cómo me sentí trabajando con otros en esta minga digital? ¿Más sólido o más débil que trabajando solo?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio (emperador que valoraba el trabajo cumplido) · cuidado interior}
+\textit{````Termina lo que empezaste. La obra cumplida da paz; la obra inconclusa pesa siempre.''''}
+
+Hoy cierras un periodo: \textbf{empezaste en S1 con la apertura, terminaste en S10 con la cosecha}. Las 9 sesiones intermedias fueron piezas; la cosecha integra. \emph{Cerrar bien lo que empezaste es disciplina del oficio adulto}. No es solo entregar el proyecto: es \emph{cerrarlo bien}, con bitácora, autoevaluación, sustentación. Ese ritual de cierre te entrena en cumplir hasta el final.
+
+\textbf{¿Estoy cerrando los proyectos completos o los dejo a medias por costumbre?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{````El primer proyecto colaborativo digital es un rito de paso. Después de él, ya no piensas igual la tecnología.''''}
+
+Antes de este proyecto, Microsoft 365 era un paquete de apps sueltas. \emph{Después de este proyecto}, lo ves como \textbf{una infraestructura integrada para producir trabajo en equipo}. Esa transformación de mirada es valiosa: \emph{ya no eres usuario aislado, eres miembro de un equipo digital}. Esa identidad te servirá en universidad, en trabajo, en proyectos sociales, durante décadas. Hoy fue tu rito de paso.
+
+\textbf{¿Cómo cambió mi forma de ver Microsoft 365 después de hacer mi primer proyecto colaborativo?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{titlebox}{milcVino}
+Compromiso final
+\end{titlebox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
+Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
+Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
+Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
+Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
+Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
+\end{tabularx}
+\normalsize
+
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la siguiente sesión.} La S11 cierra formalmente el periodo: autoevaluación con rúbrica visible, examen integrador, mirada al periodo 2. Hoy cerraste con tu equipo. La siguiente cierras formalmente como estudiante individual. Trae el cuaderno con la bitácora completa, las reflexiones del año hasta ahora, y la mirada lista hacia el P2 (Algoritmia y pensamiento computacional).
+\end{infoband}
+
+\end{document}

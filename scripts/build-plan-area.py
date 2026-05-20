@@ -495,6 +495,109 @@ def render_recursos(intro: str, recursos: list[dict], ambientes: list[str]) -> s
     return "\n".join(parts)
 
 
+def render_plataforma_conectate(pc: dict) -> str:
+    parts = [r"\section{Plataforma Conéctate}"]
+    parts.append(tex_block(pc["intro"]))
+
+    # 11.1 Arquitectura técnica
+    parts.append(r"\subsection{Arquitectura técnica}")
+    parts.append(tex_block(pc["arquitectura_intro"]))
+    parts.append(r"\renewcommand{\arraystretch}{1.3}")
+    parts.append(r"\rowcolors{2}{milcGris}{white}")
+    parts.append(r"\begin{tabularx}{\textwidth}{>{\bfseries}p{3.2cm}|Y}")
+    parts.append(r"\arrayrulecolor{milcLinea}")
+    parts.append(r"\rowcolor{milcTurquesa}{\color{white}\textbf{Aspecto}} & {\color{white}\textbf{Detalle}} \\")
+    for it in pc["arquitectura_items"]:
+        parts.append(rf"{tex(it['clave'])} & {tex(it['valor'])} \\")
+    parts.append(r"\end{tabularx}")
+
+    # 11.2 Offline (PWA)
+    parts.append(r"\subsection{Funcionamiento offline · Progressive Web App}")
+    parts.append(tex_block(pc["offline_intro"]))
+    parts.append(r"\subsubsection{Estrategias de caché del Service Worker}")
+    parts.append(r"\renewcommand{\arraystretch}{1.3}")
+    parts.append(r"\rowcolors{2}{milcGris}{white}")
+    parts.append(r"\begin{tabularx}{\textwidth}{>{\bfseries}p{3.5cm}|>{\ttfamily\footnotesize}p{3cm}|Y}")
+    parts.append(r"\arrayrulecolor{milcLinea}")
+    parts.append(r"\rowcolor{milcTurquesa}{\color{white}\textbf{Tipo}} & {\color{white}\textbf{Estrategia}} & {\color{white}\textbf{Detalle}} \\")
+    for e in pc["offline_estrategias"]:
+        parts.append(rf"{tex(e['tipo'])} & {tex(e['estrategia'])} & {tex(e['detalle'])} \\")
+    parts.append(r"\end{tabularx}")
+    parts.append(tex_block(pc["offline_versionado"]))
+
+    # 11.3 Pipeline editorial
+    parts.append(r"\subsection{Pipeline editorial MILC v3 · single source of truth}")
+    parts.append(tex_block(pc["pipeline_intro"]))
+    parts.append(r"\footnotesize")
+    parts.append(r"\renewcommand{\arraystretch}{1.3}")
+    parts.append(r"\rowcolors{2}{milcGris}{white}")
+    parts.append(r"\begin{tabularx}{\textwidth}{>{\bfseries}p{3.5cm}|Y|>{\ttfamily\scriptsize\centering\arraybackslash}p{3cm}}")
+    parts.append(r"\arrayrulecolor{milcLinea}")
+    parts.append(r"\rowcolor{milcVino}{\color{white}\textbf{Pieza}} & {\color{white}\textbf{Rutas YAML \textbar{} PDF \textbar{} TS}} & {\color{white}\textbf{Comando}} \\")
+    for p in pc["pipeline_piezas"]:
+        rutas = rf"\texttt{{\scriptsize {tex(p['yaml'])}}}\\\texttt{{\scriptsize {tex(p['pdf'])}}}\\\texttt{{\scriptsize {tex(p['ts'])}}}"
+        parts.append(rf"{tex(p['tipo'])} & {rutas} & {tex(p['comando'])} \\")
+    parts.append(r"\end{tabularx}")
+    parts.append(r"\normalsize")
+    parts.append(tex_block(pc["pipeline_validacion"]))
+
+    # 11.4 Diseño + accesibilidad
+    parts.append(r"\subsection{Diseño visual y accesibilidad}")
+    parts.append(tex_block(pc["diseno_intro"]))
+    parts.append(r"\subsubsection{Criterios de accesibilidad (WCAG 2.1 AA)}")
+    parts.append(tex_block(pc["accesibilidad_intro"]))
+    parts.append(r"\renewcommand{\arraystretch}{1.3}")
+    parts.append(r"\rowcolors{2}{milcGris}{white}")
+    parts.append(r"\begin{tabularx}{\textwidth}{>{\bfseries}p{3.5cm}|Y}")
+    parts.append(r"\arrayrulecolor{milcLinea}")
+    parts.append(r"\rowcolor{milcVerde}{\color{white}\textbf{Criterio}} & {\color{white}\textbf{Implementación}} \\")
+    for it in pc["accesibilidad_items"]:
+        parts.append(rf"{tex(it['clave'])} & {tex(it['valor'])} \\")
+    parts.append(r"\end{tabularx}")
+
+    # 11.5 Componentes interactivos
+    parts.append(r"\subsection{Componentes interactivos}")
+    parts.append(tex_block(pc["componentes_intro"]))
+    parts.append(r"\renewcommand{\arraystretch}{1.3}")
+    parts.append(r"\rowcolors{2}{milcGris}{white}")
+    parts.append(r"\begin{tabularx}{\textwidth}{>{\bfseries\ttfamily}p{3.5cm}|Y}")
+    parts.append(r"\arrayrulecolor{milcLinea}")
+    parts.append(r"\rowcolor{milcMagenta}{\color{white}\textbf{Componente}} & {\color{white}\textbf{Descripción}} \\")
+    for c in pc["componentes_lista"]:
+        parts.append(rf"{tex(c['nombre'])} & {tex(c['descripcion'])} \\")
+    parts.append(r"\end{tabularx}")
+
+    # 11.6 Métricas Lighthouse
+    parts.append(r"\subsection{Métricas de rendimiento (Lighthouse)}")
+    parts.append(tex_block(pc["metricas_intro"]))
+    parts.append(r"\renewcommand{\arraystretch}{1.35}")
+    parts.append(r"\rowcolors{2}{milcGris}{white}")
+    parts.append(r"\begin{tabularx}{\textwidth}{>{\bfseries}p{3.5cm}|>{\bfseries\centering\arraybackslash}p{2.5cm}|Y}")
+    parts.append(r"\arrayrulecolor{milcLinea}")
+    parts.append(r"\rowcolor{milcMostaza}{\color{white}\textbf{Métrica}} & {\color{white}\textbf{Valor}} & {\color{white}\textbf{Detalle}} \\")
+    for m in pc["metricas_lista"]:
+        parts.append(rf"{tex(m['metrica'])} & {tex(m['valor'])} & {tex(m['detalle'])} \\")
+    parts.append(r"\end{tabularx}")
+
+    # 11.7 Articulación con experiencia de aula
+    parts.append(r"\subsection{Articulación con la experiencia de aula}")
+    parts.append(tex_block(pc["articulacion_intro"]))
+    for momento in pc["articulacion_momentos"]:
+        parts.append(rf"""
+\begin{{softbox}}{{milcTurquesa}}{{milcGris}}{{{tex(momento['cuando'])}}}
+{tex(momento['detalle'])}
+\end{{softbox}}
+""")
+
+    # 11.8 Brecha digital + 11.9 Open source
+    parts.append(r"\subsection{Reducción de la brecha digital}")
+    parts.append(tex_block(pc["brecha_digital"]))
+    parts.append(r"\subsection{Código abierto y reproducibilidad}")
+    parts.append(tex_block(pc["open_source"]))
+
+    return "\n".join(parts)
+
+
 def render_intensidad(ih: dict) -> str:
     return rf"""
 \section{{Intensidad horaria por el área}}
@@ -609,6 +712,7 @@ def build_tex() -> str:
         data["metodologia_intro"], data["estrategias_activas"], data["politica_ia"], data["principios_ia"]
     ))
     parts.append(render_recursos(data["recursos_intro"], data["recursos"], data["ambientes"]))
+    parts.append(render_plataforma_conectate(data["plataforma_conectate"]))
     parts.append(render_intensidad(data["intensidad_horaria"]))
     parts.append(render_evaluacion(
         data["evaluacion_intro"], data["criterios_evaluacion"], data["ponderacion"],

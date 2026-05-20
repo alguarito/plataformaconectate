@@ -35,7 +35,20 @@ const lenteStyles: Record<LenteTriangulo, { chip: string; ring: string; label: s
 
 <BaseLayout
   title={`Proyecto Integrador · Grado ${grado.numero}° P${periodo.numero}: ${periodo.titulo} — ConectaTE`}
-  description={proyecto?.reto ?? `Aplica todo lo aprendido en el período ${periodo.numero}: ${periodo.titulo}.`}
+  description={(() => {
+    if (!proyecto) {
+      return `Proyecto integrador del Período ${periodo.numero}: ${periodo.titulo}. Grado ${grado.numero}° · I.E. Sor María Juliana.`;
+    }
+    const partes: string[] = [];
+    if (proyecto.titulo) partes.push(proyecto.titulo + '.');
+    if (proyecto.reto) partes.push(proyecto.reto.trim());
+    const entregables = (proyecto.entregables ?? []).slice(0, 2).map((e) => e.titulo).filter(Boolean);
+    if (entregables.length > 0) partes.push(`Entregables: ${entregables.join(' · ')}.`);
+    if (proyecto.duracionSemanas) partes.push(`${proyecto.duracionSemanas} semanas · modalidad ${proyecto.modalidad}.`);
+    let d = partes.join(' ').replace(/\s+/g, ' ').trim();
+    if (d.length > 160) d = d.slice(0, 157).trimEnd() + '…';
+    return d;
+  })()}
   ogType="article"
   imagen={`/og/grado-${grado.numero}-periodo-${periodo.numero}.png`}
 >

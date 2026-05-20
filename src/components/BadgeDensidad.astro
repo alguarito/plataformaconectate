@@ -1,9 +1,10 @@
 ---
 /**
- * Badge de densidad pedagógica de una guía.
+ * Badge de densidad pedagógica de una guía (modelo v2 · absoluto).
  *
- * Muestra un indicador visual del "peso de contenido" de la guía
- * (palabras estimadas, nivel relativo dentro del corpus, estrellas).
+ * Dos señales independientes:
+ *  - ⭐ Estrellas: completitud del contrato MILC v3 (5 = pro · 4 = bloques · 3 = legacy · 2 = solo PDF).
+ *  - 🎨 Color: densidad informativa (palabras reales del YAML) — verde / mostaza / ocre.
  *
  * Variantes:
  *  - compact: para cards de listado (estrellas + KB)
@@ -12,7 +13,7 @@
  * Si no hay datos de densidad, no renderiza nada.
  */
 import { getDensidadPeriodo, NIVEL_LABEL, NIVEL_COLOR } from '../data/densidad';
-import { getMilcLevel } from '../data/guiasContenido/_index';
+import { getMilcLevel, type NivelMilc } from '../data/guiasContenido/_index';
 
 interface Props {
   grado: number;
@@ -26,19 +27,17 @@ interface Props {
 const { grado, periodo, sesion, variant = 'compact', class: className = '' } = Astro.props;
 const dRaw = getDensidadPeriodo(grado, periodo, sesion);
 
-// Bonus de estrellas según nivel MILC v3:
-//  - 'pro':     siempre 5 estrellas (contrato completo).
-//  - 'bloques': +1 estrella sobre el cálculo por bytes del PDF (tope 5).
-//  - 'legacy' / 'none': sin bonus.
+// Estrellas absolutas según completitud del contrato MILC v3.
+const STARS_BY_MILC: Record<NivelMilc, number> = {
+  pro: 5,
+  bloques: 4,
+  legacy: 3,
+  none: 2,
+};
 const milcLevel = getMilcLevel(grado, periodo, sesion);
-const d = dRaw
-  ? (() => {
-      let stars = dRaw.stars;
-      if (milcLevel === 'pro') stars = 5;
-      else if (milcLevel === 'bloques') stars = Math.min(5, stars + 1);
-      return { ...dRaw, stars };
-    })()
-  : undefined;
+const stars = STARS_BY_MILC[milcLevel];
+
+const d = dRaw ? { ...dRaw, stars } : undefined;
 ---
 
 {
@@ -77,8 +76,8 @@ const d = dRaw
       <span style="opacity: 0.7;">·</span>
       <span style="opacity: 0.85;">{d.kb} KB</span>
       <span style="opacity: 0.7;">·</span>
-      <span style="opacity: 0.6;" title={`Percentil ${d.percentile} dentro del corpus`}>
-        P{d.percentile}
+      <span style="opacity: 0.6;" title={`Contrato MILC v3: ${milcLevel}`}>
+        MILC {milcLevel}
       </span>
     </div>
   )

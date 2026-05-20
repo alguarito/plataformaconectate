@@ -141,11 +141,37 @@ const milcBadge: { texto: string; estilo: string; title: string } | null =
 // desde la card del periodo; pero permitimos prev/next lineal hasta totalGuias.
 const prevSesion = sesion > 1 ? sesion - 1 : null;
 const nextSesion = sesion < periodo.totalGuias ? sesion + 1 : null;
+
+// Descripción SEO enriquecida con datos del contenido MILC v3 cuando existe.
+// Combina: tema, resumen, primeros conceptos clave y anclaje ancestral.
+// Cae a fallback genérico solo cuando no hay contenido enriquecido.
+function buildMetaDescription(): string {
+  const ctx = `Grado ${grado.numero}° · Período ${periodo.numero} · ${periodo.titulo}.`;
+  if (!enriquecida) {
+    return `${ctx} Sesión ${sesion}: ${tituloGuia}. Guía MILC v3 con visor PDF, actividades y reflexión filosófica del triángulo Dussel-Estoico-Floridi.`;
+  }
+  const partes: string[] = [`Sesión ${sesion}: ${tituloGuia}.`];
+  if (enriquecida.resumen) partes.push(enriquecida.resumen.replace(/\s+/g, ' ').trim());
+  const conceptos = (enriquecida.conceptosClave ?? [])
+    .slice(0, 3)
+    .map((c) => c.termino)
+    .filter(Boolean);
+  if (conceptos.length > 0) partes.push(`Aprende: ${conceptos.join(', ')}.`);
+  if (enriquecida.saberAncestral?.saber) {
+    partes.push(`Anclaje ancestral: ${enriquecida.saberAncestral.saber.replace(/\s+/g, ' ').trim()}.`);
+  }
+  partes.push(ctx);
+  // Recortar a ~160 chars (límite recomendado por Google para meta description)
+  let descripcion = partes.join(' ').replace(/\s+/g, ' ').trim();
+  if (descripcion.length > 160) descripcion = descripcion.slice(0, 157).trimEnd() + '…';
+  return descripcion;
+}
+const descripcionSEO = buildMetaDescription();
 ---
 
 <BaseLayout
   title={`Sesión ${sesion} · ${tituloGuia} — ConectaTE`}
-  description={`Grado ${grado.numero}° · Período ${periodo.numero} · ${periodo.titulo}. Guía con visor PDF embebido y descarga directa.`}
+  description={descripcionSEO}
   ogType="article"
   imagen={`/og/grado-${grado.numero}-periodo-${periodo.numero}.png`}
 >

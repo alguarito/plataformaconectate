@@ -43,7 +43,22 @@ const examenWeb = getContenidoExamen(grado.numero, periodo.numero);
 
 <BaseLayout
   title={`Examen Final · Grado ${grado.numero}° P${periodo.numero}: ${periodo.titulo} — ConectaTE`}
-  description={`Examen aplicado del Período ${periodo.numero}: ${periodo.titulo}. Síntesis, aplicación y argumentación de aprendizajes en grado ${grado.numero}°.`}
+  description={(() => {
+    const ctx = `Examen final · Grado ${grado.numero}° · Período ${periodo.numero}: ${periodo.titulo}.`;
+    if (!examenWeb) {
+      return `${ctx} Síntesis, aplicación y argumentación de aprendizajes con banco de práctica MILC v3.`;
+    }
+    const partes: string[] = [ctx];
+    partes.push(`${examenWeb.duracionMin} min · ${examenWeb.ponderacion}% del periodo.`);
+    const numPracticas = examenWeb.bancoPractica?.preguntas?.length ?? 0;
+    if (numPracticas > 0) {
+      partes.push(`Banco de práctica online: ${numPracticas} preguntas con retroalimentación inmediata.`);
+    }
+    partes.push('Modelo MILC v3 · I.E. Sor María Juliana.');
+    let d = partes.join(' ').replace(/\s+/g, ' ').trim();
+    if (d.length > 160) d = d.slice(0, 157).trimEnd() + '…';
+    return d;
+  })()}
   ogType="article"
   imagen={`/og/grado-${grado.numero}-periodo-${periodo.numero}.png`}
 >

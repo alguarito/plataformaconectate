@@ -359,7 +359,7 @@ export const membresias: Membresia[] = [
  * Estadísticas resumen para la sección "números destacados".
  */
 export const stats = {
-  anosDocencia: 12,
+  anosDocencia: 13,
   titulosAcademicos: 5,
   formacionComplementaria: 37, // 28 cursos + 9 diplomados
   reconocimientos: 12, // 12 reconocimientos distintos (NASA: 6 años · Samsung: 4 años · Inst/Mun: 11 años · etc.)
@@ -367,3 +367,60 @@ export const stats = {
   semillerosLiderados: 2,
   anosNasaIASC: 6, // 2021-2026
 };
+
+/**
+ * Plataforma educativa propia · ConectaTE · 2026.
+ * Stats de las publicaciones y el corpus curricular generado.
+ */
+export const plataformaConectate = {
+  nombre: 'Plataforma Conéctate',
+  url: 'https://alguarito.github.io/plataformaconectate',
+  ano: 2026,
+  totalPiezas: 216,
+  guias: 180, // 30 sesiones × 6 grados
+  proyectos: 18, // 3 períodos × 6 grados
+  examenes: 18, // 3 períodos × 6 grados
+  totalPaginas: 251, // páginas Astro generadas en el build
+  modelo: 'MILC v3', // Modelo de Investigación Liberadora y Científica
+  destacados: [
+    'Pipeline editorial reproducible (YAML → PDF + Web)',
+    'Offline-first vía Service Worker (PWA)',
+    'Triángulo de pensamiento Dussel · Estoico · Floridi',
+    '18 anclajes ancestrales del Valle del Cauca y el Pacífico',
+    'Política de IA progresiva por grados (sin IA → declaración → obligatoria)',
+  ],
+};
+
+export interface Publicacion {
+  titulo: string;
+  subtitulo?: string;
+  ano: number;
+  paginas: number;
+  rol: string; // "Autor", "Director editorial", etc.
+  href?: string; // ruta interna al PDF
+  emoji?: string;
+}
+
+/**
+ * Publicaciones recientes del autor.
+ */
+export const publicaciones: Publicacion[] = [
+  {
+    titulo: 'Educación en la Era Onlife',
+    subtitulo: 'Modelo MILC',
+    ano: 2026,
+    paginas: 64,
+    rol: 'Autor',
+    href: '/libro-milc/libro-milc-2026.pdf',
+    emoji: '📖',
+  },
+  {
+    titulo: 'Plan de Área 2026 · Tecnología e Informática',
+    subtitulo: 'Documento rector institucional',
+    ano: 2026,
+    paginas: 39,
+    rol: 'Director editorial',
+    href: '/plan-de-area/plan-de-area-2026.pdf',
+    emoji: '📚',
+  },
+];

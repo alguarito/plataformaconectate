@@ -69,6 +69,22 @@ def tex_block(text: str) -> str:
     return str(text).strip()
 
 
+def cell_quebrable(text: str) -> str:
+    """Texto de celda con quiebres seguros en separadores comunes.
+
+    Inserta puntos de quiebre cero-ancho (\\linebreak[0]) después de
+    '/', '-' y ',' para que palabras compuestas como 'relojero/costurera/
+    panadero' o rutas como 'a/b/c' puedan quebrarse en celdas estrechas.
+    """
+    if text is None:
+        return ""
+    out = tex(str(text))
+    # Permite quiebre opcional después de separadores típicos.
+    for sep in ("/", ")", "]", ",", ";"):
+        out = out.replace(sep, sep + r"\linebreak[1]")
+    return out
+
+
 # ───────── Preamble + macros visuales ─────────────────────────────────────
 
 
@@ -422,12 +438,12 @@ def render_malla_grado_periodo(grado: dict, periodo: dict, fechas: dict) -> str:
     parts.append(r"\endhead")
     for c in periodo["competencias"]:
         row = " & ".join([
-            tex(c.get("componente", "")),
-            tex(c.get("competencia", "")),
-            tex(c.get("aprendizaje", "")),
-            tex(c.get("cognitivo", "")),
-            tex(c.get("procedimental", "")),
-            tex(c.get("actitudinal", "")),
+            cell_quebrable(c.get("componente", "")),
+            cell_quebrable(c.get("competencia", "")),
+            cell_quebrable(c.get("aprendizaje", "")),
+            cell_quebrable(c.get("cognitivo", "")),
+            cell_quebrable(c.get("procedimental", "")),
+            cell_quebrable(c.get("actitudinal", "")),
         ]) + r" \\ \hline"
         parts.append(row)
     parts.append(r"\end{longtable}")
@@ -526,6 +542,7 @@ def render_plataforma_conectate(pc: dict) -> str:
         valor = valor.replace("github.com/alguarito/plataformaconectate", r"\seqsplit{github.com/alguarito/plataformaconectate}")
         parts.append(rf"{tex(it['clave'])} & {valor} \\")
     parts.append(r"\end{tabularx}")
+    parts.append(r"\par\vspace{6pt}")
 
     # 11.2 Offline (PWA)
     parts.append(r"\subsection{Funcionamiento offline · Progressive Web App}")
@@ -540,6 +557,7 @@ def render_plataforma_conectate(pc: dict) -> str:
     for e in pc["offline_estrategias"]:
         parts.append(rf"{tex(e['tipo'])} & {tex(e['estrategia'])} & {tex(e['detalle'])} \\")
     parts.append(r"\end{tabularx}")
+    parts.append(r"\par\vspace{6pt}")
     parts.append(tex_block(pc["offline_versionado"]))
 
     # 11.3 Pipeline editorial
@@ -549,17 +567,19 @@ def render_plataforma_conectate(pc: dict) -> str:
     parts.append(r"\renewcommand{\arraystretch}{1.3}")
     parts.append(r"\rowcolors{2}{milcGris}{white}")
     parts.append(r"\par\noindent")
-    parts.append(r"\begin{tabularx}{\linewidth}{>{\bfseries}p{3.2cm}|Y|>{\ttfamily\scriptsize\centering\arraybackslash}p{2.7cm}}")
+    parts.append(r"\begin{tabularx}{\linewidth}{>{\bfseries}p{3cm}|Y|>{\ttfamily\scriptsize\centering\arraybackslash}p{2.7cm}}")
     parts.append(r"\arrayrulecolor{milcLinea}")
     parts.append(r"\rowcolor{milcVino}{\color{white}\textbf{Pieza}} & {\color{white}\textbf{Rutas YAML \textbar{} PDF \textbar{} TS}} & {\color{white}\textbf{Comando}} \\")
     for p in pc["pipeline_piezas"]:
+        # Usamos \newline (no \\) para no romper la fila de tabularx.
         rutas = (
-            rf"\texttt{{\scriptsize\seqsplit{{{tex(p['yaml'])}}}}}\\"
-            rf"\texttt{{\scriptsize\seqsplit{{{tex(p['pdf'])}}}}}\\"
-            rf"\texttt{{\scriptsize\seqsplit{{{tex(p['ts'])}}}}}"
+            rf"\texttt{{\scriptsize\seqsplit{{{tex(p['yaml'])}}}}}"
+            rf"\newline\texttt{{\scriptsize\seqsplit{{{tex(p['pdf'])}}}}}"
+            rf"\newline\texttt{{\scriptsize\seqsplit{{{tex(p['ts'])}}}}}"
         )
         parts.append(rf"{tex(p['tipo'])} & {rutas} & {tex(p['comando'])} \\")
     parts.append(r"\end{tabularx}")
+    parts.append(r"\par\vspace{6pt}")
     parts.append(r"\normalsize")
     parts.append(tex_block(pc["pipeline_validacion"]))
 
@@ -577,6 +597,7 @@ def render_plataforma_conectate(pc: dict) -> str:
     for it in pc["accesibilidad_items"]:
         parts.append(rf"{tex(it['clave'])} & {tex(it['valor'])} \\")
     parts.append(r"\end{tabularx}")
+    parts.append(r"\par\vspace{6pt}")
 
     # 11.5 Componentes interactivos
     parts.append(r"\subsection{Componentes interactivos}")
@@ -590,6 +611,7 @@ def render_plataforma_conectate(pc: dict) -> str:
     for c in pc["componentes_lista"]:
         parts.append(rf"{tex(c['nombre'])} & {tex(c['descripcion'])} \\")
     parts.append(r"\end{tabularx}")
+    parts.append(r"\par\vspace{6pt}")
 
     # 11.6 Métricas Lighthouse
     parts.append(r"\subsection{Métricas de rendimiento (Lighthouse)}")
@@ -603,6 +625,7 @@ def render_plataforma_conectate(pc: dict) -> str:
     for m in pc["metricas_lista"]:
         parts.append(rf"{tex(m['metrica'])} & {tex(m['valor'])} & {tex(m['detalle'])} \\")
     parts.append(r"\end{tabularx}")
+    parts.append(r"\par\vspace{6pt}")
 
     # 11.7 Articulación con experiencia de aula
     parts.append(r"\subsection{Articulación con la experiencia de aula}")

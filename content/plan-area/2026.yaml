@@ -893,7 +893,238 @@ ambientes:
   - "Cuentas institucionales Microsoft 365 (Outlook, OneDrive, Teams, Word/Excel/PowerPoint online)."
   - "Acceso supervisado a IA generativa (Claude, ChatGPT, Gemini) desde G7° en adelante."
 
-# ─── Sección 11 · INTENSIDAD HORARIA ─────────────────────────────────────────
+# ─── Sección 11 · PLATAFORMA CONÉCTATE ──────────────────────────────────────
+# Diferenciador institucional del área: plataforma propia que articula
+# arquitectura técnica, accesibilidad, pipeline editorial y experiencia de
+# aula desde un único repositorio versionado.
+plataforma_conectate:
+  intro: |
+    La \textbf{Plataforma Conéctate} (alguarito.github.io/plataformaconectate)
+    es el ecosistema digital propio del área de Tecnología e Informática.
+    Desarrollada y mantenida por el docente titular, opera como repositorio
+    único y reproducible de las 216 piezas curriculares activas, articulando
+    arquitectura técnica de software profesional con experiencia de aula
+    accesible y offline-first.
+
+  arquitectura_intro: |
+    La plataforma se construyó como aplicación estática (\emph{static
+    site generator}) con disciplina de ingeniería de software contemporánea.
+    No requiere base de datos, autenticación ni mantenimiento de servidores.
+    El hospedaje en GitHub Pages garantiza disponibilidad sin costo
+    institucional ni dependencia de proveedores comerciales.
+
+  arquitectura_items:
+    - clave: "Framework"
+      valor: "Astro 4.x (static site generator con islas de interactividad TypeScript). Mínimo JavaScript en el cliente."
+    - clave: "Estilos"
+      valor: "Tailwind CSS con sistema de diseño propio \\emph{Bento Moderna} (paleta de 7 colores acentuados sobre neutros, radios 16/24/32px, sombras suaves)."
+    - clave: "Tipografía"
+      valor: "Inter como única familia (web-safe, alta legibilidad en pantalla, soporta acentos del español sin fallback)."
+    - clave: "Lenguaje"
+      valor: "TypeScript en todo el código (tipado estricto, evita errores en tiempo de ejecución)."
+    - clave: "Build"
+      valor: "249 páginas estáticas pre-renderizadas en cada compilación. Sin SSR ni hidratación parcial salvo en componentes interactivos puntuales."
+    - clave: "Hospedaje"
+      valor: "GitHub Pages (CDN global gratis, sin límite de ancho de banda, HTTPS por defecto)."
+    - clave: "CI/CD"
+      valor: "GitHub Actions: cada push a main dispara build automático + deploy. Tiempo total desde commit a producción: ~3 minutos."
+    - clave: "Repositorio"
+      valor: "github.com/alguarito/plataformaconectate (público, versionado completo con git)."
+    - clave: "URL pública"
+      valor: "alguarito.github.io/plataformaconectate"
+
+  offline_intro: |
+    La plataforma funciona \textbf{offline} tras la primera visita gracias a
+    un Service Worker propio (\emph{progressive web app}). Esto es decisivo
+    en el contexto institucional: sala de sistemas con conectividad
+    intermitente, hogares con datos limitados, jornadas extracurriculares
+    sin Wi-Fi. Una vez cargada por primera vez en cualquier dispositivo, la
+    plataforma se vuelve disponible sin conexión, incluyendo todas las
+    guías, exámenes, proyectos y PDFs locales.
+
+  offline_estrategias:
+    - tipo: "Páginas HTML"
+      estrategia: "stale-while-revalidate"
+      detalle: "Respuesta instantánea desde caché; en segundo plano se descarga la versión más reciente para la próxima visita."
+    - tipo: "Assets con hash (Astro)"
+      estrategia: "cache-first"
+      detalle: "La URL contiene el hash del contenido; nunca cambia; se cachea de manera permanente sin riesgo de desactualización."
+    - tipo: "PDFs locales"
+      estrategia: "cache-first"
+      detalle: "Guías, exámenes y proyectos imprimibles se cachean tras primera descarga; quedan disponibles offline indefinidamente."
+    - tipo: "Imágenes y diagramas"
+      estrategia: "cache-first"
+      detalle: "Recursos visuales del corpus quedan disponibles sin conexión tras primera carga."
+    - tipo: "Fuente Inter (CDN)"
+      estrategia: "cache-first"
+      detalle: "Cacheada una sola vez por dispositivo; ahorra ancho de banda en visitas posteriores."
+
+  offline_versionado: |
+    El Service Worker tiene versionado explícito (variable \texttt{VERSION}
+    en \texttt{public/sw.js}). Cada cambio sustantivo en el contenido bumpea
+    la versión, lo que dispara invalidación controlada del caché. La versión
+    actual es \texttt{v27}. Este mecanismo evita el clásico problema de
+    estudiantes viendo contenido desactualizado por caché agresivo.
+
+  pipeline_intro: |
+    El corazón pedagógico-técnico de la plataforma es el \textbf{pipeline
+    editorial MILC v3}: cada pieza curricular vive como archivo YAML
+    versionado y un script de Python compila desde esa única fuente tanto el
+    PDF imprimible (vía xelatex) como el TypeScript que renderiza la web.
+    Esta arquitectura \emph{single source of truth} garantiza coherencia: lo
+    que el estudiante lee online es exactamente lo que descarga en PDF.
+
+  pipeline_piezas:
+    - tipo: "Guías de aprendizaje (180)"
+      yaml: "content/guias/{grado}/{clave}.yaml"
+      pdf: "public/guias-mejoras/{sesion}-{grado}-TIC.pdf"
+      ts: "src/data/guiasContenido/{grado}-{periodo}-{sesion}.ts"
+      comando: "make guia-build"
+    - tipo: "Exámenes finales (18)"
+      yaml: "content/examenes/{grado}-{periodo}.yaml"
+      pdf: "public/examenes-mejoras/examen-{periodo}-{grado}-TIC.pdf"
+      ts: "src/data/examenesContenido/{grado}-{periodo}.ts"
+      comando: "make examen-build && make examen-web"
+    - tipo: "Proyectos integradores (18)"
+      yaml: "content/proyectos/{grado}-{periodo}.yaml"
+      pdf: "public/proyectos/proyecto-{periodo}-{grado}-TIC.pdf"
+      ts: "src/data/proyectosContenido/{grado}-{periodo}.ts"
+      comando: "make proyecto-build"
+    - tipo: "Plan de área (este documento)"
+      yaml: "content/plan-area/2026.yaml"
+      pdf: "public/plan-de-area/plan-de-area-2026.pdf"
+      ts: "src/data/planArea.ts (legacy compat)"
+      comando: "make plan-area-build"
+
+  pipeline_validacion: |
+    Cada pieza tiene un \textbf{linter} (\texttt{make guia-lint},
+    \texttt{make examen-lint}) que valida el contrato editorial MILC v3:
+    presencia de saber ancestral, triángulo filosófico, evaluación
+    liberadora, distribución de Bloom, número mínimo de actividades,
+    referentes bibliográficos. Las piezas que no cumplen se rechazan antes
+    de compilar. Esta automatización elimina errores humanos de edición y
+    sostiene la coherencia editorial del corpus.
+
+  diseno_intro: |
+    La plataforma adopta un sistema visual propio llamado \textbf{Bento
+    Moderna}, inspirado en la organización modular de las bandejas \emph{bento}
+    japonesas: cada pieza de información vive en su propia card con jerarquía
+    visual clara, paleta acotada y respiración generosa. Optimizado
+    \textbf{mobile-first} para el dispositivo más común del estudiantado
+    (Android gama media, pantallas 360-414px), escala armónicamente a
+    escritorio.
+
+  accesibilidad_intro: |
+    La plataforma cumple los criterios \textbf{WCAG 2.1 AA} en sus aspectos
+    fundamentales, asegurando que el estudiantado con diversidad funcional o
+    en condiciones desfavorables (luz directa, dispositivos antiguos, lectores
+    de pantalla) acceda al contenido sin barreras.
+
+  accesibilidad_items:
+    - clave: "Contraste"
+      valor: "≥ 4.5:1 en texto sobre fondo (verificado con herramientas WCAG). Los colores acento (lime, yellow) se reservan para elementos decorativos, nunca para texto."
+    - clave: "Targets táctiles"
+      valor: "≥ 44×44 px en todo elemento interactivo (botones, enlaces, controles)."
+    - clave: "Teclado"
+      valor: "Navegación completa con tabulador y focus visible (\\emph{focus-visible}) en todo elemento interactivo."
+    - clave: "Movimiento"
+      valor: "Respeta \\texttt{prefers-reduced-motion}: animaciones se desactivan automáticamente para usuarios sensibles a movimiento."
+    - clave: "Modo oscuro"
+      valor: "Activable manualmente; respeta preferencia del sistema. Cada paleta tiene variante dark verificada con mismo contraste."
+    - clave: "Imágenes"
+      valor: "Texto alternativo (\\texttt{alt}) en toda imagen significativa; imágenes decorativas marcadas como tales."
+    - clave: "Estructura semántica"
+      valor: "Encabezados jerárquicos (h1→h2→h3), regiones ARIA, listas correctamente etiquetadas."
+    - clave: "Idioma"
+      valor: "Atributo \\texttt{lang=\"es\"} en todas las páginas; soporte completo de acentos sin fallback de fuente."
+
+  componentes_intro: |
+    La plataforma incorpora componentes interactivos propios para enriquecer
+    la experiencia pedagógica sin sacrificar rendimiento ni accesibilidad.
+    Todos son componentes Astro con islas de interactividad TypeScript
+    (hidratación selectiva).
+
+  componentes_lista:
+    - nombre: "LabQuiz"
+      descripcion: "Quiz inline con feedback inmediato. Renderiza el banco de práctica de los exámenes finales (20-30 preguntas OM por grado-periodo). Cada respuesta da retroalimentación específica."
+    - nombre: "LabVisualizacion"
+      descripcion: "Visualizaciones interactivas (gráficos, simulaciones, diagramas) para guías que requieren explorar conceptos dinámicamente."
+    - nombre: "TestRunner"
+      descripcion: "Pruebas autoevaluativas con score y barra de progreso. Útil para autoevaluación intermedia del periodo."
+    - nombre: "BadgeDensidad"
+      descripcion: "Indicador visual de cada guía: estrellas absolutas por completitud del contrato MILC v3 + color por densidad real medida en palabras del YAML."
+    - nombre: "CompletarBoton"
+      descripcion: "Marca la guía/proyecto/examen como completado. El sistema recuerda con \\texttt{localStorage} (sin servidor ni datos personales)."
+    - nombre: "CompartirWhatsApp"
+      descripcion: "Genera link específico a la pieza para compartir por WhatsApp (canal principal de comunicación con familias)."
+    - nombre: "BuscadorOverlay"
+      descripcion: "Búsqueda full-text del corpus en el cliente (sin backend). Indexa títulos y temas de las 216 piezas."
+
+  metricas_intro: |
+    La plataforma se audita periódicamente con \textbf{Google Lighthouse}
+    (estándar de la industria). Las métricas actuales en build de producción:
+
+  metricas_lista:
+    - metrica: "Performance"
+      valor: "≥ 95 / 100"
+      detalle: "First Contentful Paint < 1.5s en 3G simulado; bundle JS mínimo (<50 KB en home)."
+    - metrica: "Accessibility"
+      valor: "≥ 90 / 100"
+      detalle: "Cumplimiento de criterios WCAG AA verificables automáticamente."
+    - metrica: "Best Practices"
+      valor: "≥ 95 / 100"
+      detalle: "HTTPS, sin librerías obsoletas, sin errores de consola."
+    - metrica: "SEO"
+      valor: "≥ 95 / 100"
+      detalle: "Meta tags Open Graph, sitemap, robots.txt, estructura semántica."
+
+  articulacion_intro: |
+    La plataforma se diseñó pensando en escenarios de aula reales: sala con
+    proyector, sala con computadores por estudiante, salón sin tecnología,
+    estudiantes en casa, familias que quieren acompañar. Cada escenario está
+    contemplado.
+
+  articulacion_momentos:
+    - cuando: "Antes de clase · Preparación docente"
+      detalle: "El docente revisa la guía web en su navegador o tableta. Si va a clase sin proyector, imprime el PDF (mismo contenido). El plan de aula del docente queda en la pestaña abierta como guion."
+    - cuando: "Antes de clase · Preparación estudiante"
+      detalle: "Si el estudiante tiene acceso en casa, pre-lee la guía (offline-first: una vez cargada queda disponible sin datos). El badge de densidad le anticipa si la sesión es ligera o densa."
+    - cuando: "Durante la clase · Sala de sistemas"
+      detalle: "Cada estudiante en su computador accede a su ritmo. La plataforma funciona aunque la red institucional sea inestable (Service Worker cachea todo). Sin licencias, sin instalación, sin cuentas individuales."
+    - cuando: "Durante la clase · Salón con proyector"
+      detalle: "El docente proyecta la guía web a todo el grupo. La jerarquía visual (paleta Bento, tipografía Inter, colores acento) garantiza legibilidad desde la última fila."
+    - cuando: "Durante la clase · Salón sin tecnología"
+      detalle: "El docente lleva impresos los PDFs imprimibles. Los estudiantes trabajan en cuaderno físico. La plataforma se consulta después en casa para profundizar."
+    - cuando: "Cuaderno físico del estudiante"
+      detalle: "Cada guía instruye un encabezado fijo (\\emph{Guía: G° · P · S · Tema · Fecha}). Solo lo que aparece en bloques ✏️ ACTIVIDAD, 🌱 SABER ANCESTRAL y 💭 REFLEXIÓN va al cuaderno. La plataforma es para leer; el cuaderno es para producir."
+    - cuando: "Después de clase · Refuerzo"
+      detalle: "El estudiante practica con el banco de 20-30 preguntas OM del LabQuiz (disponible 24/7 offline). Repasa la guía las veces que necesite. El progreso queda guardado en localStorage."
+    - cuando: "Familias y acudientes"
+      detalle: "Mismo enlace que para el estudiante (sin login ni cuenta). Acceden desde cualquier dispositivo. Pueden acompañar al estudiante en las actividades del cuaderno y verificar el compromiso firmado de cada guía."
+    - cuando: "Directivos y coordinación"
+      detalle: "Este Plan de Área (PDF rector) se autogenera desde el contenido. Trazabilidad completa: cada pieza tiene historial de cambios en git. Indicadores institucionales reproducibles (216 piezas activas, distribución por nivel MILC, etc.)."
+
+  brecha_digital: |
+    El diseño de la plataforma asume las condiciones reales del estudiantado
+    de la I.E. Sor María Juliana: dispositivos modestos, conectividad
+    intermitente, sin licencias institucionales adicionales. La plataforma
+    \textbf{no aumenta la brecha} sino que la reduce: cualquier estudiante
+    con acceso a internet una vez puede después usar la plataforma sin
+    datos; cualquier estudiante sin dispositivo personal puede trabajar con
+    los PDFs impresos por el docente; cualquier familia puede acompañar sin
+    crear cuenta ni instalar nada.
+
+  open_source: |
+    El código de la plataforma es \textbf{abierto y reproducible}: el
+    repositorio \texttt{github.com/alguarito/plataformaconectate} está
+    público, las dependencias son estándares de la industria (Astro,
+    Tailwind, TypeScript --- ninguno con bloqueo comercial), y las 216
+    piezas curriculares son contenido educativo institucional. Esto permite
+    que la Secretaría de Educación, otras instituciones públicas o
+    investigadores académicos puedan auditar, replicar o adaptar la
+    plataforma sin restricciones.
+
+# ─── Sección 12 · INTENSIDAD HORARIA ─────────────────────────────────────────
 intensidad_horaria:
   semanas_por_periodo: 13
   sesiones_por_periodo: 10
@@ -908,7 +1139,7 @@ intensidad_horaria:
     10 sesiones pedagógicas planificadas en el formato MILC y 3 sesiones
     de holgura para cosecha, sustentación y recuperación.
 
-# ─── Sección 12 · EVALUACIÓN ─────────────────────────────────────────────────
+# ─── Sección 13 · EVALUACIÓN ─────────────────────────────────────────────────
 evaluacion_intro: |
   La evaluación es formativa, criterial, integral y liberadora, en coherencia
   con el SIEE institucional. Se valoran cuatro dimensiones del desempeño y
@@ -957,7 +1188,7 @@ valoracion_web:
     - { nivel: "Media", umbral: "1800 – 2499",        color: "mostaza",    detalle: "Guía estándar que cumple el contrato sin excesos." }
     - { nivel: "Baja",  umbral: "< 1800",             color: "ocre",       detalle: "Guía mínima que cumple lo justo (candidata a expansión)." }
 
-# ─── Sección 13 · PLAN HME ───────────────────────────────────────────────────
+# ─── Sección 14 · PLAN HME ───────────────────────────────────────────────────
 plan_hme: |
   El Plan de Acción hacia la Meta de la Excelencia (HME) del área prioriza:
 
@@ -969,7 +1200,7 @@ plan_hme: |
     \item Documentar los proyectos sobresalientes en una feria anual de tecnología responsable.
   \end{enumerate}
 
-# ─── Sección 14 · COMISIÓN DE EVALUACIÓN Y PROMOCIÓN ─────────────────────────
+# ─── Sección 15 · COMISIÓN DE EVALUACIÓN Y PROMOCIÓN ─────────────────────────
 comision_evaluacion: |
   La comisión de evaluación y promoción del área se reúne al cierre de cada
   periodo para revisar:
@@ -981,7 +1212,7 @@ comision_evaluacion: |
     \item Ajustes al plan de aula del siguiente periodo según hallazgos.
   \end{itemize}
 
-# ─── Sección 15 · ACTIVIDADES DE APOYO ───────────────────────────────────────
+# ─── Sección 16 · ACTIVIDADES DE APOYO ───────────────────────────────────────
 actividades_apoyo: |
   Para estudiantes con dificultades en su proceso:
 
@@ -993,7 +1224,7 @@ actividades_apoyo: |
     \item Acompañamiento docente personalizado vía Outlook/Teams.
   \end{itemize}
 
-# ─── Sección 16 · MODELO PARA NEE ────────────────────────────────────────────
+# ─── Sección 17 · MODELO PARA NEE ────────────────────────────────────────────
 nee: |
   El área aplica los principios del Diseño Universal del Aprendizaje (DUA):
 
@@ -1005,7 +1236,7 @@ nee: |
     \item Articulación con el PIAR (Plan Individual de Ajustes Razonables) cuando aplica.
   \end{itemize}
 
-# ─── Sección 17 · ARTICULACIÓN CON PROYECTOS TRANSVERSALES ───────────────────
+# ─── Sección 18 · ARTICULACIÓN CON PROYECTOS TRANSVERSALES ───────────────────
 articulacion_transversal: |
   El área de Tecnología e Informática articula con los proyectos
   transversales institucionales:
@@ -1018,7 +1249,7 @@ articulacion_transversal: |
     \item \textbf{Proyecto de Emprendimiento}: G10°·P3 y G11°·P3 desarrollan microemprendimientos escolares con plan completo y sustentación pública.
   \end{itemize}
 
-# ─── Sección 18 · REFERENCIAS BIBLIOGRÁFICAS ─────────────────────────────────
+# ─── Sección 19 · REFERENCIAS BIBLIOGRÁFICAS ─────────────────────────────────
 referencias_bibliograficas:
   - "Cárdenas Orozco, Á. (2026). \\emph{Plataforma Conéctate · 216 piezas curriculares MILC v3}. I.E. Sor María Juliana, Cartago, Valle del Cauca. https://alguarito.github.io/plataformaconectate"
   - "CASEL (2020). \\emph{CASEL Framework for Social and Emotional Learning}. Collaborative for Academic, Social, and Emotional Learning."

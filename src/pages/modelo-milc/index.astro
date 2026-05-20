@@ -23,6 +23,50 @@ const planAreaHref = `${base}/plan-de-area/${planArea.pdf}`;
 const libroMilcHref = `${base}/libro-milc/libro-milc-2026.pdf`;
 const libroMilcPaginas = 64;
 
+// ─── Schema.org · Book + Article ─────────────────────────────────────────
+const origen = (Astro.site ?? new URL('https://alguarito.github.io')).toString().replace(/\/$/, '');
+const inicio = `${origen}${base.replace(/\/$/, '')}`;
+const jsonLdExtra = [
+  {
+    '@type': 'Book',
+    '@id': `${inicio}/modelo-milc#libro`,
+    name: 'Educación en la Era Onlife — Modelo MILC',
+    bookFormat: 'EBook',
+    inLanguage: 'es-CO',
+    numberOfPages: libroMilcPaginas,
+    datePublished: '2026',
+    url: `${inicio}/modelo-milc`,
+    encodingFormat: 'application/pdf',
+    associatedMedia: {
+      '@type': 'MediaObject',
+      contentUrl: `${origen}${libroMilcHref}`,
+      encodingFormat: 'application/pdf',
+    },
+    author: { '@id': `${inicio}/acerca#person` },
+    publisher: { '@id': `${inicio}#organization` },
+    about: [
+      'Modelo MILC',
+      'Pedagogía liberadora',
+      'Tecnología educativa',
+      'Filosofía de la información',
+      'Inteligencia artificial en el aula',
+    ],
+  },
+  {
+    '@type': 'Article',
+    '@id': `${inicio}/modelo-milc#article`,
+    headline: 'Modelo MILC · pedagogía propia',
+    description:
+      'Modelo de Investigación Liberadora y Científica (MILC v3): 4 fases, triángulo de pensamiento, 5 dimensiones, 18 anclajes ancestrales, política de IA responsable y pipeline editorial reproducible.',
+    inLanguage: 'es-CO',
+    isPartOf: { '@id': `${inicio}#website` },
+    author: { '@id': `${inicio}/acerca#person` },
+    publisher: { '@id': `${inicio}#organization` },
+    mainEntityOfPage: `${inicio}/modelo-milc`,
+    image: `${inicio}/og/plan-de-area.png`,
+  },
+];
+
 // Anclajes agrupados por grado para grid 6×3
 const anclajesPorGrado: Record<number, typeof anclajesAncestrales> = {};
 for (const a of anclajesAncestrales) {
@@ -41,7 +85,8 @@ const colorLente: Record<string, string> = {
   title={`Modelo MILC · ${planArea.area} — ConectaTE`}
   description="Modelo de Investigación Liberadora y Científica (MILC v3): 4 fases, triángulo de pensamiento, 5 dimensiones, 18 anclajes ancestrales, política de IA responsable y pipeline editorial reproducible."
   ogType="article"
-  imagen="/og/plan-de-area.png"
+  imagen="/og/modelo-milc.png"
+  jsonLd={jsonLdExtra}
 >
   <article class="pt-8 md:pt-12 pb-20">
     <div class="bento-container max-w-6xl">

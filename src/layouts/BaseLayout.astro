@@ -13,6 +13,8 @@ interface Props {
   imagen?: string;
   /** Tipo Open Graph; "website" para landings, "article" para guías */
   ogType?: 'website' | 'article';
+  /** JSON-LD adicional para Schema.org (Course, Book, Article, etc.). Se mezcla con el global. */
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
 const {
@@ -20,12 +22,84 @@ const {
   description = 'Plataforma educativa del Dr. Álvaro Cárdenas Orozco — I.E. Sor María Juliana, Cartago. 180 guías de Tecnología e Informática para grados 6° a 11°.',
   imagen,
   ogType = 'website',
+  jsonLd,
 } = Astro.props;
 
 const base = import.meta.env.BASE_URL;
 
 // URL canónica de la página actual
 const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://alguarito.github.io').toString();
+const origen = (Astro.site ?? new URL('https://alguarito.github.io')).toString().replace(/\/$/, '');
+const inicio = `${origen}${base.replace(/\/$/, '')}`;
+
+// ─── Schema.org · structured data global ─────────────────────────────────
+// Se renderiza en todas las páginas para que Google identifique:
+// - Quién es la organización (EducationalOrganization)
+// - Quién es el docente (Person)
+// - Qué es la plataforma (WebSite + SearchAction)
+// Páginas específicas pueden pasar `jsonLd` adicional (ej. Book en /modelo-milc)
+const schemaPerson = {
+  '@type': 'Person',
+  '@id': `${inicio}/acerca#person`,
+  name: 'Álvaro Cárdenas Orozco',
+  honorificPrefix: 'Dr.',
+  jobTitle: 'Docente de Tecnología e Informática',
+  description:
+    'Doctor en Ciencias de la Educación · Magíster en Gestión de la Tecnología Educativa · Ingeniero en Sistemas. Colaborador NASA-IASC y finalista Samsung Solve for Tomorrow.',
+  url: `${inicio}/acerca`,
+  worksFor: { '@id': `${inicio}#organization` },
+  knowsAbout: [
+    'Tecnología educativa',
+    'Inteligencia artificial en el aula',
+    'Pensamiento computacional',
+    'Robótica educativa',
+    'Filosofía de la educación',
+    'Modelo MILC',
+  ],
+  sameAs: ['https://alvarocardenasorozco.wixsite.com/blog'],
+};
+
+const schemaOrganization = {
+  '@type': 'EducationalOrganization',
+  '@id': `${inicio}#organization`,
+  name: 'Institución Educativa Sor María Juliana',
+  alternateName: 'I.E. Sor María Juliana',
+  url: inicio,
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Cartago',
+    addressRegion: 'Valle del Cauca',
+    addressCountry: 'CO',
+  },
+};
+
+const schemaWebsite = {
+  '@type': 'WebSite',
+  '@id': `${inicio}#website`,
+  name: 'Plataforma Conéctate',
+  alternateName: 'ConectaTE',
+  url: inicio,
+  description:
+    'Plataforma educativa de Tecnología e Informática · 216 piezas curriculares MILC v3 · I.E. Sor María Juliana, Cartago.',
+  inLanguage: 'es-CO',
+  publisher: { '@id': `${inicio}#organization` },
+  author: { '@id': `${inicio}/acerca#person` },
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: `${inicio}/?q={search_term_string}`,
+    },
+    'query-input': 'required name=search_term_string',
+  },
+};
+
+// Bloque JSON-LD combinado (@graph permite múltiples entidades relacionadas)
+const jsonLdExtra = Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : [];
+const schemaGraph = {
+  '@context': 'https://schema.org',
+  '@graph': [schemaOrganization, schemaPerson, schemaWebsite, ...jsonLdExtra],
+};
 
 // Imagen OG: si no se pasó una específica, usamos /og/home.png (1200×630)
 const ogImageRel = imagen ?? '/og/home.png';
@@ -72,6 +146,9 @@ const ogImageHeight = isFullsizeOg ? 630 : 1024;
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
+
+    <!-- Schema.org · structured data (Person + EducationalOrganization + WebSite + extras) -->
+    <script type="application/ld+json" set:html={JSON.stringify(schemaGraph)} />
 
     <!-- Datos del autor -->
     <meta name="author" content="Dr. Álvaro Cárdenas Orozco" />

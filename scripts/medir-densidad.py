@@ -1,27 +1,40 @@
 #!/usr/bin/env python3
 """
-Genera densidad.json para las 180 guías a partir de los fileSize (bytes)
-de los .tex en Drive. Es una v1 rápida que no requiere descargar archivos.
+Genera densidad.json con métricas absolutas de cada guía MILC v3.
 
-Niveles:
-- alta:  bytes >= P67 del grado
-- media: P33 <= bytes < P67
-- baja:  bytes < P33
+Modelo v2 (sistema absoluto):
+- Las **estrellas** del badge ya NO se calculan aquí: el componente
+  ``BadgeDensidad.astro`` las deriva del nivel MILC (``pro``/``bloques``/
+  ``legacy``/``none``) en runtime. Una guía MILC v3 pro siempre se ve ⭐⭐⭐⭐⭐
+  sin depender del percentil.
+- El **color** del badge sigue saliendo de aquí: ``nivel`` (alta/media/baja)
+  según las **palabras reales del YAML**, en umbrales absolutos:
+    * alta   ≥ 1500 palabras  (verde MILC)
+    * media  1000 - 1499      (mostaza)
+    * baja   <  1000          (ocre)
+- ``bytes`` y ``kb`` siguen siendo el tamaño real del PDF generado (informativo).
+- ``palabras`` ahora se cuenta directo del contenido editorial del YAML, no se
+  estima desde bytes (que daba números absurdos para PDFs binarios).
 
-Stars: 1-5 según percentil dentro del grado.
-
-Output: public/data/densidad.json
-{
-  "6-1": { "guiaId": "1-6-TIC", "grado": 6, "sesion": 1, "bytes": 18860,
-           "kb": 18.4, "nivel": "alta", "stars": 5, "percentile": 92 },
-  ...
-}
+Para regenerar: ``make guia-densidad`` o ``python3 scripts/medir-densidad.py``.
+Output: ``public/data/densidad.json``.
 """
 import json
+import re
 from pathlib import Path
 
-# Datos extraídos de los outputs de Drive search_files (2026-05-07)
-# Formato: (grado, sesion, bytes)
+try:
+    import yaml
+except ImportError:  # pragma: no cover
+    raise SystemExit("Falta PyYAML: ejecuta `pip install pyyaml` o usa el make target.")
+
+ROOT = Path(__file__).resolve().parent.parent
+PDF_DIR = ROOT / "public" / "guias-mejoras"
+YAML_DIR = ROOT / "content" / "guias"
+
+# Datos extraídos de los outputs de Drive search_files (2026-05-07).
+# Fallback histórico: si una guía aún no tiene PDF MILC v3 ni YAML
+# correspondiente, se usa el tamaño del .tex original como bytes.
 RAW = [
     # Grado 6
     (6,1,18860),(6,2,16616),(6,3,16075),(6,4,16075),(6,5,16724),(6,6,16605),(6,7,16139),
@@ -61,104 +74,131 @@ RAW = [
     (11,29,17494),(11,30,17284),
 ]
 
-# Calcular percentiles GLOBALES (más justo que por grado, ya que algunos
-# grados son consistentemente más pesados)
-all_bytes = sorted(b for _, _, b in RAW)
-n = len(all_bytes)
+
+# ─── Conteo de palabras desde el YAML ───────────────────────────────────────
+
+# Limpieza ligera de LaTeX para que el conteo refleje texto humano leíble.
+LATEX_CMD_WITH_ARG = re.compile(r"\\[a-zA-Z]+\{([^{}]*)\}")
+LATEX_CMD_NO_ARG = re.compile(r"\\[a-zA-Z]+\b")
+LATEX_BRACES = re.compile(r"[{}\[\]]")
 
 
-def percentile(value: int) -> int:
-    """Devuelve percentil (0-100) del valor dentro del set global."""
-    rank = sum(1 for b in all_bytes if b <= value)
-    return int(round(100 * rank / n))
+def _limpiar_latex(texto: str) -> str:
+    """Quita comandos LaTeX dejando el texto humano legible."""
+    # \textbf{foo} → foo
+    while True:
+        nuevo = LATEX_CMD_WITH_ARG.sub(r"\1", texto)
+        if nuevo == texto:
+            break
+        texto = nuevo
+    # \\, \emph (sin args restantes), etc.
+    texto = LATEX_CMD_NO_ARG.sub(" ", texto)
+    texto = LATEX_BRACES.sub(" ", texto)
+    return texto
 
 
-def nivel(p: int) -> str:
-    if p >= 67:
+def _contar_palabras(valor) -> int:
+    """Recorre dict/list/str y cuenta palabras de contenido editorial."""
+    if isinstance(valor, str):
+        if not valor:
+            return 0
+        limpio = _limpiar_latex(valor).strip()
+        if not limpio:
+            return 0
+        return len(limpio.split())
+    if isinstance(valor, dict):
+        # Saltamos llaves obvias de metadata que no son contenido editorial.
+        ignorar = {"clave", "grado", "periodo", "sesion", "completo", "autor"}
+        return sum(_contar_palabras(v) for k, v in valor.items() if k not in ignorar)
+    if isinstance(valor, list):
+        return sum(_contar_palabras(v) for v in valor)
+    return 0
+
+
+def palabras_yaml(grado: int, sesion_global: int) -> int:
+    """Cuenta palabras reales del contenido editorial del YAML de la guía."""
+    periodo = (sesion_global - 1) // 10 + 1
+    sesion_local = (sesion_global - 1) % 10 + 1
+    yaml_path = YAML_DIR / str(grado) / f"{grado}-{periodo}-{sesion_local}.yaml"
+    if not yaml_path.exists():
+        return 0
+    try:
+        data = yaml.safe_load(yaml_path.read_text(encoding="utf-8"))
+    except yaml.YAMLError:
+        return 0
+    return _contar_palabras(data)
+
+
+# ─── Bytes efectivos del PDF (informativo) ──────────────────────────────────
+
+def bytes_pdf(grado: int, sesion: int, bytes_legacy: int) -> int:
+    """Tamaño real del PDF si existe; si no, cae al .tex legacy."""
+    pdf = PDF_DIR / f"{sesion}-{grado}-TIC.pdf"
+    if pdf.exists():
+        return pdf.stat().st_size
+    return bytes_legacy
+
+
+# ─── Nivel absoluto por palabras (color del badge) ──────────────────────────
+
+# Umbrales absolutos pensados para una guía de 1 sesión (40-50 min) en MILC v3.
+# Calibrados sobre la distribución real del corpus (mayo 2026):
+#   min 1541 · P25 2150 · P50 2702 · P75 2931 · max 3415
+# Significados:
+#   alta  ≥ 2500: guía densa con actividades muy expandidas y ejemplos largos.
+#   media 1800-2499: guía estándar que cumple contrato sin excesos.
+#   baja  < 1800: guía mínima (cumple lo justo, candidata a expansión).
+UMBRAL_ALTA = 2500
+UMBRAL_MEDIA = 1800
+
+
+def nivel_por_palabras(palabras: int) -> str:
+    if palabras >= UMBRAL_ALTA:
         return "alta"
-    if p >= 33:
+    if palabras >= UMBRAL_MEDIA:
         return "media"
     return "baja"
 
 
-def stars(p: int) -> int:
-    """Convierte percentil a 1-5 estrellas."""
-    if p >= 90:
-        return 5
-    if p >= 70:
-        return 4
-    if p >= 50:
-        return 3
-    if p >= 25:
-        return 2
-    return 1
-
-
-# Estimar palabras: ~7 bytes/palabra en LaTeX típico (incluye comandos)
-# Excluyendo overhead de preamble (~3KB), contenido neto = bytes - 3000
-def palabras_estimadas(b: int) -> int:
-    contenido_neto = max(0, b - 3000)
+# Fallback de palabras cuando no hay YAML: estimar desde bytes del .tex legacy.
+# Mantiene compatibilidad con guías aún no migradas a YAML.
+def palabras_legacy(bytes_tex: int) -> int:
+    """Estima palabras desde bytes del .tex (no aplicar a PDFs)."""
+    contenido_neto = max(0, bytes_tex - 3000)
     return int(contenido_neto / 6.5)
 
 
-# Si existe un PDF local en public/guias-mejoras/ (pipeline MILC v3 nuevo),
-# usamos su tamaño real en lugar del legacy de Drive. Eso refleja el trabajo
-# de expansión MILC v3 en las estrellas y el badge.
-ROOT_FOR_PDFS = Path(__file__).resolve().parent.parent
-PDF_DIR = ROOT_FOR_PDFS / "public" / "guias-mejoras"
-
-
-def bytes_efectivos(grado: int, sesion: int, bytes_raw: int) -> int:
-    pdf = PDF_DIR / f"{sesion}-{grado}-TIC.pdf"
-    if pdf.exists():
-        return pdf.stat().st_size
-    return bytes_raw
-
-
-# Reemplazar RAW bytes con tamaños reales de PDFs MILC v3 cuando existan.
-RAW_EFECTIVO = [(g, s, bytes_efectivos(g, s, b)) for g, s, b in RAW]
-all_bytes_eff = sorted(b for _, _, b in RAW_EFECTIVO)
-
-
-def percentile_eff(value: int) -> int:
-    rank = sum(1 for b in all_bytes_eff if b <= value)
-    return int(round(100 * rank / len(all_bytes_eff)))
-
+# ─── Generación del JSON ────────────────────────────────────────────────────
 
 densidad = {}
-for grado, sesion, bytes_ in RAW_EFECTIVO:
-    p = percentile_eff(bytes_)
+for grado, sesion, bytes_legacy in RAW:
+    palabras = palabras_yaml(grado, sesion)
+    if palabras == 0:
+        palabras = palabras_legacy(bytes_legacy)
+    bytes_efectivos = bytes_pdf(grado, sesion, bytes_legacy)
     densidad[f"{grado}-{sesion}"] = {
         "guiaId": f"{sesion}-{grado}-TIC",
         "grado": grado,
         "sesion": sesion,
-        "bytes": bytes_,
-        "kb": round(bytes_ / 1024, 1),
-        "palabras": palabras_estimadas(bytes_),
-        "nivel": nivel(p),
-        "stars": stars(p),
-        "percentile": p,
+        "bytes": bytes_efectivos,
+        "kb": round(bytes_efectivos / 1024, 1),
+        "palabras": palabras,
+        "nivel": nivel_por_palabras(palabras),
     }
 
-# Estadísticas globales
+# Estadísticas
 niveles_count = {"alta": 0, "media": 0, "baja": 0}
 for d in densidad.values():
     niveles_count[d["nivel"]] += 1
 
-ROOT = Path(__file__).resolve().parent.parent
-OUT = ROOT / 'public/data/densidad.json'
+OUT = ROOT / "public/data/densidad.json"
 OUT.parent.mkdir(parents=True, exist_ok=True)
 OUT.write_text(json.dumps(densidad, ensure_ascii=False, indent=2))
 
-print(f"✓ {len(densidad)} guías procesadas")
-print(f"  Distribución: ALTA={niveles_count['alta']} | MEDIA={niveles_count['media']} | BAJA={niveles_count['baja']}")
+print(f"✓ {len(densidad)} guías procesadas (modelo absoluto v2)")
+print(f"  Color del badge (por palabras del YAML):")
+print(f"    ALTA  ≥{UMBRAL_ALTA}  → {niveles_count['alta']} guías (verde)")
+print(f"    MEDIA {UMBRAL_MEDIA}-{UMBRAL_ALTA-1} → {niveles_count['media']} guías (mostaza)")
+print(f"    BAJA  <{UMBRAL_MEDIA}  → {niveles_count['baja']} guías (ocre)")
 print(f"  Output: {OUT}")
-print(f"  Tamaño JSON: {OUT.stat().st_size} bytes")
-
-# Ejemplos
-print("\nEjemplos (primer y último de cada nivel):")
-for niv in ("alta", "media", "baja"):
-    items = [d for d in densidad.values() if d["nivel"] == niv]
-    if items:
-        items.sort(key=lambda x: x["bytes"])
-        print(f"  {niv:5}: G{items[0]['grado']}·S{items[0]['sesion']}={items[0]['kb']}KB ⭐{items[0]['stars']} ... G{items[-1]['grado']}·S{items[-1]['sesion']}={items[-1]['kb']}KB ⭐{items[-1]['stars']}")
+print(f"  Las estrellas se derivan del nivel MILC en runtime (BadgeDensidad.astro).")

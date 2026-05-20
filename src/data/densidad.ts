@@ -1,10 +1,11 @@
-// Densidad pedagógica estimada por guía.
-// Generado por scripts/medir-densidad.py a partir del tamaño en bytes
-// de los .tex de Drive. Es una v1: el tamaño correlaciona con cantidad
-// de contenido (palabras, ejemplos, ejercicios) en este corpus de guías
-// MILC ya que comparten un preamble fijo de ~3KB.
+// Densidad pedagógica de cada guía (modelo v2 · absoluto).
 //
-// Para regenerar: python3 scripts/medir-densidad.py
+// Generado por scripts/medir-densidad.py contando palabras reales del YAML.
+// El **nivel** (alta/media/baja) sale de umbrales absolutos de palabras y
+// determina el COLOR del badge. Las **estrellas** las calcula
+// BadgeDensidad.astro desde el nivel MILC v3 del contenido TS, no de aquí.
+//
+// Para regenerar: make guia-densidad
 import densidadData from '../../public/data/densidad.json';
 
 export type NivelDensidad = 'alta' | 'media' | 'baja';
@@ -17,8 +18,6 @@ export interface DensidadGuia {
   kb: number;
   palabras: number;
   nivel: NivelDensidad;
-  stars: number;        // 1-5
-  percentile: number;   // 0-100
 }
 
 const data = densidadData as Record<string, DensidadGuia>;

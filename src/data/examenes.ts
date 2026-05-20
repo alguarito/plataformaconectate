@@ -44,8 +44,9 @@ export const examenes: RecursoExamen[] = [
   {
     "grado": 6,
     "periodo": 3,
-    "pdfId": "17BzxjtC9NKQLWmPvWnsw0OnGbSQE-CG4",
-    "archivo": "examen-3-6-TIC.pdf"
+    "local": true,
+    "archivo": "examen-3-6-TIC.pdf",
+    "pdfId_archivo": "17BzxjtC9NKQLWmPvWnsw0OnGbSQE-CG4"
   },
   {
     "grado": 7,

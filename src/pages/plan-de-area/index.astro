@@ -4,20 +4,34 @@ import { grados } from '../../data/grados';
 import {
   planArea,
   fasesMILC,
+  trianguloPensamiento,
+  anclajesAncestrales,
   referentes,
   estrategias,
   componentesMEN,
   objetivos,
   criteriosEvaluacion,
   ponderacion,
+  politicaIa,
+  principiosIa,
+  pipelineMilc,
+  valoracionPorContrato,
+  valoracionPorDensidad,
 } from '../../data/planArea';
 
 const base = import.meta.env.BASE_URL;
 const pdfHref = `${base}/plan-de-area/${planArea.pdf}`;
+
+// Anclajes agrupados por grado para grid visual
+const anclajesPorGrado: Record<number, typeof anclajesAncestrales> = {};
+for (const a of anclajesAncestrales) {
+  if (!anclajesPorGrado[a.grado]) anclajesPorGrado[a.grado] = [];
+  anclajesPorGrado[a.grado].push(a);
+}
 ---
 
 <BaseLayout
-  title={`Plan de Área 2025 · ${planArea.area} — ConectaTE`}
+  title={`Plan de Área 2026 · ${planArea.area} — ConectaTE`}
   description={`${planArea.area} ${planArea.ano} · ${planArea.cobertura}. Modelo MILC: Escuta, Sistematización, Praxis y Evaluación liberadora. ${planArea.recursos.guias} guías + ${planArea.recursos.proyectos} proyectos integradores + ${planArea.recursos.examenes} exámenes.`}
   ogType="article"
   imagen="/og/plan-de-area.png"
@@ -28,7 +42,7 @@ const pdfHref = `${base}/plan-de-area/${planArea.pdf}`;
       <nav class="flex items-center gap-2 text-sm font-semibold mb-8 flex-wrap" style="color: var(--fg-muted);">
         <a href={base || '/'} class="hover:opacity-60 transition-opacity">Inicio</a>
         <span>/</span>
-        <span style="color: var(--fg);">Plan de Área 2025</span>
+        <span style="color: var(--fg);">Plan de Área 2026</span>
       </nav>
 
       <!-- HERO -->
@@ -67,7 +81,7 @@ const pdfHref = `${base}/plan-de-area/${planArea.pdf}`;
           class="bento-card-color bg-bento-purple md:col-span-4 flex flex-col justify-between min-h-[420px] hover:scale-[1.01] transition-transform group"
         >
           <div>
-            <span class="text-xs font-bold uppercase tracking-widest opacity-80">PDF · 165 KB</span>
+            <span class="text-xs font-bold uppercase tracking-widest opacity-80">PDF · documento rector</span>
             <div class="text-7xl mt-3">📄</div>
           </div>
           <div>
@@ -301,7 +315,7 @@ const pdfHref = `${base}/plan-de-area/${planArea.pdf}`;
 
       <!-- RECURSOS CURRICULARES -->
       <div class="bento-card mb-10">
-        <span class="chip-bento mb-3">Recursos curriculares 2025</span>
+        <span class="chip-bento mb-3">Recursos curriculares 2026</span>
         <h2 class="heading-huge mb-2 leading-tight">El plan vivo, en 216 piezas.</h2>
         <p class="text-sm md:text-base mb-8 leading-relaxed" style="color: var(--fg-muted);">
           Plan, guía, proyecto y examen forman partes de una misma arquitectura
@@ -380,12 +394,222 @@ const pdfHref = `${base}/plan-de-area/${planArea.pdf}`;
               <polyline points="7 10 12 15 17 10"></polyline>
               <line x1="12" y1="15" x2="12" y2="3"></line>
             </svg>
-            Descargar Plan de Área 2025 (PDF · 165 KB)
+            Descargar Plan de Área 2026 (PDF · {planArea.paginas} páginas)
           </a>
 
           <p class="text-xs opacity-60 mt-4">
             Versión editorial MILC · {planArea.institucion}
           </p>
+        </div>
+      </div>
+
+      <!-- TRIÁNGULO DE PENSAMIENTO -->
+      <div class="bento-card mb-10">
+        <span class="chip-bento mb-3">Triángulo de pensamiento</span>
+        <h2 class="heading-huge mb-2 leading-tight">3 lentes que dialogan en cada cierre.</h2>
+        <p class="text-sm md:text-base mb-8 leading-relaxed" style="color: var(--fg-muted);">
+          Cada guía, examen y proyecto integra las tres lentes del triángulo.
+          En los proyectos integradores las reflexiones quedan
+          <strong style="color: var(--fg);">incrustadas dentro de los productos</strong>
+          (no como anexos): un párrafo Dussel en la tarjeta de identidad, una nota
+          estoica en el decálogo firmado, una declaración Floridi en la
+          mini-campaña pública.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+          {trianguloPensamiento.map((l) => (
+            <div class={`bento-card-color ${l.bgClass} flex flex-col gap-3 min-h-[260px]`}>
+              <div class="text-5xl">{l.emoji}</div>
+              <div>
+                <h3 class="text-xl md:text-2xl font-black tracking-tight leading-tight">
+                  {l.nombre}
+                </h3>
+                <p class="text-xs font-bold uppercase tracking-widest mt-1 opacity-80">
+                  {l.obra}
+                </p>
+              </div>
+              <p class="text-sm leading-relaxed opacity-90 mt-auto">
+                {l.aporte}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- ANCLAJES ANCESTRALES POR PERIODO -->
+      <div class="bento-card mb-10">
+        <span class="chip-bento mb-3">Anclajes ancestrales por periodo</span>
+        <h2 class="heading-huge mb-2 leading-tight">18 saberes locales que vertebran el currículo.</h2>
+        <p class="text-sm md:text-base mb-8 leading-relaxed" style="color: var(--fg-muted);">
+          Cada periodo abre con un saber del Valle del Cauca, el Pacífico o el
+          campo colombiano. El anclaje aparece en la guía de apertura (S1),
+          regresa en el examen formal (pregunta contexto) y vertebra el reto
+          del proyecto integrador. No es decoración: es continuidad cultural
+          con identidad digital.
+        </p>
+
+        <div class="space-y-6">
+          {grados.map((g) => (
+            <div>
+              <h3 class="text-lg md:text-xl font-black mb-3 leading-tight flex items-center gap-3">
+                <span class={`w-10 h-10 rounded-bento-sm ${g.bgClass} flex items-center justify-center text-white text-sm font-black shrink-0`}>
+                  {g.numero}°
+                </span>
+                Grado {g.numero}°
+              </h3>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
+                {(anclajesPorGrado[g.numero] ?? []).map((a) => (
+                  <div class="p-4 rounded-bento-sm border-2" style="border-color: var(--border);">
+                    <div class="text-xs font-bold uppercase tracking-widest mb-1" style="color: var(--fg-muted);">
+                      Período {a.periodo}
+                    </div>
+                    <div class="font-black leading-tight mb-2 text-sm md:text-base">
+                      🌱 {a.oficio}
+                    </div>
+                    <p class="text-xs leading-relaxed" style="color: var(--fg-muted);">
+                      {a.resumen}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- POLÍTICA DE IA RESPONSABLE -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6 mb-10">
+        <div class="bento-card md:col-span-7">
+          <span class="chip-bento mb-3">🤖 Política de IA responsable</span>
+          <h2 class="heading-huge mb-2 leading-tight">Distribución por grados.</h2>
+          <p class="text-sm md:text-base mb-6 leading-relaxed" style="color: var(--fg-muted);">
+            La IA generativa entra al aula con criterio progresivo: nada en 6°
+            (todo a mano), declaración honesta en 7°, uso explícito + verificación
+            obligatoria desde 8°. La rúbrica del proyecto integrador valora el
+            uso responsable, no la cantidad de IA usada.
+          </p>
+
+          <div class="space-y-4 mt-6">
+            {politicaIa.map((p, i) => (
+              <div class="flex items-start gap-3 p-4 rounded-bento-sm" style="background: var(--bg);">
+                <span class="w-8 h-8 rounded-bento-sm bg-bento-pink text-white flex items-center justify-center text-sm font-black shrink-0">
+                  {i + 1}
+                </span>
+                <div>
+                  <div class="flex flex-wrap items-baseline gap-3 mb-1">
+                    <h3 class="font-black leading-tight">{p.rango}</h3>
+                    <span class="text-xs font-bold uppercase tracking-widest px-2 py-0.5 rounded-full bg-bento-pink/20" style="color: var(--fg);">
+                      {p.postura}
+                    </span>
+                  </div>
+                  <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">
+                    {p.detalle}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div class="bento-card-color bg-bento-pink md:col-span-5 flex flex-col gap-4 min-h-[420px]">
+          <span class="text-xs font-bold uppercase tracking-widest opacity-80">
+            Principios transversales
+          </span>
+          <h3 class="text-2xl md:text-3xl font-black tracking-tight leading-tight">
+            5 reglas no negociables
+          </h3>
+          <ul class="space-y-3 mt-2">
+            {principiosIa.map((p) => (
+              <li class="flex items-start gap-3">
+                <span class="w-5 h-5 rounded-md bg-black/15 flex items-center justify-center shrink-0 mt-0.5">
+                  <span class="text-[10px] font-black">✓</span>
+                </span>
+                <span class="text-sm leading-relaxed">{p}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <!-- SISTEMA DE VALORACIÓN -->
+      <div class="bento-card mb-10">
+        <span class="chip-bento mb-3">Sistema de valoración de guías</span>
+        <h2 class="heading-huge mb-2 leading-tight">Estrellas absolutas + color por densidad.</h2>
+        <p class="text-sm md:text-base mb-8 leading-relaxed" style="color: var(--fg-muted);">
+          Cada card de guía muestra dos señales independientes. Las
+          <strong style="color: var(--fg);">estrellas</strong> indican
+          completitud del contrato editorial MILC v3 (absoluto: una guía bien
+          hecha siempre se ve bien). El <strong style="color: var(--fg);">color</strong>
+          del badge indica densidad informativa real medida en palabras del YAML.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+          <!-- Estrellas (contrato) -->
+          <div class="p-5 rounded-bento-sm border-2" style="border-color: var(--border);">
+            <h3 class="font-black mb-3">⭐ Estrellas · completitud</h3>
+            <ul class="space-y-3 text-sm">
+              {valoracionPorContrato.map((v) => (
+                <li class="flex items-start gap-3">
+                  <span class="text-xs font-bold w-12 shrink-0 tracking-tight" style="color: var(--fg);">
+                    {'★'.repeat(v.estrellas)}{'☆'.repeat(5 - v.estrellas)}
+                  </span>
+                  <div>
+                    <div class="font-bold leading-tight">{v.nombre}</div>
+                    <p class="text-xs leading-relaxed mt-0.5" style="color: var(--fg-muted);">
+                      {v.significado}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <!-- Color (densidad) -->
+          <div class="p-5 rounded-bento-sm border-2" style="border-color: var(--border);">
+            <h3 class="font-black mb-3">🎨 Color · densidad</h3>
+            <ul class="space-y-3 text-sm">
+              {valoracionPorDensidad.map((v) => (
+                <li class="flex items-start gap-3">
+                  <span class="w-12 shrink-0 text-xs font-bold uppercase" style={`color: ${v.nivel === 'Alta' ? '#58A923' : v.nivel === 'Media' ? '#E5B400' : '#B86600'};`}>
+                    {v.nivel}
+                  </span>
+                  <div>
+                    <div class="font-bold leading-tight">{v.umbral}</div>
+                    <p class="text-xs leading-relaxed mt-0.5" style="color: var(--fg-muted);">
+                      {v.detalle}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- PIPELINE EDITORIAL MILC v3 -->
+      <div class="bento-card mb-10">
+        <span class="chip-bento mb-3">Pipeline editorial MILC v3</span>
+        <h2 class="heading-huge mb-2 leading-tight">Single source of truth: YAML → PDF + Web.</h2>
+        <p class="text-sm md:text-base mb-8 leading-relaxed" style="color: var(--fg-muted);">
+          Cada pieza vive como YAML. Un script la compila a PDF (vía xelatex)
+          y a TypeScript para la web. Edita el YAML; nunca toques el .tex, el
+          .pdf o el .ts. El linter valida el contrato editorial.
+        </p>
+
+        <div class="space-y-3">
+          {pipelineMilc.map((p) => (
+            <div class="p-4 rounded-bento-sm border-2" style="border-color: var(--border);">
+              <div class="flex items-baseline justify-between gap-3 flex-wrap mb-2">
+                <h3 class="font-black leading-tight">{p.nombre}</h3>
+                <code class="text-xs px-2 py-1 rounded bg-bento-cyan/15 font-mono">{p.comando}</code>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs" style="color: var(--fg-muted);">
+                <div><span class="font-bold uppercase tracking-widest">YAML:</span> <code class="font-mono">{p.yaml}</code></div>
+                <div><span class="font-bold uppercase tracking-widest">PDF:</span> <code class="font-mono">{p.pdf}</code></div>
+                <div><span class="font-bold uppercase tracking-widest">TS:</span> <code class="font-mono">{p.ts}</code></div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 

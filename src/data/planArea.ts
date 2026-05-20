@@ -1,13 +1,17 @@
 /**
- * Plan de Área de Tecnología e Informática 2025
+ * Plan de Área de Tecnología e Informática · 2026
  * I.E. Sor María Juliana — Autor: Dr. Álvaro Cárdenas Orozco
  *
- * Datos extraídos del documento oficial PLAN DE AREA.pdf (31 páginas).
+ * Documento rector del área. La edición 2026 cierra el pipeline editorial
+ * MILC v3 (YAML SSOT → PDF + TS web) y formaliza los ajustes operativos
+ * acumulados durante la migración: triángulo de pensamiento, anclajes
+ * ancestrales por periodo, política de IA responsable y sistema de
+ * valoración por completitud editorial.
  */
 
 export const planArea = {
   area: 'Tecnología e Informática',
-  ano: 2025,
+  ano: 2026,
   cobertura: 'Grados 6° a 11°',
   institucion: 'Institución Educativa Sor María Juliana',
   ciudad: 'Cartago, Valle del Cauca',
@@ -20,14 +24,15 @@ export const planArea = {
   metaEgreso:
     'Un estudiante capaz de comprender la tecnología, usarla críticamente, crear con ella y evaluar sus efectos en la vida común.',
 
-  pdf: 'plan-de-area-2025.pdf',
-  paginas: 31,
+  pdf: 'plan-de-area-2026.pdf',
+  paginas: 15,
 
-  // Métrica de recursos
+  // Recursos curriculares activos (216 piezas vivas)
   recursos: {
     guias: 180, // 30 × 6 grados
-    proyectos: 18, // 1 × 3 períodos × 6 grados
-    examenes: 18,
+    proyectos: 18, // 3 × 6 grados (entregable-céntrico MILC v3)
+    examenes: 18, // 3 × 6 grados (formal + banco práctica)
+    total: 216,
   },
 };
 
@@ -70,6 +75,82 @@ export const fasesMILC: FaseMILC[] = [
     descripcion:
       'Valorar evidencias, impactos, aprendizajes, errores, mejoras y compromisos éticos.',
   },
+];
+
+/**
+ * Triángulo de pensamiento — columna pedagógica explícita en cada guía,
+ * proyecto y examen. Las 3 lentes dialogan en el cierre filosófico y se
+ * incrustan operativamente en los entregables del proyecto integrador.
+ */
+export interface LenteTriangulo {
+  nombre: string;
+  obra: string;
+  bgClass: string;
+  aporte: string;
+  emoji: string;
+}
+
+export const trianguloPensamiento: LenteTriangulo[] = [
+  {
+    nombre: 'Enrique Dussel',
+    obra: 'Filosofía de la liberación',
+    bgClass: 'bg-bento-purple',
+    aporte:
+      'Reconocimiento de la voz del otro. Cuidar la propia voz es respeto a sí mismo. Lo que escribimos cuenta porque cuenta la voz de quien escribe.',
+    emoji: '🗣️',
+  },
+  {
+    nombre: 'Marco Aurelio (Estoicismo)',
+    obra: 'Meditaciones',
+    bgClass: 'bg-bento-cyan',
+    aporte:
+      'Disciplina del tiempo. Lo que escribes hoy queda. La prisa es enemiga del juicio: parar, respirar y verificar antes de creer o reenviar.',
+    emoji: '⏳',
+  },
+  {
+    nombre: 'Luciano Floridi',
+    obra: 'Filosofía de la información',
+    bgClass: 'bg-bento-orange',
+    aporte:
+      'Infoesfera. Habitas un ambiente informacional compartido. Cada mensaje suma claridad o ruido. Eres responsable de lo que produces como tuyo.',
+    emoji: '🌐',
+  },
+];
+
+/**
+ * Anclajes ancestrales por grado y período.
+ *
+ * Cada periodo conecta su tema técnico con un saber local del Valle del
+ * Cauca y el Pacífico. El anclaje aparece en la guía de apertura (S1),
+ * vuelve a aparecer en el examen formal (pregunta contexto) y vertebra
+ * el reto del proyecto integrador.
+ */
+export interface AnclajeAncestral {
+  grado: number;
+  periodo: number;
+  oficio: string;
+  resumen: string;
+}
+
+export const anclajesAncestrales: AnclajeAncestral[] = [
+  { grado: 6,  periodo: 1, oficio: 'El pregonero del barrio',           resumen: 'Don Aurelio llevaba avisos con campanita. Su nombre era su identidad: si lo entregaba bien, la cuadra lo buscaba; si lo dañaba, lo corregían.' },
+  { grado: 6,  periodo: 2, oficio: 'Relojero, costurera, panadero',     resumen: 'Maestros de oficio que entendían su máquina por dentro. Don Lucho con el reloj, doña Carmen con la Singer, don Aurelio con el horno.' },
+  { grado: 6,  periodo: 3, oficio: 'Doña Mercedes, maestra rural',      resumen: 'Enseñaba a escribir bien y a leer crítico. Antes de creer una noticia preguntaba: ¿quién?, ¿cuándo?, ¿por qué?, ¿qué prueba?, ¿quién más?' },
+  { grado: 7,  periodo: 1, oficio: 'La minga del Valle',                resumen: 'Veinte vecinos cosechaban café al tiempo, en surcos distintos, sin estorbarse, con reciprocidad. Es la matriz cultural de la coautoría en la nube.' },
+  { grado: 7,  periodo: 2, oficio: 'Doña Sofía, la tejedora',           resumen: 'Tejía canastos siguiendo un algoritmo: secuencia, repetición, condicional al borde, variable contadora en la cabeza. Las tejedoras programaban antes que las computadoras.' },
+  { grado: 7,  periodo: 3, oficio: 'El consejero del barrio',           resumen: 'Doña Mercedes, don Lucho, doña Esperanza. Aconsejaban pero no decidían por nadie. La IA hoy ocupa ese rol: requiere verificación y voz propia.' },
+  { grado: 8,  periodo: 1, oficio: 'El gesto de la cocina del Valle',   resumen: 'La abuela tomaba decisiones lógicas antes de poner la olla al fogón. Cuidado, precisión y verificación cruzada en cada paso.' },
+  { grado: 8,  periodo: 2, oficio: 'Decisiones del campesino',          resumen: 'En las fincas, decisiones que parecen sencillas esconden lógica compuesta: condiciones AND/OR/NOT que evitan pérdidas.' },
+  { grado: 8,  periodo: 3, oficio: 'Diseño visual del Pacífico',        resumen: 'Comunidades del Chocó con tradiciones de diseño visual y gestión del dato comunal. Lo común se anota, se cuida, se transmite.' },
+  { grado: 9,  periodo: 1, oficio: 'La técnica en la mano',             resumen: 'Los primeros artefactos (azuela, hueso tallado) no nacieron en fábrica: nacieron en la mano. La técnica es habilidad situada antes que herramienta.' },
+  { grado: 9,  periodo: 2, oficio: 'Pasquines, almanaques, esquelas',   resumen: 'Diseño popular del Valle: pliegos parroquiales y almanaques campesinos. La maquetación tiene siglos antes de Figma.' },
+  { grado: 9,  periodo: 3, oficio: 'La libreta de la abuela',           resumen: 'Conteo de cosecha: racimos por mata, gallinas por corral, deudas pendientes. La estadística doméstica como ética de cuidado.' },
+  { grado: 10, periodo: 1, oficio: 'El personaje silencioso del barrio',resumen: 'Intermediario que conectaba familias y oficios. Curaduría comunitaria de la información, sin algoritmo ni servidor.' },
+  { grado: 10, periodo: 2, oficio: 'Los 4 oficios de la palabra',       resumen: 'En el barrio Obrero: cuentista, pregonero, recitador, sermoneador. Cada uno con un tipo de palabra; cada uno con criterio editorial.' },
+  { grado: 10, periodo: 3, oficio: 'Tiendas y panaderías del centro',   resumen: 'Microempresas del Quindío y Cartago que sostienen libros de cuentas, fiar y cobrar, oferta de temporada. Gestión del negocio antes del Excel.' },
+  { grado: 11, periodo: 1, oficio: 'Oficio y palabra',                  resumen: 'Una persona se conocía por dos cosas: su oficio (lo que sabía hacer) y su palabra (lo que sostenía). Identidad y reputación digital tienen aquí su anclaje.' },
+  { grado: 11, periodo: 2, oficio: 'El maestro carpintero',             resumen: 'No necesita reloj para saber dónde se traba el taller: lo ve. Lectura del proceso, detección de cuellos de botella y mejora continua.' },
+  { grado: 11, periodo: 3, oficio: 'Oficios que escuchan al pueblo',    resumen: 'Los oficios del Valle no nacían de la imaginación del emprendedor genial: nacían de escuchar lo que el pueblo necesitaba. Validación de mercado ancestral.' },
 ];
 
 /**
@@ -262,4 +343,112 @@ export const ponderacion = [
   { item: 'Proyecto integrador', porcentaje: 30 },
   { item: 'Examen / prueba aplicada', porcentaje: 20 },
   { item: 'Participación y reflexión MILC', porcentaje: 20 },
+];
+
+/**
+ * Política institucional de IA responsable.
+ *
+ * Distribución por grados: G6 sin IA, G7 con declaración honesta, G8-G11
+ * con uso explícito + declaración obligatoria en cada entregable.
+ */
+export interface PoliticaIaPorGrado {
+  rango: string;
+  postura: string;
+  detalle: string;
+}
+
+export const politicaIa: PoliticaIaPorGrado[] = [
+  {
+    rango: 'Grado 6°',
+    postura: 'Sin IA',
+    detalle:
+      'Los entregables se producen a mano por el equipo, con criterio propio. La IA aún no se cubre como herramienta de uso. Si algún estudiante la usó por curiosidad personal, debe declararlo en la sustentación.',
+  },
+  {
+    rango: 'Grado 7°',
+    postura: 'IA con declaración',
+    detalle:
+      'Se permite el uso de IA generativa con declaración explícita: qué herramienta (Claude/ChatGPT/Gemini), en qué parte, cuánto editó el equipo a mano. La IA es asistente, no reemplazo del trabajo humano.',
+  },
+  {
+    rango: 'Grados 8° a 11°',
+    postura: 'IA esperada · declaración obligatoria',
+    detalle:
+      'La rúbrica del entregable 1 penaliza explícitamente la falta de declaración o el copy-paste sin edición. Se evalúa el uso responsable: voz humana visible + edición + declaración + verificación de lo que dijo la IA contra fuentes externas.',
+  },
+];
+
+/**
+ * Principios transversales de la política de IA.
+ */
+export const principiosIa: string[] = [
+  'Declarar siempre el uso, así sea pequeño.',
+  'Verificar contra fuente externa los datos importantes (fechas, leyes, nombres).',
+  'Editar con voz propia: la IA puede borrador, pero el entregable es del estudiante.',
+  'Respetar la privacidad: no escribir datos personales de otros en prompts.',
+  'No usar IA en evaluaciones que valoran algo personal (autobiografía, reflexión propia, ética).',
+];
+
+/**
+ * Pipeline editorial MILC v3.
+ *
+ * Single source of truth: cada pieza vive como YAML; un script la compila
+ * a PDF (LaTeX) y a TS para la web. Linter automatiza el contrato.
+ */
+export interface PipelinePieza {
+  nombre: string;
+  yaml: string;
+  pdf: string;
+  ts: string;
+  comando: string;
+}
+
+export const pipelineMilc: PipelinePieza[] = [
+  {
+    nombre: 'Guías',
+    yaml: 'content/guias/{grado}/{clave}.yaml',
+    pdf: 'public/guias-mejoras/{sesion}-{grado}-TIC.pdf',
+    ts: 'src/data/guiasContenido/{grado}-{periodo}-{sesion}.ts',
+    comando: 'make guia-build',
+  },
+  {
+    nombre: 'Exámenes',
+    yaml: 'content/examenes/{grado}-{periodo}.yaml',
+    pdf: 'public/examenes-mejoras/examen-{periodo}-{grado}-TIC.pdf',
+    ts: 'src/data/examenesContenido/{grado}-{periodo}.ts',
+    comando: 'make examen-build && make examen-web',
+  },
+  {
+    nombre: 'Proyectos',
+    yaml: 'content/proyectos/{grado}-{periodo}.yaml',
+    pdf: 'public/proyectos/proyecto-{periodo}-{grado}-TIC.pdf',
+    ts: 'src/data/proyectosContenido/{grado}-{periodo}.ts',
+    comando: 'make proyecto-build',
+  },
+];
+
+/**
+ * Sistema absoluto de valoración de guías.
+ *
+ * El badge de cada guía combina dos señales independientes:
+ * - Estrellas: completitud del contrato MILC v3 (absoluto).
+ * - Color: densidad informativa real medida en palabras del YAML.
+ */
+export interface NivelValoracion {
+  estrellas: number;
+  nombre: string;
+  significado: string;
+}
+
+export const valoracionPorContrato: NivelValoracion[] = [
+  { estrellas: 5, nombre: 'MILC v3 · pro',     significado: 'Contrato completo: saber ancestral + ruta + actividades + triángulo + 5 dimensiones.' },
+  { estrellas: 4, nombre: 'MILC v3 · bloques', significado: 'Bloques filosóficos completos (saber + triángulo + 5d) sin actividades estructuradas.' },
+  { estrellas: 3, nombre: 'Legacy migrada',    significado: 'TS migrado pre-MILC v3.' },
+  { estrellas: 2, nombre: 'PDF disponible',    significado: 'Solo PDF, sin contenido enriquecido en web.' },
+];
+
+export const valoracionPorDensidad = [
+  { nivel: 'Alta', umbral: '≥ 2500 palabras', color: 'verde MILC',  detalle: 'Guía con actividades muy expandidas y ejemplos largos.' },
+  { nivel: 'Media', umbral: '1800 – 2499',     color: 'mostaza',     detalle: 'Guía estándar que cumple el contrato sin excesos.' },
+  { nivel: 'Baja',  umbral: '< 1800',          color: 'ocre',        detalle: 'Guía mínima que cumple lo justo (candidata a expansión).' },
 ];

@@ -221,6 +221,21 @@ else
 	@$(PYTHON) scripts/build-proyectos-web-ts.py $(CLAVE)
 endif
 
+# ─── Plan de Área 2026 (documento rector) ────────────────────────────────────
+
+.PHONY: plan-area-build
+plan-area-build:  ## Genera el PDF rector del Plan de Área 2026 desde planArea.ts
+	@$(PYTHON) scripts/build-plan-area.py
+
+.PHONY: plan-area-show
+plan-area-show:  ## Abre el PDF del Plan de Área 2026 en Preview
+	@if [ -f public/plan-de-area/plan-de-area-2026.pdf ]; then \
+		open public/plan-de-area/plan-de-area-2026.pdf; \
+	else \
+		echo "✗ No existe public/plan-de-area/plan-de-area-2026.pdf"; \
+		echo "  Corre: make plan-area-build"; exit 1; \
+	fi
+
 .PHONY: proyecto-show
 proyecto-show:  ## Abre el PDF del proyecto CLAVE en Preview (CLAVE=grado-periodo)
 	@if [ -z "$(CLAVE)" ]; then \

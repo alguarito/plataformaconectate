@@ -1,0 +1,484 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import DiagramaCicloMILC from '../../components/DiagramaCicloMILC.astro';
+import DiagramaPipeline from '../../components/DiagramaPipeline.astro';
+import { grados } from '../../data/grados';
+import {
+  planArea,
+  fasesMILC,
+  trianguloPensamiento,
+  anclajesAncestrales,
+  referentes,
+  estrategias,
+  componentesMEN,
+  politicaIa,
+  principiosIa,
+  pipelineMilc,
+  valoracionPorContrato,
+  valoracionPorDensidad,
+} from '../../data/planArea';
+
+const base = import.meta.env.BASE_URL;
+const pdfHref = `${base}/plan-de-area/${planArea.pdf}`;
+
+// Anclajes agrupados por grado para grid 6×3
+const anclajesPorGrado: Record<number, typeof anclajesAncestrales> = {};
+for (const a of anclajesAncestrales) {
+  if (!anclajesPorGrado[a.grado]) anclajesPorGrado[a.grado] = [];
+  anclajesPorGrado[a.grado].push(a);
+}
+
+const colorLente: Record<string, string> = {
+  'Enrique Dussel': 'bg-bento-purple text-white',
+  'Marco Aurelio (Estoicismo)': 'bg-bento-cyan text-black',
+  'Luciano Floridi': 'bg-bento-orange text-white',
+};
+---
+
+<BaseLayout
+  title={`Modelo MILC · ${planArea.area} — ConectaTE`}
+  description="Modelo de Investigación Liberadora y Científica (MILC v3): 4 fases, triángulo de pensamiento, 5 dimensiones, 18 anclajes ancestrales, política de IA responsable y pipeline editorial reproducible."
+  ogType="article"
+  imagen="/og/plan-de-area.png"
+>
+  <article class="pt-8 md:pt-12 pb-20">
+    <div class="bento-container max-w-6xl">
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-sm font-semibold mb-6 flex-wrap" style="color: var(--fg-muted);">
+        <a href={base || '/'} class="hover:opacity-60 transition-opacity">Inicio</a>
+        <span>/</span>
+        <span style="color: var(--fg);">Modelo MILC</span>
+      </nav>
+
+      <!-- HERO -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6 mb-10">
+        <div class="bento-card-color bg-bento-purple md:col-span-8 min-h-[420px] flex flex-col justify-between">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-black/15">
+              🌱 Pedagogía propia · {planArea.ano}
+            </span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-black/15">
+              MILC v3 · liberador
+            </span>
+          </div>
+          <div>
+            <span class="text-xs font-bold uppercase tracking-widest opacity-80">Modelo</span>
+            <h1 class="heading-giant text-balance leading-[0.95] mt-1 mb-3">
+              MILC.
+            </h1>
+            <p class="text-base md:text-lg font-semibold opacity-90 leading-snug max-w-xl">
+              Modelo de <strong>Investigación Liberadora y Científica</strong>. Una pedagogía
+              propia que articula técnica con ética, saberes ancestrales con tecnología
+              contemporánea, y autonomía del estudiante con responsabilidad social.
+            </p>
+          </div>
+        </div>
+
+        <a
+          href={pdfHref}
+          download
+          class="bento-card-color bg-bento-lime md:col-span-4 flex flex-col justify-between min-h-[420px] hover:scale-[1.01] transition-transform group"
+        >
+          <div>
+            <span class="text-xs font-bold uppercase tracking-widest opacity-80">PDF rector</span>
+            <div class="text-7xl mt-3">📚</div>
+          </div>
+          <div>
+            <h3 class="text-2xl md:text-3xl font-black tracking-tight leading-tight mb-2">
+              Plan de Área 2026
+            </h3>
+            <p class="text-sm opacity-80 mb-3 leading-relaxed">
+              {planArea.paginas} páginas con marco teórico, mallas curriculares MEN y referentes completos.
+            </p>
+            <div class="inline-flex items-center gap-2 font-bold text-sm group-hover:gap-3 transition-all">
+              Descargar
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- IDEA FUERZA -->
+      <div class="bento-card-color bg-bento-yellow mb-10 py-12 px-6 md:py-16 md:px-10 text-center">
+        <span class="chip-bento mb-4 bg-black/10" style="color: rgba(0,0,0,0.7);">Idea fuerza</span>
+        <p class="text-2xl md:text-3xl font-black tracking-tight leading-tight max-w-3xl mx-auto">
+          "{planArea.ideaFuerza}"
+        </p>
+      </div>
+
+      <!-- 4 FASES MILC -->
+      <div class="bento-card mb-10">
+        <span class="chip-bento mb-3">4 fases del modelo</span>
+        <h2 class="heading-huge mb-2 leading-tight">
+          Escuta · Sistematización · Praxis · Evaluación.
+        </h2>
+        <p class="text-sm md:text-base mb-8 leading-relaxed" style="color: var(--fg-muted);">
+          Cada clase MILC convierte la sesión en un proceso de investigación escolar.
+          El estudiante escucha el contexto, organiza lo que encuentra, actúa con productos
+          o prototipos, y evalúa críticamente el sentido de lo realizado.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+          {fasesMILC.map((f, i) => (
+            <div class={`bento-card-color ${f.bgClass} flex gap-4 items-start min-h-[180px]`}>
+              <div class="text-5xl shrink-0">{f.emoji}</div>
+              <div>
+                <span class="text-xs font-bold uppercase tracking-widest opacity-80">
+                  Fase {i + 1}
+                </span>
+                <h3 class="text-xl md:text-2xl font-black tracking-tight leading-tight mt-1 mb-2">
+                  {f.nombre}
+                </h3>
+                <p class="text-sm leading-relaxed opacity-90">
+                  {f.descripcion}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- DIAGRAMA CICLO -->
+      <div class="bento-card mb-10">
+        <span class="chip-bento mb-3">Diagrama del ciclo completo</span>
+        <h2 class="heading-huge mb-2 leading-tight">El recorrido visual.</h2>
+        <p class="text-sm md:text-base mb-6 leading-relaxed" style="color: var(--fg-muted);">
+          Las 4 fases circulan: cada cierre alimenta la apertura siguiente. En el centro,
+          el triángulo de pensamiento articula la dimensión filosófica.
+        </p>
+        <DiagramaCicloMILC />
+      </div>
+
+      <!-- TRIÁNGULO DE PENSAMIENTO -->
+      <div class="bento-card mb-10">
+        <span class="chip-bento mb-3">Triángulo de pensamiento</span>
+        <h2 class="heading-huge mb-2 leading-tight">3 voces que dialogan al cierre.</h2>
+        <p class="text-sm md:text-base mb-8 leading-relaxed" style="color: var(--fg-muted);">
+          MILC integra tres lentes filosóficas distintas en el cierre de cada guía. La
+          dimensión liberadora (Dussel), el dominio de sí (estoicismo) y la habitabilidad
+          ética de la infoesfera (Floridi).
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
+          {trianguloPensamiento.map((l) => (
+            <div class={`bento-card-color ${l.bgClass} flex flex-col gap-3 min-h-[260px]`}>
+              <div class="text-5xl">{l.emoji}</div>
+              <div>
+                <h3 class="text-lg md:text-xl font-black tracking-tight leading-tight">
+                  {l.nombre}
+                </h3>
+                <span class="text-xs font-bold uppercase tracking-widest opacity-80 mt-1 block">
+                  {l.obra}
+                </span>
+              </div>
+              <p class="text-sm leading-relaxed opacity-90 mt-auto">
+                {l.aporte}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- 18 ANCLAJES ANCESTRALES -->
+      <div class="bento-card mb-10">
+        <span class="chip-bento mb-3">18 anclajes ancestrales</span>
+        <h2 class="heading-huge mb-2 leading-tight">Saberes locales que vertebran cada periodo.</h2>
+        <p class="text-sm md:text-base mb-8 leading-relaxed" style="color: var(--fg-muted);">
+          Cada periodo abre con un saber del Valle del Cauca, el Pacífico o el campo
+          colombiano. El anclaje aparece en la guía de apertura (S1), regresa en el examen
+          formal (pregunta contexto) y vertebra el reto del proyecto integrador.
+          <strong style="color: var(--fg);"> No es decoración: es continuidad cultural con identidad digital.</strong>
+        </p>
+
+        <div class="space-y-5">
+          {grados.map((g) => (
+            <div>
+              <h3 class="text-base md:text-lg font-black mb-3 leading-tight flex items-center gap-3">
+                <span class={`w-10 h-10 rounded-bento-sm ${g.bgClass} flex items-center justify-center text-white text-sm font-black shrink-0`}>
+                  {g.numero}°
+                </span>
+                Grado {g.numero}°
+              </h3>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
+                {(anclajesPorGrado[g.numero] ?? []).map((a) => (
+                  <div class="p-4 rounded-bento-sm border-2" style="border-color: var(--border);">
+                    <div class="text-xs font-bold uppercase tracking-widest mb-1" style="color: var(--fg-muted);">
+                      Período {a.periodo}
+                    </div>
+                    <div class="font-black leading-tight mb-2 text-sm md:text-base">
+                      🌱 {a.oficio}
+                    </div>
+                    <p class="text-xs leading-relaxed" style="color: var(--fg-muted);">
+                      {a.resumen}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- POLÍTICA DE IA -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6 mb-10">
+        <div class="bento-card md:col-span-7">
+          <span class="chip-bento mb-3">🤖 Política de IA responsable</span>
+          <h2 class="heading-huge mb-2 leading-tight">Distribución por grados.</h2>
+          <p class="text-sm md:text-base mb-6 leading-relaxed" style="color: var(--fg-muted);">
+            La IA generativa entra al aula con criterio progresivo. La rúbrica del proyecto
+            integrador valora el <strong style="color: var(--fg);">uso responsable</strong>,
+            no la cantidad de IA usada.
+          </p>
+
+          <div class="space-y-4 mt-6">
+            {politicaIa.map((p, i) => (
+              <div class="flex items-start gap-3 p-4 rounded-bento-sm" style="background: var(--bg);">
+                <span class="w-8 h-8 rounded-bento-sm bg-bento-pink text-white flex items-center justify-center text-sm font-black shrink-0">
+                  {i + 1}
+                </span>
+                <div>
+                  <div class="flex flex-wrap items-baseline gap-3 mb-1">
+                    <h3 class="font-black leading-tight">{p.rango}</h3>
+                    <span class="text-xs font-bold uppercase tracking-widest px-2 py-0.5 rounded-full bg-bento-pink/20" style="color: var(--fg);">
+                      {p.postura}
+                    </span>
+                  </div>
+                  <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">
+                    {p.detalle}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div class="bento-card-color bg-bento-pink md:col-span-5 flex flex-col gap-4 min-h-[420px]">
+          <span class="text-xs font-bold uppercase tracking-widest opacity-80">
+            Principios transversales
+          </span>
+          <h3 class="text-2xl md:text-3xl font-black tracking-tight leading-tight">
+            5 reglas no negociables
+          </h3>
+          <ul class="space-y-3 mt-2">
+            {principiosIa.map((p) => (
+              <li class="flex items-start gap-3">
+                <span class="w-5 h-5 rounded-md bg-black/15 flex items-center justify-center shrink-0 mt-0.5">
+                  <span class="text-[10px] font-black">✓</span>
+                </span>
+                <span class="text-sm leading-relaxed">{p}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <!-- SISTEMA DE VALORACIÓN -->
+      <div class="bento-card mb-10">
+        <span class="chip-bento mb-3">Sistema de valoración de guías</span>
+        <h2 class="heading-huge mb-2 leading-tight">Estrellas absolutas + color por densidad.</h2>
+        <p class="text-sm md:text-base mb-8 leading-relaxed" style="color: var(--fg-muted);">
+          Cada card de guía muestra dos señales independientes. Las
+          <strong style="color: var(--fg);">estrellas</strong> indican completitud del
+          contrato editorial MILC v3 (absoluto: una guía bien hecha siempre se ve bien).
+          El <strong style="color: var(--fg);">color</strong> indica densidad informativa
+          real medida en palabras del YAML.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+          <!-- Estrellas (contrato) -->
+          <div class="p-5 rounded-bento-sm border-2" style="border-color: var(--border);">
+            <h3 class="font-black mb-3">⭐ Estrellas · completitud</h3>
+            <ul class="space-y-3 text-sm">
+              {valoracionPorContrato.map((v) => (
+                <li class="flex items-start gap-3">
+                  <span class="text-xs font-bold w-14 shrink-0 tracking-tight" style="color: var(--fg);">
+                    {'★'.repeat(v.estrellas)}{'☆'.repeat(5 - v.estrellas)}
+                  </span>
+                  <div>
+                    <div class="font-bold leading-tight">{v.nombre}</div>
+                    <p class="text-xs leading-relaxed mt-0.5" style="color: var(--fg-muted);">
+                      {v.significado}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <!-- Color (densidad) -->
+          <div class="p-5 rounded-bento-sm border-2" style="border-color: var(--border);">
+            <h3 class="font-black mb-3">🎨 Color · densidad</h3>
+            <ul class="space-y-3 text-sm">
+              {valoracionPorDensidad.map((v) => (
+                <li class="flex items-start gap-3">
+                  <span class="w-14 shrink-0 text-xs font-bold uppercase" style={`color: ${v.nivel === 'Alta' ? '#58A923' : v.nivel === 'Media' ? '#E5B400' : '#B86600'};`}>
+                    {v.nivel}
+                  </span>
+                  <div>
+                    <div class="font-bold leading-tight">{v.umbral}</div>
+                    <p class="text-xs leading-relaxed mt-0.5" style="color: var(--fg-muted);">
+                      {v.detalle}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- PIPELINE EDITORIAL -->
+      <div class="bento-card mb-10">
+        <span class="chip-bento mb-3">Pipeline editorial</span>
+        <h2 class="heading-huge mb-2 leading-tight">Un YAML · dos salidas · cero copia manual.</h2>
+        <p class="text-sm md:text-base mb-8 leading-relaxed" style="color: var(--fg-muted);">
+          MILC v3 opera como <em>single source of truth</em>: cada pieza vive en un YAML
+          versionado, un builder en Python compila a PDF (vía xelatex) y a TypeScript
+          para la web. Edita el YAML; nunca toques el .pdf o el .ts.
+        </p>
+
+        <DiagramaPipeline />
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-6">
+          {pipelineMilc.map((p) => (
+            <div class="p-4 rounded-bento-sm border-2" style="border-color: var(--border);">
+              <div class="flex items-baseline justify-between gap-3 mb-2 flex-wrap">
+                <h3 class="font-black leading-tight">{p.nombre}</h3>
+                <code class="text-xs px-2 py-1 rounded bg-bento-cyan/15 font-mono">{p.comando}</code>
+              </div>
+              <div class="space-y-0.5 text-xs font-mono" style="color: var(--fg-muted);">
+                <div>YAML: <span style="color: var(--fg);">{p.yaml}</span></div>
+                <div>PDF:&nbsp; <span style="color: var(--fg);">{p.pdf}</span></div>
+                <div>TS:&nbsp;&nbsp; <span style="color: var(--fg);">{p.ts}</span></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- ESTRATEGIAS ACTIVAS -->
+      <div class="bento-card mb-10">
+        <span class="chip-bento mb-3">Estrategias activas de aprendizaje</span>
+        <h2 class="heading-huge mb-2 leading-tight">6 metodologías que vertebran el aula.</h2>
+        <p class="text-sm md:text-base mb-8 leading-relaxed" style="color: var(--fg-muted);">
+          Combinadas con MILC, hacen que cada clase sea experiencia de producción y
+          pensamiento, no de repetición técnica.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {estrategias.map((e) => (
+            <div class="p-4 rounded-bento-sm border-2" style="border-color: var(--border);">
+              <div class="text-3xl mb-2">{e.emoji}</div>
+              <h3 class="font-black leading-tight mb-1">{e.nombre}</h3>
+              <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">
+                {e.descripcion}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- COMPONENTES MEN -->
+      <div class="bento-card mb-10">
+        <span class="chip-bento mb-3">Componentes MEN · Guía No. 30</span>
+        <h2 class="heading-huge mb-2 leading-tight">Articulación con el marco oficial.</h2>
+        <p class="text-sm md:text-base mb-8 leading-relaxed" style="color: var(--fg-muted);">
+          MILC se ancla en los 4 componentes del Ministerio de Educación Nacional. Cada
+          guía MILC v3 los activa explícitamente en la malla curricular.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {componentesMEN.map((c) => (
+            <div class="flex items-start gap-3 p-4 rounded-bento-sm" style="background: var(--bg);">
+              <div class="text-3xl shrink-0">{c.emoji}</div>
+              <div>
+                <h3 class="font-black leading-tight mb-1">{c.nombre}</h3>
+                <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">
+                  {c.descripcion}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- MARCO TEÓRICO · 7 REFERENTES -->
+      <div class="bento-card mb-10">
+        <span class="chip-bento mb-3">Marco teórico</span>
+        <h2 class="heading-huge mb-2 leading-tight">7 referentes que sostienen el modelo.</h2>
+        <p class="text-sm md:text-base mb-8 leading-relaxed" style="color: var(--fg-muted);">
+          MILC no inventa de cero: integra a los grandes referentes pedagógicos, filosóficos
+          y tecnológicos en un lenguaje operativo para el aula.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+          {referentes.map((r) => (
+            <div class="p-5 rounded-bento-sm border-2" style="border-color: var(--border);">
+              <div class="flex items-center gap-3 mb-3">
+                <span class="text-3xl">{r.emoji}</span>
+                <div>
+                  <h3 class="font-black leading-tight">{r.autor}</h3>
+                  <p class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">
+                    {r.obra}
+                  </p>
+                </div>
+              </div>
+              <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">
+                {r.aporte}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- CTA FINAL -->
+      <div class="bento-card-color bg-bento-black grid-pattern py-12 md:py-16 px-6 md:px-10 mb-10">
+        <div class="text-center max-w-2xl mx-auto">
+          <span class="chip-bento mb-3 bg-white/10 text-white">Documento rector</span>
+          <h2 class="heading-huge mb-3 leading-tight">¿Quieres el detalle completo?</h2>
+          <p class="text-base md:text-lg opacity-80 mb-8 leading-relaxed">
+            El Plan de Área 2026 PDF de {planArea.paginas} páginas incluye marco legal,
+            mallas curriculares por grado y periodo, rúbricas detalladas, anexos y
+            referencias bibliográficas completas.
+          </p>
+
+          <a
+            href={pdfHref}
+            download
+            class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full font-bold text-sm bg-bento-lime text-black hover:scale-105 transition-transform"
+          >
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Descargar Plan de Área 2026 (PDF · {planArea.paginas} páginas)
+          </a>
+
+          <p class="text-xs opacity-60 mt-4">
+            Versión editorial MILC v3 · {planArea.institucion}
+          </p>
+        </div>
+      </div>
+
+      <!-- VOLVER -->
+      <a
+        href={base || '/'}
+        class="bento-card-hover flex items-center gap-4"
+      >
+        <svg class="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 12H5"></path>
+          <path d="m12 19-7-7 7-7"></path>
+        </svg>
+        <div>
+          <div class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">Volver al</div>
+          <div class="font-black text-lg">Inicio de ConectaTE</div>
+        </div>
+      </a>
+    </div>
+  </article>
+</BaseLayout>

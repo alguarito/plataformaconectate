@@ -15,6 +15,12 @@ import sharp from 'sharp';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { grados } from '../src/data/grados';
+import { anclajesAncestrales } from '../src/data/planArea';
+
+const ANCLAJE_POR_PERIODO: Record<string, { oficio: string }> = {};
+for (const a of anclajesAncestrales) {
+  ANCLAJE_POR_PERIODO[`${a.grado}-${a.periodo}`] = { oficio: a.oficio };
+}
 
 const OUT_DIR = resolve('public/og');
 const W = 1200;
@@ -129,31 +135,33 @@ function tplHome(): string {
 
 function tplGrado(grado: typeof grados[number]): string {
   const c = COLOR[grado.bgClass] ?? COLOR['bg-bento-blue'];
-  const lineasTit = textoEnLineas(grado.titulo, 28, 2);
+  // 3 chips con los temas de los 3 periodos
+  const chips = grado.periodos.map((p, i) => {
+    const x = 80;
+    const y = 470 + i * 60;
+    const titulo = truncar(p.titulo, 48);
+    return `
+      <text x="${x}" y="${y}" fill="${c.fg}" opacity="0.95" font-family="Helvetica, sans-serif" font-weight="700" font-size="24" letter-spacing="-0.5">
+        <tspan opacity="0.6">P${p.numero} ·</tspan> ${esc(titulo)}
+      </text>`;
+  }).join('');
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
     <rect width="${W}" height="${H}" fill="${c.bg}"/>
     ${patternDots(0.07)}
     <!-- Etiqueta superior -->
     <text x="80" y="120" fill="${c.fg}" opacity="0.85" font-family="Helvetica, sans-serif" font-weight="700" font-size="22" letter-spacing="3">
-      ${esc('GRADO · TECNOLOGÍA E INFORMÁTICA')}
+      ${esc('GRADO · TECNOLOGÍA E INFORMÁTICA · 2026')}
     </text>
-    <!-- Número grande del grado -->
-    <text x="80" y="430" fill="${c.fg}" font-family="Helvetica, sans-serif" font-weight="900" font-size="380" letter-spacing="-15">
+    <!-- Número grande del grado (a la izquierda, no tan dominante) -->
+    <text x="80" y="380" fill="${c.fg}" font-family="Helvetica, sans-serif" font-weight="900" font-size="320" letter-spacing="-15" opacity="0.95">
       ${grado.numero}°
     </text>
-    <!-- Icono del grado en esquina -->
+    <!-- Icono del grado en esquina superior derecha -->
     <text x="${W - 100}" y="200" fill="${c.fg}" font-family="Helvetica, sans-serif" font-size="120" text-anchor="end">
       ${grado.icono}
     </text>
-    <!-- Título del grado -->
-    ${lineasTit
-      .map(
-        (l, i) => `
-      <text x="80" y="${510 + i * 50}" fill="${c.fg}" font-family="Helvetica, sans-serif" font-weight="900" font-size="42" letter-spacing="-1">
-        ${esc(l)}
-      </text>`,
-      )
-      .join('')}
+    <!-- Tres temas (uno por periodo) -->
+    ${chips}
     <!-- Wordmark esquina -->
     ${wordmark(W - 240, H - 60, c.fg, c.fg === '#FFFFFF' ? '#FFFFFF' : '#0066FF')}
   </svg>`;
@@ -162,15 +170,17 @@ function tplGrado(grado: typeof grados[number]): string {
 function tplPeriodo(grado: typeof grados[number], periodo: typeof grados[number]['periodos'][number]): string {
   const c = COLOR[periodo.bgClass] ?? COLOR['bg-bento-blue'];
   const lineasTit = textoEnLineas(periodo.titulo, 22, 2);
+  const anclaje = ANCLAJE_POR_PERIODO[`${grado.numero}-${periodo.numero}`];
+  const oficio = anclaje ? truncar(anclaje.oficio, 50) : '';
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
     <rect width="${W}" height="${H}" fill="${c.bg}"/>
     ${patternDots(0.07)}
     <!-- Etiqueta superior -->
     <text x="80" y="120" fill="${c.fg}" opacity="0.85" font-family="Helvetica, sans-serif" font-weight="700" font-size="22" letter-spacing="3">
-      ${esc(`GRADO ${grado.numero}° · PERÍODO ${periodo.numero}`)}
+      ${esc(`GRADO ${grado.numero}° · PERÍODO ${periodo.numero} · 2026`)}
     </text>
-    <!-- Número grande del período -->
-    <text x="80" y="370" fill="${c.fg}" font-family="Helvetica, sans-serif" font-weight="900" font-size="280" letter-spacing="-12" opacity="0.18">
+    <!-- Número grande del período (fondo decorativo) -->
+    <text x="80" y="370" fill="${c.fg}" font-family="Helvetica, sans-serif" font-weight="900" font-size="280" letter-spacing="-12" opacity="0.16">
       P${periodo.numero}
     </text>
     <!-- Título del período -->
@@ -182,9 +192,17 @@ function tplPeriodo(grado: typeof grados[number], periodo: typeof grados[number]
       </text>`,
       )
       .join('')}
+    <!-- Anclaje ancestral (nuevo · ancla cultural del periodo) -->
+    ${oficio ? `
+    <text x="80" y="${H - 170}" fill="${c.fg}" opacity="0.7" font-family="Helvetica, sans-serif" font-weight="700" font-size="18" letter-spacing="2">
+      ${esc('🌱 ANCLAJE ANCESTRAL')}
+    </text>
+    <text x="80" y="${H - 130}" fill="${c.fg}" opacity="0.95" font-family="Helvetica, sans-serif" font-weight="700" font-size="30" letter-spacing="-1">
+      ${esc(oficio)}
+    </text>` : ''}
     <!-- Sub-stats -->
-    <text x="80" y="${H - 130}" fill="${c.fg}" opacity="0.85" font-family="Helvetica, sans-serif" font-weight="600" font-size="22">
-      ${esc('10 sesiones · 1 proyecto integrador · 1 examen final')}
+    <text x="80" y="${H - 80}" fill="${c.fg}" opacity="0.75" font-family="Helvetica, sans-serif" font-weight="600" font-size="20">
+      ${esc('10 guías · 1 proyecto integrador · 1 examen · banco de práctica')}
     </text>
     <!-- Wordmark esquina -->
     ${wordmark(W - 240, H - 60, c.fg, c.fg === '#FFFFFF' ? '#FFFFFF' : '#0066FF')}
@@ -216,24 +234,30 @@ function tplAcerca(): string {
 
 function tplPlanArea(): string {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
-    <rect width="${W}" height="${H}" fill="#7C3AED"/>
+    <rect width="${W}" height="${H}" fill="#5A0038"/>
     ${patternDots(0.07)}
-    <text x="80" y="120" fill="#FFFFFF" opacity="0.85" font-family="Helvetica, sans-serif" font-weight="700" font-size="22" letter-spacing="3">
-      ${esc('PLAN DE ÁREA · 2025')}
+    <text x="80" y="120" fill="#FFD60A" opacity="0.95" font-family="Helvetica, sans-serif" font-weight="700" font-size="22" letter-spacing="3">
+      ${esc('PLAN DE ÁREA · 2026')}
     </text>
-    <text x="80" y="${H - 100}" fill="#FFFFFF" font-family="Helvetica, sans-serif" font-size="180" text-anchor="start">
+    <text x="${W - 80}" y="220" fill="#FFFFFF" opacity="0.25" font-family="Helvetica, sans-serif" font-size="180" text-anchor="end">
       📚
     </text>
-    <text x="80" y="320" fill="#FFFFFF" font-family="Helvetica, sans-serif" font-weight="900" font-size="80" letter-spacing="-2">
+    <text x="80" y="290" fill="#FFFFFF" font-family="Helvetica, sans-serif" font-weight="900" font-size="80" letter-spacing="-2">
       ${esc('Tecnología')}
     </text>
-    <text x="80" y="410" fill="#FFFFFF" font-family="Helvetica, sans-serif" font-weight="900" font-size="80" letter-spacing="-2">
+    <text x="80" y="380" fill="#FFFFFF" font-family="Helvetica, sans-serif" font-weight="900" font-size="80" letter-spacing="-2">
       ${esc('e Informática.')}
     </text>
-    <text x="80" y="490" fill="#FFFFFF" opacity="0.85" font-family="Helvetica, sans-serif" font-weight="600" font-size="28">
-      ${esc('Modelo MILC · Grados 6° a 11° · I.E. Sor María Juliana')}
+    <text x="80" y="450" fill="#FFD60A" font-family="Helvetica, sans-serif" font-weight="900" font-size="36" letter-spacing="-1">
+      ${esc('216 piezas curriculares activas')}
     </text>
-    ${wordmark(W - 240, H - 60, '#FFFFFF', '#FFFFFF')}
+    <text x="80" y="490" fill="#FFFFFF" opacity="0.85" font-family="Helvetica, sans-serif" font-weight="600" font-size="22">
+      ${esc('180 guías · 18 proyectos · 18 exámenes · Pipeline MILC v3')}
+    </text>
+    <text x="80" y="${H - 100}" fill="#FFFFFF" opacity="0.7" font-family="Helvetica, sans-serif" font-weight="600" font-size="20">
+      ${esc('Grados 6° a 11° · I.E. Sor María Juliana · Cartago')}
+    </text>
+    ${wordmark(W - 240, H - 60, '#FFFFFF', '#FFD60A')}
   </svg>`;
 }
 

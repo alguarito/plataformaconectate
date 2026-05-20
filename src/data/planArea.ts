@@ -25,7 +25,7 @@ export const planArea = {
     'Un estudiante capaz de comprender la tecnología, usarla críticamente, crear con ella y evaluar sus efectos en la vida común.',
 
   pdf: 'plan-de-area-2026.pdf',
-  paginas: 17,
+  paginas: 33,
 
   // Recursos curriculares activos (216 piezas vivas)
   recursos: {

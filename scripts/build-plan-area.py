@@ -101,6 +101,17 @@ PREAMBLE = r"""
 \setlist{leftmargin=6mm,itemsep=1.5mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
 
+% Permite mayor flexibilidad de espaciado para evitar overflow horizontal
+% (URLs y rutas largas sin guiones se quebrarían fuera del margen).
+\setlength{\emergencystretch}{4em}
+\tolerance=1000
+\hyphenpenalty=500
+\hbadness=10000
+
+% Macro para quebrar URLs/rutas largas en cualquier carácter sin agregar guion.
+\usepackage{seqsplit}
+\newcommand{\rutapath}[1]{\seqsplit{#1}}
+
 % Paleta institucional MILC.
 \definecolor{milcMagenta}{HTML}{E6007E}
 \definecolor{milcVino}{HTML}{5A0038}
@@ -504,11 +515,16 @@ def render_plataforma_conectate(pc: dict) -> str:
     parts.append(tex_block(pc["arquitectura_intro"]))
     parts.append(r"\renewcommand{\arraystretch}{1.3}")
     parts.append(r"\rowcolors{2}{milcGris}{white}")
-    parts.append(r"\begin{tabularx}{\textwidth}{>{\bfseries}p{3.2cm}|Y}")
+    parts.append(r"\par\noindent")
+    parts.append(r"\begin{tabularx}{\linewidth}{>{\bfseries}p{3cm}|Y}")
     parts.append(r"\arrayrulecolor{milcLinea}")
     parts.append(r"\rowcolor{milcTurquesa}{\color{white}\textbf{Aspecto}} & {\color{white}\textbf{Detalle}} \\")
     for it in pc["arquitectura_items"]:
-        parts.append(rf"{tex(it['clave'])} & {tex(it['valor'])} \\")
+        valor = tex(it["valor"])
+        # Quiebre seguro de URLs/rutas largas
+        valor = valor.replace("alguarito.github.io/plataformaconectate", r"\seqsplit{alguarito.github.io/plataformaconectate}")
+        valor = valor.replace("github.com/alguarito/plataformaconectate", r"\seqsplit{github.com/alguarito/plataformaconectate}")
+        parts.append(rf"{tex(it['clave'])} & {valor} \\")
     parts.append(r"\end{tabularx}")
 
     # 11.2 Offline (PWA)
@@ -517,7 +533,8 @@ def render_plataforma_conectate(pc: dict) -> str:
     parts.append(r"\subsubsection{Estrategias de caché del Service Worker}")
     parts.append(r"\renewcommand{\arraystretch}{1.3}")
     parts.append(r"\rowcolors{2}{milcGris}{white}")
-    parts.append(r"\begin{tabularx}{\textwidth}{>{\bfseries}p{3.5cm}|>{\ttfamily\footnotesize}p{3cm}|Y}")
+    parts.append(r"\par\noindent")
+    parts.append(r"\begin{tabularx}{\linewidth}{>{\bfseries}p{2.9cm}|>{\ttfamily\scriptsize}p{3.5cm}|Y}")
     parts.append(r"\arrayrulecolor{milcLinea}")
     parts.append(r"\rowcolor{milcTurquesa}{\color{white}\textbf{Tipo}} & {\color{white}\textbf{Estrategia}} & {\color{white}\textbf{Detalle}} \\")
     for e in pc["offline_estrategias"]:
@@ -531,11 +548,16 @@ def render_plataforma_conectate(pc: dict) -> str:
     parts.append(r"\footnotesize")
     parts.append(r"\renewcommand{\arraystretch}{1.3}")
     parts.append(r"\rowcolors{2}{milcGris}{white}")
-    parts.append(r"\begin{tabularx}{\textwidth}{>{\bfseries}p{3.5cm}|Y|>{\ttfamily\scriptsize\centering\arraybackslash}p{3cm}}")
+    parts.append(r"\par\noindent")
+    parts.append(r"\begin{tabularx}{\linewidth}{>{\bfseries}p{3.2cm}|Y|>{\ttfamily\scriptsize\centering\arraybackslash}p{2.7cm}}")
     parts.append(r"\arrayrulecolor{milcLinea}")
     parts.append(r"\rowcolor{milcVino}{\color{white}\textbf{Pieza}} & {\color{white}\textbf{Rutas YAML \textbar{} PDF \textbar{} TS}} & {\color{white}\textbf{Comando}} \\")
     for p in pc["pipeline_piezas"]:
-        rutas = rf"\texttt{{\scriptsize {tex(p['yaml'])}}}\\\texttt{{\scriptsize {tex(p['pdf'])}}}\\\texttt{{\scriptsize {tex(p['ts'])}}}"
+        rutas = (
+            rf"\texttt{{\scriptsize\seqsplit{{{tex(p['yaml'])}}}}}\\"
+            rf"\texttt{{\scriptsize\seqsplit{{{tex(p['pdf'])}}}}}\\"
+            rf"\texttt{{\scriptsize\seqsplit{{{tex(p['ts'])}}}}}"
+        )
         parts.append(rf"{tex(p['tipo'])} & {rutas} & {tex(p['comando'])} \\")
     parts.append(r"\end{tabularx}")
     parts.append(r"\normalsize")
@@ -548,7 +570,8 @@ def render_plataforma_conectate(pc: dict) -> str:
     parts.append(tex_block(pc["accesibilidad_intro"]))
     parts.append(r"\renewcommand{\arraystretch}{1.3}")
     parts.append(r"\rowcolors{2}{milcGris}{white}")
-    parts.append(r"\begin{tabularx}{\textwidth}{>{\bfseries}p{3.5cm}|Y}")
+    parts.append(r"\par\noindent")
+    parts.append(r"\begin{tabularx}{\linewidth}{>{\bfseries}p{3.2cm}|Y}")
     parts.append(r"\arrayrulecolor{milcLinea}")
     parts.append(r"\rowcolor{milcVerde}{\color{white}\textbf{Criterio}} & {\color{white}\textbf{Implementación}} \\")
     for it in pc["accesibilidad_items"]:
@@ -560,7 +583,8 @@ def render_plataforma_conectate(pc: dict) -> str:
     parts.append(tex_block(pc["componentes_intro"]))
     parts.append(r"\renewcommand{\arraystretch}{1.3}")
     parts.append(r"\rowcolors{2}{milcGris}{white}")
-    parts.append(r"\begin{tabularx}{\textwidth}{>{\bfseries\ttfamily}p{3.5cm}|Y}")
+    parts.append(r"\par\noindent")
+    parts.append(r"\begin{tabularx}{\linewidth}{>{\bfseries\ttfamily}p{3.2cm}|Y}")
     parts.append(r"\arrayrulecolor{milcLinea}")
     parts.append(r"\rowcolor{milcMagenta}{\color{white}\textbf{Componente}} & {\color{white}\textbf{Descripción}} \\")
     for c in pc["componentes_lista"]:
@@ -572,7 +596,8 @@ def render_plataforma_conectate(pc: dict) -> str:
     parts.append(tex_block(pc["metricas_intro"]))
     parts.append(r"\renewcommand{\arraystretch}{1.35}")
     parts.append(r"\rowcolors{2}{milcGris}{white}")
-    parts.append(r"\begin{tabularx}{\textwidth}{>{\bfseries}p{3.5cm}|>{\bfseries\centering\arraybackslash}p{2.5cm}|Y}")
+    parts.append(r"\par\noindent")
+    parts.append(r"\begin{tabularx}{\linewidth}{>{\bfseries}p{3.2cm}|>{\bfseries\centering\arraybackslash}p{2.3cm}|Y}")
     parts.append(r"\arrayrulecolor{milcLinea}")
     parts.append(r"\rowcolor{milcMostaza}{\color{white}\textbf{Métrica}} & {\color{white}\textbf{Valor}} & {\color{white}\textbf{Detalle}} \\")
     for m in pc["metricas_lista"]:

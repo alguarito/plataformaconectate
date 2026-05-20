@@ -15,7 +15,7 @@
  * forzar invalidación de caché.
  */
 
-const VERSION = 'v28';
+const VERSION = 'v29';
 const BASE_PATH = '/plataformaconectate';
 
 const CACHE_SHELL = `conectate-shell-${VERSION}`;

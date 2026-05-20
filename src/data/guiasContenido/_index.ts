@@ -256,6 +256,14 @@ export function listaEnriquecidas(): { grado: number; periodo: number; sesion: n
 }
 
 /**
+ * Lista completa de guías con contenido enriquecido. Útil para construir
+ * índices de búsqueda y otros consumidores agregados.
+ */
+export function getAllContenidoGuia(): ContenidoGuia[] {
+  return TODAS.slice();
+}
+
+/**
  * Nivel de adopción del contrato editorial MILC v3 de una guía:
  *  - 'pro':     contrato completo (saber + ruta + actividades + triángulo + 5d).
  *               Es la profundidad de G9·P1+P2 y G11·P1.

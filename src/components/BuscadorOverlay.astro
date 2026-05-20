@@ -1,18 +1,30 @@
 ---
 /**
- * Buscador global de ConectaTE.
+ * Buscador global de ConectaTE (MILC v3).
  *
- * - Indexa al BUILD las 180 guías + 18 proyectos (198 items).
- * - Búsqueda en vivo (≥ 2 chars), insensible a tildes y a mayúsculas.
- * - Resultados resaltados, agrupados por grado.
- * - Marca con ✓ los items ya completados (engancha con localStorage).
- * - Navegación con teclado: ↑ ↓ para moverse, Enter para abrir, Esc para cerrar.
- * - Atajos para abrir: ⌘ K, Ctrl K, /.
+ * Indexa al BUILD las fuentes editoriales del corpus:
+ *   - 180 guías MILC v3 (título + saber ancestral + conceptos clave + triángulo)
+ *   - 18 proyectos integradores entregable-céntricos (reto + anclaje + entregables)
+ *   - 18 exámenes finales (título + período + DBA del periodo)
+ *   - 18 anclajes ancestrales del plan de área (atajo a la guía S1 que los contiene)
+ *
+ * Cada concepto clave de las guías también se indexa como item independiente,
+ * de modo que buscar "identidad digital" lleva directo a la guía donde se
+ * desarrolla, no solo a las que lo mencionan en el título.
+ *
+ * UX:
+ *   - Búsqueda en vivo (≥ 2 chars), insensible a tildes y mayúsculas.
+ *   - 5 tipos de resultado con badge propio: guía · proyecto · examen · concepto · anclaje.
+ *   - Filtros sticky por tipo (chips).
+ *   - Hasta 100 resultados visibles + botón "Cargar más".
+ *   - Navegación con ↑ ↓ + Enter; cerrar con Esc; abrir con ⌘ K / Ctrl K / /.
+ *   - Marca ✓ las guías y proyectos ya completados (localStorage).
  */
 import { grados } from '../data/grados';
-import { recursos } from '../data/recursos';
-import { proyectos } from '../data/proyectos';
+import { getAllContenidoGuia } from '../data/guiasContenido/_index';
+import { getAllContenidoProyecto } from '../data/proyectosContenido/_index';
 import { examenes } from '../data/examenes';
+import { anclajesAncestrales } from '../data/planArea';
 
 const base = import.meta.env.BASE_URL;
 
@@ -24,88 +36,164 @@ function normalizar(s: string): string {
     .trim();
 }
 
+type TipoResultado = 'guia' | 'proyecto' | 'examen' | 'concepto' | 'anclaje';
+
 interface ItemIndice {
-  tipo: 'guia' | 'proyecto' | 'examen';
+  tipo: TipoResultado;
   grado: number;
   periodo: number;
-  sesion: number; // 0 para proyectos y exámenes
+  sesion: number;          // 0 para proyectos/exámenes/anclajes
   titulo: string;
-  contexto: string; // ej. "P1 · Sesión 1"
+  contexto: string;        // ej. "G6 · P1 · S2"
+  subtitulo?: string;      // texto descriptivo opcional
   href: string;
-  k: string; // texto normalizado
-  bgClass: string; // color del período (badge)
+  k: string;               // texto normalizado para match
+  bgClass: string;         // color del período (badge)
 }
 
-// Mapa rápido grado→periodo→bgClass para los badges
+// Mapa rápido grado → periodo → bgClass para los badges
 const colorPorPeriodo: Record<string, string> = {};
+const periodoTitulo: Record<string, string> = {};
 for (const g of grados) {
   for (const p of g.periodos) {
     colorPorPeriodo[`${g.numero}-${p.numero}`] = p.bgClass;
+    periodoTitulo[`${g.numero}-${p.numero}`] = p.titulo;
   }
 }
 
-// Grados en construcción no entran al índice de búsqueda: el currículum
-// no está liberado y enlazar a sus guías rompe la promesa de "no dar acceso".
+// Grados en construcción no entran al índice
 const gradosEnConstruccion = new Set(
   grados.filter((g) => g.enConstruccion).map((g) => g.numero),
 );
 
-const indice: ItemIndice[] = [
-  ...recursos
-    .filter((r) => !gradosEnConstruccion.has(r.grado))
-    .map((r) => ({
-      tipo: 'guia' as const,
-      grado: r.grado,
-      periodo: r.periodo,
-      sesion: r.sesion,
-      titulo: r.titulo,
-      contexto: `P${r.periodo} · Sesión ${r.sesion}`,
-      href: `${base}/grado-${r.grado}/periodo-${r.periodo}/guia-${r.sesion}`,
-      k: normalizar(r.titulo),
-      bgClass: colorPorPeriodo[`${r.grado}-${r.periodo}`] ?? 'bg-bento-blue',
-    })),
-  ...grados.filter((g) => !g.enConstruccion).flatMap((g) =>
-    g.periodos.map((p) => {
-      const proy = proyectos.find((pr) => pr.grado === g.numero && pr.periodo === p.numero);
-      const reto = proy?.retoCentral ?? p.titulo;
-      const aprendizajesTexto = proy?.aprendizajes.join(' ') ?? '';
-      return {
-        tipo: 'proyecto' as const,
-        grado: g.numero,
-        periodo: p.numero,
-        sesion: 0,
-        titulo: `Proyecto integrador · ${reto}`,
-        contexto: `Período ${p.numero}`,
-        href: `${base}/grado-${g.numero}/periodo-${p.numero}/proyecto`,
-        k: normalizar(
-          `proyecto integrador ${reto} ${p.titulo} ${proy?.productoFinal ?? ''} ${proy?.estrategia ?? ''} ${aprendizajesTexto}`,
-        ),
-        bgClass: p.bgClass,
-      };
-    }),
-  ),
-  ...examenes.map((e) => {
-    // Buscar el período correspondiente para acceder a su título y descripción
-    const grado = grados.find((g) => g.numero === e.grado);
-    const periodo = grado?.periodos.find((p) => p.numero === e.periodo);
-    const tituloPeriodo = periodo?.titulo ?? '';
-    return {
-      tipo: 'examen' as const,
-      grado: e.grado,
-      periodo: e.periodo,
-      sesion: 0,
-      titulo: `Examen final · ${tituloPeriodo}`,
-      contexto: `Período ${e.periodo}`,
-      href: `${base}/grado-${e.grado}/periodo-${e.periodo}/examen`,
-      k: normalizar(
-        `examen final ${tituloPeriodo} ${periodo?.descripcion ?? ''} sintesis aplicacion argumentacion`,
-      ),
-      bgClass: periodo?.bgClass ?? 'bg-bento-blue',
-    };
-  }),
-];
+const indice: ItemIndice[] = [];
+
+// ─── 1. Guías MILC v3 ─────────────────────────────────────────────────────
+for (const guia of getAllContenidoGuia()) {
+  if (gradosEnConstruccion.has(guia.grado)) continue;
+  const claveColor = `${guia.grado}-${guia.periodo}`;
+  const bgClass = colorPorPeriodo[claveColor] ?? 'bg-bento-blue';
+
+  const titulo = guia.titulo ?? guia.resumen;
+  const saber = guia.saberAncestral
+    ? `${guia.saberAncestral.saber ?? ''} ${guia.saberAncestral.fuente ?? ''} ${guia.saberAncestral.preguntaPuente ?? ''}`
+    : '';
+  const conceptos = guia.conceptosClave
+    .map((c) => `${c.termino} ${c.definicion}`)
+    .join(' ');
+  const triangulo = guia.triangulo
+    ? `${guia.triangulo.dussel.cita} ${guia.triangulo.estoico.cita} ${guia.triangulo.floridi.cita} ${guia.triangulo.dussel.lente} ${guia.triangulo.estoico.lente} ${guia.triangulo.floridi.lente}`
+    : '';
+  const preLectura = `${guia.preLectura.porQueImporta} ${guia.preLectura.preguntaDetonante}`;
+  const subtema = guia.subtema ?? '';
+
+  indice.push({
+    tipo: 'guia',
+    grado: guia.grado,
+    periodo: guia.periodo,
+    sesion: guia.sesion,
+    titulo,
+    subtitulo: guia.resumen,
+    contexto: `G${guia.grado} · P${guia.periodo} · S${guia.sesion}`,
+    href: `${base}/grado-${guia.grado}/periodo-${guia.periodo}/guia-${guia.sesion}`,
+    k: normalizar(`${titulo} ${subtema} ${preLectura} ${saber} ${conceptos} ${triangulo}`),
+    bgClass,
+  });
+
+  // ─── Cada concepto clave como item independiente ──────────────────────
+  for (const c of guia.conceptosClave) {
+    indice.push({
+      tipo: 'concepto',
+      grado: guia.grado,
+      periodo: guia.periodo,
+      sesion: guia.sesion,
+      titulo: c.termino,
+      subtitulo: c.definicion,
+      contexto: `G${guia.grado} · P${guia.periodo} · S${guia.sesion}`,
+      href: `${base}/grado-${guia.grado}/periodo-${guia.periodo}/guia-${guia.sesion}#concepto-${normalizar(c.termino).replace(/\s+/g, '-')}`,
+      k: normalizar(`${c.termino} ${c.definicion} ${c.ejemplo ?? ''}`),
+      bgClass,
+    });
+  }
+}
+
+// ─── 2. Proyectos integradores MILC v3 ────────────────────────────────────
+for (const proy of getAllContenidoProyecto()) {
+  if (gradosEnConstruccion.has(proy.grado)) continue;
+  const claveColor = `${proy.grado}-${proy.periodo}`;
+  const bgClass = colorPorPeriodo[claveColor] ?? 'bg-bento-blue';
+
+  const entregables = proy.entregables
+    .map((e) => `${e.titulo} ${e.queEntregas} ${e.criterios.join(' ')}`)
+    .join(' ');
+  const aprendizajes = proy.aprendizajes.map((a) => a.titulo).join(' ');
+
+  indice.push({
+    tipo: 'proyecto',
+    grado: proy.grado,
+    periodo: proy.periodo,
+    sesion: 0,
+    titulo: proy.titulo || `Proyecto integrador · ${proy.reto}`,
+    subtitulo: proy.reto,
+    contexto: `G${proy.grado} · P${proy.periodo} · Proyecto`,
+    href: `${base}/grado-${proy.grado}/periodo-${proy.periodo}/proyecto`,
+    k: normalizar(
+      `proyecto integrador ${proy.titulo} ${proy.reto} ${proy.anclaje} ${proy.estrategia} ${proy.dba} ${entregables} ${aprendizajes}`,
+    ),
+    bgClass,
+  });
+}
+
+// ─── 3. Exámenes finales ──────────────────────────────────────────────────
+for (const ex of examenes) {
+  if (gradosEnConstruccion.has(ex.grado)) continue;
+  const claveColor = `${ex.grado}-${ex.periodo}`;
+  const bgClass = colorPorPeriodo[claveColor] ?? 'bg-bento-blue';
+  const tituloPer = periodoTitulo[claveColor] ?? '';
+
+  indice.push({
+    tipo: 'examen',
+    grado: ex.grado,
+    periodo: ex.periodo,
+    sesion: 0,
+    titulo: `Examen final · ${tituloPer || `P${ex.periodo}`}`,
+    subtitulo: 'Banco de práctica y examen formal del período',
+    contexto: `G${ex.grado} · P${ex.periodo} · Examen`,
+    href: `${base}/grado-${ex.grado}/periodo-${ex.periodo}/examen`,
+    k: normalizar(
+      `examen final ${tituloPer} banco de practica sintesis aplicacion argumentacion ${ex.archivo}`,
+    ),
+    bgClass,
+  });
+}
+
+// ─── 4. Anclajes ancestrales del plan de área ─────────────────────────────
+// Cada anclaje enlaza al período correspondiente; el saber se desarrolla en S1.
+for (const a of anclajesAncestrales) {
+  if (gradosEnConstruccion.has(a.grado)) continue;
+  const claveColor = `${a.grado}-${a.periodo}`;
+  const bgClass = colorPorPeriodo[claveColor] ?? 'bg-bento-blue';
+
+  indice.push({
+    tipo: 'anclaje',
+    grado: a.grado,
+    periodo: a.periodo,
+    sesion: 1,
+    titulo: a.oficio,
+    subtitulo: a.resumen,
+    contexto: `G${a.grado} · P${a.periodo} · Saber ancestral`,
+    href: `${base}/grado-${a.grado}/periodo-${a.periodo}/guia-1`,
+    k: normalizar(`${a.oficio} ${a.resumen} saber ancestral anclaje`),
+    bgClass,
+  });
+}
 
 const totalItems = indice.length;
+const totalGuias = indice.filter((i) => i.tipo === 'guia').length;
+const totalProyectos = indice.filter((i) => i.tipo === 'proyecto').length;
+const totalConceptos = indice.filter((i) => i.tipo === 'concepto').length;
+const totalExamenes = indice.filter((i) => i.tipo === 'examen').length;
+const totalAnclajes = indice.filter((i) => i.tipo === 'anclaje').length;
 ---
 
 <dialog
@@ -114,19 +202,20 @@ const totalItems = indice.length;
 >
   <div class="fixed inset-0 flex items-start md:items-center justify-center p-0 md:p-6 md:pt-20">
     <div
-      class="w-full md:max-w-2xl h-full md:h-auto md:max-h-[80vh] flex flex-col rounded-none md:rounded-bento-lg shadow-2xl overflow-hidden"
+      class="w-full md:max-w-3xl h-full md:h-auto md:max-h-[85vh] flex flex-col rounded-none md:rounded-bento-lg shadow-2xl overflow-hidden"
       style="background: var(--bg);"
     >
       {/* Caja de búsqueda */}
       <div class="flex items-center gap-3 px-5 md:px-6 py-4 border-b" style="border-color: var(--border);">
-        <svg class="w-5 h-5 shrink-0" style="color: var(--fg-muted);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <svg class="w-5 h-5 shrink-0" style="color: var(--fg-muted);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <circle cx="11" cy="11" r="8"></circle>
           <path d="m21 21-4.3-4.3"></path>
         </svg>
         <input
           id="buscador-input"
           type="search"
-          placeholder={`Busca entre ${totalItems} guías y proyectos…`}
+          placeholder="Busca tema, saber ancestral, concepto, proyecto…"
+          aria-label="Buscar en el corpus de la plataforma"
           autocomplete="off"
           autocorrect="off"
           autocapitalize="off"
@@ -144,10 +233,43 @@ const totalItems = indice.length;
           class="w-8 h-8 rounded-full flex items-center justify-center hover:opacity-70 transition-opacity md:hidden"
           style="background: var(--border);"
         >
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M18 6 6 18"></path>
             <path d="m6 6 12 12"></path>
           </svg>
+        </button>
+      </div>
+
+      {/* Filtros por tipo */}
+      <div
+        class="flex items-center gap-2 px-5 md:px-6 py-3 border-b overflow-x-auto"
+        style="border-color: var(--border);"
+        role="tablist"
+        aria-label="Filtrar por tipo de resultado"
+      >
+        <button
+          type="button"
+          class="buscador-filtro shrink-0 px-3 py-1.5 rounded-full text-xs font-black uppercase tracking-widest border-2 transition-all"
+          data-filtro="todo"
+          aria-pressed="true"
+          style="border-color: var(--fg); background: var(--fg); color: var(--bg);"
+        >
+          Todo · {totalItems}
+        </button>
+        <button type="button" class="buscador-filtro shrink-0 px-3 py-1.5 rounded-full text-xs font-black uppercase tracking-widest border-2 transition-all" data-filtro="guia" aria-pressed="false" style="border-color: var(--border); color: var(--fg-muted);">
+          📄 Guías · {totalGuias}
+        </button>
+        <button type="button" class="buscador-filtro shrink-0 px-3 py-1.5 rounded-full text-xs font-black uppercase tracking-widest border-2 transition-all" data-filtro="proyecto" aria-pressed="false" style="border-color: var(--border); color: var(--fg-muted);">
+          🎯 Proyectos · {totalProyectos}
+        </button>
+        <button type="button" class="buscador-filtro shrink-0 px-3 py-1.5 rounded-full text-xs font-black uppercase tracking-widest border-2 transition-all" data-filtro="examen" aria-pressed="false" style="border-color: var(--border); color: var(--fg-muted);">
+          📝 Exámenes · {totalExamenes}
+        </button>
+        <button type="button" class="buscador-filtro shrink-0 px-3 py-1.5 rounded-full text-xs font-black uppercase tracking-widest border-2 transition-all" data-filtro="concepto" aria-pressed="false" style="border-color: var(--border); color: var(--fg-muted);">
+          🔑 Conceptos · {totalConceptos}
+        </button>
+        <button type="button" class="buscador-filtro shrink-0 px-3 py-1.5 rounded-full text-xs font-black uppercase tracking-widest border-2 transition-all" data-filtro="anclaje" aria-pressed="false" style="border-color: var(--border); color: var(--fg-muted);">
+          🌱 Anclajes · {totalAnclajes}
         </button>
       </div>
 
@@ -156,12 +278,13 @@ const totalItems = indice.length;
         id="buscador-resultados"
         class="flex-1 overflow-y-auto p-3 md:p-4"
         role="listbox"
+        aria-label="Resultados de búsqueda"
       >
         <div id="buscador-vacio" class="text-center py-12 px-6">
-          <div class="text-5xl mb-3">🔎</div>
+          <div class="text-5xl mb-3" aria-hidden="true">🔎</div>
           <div class="font-bold text-lg mb-1">Empieza a escribir</div>
           <div class="text-sm" style="color: var(--fg-muted);">
-            Busca por tema (ej. "excel", "phishing", "scratch") o por grado y sesión.
+            Busca por <strong>tema</strong> (ej. "phishing"), <strong>saber ancestral</strong> (ej. "minga"), <strong>concepto</strong> (ej. "huella digital") o <strong>proyecto</strong>.
           </div>
         </div>
       </div>
@@ -183,6 +306,7 @@ const totalItems = indice.length;
           <kbd class="px-1.5 py-0.5 rounded border" style="border-color: var(--border);">⌘ K</kbd>
           abrir
         </span>
+        <span class="ml-auto" aria-live="polite" id="buscador-contador"></span>
       </div>
     </div>
   </div>
@@ -193,11 +317,12 @@ const totalItems = indice.length;
   const input = document.getElementById('buscador-input');
   const out = document.getElementById('buscador-resultados');
   const vacio = document.getElementById('buscador-vacio');
+  const contador = document.getElementById('buscador-contador');
 
   if (!dialog || !input || !out) {
-    // SSR / desconexión — no continuamos
+    // SSR — no continuamos
   } else {
-    /** Helpers ---------------------------------------------------------- */
+    // ─── Helpers ──────────────────────────────────────────────────────────
 
     function normalizar(s) {
       return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim();
@@ -212,24 +337,18 @@ const totalItems = indice.length;
         .replaceAll("'", '&#39;');
     }
 
-    /** Devuelve el HTML del título con los matches resaltados. */
-    function resaltar(titulo, queryNorm) {
-      if (!queryNorm) return escapeHtml(titulo);
-      const tNorm = normalizar(titulo);
+    function resaltar(text, queryNorm) {
+      if (!queryNorm) return escapeHtml(text);
+      const tNorm = normalizar(text);
       const idx = tNorm.indexOf(queryNorm);
-      if (idx < 0) return escapeHtml(titulo);
-      // mismo índice porque normalizar no cambia la longitud (sí: NFD elimina diacríticos
-      // pero como contamos sobre la normalizada y el original puede tener tildes, podríamos
-      // tener un offset. Para robustez, hacemos un mapeo char-a-char.)
+      if (idx < 0) return escapeHtml(text);
       let visible = '';
       let normCount = 0;
       let highlighted = false;
-      for (let i = 0; i < titulo.length; i++) {
-        const ch = titulo[i];
+      for (let i = 0; i < text.length; i++) {
+        const ch = text[i];
         const chNorm = normalizar(ch);
-        if (!highlighted && normCount === idx) {
-          visible += '<mark>';
-        }
+        if (!highlighted && normCount === idx) visible += '<mark>';
         visible += escapeHtml(ch);
         if (chNorm.length > 0) {
           normCount += chNorm.length;
@@ -243,7 +362,6 @@ const totalItems = indice.length;
       return visible;
     }
 
-    /** Lee el estado de progreso de localStorage para los checks ✓. */
     function leerCompletadas() {
       try {
         const raw = localStorage.getItem('conectate.progreso.v1');
@@ -263,35 +381,67 @@ const totalItems = indice.length;
       if (item.tipo === 'proyecto') {
         return `g${item.grado}-p${item.periodo}` in c.proyectos;
       }
-      // exámenes no se trackean en el progreso
       return false;
     }
 
-    /** Búsqueda + render ----------------------------------------------- */
+    const ICONOS = {
+      guia: '📄',
+      proyecto: '🎯',
+      examen: '📝',
+      concepto: '🔑',
+      anclaje: '🌱',
+    };
+    const ETIQUETAS = {
+      guia: 'Guía',
+      proyecto: 'Proyecto',
+      examen: 'Examen',
+      concepto: 'Concepto',
+      anclaje: 'Anclaje ancestral',
+    };
 
-    let resultadosActuales = [];
+    // ─── Estado ───────────────────────────────────────────────────────────
+
+    let queryNorm = '';
+    let filtroActivo = 'todo';
+    let resultadosVisibles = [];
     let cursor = -1;
+    let limite = 100;
+    const PAGINA = 100;
 
-    function render(q) {
-      const qn = normalizar(q);
-      if (qn.length < 2) {
-        resultadosActuales = [];
+    // ─── Render ───────────────────────────────────────────────────────────
+
+    function calcularMatches() {
+      if (queryNorm.length < 2) return [];
+      let base = indice;
+      if (filtroActivo !== 'todo') {
+        base = indice.filter((i) => i.tipo === filtroActivo);
+      }
+      return base.filter((i) => i.k.includes(queryNorm));
+    }
+
+    function render() {
+      if (queryNorm.length < 2) {
+        resultadosVisibles = [];
         cursor = -1;
         out.innerHTML = '';
         out.appendChild(vacio);
+        if (contador) contador.textContent = '';
         return;
       }
-      const matches = indice.filter((i) => i.k.includes(qn)).slice(0, 30);
-      resultadosActuales = matches;
-      cursor = matches.length > 0 ? 0 : -1;
+      const matches = calcularMatches();
+      resultadosVisibles = matches.slice(0, limite);
+      cursor = resultadosVisibles.length > 0 ? 0 : -1;
+      if (contador) {
+        contador.textContent = `${matches.length} ${matches.length === 1 ? 'resultado' : 'resultados'}`;
+      }
 
       if (matches.length === 0) {
         out.innerHTML = `
           <div class="text-center py-12 px-6">
-            <div class="text-5xl mb-3">🤔</div>
-            <div class="font-bold text-lg mb-1">Sin resultados para "${escapeHtml(q)}"</div>
+            <div class="text-5xl mb-3" aria-hidden="true">🤔</div>
+            <div class="font-bold text-lg mb-1">Sin resultados</div>
             <div class="text-sm" style="color: var(--fg-muted);">
-              Prueba con otra palabra clave (sin acentos, en singular).
+              Prueba con otra palabra clave o cambia el filtro de tipo.
             </div>
           </div>`;
         return;
@@ -299,48 +449,52 @@ const totalItems = indice.length;
 
       // Agrupar por grado
       const porGrado = new Map();
-      for (const m of matches) {
+      for (const m of resultadosVisibles) {
         if (!porGrado.has(m.grado)) porGrado.set(m.grado, []);
         porGrado.get(m.grado).push(m);
       }
 
       const partes = [];
-      partes.push(
-        `<div class="text-xs font-bold uppercase tracking-widest mb-3 px-2" style="color: var(--fg-muted);">
-          ${matches.length} ${matches.length === 1 ? 'resultado' : 'resultados'}
-        </div>`,
-      );
+      partes.push(`
+        <div class="text-xs font-bold uppercase tracking-widest mb-3 px-2" style="color: var(--fg-muted);">
+          Mostrando ${resultadosVisibles.length} de ${matches.length} ${matches.length === 1 ? 'resultado' : 'resultados'}
+        </div>`);
 
       let idxGlobal = 0;
       for (const [grado, items] of [...porGrado.entries()].sort((a, b) => a[0] - b[0])) {
-        partes.push(
-          `<div class="text-xs font-black uppercase tracking-widest mt-3 mb-2 px-2 opacity-60">
+        partes.push(`
+          <div class="text-xs font-black uppercase tracking-widest mt-3 mb-2 px-2 opacity-60">
             Grado ${grado}°
-          </div>`,
-        );
+          </div>`);
         for (const it of items) {
           const completado = estaCompletado(it);
-          const icono =
-            it.tipo === 'proyecto' ? '🎯' :
-            it.tipo === 'examen' ? '📝' :
-            '📄';
+          const icono = ICONOS[it.tipo] ?? '📄';
+          const etiqueta = ETIQUETAS[it.tipo] ?? 'Resultado';
+          const subtitulo = it.subtitulo
+            ? `<div class="text-xs mt-1 line-clamp-2" style="color: var(--fg-muted);">${resaltar(it.subtitulo, queryNorm)}</div>`
+            : '';
           partes.push(`
             <a
               href="${escapeHtml(it.href)}"
               data-resultado-idx="${idxGlobal}"
+              role="option"
               class="buscador-resultado flex items-start gap-3 p-3 rounded-bento-sm hover:opacity-90 transition-opacity"
             >
-              <span class="text-2xl shrink-0">${icono}</span>
+              <span class="text-2xl shrink-0" aria-hidden="true">${icono}</span>
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2 flex-wrap mb-1">
                   <span class="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest ${escapeHtml(it.bgClass)}">
                     ${escapeHtml(it.contexto)}
                   </span>
+                  <span class="text-[10px] font-bold uppercase tracking-widest" style="color: var(--fg-muted);">
+                    ${escapeHtml(etiqueta)}
+                  </span>
                   ${completado ? '<span class="text-xs font-bold text-bento-lime">✓ Completada</span>' : ''}
                 </div>
-                <div class="font-bold leading-snug">${resaltar(it.titulo, qn)}</div>
+                <div class="font-bold leading-snug">${resaltar(it.titulo, queryNorm)}</div>
+                ${subtitulo}
               </div>
-              <svg class="w-5 h-5 shrink-0 mt-1 opacity-40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <svg class="w-5 h-5 shrink-0 mt-1 opacity-40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="m9 18 6-6-6-6"></path>
               </svg>
             </a>`);
@@ -348,7 +502,28 @@ const totalItems = indice.length;
         }
       }
 
+      // Botón "Cargar más" si hay más
+      if (matches.length > resultadosVisibles.length) {
+        partes.push(`
+          <button
+            type="button"
+            id="buscador-cargar-mas"
+            class="w-full mt-4 py-3 rounded-bento-sm font-bold text-sm border-2 hover:opacity-80 transition-opacity"
+            style="border-color: var(--border); color: var(--fg);"
+          >
+            Cargar ${Math.min(PAGINA, matches.length - resultadosVisibles.length)} resultados más
+            (${matches.length - resultadosVisibles.length} restantes)
+          </button>`);
+      }
+
       out.innerHTML = partes.join('');
+      const cargarMas = document.getElementById('buscador-cargar-mas');
+      if (cargarMas) {
+        cargarMas.addEventListener('click', () => {
+          limite += PAGINA;
+          render();
+        });
+      }
       pintarCursor();
     }
 
@@ -356,32 +531,62 @@ const totalItems = indice.length;
       out.querySelectorAll('.buscador-resultado').forEach((el, i) => {
         if (i === cursor) {
           el.classList.add('bg-bento-blue', 'text-white');
+          el.setAttribute('aria-selected', 'true');
           el.scrollIntoView({ block: 'nearest' });
         } else {
           el.classList.remove('bg-bento-blue', 'text-white');
+          el.removeAttribute('aria-selected');
         }
       });
     }
 
-    /** Eventos --------------------------------------------------------- */
+    // ─── Filtros ──────────────────────────────────────────────────────────
+
+    document.querySelectorAll('.buscador-filtro').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const filtro = btn.dataset.filtro;
+        if (!filtro) return;
+        filtroActivo = filtro;
+        limite = PAGINA;
+        // Actualizar estado visual
+        document.querySelectorAll('.buscador-filtro').forEach((b) => {
+          const activo = b.dataset.filtro === filtro;
+          b.setAttribute('aria-pressed', activo ? 'true' : 'false');
+          if (activo) {
+            b.style.background = 'var(--fg)';
+            b.style.color = 'var(--bg)';
+            b.style.borderColor = 'var(--fg)';
+          } else {
+            b.style.background = '';
+            b.style.color = 'var(--fg-muted)';
+            b.style.borderColor = 'var(--border)';
+          }
+        });
+        render();
+      });
+    });
+
+    // ─── Eventos de input/teclado ─────────────────────────────────────────
 
     input.addEventListener('input', (e) => {
-      render((e.target).value);
+      queryNorm = normalizar(e.target.value);
+      limite = PAGINA;
+      render();
     });
 
     input.addEventListener('keydown', (e) => {
-      if (resultadosActuales.length === 0) return;
+      if (resultadosVisibles.length === 0) return;
       if (e.key === 'ArrowDown') {
         e.preventDefault();
-        cursor = (cursor + 1) % resultadosActuales.length;
+        cursor = (cursor + 1) % resultadosVisibles.length;
         pintarCursor();
       } else if (e.key === 'ArrowUp') {
         e.preventDefault();
-        cursor = (cursor - 1 + resultadosActuales.length) % resultadosActuales.length;
+        cursor = (cursor - 1 + resultadosVisibles.length) % resultadosVisibles.length;
         pintarCursor();
       } else if (e.key === 'Enter') {
         e.preventDefault();
-        const item = resultadosActuales[cursor];
+        const item = resultadosVisibles[cursor];
         if (item) window.location.href = item.href;
       }
     });
@@ -394,7 +599,7 @@ const totalItems = indice.length;
       if (e.target === dialog) dialog.close();
     });
 
-    /** Apertura -------------------------------------------------------- */
+    // ─── Apertura ─────────────────────────────────────────────────────────
 
     function abrir() {
       if (typeof dialog.showModal === 'function') dialog.showModal();
@@ -412,13 +617,11 @@ const totalItems = indice.length;
         e.target instanceof HTMLTextAreaElement ||
         (e.target instanceof HTMLElement && e.target.isContentEditable);
 
-      // ⌘ K / Ctrl K
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
         abrir();
         return;
       }
-      // "/" cuando NO se está escribiendo en otro lado
       if (e.key === '/' && !enInput && !dialog.open) {
         e.preventDefault();
         abrir();
@@ -450,5 +653,13 @@ const totalItems = indice.length;
       opacity: 1;
       transform: translateY(0) scale(1);
     }
+  }
+
+  /* Line clamp para subtítulos largos */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 </style>

@@ -49,6 +49,11 @@ ifeq ($(CLAVE),)
 else
 	@GRADO=$(GRADO) $(PYTHON) $(BUILDER) $(CLAVE)
 endif
+	@$(PYTHON) scripts/medir-densidad.py > /dev/null && echo "  ✓ densidad.json actualizada (peso real del PDF)"
+
+.PHONY: guia-densidad
+guia-densidad:  ## Regenera public/data/densidad.json con peso real de los PDFs (estrellas)
+	@$(PYTHON) scripts/medir-densidad.py
 
 .PHONY: guia-show
 guia-show:  ## Abre el PDF de la guía CLAVE en Preview (requiere CLAVE=p-s)

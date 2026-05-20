@@ -1,0 +1,219 @@
+/**
+ * Contenido web del proyecto integrador · Grado 7 · Período 1
+ *
+ * Auto-generado desde content/proyectos/7-1.yaml por
+ * scripts/build-proyectos-web-ts.py. Edita el YAML, no este archivo.
+ *
+ * Modelo MILC v3 entregable-céntrico: 3-5 entregables con reflexión
+ * incrustada del triángulo (Dussel/Estoico/Floridi).
+ */
+import type { ContenidoProyecto } from './_schema';
+
+const contenido: ContenidoProyecto = {
+  grado: 7,
+  periodo: 1,
+  clave: '7-1',
+  titulo: 'Proyecto integrador · Minga digital: una obra colaborativa en la nube',
+  tituloPortada: 'Minga digital — una obra en la nube',
+  autor: 'Dr. Álvaro Cárdenas Orozco',
+  dba: 'Produce un proyecto colaborativo en Microsoft 365 aplicando coautoría, permisos, comentarios e historial de versiones, con declaración del proceso (MEN, T&I 7°).',
+  estrategia: 'Trabajo en equipo + producto colaborativo en la nube + reflexión ética',
+  duracionSemanas: 4,
+  modalidad: 'equipo de 3',
+  reto: 'Tu equipo de 3 estudiantes se convierte en minga digital del salón: produce una obra colaborativa real en Microsoft 365 sobre un tema del colegio o el barrio. Tres entregables que cierran el periodo: un Word colaborativo de 4 páginas, una tabla en Excel con datos del tema, y un PowerPoint de 5 diapositivas para sustentar. Todo el proceso queda registrado — comentarios, historial, permisos — como bitácora de minga.',
+  insumos: [
+    'Cuenta institucional con acceso a Microsoft 365 (Word/Excel/PowerPoint en línea, OneDrive, Teams, Outlook)',
+    'Computador o celular con navegador moderno para entrar a office.com',
+    'Cuaderno físico de cada integrante con sus 10 sesiones del periodo 1',
+    'Acceso a Outlook institucional para enviar la entrega al profe',
+    'Acuerdo de equipo sobre el tema del proyecto (firmado por los 3)'
+  ],
+  anclaje: 'En las veredas alrededor de Cartago existía la minga: 20-30 vecinos cosechando café al tiempo, cada uno en un surco, sin estorbarse, con reciprocidad. Lo que una persona haría en un mes, la minga lo terminaba en un día. Las mujeres preparaban sancocho grande y al mediodía todos comían juntos. Trabajo paralelo + no estorbar + organización + reciprocidad: 4 ideas que sostienen la minga. Tu equipo de 3 las traslada hoy a Microsoft 365: cada uno en su sección, sin estorbar al otro, organizando con comentarios y permisos, con reciprocidad (todos aportamos al mismo Word). La herramienta es nueva; el saber es ancestral.',
+  aprendizajes: [
+    {
+      sesion: 1,
+      titulo: 'Apertura: la minga digital y el contrato del periodo'
+    },
+    {
+      sesion: 2,
+      titulo: '¿Qué es Microsoft 365 y la nube?'
+    },
+    {
+      sesion: 3,
+      titulo: 'OneDrive: la nube personal'
+    },
+    {
+      sesion: 4,
+      titulo: 'Word, Excel y PowerPoint en línea'
+    },
+    {
+      sesion: 5,
+      titulo: 'Compartir y permisos (lectura/comentarios/edición)'
+    },
+    {
+      sesion: 6,
+      titulo: 'Coautoría asincrónica'
+    },
+    {
+      sesion: 7,
+      titulo: 'Comentarios y sugerencias'
+    },
+    {
+      sesion: 8,
+      titulo: 'Versiones e historial'
+    },
+    {
+      sesion: 9,
+      titulo: 'Outlook y Teams'
+    },
+    {
+      sesion: 10,
+      titulo: 'Cosecha: proyecto colaborativo final'
+    }
+  ],
+  entregables: [
+    {
+      numero: 1,
+      titulo: 'Word colaborativo de 4 páginas (Dussel)',
+      queEntregas: 'Un Word de 4 páginas en OneDrive, escrito por los 3 integrantes con coautoría real. El documento trata un tema del colegio o del barrio (ejemplo: "Los espacios verdes del colegio", "Tres oficios de mi cuadra", "Historia de la sala de sistemas"). Estructura: (a) portada con título + integrantes + grado + fecha; (b) introducción de 1 párrafo; (c) 3 secciones (una por integrante, con subtítulo y autor); (d) cierre de 1 párrafo escrito en equipo; (e) fuentes citadas (mínimo 2). El archivo debe haber sido editado en el navegador con coautoría asincrónica y conservar al menos 3 comentarios resueltos del historial.',
+      comoSeHace: [
+        'Paso 1: el equipo decide el tema y un integrante crea el Word en OneDrive con permisos de Edición para los otros 2.',
+        'Paso 2: dividir las 3 secciones (intro, cuerpo, cierre del tema). Cada uno toma una y firma su sección con su nombre.',
+        'Paso 3: durante 1-2 semanas, cada uno edita su sección en tiempos distintos (asincrónico). Quedan registrados en el historial.',
+        'Paso 4: ronda de comentarios: cada integrante revisa las secciones de los otros 2 dejando al menos 1 comentario constructivo. El autor responde y marca como resuelto.',
+        'Paso 5: revisión final en equipo, exportar a PDF y entregar al profe por Outlook.'
+      ],
+      reflexion: {
+        lente: 'dussel',
+        titulo: '💭 Cada voz cuenta en la minga (Dussel)',
+        consigna: 'En la introducción o portada del Word, los 3 escriben juntos un párrafo de 3 líneas: "En este documento, cada una de nuestras voces de 7° cuenta. Como en la minga del Valle, nadie estorba al otro: cada uno toma una sección y firma su aporte. La obra que entregamos es de los 3, no de uno solo. La diversidad de voces hace mejor el documento.". Queda visible en el documento, no como anexo.'
+      },
+      criterios: [
+        'El documento tiene 4 páginas con las 5 partes pedidas (portada, intro, 3 secciones firmadas, cierre, fuentes).',
+        'Cada integrante firma su sección con nombre.',
+        'Se editó con coautoría real (historial muestra ediciones de los 3 en tiempos distintos).',
+        'Quedan al menos 3 comentarios resueltos en el documento.',
+        'El párrafo Dussel está visible en el documento.'
+      ]
+    },
+    {
+      numero: 2,
+      titulo: 'Tabla en Excel con datos del tema (Estoico)',
+      queEntregas: 'Una tabla en Excel en línea con datos reales sobre el tema del proyecto. La tabla tiene: (a) encabezado claro con título de la tabla; (b) al menos 5 filas de datos más fila de encabezado; (c) al menos 4 columnas con datos comparables (ejemplo: nombre, tipo, cantidad, observación); (d) una columna con números que se pueda sumar (mínimo total); (e) formato profesional (fila de encabezado en negrita, bordes, alineación correcta). La tabla debe estar enlazada o referenciada en el Word del entregable 1.',
+      comoSeHace: [
+        'Paso 1: el equipo decide qué datos cuantitativos del tema valen la pena (ejemplo: "árboles en cada zona del colegio + altura + edad estimada").',
+        'Paso 2: un integrante crea el Excel en OneDrive con permisos de Edición para los otros 2.',
+        'Paso 3: el equipo recolecta los datos (medir, contar, preguntar a alguien).',
+        'Paso 4: ingresan los datos en filas y columnas; aplican formato profesional; agregan una fórmula simple de suma (=SUMA(rango)).',
+        'Paso 5: copian el enlace del Excel en el Word del entregable 1 (sección donde corresponde) y/o pegan captura como imagen con pie de foto.'
+      ],
+      reflexion: {
+        lente: 'estoico',
+        titulo: '💭 Los números también son palabra: cuídalos (Marco Aurelio)',
+        consigna: 'En una celda visible debajo de la tabla, escriban en 2-3 líneas: "Marco Aurelio decía: lo que escribes hoy queda. Estos datos también son palabra. Los recolectamos con honestidad, los anotamos con cuidado, y firmamos su veracidad como equipo. Quien lea esta tabla puede confiar en lo que aquí escribimos.". Queda visible junto a la tabla.'
+      },
+      criterios: [
+        'La tabla tiene al menos 5 filas de datos + encabezado claro + 4 columnas.',
+        'Una columna numérica tiene fórmula de SUMA o promedio aplicada.',
+        'Formato profesional aplicado (encabezado en negrita, bordes, alineación).',
+        'La tabla está enlazada o pegada como imagen con pie en el Word del entregable 1.',
+        'El párrafo estoico está visible junto a la tabla.'
+      ]
+    },
+    {
+      numero: 3,
+      titulo: 'PowerPoint de 5 diapositivas para sustentación (Floridi)',
+      queEntregas: 'Un PowerPoint de 5 diapositivas en línea creado en equipo para sustentar el proyecto en clase. Estructura sugerida: (1) Portada con título + equipo + grado + fecha; (2) El reto (de qué trata el proyecto en 1 frase); (3) Proceso colaborativo (cómo trabajamos en M365: división, comentarios, historial); (4) Producto (captura del Word + datos clave del Excel); (5) Cierre (qué aprendimos como minga + agradecimientos). Diseño limpio, fuente legible, una idea por diapositiva.',
+      comoSeHace: [
+        'Paso 1: un integrante crea el PowerPoint en OneDrive con permisos de Edición para los otros 2.',
+        'Paso 2: dividen las 5 diapositivas: A hace 1+2, B hace 3+4, C hace 5; o cualquier división equitativa.',
+        'Paso 3: aplican diseño limpio (1 fuente, máximo 6 líneas por diapo, imagen o icono por diapo).',
+        'Paso 4: revisan en conjunto, ajustan, y exportan a PDF para el día de la sustentación.',
+        'Paso 5: ensayan al menos 1 vez con cronómetro (5 minutos en total, 1 por diapositiva).'
+      ],
+      reflexion: {
+        lente: 'floridi',
+        titulo: '💭 Nuestra obra entra a la infoesfera (Floridi)',
+        consigna: 'En la diapositiva 5 (cierre) o como subtítulo en la portada, escriban: "Luciano Floridi dice que vivimos en la infoesfera. Esta presentación entra a esa conversación con nuestra voz de 7°. Mostramos no solo qué hicimos, sino cómo lo hicimos: una obra colaborativa real, con honestidad del proceso. Aportamos claridad, no ruido.". Queda visible en el PowerPoint.'
+      },
+      criterios: [
+        'El PowerPoint tiene las 5 diapositivas con la estructura pedida.',
+        'Diseño limpio (1 fuente, máximo 6 líneas por diapositiva, imagen o icono por diapositiva).',
+        'Muestra el proceso colaborativo (división + comentarios + historial), no solo el resultado.',
+        'Se editó con coautoría real en M365 (historial muestra ediciones de los 3).',
+        'El párrafo Floridi está visible en el PowerPoint.'
+      ]
+    },
+    {
+      numero: 4,
+      titulo: 'Sustentación de equipo y autoevaluación (transversal)',
+      queEntregas: 'Sustentación oral de 5 minutos donde el equipo presenta el proyecto al profe y al grupo. Los 3 integrantes hablan apoyándose con el PowerPoint. Después del cierre, autoevaluación honesta con la rúbrica de 5 criterios marcada por el equipo.',
+      comoSeHace: [
+        'Paso 1: armar guion de 5 minutos repartido entre los 3 (cada uno habla 1:30 aprox.).',
+        'Paso 2: ensayar al menos 1 vez con cronómetro.',
+        'Paso 3: presentar ante profe y compañeros con el PowerPoint en pantalla.',
+        'Paso 4: después de la sustentación, autoevaluarse en equipo con la rúbrica de 5 criterios.',
+        'Paso 5: cada integrante escribe en su cuaderno 4 líneas de reflexión personal: \'¿qué aprendí siendo minga digital?\'.'
+      ],
+      reflexion: {
+        lente: 'dussel',
+        titulo: '💭 Cierre del equipo: cosecha del periodo 1',
+        consigna: 'Cada integrante escribe en su cuaderno 4 líneas: "Mi mayor aprendizaje siendo minga digital fue ___. Lo que más me costó del trabajo en la nube fue ___. La función de M365 que voy a sostener todo el año es ___. Le doy gracias a mi equipo por ___.". Firmado.'
+      },
+      criterios: [
+        'Los 3 integrantes hablaron durante la sustentación.',
+        'Los 5 minutos se respetaron (entre 4:30 y 5:30).',
+        'Se mostraron los 3 productos (Word, Excel, PowerPoint).',
+        'Hay autoevaluación honesta con la rúbrica.',
+        'Cada integrante escribió sus 4 líneas de reflexión personal.'
+      ]
+    }
+  ],
+  rubrica: [
+    {
+      entregable: 1,
+      nivel5: 'Word de 4 páginas, 5 partes completas, coautoría real con historial, 3 comentarios resueltos, párrafo Dussel visible.',
+      nivel3: 'Word casi completo, pero coautoría desigual o sin comentarios resueltos o sin párrafo Dussel.',
+      nivel1: 'Word incompleto (<3 páginas) o sin coautoría real (un solo autor en el historial).'
+    },
+    {
+      entregable: 2,
+      nivel5: 'Excel con tabla 5+ filas, 4+ columnas, fórmula aplicada, formato profesional, enlazado al Word, párrafo estoico visible.',
+      nivel3: 'Excel con tabla pero sin fórmula o sin formato profesional o sin enlace al Word.',
+      nivel1: 'Excel incompleto (<3 filas o <3 columnas) o sin párrafo estoico.'
+    },
+    {
+      entregable: 3,
+      nivel5: 'PowerPoint con las 5 diapositivas estructuradas, diseño limpio, muestra proceso colaborativo, párrafo Floridi visible.',
+      nivel3: 'PowerPoint con 4 diapositivas o diseño caótico (más de 1 fuente, exceso de texto), o sin mostrar proceso.',
+      nivel1: 'PowerPoint incompleto (<4 diapositivas) o sin coautoría real.'
+    },
+    {
+      entregable: 4,
+      nivel5: 'Los 3 hablaron 5 min con los 3 productos a la vista, autoevaluación honesta, reflexión personal de cada uno.',
+      nivel3: '1-2 integrantes hablaron, sustentación de 3-4 min, autoevaluación con criterio limitado.',
+      nivel1: 'Solo 1 habló o no hubo sustentación.'
+    },
+    {
+      entregable: 'global',
+      nivel5: 'Las 3 lentes (Dussel + Estoico + Floridi) están visibles en los productos, no como anexo aparte.',
+      nivel3: 'Las 3 lentes están pero alguna parece copiada o forzada al producto.',
+      nivel1: 'Falta alguna lente o las reflexiones son superficiales.',
+      titulo: 'Comunicación, sustentación e integración del triángulo'
+    }
+  ],
+  sustentacion: {
+    duracionMin: 5,
+    guionSugerido: [
+      '1 min · presentación del equipo + reto del proyecto (diapositivas 1-2)',
+      '1:30 min · proceso colaborativo (división, comentarios, historial) explicado por A (diapositiva 3)',
+      '1:30 min · productos Word + Excel (diapositiva 4) por B',
+      '1 min · cierre del equipo + aprendizajes (diapositiva 5) por C'
+    ]
+  },
+  declaracionIa: 'Este es proyecto de grado 7°. Se permite el uso de IA generativa con declaración explícita: si tu equipo usó ChatGPT, Claude, Copilot o Gemini para alguna parte (idear, redactar, sugerir tabla, ortografía), debe declararlo en la sustentación: qué herramienta usaron, en qué parte, cuánto editó el equipo a mano. Lo central del proyecto es la coautoría humana en Microsoft 365, no la IA. La IA es asistente, no reemplazo del trabajo del equipo.',
+  cierre: 'Cerrando el periodo 1 de grado 7°, la minga digital dejó obra. El periodo 2 te lleva al siguiente oficio: vas a aprender a pensar como computadora (algoritmos, variables, Scratch) y a construir tu primer programa.',
+  pdf: 'proyecto-1-7-TIC.pdf'
+};
+
+export default contenido;

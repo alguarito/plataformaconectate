@@ -1,0 +1,221 @@
+/**
+ * Contenido web del proyecto integrador · Grado 9 · Período 1
+ *
+ * Auto-generado desde content/proyectos/9-1.yaml por
+ * scripts/build-proyectos-web-ts.py. Edita el YAML, no este archivo.
+ *
+ * Modelo MILC v3 entregable-céntrico: 3-5 entregables con reflexión
+ * incrustada del triángulo (Dussel/Estoico/Floridi).
+ */
+import type { ContenidoProyecto } from './_schema';
+
+const contenido: ContenidoProyecto = {
+  grado: 9,
+  periodo: 1,
+  clave: '9-1',
+  titulo: 'Proyecto integrador · Manifiesto del técnico crítico',
+  tituloPortada: 'Manifiesto del técnico crítico',
+  autor: 'Dr. Álvaro Cárdenas Orozco',
+  dba: 'Distingue técnica de tecnología, mapea su historia desde el cuerpo hasta el chip, y produce un manifiesto fundamentado del técnico crítico que decide qué adopta, qué cuestiona y qué oficios defiende.',
+  estrategia: 'Investigación histórica + Manifiesto crítico + Producto comunicativo',
+  duracionSemanas: 5,
+  modalidad: 'equipo',
+  reto: 'Construye un manifiesto público del técnico crítico que distinga técnica de tecnología con ejemplos concretos del Valle, recorra la línea histórica (fuego → chip), reconozca al menos una tecnología propia del Pacífico o los Andes y declare tu postura ante tecnologías nuevas: qué adoptas, qué cuestionas, qué oficios defiendes. El manifiesto debe poder leerse por un adulto del barrio que nunca tocó un computador.',
+  insumos: [
+    'Plantilla de línea de tiempo (Canva, Genially o Figma)',
+    '3 fuentes históricas locales: museo del oro, archivos del Valle, biblioteca municipal',
+    '1 entrevista a una persona mayor del barrio (oficio anterior al chip)',
+    'Acceso a IA generativa para investigación e ilustración',
+    'Canva o Figma para diseñar el manifiesto y la línea de tiempo',
+    'Plataforma para publicar el manifiesto: blog, Issuu, Instagram, mural físico'
+  ],
+  anclaje: 'En los valles altos del Quindío y el Valle del Cauca, los alfareros Quimbayas produjeron durante siglos piezas de cerámica que hoy se exhiben en museos del mundo. Para hacer una sola vasija, el alfarero dominaba una cadena de técnicas que ningún libro le enseñó: conocer el barro, prepararlo, moldearlo, decorarlo, secarlo, cocerlo. Cada paso era técnica: conocimiento del cuerpo aplicado a un material concreto. Cuando llegó el torno y después el horno eléctrico, esos instrumentos se llamaron tecnología: la técnica amplificada por un medio. Pero la sabiduría seguía siendo del alfarero, no del torno. La diferencia entre técnica (saber del cuerpo) y tecnología (medio que amplifica) es la pregunta que atraviesa todo el periodo: ¿quién decide cuándo y para qué se usa la tecnología?.',
+  aprendizajes: [
+    {
+      sesion: 1,
+      titulo: '¿Qué es técnica? Del cuerpo al instrumento'
+    },
+    {
+      sesion: 2,
+      titulo: 'Máquinas simples del campo: rueda, agua, palanca'
+    },
+    {
+      sesion: 3,
+      titulo: 'La balanza y el peso como acto político'
+    },
+    {
+      sesion: 4,
+      titulo: 'Línea del tiempo: del fuego a la imprenta'
+    },
+    {
+      sesion: 5,
+      titulo: 'Revolución Industrial: máquinas que cambian el trabajo'
+    },
+    {
+      sesion: 6,
+      titulo: 'La imprenta: reproducir el texto a escala'
+    },
+    {
+      sesion: 7,
+      titulo: 'La electricidad: luz, motor, comunicación'
+    },
+    {
+      sesion: 8,
+      titulo: 'Era digital: del ábaco al chip'
+    },
+    {
+      sesion: 9,
+      titulo: 'Tecnologías propias del Valle, Pacífico y Andes'
+    },
+    {
+      sesion: 10,
+      titulo: 'Manifiesto del técnico crítico'
+    }
+  ],
+  entregables: [
+    {
+      numero: 1,
+      titulo: 'Línea del tiempo visual: del fuego al chip (con tecnologías propias)',
+      queEntregas: 'Línea del tiempo visual (Canva, Genially o póster A2 físico) con al menos 8 hitos: fuego, rueda, balanza, imprenta, Revolución Industrial, electricidad, ábaco, chip. Obligatorio incluir al menos 2 tecnologías propias de pueblos colombianos (cerámica Quimbaya, metalurgia muisca, irrigación tairona, canoas del Pacífico, técnicas afro-pacíficas) ubicadas en su momento histórico real.',
+      comoSeHace: [
+        'Investigar fechas y contextos de cada hito (mínimo 1 fuente verificable por hito)',
+        'Identificar al menos 2 tecnologías propias colombianas con su contexto',
+        'Diseñar la línea con jerarquía visual (no todos los hitos del mismo tamaño)',
+        'Agregar 1 imagen o ícono por hito',
+        'Citar fuentes consultadas al pie de la línea'
+      ],
+      reflexion: {
+        lente: 'dussel',
+        titulo: 'Qué tecnologías quedan fuera de los libros oficiales',
+        consigna: 'En la línea del tiempo, al pie, agrega una sección titulada "Qué tecnologías quedan fuera de los libros oficiales". Reconoce honestamente qué tecnologías propias del Pacífico, los Andes o el Caribe colombianos aparecen poco o nada en los textos escolares estándar (por ejemplo: redes de pesca tradicional, sistemas de irrigación ancestral, técnicas constructivas Wayuu, cocina como tecnología cultural). Explica por qué importa que TÚ las recuperes en tu manifiesto. Ese párrafo queda en la línea del tiempo publicada, no como anexo escolar. La lente del nosotros pregunta por las técnicas que el centro hegemónico ha silenciado.'
+      },
+      criterios: [
+        'Mínimo 8 hitos con fechas y contextos verificables',
+        '2+ tecnologías propias colombianas con contexto',
+        'Jerarquía visual clara (no todo del mismo tamaño)',
+        'Fuentes citadas al pie de la línea',
+        'Sección Dussel publicada en la línea de tiempo'
+      ]
+    },
+    {
+      numero: 2,
+      titulo: 'Entrevista a una persona mayor + síntesis del oficio anterior al chip',
+      queEntregas: 'Entrevista grabada (audio o video, mínimo 10 minutos) a una persona mayor del barrio que practicó o practica un oficio anterior al computador (zapatero, sastre, panadero, partera, mecánico, telegrafista, modista, tejedora, ebanista, etc.). + Síntesis escrita de 1-2 páginas con: oficio descrito, herramientas usadas, qué cambió con la era digital, qué se perdió y qué se ganó. Mínimo 3 citas textuales de la persona entrevistada.',
+      comoSeHace: [
+        'Identificar a la persona y pedir consentimiento explícito (audio/video grabado)',
+        'Preparar 6-8 preguntas abiertas sobre su oficio',
+        'Grabar la entrevista respetando tiempos del entrevistado',
+        'Transcribir 3+ citas textuales relevantes',
+        'Sintetizar en 1-2 páginas con tu propia voz, no de IA'
+      ],
+      reflexion: {
+        lente: 'estoico',
+        titulo: 'Lo que el oficio enseña sobre la disciplina',
+        consigna: 'En la síntesis escrita, agrega una sección titulada "Lo que el oficio enseña sobre la disciplina". Reflexiona: ¿qué disciplina personal exigía el oficio de tu entrevistado que la tecnología actual no exige (o exige distinto)?, ¿qué del oficio antiguo conviene preservar aunque el chip lo amplifique?, ¿qué disciplina propia te comprometes a sostener al adoptar tecnologías nuevas? Esa sección queda en la síntesis entregada al docente y, si la persona acepta, también compartida con ella. El estoico entiende que la tecnología sin oficio detrás es atajo.'
+      },
+      criterios: [
+        'Entrevista grabada de mínimo 10 minutos con consentimiento documentado',
+        'Síntesis escrita de 1-2 páginas con voz propia (no IA)',
+        'Mínimo 3 citas textuales del entrevistado',
+        'Identificación clara de oficio + herramientas + cambio digital',
+        'Sección estoica publicada en la síntesis'
+      ]
+    },
+    {
+      numero: 3,
+      titulo: 'Manifiesto del técnico crítico (1-2 páginas)',
+      queEntregas: 'Documento de 1-2 páginas firmado por el equipo: declaración pública con 5-7 puntos sobre tu postura ante las tecnologías digitales. Debe responder al menos: ¿qué adoptamos?, ¿qué cuestionamos?, ¿qué oficios defendemos?, ¿qué tecnologías propias colombianas reivindicamos?, ¿qué responsabilidad asumimos como técnicos jóvenes del Valle? Publicado en blog, Instagram, mural físico o cualquier formato accesible al barrio.',
+      comoSeHace: [
+        'Escribir borradores individuales de cada miembro del equipo',
+        'Discutir y consensuar los 5-7 puntos centrales',
+        'Redactar el manifiesto con voz propia (no plantilla de IA)',
+        'Diseñar en Canva/Figma con jerarquía visual clara',
+        'Publicar y obtener URL pública o foto del mural'
+      ],
+      reflexion: {
+        lente: 'floridi',
+        titulo: 'Nuestro manifiesto en la cadena informacional',
+        consigna: 'En el manifiesto mismo, agrega un punto titulado "Nuestro manifiesto en la cadena informacional". Reflexiona: ¿qué información honesta agrega nuestro manifiesto a la conversación pública del barrio?, ¿enriquece la mirada crítica sobre la tecnología o solo agrega contenido?, ¿qué responsabilidad ética asumimos por lo que declaramos públicamente? Esa reflexión queda dentro del manifiesto publicado, no como anexo. La ética de Floridi va más allá de declarar opiniones: pregunta por el aporte real a la conversación común.'
+      },
+      criterios: [
+        '5-7 puntos centrales declarados',
+        'Voz propia identificable (no plantilla de IA sin editar)',
+        'Posicionamiento ante tecnologías propias colombianas',
+        'Publicación accesible al barrio (URL, mural, redes)',
+        'Reflexión Floridi publicada dentro del manifiesto'
+      ]
+    },
+    {
+      numero: 4,
+      titulo: 'Acto público de lectura del manifiesto + cierre del periodo',
+      queEntregas: 'Acto público de 10-15 minutos donde el equipo lee el manifiesto en voz alta ante: el grupo del colegio, al menos 2 invitados externos (familia, persona entrevistada, profesional de la zona) y, si aplica, la persona entrevistada en el entregable 2. + Carta firmada del equipo con compromisos del triángulo y conexión a los siguientes periodos del año.',
+      comoSeHace: [
+        'Ensayar la lectura del manifiesto en voz alta al menos 2 veces',
+        'Identificar y confirmar 2+ invitados externos',
+        'Preparar el espacio (físico o virtual) para el acto',
+        'Documentar el acto con fotos o video corto',
+        'Escribir carta de cierre con compromisos verificables del triángulo'
+      ],
+      reflexion: {
+        lente: 'dussel',
+        titulo: 'Nuestros compromisos como técnicos críticos jóvenes',
+        consigna: 'En la carta de cierre, dedica un párrafo a cada lente del triángulo como compromisos verificables, no retóricos. Por Dussel: a qué oficio del barrio amenazado por la tecnología nos comprometemos a defender o documentar. Por el estoico: qué disciplina personal sostendremos al adoptar tecnologías nuevas durante los próximos 6 meses. Por Floridi: qué información honesta seguiremos publicando sobre nuestra mirada crítica de la tecnología. Cada uno con decisión concreta y fechada.'
+      },
+      criterios: [
+        'Acto público de 10-15 minutos efectivamente realizado',
+        'Lectura completa del manifiesto en voz alta',
+        '2+ invitados externos asistieron',
+        'Documentación del acto (foto o video)',
+        'Carta de cierre con compromisos verificables del triángulo'
+      ]
+    }
+  ],
+  rubrica: [
+    {
+      entregable: 1,
+      nivel5: 'Línea con 8+ hitos, 2+ tecnologías propias, fuentes verificables, Dussel visible',
+      nivel3: 'Línea con hitos pero sin tecnologías propias o sin fuentes',
+      nivel1: 'Línea incompleta o sin reconocer tecnologías propias colombianas'
+    },
+    {
+      entregable: 2,
+      nivel5: 'Entrevista de 10+ min con consentimiento, síntesis con voz propia, estoico visible',
+      nivel3: 'Entrevista corta o síntesis con borrador de IA sin editar',
+      nivel1: 'Sin entrevista real o sin citas textuales'
+    },
+    {
+      entregable: 3,
+      nivel5: 'Manifiesto con 5-7 puntos, voz propia, publicado, Floridi visible',
+      nivel3: 'Manifiesto con voz parcial o publicado en formato poco accesible',
+      nivel1: 'Manifiesto genérico o sin publicar'
+    },
+    {
+      entregable: 4,
+      nivel5: 'Acto público realizado, 2+ invitados, 3 lentes con compromisos verificables',
+      nivel3: 'Acto sin invitados externos o triángulo retórico',
+      nivel1: 'No realizó el acto o carta sin compromisos concretos'
+    },
+    {
+      entregable: 'global',
+      nivel5: 'La línea, la entrevista, el manifiesto y el acto dialogan; la voz propia es identificable',
+      nivel3: 'Coherencia parcial entre las partes',
+      nivel1: 'Las partes parecen ejercicios separados sin diálogo',
+      titulo: 'Coherencia del manifiesto: historia, oficio, postura y acción pública'
+    }
+  ],
+  sustentacion: {
+    duracionMin: 5,
+    guionSugerido: [
+      '1 min · Distinción técnica/tecnología con ejemplo del Valle',
+      '1 min · Tecnología propia colombiana reivindicada (de la línea)',
+      '1 min · Voz del oficio entrevistado: cita textual y aprendizaje',
+      '1 min · Lectura de 2-3 puntos centrales del manifiesto',
+      '1 min · Compromisos del triángulo para los próximos periodos'
+    ]
+  },
+  declaracionIa: 'Tu carta de cierre debe declarar honestamente: (1) qué partes del proyecto usaron IA (investigación de hitos históricos, redacción de síntesis, diseño visual). (2) qué partes se hicieron sin IA y por qué (la entrevista, las citas textuales, la voz del manifiesto, el acto público). (3) 3 compromisos verificables del triángulo. La paradoja honesta: el técnico crítico usa IA con criterio, no la rechaza ni la idolatra.',
+  cierre: 'Cierras el periodo 1 con tu primer manifiesto público sobre la tecnología. El periodo 2 (Diseño editorial) te pedirá llevar esta mirada crítica a la forma visual: cómo el tipógrafo y el diseñador deciden qué jerarquías visibles producen. El alfarero Quimbaya y el oficio que entrevistaste se van contigo a la página y la cuadrícula.',
+  pdf: 'proyecto-1-9-TIC.pdf'
+};
+
+export default contenido;

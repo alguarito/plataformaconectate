@@ -207,8 +207,18 @@ endif
 proyecto-build:  ## Compila proyecto(s) YAML → PDF (modelo entregable-céntrico MILC v3)
 ifeq ($(CLAVE),)
 	@$(PYTHON) scripts/build-proyectos.py
+	@$(PYTHON) scripts/build-proyectos-web-ts.py --force > /dev/null && echo "  ✓ contenido web TS regenerado (src/data/proyectosContenido)"
 else
 	@$(PYTHON) scripts/build-proyectos.py $(CLAVE)
+	@$(PYTHON) scripts/build-proyectos-web-ts.py $(CLAVE) --force > /dev/null && echo "  ✓ contenido web TS regenerado para $(CLAVE)"
+endif
+
+.PHONY: proyecto-web
+proyecto-web:  ## Genera contenido web TS desde YAML SSOT (src/data/proyectosContenido)
+ifeq ($(CLAVE),)
+	@$(PYTHON) scripts/build-proyectos-web-ts.py
+else
+	@$(PYTHON) scripts/build-proyectos-web-ts.py $(CLAVE)
 endif
 
 .PHONY: proyecto-show

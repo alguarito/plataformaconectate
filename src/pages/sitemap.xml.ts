@@ -19,6 +19,12 @@ export const GET: APIRoute = async ({ site }) => {
   // Home
   urls.push({ loc: `${fullBase}/`, priority: 1.0, changefreq: 'weekly' });
 
+  // Página "Comenzar" · onboarding para docentes y estudiantes (alto valor SEO)
+  urls.push({ loc: `${fullBase}/comenzar`, priority: 0.9, changefreq: 'monthly' });
+
+  // Página "Modelo MILC" · pedagogía propia · página de autoridad (alto valor SEO)
+  urls.push({ loc: `${fullBase}/modelo-milc`, priority: 0.9, changefreq: 'monthly' });
+
   // Página "Acerca de"
   urls.push({ loc: `${fullBase}/acerca`, priority: 0.8, changefreq: 'monthly' });
 

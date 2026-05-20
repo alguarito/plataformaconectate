@@ -232,6 +232,73 @@ function tplAcerca(): string {
   </svg>`;
 }
 
+function tplComenzar(): string {
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+    <rect width="${W}" height="${H}" fill="#0066FF"/>
+    ${patternDots(0.08)}
+    <!-- Etiqueta superior -->
+    <text x="80" y="120" fill="#FFFFFF" opacity="0.95" font-family="Helvetica, sans-serif" font-weight="700" font-size="22" letter-spacing="3">
+      ${esc('CÓMO USAR LA PLATAFORMA · 2026')}
+    </text>
+    <!-- Emoji decorativo -->
+    <text x="${W - 80}" y="200" fill="#FFFFFF" opacity="0.18" font-family="Helvetica, sans-serif" font-size="160" text-anchor="end">
+      🧭
+    </text>
+    <!-- Título principal -->
+    <text x="80" y="320" fill="#FFFFFF" font-family="Helvetica, sans-serif" font-weight="900" font-size="124" letter-spacing="-4">
+      ${esc('Comenzar.')}
+    </text>
+    <!-- Subtítulo -->
+    <text x="80" y="395" fill="#A3FF12" font-family="Helvetica, sans-serif" font-weight="800" font-size="32" letter-spacing="-1">
+      ${esc('Para docentes y estudiantes.')}
+    </text>
+    <!-- Stats clave -->
+    <text x="80" y="455" fill="#FFFFFF" opacity="0.9" font-family="Helvetica, sans-serif" font-weight="600" font-size="22">
+      ${esc('7 secciones · 3 diagramas · toggle docente/estudiante')}
+    </text>
+    <text x="80" y="490" fill="#FFFFFF" opacity="0.75" font-family="Helvetica, sans-serif" font-weight="500" font-size="20">
+      ${esc('Anatomía de una guía · cuaderno · examen · proyecto · política de IA')}
+    </text>
+    <!-- Wordmark esquina -->
+    ${wordmark(W - 240, H - 60, '#FFFFFF', '#A3FF12')}
+  </svg>`;
+}
+
+function tplModeloMilc(): string {
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+    <rect width="${W}" height="${H}" fill="#7C3AED"/>
+    ${patternDots(0.08)}
+    <!-- Etiqueta superior -->
+    <text x="80" y="120" fill="#FFD60A" opacity="0.95" font-family="Helvetica, sans-serif" font-weight="700" font-size="22" letter-spacing="3">
+      ${esc('PEDAGOGÍA PROPIA · 2026')}
+    </text>
+    <!-- Emoji decorativo -->
+    <text x="${W - 80}" y="220" fill="#FFFFFF" opacity="0.18" font-family="Helvetica, sans-serif" font-size="170" text-anchor="end">
+      🌱
+    </text>
+    <!-- Título principal -->
+    <text x="80" y="300" fill="#FFFFFF" font-family="Helvetica, sans-serif" font-weight="900" font-size="92" letter-spacing="-3">
+      ${esc('Modelo')}
+    </text>
+    <text x="80" y="380" fill="#FFD60A" font-family="Helvetica, sans-serif" font-weight="900" font-size="124" letter-spacing="-4">
+      ${esc('MILC.')}
+    </text>
+    <!-- Subtítulo -->
+    <text x="80" y="430" fill="#FFFFFF" font-family="Helvetica, sans-serif" font-weight="700" font-size="26" letter-spacing="-1">
+      ${esc('Investigación · Liberadora · Científica.')}
+    </text>
+    <!-- Stats clave -->
+    <text x="80" y="475" fill="#FFFFFF" opacity="0.9" font-family="Helvetica, sans-serif" font-weight="600" font-size="22">
+      ${esc('4 fases · Triángulo Dussel-Estoico-Floridi · 18 anclajes ancestrales')}
+    </text>
+    <text x="80" y="510" fill="#FFFFFF" opacity="0.75" font-family="Helvetica, sans-serif" font-weight="500" font-size="20">
+      ${esc('Libro · 64 páginas · Dr. Álvaro Cárdenas Orozco')}
+    </text>
+    <!-- Wordmark esquina -->
+    ${wordmark(W - 240, H - 60, '#FFFFFF', '#FFD60A')}
+  </svg>`;
+}
+
 function tplPlanArea(): string {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
     <rect width="${W}" height="${H}" fill="#5A0038"/>
@@ -280,6 +347,14 @@ async function main(): Promise<void> {
 
   // Acerca
   await svg2png(tplAcerca(), `${OUT_DIR}/acerca.png`);
+  count++;
+
+  // Comenzar (módulo onboarding)
+  await svg2png(tplComenzar(), `${OUT_DIR}/comenzar.png`);
+  count++;
+
+  // Modelo MILC (página de autoridad pedagógica)
+  await svg2png(tplModeloMilc(), `${OUT_DIR}/modelo-milc.png`);
   count++;
 
   // Plan de Área

@@ -3,11 +3,12 @@ import BaseLayout from '../../../../layouts/BaseLayout.astro';
 import CompletarBoton from '../../../../components/CompletarBoton.astro';
 import CompartirWhatsApp from '../../../../components/CompartirWhatsApp.astro';
 import { grados } from '../../../../data/grados';
-import { getProyecto } from '../../../../data/proyectos';
+import { getContenidoProyecto, type LenteTriangulo } from '../../../../data/proyectosContenido/_index';
 
 export function getStaticPaths() {
   const paths: any[] = [];
-  for (const g of grados) { if (g.enConstruccion) continue;
+  for (const g of grados) {
+    if (g.enConstruccion) continue;
     for (const p of g.periodos) {
       paths.push({
         params: { numero: String(g.numero), periodo: String(p.numero) },
@@ -21,16 +22,20 @@ export function getStaticPaths() {
 const { grado, periodo } = Astro.props;
 const base = import.meta.env.BASE_URL;
 
-// Datos reales del proyecto desde proyectos.ts
-const proyecto = getProyecto(grado.numero, periodo.numero);
-
-// URL de descarga del PDF servido localmente
+const proyecto = getContenidoProyecto(grado.numero, periodo.numero);
 const pdfHref = proyecto ? `${base}/proyectos/${proyecto.pdf}` : '';
+
+// Estética del triángulo: una clase de color por lente.
+const lenteStyles: Record<LenteTriangulo, { chip: string; ring: string; label: string }> = {
+  dussel:  { chip: 'bg-bento-purple text-white',  ring: 'ring-bento-purple/40',  label: 'Dussel · voz reconocida' },
+  estoico: { chip: 'bg-bento-cyan text-white',    ring: 'ring-bento-cyan/40',    label: 'Estoico · disciplina del tiempo' },
+  floridi: { chip: 'bg-bento-orange text-white',  ring: 'ring-bento-orange/40',  label: 'Floridi · infoesfera' },
+};
 ---
 
 <BaseLayout
   title={`Proyecto Integrador · Grado ${grado.numero}° P${periodo.numero}: ${periodo.titulo} — ConectaTE`}
-  description={proyecto?.retoCentral ?? `Aplica todo lo aprendido en el período ${periodo.numero}: ${periodo.titulo}.`}
+  description={proyecto?.reto ?? `Aplica todo lo aprendido en el período ${periodo.numero}: ${periodo.titulo}.`}
   ogType="article"
   imagen={`/og/grado-${grado.numero}-periodo-${periodo.numero}.png`}
 >
@@ -51,7 +56,7 @@ const pdfHref = proyecto ? `${base}/proyectos/${proyecto.pdf}` : '';
         <span style="color: var(--fg);">Proyecto integrador</span>
       </nav>
 
-      <!-- Hero card del proyecto -->
+      <!-- Hero card -->
       <div class={`bento-card-color ${periodo.bgClass} mb-10 min-h-[360px] flex flex-col justify-between`}>
         <div class="flex items-start justify-between flex-wrap gap-3">
           <div class="flex flex-wrap gap-2">
@@ -64,6 +69,16 @@ const pdfHref = proyecto ? `${base}/proyectos/${proyecto.pdf}` : '';
             <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-black/15">
               🎯 Proyecto integrador
             </span>
+            {proyecto && (
+              <>
+                <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-black/15">
+                  {proyecto.duracionSemanas} semanas
+                </span>
+                <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-black/15">
+                  {proyecto.modalidad}
+                </span>
+              </>
+            )}
           </div>
           <span class="text-9xl">🎯</span>
         </div>
@@ -73,11 +88,11 @@ const pdfHref = proyecto ? `${base}/proyectos/${proyecto.pdf}` : '';
             Proyecto Integrador · {periodo.titulo}
           </span>
           <h1 class="heading-giant text-balance mt-2 mb-4">
-            {proyecto?.retoCentral ?? 'Aplica todo lo aprendido.'}
+            {proyecto?.titulo ?? 'Aplica todo lo aprendido.'}
           </h1>
-          {proyecto?.estrategia && (
-            <p class="text-sm md:text-base font-semibold opacity-90 max-w-2xl">
-              <strong>Estrategia:</strong> {proyecto.estrategia}
+          {proyecto?.reto && (
+            <p class="text-sm md:text-base font-semibold opacity-95 max-w-3xl leading-relaxed">
+              <strong>Reto:</strong> {proyecto.reto}
             </p>
           )}
         </div>
@@ -95,8 +110,8 @@ const pdfHref = proyecto ? `${base}/proyectos/${proyecto.pdf}` : '';
               <div class="text-5xl">📄</div>
               <div class="flex-1">
                 <span class="text-xs font-bold uppercase tracking-widest opacity-80">PDF imprimible</span>
-                <div class="font-black text-xl leading-tight mt-1">Descargar plantilla</div>
-                <div class="text-sm opacity-80 mt-1">Versión imprimible con espacios para llenar</div>
+                <div class="font-black text-xl leading-tight mt-1">Descargar proyecto</div>
+                <div class="text-sm opacity-80 mt-1">Brief completo · entregables · rúbrica</div>
               </div>
               <svg class="w-7 h-7 group-hover:translate-x-1 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -137,8 +152,6 @@ const pdfHref = proyecto ? `${base}/proyectos/${proyecto.pdf}` : '';
                 </div>
               </div>
             </div>
-            {/* iFrame del PDF solo en md+: iOS Safari no auto-ajusta PDFs.
-                En móvil mostramos CTA grande para abrir en visor nativo. */}
             <div class="hidden md:block md:aspect-[3/4] w-full bg-black/5">
               <iframe
                 src={pdfHref}
@@ -167,160 +180,161 @@ const pdfHref = proyecto ? `${base}/proyectos/${proyecto.pdf}` : '';
             </a>
           </div>
 
-          {proyecto.sentido && (
-            <!-- Sentido del proyecto -->
-            <div class="bento-card mb-10">
-              <span class="chip-bento mb-4">Sentido del proyecto</span>
+          <!-- Anclaje ancestral -->
+          {proyecto.anclaje && (
+            <div class="bento-card-color bg-bento-yellow mb-10">
+              <span class="chip-bento mb-4 bg-black/15">🌱 Anclaje ancestral</span>
               <p class="text-base md:text-lg leading-relaxed mt-3">
-                {proyecto.sentido}
+                {proyecto.anclaje}
               </p>
             </div>
           )}
 
-          <!-- Bento de información clave -->
+          <!-- DBA + estrategia -->
           <div class="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6 mb-10">
-            <!-- Producto final -->
-            <div class="bento-card-color bg-bento-purple md:col-span-7 min-h-[200px] flex flex-col justify-between">
-              <span class="text-xs font-bold uppercase tracking-widest opacity-80">Producto final</span>
-              <div>
-                <div class="text-xl md:text-2xl font-black tracking-tight leading-tight">
-                  {proyecto.productoFinal}
-                </div>
-              </div>
-            </div>
-
-            <!-- Foco de diseño -->
-            <div class="bento-card-color bg-bento-cyan md:col-span-5 min-h-[200px] flex flex-col justify-between">
-              <span class="text-xs font-bold uppercase tracking-widest opacity-80">Foco de diseño</span>
-              <div>
-                <div class="text-base md:text-lg font-black tracking-tight leading-tight">
-                  {proyecto.focoDiseno}
-                </div>
-              </div>
-            </div>
-
-            <!-- DBA -->
-            <div class="bento-card-color bg-bento-yellow md:col-span-12 min-h-[140px] flex flex-col justify-between">
+            <div class="bento-card-color bg-bento-purple md:col-span-7 min-h-[160px] flex flex-col justify-between">
               <span class="text-xs font-bold uppercase tracking-widest opacity-80">DBA del periodo</span>
-              <div class="text-base md:text-lg font-bold leading-relaxed">
+              <div class="text-base md:text-lg font-bold leading-relaxed mt-3">
                 {proyecto.dba}
+              </div>
+            </div>
+            <div class="bento-card-color bg-bento-cyan md:col-span-5 min-h-[160px] flex flex-col justify-between">
+              <span class="text-xs font-bold uppercase tracking-widest opacity-80">Estrategia</span>
+              <div class="text-base md:text-lg font-bold leading-relaxed mt-3">
+                {proyecto.estrategia}
               </div>
             </div>
           </div>
 
-          {proyecto.aprendizajes.length > 0 && (
-            <!-- Aprendizajes que integra -->
+          <!-- Insumos -->
+          {proyecto.insumos.length > 0 && (
             <div class="bento-card mb-10">
-              <span class="chip-bento mb-4">Aprendizajes que integra</span>
+              <span class="chip-bento mb-4">Insumos · qué necesita el equipo para arrancar</span>
+              <ul class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-5">
+                {proyecto.insumos.map((insumo) => (
+                  <li class="flex items-start gap-3">
+                    <span class="w-6 h-6 rounded-md bg-bento-lime/30 text-black flex items-center justify-center text-xs font-black shrink-0 mt-0.5">
+                      📦
+                    </span>
+                    <span class="text-sm leading-relaxed">{insumo}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <!-- Aprendizajes que integra -->
+          {proyecto.aprendizajes.length > 0 && (
+            <div class="bento-card mb-10">
+              <span class="chip-bento mb-4">Aprendizajes del periodo que se ponen a prueba</span>
               <p class="text-sm mt-3 mb-5" style="color: var(--fg-muted);">
                 Las 10 sesiones del período cuyas competencias se ponen en juego en este proyecto.
               </p>
               <ul class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
-                {proyecto.aprendizajes.map((a, i) => (
+                {proyecto.aprendizajes.map((a) => (
                   <li class="flex items-start gap-3">
                     <span class="w-7 h-7 rounded-bento-sm bg-bento-blue text-white flex items-center justify-center text-xs font-black shrink-0 mt-0.5">
-                      {i + 1}
+                      {a.sesion}
                     </span>
-                    <span class="text-sm leading-relaxed">{a}</span>
+                    <span class="text-sm leading-relaxed">{a.titulo}</span>
                   </li>
                 ))}
               </ul>
             </div>
           )}
 
-          <!-- Fases del proyecto -->
-          <div class="bento-card mb-10">
-            <span class="chip-bento mb-6">Fases del proyecto · método MILC</span>
-            <p class="text-sm mb-2 mt-2" style="color: var(--fg-muted);">
-              Recorrido en cuatro fases: Escuta, Sistematización, Praxis y Evaluación liberadora.
-            </p>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-              {[
-                { color: 'bg-bento-lime', textColor: 'text-black', n: 1 },
-                { color: 'bg-bento-cyan', textColor: 'text-white', n: 2 },
-                { color: 'bg-bento-pink', textColor: 'text-white', n: 3 },
-                { color: 'bg-bento-purple', textColor: 'text-white', n: 4 },
-              ].map(({ color, textColor, n }, i) => {
-                const fase = proyecto.fases[i];
-                return (
-                  <div class="flex gap-4">
-                    <div class={`w-12 h-12 rounded-bento-sm ${color} ${textColor} flex items-center justify-center text-xl font-black shrink-0`}>
-                      {n}
-                    </div>
-                    <div class="flex-1">
-                      <h3 class="text-lg font-black mb-1 leading-tight">{fase.nombre}</h3>
-                      <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">
-                        {fase.proposito}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {(proyecto.conceptosClave || proyecto.competencias) && (
-            <!-- Conceptos / Competencias / Desempeños -->
-            <div class="bento-card mb-10">
-              <span class="chip-bento mb-4">Conceptos, competencias y desempeños</span>
-              <div class="space-y-4 mt-5">
-                {proyecto.conceptosClave && (
-                  <div>
-                    <h4 class="text-sm font-black uppercase tracking-widest mb-1" style="color: var(--fg-muted);">Conceptos clave</h4>
-                    <p class="text-sm md:text-base leading-relaxed">{proyecto.conceptosClave}</p>
-                  </div>
-                )}
-                {proyecto.competencias && (
-                  <div>
-                    <h4 class="text-sm font-black uppercase tracking-widest mb-1" style="color: var(--fg-muted);">Competencias</h4>
-                    <p class="text-sm md:text-base leading-relaxed">{proyecto.competencias}</p>
-                  </div>
-                )}
-                {proyecto.desempenoCognitivo && (
-                  <div>
-                    <h4 class="text-sm font-black uppercase tracking-widest mb-1" style="color: var(--fg-muted);">Desempeño cognitivo</h4>
-                    <p class="text-sm md:text-base leading-relaxed">{proyecto.desempenoCognitivo}</p>
-                  </div>
-                )}
-                {proyecto.desempenoProcedimental && (
-                  <div>
-                    <h4 class="text-sm font-black uppercase tracking-widest mb-1" style="color: var(--fg-muted);">Desempeño procedimental</h4>
-                    <p class="text-sm md:text-base leading-relaxed">{proyecto.desempenoProcedimental}</p>
-                  </div>
-                )}
-                {proyecto.desempenoActitudinal && (
-                  <div>
-                    <h4 class="text-sm font-black uppercase tracking-widest mb-1" style="color: var(--fg-muted);">Desempeño actitudinal</h4>
-                    <p class="text-sm md:text-base leading-relaxed">{proyecto.desempenoActitudinal}</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
+          <!-- Entregables -->
           {proyecto.entregables.length > 0 && (
-            <!-- Entregables mínimos -->
-            <div class="bento-card-color bg-bento-orange mb-10">
-              <span class="chip-bento mb-4 bg-black/15">Entregables mínimos</span>
-              <ul class="space-y-3 mt-4">
-                {proyecto.entregables.map((e) => (
-                  <li class="flex items-start gap-3">
-                    <span class="w-6 h-6 rounded-md border-2 border-current flex items-center justify-center shrink-0 mt-0.5">
-                      <span class="text-xs font-black">✓</span>
-                    </span>
-                    <span class="text-base leading-relaxed">{e}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <section class="mb-10">
+              <div class="flex items-center justify-between flex-wrap gap-3 mb-6">
+                <h2 class="heading-huge">Entregables del proyecto</h2>
+                <span class="chip-bento">{proyecto.entregables.length} entregables</span>
+              </div>
+              <p class="text-sm mb-6" style="color: var(--fg-muted);">
+                Cada entregable es una unidad cerrada: qué se entrega, cómo se hace, reflexión incrustada del triángulo (Dussel · Estoico · Floridi), y criterios observables.
+              </p>
+
+              <div class="space-y-6">
+                {proyecto.entregables.map((e) => {
+                  const lente = lenteStyles[e.reflexion.lente];
+                  return (
+                    <article class={`bento-card ring-1 ${lente.ring}`}>
+                      <header class="flex items-start gap-4 mb-4 flex-wrap">
+                        <span class="w-12 h-12 rounded-bento-sm bg-bento-blue text-white flex items-center justify-center text-xl font-black shrink-0">
+                          {e.numero}
+                        </span>
+                        <div class="flex-1 min-w-[200px]">
+                          <h3 class="text-xl md:text-2xl font-black leading-tight">
+                            {e.titulo}
+                          </h3>
+                          <span class={`inline-block mt-2 px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest ${lente.chip}`}>
+                            {lente.label}
+                          </span>
+                        </div>
+                      </header>
+
+                      <div class="space-y-5 mt-5">
+                        <div>
+                          <h4 class="text-sm font-black uppercase tracking-widest mb-2" style="color: var(--fg-muted);">Qué entregas</h4>
+                          <p class="text-sm md:text-base leading-relaxed">{e.queEntregas}</p>
+                        </div>
+
+                        {e.comoSeHace.length > 0 && (
+                          <div>
+                            <h4 class="text-sm font-black uppercase tracking-widest mb-2" style="color: var(--fg-muted);">Cómo se hace</h4>
+                            <ol class="space-y-2 mt-2">
+                              {e.comoSeHace.map((paso, i) => (
+                                <li class="flex items-start gap-3">
+                                  <span class="w-6 h-6 rounded-md bg-bento-yellow/30 text-black flex items-center justify-center text-xs font-black shrink-0 mt-0.5">
+                                    {i + 1}
+                                  </span>
+                                  <span class="text-sm leading-relaxed">{paso}</span>
+                                </li>
+                              ))}
+                            </ol>
+                          </div>
+                        )}
+
+                        {e.reflexion.consigna && (
+                          <div class="bg-black/[0.03] dark:bg-white/[0.03] rounded-bento-sm p-4">
+                            <h4 class="text-sm font-black uppercase tracking-widest mb-2">
+                              💭 {e.reflexion.titulo || 'Reflexión incrustada'}
+                            </h4>
+                            <p class="text-sm md:text-base leading-relaxed italic">
+                              {e.reflexion.consigna}
+                            </p>
+                          </div>
+                        )}
+
+                        {e.criterios.length > 0 && (
+                          <div>
+                            <h4 class="text-sm font-black uppercase tracking-widest mb-2" style="color: var(--fg-muted);">Criterios observables</h4>
+                            <ul class="space-y-2 mt-2">
+                              {e.criterios.map((c) => (
+                                <li class="flex items-start gap-3">
+                                  <span class="w-5 h-5 rounded-md border-2 border-current flex items-center justify-center shrink-0 mt-0.5">
+                                    <span class="text-[10px] font-black">✓</span>
+                                  </span>
+                                  <span class="text-sm leading-relaxed">{c}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+            </section>
           )}
 
+          <!-- Rúbrica -->
           {proyecto.rubrica.length > 0 && (
-            <!-- Rúbrica de evaluación -->
             <div class="bento-card mb-10">
               <span class="chip-bento mb-4">Rúbrica de evaluación</span>
               <p class="text-sm mt-2 mb-5" style="color: var(--fg-muted);">
-                Niveles de desempeño por criterio · Excelente (5) · Aceptable (3) · Por mejorar (1)
+                Un criterio por entregable + uno transversal de comunicación/triángulo. Niveles: Excelente (5) · Aceptable (3) · Por mejorar (1).
               </p>
               <div class="overflow-x-auto -mx-6 md:mx-0">
                 <table class="w-full text-sm border-separate border-spacing-0 min-w-[640px] md:min-w-0">
@@ -339,29 +353,72 @@ const pdfHref = proyecto ? `${base}/proyectos/${proyecto.pdf}` : '';
                     </tr>
                   </thead>
                   <tbody>
-                    {proyecto.rubrica.map((r, i) => (
-                      <tr class={i % 2 === 1 ? 'bg-black/[0.02] dark:bg-white/[0.02]' : ''}>
-                        <td class="p-3 align-top font-bold border-t" style="border-color: var(--border);">
-                          {r.criterio}
-                        </td>
-                        <td class="p-3 align-top leading-relaxed border-t" style="border-color: var(--border);">
-                          {r.nivel5}
-                        </td>
-                        <td class="p-3 align-top leading-relaxed border-t" style="border-color: var(--border);">
-                          {r.nivel3}
-                        </td>
-                        <td class="p-3 align-top leading-relaxed border-t" style="border-color: var(--border);">
-                          {r.nivel1}
-                        </td>
-                      </tr>
-                    ))}
+                    {proyecto.rubrica.map((r, i) => {
+                      const isGlobal = r.entregable === 'global';
+                      const etiqueta = isGlobal
+                        ? (r.titulo ?? 'Comunicación e integración del triángulo')
+                        : `Entregable ${r.entregable}`;
+                      return (
+                        <tr class={i % 2 === 1 ? 'bg-black/[0.02] dark:bg-white/[0.02]' : ''}>
+                          <td class="p-3 align-top font-bold border-t" style="border-color: var(--border);">
+                            {etiqueta}
+                          </td>
+                          <td class="p-3 align-top leading-relaxed border-t" style="border-color: var(--border);">{r.nivel5}</td>
+                          <td class="p-3 align-top leading-relaxed border-t" style="border-color: var(--border);">{r.nivel3}</td>
+                          <td class="p-3 align-top leading-relaxed border-t" style="border-color: var(--border);">{r.nivel1}</td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
             </div>
           )}
 
-          <!-- Marca como completado y comparte -->
+          <!-- Sustentación -->
+          {proyecto.sustentacion.guionSugerido.length > 0 && (
+            <div class="bento-card-color bg-bento-orange mb-10">
+              <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
+                <span class="chip-bento bg-black/15">🎤 Sustentación final</span>
+                <span class="text-xs font-black uppercase tracking-widest opacity-90">
+                  {proyecto.sustentacion.duracionMin} min
+                </span>
+              </div>
+              <p class="text-sm opacity-90 mb-4">
+                Guion sugerido para la presentación final ante el grupo y la profe/el profe.
+              </p>
+              <ol class="space-y-3 mt-4">
+                {proyecto.sustentacion.guionSugerido.map((p, i) => (
+                  <li class="flex items-start gap-3">
+                    <span class="w-7 h-7 rounded-bento-sm bg-black/15 flex items-center justify-center text-xs font-black shrink-0 mt-0.5">
+                      {i + 1}
+                    </span>
+                    <span class="text-sm md:text-base leading-relaxed">{p}</span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          )}
+
+          <!-- Declaración de IA -->
+          {proyecto.declaracionIa && (
+            <div class="bento-card mb-10 border-l-4 border-bento-pink">
+              <span class="chip-bento mb-3">🤖 Declaración honesta de IA</span>
+              <p class="text-sm md:text-base leading-relaxed mt-3">
+                {proyecto.declaracionIa}
+              </p>
+            </div>
+          )}
+
+          <!-- Cierre -->
+          {proyecto.cierre && (
+            <div class="text-center mb-10 px-4">
+              <p class="text-base md:text-lg italic leading-relaxed max-w-2xl mx-auto" style="color: var(--fg-muted);">
+                {proyecto.cierre}
+              </p>
+            </div>
+          )}
+
           <CompletarBoton tipo="proyecto" grado={grado.numero} periodo={periodo.numero} />
 
           <CompartirWhatsApp
@@ -369,7 +426,6 @@ const pdfHref = proyecto ? `${base}/proyectos/${proyecto.pdf}` : '';
             contexto={`Grado ${grado.numero}° · Período ${periodo.numero}`}
           />
 
-          {/* Crédito al autor */}
           <div class="text-center text-sm mt-10 mb-6" style="color: var(--fg-muted);">
             Autor: <strong style="color: var(--fg);">{proyecto.autor}</strong>
           </div>

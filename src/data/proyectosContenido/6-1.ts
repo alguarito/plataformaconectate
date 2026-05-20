@@ -1,0 +1,221 @@
+/**
+ * Contenido web del proyecto integrador · Grado 6 · Período 1
+ *
+ * Auto-generado desde content/proyectos/6-1.yaml por
+ * scripts/build-proyectos-web-ts.py. Edita el YAML, no este archivo.
+ *
+ * Modelo MILC v3 entregable-céntrico: 3-5 entregables con reflexión
+ * incrustada del triángulo (Dussel/Estoico/Floridi).
+ */
+import type { ContenidoProyecto } from './_schema';
+
+const contenido: ContenidoProyecto = {
+  grado: 6,
+  periodo: 1,
+  clave: '6-1',
+  titulo: 'Proyecto integrador · Pregoneros digitales del barrio',
+  tituloPortada: 'Pregoneros digitales del barrio',
+  autor: 'Dr. Álvaro Cárdenas Orozco',
+  dba: 'Reconoce principios de identidad y comunicación digital y los aplica en una campaña concreta para su comunidad (MEN, T&I 6°).',
+  estrategia: 'Trabajo en equipo + producto comunitario + reflexión ética',
+  duracionSemanas: 4,
+  modalidad: 'equipo de 3',
+  reto: 'Tu equipo de 3 estudiantes se convierte en pregoneros digitales del barrio: produce y entrega 3 productos comunitarios que ayuden a otros a habitar la red con dignidad. Una tarjeta de identidad digital del equipo, un decálogo de netiqueta firmado por tu salón, y una mini-campaña de prevención de riesgos digitales con 3 carteles para el colegio o el barrio. Todo aplicando los 10 aprendizajes del periodo 1.',
+  insumos: [
+    'Cuaderno físico de cada integrante con sus 10 sesiones del periodo registradas',
+    'Hojas de cartulina o papel grande para los carteles (3-4 hojas)',
+    'Marcadores, colores, lápices del equipo',
+    'Acceso a un computador o celular para hacer 1 búsqueda en línea (CRAAP)',
+    'Acceso a Outlook o correo institucional para enviar el decálogo firmado al rector',
+    'Una hoja blanca tamaño carta para la tarjeta de identidad del equipo'
+  ],
+  anclaje: 'En el centro de Cartago caminaba el pregonero del barrio. Antes de los celulares, antes de la radio, en cada cuadra había una persona mayor con campanita que llevaba mensajes casa a casa: "Reunión del barrio el sábado, traer ladrillos para arreglar el parque". La gente confiaba en él porque lo conocía: su nombre y su voz eran su identidad. Si entregaba bien un mensaje, lo buscaban para más. Si lo dañaba, lo corregían: "Don Aurelio, esa noticia no la entregó bien". Aurelio cuidaba su nombre porque lo necesitaba para vivir. Hoy tu equipo se vuelve pregonero del barrio digital: lleva mensajes útiles a tu salón y a tu cuadra, con tu nombre y tu voz como firma.',
+  aprendizajes: [
+    {
+      sesion: 1,
+      titulo: 'Bienvenida MILC y el contrato del año'
+    },
+    {
+      sesion: 2,
+      titulo: 'Identidad digital: la tarjeta del cuaderno'
+    },
+    {
+      sesion: 3,
+      titulo: 'Correo institucional: las 5 partes del correo formal'
+    },
+    {
+      sesion: 4,
+      titulo: 'Netiqueta: los 10 acuerdos para chats y redes'
+    },
+    {
+      sesion: 5,
+      titulo: 'Historia de los medios: del pregonero al WhatsApp'
+    },
+    {
+      sesion: 6,
+      titulo: 'Huella digital: activa, pasiva y secundaria'
+    },
+    {
+      sesion: 7,
+      titulo: 'Privacidad y datos personales: Ley 1581 de Colombia'
+    },
+    {
+      sesion: 8,
+      titulo: 'Riesgos digitales: 5 señales y 3 adultos de confianza'
+    },
+    {
+      sesion: 9,
+      titulo: 'Comunicación responsable: los 3 filtros antes de publicar'
+    },
+    {
+      sesion: 10,
+      titulo: 'Mi presentación digital: el pitch de 2 minutos'
+    }
+  ],
+  entregables: [
+    {
+      numero: 1,
+      titulo: 'Tarjeta de identidad digital del equipo (Dussel)',
+      queEntregas: 'Una tarjeta de identidad digital del equipo (1 hoja tamaño carta) que represente a los 3 integrantes como pregoneros del barrio. La tarjeta tiene: (a) nombre del equipo (inventado por ustedes); (b) 3 retratos dibujados (uno por integrante) con su nombre real debajo; (c) 3 cosas que cada integrante quiere aportar al barrio (1 por integrante); (d) frase del equipo inventada por los 3 ("Somos los pregoneros que..."); (e) firma del equipo con fecha.',
+      comoSeHace: [
+        'Paso 1: reunirse los 3 e inventar un nombre de equipo y una frase que los represente como pregoneros.',
+        'Paso 2: cada integrante dibuja su retrato en la hoja, con su nombre real debajo.',
+        'Paso 3: cada uno escribe 3 cosas que quiere aportar al barrio (puede ser respeto, conocimiento, ayuda, alegría, lo que sea).',
+        'Paso 4: los 3 firman la tarjeta con su nombre completo y fecha.',
+        'Paso 5: pegar la tarjeta en la primera página del cuaderno físico del equipo.'
+      ],
+      reflexion: {
+        lente: 'dussel',
+        titulo: '💭 Nuestra voz también cuenta (Dussel)',
+        consigna: 'En la parte inferior de la tarjeta, los 3 escriben juntos un párrafo de 3 líneas que diga: "Nuestras voces de adolescentes en grado 6 también cuentan en internet. No tenemos que esperar a ser adultos para hablar con respeto y con criterio. Lo hacemos desde hoy, firmados con nuestros nombres reales.". Este párrafo queda visible en la tarjeta, no como anexo.'
+      },
+      criterios: [
+        'La tarjeta cabe en 1 hoja tamaño carta.',
+        'Tiene los 3 retratos con nombres reales.',
+        'Cada integrante aportó 3 cosas distintas.',
+        'Hay frase del equipo inventada por los 3.',
+        'El párrafo Dussel está visible en la tarjeta (no en anexo).'
+      ]
+    },
+    {
+      numero: 2,
+      titulo: 'Decálogo de netiqueta firmado por el salón (Estoico)',
+      queEntregas: 'Un decálogo de netiqueta (1 cartel grande de cartulina) con los 10 acuerdos firmados por todos los compañeros del salón. Cada acuerdo va con un ícono pequeño dibujado al lado. Al final hay un espacio para que cada compañero del salón firme con su nombre + curso. El decálogo se enviará al rector por correo institucional (aplicando S3 sobre las 5 partes del correo formal).',
+      comoSeHace: [
+        'Paso 1: reproducir los 10 acuerdos de netiqueta (S4) en una cartulina grande con letra clara.',
+        'Paso 2: dibujar un ícono pequeño al lado de cada acuerdo (qué quiere decir visualmente).',
+        'Paso 3: pasar la cartulina por el salón pidiendo a cada compañero firmar con su nombre y curso.',
+        'Paso 4: redactar un correo formal al rector (5 partes: destinatario, asunto, saludo, cuerpo, despedida) explicando qué es el decálogo y por qué lo hicieron como salón.',
+        'Paso 5: enviar el correo desde el correo institucional del equipo. Imprimir el correo enviado o tomar captura.'
+      ],
+      reflexion: {
+        lente: 'estoico',
+        titulo: '💭 Lo que firmamos hoy queda (Marco Aurelio)',
+        consigna: 'En la parte inferior del decálogo, escriban juntos en 3 líneas: "Marco Aurelio decía: lo que escribes hoy queda. Estos 10 acuerdos quedan firmados por nuestro salón en 2026. Quien firmó aquí se compromete a sostenerlos en sus chats y redes el resto del año, sabiendo que la palabra firmada vale más que la palabra olvidada.". Queda escrito en el cartel, junto a las firmas.'
+      },
+      criterios: [
+        'El decálogo tiene los 10 acuerdos completos y legibles.',
+        'Cada acuerdo tiene un ícono dibujado al lado.',
+        'Hay al menos 15 firmas de compañeros del salón.',
+        'Se envió correo formal al rector con las 5 partes correctas.',
+        'El párrafo estoico está visible en el cartel junto a las firmas.'
+      ]
+    },
+    {
+      numero: 3,
+      titulo: 'Mini-campaña de prevención de riesgos digitales (Floridi)',
+      queEntregas: '3 carteles (cartulina mediana cada uno) para pegar en pasillos del colegio o llevar al barrio, sobre los 3 riesgos digitales principales: (a) ciberacoso, (b) grooming, (c) estafas digitales / phishing. Cada cartel: nombre del riesgo arriba, 3 señales para reconocerlo en el centro, 3 acciones de oro abajo, línea de ayuda en la esquina (Te Protejo, CAI Virtual 123, ICBF 141). Carteles legibles desde 2 metros de distancia.',
+      comoSeHace: [
+        'Paso 1: dividirse los 3 riesgos entre los 3 integrantes (uno por persona).',
+        'Paso 2: cada uno hace SU cartel siguiendo la plantilla: nombre + 3 señales + 3 acciones + línea de ayuda.',
+        'Paso 3: revisión conjunta de los 3 carteles para asegurar coherencia visual.',
+        'Paso 4: aplicar los 3 filtros antes de publicar (S9): ¿es verdad? ¿es necesario? ¿es amable?. Si algún cartel falla un filtro, ajustar.',
+        'Paso 5: pegar los 3 carteles en pasillos del colegio (con permiso) o llevar al barrio (con apoyo de un adulto).'
+      ],
+      reflexion: {
+        lente: 'floridi',
+        titulo: '💭 Internet es conversación enorme; aportamos con criterio (Floridi)',
+        consigna: 'En el primer cartel (o en hoja anexa visible junto a los 3), escriban: "Luciano Floridi dice que internet es una conversación enorme entre muchas voces. Estos 3 carteles son la voz de nuestro equipo de pregoneros digitales aportando a esa conversación: prevención, no miedo. Información útil, no alarma. Voces de 6° que cuidan al barrio.". Queda visible junto a los carteles.'
+      },
+      criterios: [
+        'Los 3 carteles están bien hechos y legibles desde 2 metros.',
+        'Cada cartel sigue la plantilla (nombre + 3 señales + 3 acciones + línea de ayuda).',
+        'Aplicaron los 3 filtros antes de publicar.',
+        'Los carteles están instalados en pasillo o llevados al barrio (con evidencia).',
+        'El párrafo Floridi está visible junto a los carteles.'
+      ]
+    },
+    {
+      numero: 4,
+      titulo: 'Sustentación de equipo y autoevaluación (transversal)',
+      queEntregas: 'Sustentación oral de 5 minutos en clase donde el equipo presenta los 3 entregables al profe y al grupo. Todos los 3 integrantes hablan (no se vale uno solo). Apoyan con los productos físicos (tarjeta, decálogo, 3 carteles). Después: autoevaluación con la rúbrica de 5 criterios marcada honestamente.',
+      comoSeHace: [
+        'Paso 1: armar guion de 5 minutos: 1 min introducción (quiénes somos, qué hicimos), 3 min muestra de los 3 entregables (1 min cada uno, hablado por integrante distinto), 1 min reflexión final del equipo.',
+        'Paso 2: ensayar al menos 1 vez con cronómetro.',
+        'Paso 3: presentar ante profe y compañeros.',
+        'Paso 4: después de la sustentación, autoevaluarse con la rúbrica de 5 criterios.',
+        'Paso 5: redactar 4 líneas de reflexión personal de cada integrante: \'¿qué aprendí siendo pregonero digital?\'.'
+      ],
+      reflexion: {
+        lente: 'dussel',
+        titulo: '💭 Cierre del equipo: nuestra cosecha del periodo',
+        consigna: 'Cada integrante escribe en su cuaderno 4 líneas: "Mi mayor aprendizaje siendo pregonero digital del barrio fue ___. Lo que más me costó del proyecto fue ___. Lo que voy a sostener del decálogo el resto del año es ___. Le doy gracias a mi equipo por ___.". Firmado.'
+      },
+      criterios: [
+        'Los 3 integrantes hablaron durante la sustentación.',
+        'Los 5 minutos se respetaron (entre 4:30 y 5:30).',
+        'Los 3 productos físicos se mostraron al grupo.',
+        'Hay autoevaluación honesta con la rúbrica.',
+        'Cada integrante escribió sus 4 líneas de reflexión personal.'
+      ]
+    }
+  ],
+  rubrica: [
+    {
+      entregable: 1,
+      nivel5: 'Tarjeta completa con los 5 elementos + párrafo Dussel visible + firmada por los 3.',
+      nivel3: 'Tarjeta con 3-4 elementos completos; falta o el párrafo Dussel o las firmas.',
+      nivel1: 'Tarjeta incompleta, sin párrafo Dussel o sin firmas.'
+    },
+    {
+      entregable: 2,
+      nivel5: 'Decálogo con los 10 acuerdos, íconos, 15+ firmas del salón, correo enviado al rector, párrafo estoico visible.',
+      nivel3: 'Decálogo con los 10 acuerdos pero faltan firmas (<10), o falta correo formal, o falta párrafo estoico.',
+      nivel1: 'Decálogo incompleto, sin firmas o sin correo enviado.'
+    },
+    {
+      entregable: 3,
+      nivel5: '3 carteles completos siguiendo plantilla + filtros aplicados + instalados visiblemente + párrafo Floridi.',
+      nivel3: '3 carteles con plantilla pero sin instalación visible o sin párrafo Floridi.',
+      nivel1: 'Menos de 3 carteles o carteles incompletos.'
+    },
+    {
+      entregable: 4,
+      nivel5: 'Los 3 hablaron 5 min con productos a la vista, autoevaluación honesta, reflexión personal de cada uno.',
+      nivel3: '1-2 integrantes hablaron, sustentación de 3-4 min, autoevaluación con criterio limitado.',
+      nivel1: 'Solo 1 habló o no hubo sustentación, sin autoevaluación.'
+    },
+    {
+      entregable: 'global',
+      nivel5: 'Las 3 lentes (Dussel + Estoico + Floridi) están visibles en los productos, no como anexo aparte. Reflexiones genuinas, no copiadas.',
+      nivel3: 'Las 3 lentes están pero alguna parece copiada o forzada al producto.',
+      nivel1: 'Falta alguna lente o las reflexiones son superficiales/postizas.',
+      titulo: 'Comunicación, sustentación e integración del triángulo'
+    }
+  ],
+  sustentacion: {
+    duracionMin: 5,
+    guionSugerido: [
+      '1 min · presentación del equipo + reto del proyecto',
+      '1 min · entregable 1 (tarjeta) explicado por integrante A',
+      '1 min · entregable 2 (decálogo) explicado por integrante B',
+      '1 min · entregable 3 (carteles) explicado por integrante C',
+      '1 min · cierre del equipo: aprendizajes + agradecimientos'
+    ]
+  },
+  declaracionIa: 'Este es proyecto de grado 6°. NO se permite el uso de IA generativa (ChatGPT, Claude, Gemini, DALL-E) para producir los entregables. Los productos deben ser hechos a mano por el equipo, con criterio propio. La IA aún no se cubre como herramienta de uso en grado 6°. Si en algún momento se usó IA (por curiosidad personal), declararlo en la sustentación.',
+  cierre: 'Cerrando el periodo 1, los pregoneros del barrio digital quedaron: producir y entregar a la comunidad. El periodo 2 te abre el computador por dentro — aprenderás a habitar la máquina, no solo la red.',
+  pdf: 'proyecto-1-6-TIC.pdf'
+};
+
+export default contenido;

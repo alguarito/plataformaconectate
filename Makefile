@@ -275,3 +275,13 @@ dev:  ## npm run dev (servidor de desarrollo Astro)
 .PHONY: build
 build:  ## npm run build (compila el sitio Astro completo)
 	@npm run build
+
+.PHONY: sw-bump
+sw-bump:  ## Incrementa public/sw.js VERSION (solo si PDFs/imágenes de public/ cambiaron)
+	@cur=$$(grep -E "^const VERSION = 'v[0-9]+';" public/sw.js | sed -E "s/.*v([0-9]+).*/\1/"); \
+	next=$$((cur + 1)); \
+	echo "  SW: v$$cur → v$$next"; \
+	sed -i.bak -E "s/const VERSION = 'v[0-9]+';/const VERSION = 'v$$next';/" public/sw.js && rm public/sw.js.bak; \
+	echo "  ✓ public/sw.js actualizado"; \
+	echo "  ⚠ Recordá: solo bumpear si cambiaron PDFs, imágenes en public/, o la lógica del SW."; \
+	echo "    Cambios de HTML/CSS/TS NO requieren bump (Astro hashea, SwR refresca)."

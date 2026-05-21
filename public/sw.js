@@ -11,11 +11,27 @@
  *  - Sitemap/manifest   → network-first (puede cambiar entre deploys)
  *  - Drive / 3rd party  → no se cachea (passthrough)
  *
- * Versión: bumpear este número en deploys con cambios estructurales para
- * forzar invalidación de caché.
+ * ─── Cuándo bumpear VERSION ─────────────────────────────────────────────
+ *
+ * SÍ bumpear (assets cacheados cambiaron):
+ *   ✓ Cambia LOGO.png u otra imagen del SHELL_URLS
+ *   ✓ Se regeneran PDFs de guías (public/guias-mejoras/*.pdf)
+ *   ✓ Cambia algún PDF en public/ (plan-de-area, libro-milc, etc.)
+ *   ✓ Cambia la estrategia/lógica del propio SW
+ *
+ * NO bumpear (no es necesario):
+ *   ✗ Solo cambian componentes Astro (HTML/CSS) → SwR los refresca solo
+ *   ✗ Solo cambian YAMLs de contenido sin recompilar PDFs
+ *   ✗ Cambia código TypeScript en src/ → Astro genera URLs con hash nuevo
+ *   ✗ Cambia el contenido de una página → SwR la refresca al próximo load
+ *
+ * Regla mnemónica: bumpea solo si cambias un archivo binario en public/
+ * con el MISMO nombre. Si el nombre cambia o si es HTML/JS/CSS, NO hace
+ * falta bumpear porque Astro genera URLs hasheadas o SwR lo refresca.
+ * ─────────────────────────────────────────────────────────────────────────
  */
 
-const VERSION = 'v40';
+const VERSION = 'v41';
 const BASE_PATH = '/plataformaconectate';
 
 const CACHE_SHELL = `conectate-shell-${VERSION}`;

@@ -39,7 +39,10 @@ El proyecto ya tiene un sistema **"Bento Moderna"** en [tailwind.config.mjs](tai
 - Es **offline-first** (Service Worker activo). No introducir dependencias pesadas sin razón.
 - Imágenes: usar `astro:assets` (`<Image />`), nunca `<img>` crudo con archivos grandes.
 - Lazy-load todo lo que no esté above-the-fold.
-- Cualquier cambio en assets cacheados → recordar bumpear la versión del SW (ver commits previos: `bump SW vN`).
+- **Bump del Service Worker** (regla precisa, no genérica):
+  - ✅ Bumpear `public/sw.js` solo si: cambia un PDF compilado, una imagen en `public/`, el LOGO.png, o la lógica del propio SW.
+  - ❌ NO bumpear si solo cambia HTML/CSS de un componente Astro, código TypeScript en `src/`, o YAMLs sin recompilar PDFs. El navegador o el `stale-while-revalidate` los refresca solo.
+  - Ver el header de `public/sw.js` que tiene la tabla SÍ/NO completa.
 
 ### Tono y lenguaje
 - Español neutro de Colombia, cercano pero no infantil. Estudiantes de secundaria, no niños.
@@ -305,4 +308,4 @@ Documentación completa en [content/guias/_SCHEMA.md](content/guias/_SCHEMA.md).
 - No agregar emojis al código ni a la UI salvo que se pida explícitamente.
 - No crear archivos `.md` de documentación sin que se pidan.
 - Para cambios de UI, **probar visualmente** (`npm run dev` + navegador) antes de declarar la tarea completa.
-- Service Worker: cualquier cambio que afecte assets cacheados debe ir acompañado del bump de versión.
+- Service Worker: ver "Bump del Service Worker" arriba en la sección Performance. Bumpear solo cuando se regeneran PDFs, se cambia una imagen del SHELL_URLS, o cambia la lógica del propio SW. Para cambios de HTML/CSS/TS de Astro, NO bumpear (Astro hashea URLs y stale-while-revalidate refresca el HTML al próximo load).

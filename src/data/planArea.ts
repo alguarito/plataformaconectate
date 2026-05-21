@@ -48,7 +48,7 @@ export interface FaseMILC {
 
 export const fasesMILC: FaseMILC[] = [
   {
-    nombre: 'Escuta',
+    nombre: 'Escucha',
     emoji: '👂',
     bgClass: 'bg-bento-lime',
     descripcion:

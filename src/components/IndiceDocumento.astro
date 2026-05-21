@@ -1,0 +1,86 @@
+---
+/**
+ * Índice navegable de un documento rector (plan de área, modelo MILC).
+ *
+ * Sigue el patrón visual del MapaRutaBlock de las guías, pero adaptado a
+ * documentos largos: cada item es un ancla a un id en la misma página.
+ */
+
+interface Seccion {
+  id: string;
+  titulo: string;
+  emoji?: string;
+}
+
+interface Props {
+  secciones: Seccion[];
+  titulo?: string;
+  chip?: string;
+  introduccion?: string;
+}
+
+const {
+  secciones,
+  titulo = 'Esto vas a encontrar.',
+  chip = '📑 Índice del documento',
+  introduccion,
+} = Astro.props;
+---
+
+<section class="bento-card mb-10" aria-labelledby="indice-doc-titulo">
+  <div class="flex items-center gap-3 mb-3 flex-wrap">
+    <span class="chip-bento">{chip}</span>
+    <span class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">
+      {secciones.length} secciones
+    </span>
+  </div>
+
+  <h2 id="indice-doc-titulo" class="heading-huge leading-tight mb-3">
+    {titulo}
+  </h2>
+
+  {introduccion && (
+    <p class="text-sm md:text-base mb-6 leading-relaxed" style="color: var(--fg-muted);">
+      {introduccion}
+    </p>
+  )}
+
+  <ol class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-5">
+    {secciones.map((s, i) => (
+      <li>
+        <a
+          href={`#${s.id}`}
+          class="flex items-center gap-4 p-4 rounded-bento-sm border-2 hover:border-bento-blue transition-colors group h-full"
+          style="border-color: var(--border);"
+        >
+          <div class="w-10 h-10 rounded-full bg-bento-blue text-white flex items-center justify-center text-base font-black shrink-0">
+            {i + 1}
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-baseline gap-2 flex-wrap">
+              {s.emoji && (
+                <span class="text-xl leading-none" aria-hidden="true">{s.emoji}</span>
+              )}
+              <h3 class="font-black text-sm md:text-base leading-tight">
+                {s.titulo}
+              </h3>
+            </div>
+          </div>
+          <svg
+            class="w-5 h-5 shrink-0 opacity-50 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+      </li>
+    ))}
+  </ol>
+</section>

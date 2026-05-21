@@ -22,6 +22,7 @@ const grados = gradosData.map((g) => ({
         </span>
       </a>
 
+      <!-- Nav desktop (≥ md) -->
       <nav class="hidden md:flex items-center gap-1">
         <a
           href={`${base}/comenzar`}
@@ -90,7 +91,227 @@ const grados = gradosData.map((g) => ({
         >
           Ingresar
         </a>
+
+        <!-- Botón hamburger (mobile · < md) -->
+        <button
+          type="button"
+          data-abrir-menu
+          aria-label="Abrir menú de navegación"
+          aria-controls="menu-mobile"
+          aria-expanded="false"
+          class="md:hidden w-11 h-11 rounded-full flex items-center justify-center hover:bg-[var(--border)] transition-colors"
+        >
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="4" y1="7"  x2="20" y2="7"></line>
+            <line x1="4" y1="12" x2="20" y2="12"></line>
+            <line x1="4" y1="17" x2="20" y2="17"></line>
+          </svg>
+        </button>
       </div>
     </div>
   </div>
+
+  <!-- ════════════ Drawer Mobile ════════════ -->
+  <dialog
+    id="menu-mobile"
+    class="menu-mobile md:hidden"
+    aria-label="Menú de navegación"
+  >
+    <div class="menu-mobile-panel">
+      <div class="flex items-center justify-between mb-6">
+        <span class="font-black text-xl tracking-tighter leading-none">
+          Conecta<span class="text-bento-blue">TE</span>
+        </span>
+        <button
+          type="button"
+          data-cerrar-menu
+          aria-label="Cerrar menú"
+          class="w-11 h-11 rounded-full flex items-center justify-center hover:bg-[var(--border)] transition-colors"
+        >
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="6" y1="6"  x2="18" y2="18"></line>
+            <line x1="18" y1="6" x2="6"  y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <span class="text-[11px] font-black uppercase tracking-[0.18em] mb-3 block" style="color: var(--fg-muted);">
+        Navegación
+      </span>
+      <nav class="flex flex-col gap-1 mb-6">
+        <a
+          href={`${base}/comenzar`}
+          class="menu-mobile-link"
+        >
+          Comenzar
+        </a>
+        <a
+          href={`${base}/plan-de-area`}
+          class="menu-mobile-link"
+        >
+          Plan de Área
+        </a>
+        <a
+          href={`${base}/modelo-milc`}
+          class="menu-mobile-link"
+        >
+          Modelo MILC
+        </a>
+        <a
+          href={`${base}/acerca`}
+          class="menu-mobile-link"
+        >
+          Acerca
+        </a>
+      </nav>
+
+      <span class="text-[11px] font-black uppercase tracking-[0.18em] mb-3 block" style="color: var(--fg-muted);">
+        Grados
+      </span>
+      <div class="grid grid-cols-3 gap-2 mb-6">
+        {
+          grados.map((g) => (
+            <a
+              href={`${base}/grado-${g.numero}`}
+              class:list={[
+                'menu-mobile-grado',
+                g.enConstruccion && 'opacity-50',
+              ]}
+              aria-label={g.enConstruccion ? `Grado ${g.numero}°: en construcción` : `Grado ${g.numero}°`}
+            >
+              <span class="text-2xl font-black tracking-tighter leading-none">{g.numero}°</span>
+            </a>
+          ))
+        }
+      </div>
+
+      <a
+        href={`${base}/registro`}
+        class="btn-bento text-sm w-full justify-center text-center"
+      >
+        Ingresar
+      </a>
+    </div>
+  </dialog>
 </header>
+
+<style>
+  /* Drawer mobile · slide desde la derecha */
+  .menu-mobile {
+    margin: 0 0 0 auto;
+    padding: 0;
+    width: min(85vw, 360px);
+    max-width: 360px;
+    height: 100vh;
+    height: 100dvh;
+    border: none;
+    background: var(--bg-card);
+    color: var(--fg);
+    box-shadow: -12px 0 40px rgba(0, 0, 0, 0.18);
+    animation: drawer-slide-in 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .menu-mobile::backdrop {
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(2px);
+    animation: drawer-backdrop-in 0.22s ease-out;
+  }
+  @keyframes drawer-slide-in {
+    from { transform: translateX(100%); }
+    to   { transform: translateX(0); }
+  }
+  @keyframes drawer-backdrop-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  .menu-mobile-panel {
+    padding: 20px 22px 28px;
+    height: 100%;
+    overflow-y: auto;
+  }
+
+  .menu-mobile-link {
+    display: flex;
+    align-items: center;
+    padding: 12px 14px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--fg);
+    text-decoration: none;
+    transition: background 0.15s;
+  }
+  .menu-mobile-link:hover,
+  .menu-mobile-link:focus-visible {
+    background: var(--border);
+    outline: none;
+  }
+
+  .menu-mobile-grado {
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    border: 2px solid var(--border);
+    color: var(--fg);
+    text-decoration: none;
+    transition: all 0.15s;
+  }
+  .menu-mobile-grado:hover,
+  .menu-mobile-grado:focus-visible {
+    border-color: var(--fg);
+    background: var(--fg);
+    color: var(--bg-card);
+    outline: none;
+  }
+
+  /* Reduce motion */
+  @media (prefers-reduced-motion: reduce) {
+    .menu-mobile,
+    .menu-mobile::backdrop {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  const dialog = document.getElementById('menu-mobile') as HTMLDialogElement | null;
+  if (dialog) {
+    const trigger = document.querySelector<HTMLButtonElement>('[data-abrir-menu]');
+
+    function abrir() {
+      dialog?.showModal();
+      trigger?.setAttribute('aria-expanded', 'true');
+    }
+    function cerrar() {
+      dialog?.close();
+      trigger?.setAttribute('aria-expanded', 'false');
+    }
+
+    /* Abrir */
+    trigger?.addEventListener('click', abrir);
+
+    /* Cerrar · botón X */
+    dialog.querySelectorAll('[data-cerrar-menu]').forEach((b) =>
+      b.addEventListener('click', cerrar),
+    );
+
+    /* Cerrar · click en backdrop */
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) cerrar();
+    });
+
+    /* Cerrar · click en cualquier link (para que al volver no esté abierto) */
+    dialog.querySelectorAll('a').forEach((link) =>
+      link.addEventListener('click', () => {
+        setTimeout(cerrar, 50);
+      }),
+    );
+
+    /* Cerrar · al pasar a desktop (≥ md = 768px) */
+    const mq = window.matchMedia('(min-width: 768px)');
+    mq.addEventListener('change', (e) => {
+      if (e.matches && dialog.open) cerrar();
+    });
+  }
+</script>

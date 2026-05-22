@@ -217,7 +217,7 @@ ${conceptosBlock}
   postLectura: {
     reflexion: \`TODO pregunta de reflexión profunda (mira tu día/semana).\`,
     transferencia: \`TODO pista para encontrar el concepto en su vida cotidiana.\`,
-    cierre: \`TODO frase de cierre con voz MILC (Escuta · Sistematización · Praxis · Evaluación liberadora).\`,
+    cierre: \`TODO frase de cierre con voz MILC (Escucha · Sistematización · Praxis · Evaluación liberadora).\`,
   },
 };
 

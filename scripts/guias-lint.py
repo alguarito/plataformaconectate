@@ -126,14 +126,14 @@ def lint_required_fields(g: dict) -> list[str]:
 def lint_verbos(g: dict) -> tuple[list[str], list[str], list[str]]:
     """Extrae verbos de escuta/sist/praxis y valida.
 
-    Cada fase puede tener el verbo en `intro` (Praxis, Escuta) o en
+    Cada fase puede tener el verbo en `intro` (Praxis, Escucha) o en
     `cuaderno`/infoband (Sistematización). Buscamos en varios campos.
 
     Devuelve (verbos_encontrados, errores, warnings).
     """
     # Para cada actividad/fase, busca en una lista de campos hasta encontrar uno con el patrón.
     fases = [
-        ("Actividad 1 (Escuta)", ["escuta.escena", "escuta.cuaderno"]),
+        ("Actividad 1 (Escucha)", ["escuta.escena", "escuta.cuaderno"]),
         ("Actividad 2 (Sist)",  ["sistematizacion.intro", "sistematizacion.cuaderno"]),
         ("Actividad 3 (Praxis)", ["praxis.intro", "praxis.cuaderno"]),
     ]

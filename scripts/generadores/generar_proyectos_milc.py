@@ -547,7 +547,7 @@ Aprendizajes que integra
 
 \newpage
 \begin{{titlebox}}{{milcVerde}}
-Fase 1 · Escuta y empatía
+Fase 1 · Escucha y empatía
 \end{{titlebox}}
 \begin{{softbox}}{{milcVerde}}{{milcGris}}{{Propósito}}
 Escuchar el contexto, reconocer una necesidad real y formular un problema que valga la pena trabajar. Esta fase puede incluir entrevistas, observación, encuesta breve o revisión de evidencias.

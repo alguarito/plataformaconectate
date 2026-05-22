@@ -96,7 +96,7 @@ export const recursos: RecursoGuia[] = [
     "periodo": 1,
     "sesion": 9,
     "sesionGlobal": 9,
-    "titulo": "Proyecto MILC Escuta: entrevista ética a un adulto mayor sobre la evolución de la comunicación en su vida",
+    "titulo": "Proyecto MILC Escucha: entrevista ética a un adulto mayor sobre la evolución de la comunicación en su vida",
     "pdfId": "1Kgulp-aYcAglDhvzZkZGRMnCcf41BJ9Z",
     "guiaId": "9-6-TIC"
   },
@@ -366,7 +366,7 @@ export const recursos: RecursoGuia[] = [
     "periodo": 1,
     "sesion": 9,
     "sesionGlobal": 9,
-    "titulo": "Proyecto MILC Escuta: cartografía social digital de necesidades tecnológicas del entorno escolar",
+    "titulo": "Proyecto MILC Escucha: cartografía social digital de necesidades tecnológicas del entorno escolar",
     "pdfId": "1X_tJd_L74WFxmwnrOc0OIbN5KEjHWEVU",
     "guiaId": "9-7-TIC"
   },

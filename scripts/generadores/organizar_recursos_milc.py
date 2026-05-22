@@ -293,7 +293,7 @@ La línea visual usa una paleta magenta/vino con acentos verde, turquesa y mosta
 
 ## Enfoque Pedagógico
 
-Los recursos integran el método MILC: Escuta, Sistematización, Praxis y Evaluación liberadora. Los proyectos incorporan estrategias activas como Design Thinking, prototipado, experimentación, validación y sustentación.
+Los recursos integran el método MILC: Escucha, Sistematización, Praxis y Evaluación liberadora. Los proyectos incorporan estrategias activas como Design Thinking, prototipado, experimentación, validación y sustentación.
 
 ## Autor
 

@@ -90,7 +90,7 @@ This opening is NOT cultural decoration. It is the anchor that prevents technolo
 
 For every guide or activity, verify:
 
-- **Escuta**: The student observes a real context, need, question, user, or problem.
+- **Escucha**: The student observes a real context, need, question, user, or problem.
 
 - **Sistematización (con pensamiento computacional)**: The student receives concepts, vocabulary, examples, and criteria, AND practices the four pillars of computational thinking on the topic itself:
   - **Descomposición**: divide the topic or problem into manageable parts.

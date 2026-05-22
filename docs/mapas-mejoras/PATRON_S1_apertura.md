@@ -154,7 +154,7 @@ Cuando instancies este patrón para un grado, **debes diferenciar al menos estos
 
 1. 🎚️ **Frase de apertura con metáfora del grado** (§6) — única por grado.
 2. 🎚️ **Saberes ancestrales del Valle** invocados en el ritual — distintos: 6° herrero/tendero · 7° minga digital · 8° pesar el grano · 9° cooperativa cafetera · 10° voz del Pacífico afro · 11° feria del campesino.
-3. 🎚️ **Brief del proyecto integrador** — distinto contenido por grado (Escuta en 6° · narrativa interactiva en 7° · dashboard de phronesis en 8° · etc.).
+3. 🎚️ **Brief del proyecto integrador** — distinto contenido por grado (Escucha en 6° · narrativa interactiva en 7° · dashboard de phronesis en 8° · etc.).
 4. 🎚️ **Lenguaje del auto-check MILC** — emojis y frases en 6°–7° / argumentación escrita en 10°–11°.
 5. 🎚️ **Profundidad del triángulo de pensamiento** — frases concretas en 6° / dilemas argumentados en 11°.
 6. 🎚️ **Conexión vertical** — la S1 menciona qué prepara para grado +1 (en 11° menciona la vida laboral / universitaria).

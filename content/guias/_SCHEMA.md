@@ -47,7 +47,7 @@ puentes:
   a_evaluacion: |
   a_triangulo: |
 
-# ─── Fase 1 · Escuta = Actividad 1 ───────────────────────────────────
+# ─── Fase 1 · Escucha = Actividad 1 ───────────────────────────────────
 escuta:
   escena: |               # str · prompt de la Actividad 1 (qué vas a hacer)
   checks:                 # list[str] · 3 checks observables

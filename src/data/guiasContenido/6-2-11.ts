@@ -2,7 +2,7 @@
  * Contenido enriquecido para Grado 6 · Período 2 · Sesión 11
  * (sesión global 22 — COSECHA MILC del periodo 2).
  *
- * Tema: Diagnóstico de un equipo + integración cruzada P1+P2 + Escuta digitalizado + auto-check #4.
+ * Tema: Diagnóstico de un equipo + integración cruzada P1+P2 + Escucha digitalizado + auto-check #4.
  * Aplica PATRON_S11_cosecha.md · variante P2·S11 Cosecha intermedia.
  * Capítulo 2 cerrado: "ahora sé qué hay dentro y cómo cuidarlo".
  */
@@ -13,41 +13,41 @@ const contenido: ContenidoGuia = {
   periodo: 2,
   sesion: 11,
   titulo:
-    'Cosecha del periodo 2 · Diagnóstico de un equipo + integración cruzada P1+P2 + Escuta digitalizado',
+    'Cosecha del periodo 2 · Diagnóstico de un equipo + integración cruzada P1+P2 + Escucha digitalizado',
   ocultarPDF: true,
   sinStepper: true,
   resumen:
-    'Habitamos la sala digital con dignidad — capítulo 2 cerrado: ahora sé qué hay dentro y cómo cuidarlo. Hoy diagnosticas un equipo, conectas lo aprendido entre P1 y P2 y entregas el segundo hito del Escuta: tu entrevista digitalizada y respaldada.',
+    'Habitamos la sala digital con dignidad — capítulo 2 cerrado: ahora sé qué hay dentro y cómo cuidarlo. Hoy diagnosticas un equipo, conectas lo aprendido entre P1 y P2 y entregas el segundo hito del Escucha: tu entrevista digitalizada y respaldada.',
   duracionMin: 90,
   subtema: 'Cosecha · Diagnóstico + integración cruzada P1+P2',
 
   preLectura: {
     porQueImporta:
-      'Si pasaste 11 sesiones aprendiendo de hardware y software pero no puedes entregar tu Escuta digitalizado, no aprendiste — solo escuchaste. La cosecha intermedia mide si lo aprendido SIRVE para tu proyecto del año.',
+      'Si pasaste 11 sesiones aprendiendo de hardware y software pero no puedes entregar tu Escucha digitalizado, no aprendiste — solo escuchaste. La cosecha intermedia mide si lo aprendido SIRVE para tu proyecto del año.',
     preguntaDetonante:
-      '¿Tu Escuta de P1 se conectó con lo que aprendiste de hardware en P2? ¿Cómo? Si no, ¿qué se perdió?',
+      '¿Tu Escucha de P1 se conectó con lo que aprendiste de hardware en P2? ¿Cómo? Si no, ¿qué se perdió?',
     activacion: {
       titulo: 'Círculo de la cosecha intermedia · El trueque entre veredas',
       descripcion:
-        'Cada estudiante dice en una frase qué conecta P1 (comunicación) y P2 (hardware) en su Escuta. Es síntesis cruzada en voz alta — el ejercicio más exigente del año hasta hoy.',
+        'Cada estudiante dice en una frase qué conecta P1 (comunicación) y P2 (hardware) en su Escucha. Es síntesis cruzada en voz alta — el ejercicio más exigente del año hasta hoy.',
       duracionMin: 5,
     },
     conexion: {
       anterior:
         'Vienes de la S10 P2: evaluación práctica con diagnóstico de un sistema computacional + portafolio.',
       siguiente:
-        'En P3·S1 entras a la aceleración del año: Word, Internet, sustentación pública del Escuta. Última recta.',
+        'En P3·S1 entras a la aceleración del año: Word, Internet, sustentación pública del Escucha. Última recta.',
     },
   },
 
   conceptosClave: [
     {
       categoria: '🔗 Integración P1 + P2',
-      termino: 'Audio del Escuta ↔ Almacenamiento',
+      termino: 'Audio del Escucha ↔ Almacenamiento',
       definicion:
         'Lo que grabaste en P1 vive físicamente en un disco (HDD o SSD) que aprendiste a entender en P2.',
       ejemplo:
-        'Tu archivo Escuta_abuela.mp3 ocupa 30 MB. Si tu disco está al 99%, no podrás guardarlo bien.',
+        'Tu archivo Escucha_abuela.mp3 ocupa 30 MB. Si tu disco está al 99%, no podrás guardarlo bien.',
       emoji: '🎙️',
     },
     {
@@ -99,7 +99,7 @@ const contenido: ContenidoGuia = {
       categoria: '🔍 Las 5 dimensiones MILC · cuarta medición',
       termino: 'Reflexión local + Vínculo intergeneracional',
       definicion:
-        'Cómo tu Escuta digitalizado puede entregarse a quien lo grabó (devolución) y a quien viene detrás.',
+        'Cómo tu Escucha digitalizado puede entregarse a quien lo grabó (devolución) y a quien viene detrás.',
       ejemplo:
         'Llevar el archivo en USB a la casa de tu abuela y mostrárselo es cerrar el círculo intergeneracional.',
       emoji: '🌳',
@@ -109,9 +109,9 @@ const contenido: ContenidoGuia = {
   laboratorios: [
     {
       tipo: 'visualizacion',
-      titulo: 'Diagnóstico técnico + Escuta digitalizado + auto-check #4 + pre-mortem',
+      titulo: 'Diagnóstico técnico + Escucha digitalizado + auto-check #4 + pre-mortem',
       instrucciones:
-        'Seis pasos del 70% hands-on. Sales con: ficha de diagnóstico firmada, Escuta digitalizado y respaldado, auto-check con gráfica longitudinal, pre-mortem del proyecto y equipo de sustentación P3 definido.',
+        'Seis pasos del 70% hands-on. Sales con: ficha de diagnóstico firmada, Escucha digitalizado y respaldado, auto-check con gráfica longitudinal, pre-mortem del proyecto y equipo de sustentación P3 definido.',
       pasos: [
         {
           titulo: 'Paso 1 · Diagnóstico real de un equipo (15 min)',
@@ -119,7 +119,7 @@ const contenido: ContenidoGuia = {
             'En parejas, revisan 5 elementos del equipo asignado: estado físico, espacio en disco, programas innecesarios abiertos, conexiones, fecha del último mantenimiento. Llenan una ficha técnica.',
         },
         {
-          titulo: 'Paso 2 · Hito 2 del Escuta · digitalización (15 min)',
+          titulo: 'Paso 2 · Hito 2 del Escucha · digitalización (15 min)',
           texto:
             'Cada estudiante muestra: archivo de audio organizado en carpeta, copia en la nube institucional, copia en USB o segundo dispositivo. Tres copias = entrega segura.',
         },
@@ -131,7 +131,7 @@ const contenido: ContenidoGuia = {
         {
           titulo: 'Paso 4 · Pre-mortem del proyecto (10 min)',
           texto:
-            'Imagina que tu Escuta fracasa en P3·S11. Pregúntate: "Si esto fracasa, ¿por qué probablemente sea?". Anota 2 riesgos + 2 acciones para mitigarlos. Esto es anticipación estoica.',
+            'Imagina que tu Escucha fracasa en P3·S11. Pregúntate: "Si esto fracasa, ¿por qué probablemente sea?". Anota 2 riesgos + 2 acciones para mitigarlos. Esto es anticipación estoica.',
         },
         {
           titulo: 'Paso 5 · Definición de equipos de sustentación P3 (5 min)',
@@ -151,7 +151,7 @@ const contenido: ContenidoGuia = {
       instrucciones: '5 preguntas que exigen integrar lo aprendido en los dos periodos.',
       preguntas: [
         {
-          enunciado: 'Para guardar tu Escuta de manera segura, lo más prudente es:',
+          enunciado: 'Para guardar tu Escucha de manera segura, lo más prudente es:',
           opciones: [
             'Solo en el celular',
             'Solo en la nube',
@@ -165,7 +165,7 @@ const contenido: ContenidoGuia = {
             '❌ Una sola copia es una sola falla del destino. La regla 3-2-1: 3 copias, 2 medios distintos, 1 fuera del lugar habitual.',
         },
         {
-          enunciado: 'Si el archivo de audio del Escuta pesa 200 MB, ¿dónde NO conviene guardarlo?',
+          enunciado: 'Si el archivo de audio del Escucha pesa 200 MB, ¿dónde NO conviene guardarlo?',
           opciones: [
             'En USB',
             'En OneDrive',
@@ -207,7 +207,7 @@ const contenido: ContenidoGuia = {
             '❌ Ignorar, borrar o mentir destruye el valor del auto-check. Una bajada es una pista, no una falla.',
         },
         {
-          enunciado: 'El riesgo más probable de tu Escuta para P3 es:',
+          enunciado: 'El riesgo más probable de tu Escucha para P3 es:',
           opciones: [
             'No hay riesgos',
             'Que se pierda el archivo, que el entrevistado se arrepienta, o que no logres redactar el documento final',
@@ -218,7 +218,7 @@ const contenido: ContenidoGuia = {
           feedbackCorrecto:
             '✅ Tres riesgos reales. Anótalos en tu pre-mortem y decide tu mitigación HOY.',
           feedbackIncorrecto:
-            '❌ Negar riesgos no los elimina — los oculta. Los riesgos reales del Escuta se anticipan y se mitigan.',
+            '❌ Negar riesgos no los elimina — los oculta. Los riesgos reales del Escucha se anticipan y se mitigan.',
         },
       ],
     },
@@ -228,7 +228,7 @@ const contenido: ContenidoGuia = {
     reflexion:
       '¿Qué dimensión MILC se mantiene baja desde P1·S1? ¿Qué acto concreto vas a hacer en P3 para moverla?',
     transferencia:
-      'Esta semana hazle una copia del audio de tu Escuta a la persona que entrevistaste. Llévaselo en USB o por WhatsApp con su permiso. Es el primer acto público de devolución.',
+      'Esta semana hazle una copia del audio de tu Escucha a la persona que entrevistaste. Llévaselo en USB o por WhatsApp con su permiso. Es el primer acto público de devolución.',
     cierre:
       'Cosechas el periodo 2: Dussel diría que saber abrir la caja negra es no depender del que cobra por hacerlo. Epicteto diría que lo que revisas a tiempo no te sorprende después. Floridi diría que el cuerpo de la información también necesita cuidado — y hoy lo cuidaste.',
   },

@@ -3111,7 +3111,7 @@ def tex_classic_cover(guide: GuideData, title_font: int, title_leading: int) -> 
 \end{{tcolorbox}}
 \vfill
 \begin{{tcolorbox}}[enhanced,colback=milcVino!72!black,colframe=milcVino!72!black,arc=5mm,boxrule=0pt,width=.86\textwidth,left=6mm,right=6mm,top=4mm,bottom=4mm,center]
-\centering{{\color{{white}}\sffamily\small Metodología MILC · Escuta · Sistematización · Praxis · Evaluación liberadora\\Producto: {tex_escape(guide.product)}}}
+\centering{{\color{{white}}\sffamily\small Metodología MILC · Escucha · Sistematización · Praxis · Evaluación liberadora\\Producto: {tex_escape(guide.product)}}}
 \end{{tcolorbox}}
 
 \newpage
@@ -3230,7 +3230,7 @@ def tex_grade_web_cover(guide: GuideData) -> str:
     ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
     ([xshift=-1.35cm,yshift=3.15cm]current page.south east);
   \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.0cm]current page.south)
-    {{\sffamily\fontsize{{10}}{{12}}\selectfont Metodología MILC · Escuta · Sistematización · Praxis · Evaluación liberadora\\
+    {{\sffamily\fontsize{{10}}{{12}}\selectfont Metodología MILC · Escucha · Sistematización · Praxis · Evaluación liberadora\\
     \textcolor{{milcGradeDark}}{{\bfseries Producto:}} {tex_escape(guide.product)}}};
 \end{{tikzpicture}}
 \mbox{{}}
@@ -3396,7 +3396,7 @@ Producto final & {tex_escape(guide.product)}\\
 Ruta MILC: así vamos a aprender
 \end{{titlebox}}
 \begin{{tabularx}}{{\textwidth}}{{>{{\centering\arraybackslash}}X>{{\centering\arraybackslash}}X>{{\centering\arraybackslash}}X>{{\centering\arraybackslash}}X}}
-\phasecard{{1}}{{milcVerde}}{{milcGris}}{{Escuta\\[-1mm]\small Observo, escucho y pregunto.}} &
+\phasecard{{1}}{{milcVerde}}{{milcGris}}{{Escucha\\[-1mm]\small Observo, escucho y pregunto.}} &
 \phasecard{{2}}{{milcTurquesa}}{{milcGris}}{{Sistematización\\[-1mm]\small Organizo ideas y conceptos.}} &
 \phasecard{{3}}{{milcMagenta}}{{milcGris}}{{Praxis\\[-1mm]\small Actúo, resuelvo y construyo.}} &
 \phasecard{{4}}{{milcVino}}{{milcGris}}{{Evaluación\\[-1mm]\small Reflexiono y me comprometo.}}
@@ -3409,7 +3409,7 @@ Ruta MILC: así vamos a aprender
 \newpage
 {extra_how_to_use}
 \begin{{titlebox}}{{milcVerde}}
-Fase 1 · Escuta
+Fase 1 · Escucha
 \end{{titlebox}}
 \begin{{softbox}}{{milcVerde}}{{milcGris}}{{Reto de observación}}
 {tex_escape(escuta_challenge_text(guide))}
@@ -3612,13 +3612,13 @@ def write_docx(guide: GuideData, path: Path) -> None:
         )
 
     for label, color, body in [
-        ("Fase 1 · Escuta", COLORS["verde"], escuta_challenge_text(guide)),
+        ("Fase 1 · Escucha", COLORS["verde"], escuta_challenge_text(guide)),
         ("Fase 2 · Sistematización", COLORS["turquesa"], "Organiza conceptos, ejemplos y relaciones importantes."),
         ("Fase 3 · Praxis", COLORS["magenta"], "Aplica lo aprendido en una situación concreta y produce una evidencia."),
         ("Fase 4 · Evaluación liberadora", COLORS["vino"], "Reflexiona sobre lo aprendido y formula un compromiso responsable."),
     ]:
         add_docx_box(doc, label, body, color)
-        if "Escuta" in label:
+        if "Escucha" in label:
             for item in escuta_check_items(guide):
                 doc.add_paragraph(f"☐ {item}")
             prompt_a, prompt_b = escuta_response_prompts(guide)

@@ -31,7 +31,7 @@ Si propongo **re-título**, encontrarás la línea `**Título propuesto:**` deba
 
 ## Guía 1-6-TIC · P1·s1 · 🌱 APERTURA MILC
 **Título actual:** "Diagnóstico tecnológico y reconocimiento de la sala de sistemas — normas de seguridad y convivencia"
-**Título propuesto:** 🔁 *"Bienvenida MILC · Cómo aprenderemos este año en Tecnología — la sala digital, nuestro pacto y mi proyecto Escuta"*
+**Título propuesto:** 🔁 *"Bienvenida MILC · Cómo aprenderemos este año en Tecnología — la sala digital, nuestro pacto y mi proyecto Escucha"*
 > Razón: aplica el [PATRON_S1_apertura.md](PATRON_S1_apertura.md). El diagnóstico se conserva fusionado como **mini-reto** (§7 del bloque hands-on). El reconocimiento de la sala se mantiene como ritual de apertura.
 
 🌟 **Frase del capítulo (metáfora del grado):** *"Habitamos la sala digital con dignidad — capítulo 1: llegar y reconocer."*
@@ -58,7 +58,7 @@ Si propongo **re-título**, encontrarás la línea `**Título propuesto:**` deba
 - **Tour interactivo de la plataforma ConectaTE** (15 min) — anatomía de una guía + cómo marcar completado + dónde está tu portafolio.
 - **Mini-reto diagnóstico** (20 min) — fusiona el diagnóstico tecnológico original: identificar 5 partes de un equipo + 3 normas de seguridad + 1 problema común.
 - **Firma del contrato pedagógico** (10 min) — 5 acuerdos: con la sala · con mi equipo · con mi compañero · con el docente · conmigo mismo.
-- **Brief inicial del proyecto integrador del año (Escuta)** (10 min) — primer planteamiento: "vas a entrevistar a un adulto mayor sobre cómo cambió la comunicación en su vida y al final del año entregarás un documento con sustentación pública".
+- **Brief inicial del proyecto integrador del año (Escucha)** (10 min) — primer planteamiento: "vas a entrevistar a un adulto mayor sobre cómo cambió la comunicación en su vida y al final del año entregarás un documento con sustentación pública".
 - **Auto-check MILC #1 línea base** (5 min) — escala 1–5 con emojis en las 5 dimensiones.
 
 🎯 **5 preguntas ICFES propuestas (calibradas a comprensión del método, no del dominio):**
@@ -84,7 +84,7 @@ Si propongo **re-título**, encontrarás la línea `**Título propuesto:**` deba
 - 🟡 **Estoicismo · Epicteto:** *"Distingue lo que depende de ti y lo que no."* → No depende de ti que el equipo sea viejo; sí depende de ti cómo lo trates y cómo aprendes.
 - 🔵 **Floridi:** *"Somos organismos informacionales que comparten un entorno."* → La sala y la plataforma son un entorno compartido — tu cuidado afecta a 30 personas más.
 
-📦 **Producto:** Carpeta de apertura con: contrato pedagógico firmado · primera entrada del diario del proyecto Escuta · auto-check MILC #1 registrado · foto de la cartelera del mapa del año marcada.
+📦 **Producto:** Carpeta de apertura con: contrato pedagógico firmado · primera entrada del diario del proyecto Escucha · auto-check MILC #1 registrado · foto de la cartelera del mapa del año marcada.
 
 ---
 
@@ -435,7 +435,7 @@ Si propongo **re-título**, encontrarás la línea `**Título propuesto:**` deba
 ---
 
 ## Guía 9-6-TIC · P1·s9
-**Título actual:** "Proyecto MILC Escuta: entrevista ética a un adulto mayor sobre la evolución de la comunicación en su vida"
+**Título actual:** "Proyecto MILC Escucha: entrevista ética a un adulto mayor sobre la evolución de la comunicación en su vida"
 **Título propuesto:** ✅ se mantiene (joya del periodo).
 
 🪶 **Saber ancestral:** En las comunidades indígenas y campesinas del Valle, **escuchar a los mayores es la primera forma de archivo**. Lo que no se escucha, se pierde. Encaja directamente: el proyecto convierte al estudiante en archivista de la memoria viva.
@@ -485,7 +485,7 @@ Si propongo **re-título**, encontrarás la línea `**Título propuesto:**` deba
 
 ## Guía 10-6-TIC · P1·s10
 **Título actual:** "Socialización de hallazgos y evaluación de periodo — portafolio digital del informe"
-**Título propuesto:** 🔁 *"Cierre de período: socialización del proyecto Escuta y portafolio digital del periodo"*
+**Título propuesto:** 🔁 *"Cierre de período: socialización del proyecto Escucha y portafolio digital del periodo"*
 > Razón: el actual es genérico; conviene anclar al producto del periodo.
 
 🪶 **Saber ancestral:** En las mingas del Valle, al final del trabajo se hace **"el círculo de la palabra"**: cada quien cuenta lo que aportó, lo que aprendió, qué falta. Encaja: la socialización es ese círculo, ahora con portafolio digital.
@@ -525,7 +525,7 @@ Si propongo **re-título**, encontrarás la línea `**Título propuesto:**` deba
 
 🔺 **Triángulo de pensamiento:**
 
-- 🟣 **Dussel:** *"Hacer público lo aprendido es ya un acto de comunidad."* → Compartir tu Escuta libera la voz del entrevistado.
+- 🟣 **Dussel:** *"Hacer público lo aprendido es ya un acto de comunidad."* → Compartir tu Escucha libera la voz del entrevistado.
 - 🟡 **Estoicismo:** *"La revisión honesta de uno mismo es el inicio de la mejora."* → El portafolio es espejo, no vitrina.
 - 🔵 **Floridi:** *"La información bien organizada es información dos veces útil."* → Curar también es respetar al lector futuro.
 
@@ -534,7 +534,7 @@ Si propongo **re-título**, encontrarás la línea `**Título propuesto:**` deba
 ---
 
 ## Guía 11-6-TIC · P1·s11 · 🌾 COSECHA MILC
-**Título propuesto:** *"Cosecha del periodo 1 · Vitrina del Escuta + auto-check MILC + cierre del primer ciclo"*
+**Título propuesto:** *"Cosecha del periodo 1 · Vitrina del Escucha + auto-check MILC + cierre del primer ciclo"*
 > Aplica el [PATRON_S11_cosecha.md](PATRON_S11_cosecha.md). Espeja la S1·P1.
 
 🌟 **Frase del capítulo:** *"Habitamos la sala digital con dignidad — capítulo 1 cerrado: lo que escuchamos también nos enseñó."*
@@ -546,7 +546,7 @@ Si propongo **re-título**, encontrarás la línea `**Título propuesto:**` deba
 📚 **8 elementos de la cosecha (3+5):**
 
 🎤 **De la vitrina:**
-1. 🖼️ **Evidencia visual** — foto, audio o captura del Escuta
+1. 🖼️ **Evidencia visual** — foto, audio o captura del Escucha
 2. ⏱️ **Tiempo dosificado** — 3 min cronómetro
 3. 💬 **Retroalimentación entre pares** — 1 fortaleza + 1 mejora por compañero
 
@@ -554,9 +554,9 @@ Si propongo **re-título**, encontrarás la línea `**Título propuesto:**` deba
 4. 💚 Desarrollo personal · 5. 🟡 Control emocional · 6. 🤝 Reflexión ciudadana · 7. 🏘️ Reflexión local · 8. 🌳 Vínculo intergeneracional
 
 🧪 **Hands-on principal (70%):**
-- **Vitrina del Escuta** — cada estudiante presenta 3 min con apoyo visual.
+- **Vitrina del Escucha** — cada estudiante presenta 3 min con apoyo visual.
 - **Auto-check MILC #2** — comparado contra #1 (línea base de S1·P1). Gráfica simple con flecha de crecimiento.
-- **Hito 1 del proyecto integrador entregado** — primera versión visible del Escuta digitalizado.
+- **Hito 1 del proyecto integrador entregado** — primera versión visible del Escucha digitalizado.
 - **Retroalimentación entre pares** con plantilla de 2 líneas.
 - **Marcar el mapa del año** en la cartelera del salón.
 - **Entrada de cierre del diario** — pregunta-pauta: *"Hoy, ¿cómo veo mi proyecto frente a cómo lo vi el primer día?"*
@@ -569,7 +569,7 @@ Si propongo **re-título**, encontrarás la línea `**Título propuesto:**` deba
 2. **(Aplicación)** Ante un correo dudoso de "premio", la regla MILC del periodo es:
    - A) Abrir y mirar · B) Reenviar · C) **Detener · verificar canal oficial · reportar como spam** · D) Dar clic discreto
 
-3. **(Evaluación)** El proyecto Escuta vale la pena cuando:
+3. **(Evaluación)** El proyecto Escucha vale la pena cuando:
    - A) Lo entregas a tiempo · B) Suena bonito · C) **Devuelves la entrevista al adulto mayor y respetas lo que pidió no publicar** · D) Te dan buena nota
 
 4. **(Reflexión MILC)** Tu auto-check MILC subió en "control emocional" porque:
@@ -580,11 +580,11 @@ Si propongo **re-título**, encontrarás la línea `**Título propuesto:**` deba
 
 🔺 **Triángulo de cosecha:**
 
-- 🟣 **Dussel:** *"Lo que escuché del que casi nadie escucha es ya un acto político."* → Tu Escuta dio voz pública a quien tenía voz privada.
+- 🟣 **Dussel:** *"Lo que escuché del que casi nadie escucha es ya un acto político."* → Tu Escucha dio voz pública a quien tenía voz privada.
 - 🟡 **Estoicismo:** *"Lo que cosechas hoy lo sembraste 11 sesiones atrás."* → Vuelve a tu auto-check #1 y mira.
-- 🔵 **Floridi:** *"Cuidar la información del otro es cuidar al otro."* → La ética del Escuta es la ética de la infoesfera, en escala humana.
+- 🔵 **Floridi:** *"Cuidar la información del otro es cuidar al otro."* → La ética del Escucha es la ética de la infoesfera, en escala humana.
 
-📦 **Producto:** Vitrina presentada (3 min) + auto-check MILC #2 con comparativa #1 + entrada cierre diario + retroalimentación entre pares firmada + hito 1 del Escuta digitalizado.
+📦 **Producto:** Vitrina presentada (3 min) + auto-check MILC #2 con comparativa #1 + entrada cierre diario + retroalimentación entre pares firmada + hito 1 del Escucha digitalizado.
 
 ---
 
@@ -593,7 +593,7 @@ Si propongo **re-título**, encontrarás la línea `**Título propuesto:**` deba
 > Hilo del capítulo 2: **"equiparme y cuidar"** — qué hay dentro de la máquina, cómo cuidarla, cómo elegir herramientas con criterio.
 
 ## Guía 12-6-TIC · P2·s1 · 🌱 APERTURA MILC
-**Título propuesto:** *"Re-encuentro MILC · Lo que cosechamos en P1, lo que viene con el hardware y mi proyecto Escuta sigue creciendo"*
+**Título propuesto:** *"Re-encuentro MILC · Lo que cosechamos en P1, lo que viene con el hardware y mi proyecto Escucha sigue creciendo"*
 > Aplica [PATRON_S1_apertura.md](PATRON_S1_apertura.md), variante **P2·S1 Re-encuentro**.
 
 🌟 **Frase del capítulo:** *"Habitamos la sala digital con dignidad — capítulo 2: equiparme y cuidar."*
@@ -613,11 +613,11 @@ Si propongo **re-título**, encontrarás la línea `**Título propuesto:**` deba
 8. 🔧 **Mantenimiento** — el cuidado que decide cuánto dura
 
 🧪 **Hands-on principal (70%):**
-- **Vitrina cruzada del P1** (10 min) — 3 estudiantes voluntarios muestran 90 seg de su Escuta. Naturaliza lenguaje MILC.
+- **Vitrina cruzada del P1** (10 min) — 3 estudiantes voluntarios muestran 90 seg de su Escucha. Naturaliza lenguaje MILC.
 - **Revisión del contrato pedagógico** (5 min) — qué cumplimos, qué nos costó.
 - **Tour físico de un equipo abierto** (20 min) — el docente trae un PC desarmado o usa simulador 3D; estudiantes nombran 5 partes.
 - **Auto-check MILC #2 (de P1·S11) → línea base #3 ahora** (5 min) — escala 1–5 con comparación visible.
-- **Segundo brief del proyecto Escuta** (10 min) — refinamiento: ahora la entrevista debe digitalizarse en el computador que aprenderás a cuidar.
+- **Segundo brief del proyecto Escucha** (10 min) — refinamiento: ahora la entrevista debe digitalizarse en el computador que aprenderás a cuidar.
 - **Marcar el mapa** (5 min).
 
 🎯 **5 preguntas ICFES (re-encuentro):**
@@ -628,7 +628,7 @@ Si propongo **re-título**, encontrarás la línea `**Título propuesto:**` deba
 2. **(Aplicación)** Si tu computador es lento, lo prudente antes de quejarte es:
    - A) Pegarle · B) Reiniciar 10 veces · C) **Mirar si hay muchos programas abiertos y cuántos años tiene el equipo** · D) Cambiarlo
 
-3. **(Análisis)** ¿Por qué digitalizar el Escuta exige saber de hardware?
+3. **(Análisis)** ¿Por qué digitalizar el Escucha exige saber de hardware?
    - A) Por trámite · B) **Porque tu archivo de audio depende del micrófono, almacenamiento y software del equipo** · C) Sin razón · D) Por moda
 
 4. **(Reflexión MILC)** Mi auto-check #2 vs #3 me dice:
@@ -643,7 +643,7 @@ Si propongo **re-título**, encontrarás la línea `**Título propuesto:**` deba
 - 🟡 **Estoicismo:** *"Cuida el equipo: parte depende de ti, parte no — distinguir es libertad."*
 - 🔵 **Floridi:** *"Conocer el hardware es conocer el cuerpo de la información."*
 
-📦 **Producto:** Vitrina P1 firmada · contrato revisado · auto-check #3 · brief Escuta refinado · primera ficha técnica del equipo asignado.
+📦 **Producto:** Vitrina P1 firmada · contrato revisado · auto-check #3 · brief Escucha refinado · primera ficha técnica del equipo asignado.
 
 ---
 
@@ -652,19 +652,19 @@ Si propongo **re-título**, encontrarás la línea `**Título propuesto:**` deba
 ---
 
 ## Guía 22-6-TIC · P2·s11 · 🌾 COSECHA MILC
-**Título propuesto:** *"Cosecha del periodo 2 · Diagnóstico de un equipo + integración cruzada P1+P2 + Escuta digitalizado"*
+**Título propuesto:** *"Cosecha del periodo 2 · Diagnóstico de un equipo + integración cruzada P1+P2 + Escucha digitalizado"*
 > Aplica [PATRON_S11_cosecha.md](PATRON_S11_cosecha.md), variante **P2·S11 Cosecha intermedia**.
 
 🌟 **Frase del capítulo:** *"Habitamos la sala digital con dignidad — capítulo 2 cerrado: ahora sé qué hay dentro y cómo cuidarlo."*
 
-🪶 **Ritual de cierre · Síntesis cruzada:** **El trueque entre veredas** — llevar lo cosechado en una vereda para complementar lo de la otra. *Cada estudiante dice 1 frase con lo que conecta P1 y P2 en su Escuta.*
+🪶 **Ritual de cierre · Síntesis cruzada:** **El trueque entre veredas** — llevar lo cosechado en una vereda para complementar lo de la otra. *Cada estudiante dice 1 frase con lo que conecta P1 y P2 en su Escucha.*
 
-💡 **Caso real Fase 1:** Tu Escuta entrevistó a tu abuela. Ahora tienes un equipo que sabes diagnosticar. Hoy cuentas cómo el hardware que ahora entiendes te permite digitalizar la voz que escuchaste.
+💡 **Caso real Fase 1:** Tu Escucha entrevistó a tu abuela. Ahora tienes un equipo que sabes diagnosticar. Hoy cuentas cómo el hardware que ahora entiendes te permite digitalizar la voz que escuchaste.
 
 📚 **8 elementos de la cosecha intermedia:**
 
 🔗 **Integración P1+P2:**
-1. 🎙️ **Audio del Escuta** (P1) ↔ 💾 **Almacenamiento** (P2)
+1. 🎙️ **Audio del Escucha** (P1) ↔ 💾 **Almacenamiento** (P2)
 2. ✉️ **Correo institucional** (P1) ↔ 🖥️ **Sistema operativo** (P2)
 3. 👣 **Huella digital** (P1) ↔ 📂 **Gestión de archivos** (P2)
 
@@ -674,17 +674,17 @@ Si propongo **re-título**, encontrarás la línea `**Título propuesto:**` deba
 🧪 **Hands-on principal (70%):**
 - **Diagnóstico real de un equipo** — 5 elementos revisados, ficha técnica entregada.
 - **Auto-check MILC #4** + gráfica con #1, #2, #3, #4. Crecimiento longitudinal visible.
-- **Hito 2 del Escuta** — entrevista digitalizada: archivo de audio organizado en carpeta del equipo, copiado a la nube.
-- **Pre-mortem del proyecto** (10 min) — *"Si mi Escuta fracasa en P3, ¿por qué probablemente sea?"* Anticipación estoica.
+- **Hito 2 del Escucha** — entrevista digitalizada: archivo de audio organizado en carpeta del equipo, copiado a la nube.
+- **Pre-mortem del proyecto** (10 min) — *"Si mi Escucha fracasa en P3, ¿por qué probablemente sea?"* Anticipación estoica.
 - **Definición de equipos definitivos** para la sustentación de P3·S11.
 - **Marcar el mapa** + **entrada de cierre del diario** con la pregunta: *"¿Qué tuve que cambiar de mi idea inicial y por qué?"*
 
 🎯 **5 preguntas ICFES (síntesis cruzada):**
 
-1. **(Síntesis)** Para guardar tu Escuta de manera segura, lo más prudente es:
+1. **(Síntesis)** Para guardar tu Escucha de manera segura, lo más prudente es:
    - A) Solo en el celular · B) Solo en la nube · C) **En el equipo + nube + copia en otro dispositivo** · D) Imprimirlo
 
-2. **(Aplicación)** Si el archivo de audio del Escuta pesa 200 MB, ¿dónde NO conviene guardarlo?
+2. **(Aplicación)** Si el archivo de audio del Escucha pesa 200 MB, ¿dónde NO conviene guardarlo?
    - A) USB · B) OneDrive · C) **Memoria RAM** · D) Disco duro
 
 3. **(Análisis)** Conectar tu micrófono USB y que NO funcione puede deberse a:
@@ -693,7 +693,7 @@ Si propongo **re-título**, encontrarás la línea `**Título propuesto:**` deba
 4. **(Reflexión MILC)** Mi gráfica de auto-check muestra:
    - (respuesta argumentada abierta)
 
-5. **(Pre-mortem)** El riesgo más probable de mi Escuta para P3 es:
+5. **(Pre-mortem)** El riesgo más probable de mi Escucha para P3 es:
    - (respuesta abierta + plan de mitigación)
 
 🔺 **Triángulo de cosecha P2:**
@@ -702,23 +702,23 @@ Si propongo **re-título**, encontrarás la línea `**Título propuesto:**` deba
 - 🟡 **Estoicismo:** *"Lo que reviso a tiempo no me sorprende después."*
 - 🔵 **Floridi:** *"El cuerpo de la información también necesita cuidado — el hardware es ese cuerpo."*
 
-📦 **Producto:** Diagnóstico técnico firmado + Escuta digitalizado y respaldado + auto-check MILC #4 con gráfica + pre-mortem + equipo de sustentación definido.
+📦 **Producto:** Diagnóstico técnico firmado + Escucha digitalizado y respaldado + auto-check MILC #4 con gráfica + pre-mortem + equipo de sustentación definido.
 
 ---
 
 # PERIODO 3 · Procesador de texto e Internet
 
-> Hilo del capítulo 3: **"comunicar y sustentar"** — Word/Docs, búsqueda crítica, seguridad básica y sustentación del proyecto Escuta.
+> Hilo del capítulo 3: **"comunicar y sustentar"** — Word/Docs, búsqueda crítica, seguridad básica y sustentación del proyecto Escucha.
 
 ## Guía 23-6-TIC · P3·s1 · 🌱 APERTURA MILC
-**Título propuesto:** *"Aceleración MILC · El año que se cierra: Word, Internet, mi sustentación del Escuta y mi carta a 6° del próximo año"*
+**Título propuesto:** *"Aceleración MILC · El año que se cierra: Word, Internet, mi sustentación del Escucha y mi carta a 6° del próximo año"*
 > Aplica [PATRON_S1_apertura.md](PATRON_S1_apertura.md), variante **P3·S1 Aceleración**.
 
 🌟 **Frase del capítulo:** *"Habitamos la sala digital con dignidad — capítulo 3: comunicar y sustentar."*
 
 🪶 **Ritual de apertura · Aceleración:** **El último tramo del telar** en comunidades del Pacífico — cuando ya hay tela, falta solo cerrarla con dignidad. *Cada estudiante dice 1 frase con lo que quiere cosechar antes de cerrar.*
 
-💡 **Caso real Fase 1:** Faltan 11 sesiones. Tu Escuta ya tiene voz, equipo y archivo. Hoy aprendes a darle forma escrita y sustentarlo en público. ¿Qué versión final quieres entregar?
+💡 **Caso real Fase 1:** Faltan 11 sesiones. Tu Escucha ya tiene voz, equipo y archivo. Hoy aprendes a darle forma escrita y sustentarlo en público. ¿Qué versión final quieres entregar?
 
 📚 **8 conceptos de la aceleración (5 dimensiones + 3 herramientas):**
 
@@ -740,7 +740,7 @@ Si propongo **re-título**, encontrarás la línea `**Título propuesto:**` deba
 
 🎯 **5 preguntas ICFES (calibradas a aceleración):**
 
-1. **(Comprensión)** En P3 mi proyecto Escuta entrará a su forma final como:
+1. **(Comprensión)** En P3 mi proyecto Escucha entrará a su forma final como:
    - A) Audio crudo · B) Esquema · C) **Documento escrito en Word/Docs con sustentación pública** · D) Tweet
 
 2. **(Aplicación)** Ante una fuente web "te cuento por qué los antiguos sabían más", el criterio es:
@@ -762,34 +762,34 @@ Si propongo **re-título**, encontrarás la línea `**Título propuesto:**` deba
 - 🔵 **Floridi · borrador propio:** *"…"*
 > El borrador se afina y se firma en P3·S11.
 
-📦 **Producto:** Brief final del Escuta firmado + cronograma de las 11 sesiones + auto-check MILC #5 con histórico + bosquejo del triángulo propio + entrada de aceleración en el diario.
+📦 **Producto:** Brief final del Escucha firmado + cronograma de las 11 sesiones + auto-check MILC #5 con histórico + bosquejo del triángulo propio + entrada de aceleración en el diario.
 
 ---
 
-> ⏳ **S2–S10 P3 (9 guías temáticas) — pendiente.** Cubrirá: introducción a Word/Docs, formato y párrafo, inserción de imágenes/tablas, taller documento autobiográfico, búsqueda en Internet, **ruido y desinformación** (re-titulada desde "entropía"), seguridad digital, taller integrador investigación comunitaria, redacción del informe final del Escuta y ensayo de la sustentación.
+> ⏳ **S2–S10 P3 (9 guías temáticas) — pendiente.** Cubrirá: introducción a Word/Docs, formato y párrafo, inserción de imágenes/tablas, taller documento autobiográfico, búsqueda en Internet, **ruido y desinformación** (re-titulada desde "entropía"), seguridad digital, taller integrador investigación comunitaria, redacción del informe final del Escucha y ensayo de la sustentación.
 
 ---
 
 ## Guía 33-6-TIC · P3·s11 · 🌾 COSECHA DEL AÑO · Sustentación del proyecto integrador
-**Título propuesto:** *"Cosecha del año · Sustentación pública del Escuta + auto-check final + carta al estudiante de 6° del próximo año"*
+**Título propuesto:** *"Cosecha del año · Sustentación pública del Escucha + auto-check final + carta al estudiante de 6° del próximo año"*
 > Aplica [PATRON_S11_cosecha.md](PATRON_S11_cosecha.md), variante **P3·S11 Sustentación del año**. **No es examen** — el examen sumativo migra a la página de "Evaluación final del grado" (fase posterior).
 
 🌟 **Frase del capítulo:** *"Habitamos la sala digital con dignidad — capítulo final: lo aprendido se entrega."*
 
 🪶 **Ritual de cierre · Cosecha del año:** **La fiesta del último corte de café en haciendas del Norte del Valle** — el cierre comunitario que marca el fin del ciclo y prepara la siguiente siembra. *Cada estudiante dice 1 frase con lo que se lleva del año + 1 que entrega al grado siguiente.*
 
-💡 **Caso real Fase 1:** Es el último día. Tienes 5 minutos para sustentar tu Escuta a tu curso, con tu adulto mayor invitado en primera fila. ¿Qué cuentas? ¿Qué le dices a quien va a llegar a 6° el próximo año?
+💡 **Caso real Fase 1:** Es el último día. Tienes 5 minutos para sustentar tu Escucha a tu curso, con tu adulto mayor invitado en primera fila. ¿Qué cuentas? ¿Qué le dices a quien va a llegar a 6° el próximo año?
 
 📚 **8 elementos de la cosecha del año:**
 
 🎤 **De la sustentación:**
-1. 🖼️ Documento Escuta digital · 2. ⏱️ 5 min cronómetro · 3. 💬 Q&A del público
+1. 🖼️ Documento Escucha digital · 2. ⏱️ 5 min cronómetro · 3. 💬 Q&A del público
 
 🔍 **Las 5 dimensiones MILC, sexta y última medición:**
 4. 💚 · 5. 🟡 · 6. 🤝 · 7. 🏘️ · 8. 🌳 — todas con evidencia del año.
 
 🧪 **Hands-on principal (70%):**
-- **Sustentación pública del Escuta** (5 min/estudiante con apoyos visuales).
+- **Sustentación pública del Escucha** (5 min/estudiante con apoyos visuales).
 - **Auto-check MILC #6 final** + gráfica longitudinal completa (las 6 mediciones del año).
 - **Triángulo de cierre · firmado por el estudiante** — frase propia para Dussel · Estoicismo · Floridi (pulida del bosquejo de P3·S1).
 - **Carta al estudiante de 6° del próximo año** (15 min de escritura) — qué le diría a quien viene detrás.
@@ -798,7 +798,7 @@ Si propongo **re-título**, encontrarás la línea `**Título propuesto:**` deba
 
 🎯 **5 preguntas ICFES (cosecha del año):**
 
-1. **(Síntesis)** El proyecto Escuta integró:
+1. **(Síntesis)** El proyecto Escucha integró:
    - A) Solo P1 · B) Solo P3 · C) **Comunicación + hardware + procesador de texto + ética** · D) Nada
 
 2. **(Aplicación)** Sustentar bien implica:
@@ -819,7 +819,7 @@ Si propongo **re-título**, encontrarás la línea `**Título propuesto:**` deba
 - 🟡 **Estoicismo (mi versión):** *"…"*
 - 🔵 **Floridi (mi versión):** *"…"*
 
-📦 **Producto:** Documento Escuta sustentado + auto-check MILC #6 con gráfica longitudinal completa + triángulo firmado por el estudiante + carta al 6° del próximo año + portafolio digital del grado cerrado y archivado + acto simbólico del contrato.
+📦 **Producto:** Documento Escucha sustentado + auto-check MILC #6 con gráfica longitudinal completa + triángulo firmado por el estudiante + carta al 6° del próximo año + portafolio digital del grado cerrado y archivado + acto simbólico del contrato.
 
 ---
 

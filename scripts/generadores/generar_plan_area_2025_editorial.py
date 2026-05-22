@@ -514,7 +514,7 @@ def academic_preliminaries() -> list[PrelimSection]:
                 "La dimensión científica de MILC exige observación, formulación de preguntas, registro de evidencias, análisis de información, experimentación, prototipado, validación y comunicación de resultados. La dimensión liberadora exige responsabilidad ética, lectura del contexto, cuidado de sí y de los otros, soberanía informacional y compromiso con la comunidad.",
             ],
             bullets=[
-                "Escuta: escuchar, observar y problematizar la realidad tecnológica del estudiante y su comunidad.",
+                "Escucha: escuchar, observar y problematizar la realidad tecnológica del estudiante y su comunidad.",
                 "Sistematización: ordenar información, reconocer patrones, construir criterios, documentar procesos y formular explicaciones.",
                 "Praxis: diseñar, experimentar, programar, prototipar, comunicar o intervenir una situación concreta.",
                 "Evaluación liberadora: valorar evidencias, impactos, aprendizajes, errores, mejoras y compromisos éticos.",
@@ -622,7 +622,7 @@ def academic_preliminaries() -> list[PrelimSection]:
             color=PALETTE["vino"],
             paragraphs=[
                 "El sistema de evaluación del área se fundamenta en una concepción formativa, criterial, integral y liberadora. Formativa, porque acompaña el proceso y ofrece retroalimentación para mejorar; criterial, porque valora desempeños observables y no impresiones subjetivas; integral, porque articula dimensiones cognitivas, procedimentales, actitudinales y socioemocionales; liberadora, porque ayuda al estudiante a comprender su propio aprendizaje y a transformar el error en conciencia, autonomía y mejora.",
-                "En coherencia con MILC, la evaluación se organiza en cuatro momentos. En Escuta se valora la capacidad de observar, preguntar, escuchar al otro y reconocer el contexto. En Sistematización se valora la organización de información, la construcción de criterios, la explicación conceptual y la documentación del proceso. En Praxis se valora la producción, el prototipado, la aplicación técnica, la colaboración y la resolución situada de problemas. En Evaluación liberadora se valora la reflexión crítica, la mejora del producto, la sustentación, la autoevaluación, la coevaluación y el compromiso ético.",
+                "En coherencia con MILC, la evaluación se organiza en cuatro momentos. En Escucha se valora la capacidad de observar, preguntar, escuchar al otro y reconocer el contexto. En Sistematización se valora la organización de información, la construcción de criterios, la explicación conceptual y la documentación del proceso. En Praxis se valora la producción, el prototipado, la aplicación técnica, la colaboración y la resolución situada de problemas. En Evaluación liberadora se valora la reflexión crítica, la mejora del producto, la sustentación, la autoevaluación, la coevaluación y el compromiso ético.",
                 "El área adopta una lectura de desempeños coherente con el SIEE institucional, de modo que las valoraciones puedan traducirse a los niveles de desempeño definidos por la institución. No obstante, internamente se recomienda que cada periodo conserve una matriz de evidencias que permita rastrear guías, portafolio, proyecto integrador, prueba final y componente actitudinal.",
                 "La promoción en Tecnología e Informática no debe depender de una única prueba ni de la entrega mecánica de tareas. Debe considerar la progresión del estudiante, la calidad de sus evidencias, su participación en procesos colaborativos, su capacidad de explicar decisiones, su cuidado de equipos e información y su disposición para mejorar productos a partir de retroalimentación.",
             ],
@@ -644,7 +644,7 @@ def academic_preliminaries() -> list[PrelimSection]:
             color=PALETTE["verde"],
             paragraphs=[
                 "La propuesta se apoya en referentes pedagógicos, filosóficos y tecnológicos que permiten defender el plan más allá de la organización temática. Freire fundamenta la crítica a la educación bancaria y la necesidad de una educación problematizadora. Dussel aporta la exigencia de escuchar al otro y orientar la producción tecnológica hacia la dignidad. Floridi permite comprender la vida en la infoesfera y la ética de la información. Wing ofrece el pensamiento computacional como habilidad transversal. CASEL aporta la dimensión socioemocional necesaria para aprender, convivir y decidir en comunidad. UNESCO actualiza la discusión sobre inteligencia artificial, ciudadanía y diseño humano-centrado. La Guía No. 30 MEN conserva el marco colombiano para competencias tecnológicas.",
-                "MILC articula estos referentes en una metodología propia: Escuta, Sistematización, Praxis y Evaluación liberadora. Su aporte central es convertir la educación tecnológica en una práctica de investigación escolar situada, culturalmente consciente y éticamente responsable.",
+                "MILC articula estos referentes en una metodología propia: Escucha, Sistematización, Praxis y Evaluación liberadora. Su aporte central es convertir la educación tecnológica en una práctica de investigación escolar situada, culturalmente consciente y éticamente responsable.",
             ],
             bullets=[
                 "Freire, P. Pedagogía del oprimido: educación bancaria, diálogo, problematización y praxis.",
@@ -863,7 +863,7 @@ def add_annex_descriptions_docx(doc: Document) -> None:
     )
     for item in [
         "Antes de clase: revisar el propósito, el producto esperado, los conceptos nuevos y los materiales necesarios; anticipar qué ejemplos o demostraciones necesitará el grupo.",
-        "Inicio de clase: usar la Escuta para conectar el tema con una situación real del colegio, la familia, la comunidad, una empresa simulada o un problema digital cercano.",
+        "Inicio de clase: usar la Escucha para conectar el tema con una situación real del colegio, la familia, la comunidad, una empresa simulada o un problema digital cercano.",
         "Desarrollo conceptual: no pedir respuestas antes de explicar vocabulario, criterios, ejemplos, errores frecuentes y el procedimiento mínimo para avanzar.",
         "Acompañamiento: circular por el aula, pedir evidencias parciales, hacer preguntas de precisión y ayudar al estudiante a explicar qué intentó, qué encontró y qué debe corregir.",
         "Cierre: recoger una evidencia concreta, orientar autoevaluación breve, registrar dificultades comunes y dejar una mejora verificable para el portafolio.",
@@ -901,7 +901,7 @@ def add_annex_descriptions_docx(doc: Document) -> None:
         doc,
         ["Referente", "Aporte central", "Uso dentro del plan"],
         [
-            ["Paulo Freire", "Educación problematizadora, diálogo y lectura crítica de la realidad.", "La Escuta inicia desde preguntas del contexto y evita que la guía sea solo copia de procedimientos."],
+            ["Paulo Freire", "Educación problematizadora, diálogo y lectura crítica de la realidad.", "La Escucha inicia desde preguntas del contexto y evita que la guía sea solo copia de procedimientos."],
             ["Enrique Dussel", "Ética de la alteridad: escuchar al otro, reconocer exclusiones y responder con responsabilidad.", "Los proyectos exigen pensar usuarios, beneficiarios, impactos y límites de cada solución tecnológica."],
             ["Guía No. 30 MEN", "Cuatro componentes de la educación en tecnología.", "Los estándares se trabajan como filas permanentes en cada periodo y no como temas aislados."],
             ["Wing, CSTA e ISTE", "Pensamiento computacional, ciudadanía digital, diseño, datos y solución de problemas.", "La Sistematización organiza conceptos, algoritmos, evidencias y criterios antes de producir."],
@@ -925,7 +925,7 @@ def add_annex_descriptions_docx(doc: Document) -> None:
     add_small_table(
         doc,
         [
-            ("Escuta", "Momento de lectura del contexto. El estudiante observa, escucha, pregunta, identifica usuarios, reconoce necesidades y formula una situación problemática situada."),
+            ("Escucha", "Momento de lectura del contexto. El estudiante observa, escucha, pregunta, identifica usuarios, reconoce necesidades y formula una situación problemática situada."),
             ("Sistematización", "Momento de organización del saber. El estudiante define conceptos, revisa fuentes, ordena datos, construye criterios y comprende procedimientos antes de producir."),
             ("Praxis", "Momento de acción transformadora. El estudiante diseña, programa, redacta, analiza, prototipa, documenta o comunica un producto verificable."),
             ("Evaluación liberadora", "Momento de conciencia crítica. El estudiante revisa evidencias, errores, impactos, sesgos, decisiones éticas, aprendizajes y mejoras posibles."),
@@ -1027,7 +1027,7 @@ def add_platform_annex_docx(doc: Document) -> None:
         doc,
         ["Momento MILC", "Función de ConectaTE"],
         [
-            ["Escuta", "Sitúa al estudiante en grado, periodo, sesión y propósito; permite reconocer qué guía corresponde al proceso real de aula."],
+            ["Escucha", "Sitúa al estudiante en grado, periodo, sesión y propósito; permite reconocer qué guía corresponde al proceso real de aula."],
             ["Sistematización", "Ordena contenidos, recursos y evidencias en una arquitectura navegable que evita dispersión documental."],
             ["Praxis", "Facilita el acceso al documento de trabajo para producir actividades, proyectos, portafolios y evidencias verificables."],
             ["Evaluación liberadora", "Apoya la revisión de avance, la continuidad fuera del aula, la socialización de enlaces y la responsabilidad del estudiante sobre su proceso."],
@@ -1175,7 +1175,7 @@ def build_docx(periods: list[PeriodData]) -> Path:
         doc,
         [
             ("Componentes MEN", "; ".join(COMPONENTS)),
-            ("Metodología", "MILC: Escuta, Sistematización, Praxis y Evaluación liberadora."),
+            ("Metodología", "MILC: Escucha, Sistematización, Praxis y Evaluación liberadora."),
             ("Recursos integrados", "180 guías de aprendizaje, 18 proyectos integradores y 18 exámenes finales."),
             ("Criterio editorial", "Paleta magenta/vino con acentos verde, turquesa y mostaza; tablas limpias y legibles."),
         ],
@@ -1324,7 +1324,7 @@ Las guías no son talleres aislados: son la unidad didáctica mínima del plan. 
 \begin{tcolorbox}[breakable,colback=white,colframe=turquesa,title=\textbf{Ruta de uso docente},top=1mm,bottom=1mm]
 \begin{itemize}
 \item \textbf{Antes de clase:} revisar propósito, producto esperado, conceptos nuevos y materiales; anticipar ejemplos, demostraciones o apoyos visuales.
-\item \textbf{Inicio:} usar la Escuta para conectar el tema con una situación real del colegio, la familia, la comunidad, una empresa simulada o un problema digital cercano.
+\item \textbf{Inicio:} usar la Escucha para conectar el tema con una situación real del colegio, la familia, la comunidad, una empresa simulada o un problema digital cercano.
 \item \textbf{Desarrollo conceptual:} explicar vocabulario, criterios, ejemplos, errores frecuentes y procedimiento mínimo antes de exigir respuestas.
 \item \textbf{Acompañamiento:} pedir evidencias parciales, hacer preguntas de precisión y ayudar al estudiante a explicar qué intentó, qué encontró y qué debe corregir.
 \item \textbf{Cierre:} recoger una evidencia concreta, orientar autoevaluación, registrar dificultades comunes y dejar una mejora verificable para el portafolio.
@@ -1366,7 +1366,7 @@ MILC dialoga con Paulo Freire en la educación problematizadora; con Enrique Dus
 \setlength{\tabcolsep}{2pt}
 \begin{longtable}{L{0.17\linewidth}L{0.35\linewidth}L{0.40\linewidth}}
 \rowcolor{vino}\color{white}\textbf{Referente} & \color{white}\textbf{Aporte central} & \color{white}\textbf{Uso dentro del plan}\\
-Paulo Freire & Educación problematizadora, diálogo y lectura crítica de la realidad. & La Escuta inicia desde preguntas del contexto y evita que la guía sea solo copia de procedimientos.\\
+Paulo Freire & Educación problematizadora, diálogo y lectura crítica de la realidad. & La Escucha inicia desde preguntas del contexto y evita que la guía sea solo copia de procedimientos.\\
 Enrique Dussel & Ética de la alteridad: escuchar al otro, reconocer exclusiones y responder con responsabilidad. & Los proyectos exigen pensar usuarios, beneficiarios, impactos y límites de cada solución tecnológica.\\
 Guía No. 30 MEN & Cuatro componentes de la educación en tecnología. & Los estándares se trabajan como filas permanentes en cada periodo y no como temas aislados.\\
 Wing, CSTA e ISTE & Pensamiento computacional, ciudadanía digital, diseño, datos y solución de problemas. & La Sistematización organiza conceptos, algoritmos, evidencias y criterios antes de producir.\\
@@ -1384,7 +1384,7 @@ CASEL & Autoconciencia, colaboración, toma responsable de decisiones y autorreg
 \end{itemize}
 \end{tcolorbox}
 \begin{tcolorbox}[breakable,colback=verde!7,colframe=verde,title=\textbf{MILC en cuatro momentos},top=1mm,bottom=1mm]
-\textbf{Escuta:} momento de lectura del contexto. El estudiante observa, escucha, pregunta, identifica usuarios, reconoce necesidades y formula una situación problemática situada.\\
+\textbf{Escucha:} momento de lectura del contexto. El estudiante observa, escucha, pregunta, identifica usuarios, reconoce necesidades y formula una situación problemática situada.\\
 \textbf{Sistematización:} momento de organización del saber. El estudiante define conceptos, revisa fuentes, ordena datos, construye criterios y comprende procedimientos antes de producir.\\
 \textbf{Praxis:} momento de acción transformadora. El estudiante diseña, programa, redacta, analiza, prototipa, documenta o comunica un producto verificable.\\
 \textbf{Evaluación liberadora:} momento de conciencia crítica. El estudiante revisa evidencias, errores, impactos, sesgos, decisiones éticas, aprendizajes y mejoras posibles.
@@ -1499,7 +1499,7 @@ La paleta de ConectaTE se proyecta a portadas físicas, PDFs, DOCX, proyectos y 
 \setlength{{\tabcolsep}}{{4pt}}
 \begin{{longtable}}{{L{{0.19\linewidth}}L{{0.73\linewidth}}}}
 \rowcolor{{vino}}\color{{white}}\textbf{{Momento MILC}} & \color{{white}}\textbf{{Función de ConectaTE}}\\
-Escuta & Sitúa al estudiante en grado, periodo, sesión y propósito; permite reconocer qué guía corresponde al proceso real de aula.\\
+Escucha & Sitúa al estudiante en grado, periodo, sesión y propósito; permite reconocer qué guía corresponde al proceso real de aula.\\
 Sistematización & Ordena contenidos, recursos y evidencias en una arquitectura navegable que evita dispersión documental.\\
 Praxis & Facilita el acceso al documento de trabajo para producir actividades, proyectos, portafolios y evidencias verificables.\\
 Evaluación liberadora & Apoya la revisión de avance, la continuidad fuera del aula, la socialización de enlaces y la responsabilidad del estudiante sobre su proceso.\\
@@ -1694,7 +1694,7 @@ def build_tex(periods: list[PeriodData]) -> Path:
 \end{{tcolorbox}}
 \vfill
 \begin{{tcolorbox}}[enhanced,colback=vino!72!black,colframe=vino!72!black,arc=5mm,boxrule=0pt,width=.86\textwidth,left=6mm,right=6mm,top=4mm,bottom=4mm,center]
-{{\color{{white}}\sffamily\small Metodología MILC · Escuta · Sistematización · Praxis · Evaluación liberadora\hfill Recursos: 180 guías · 18 proyectos · 18 exámenes}}
+{{\color{{white}}\sffamily\small Metodología MILC · Escucha · Sistematización · Praxis · Evaluación liberadora\hfill Recursos: 180 guías · 18 proyectos · 18 exámenes}}
 \end{{tcolorbox}}
 \end{{center}}
 \end{{titlepage}}
@@ -1708,7 +1708,7 @@ Esta versión conserva el sentido curricular del plan de área 2025 y reorganiza
 
 \begin{{tcolorbox}}[breakable,colback=gris,colframe=magentaMILC,title=\textbf{{Sistema metodológico y editorial}},top=1mm,bottom=1mm,before skip=2pt,after skip=4pt]
 \textbf{{Componentes MEN:}} {tex_escape("; ".join(COMPONENTS))}.\\
-\textbf{{MILC:}} Escuta, Sistematización, Praxis y Evaluación liberadora.\\
+\textbf{{MILC:}} Escucha, Sistematización, Praxis y Evaluación liberadora.\\
 \textbf{{Estrategias activas:}} Design Thinking, aprendizaje basado en proyectos, experimentos escolares, laboratorio técnico, prototipado, validación y producción situada.\\
 \textbf{{Estilo:}} títulos sobre formas sólidas, texto blanco, jerarquía limpia y paleta magenta/vino con acentos verde, turquesa y mostaza.
 \end{{tcolorbox}}

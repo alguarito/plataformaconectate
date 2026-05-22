@@ -18,7 +18,7 @@ salidas desde la misma fuente**:
 
 ## Filosofía del modelo
 
-A diferencia del proyecto MILC clásico de **fases abstractas** (Escuta,
+A diferencia del proyecto MILC clásico de **fases abstractas** (Escucha,
 Sistematización, Praxis, Evaluación), este modelo es **entregable-céntrico**:
 
 - El proyecto es un **brief sintético**: reto + insumos + entregables + rúbrica.

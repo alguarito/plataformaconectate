@@ -12,7 +12,7 @@ Cada subcarpeta sigue el formato Anthropic Skills:
 
 | Skill | Cuándo usarla |
 |---|---|
-| **alvaro-milc-pedagogy** | Auditoría pedagógica con Bloom/SOLO/DOK/Marzano, ICFES, DBA, escala 1.0–5.0 colombiana, MILC (Escuta-Sistematización-Praxis-Evaluación liberadora). |
+| **alvaro-milc-pedagogy** | Auditoría pedagógica con Bloom/SOLO/DOK/Marzano, ICFES, DBA, escala 1.0–5.0 colombiana, MILC (Escucha-Sistematización-Praxis-Evaluación liberadora). |
 | **alvaro-milc-ia-empresarial** | Currículo IA + negocios (grados 9-11): prompts, libros con IA, reportes LaTeX, dashboards, presencia digital, automatización, pitch. |
 | **alvaro-milc-latex-editorial** | LaTeX educativo: tcolorbox, TikZ, pgfplots, circuitikz, siunitx, layout print-ready. |
 | **alvaro-milc-stem-lab** | Laboratorios STEM: matemática, física, electrónica/IoT, Python científico, simulaciones, dashboards. |

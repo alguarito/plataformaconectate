@@ -397,7 +397,7 @@ def render_marco_conceptual(intro: str, componentes: list[dict], fases: list[dic
         parts.append(rf"{tex(c['nombre'])} & {tex(c['descripcion'])} \\")
     parts.append(r"\end{tabularx}")
     parts.append(r"\subsection{Cuatro fases del modelo MILC}")
-    color_map = {"Escuta": "milcVerde", "Sistematización": "milcTurquesa", "Praxis": "milcMagenta", "Evaluación liberadora": "milcVino"}
+    color_map = {"Escucha": "milcVerde", "Sistematización": "milcTurquesa", "Praxis": "milcMagenta", "Evaluación liberadora": "milcVino"}
     for i, f in enumerate(fases, 1):
         color = color_map.get(f["nombre"], "milcTurquesa")
         parts.append(rf"""

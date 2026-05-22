@@ -2,7 +2,7 @@
  * Contenido enriquecido para Grado 6 · Período 3 · Sesión 11
  * (sesión global 33 — COSECHA DEL AÑO · Sustentación del proyecto integrador del grado).
  *
- * Tema: Sustentación pública del Escuta + auto-check #6 final + carta al estudiante de 6° del próximo año + triángulo escrito por el estudiante.
+ * Tema: Sustentación pública del Escucha + auto-check #6 final + carta al estudiante de 6° del próximo año + triángulo escrito por el estudiante.
  * Aplica PATRON_S11_cosecha.md · variante P3·S11 Sustentación del año.
  * NO es examen — el examen sumativo migra a "Evaluación final del grado" en fase posterior.
  */
@@ -13,11 +13,11 @@ const contenido: ContenidoGuia = {
   periodo: 3,
   sesion: 11,
   titulo:
-    'Cosecha del año · Sustentación pública del Escuta + auto-check final + carta al estudiante de 6° del próximo año',
+    'Cosecha del año · Sustentación pública del Escucha + auto-check final + carta al estudiante de 6° del próximo año',
   ocultarPDF: true,
   sinStepper: true,
   resumen:
-    'Habitamos la sala digital con dignidad — capítulo final: lo aprendido se entrega. Hoy sustentas tu Escuta a tu curso (con tu adulto mayor invitado), miras tu gráfica longitudinal completa de las 6 mediciones, escribes tu triángulo propio y le dejas una carta al estudiante de 6° del próximo año.',
+    'Habitamos la sala digital con dignidad — capítulo final: lo aprendido se entrega. Hoy sustentas tu Escucha a tu curso (con tu adulto mayor invitado), miras tu gráfica longitudinal completa de las 6 mediciones, escribes tu triángulo propio y le dejas una carta al estudiante de 6° del próximo año.',
   duracionMin: 90,
   subtema: 'Cosecha del año · Sustentación del proyecto integrador',
 
@@ -34,7 +34,7 @@ const contenido: ContenidoGuia = {
     },
     conexion: {
       anterior:
-        'Vienes de la S10 P3: ensayo de la sustentación + redacción del informe final del Escuta.',
+        'Vienes de la S10 P3: ensayo de la sustentación + redacción del informe final del Escucha.',
       siguiente:
         'En grado 7° entrarás a "Pensar con la máquina sin perderme" — trabajo colaborativo, algoritmia y primer contacto con IA. Lo que cosechaste hoy es tu piso.',
     },
@@ -47,7 +47,7 @@ const contenido: ContenidoGuia = {
       definicion:
         'El orden invisible que sostiene tu sustentación. Sin hilo, el público se pierde — con hilo, te siguen aunque te equivoques.',
       ejemplo:
-        'Hilo Escuta: por qué entrevisté → quién es → qué me contó → qué me cambió → qué entrego.',
+        'Hilo Escucha: por qué entrevisté → quién es → qué me contó → qué me cambió → qué entrego.',
       emoji: '🧵',
     },
     {
@@ -92,14 +92,14 @@ const contenido: ContenidoGuia = {
       definicion:
         'Lo que aprendiste te exige actuar como ciudadano digital — y hoy se nota.',
       ejemplo:
-        '"No publiqué fragmentos del Escuta que mi abuela pidió no compartir. La fidelidad al pacto es ciudadanía."',
+        '"No publiqué fragmentos del Escucha que mi abuela pidió no compartir. La fidelidad al pacto es ciudadanía."',
       emoji: '🤝',
     },
     {
       categoria: '🔍 Las 5 dimensiones MILC · sexta y última medición',
       termino: 'Reflexión local + Vínculo intergeneracional',
       definicion:
-        'Dos dimensiones que se entregan en una sola obra: tu Escuta es Cartago + dos generaciones unidas por una entrevista.',
+        'Dos dimensiones que se entregan en una sola obra: tu Escucha es Cartago + dos generaciones unidas por una entrevista.',
       ejemplo:
         'Tu carta al estudiante de 6° del próximo año cierra el círculo: recibiste de un mayor, entregas a un menor.',
       emoji: '🌳',
@@ -109,12 +109,12 @@ const contenido: ContenidoGuia = {
   laboratorios: [
     {
       tipo: 'visualizacion',
-      titulo: 'Sustentación del Escuta + auto-check #6 + triángulo propio + carta al 6° del próximo año',
+      titulo: 'Sustentación del Escucha + auto-check #6 + triángulo propio + carta al 6° del próximo año',
       instrucciones:
         'Seis pasos del 70% hands-on. Sales con: sustentación entregada, gráfica longitudinal completa, triángulo escrito por ti, carta al 6° del próximo año, portafolio cerrado y contrato pedagógico cerrado simbólicamente.',
       pasos: [
         {
-          titulo: 'Paso 1 · Sustentación pública del Escuta (5 min/estudiante)',
+          titulo: 'Paso 1 · Sustentación pública del Escucha (5 min/estudiante)',
           texto:
             'Cada estudiante (o equipo) sustenta 5 minutos cronómetro con apoyo visual. El adulto mayor entrevistado puede estar invitado. El curso escucha en silencio.',
         },
@@ -136,7 +136,7 @@ const contenido: ContenidoGuia = {
         {
           titulo: 'Paso 5 · Carta al estudiante de 6° del próximo año (15 min)',
           texto:
-            'Una página máximo. Le cuentas qué cuidar, qué no perderse, qué consejo le das para su Escuta. Esa carta queda en el portafolio del colegio para abrir el próximo año.',
+            'Una página máximo. Le cuentas qué cuidar, qué no perderse, qué consejo le das para su Escucha. Esa carta queda en el portafolio del colegio para abrir el próximo año.',
         },
         {
           titulo: 'Paso 6 · Acto simbólico de cierre del contrato + última marca del mapa (5 min)',
@@ -151,7 +151,7 @@ const contenido: ContenidoGuia = {
       instrucciones: '5 preguntas que integran los tres periodos del año.',
       preguntas: [
         {
-          enunciado: 'El proyecto Escuta integró:',
+          enunciado: 'El proyecto Escucha integró:',
           opciones: [
             'Solo el periodo 1',
             'Solo el periodo 3',
@@ -162,7 +162,7 @@ const contenido: ContenidoGuia = {
           feedbackCorrecto:
             '✅ Por eso se llama integrador. Tocó los tres periodos y la ética que los atraviesa.',
           feedbackIncorrecto:
-            '❌ El Escuta NO fue una sola tarea: fue el hilo que conectó comunicación, hardware, redacción y ética.',
+            '❌ El Escucha NO fue una sola tarea: fue el hilo que conectó comunicación, hardware, redacción y ética.',
         },
         {
           enunciado: 'Sustentar bien implica:',
@@ -228,7 +228,7 @@ const contenido: ContenidoGuia = {
     reflexion:
       '¿Qué dimensión MILC te costó más este año? ¿Por qué? ¿Qué te llevas a grado 7° con esa dimensión?',
     transferencia:
-      'Estas vacaciones: entrégale tu informe Escuta impreso o digital al adulto mayor que entrevistaste. Cierra el círculo donde empezó.',
+      'Estas vacaciones: entrégale tu informe Escucha impreso o digital al adulto mayor que entrevistaste. Cierra el círculo donde empezó.',
     cierre:
       'Cosechas el año entero. Lo que diga TU triángulo Dussel-Estoicismo-Floridi reemplaza desde hoy lo que diga el docente — lo que escribiste tú es tu palabra. Habitamos la sala digital con dignidad — capítulo final: lo aprendido se entrega. Nos vemos en grado 7°.',
   },

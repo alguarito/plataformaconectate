@@ -133,14 +133,14 @@ def chapters() -> list[Chapter]:
             paragraphs=[
                 "Enrique Dussel aporta a MILC una exigencia ética fundamental: partir del otro. La tecnología no puede evaluarse únicamente por eficiencia, velocidad, novedad o rendimiento; debe preguntarse por las vidas que afecta, por las exclusiones que reproduce y por las posibilidades de dignidad que abre o cierra.",
                 "La filosofía de la liberación permite problematizar la neutralidad tecnológica. Todo sistema técnico organiza relaciones: quién accede, quién decide, quién queda vigilado, quién produce datos, quién se beneficia, quién asume costos ambientales y quién queda por fuera. Esta pregunta es especialmente importante en contextos escolares con desigualdades de conectividad, capital cultural y acompañamiento familiar.",
-                "MILC incorpora esta perspectiva mediante la Escuta, entendida como escucha ética del contexto. Antes de diseñar una solución, el estudiante debe reconocer a los usuarios, las condiciones, los límites y las consecuencias. La tecnología se convierte así en mediación de responsabilidad y no solo en demostración de habilidad.",
+                "MILC incorpora esta perspectiva mediante la Escucha, entendida como escucha ética del contexto. Antes de diseñar una solución, el estudiante debe reconocer a los usuarios, las condiciones, los límites y las consecuencias. La tecnología se convierte así en mediación de responsabilidad y no solo en demostración de habilidad.",
                 "La dimensión liberadora no significa rechazar la tecnología, sino someterla a juicio ético. Una solución tecnológica escolar debe ser útil, comprensible, segura, situada, inclusiva y respetuosa de la dignidad de las personas.",
             ],
             bullets=[
                 "El otro como punto de partida de la innovación.",
                 "Crítica a la neutralidad tecnológica.",
                 "Tecnología como mediación de justicia, cuidado y responsabilidad.",
-                "Escuta como principio ético antes de la producción técnica.",
+                "Escucha como principio ético antes de la producción técnica.",
             ],
             synthesis="Desde Dussel, MILC entiende que toda creación tecnológica debe responder a una responsabilidad con el otro.",
         ),
@@ -185,7 +185,7 @@ def chapters() -> list[Chapter]:
             color=PALETTE["turquesa"],
             paragraphs=[
                 "La tecnología no solo involucra habilidades técnicas; compromete emociones, vínculos, atención, identidad y convivencia. Por eso, una propuesta curricular robusta debe integrar educación socioemocional. Aprender con tecnología exige tolerancia a la frustración, regulación ante el error, escucha, empatía, colaboración, comunicación clara y toma responsable de decisiones.",
-                "El marco CASEL identifica competencias socioemocionales como autoconciencia, autorregulación, conciencia social, habilidades relacionales y toma responsable de decisiones. Estas competencias dialogan directamente con MILC. La Escuta requiere conciencia social; la Sistematización exige autorregulación cognitiva; la Praxis demanda colaboración; la Evaluación liberadora exige autoconciencia, honestidad y apertura a la mejora.",
+                "El marco CASEL identifica competencias socioemocionales como autoconciencia, autorregulación, conciencia social, habilidades relacionales y toma responsable de decisiones. Estas competencias dialogan directamente con MILC. La Escucha requiere conciencia social; la Sistematización exige autorregulación cognitiva; la Praxis demanda colaboración; la Evaluación liberadora exige autoconciencia, honestidad y apertura a la mejora.",
                 "En el aula de Tecnología e Informática, la educación socioemocional se expresa en prácticas concretas: cuidado de equipos compartidos, respeto por roles de trabajo, escucha de usuarios, manejo de desacuerdos, reconocimiento del error, prevención del ciberacoso, comunicación responsable y protección de datos personales.",
                 "MILC asume que no hay ciudadanía digital sin formación del carácter. El estudiante debe aprender a crear, pero también a cuidar; a argumentar, pero también a escuchar; a resolver, pero también a reconocer límites.",
             ],
@@ -219,8 +219,8 @@ def chapters() -> list[Chapter]:
             title="10. Formalización del Modelo MILC",
             color=PALETTE["vino"],
             paragraphs=[
-                "MILC se define como un modelo pedagógico-investigativo original, en proceso de formalización, orientado a integrar investigación escolar, pensamiento tecnológico, conciencia crítica, reconocimiento cultural, educación socioemocional y evaluación liberadora. Su estructura se organiza en cuatro fases: Escuta, Sistematización, Praxis y Evaluación liberadora.",
-                "Escuta es la fase de apertura ética y contextual. Consiste en escuchar la realidad antes de intervenirla: observar, dialogar, identificar necesidades, reconocer usuarios, comprender condiciones y formular preguntas significativas. Se diferencia de una simple motivación inicial porque constituye el fundamento epistemológico del problema.",
+                "MILC se define como un modelo pedagógico-investigativo original, en proceso de formalización, orientado a integrar investigación escolar, pensamiento tecnológico, conciencia crítica, reconocimiento cultural, educación socioemocional y evaluación liberadora. Su estructura se organiza en cuatro fases: Escucha, Sistematización, Praxis y Evaluación liberadora.",
+                "Escucha es la fase de apertura ética y contextual. Consiste en escuchar la realidad antes de intervenirla: observar, dialogar, identificar necesidades, reconocer usuarios, comprender condiciones y formular preguntas significativas. Se diferencia de una simple motivación inicial porque constituye el fundamento epistemológico del problema.",
                 "Sistematización es la fase de ordenamiento cognitivo. El estudiante organiza información, construye categorías, valida fuentes, reconoce patrones, selecciona criterios y documenta su proceso. Esta fase evita que la acción tecnológica sea improvisada.",
                 "Praxis es la fase de acción transformadora. Implica diseñar, programar, construir, prototipar, comunicar, experimentar o intervenir. No es activismo sin reflexión; es acción guiada por el análisis previo.",
                 "Evaluación liberadora es la fase de juicio crítico y mejora. Valora evidencias, impactos, aprendizajes, errores, decisiones éticas y compromisos. Libera porque permite al estudiante comprender su proceso, reconocer avances y proyectar nuevas acciones.",
@@ -278,7 +278,7 @@ def chapters() -> list[Chapter]:
             color=PALETTE["magenta"],
             paragraphs=[
                 "La evaluación en MILC no se limita a comprobar resultados. Evalúa el proceso completo por el cual el estudiante escucha, organiza, actúa y reflexiona. Por ello, combina evaluación diagnóstica, formativa, sumativa, autoevaluativa y coevaluativa.",
-                "En Escuta se evalúa la pertinencia de la pregunta, la escucha del usuario, la identificación del contexto y la sensibilidad ética. En Sistematización se evalúa la calidad de fuentes, la organización de información, la claridad conceptual y la documentación. En Praxis se evalúa la calidad del producto, el uso técnico, la colaboración, la creatividad y la funcionalidad. En Evaluación liberadora se evalúa la reflexión, la mejora, la sustentación y el compromiso.",
+                "En Escucha se evalúa la pertinencia de la pregunta, la escucha del usuario, la identificación del contexto y la sensibilidad ética. En Sistematización se evalúa la calidad de fuentes, la organización de información, la claridad conceptual y la documentación. En Praxis se evalúa la calidad del producto, el uso técnico, la colaboración, la creatividad y la funcionalidad. En Evaluación liberadora se evalúa la reflexión, la mejora, la sustentación y el compromiso.",
                 "La ponderación orientativa por periodo puede organizarse así: guías y portafolio 30%, proyecto o producto integrador 30%, prueba aplicada o examen final 20%, participación, cuidado, colaboración y reflexión MILC 20%. Esta distribución debe ajustarse al SIEE institucional, pero ofrece coherencia entre proceso, producto, transferencia y actitud.",
                 "Los instrumentos sugeridos son rúbricas, listas de cotejo, bitácoras, portafolios, guías, proyectos, pruebas aplicadas, sustentaciones, autoevaluación y coevaluación. La retroalimentación debe ser descriptiva y orientada a la mejora, no únicamente numérica.",
             ],
@@ -296,8 +296,8 @@ def chapters() -> list[Chapter]:
             color=PALETTE["mostaza"],
             paragraphs=[
                 "Una propuesta curricular doctoralmente defendible debe mostrar coherencia entre fundamentos, metodología, contenidos, recursos y evaluación. La matriz de coherencia de MILC permite revisar si cada decisión curricular responde a una arquitectura común o si aparece como actividad aislada.",
-                "En la fase de Escuta, la coherencia se observa cuando la guía parte de un problema real o verosímil, reconoce usuarios, formula una pregunta orientadora y activa saberes previos. En Sistematización, se observa cuando el estudiante organiza información, construye criterios y produce una explicación. En Praxis, se evidencia cuando el estudiante diseña o produce algo que responde al problema. En Evaluación liberadora, se verifica cuando el estudiante revisa impactos, mejora el producto y explicita aprendizajes.",
-                "Esta matriz también permite revisar proyectos integradores. Un proyecto sin Escuta corre el riesgo de ser producto decorativo; sin Sistematización, se vuelve improvisación; sin Praxis, queda en discurso; sin Evaluación liberadora, termina en entrega sin conciencia.",
+                "En la fase de Escucha, la coherencia se observa cuando la guía parte de un problema real o verosímil, reconoce usuarios, formula una pregunta orientadora y activa saberes previos. En Sistematización, se observa cuando el estudiante organiza información, construye criterios y produce una explicación. En Praxis, se evidencia cuando el estudiante diseña o produce algo que responde al problema. En Evaluación liberadora, se verifica cuando el estudiante revisa impactos, mejora el producto y explicita aprendizajes.",
+                "Esta matriz también permite revisar proyectos integradores. Un proyecto sin Escucha corre el riesgo de ser producto decorativo; sin Sistematización, se vuelve improvisación; sin Praxis, queda en discurso; sin Evaluación liberadora, termina en entrega sin conciencia.",
                 "La coherencia curricular exige que los instrumentos de evaluación no contradigan la metodología. Si MILC promueve investigación y creación, la evaluación debe valorar proceso, criterio, evidencia, producción, reflexión y mejora. Evaluar solo respuestas cerradas rompería la lógica del modelo.",
             ],
             bullets=[
@@ -436,7 +436,7 @@ def build_tex() -> Path:
 \end{{tcolorbox}}
 \vfill
 \begin{{tcolorbox}}[enhanced,colback=vino!72!black,colframe=vino!72!black,arc=5mm,boxrule=0pt,width=.86\textwidth,left=6mm,right=6mm,top=4mm,bottom=4mm,center]
-{{\color{{white}}\sffamily\small Escuta · Sistematización · Praxis · Evaluación liberadora}}
+{{\color{{white}}\sffamily\small Escucha · Sistematización · Praxis · Evaluación liberadora}}
 \end{{tcolorbox}}
 \end{{center}}
 \end{{titlepage}}

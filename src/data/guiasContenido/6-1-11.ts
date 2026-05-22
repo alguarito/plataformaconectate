@@ -2,7 +2,7 @@
  * Contenido enriquecido para Grado 6 · Período 1 · Sesión 11
  * (sesión global 11 — COSECHA MILC del periodo 1).
  *
- * Tema: Vitrina del Escuta + auto-check MILC #2 + cierre del primer ciclo.
+ * Tema: Vitrina del Escucha + auto-check MILC #2 + cierre del primer ciclo.
  * Aplica PATRON_S11_cosecha.md · variante P1·S11 Primera cosecha.
  * Espeja simétricamente a 6-1-1.ts.
  * Calibración 6°: 30% reflexión · 70% producto.
@@ -14,11 +14,11 @@ const contenido: ContenidoGuia = {
   periodo: 1,
   sesion: 11,
   titulo:
-    'Cosecha del periodo 1 · Vitrina del Escuta + auto-check MILC + cierre del primer ciclo',
+    'Cosecha del periodo 1 · Vitrina del Escucha + auto-check MILC + cierre del primer ciclo',
   ocultarPDF: true,
   sinStepper: true,
   resumen:
-    'Habitamos la sala digital con dignidad — capítulo 1 cerrado: lo que escuchamos también nos enseñó. Hoy presentas tu Escuta, comparas tu auto-check con la línea base y entregas el primer hito del proyecto del año.',
+    'Habitamos la sala digital con dignidad — capítulo 1 cerrado: lo que escuchamos también nos enseñó. Hoy presentas tu Escucha, comparas tu auto-check con la línea base y entregas el primer hito del proyecto del año.',
   duracionMin: 90,
   subtema: 'Cosecha · Primera vitrina + auto-check #2',
 
@@ -26,7 +26,7 @@ const contenido: ContenidoGuia = {
     porQueImporta:
       'Cerrar bien un ciclo es tan importante como abrirlo. Si pasaste 11 sesiones aprendiendo y no muestras lo aprendido, te lo guardas para ti — y este año dijimos que la voz del adulto mayor también merece llegar a otros.',
     preguntaDetonante:
-      'Si solo tuvieras 3 minutos para que el curso entendiera por qué tu Escuta importa, ¿qué cuentas y qué dejas afuera?',
+      'Si solo tuvieras 3 minutos para que el curso entendiera por qué tu Escucha importa, ¿qué cuentas y qué dejas afuera?',
     activacion: {
       titulo: 'Círculo de la cosecha',
       descripcion:
@@ -35,9 +35,9 @@ const contenido: ContenidoGuia = {
     },
     conexion: {
       anterior:
-        'Vienes de la S10: socialización y portafolio del informe Escuta. Ya tienes evidencias.',
+        'Vienes de la S10: socialización y portafolio del informe Escucha. Ya tienes evidencias.',
       siguiente:
-        'En P2·S1 te re-encuentras con MILC y entras al hardware: vas a digitalizar tu Escuta en un equipo que aprenderás a cuidar.',
+        'En P2·S1 te re-encuentras con MILC y entras al hardware: vas a digitalizar tu Escucha en un equipo que aprenderás a cuidar.',
     },
   },
 
@@ -57,7 +57,7 @@ const contenido: ContenidoGuia = {
       definicion:
         'Una imagen, captura de audio o foto que respalda lo que cuentas — sin ella el público se distrae.',
       ejemplo:
-        'En tu vitrina muestras la foto de tu abuela + 30 segundos del audio del Escuta. No 5 minutos de audio.',
+        'En tu vitrina muestras la foto de tu abuela + 30 segundos del audio del Escucha. No 5 minutos de audio.',
       emoji: '🖼️',
     },
     {
@@ -100,7 +100,7 @@ const contenido: ContenidoGuia = {
       categoria: '🔍 Las 5 dimensiones MILC, ahora con evidencia',
       termino: 'Reflexión local + Vínculo intergeneracional · evidenciados',
       definicion:
-        'Cómo tu Escuta te conectó con Cartago / el Valle y entre dos generaciones.',
+        'Cómo tu Escucha te conectó con Cartago / el Valle y entre dos generaciones.',
       ejemplo:
         '"Mi entrevistado vivía en Ansermanuevo y trabajaba en café. Lo que me contó nunca había salido de la familia."',
       emoji: '🌳',
@@ -110,7 +110,7 @@ const contenido: ContenidoGuia = {
   laboratorios: [
     {
       tipo: 'visualizacion',
-      titulo: 'Vitrina del Escuta + auto-check #2 + retroalimentación entre pares',
+      titulo: 'Vitrina del Escucha + auto-check #2 + retroalimentación entre pares',
       instrucciones:
         'Cinco pasos que ocupan el 70% de la sesión. Sales con producto entregado, auto-check registrado y retroalimentación firmada.',
       pasos: [
@@ -175,7 +175,7 @@ const contenido: ContenidoGuia = {
             '❌ El phishing usa urgencia y curiosidad. La regla es: detente, verifica por canal oficial, reporta. No abras "con cuidado".',
         },
         {
-          enunciado: 'El proyecto Escuta vale la pena cuando:',
+          enunciado: 'El proyecto Escucha vale la pena cuando:',
           opciones: [
             'Lo entregas a tiempo',
             'Suena bonito',
@@ -184,7 +184,7 @@ const contenido: ContenidoGuia = {
           ],
           respuestaIndex: 2,
           feedbackCorrecto:
-            '✅ Correcto. La devolución y el respeto al pedido del entrevistado es el corazón ético de Escuta.',
+            '✅ Correcto. La devolución y el respeto al pedido del entrevistado es el corazón ético de Escucha.',
           feedbackIncorrecto:
             '❌ Una entrevista sin devolución ni respeto es extracción, no escucha. La nota es secundaria.',
         },
@@ -224,7 +224,7 @@ const contenido: ContenidoGuia = {
     reflexion:
       '¿Qué dimensión MILC se movió más en tu auto-check? ¿Qué hiciste tú para que se moviera? Si NINGUNA se movió, ¿qué dejaste de hacer?',
     transferencia:
-      'Esta semana muestra tu Escuta a alguien fuera del colegio (un familiar, un vecino). No es "tarea": es practicar la sustentación que llegará en P3·S11.',
+      'Esta semana muestra tu Escucha a alguien fuera del colegio (un familiar, un vecino). No es "tarea": es practicar la sustentación que llegará en P3·S11.',
     cierre:
       'Cosechas el periodo 1: Dussel diría que diste voz pública a quien tenía voz privada. Epicteto diría que lo cosechado hoy lo sembraste 11 sesiones atrás — vuelve a tu auto-check #1 y mira. Floridi diría que cuidar la información del otro es cuidar al otro. Capítulo 1 cerrado.',
   },

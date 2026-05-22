@@ -39,7 +39,7 @@ Do not load all references by default. Choose the smallest reference that direct
 4. Add enough conceptual scaffolding before asking students to calculate, code, wire, or interpret.
 5. Include a worked example and a verification step.
 6. Align the product with MILC:
-   - Escuta: context/problem/data source;
+   - Escucha: context/problem/data source;
    - Sistematización: concepts/model/procedure;
    - Praxis: experiment/simulation/prototype/dashboard;
    - Evaluación: evidence, interpretation, limitations, ethics.

@@ -161,7 +161,7 @@ Antes de dejar un hueco, aplica una de estas seis técnicas:
 
 ### Combinaciones recomendadas
 
-- Reflexión personal/emocional (Escuta, Evaluación) → técnica #1
+- Reflexión personal/emocional (Escucha, Evaluación) → técnica #1
 - 5 dimensiones liberatorias paralelas → técnica #2 (tabla)
 - Triángulo Dussel/Estoicismo/Floridi → técnica #1 dentro de cada softbox
   (NO tabla — cada voz necesita respiro independiente)

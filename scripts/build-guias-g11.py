@@ -258,7 +258,7 @@ def yaml_a_placeholders(guia: dict) -> dict[str, str]:
         "PUENTE_TO_EVAL": puentes["a_evaluacion"],
         "PUENTE_TO_TRIANG": puentes["a_triangulo"],
 
-        # Escuta
+        # Escucha
         "ESCUTA_ESCENA": escuta["escena"],
         "ESCUTA_CHECK_1": escuta["checks"][0],
         "ESCUTA_CHECK_2": escuta["checks"][1],

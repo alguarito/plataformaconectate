@@ -38,7 +38,10 @@ export const supabase: SupabaseClient<Database> = createClient<Database>(
     auth: {
       persistSession: true,
       autoRefreshToken: true,
-      detectSessionInUrl: false,
+      // detectSessionInUrl: true es el default y es CRÍTICO para que el
+      // callback de Google OAuth procese el ?code=... automáticamente.
+      // Si lo apagas, /cuenta/callback queda en timeout sin crear sesión.
+      detectSessionInUrl: true,
       // Storage en localStorage para que sobreviva offline
       storage: typeof window !== 'undefined' ? window.localStorage : undefined,
     },

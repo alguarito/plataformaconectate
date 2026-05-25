@@ -53,15 +53,10 @@ create policy aulas_docente_propietario on public.aulas for all
   with check (docente_id = auth.uid());
 
 -- Cualquier usuario autenticado puede ver el aula a la que pertenece (para mostrar el nombre).
+-- Usa función SECURITY DEFINER para evitar recursión con la policy de enrollments.
 drop policy if exists aulas_miembro_lee on public.aulas;
 create policy aulas_miembro_lee on public.aulas for select
-  using (
-    exists (
-      select 1 from public.enrollments
-      where aula_id = aulas.id
-        and usuario_id = auth.uid()
-    )
-  );
+  using (public.es_miembro_de_aula(auth.uid(), id));
 
 -- ============================================================================
 -- 4. Políticas para enrollments
@@ -72,34 +67,16 @@ drop policy if exists enrollments_self on public.enrollments;
 create policy enrollments_self on public.enrollments for select
   using (usuario_id = auth.uid());
 
--- El docente ve los enrollments de sus aulas.
+-- El docente ve los enrollments de sus aulas (usa función SECURITY DEFINER).
 drop policy if exists enrollments_docente on public.enrollments;
 create policy enrollments_docente on public.enrollments for select
-  using (
-    exists (
-      select 1 from public.aulas
-      where id = enrollments.aula_id
-        and docente_id = auth.uid()
-    )
-  );
+  using (public.es_docente_del_aula(auth.uid(), aula_id));
 
 -- El docente puede crear/eliminar enrollments de sus aulas.
 drop policy if exists enrollments_docente_admin on public.enrollments;
 create policy enrollments_docente_admin on public.enrollments for all
-  using (
-    exists (
-      select 1 from public.aulas
-      where id = enrollments.aula_id
-        and docente_id = auth.uid()
-    )
-  )
-  with check (
-    exists (
-      select 1 from public.aulas
-      where id = enrollments.aula_id
-        and docente_id = auth.uid()
-    )
-  );
+  using (public.es_docente_del_aula(auth.uid(), aula_id))
+  with check (public.es_docente_del_aula(auth.uid(), aula_id));
 
 -- ============================================================================
 -- 5. Políticas para progreso_guia
@@ -173,15 +150,14 @@ create policy intentos_docente on public.intentos_quiz for select
 --    El acceso se hace por id + OTP desde el backend, no desde el cliente.
 -- ============================================================================
 
--- Solo el service_role accede (negar acceso a todos los demás).
-drop policy if exists registros_negar_todo on public.registros_pendientes;
-create policy registros_negar_todo on public.registros_pendientes for all
-  using (false)
-  with check (false);
-
--- Excepción: el cliente anónimo puede crear un registro (al ingresar el código de aula).
+-- El cliente anónimo puede crear un registro (al ingresar el código de aula).
+-- Roles explícitos: anon (visitante sin sesión) y authenticated.
+-- No agregamos policies de SELECT/UPDATE/DELETE adrede: el acceso de lectura
+-- vive en el backend con service_role (privacidad).
 drop policy if exists registros_anon_insert on public.registros_pendientes;
-create policy registros_anon_insert on public.registros_pendientes for insert
+create policy registros_anon_insert on public.registros_pendientes
+  for insert
+  to anon, authenticated
   with check (true);
 
 -- ============================================================================

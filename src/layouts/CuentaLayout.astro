@@ -1,0 +1,91 @@
+---
+/**
+ * Layout para rutas protegidas (/cuenta, /docente).
+ *
+ * - Si PUBLIC_AUTH_ENABLED=false, las páginas redirigen a home en client-side.
+ *   Eso significa que el sitio se comporta como hoy (rutas inaccesibles).
+ * - Si PUBLIC_AUTH_ENABLED=true y NO hay sesión, redirige a /cuenta/login
+ *   conservando ?next=<ruta actual>.
+ * - Si hay sesión, renderiza el children con CuentaHeader arriba.
+ *
+ * El protected check vive en client-side porque el sitio es 100% estático
+ * (GitHub Pages). El HTML inicial muestra un placeholder hasta validar.
+ */
+
+import BaseLayout from './BaseLayout.astro';
+import CuentaHeader from '../components/CuentaHeader.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Si false, no muestra el CuentaHeader (útil para /cuenta/login que no es protegida) */
+  conHeader?: boolean;
+  /** Permitir acceso sin sesión (para páginas públicas dentro del namespace, como /cuenta/login) */
+  publica?: boolean;
+}
+
+const {
+  title = 'Mi cuenta · Plataforma Conéctate',
+  description,
+  conHeader = true,
+  publica = false,
+} = Astro.props;
+
+const authEnabled = import.meta.env.PUBLIC_AUTH_ENABLED === 'true';
+---
+
+<BaseLayout title={title} description={description}>
+  <main class="min-h-[60vh] py-8 md:py-12">
+    <div class="bento-container max-w-3xl mx-auto">
+      {conHeader && (
+        <div class="mb-6">
+          <CuentaHeader mostrarHome />
+        </div>
+      )}
+
+      <!-- Placeholder mientras valida sesión client-side -->
+      <div data-cuenta-loading class="text-center py-12">
+        <p class="text-sm text-neutral-500">Verificando sesión…</p>
+      </div>
+
+      <!-- Contenido real, oculto hasta que se valide sesión -->
+      <div data-cuenta-contenido class="hidden">
+        <slot />
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<script define:vars={{ authEnabled, publica }}>
+  import('../lib/auth').then(async ({ getSesion }) => {
+    const base = (import.meta.env?.BASE_URL ?? '/').replace(/\/$/, '');
+    const loading = document.querySelector('[data-cuenta-loading]');
+    const contenido = document.querySelector('[data-cuenta-contenido]');
+
+    function mostrarContenido() {
+      loading?.classList.add('hidden');
+      contenido?.classList.remove('hidden');
+    }
+
+    // Caso 1: auth deshabilitada (sitio actual) — redirigir a home
+    if (!authEnabled && !publica) {
+      window.location.replace(base + '/');
+      return;
+    }
+
+    // Caso 2: página pública (ej. login) — mostrar siempre
+    if (publica) {
+      mostrarContenido();
+      return;
+    }
+
+    // Caso 3: página protegida — requerir sesión
+    const sesion = await getSesion();
+    if (!sesion) {
+      const next = encodeURIComponent(window.location.pathname + window.location.search);
+      window.location.replace(base + '/cuenta/login?next=' + next);
+      return;
+    }
+    mostrarContenido();
+  });
+</script>

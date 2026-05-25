@@ -1,0 +1,112 @@
+---
+/**
+ * Header de cuenta · avatar + nombre + botón cerrar sesión.
+ *
+ * Se hidrata client-side leyendo la sesión de Supabase y los user_metadata
+ * de Google (avatar_url, full_name). No bloquea el render inicial: muestra
+ * un placeholder hasta que carga la sesión.
+ */
+
+interface Props {
+  /** Si true, muestra el botón "Volver a la home" además del logout */
+  mostrarHome?: boolean;
+}
+
+const { mostrarHome = false } = Astro.props;
+const base = (import.meta.env.BASE_URL ?? '/').replace(/\/$/, '');
+---
+
+<div
+  data-cuenta-header
+  class="flex items-center gap-3 p-3 rounded-bento bg-white dark:bg-neutral-900 shadow-bento"
+>
+  <!-- Avatar (se llena por JS) -->
+  <div
+    data-avatar-wrap
+    class="w-10 h-10 rounded-full bg-neutral-200 dark:bg-neutral-800 flex items-center justify-center overflow-hidden flex-shrink-0"
+    aria-hidden="true"
+  >
+    <span data-avatar-inicial class="text-sm font-bold text-neutral-600 dark:text-neutral-400">
+      ?
+    </span>
+  </div>
+
+  <!-- Nombre + email -->
+  <div class="flex-1 min-w-0">
+    <p
+      data-nombre
+      class="text-sm font-bold text-neutral-950 dark:text-neutral-50 truncate"
+    >
+      Cargando…
+    </p>
+    <p
+      data-email
+      class="text-xs text-neutral-600 dark:text-neutral-400 truncate"
+    ></p>
+  </div>
+
+  <!-- Acciones -->
+  <div class="flex items-center gap-2 flex-shrink-0">
+    {mostrarHome && (
+      <a
+        href={base + '/'}
+        class="text-xs font-semibold px-3 py-2 rounded-bento-sm text-bento-blue hover:bg-bento-blue/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bento-blue/40"
+      >
+        Inicio
+      </a>
+    )}
+    <button
+      type="button"
+      data-logout
+      class="text-xs font-semibold px-3 py-2 rounded-bento-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bento-blue/40"
+      aria-label="Cerrar sesión"
+    >
+      Cerrar sesión
+    </button>
+  </div>
+</div>
+
+<script>
+  import { getSesion, getAvatarUrl, signOut } from '../lib/auth';
+
+  async function hidratar() {
+    const sesion = await getSesion();
+    const root = document.querySelector('[data-cuenta-header]');
+    if (!root || !sesion) return;
+
+    const md = sesion.user.user_metadata ?? {};
+    const nombre =
+      (md.full_name as string) ||
+      (md.name as string) ||
+      sesion.user.email?.split('@')[0] ||
+      'Usuario';
+    const email = sesion.user.email || '';
+
+    root.querySelector<HTMLElement>('[data-nombre]')!.textContent = nombre;
+    root.querySelector<HTMLElement>('[data-email]')!.textContent = email;
+
+    const inicial = nombre.charAt(0).toUpperCase();
+    root.querySelector<HTMLElement>('[data-avatar-inicial]')!.textContent = inicial;
+
+    const avatarUrl = await getAvatarUrl();
+    if (avatarUrl) {
+      const wrap = root.querySelector<HTMLElement>('[data-avatar-wrap]')!;
+      wrap.innerHTML = `<img src="${avatarUrl}" alt="" class="w-full h-full object-cover" />`;
+    }
+  }
+
+  document.querySelectorAll('[data-logout]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      try {
+        await signOut();
+        const base = (import.meta as any).env?.BASE_URL?.replace(/\/$/, '') ?? '';
+        window.location.replace(base + '/');
+      } catch (err) {
+        console.error('[CuentaHeader] Error cerrando sesión:', err);
+        alert('No se pudo cerrar sesión. Intenta de nuevo.');
+      }
+    });
+  });
+
+  hidratar();
+</script>

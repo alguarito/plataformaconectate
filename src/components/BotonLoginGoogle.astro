@@ -1,0 +1,98 @@
+---
+/**
+ * Botón "Continuar con Google" siguiendo las guidelines oficiales de Google
+ * (https://developers.google.com/identity/branding-guidelines) adaptadas
+ * al sistema Bento de Conéctate:
+ * - Fondo blanco con borde sutil (cumple identidad Google)
+ * - Logo "G" oficial (multicolor, no monocromo)
+ * - Tipografía Inter (consistente con el resto del sitio)
+ * - Tamaño target ≥ 44px (WCAG AA)
+ * - Focus-visible ring para teclado
+ * - prefers-reduced-motion respetado
+ *
+ * Activa el flujo si PUBLIC_AUTH_ENABLED=true; muestra estado deshabilitado
+ * si está en false.
+ */
+
+interface Props {
+  /** A dónde llevar al usuario tras login exitoso. Default: /cuenta */
+  redirectTo?: string;
+  /** Texto del botón. Default: "Continuar con Google" */
+  label?: string;
+}
+
+const { redirectTo, label = 'Continuar con Google' } = Astro.props;
+
+const authEnabled = import.meta.env.PUBLIC_AUTH_ENABLED === 'true';
+---
+
+<button
+  type="button"
+  data-login-google
+  data-redirect-to={redirectTo ?? ''}
+  disabled={!authEnabled}
+  class:list={[
+    'group inline-flex items-center justify-center gap-3',
+    'w-full sm:w-auto min-w-[260px]',
+    'min-h-[48px] px-5 py-3',
+    'rounded-bento-sm border border-neutral-300',
+    'bg-white text-neutral-950 font-semibold text-base',
+    'shadow-sm hover:shadow-bento',
+    'transition-shadow duration-200 motion-reduce:transition-none',
+    'focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/40 focus-visible:ring-offset-2',
+    'disabled:opacity-60 disabled:cursor-not-allowed',
+    'dark:bg-neutral-900 dark:text-neutral-50 dark:border-neutral-700',
+  ]}
+  aria-label={`${label}. Se abrirá la página de autorización de Google.`}
+>
+  <!-- Logo oficial multicolor de Google -->
+  <svg
+    class="w-5 h-5 flex-shrink-0"
+    viewBox="0 0 18 18"
+    aria-hidden="true"
+  >
+    <path
+      fill="#4285F4"
+      d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"
+    />
+    <path
+      fill="#34A853"
+      d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"
+    />
+    <path
+      fill="#FBBC05"
+      d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"
+    />
+    <path
+      fill="#EA4335"
+      d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"
+    />
+  </svg>
+
+  <span>{label}</span>
+</button>
+
+<script>
+  import { signInWithGoogle } from '../lib/auth';
+
+  document.querySelectorAll('[data-login-google]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const target = btn as HTMLButtonElement;
+      if (target.disabled) return;
+
+      const redirectTo = target.dataset.redirectTo || undefined;
+      target.disabled = true;
+      target.classList.add('animate-pulse');
+      try {
+        await signInWithGoogle(redirectTo);
+      } catch (err) {
+        console.error('[BotonLoginGoogle] Error iniciando login:', err);
+        target.disabled = false;
+        target.classList.remove('animate-pulse');
+        alert(
+          'No se pudo iniciar el login con Google. Verifica tu conexión a internet y vuelve a intentar.'
+        );
+      }
+    });
+  });
+</script>

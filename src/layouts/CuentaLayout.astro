@@ -32,10 +32,17 @@ const {
 } = Astro.props;
 
 const authEnabled = import.meta.env.PUBLIC_AUTH_ENABLED === 'true';
+const base = (import.meta.env.BASE_URL ?? '/').replace(/\/$/, '');
 ---
 
 <BaseLayout title={title} description={description}>
-  <main class="min-h-[60vh] py-8 md:py-12">
+  <main
+    class="min-h-[60vh] py-8 md:py-12"
+    data-cuenta-config
+    data-auth-enabled={String(authEnabled)}
+    data-publica={String(publica)}
+    data-base={base}
+  >
     <div class="bento-container max-w-3xl mx-auto">
       {conHeader && (
         <div class="mb-6">
@@ -56,36 +63,38 @@ const authEnabled = import.meta.env.PUBLIC_AUTH_ENABLED === 'true';
   </main>
 </BaseLayout>
 
-<script define:vars={{ authEnabled, publica }}>
-  import('../lib/auth').then(async ({ getSesion }) => {
-    const base = (import.meta.env?.BASE_URL ?? '/').replace(/\/$/, '');
-    const loading = document.querySelector('[data-cuenta-loading]');
-    const contenido = document.querySelector('[data-cuenta-contenido]');
+<script>
+  import { getSesion } from '../lib/auth';
+
+  const config = document.querySelector<HTMLElement>('[data-cuenta-config]');
+  if (config) {
+    const authEnabled = config.dataset.authEnabled === 'true';
+    const publica = config.dataset.publica === 'true';
+    const base = config.dataset.base ?? '';
+    const loading = config.querySelector<HTMLElement>('[data-cuenta-loading]');
+    const contenido = config.querySelector<HTMLElement>('[data-cuenta-contenido]');
 
     function mostrarContenido() {
       loading?.classList.add('hidden');
       contenido?.classList.remove('hidden');
     }
 
-    // Caso 1: auth deshabilitada (sitio actual) — redirigir a home
-    if (!authEnabled && !publica) {
-      window.location.replace(base + '/');
-      return;
-    }
-
-    // Caso 2: página pública (ej. login) — mostrar siempre
-    if (publica) {
+    (async () => {
+      if (!authEnabled && !publica) {
+        window.location.replace(base + '/');
+        return;
+      }
+      if (publica) {
+        mostrarContenido();
+        return;
+      }
+      const sesion = await getSesion();
+      if (!sesion) {
+        const next = encodeURIComponent(window.location.pathname + window.location.search);
+        window.location.replace(base + '/cuenta/login?next=' + next);
+        return;
+      }
       mostrarContenido();
-      return;
-    }
-
-    // Caso 3: página protegida — requerir sesión
-    const sesion = await getSesion();
-    if (!sesion) {
-      const next = encodeURIComponent(window.location.pathname + window.location.search);
-      window.location.replace(base + '/cuenta/login?next=' + next);
-      return;
-    }
-    mostrarContenido();
-  });
+    })();
+  }
 </script>

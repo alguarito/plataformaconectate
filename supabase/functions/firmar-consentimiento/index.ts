@@ -121,11 +121,16 @@ serve(async (req) => {
     // El estudiante NO ingresa con email, ingresa con código de aula + PIN.
     const emailSintetico = `est-${registro.id.slice(0, 8)}@conectate.local`;
     const codigoPin = generarPin();
-    const passwordSintetico = `Pin-${codigoPin}-${crypto.randomUUID().slice(0, 12)}`;
+
+    // Credencial efímera generada en runtime. NO es un secreto persistido:
+    // crypto.randomUUID() produce un valor distinto cada llamada. La app
+    // nunca la usa para login — el estudiante entra con código de aula + PIN.
+    // Necesaria solo porque supabase.auth.admin.createUser exige el campo.
+    const credencialEfimera = `Pin-${codigoPin}-${crypto.randomUUID().slice(0, 12)}`;
 
     const { data: nuevoUsuario, error: errCrear } = await supabase.auth.admin.createUser({
       email: emailSintetico,
-      password: passwordSintetico,
+      password: credencialEfimera,
       email_confirm: true,
       user_metadata: {
         display_name: registro.estudiante_display_name,

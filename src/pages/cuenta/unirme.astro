@@ -1,0 +1,241 @@
+---
+/**
+ * /cuenta/unirme · página pública donde el estudiante ingresa el código
+ * de aula que su docente le dio.
+ *
+ * Flujo (paso 1 / 3):
+ *   1. Ingresa código → valida con info_aula_por_codigo (RPC SECURITY DEFINER)
+ *   2. Muestra info del aula → estudiante confirma
+ *   3. Pide datos del estudiante (nombre, fecha nac) + email del acudiente
+ *   4. Submit → llama iniciarRegistro → redirige a /cuenta/solicitud-enviada
+ */
+import CuentaLayout from '../../layouts/CuentaLayout.astro';
+---
+
+<CuentaLayout
+  title="Unirme a un aula · Plataforma Conéctate"
+  description="Únete al aula de tu docente usando el código que te entregó en clase."
+  conHeader={false}
+  publica={true}
+>
+  <div class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-6 md:p-10">
+    <header class="text-center mb-8">
+      <h1 class="text-huge font-black tracking-tight mb-3 text-bento-blue">
+        Únete a tu aula
+      </h1>
+      <p class="text-base text-neutral-700 dark:text-neutral-300 max-w-md mx-auto leading-relaxed">
+        Tu docente te entregó un código (ej.
+        <code class="bg-bento-blue/10 text-bento-blue px-2 py-0.5 rounded font-mono text-sm">
+          AULA-6A-2026-K3X7
+        </code>). Ingrésalo abajo para empezar.
+      </p>
+    </header>
+
+    <!-- Paso 1: código de aula -->
+    <section data-paso="codigo">
+      <form data-form-codigo class="space-y-4">
+        <div>
+          <label for="codigo-input" class="block text-sm font-bold mb-2">
+            Código de aula
+          </label>
+          <input
+            id="codigo-input"
+            name="codigo"
+            type="text"
+            required
+            placeholder="AULA-6A-2026-XXXX"
+            autocomplete="off"
+            spellcheck="false"
+            class="w-full px-4 py-3 rounded-bento-sm border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 font-mono font-bold text-center uppercase tracking-wider text-lg focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/40"
+          />
+        </div>
+        <button
+          type="submit"
+          data-btn-validar
+          class="w-full min-h-[48px] px-5 py-3 rounded-bento-sm bg-bento-blue text-white font-bold hover:scale-[1.01] transition-transform motion-reduce:transition-none disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/40"
+        >
+          Verificar código
+        </button>
+      </form>
+      <div data-error-codigo class="hidden mt-4 bg-bento-pink/10 border border-bento-pink/30 rounded-bento-sm p-3">
+        <p class="text-sm text-bento-pink font-semibold" data-error-codigo-msg></p>
+      </div>
+    </section>
+
+    <!-- Paso 2: datos del estudiante + acudiente -->
+    <section data-paso="datos" class="hidden">
+      <div class="bg-bento-lime/15 border border-bento-lime rounded-bento-sm p-4 mb-6">
+        <p class="text-sm font-bold text-neutral-950 dark:text-neutral-50 mb-1">
+          ✓ Aula encontrada
+        </p>
+        <p class="text-sm text-neutral-800 dark:text-neutral-200" data-aula-resumen></p>
+      </div>
+
+      <form data-form-datos class="space-y-5">
+        <div>
+          <label for="nombre-input" class="block text-sm font-bold mb-2">
+            Tu nombre o seudónimo
+          </label>
+          <input
+            id="nombre-input"
+            name="estudiante_display_name"
+            type="text"
+            required
+            minlength="2"
+            maxlength="80"
+            placeholder="Ej: Juan Pablo R."
+            class="w-full px-4 py-3 rounded-bento-sm border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/40"
+          />
+          <p class="text-xs text-neutral-500 mt-1">
+            Puedes usar tu nombre completo o un seudónimo. Es lo que verá el docente.
+          </p>
+        </div>
+
+        <div>
+          <label for="fecha-nac-input" class="block text-sm font-bold mb-2">
+            Tu fecha de nacimiento
+          </label>
+          <input
+            id="fecha-nac-input"
+            name="estudiante_fecha_nacimiento"
+            type="date"
+            required
+            max="2015-12-31"
+            min="2005-01-01"
+            class="w-full px-4 py-3 rounded-bento-sm border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/40"
+          />
+        </div>
+
+        <hr class="border-neutral-200 dark:border-neutral-700">
+
+        <div>
+          <label for="acudiente-email-input" class="block text-sm font-bold mb-2">
+            Correo electrónico de tu acudiente
+          </label>
+          <input
+            id="acudiente-email-input"
+            name="acudiente_email"
+            type="email"
+            required
+            placeholder="papa.juan@correo.com"
+            class="w-full px-4 py-3 rounded-bento-sm border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/40"
+          />
+          <p class="text-xs text-neutral-500 mt-1">
+            Le enviaremos un correo para que autorice tu registro. Sin esa
+            autorización no podemos tratar tus datos (Ley 1581 de 2012).
+          </p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3 pt-2">
+          <button
+            type="submit"
+            data-btn-enviar
+            class="flex-1 min-h-[48px] px-5 py-3 rounded-bento-sm bg-bento-blue text-white font-bold hover:scale-[1.01] transition-transform motion-reduce:transition-none disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/40"
+          >
+            Solicitar autorización
+          </button>
+          <button
+            type="button"
+            data-btn-volver
+            class="px-5 py-3 rounded-bento-sm border border-neutral-300 dark:border-neutral-700 font-semibold hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors"
+          >
+            Cambiar código
+          </button>
+        </div>
+      </form>
+
+      <div data-error-datos class="hidden mt-4 bg-bento-pink/10 border border-bento-pink/30 rounded-bento-sm p-3">
+        <p class="text-sm text-bento-pink font-semibold" data-error-datos-msg></p>
+      </div>
+    </section>
+  </div>
+</CuentaLayout>
+
+<script>
+  import { validarCodigoAula, iniciarRegistro } from '../../lib/registro';
+
+  const base = (import.meta.env?.BASE_URL ?? '/').replace(/\/$/, '');
+  const pasoCodigo = document.querySelector<HTMLElement>('[data-paso="codigo"]');
+  const pasoDatos = document.querySelector<HTMLElement>('[data-paso="datos"]');
+  const aulaResumen = document.querySelector<HTMLElement>('[data-aula-resumen]');
+
+  let codigoActual = '';
+
+  // Si la URL trae ?codigo=, pre-llena el input (link directo del docente)
+  const paramsURL = new URLSearchParams(window.location.search);
+  const codigoEnURL = paramsURL.get('codigo');
+  if (codigoEnURL) {
+    const input = document.querySelector<HTMLInputElement>('#codigo-input');
+    if (input) input.value = codigoEnURL.toUpperCase();
+  }
+
+  // Paso 1: validar código
+  document.querySelector<HTMLFormElement>('[data-form-codigo]')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.querySelector<HTMLButtonElement>('[data-btn-validar]')!;
+    const errorEl = document.querySelector<HTMLElement>('[data-error-codigo]')!;
+    const errorMsg = document.querySelector<HTMLElement>('[data-error-codigo-msg]')!;
+    const input = document.querySelector<HTMLInputElement>('#codigo-input')!;
+
+    errorEl.classList.add('hidden');
+    btn.disabled = true;
+    btn.textContent = 'Verificando…';
+
+    const codigo = input.value.trim().toUpperCase();
+    const info = await validarCodigoAula(codigo);
+
+    if (!info) {
+      errorMsg.textContent = 'No encontramos un aula con ese código. Verifica que esté escrito igual al que te entregó tu docente.';
+      errorEl.classList.remove('hidden');
+      btn.disabled = false;
+      btn.textContent = 'Verificar código';
+      return;
+    }
+
+    codigoActual = codigo;
+    const periodos = ['Primer', 'Segundo', 'Tercer'];
+    aulaResumen!.textContent =
+      `Grado ${info.grado}° · ${periodos[info.periodo - 1]} periodo · Año ${info.ano}` +
+      (info.nombre ? ` · ${info.nombre}` : '');
+
+    pasoCodigo!.classList.add('hidden');
+    pasoDatos!.classList.remove('hidden');
+  });
+
+  // Paso 2 botón "Cambiar código"
+  document.querySelector('[data-btn-volver]')?.addEventListener('click', () => {
+    pasoDatos!.classList.add('hidden');
+    pasoCodigo!.classList.remove('hidden');
+    codigoActual = '';
+  });
+
+  // Paso 2 submit
+  document.querySelector<HTMLFormElement>('[data-form-datos]')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.querySelector<HTMLButtonElement>('[data-btn-enviar]')!;
+    const errorEl = document.querySelector<HTMLElement>('[data-error-datos]')!;
+    const errorMsg = document.querySelector<HTMLElement>('[data-error-datos-msg]')!;
+
+    errorEl.classList.add('hidden');
+    btn.disabled = true;
+    btn.textContent = 'Enviando…';
+
+    const form = e.currentTarget as HTMLFormElement;
+    const data = new FormData(form);
+    try {
+      const { registro_id } = await iniciarRegistro({
+        codigoAula: codigoActual,
+        estudianteDisplayName: String(data.get('estudiante_display_name') ?? ''),
+        estudianteFechaNacimiento: String(data.get('estudiante_fecha_nacimiento') ?? ''),
+        acudienteEmail: String(data.get('acudiente_email') ?? ''),
+      });
+      window.location.replace(`${base}/cuenta/solicitud-enviada?id=${registro_id}`);
+    } catch (err: any) {
+      console.error('[unirme] iniciarRegistro:', err);
+      errorMsg.textContent = err.message ?? 'No se pudo enviar la solicitud. Intenta de nuevo.';
+      errorEl.classList.remove('hidden');
+      btn.disabled = false;
+      btn.textContent = 'Solicitar autorización';
+    }
+  });
+</script>

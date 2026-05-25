@@ -1,0 +1,277 @@
+---
+/**
+ * /cuenta/firma-acudiente?id=<uuid> · página donde el acudiente firma el
+ * consentimiento informado.
+ *
+ * Pública (el acudiente no necesita cuenta). El id del registro_pendiente
+ * sirve como token efímero (UUID v4, no enumerable). Las validaciones se
+ * hacen en la edge function firmar-consentimiento.
+ */
+import CuentaLayout from '../../layouts/CuentaLayout.astro';
+import ConsentimientoTexto from '../../components/ConsentimientoTexto.astro';
+
+const VERSION_POLITICA = '2026.05';
+---
+
+<CuentaLayout
+  title={`Autorización · ${VERSION_POLITICA}`}
+  description="Autoriza el tratamiento de datos personales del menor."
+  conHeader={false}
+  publica={true}
+>
+  <!-- Loading inicial -->
+  <div data-estado="cargando" class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-10 text-center">
+    <span class="inline-block w-12 h-12 rounded-full border-4 border-bento-blue/30 border-t-bento-blue animate-spin motion-reduce:animate-none mb-4"></span>
+    <p class="text-sm text-neutral-600 dark:text-neutral-400">Cargando solicitud…</p>
+  </div>
+
+  <!-- Error -->
+  <div data-estado="error" class="hidden bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-8 text-center">
+    <div class="text-5xl mb-4" aria-hidden="true">⚠️</div>
+    <h1 class="text-2xl font-black mb-2 text-bento-pink">No se pudo cargar la solicitud</h1>
+    <p class="text-sm text-neutral-700 dark:text-neutral-300 max-w-md mx-auto" data-error-msg>
+      El enlace no es válido o ya fue procesado.
+    </p>
+  </div>
+
+  <!-- Formulario de firma -->
+  <article data-estado="firma" class="hidden space-y-6">
+    <header class="bg-bento-blue text-white rounded-bento shadow-bento p-6">
+      <p class="text-xs uppercase tracking-widest font-bold opacity-80 mb-1">
+        Solicitud de autorización · {VERSION_POLITICA}
+      </p>
+      <h1 class="text-3xl md:text-4xl font-black tracking-tight mb-2">
+        Su acudido <span data-estudiante-nombre></span> desea registrarse
+      </h1>
+      <p class="text-base text-white/85 leading-relaxed" data-aula-contexto></p>
+    </header>
+
+    <section class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-6 md:p-8">
+      <h2 class="text-lg font-black mb-4">Texto del consentimiento informado</h2>
+      <ConsentimientoTexto />
+    </section>
+
+    <section class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-6 md:p-8">
+      <h2 class="text-lg font-black mb-4">Diligencie sus datos</h2>
+
+      <form data-form-firma class="space-y-5">
+        <div>
+          <label for="acu-nombre" class="block text-sm font-bold mb-2">
+            Nombre completo del acudiente
+          </label>
+          <input
+            id="acu-nombre"
+            name="acudiente_nombre"
+            type="text"
+            required
+            minlength="3"
+            maxlength="120"
+            class="w-full px-4 py-3 rounded-bento-sm border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/40"
+          />
+        </div>
+
+        <div>
+          <label for="acu-cc" class="block text-sm font-bold mb-2">
+            Cédula de Ciudadanía
+          </label>
+          <input
+            id="acu-cc"
+            name="acudiente_cc"
+            type="text"
+            required
+            inputmode="numeric"
+            pattern="[0-9]{6,12}"
+            placeholder="1234567890"
+            class="w-full px-4 py-3 rounded-bento-sm border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 font-mono focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/40"
+          />
+          <p class="text-xs text-neutral-500 mt-1">
+            Solo números, sin puntos ni guiones.
+          </p>
+        </div>
+
+        <div>
+          <span class="block text-sm font-bold mb-2">Parentesco</span>
+          <div class="grid grid-cols-3 gap-2">
+            <label class="flex items-center justify-center px-4 py-3 rounded-bento-sm border border-neutral-300 dark:border-neutral-700 cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-800 has-[input:checked]:bg-bento-blue/10 has-[input:checked]:border-bento-blue has-[input:checked]:text-bento-blue has-[input:checked]:font-bold">
+              <input type="radio" name="acudiente_parentesco" value="padre" required class="sr-only" />
+              Padre
+            </label>
+            <label class="flex items-center justify-center px-4 py-3 rounded-bento-sm border border-neutral-300 dark:border-neutral-700 cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-800 has-[input:checked]:bg-bento-blue/10 has-[input:checked]:border-bento-blue has-[input:checked]:text-bento-blue has-[input:checked]:font-bold">
+              <input type="radio" name="acudiente_parentesco" value="madre" required class="sr-only" />
+              Madre
+            </label>
+            <label class="flex items-center justify-center px-4 py-3 rounded-bento-sm border border-neutral-300 dark:border-neutral-700 cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-800 has-[input:checked]:bg-bento-blue/10 has-[input:checked]:border-bento-blue has-[input:checked]:text-bento-blue has-[input:checked]:font-bold">
+              <input type="radio" name="acudiente_parentesco" value="tutor" required class="sr-only" />
+              Tutor
+            </label>
+          </div>
+        </div>
+
+        <fieldset>
+          <legend class="block text-sm font-bold mb-2">
+            Finalidades que autoriza (marque al menos la primera)
+          </legend>
+          <div class="space-y-2">
+            <label class="flex items-start gap-3 p-3 rounded-bento-sm border border-neutral-200 dark:border-neutral-700 cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-800 has-[input:checked]:bg-bento-blue/5 has-[input:checked]:border-bento-blue/30">
+              <input type="checkbox" name="finalidades" value="progreso" required class="mt-0.5 w-4 h-4 accent-bento-blue" />
+              <span class="text-sm">Seguimiento de progreso del estudiante en las guías del área.</span>
+            </label>
+            <label class="flex items-start gap-3 p-3 rounded-bento-sm border border-neutral-200 dark:border-neutral-700 cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-800 has-[input:checked]:bg-bento-blue/5 has-[input:checked]:border-bento-blue/30">
+              <input type="checkbox" name="finalidades" value="quizzes" class="mt-0.5 w-4 h-4 accent-bento-blue" />
+              <span class="text-sm">Conservación de intentos de quizzes con fines formativos.</span>
+            </label>
+            <label class="flex items-start gap-3 p-3 rounded-bento-sm border border-neutral-200 dark:border-neutral-700 cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-800 has-[input:checked]:bg-bento-blue/5 has-[input:checked]:border-bento-blue/30">
+              <input type="checkbox" name="finalidades" value="reportes_docente" class="mt-0.5 w-4 h-4 accent-bento-blue" />
+              <span class="text-sm">Reportes pedagógicos al docente del área.</span>
+            </label>
+            <label class="flex items-start gap-3 p-3 rounded-bento-sm border border-neutral-200 dark:border-neutral-700 cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-800 has-[input:checked]:bg-bento-blue/5 has-[input:checked]:border-bento-blue/30">
+              <input type="checkbox" name="finalidades" value="comunicacion" class="mt-0.5 w-4 h-4 accent-bento-blue" />
+              <span class="text-sm">Comunicación pedagógica por correo electrónico (sin publicidad).</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <div class="bg-neutral-50 dark:bg-neutral-800/50 rounded-bento-sm p-4 text-xs text-neutral-700 dark:text-neutral-300 leading-relaxed">
+          Al hacer clic en "Autorizar firmo digitalmente" usted manifiesta que:
+          (1) es el representante legal del menor; (2) ha leído íntegramente este
+          documento; (3) ha escuchado la opinión del menor; (4) acepta los términos
+          de la versión {VERSION_POLITICA}. Su firma se registra con fecha, IP y
+          navegador como prueba legal.
+        </div>
+
+        <button
+          type="submit"
+          data-btn-firmar
+          class="w-full min-h-[52px] px-5 py-4 rounded-bento-sm bg-bento-blue text-white font-bold text-lg hover:scale-[1.01] transition-transform motion-reduce:transition-none disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/40"
+        >
+          Autorizar y firmar digitalmente
+        </button>
+      </form>
+
+      <div data-error-firma class="hidden mt-4 bg-bento-pink/10 border border-bento-pink/30 rounded-bento-sm p-3">
+        <p class="text-sm text-bento-pink font-semibold" data-error-firma-msg></p>
+      </div>
+    </section>
+  </article>
+
+  <!-- Firmado: éxito -->
+  <article data-estado="firmado" class="hidden bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-8 md:p-10 text-center">
+    <div class="text-6xl mb-6" aria-hidden="true">✅</div>
+    <h1 class="text-huge font-black tracking-tight mb-3 text-bento-lime">
+      Autorización registrada
+    </h1>
+    <p class="text-base text-neutral-700 dark:text-neutral-300 max-w-md mx-auto leading-relaxed mb-6">
+      Gracias por autorizar el registro. La cuenta del estudiante quedó creada.
+      Recibirá una confirmación en su correo.
+    </p>
+    <div class="bg-bento-blue/10 rounded-bento-sm p-6 mb-6 max-w-md mx-auto">
+      <p class="text-xs uppercase tracking-widest font-bold text-neutral-600 dark:text-neutral-400 mb-2">
+        PIN del estudiante (entréguelo solo al docente)
+      </p>
+      <p class="text-5xl font-black font-mono tracking-widest text-bento-blue" data-pin-display></p>
+      <p class="text-xs text-neutral-500 mt-3">
+        Este PIN aparece una sola vez. Anótelo y entregue al docente.
+      </p>
+    </div>
+    <p class="text-xs text-neutral-500">
+      Puede cerrar esta ventana de forma segura.
+    </p>
+  </article>
+</CuentaLayout>
+
+<script>
+  import { firmarConsentimiento } from '../../lib/registro';
+  import { supabase } from '../../lib/supabase';
+
+  const VERSION_POLITICA = '2026.05';
+  const params = new URLSearchParams(window.location.search);
+  const registroId = params.get('id');
+
+  function mostrar(estado: 'cargando' | 'firma' | 'firmado' | 'error') {
+    document.querySelectorAll<HTMLElement>('[data-estado]').forEach((el) => {
+      el.classList.toggle('hidden', el.dataset.estado !== estado);
+    });
+  }
+
+  function mostrarError(msg: string) {
+    const m = document.querySelector<HTMLElement>('[data-error-msg]');
+    if (m) m.textContent = msg;
+    mostrar('error');
+  }
+
+  async function cargarInfo() {
+    if (!registroId) {
+      mostrarError('URL inválida: falta el parámetro id.');
+      return;
+    }
+
+    // Verificar que el registro está pendiente. No leemos detalles (RLS lo bloquea
+    // a propósito; el acudiente no debe enumerar otros registros). Solo el estado.
+    const { data: estado } = await supabase.rpc('estado_registro_por_id', {
+      _id: registroId,
+    });
+
+    if (!estado) {
+      mostrarError('La solicitud no existe o expiró.');
+      return;
+    }
+    if (estado !== 'pendiente') {
+      if (estado === 'firmado') {
+        mostrarError('Esta solicitud ya fue firmada anteriormente.');
+      } else {
+        mostrarError(`La solicitud está en estado ${estado} y no se puede firmar.`);
+      }
+      return;
+    }
+
+    // Mostrar el formulario. El edge function se encarga de tener acceso pleno
+    // al registro_pendiente y validará todos los campos.
+    document.querySelector<HTMLElement>('[data-estudiante-nombre]')!.textContent = 'el estudiante';
+    document.querySelector<HTMLElement>('[data-aula-contexto]')!.textContent =
+      'Lea el consentimiento y diligencie sus datos a continuación.';
+    mostrar('firma');
+  }
+
+  cargarInfo();
+
+  document.querySelector<HTMLFormElement>('[data-form-firma]')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!registroId) return;
+
+    const btn = document.querySelector<HTMLButtonElement>('[data-btn-firmar]')!;
+    const errorEl = document.querySelector<HTMLElement>('[data-error-firma]')!;
+    const errorMsg = document.querySelector<HTMLElement>('[data-error-firma-msg]')!;
+
+    errorEl.classList.add('hidden');
+    btn.disabled = true;
+    btn.textContent = 'Firmando…';
+
+    const form = e.currentTarget as HTMLFormElement;
+    const data = new FormData(form);
+
+    const finalidades: string[] = [];
+    form.querySelectorAll<HTMLInputElement>('input[name="finalidades"]:checked').forEach((i) => {
+      finalidades.push(i.value);
+    });
+
+    try {
+      const { codigo_pin } = await firmarConsentimiento({
+        registroId,
+        acudienteNombre: String(data.get('acudiente_nombre') ?? ''),
+        acudienteCC: String(data.get('acudiente_cc') ?? ''),
+        acudienteParentesco: String(data.get('acudiente_parentesco') ?? '') as 'padre' | 'madre' | 'tutor',
+        finalidades,
+        versionPolitica: VERSION_POLITICA,
+      });
+      document.querySelector<HTMLElement>('[data-pin-display]')!.textContent = codigo_pin;
+      mostrar('firmado');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (err: any) {
+      console.error('[firma] error:', err);
+      errorMsg.textContent = err.message ?? 'No se pudo registrar la firma. Intenta de nuevo.';
+      errorEl.classList.remove('hidden');
+      btn.disabled = false;
+      btn.textContent = 'Autorizar y firmar digitalmente';
+    }
+  });
+</script>

@@ -1,0 +1,146 @@
+---
+/**
+ * /cuenta/solicitud-enviada · pantalla intermedia tras iniciar registro.
+ *
+ * El estudiante ve "le enviamos un correo a tu acudiente". Hace polling
+ * cada 5 s del estado del registro. Si el acudiente firma, redirige al
+ * paso final (donde el docente le entregará el PIN).
+ */
+import CuentaLayout from '../../layouts/CuentaLayout.astro';
+---
+
+<CuentaLayout
+  title="Esperando autorización · Plataforma Conéctate"
+  description="Esperando que tu acudiente autorice tu registro."
+  conHeader={false}
+  publica={true}
+>
+  <div class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-6 md:p-10">
+    <!-- Estado: esperando -->
+    <div data-estado="esperando" class="text-center">
+      <div class="text-6xl mb-6" aria-hidden="true">📬</div>
+      <h1 class="text-huge font-black tracking-tight mb-3 text-bento-blue">
+        Le enviamos un correo a tu acudiente
+      </h1>
+      <p class="text-base text-neutral-700 dark:text-neutral-300 max-w-md mx-auto leading-relaxed mb-6">
+        Tu acudiente recibirá un correo para leer y autorizar el tratamiento
+        de tus datos. Esta página se actualiza sola cuando lo haga.
+      </p>
+
+      <div class="inline-flex items-center gap-2 text-sm text-neutral-500 mb-6">
+        <span class="inline-block w-4 h-4 rounded-full border-2 border-bento-blue/30 border-t-bento-blue animate-spin motion-reduce:animate-none"></span>
+        <span data-estado-texto>Esperando autorización…</span>
+      </div>
+
+      <details class="text-left text-sm bg-neutral-50 dark:bg-neutral-800/50 rounded-bento-sm p-4">
+        <summary class="font-semibold cursor-pointer">¿No le llegó el correo?</summary>
+        <div class="mt-3 space-y-2 text-neutral-700 dark:text-neutral-300">
+          <p>1. Pídele que revise la carpeta de <strong>spam</strong> o <strong>correo no deseado</strong>.</p>
+          <p>2. El remitente es <code class="bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 rounded text-xs">onboarding@resend.dev</code> con el nombre "Plataforma Conéctate".</p>
+          <p>3. Si tras 5 minutos no llega, vuelve al paso anterior y verifica que el correo esté bien escrito.</p>
+          <p class="pt-2">
+            <a data-link-volver href="#" class="text-bento-blue font-semibold underline">Volver e ingresar otro correo</a>
+          </p>
+        </div>
+      </details>
+    </div>
+
+    <!-- Estado: firmado -->
+    <div data-estado="firmado" class="hidden text-center">
+      <div class="text-6xl mb-6" aria-hidden="true">🎉</div>
+      <h1 class="text-huge font-black tracking-tight mb-3 text-bento-lime">
+        ¡Tu acudiente autorizó!
+      </h1>
+      <p class="text-base text-neutral-700 dark:text-neutral-300 max-w-md mx-auto leading-relaxed mb-6">
+        Tu cuenta ya está creada. El docente te entregará en clase el código
+        <strong>PIN</strong> para que puedas entrar.
+      </p>
+      <a
+        data-link-cuenta
+        href="#"
+        class="inline-block px-6 py-3 rounded-bento-sm bg-bento-blue text-white font-bold hover:scale-[1.02] transition-transform motion-reduce:transition-none"
+      >
+        Volver a la home
+      </a>
+    </div>
+
+    <!-- Estado: error -->
+    <div data-estado="error" class="hidden text-center">
+      <div class="text-6xl mb-6" aria-hidden="true">⚠️</div>
+      <h1 class="text-huge font-black tracking-tight mb-3 text-bento-pink">
+        Algo no anda bien
+      </h1>
+      <p class="text-base text-neutral-700 dark:text-neutral-300 max-w-md mx-auto leading-relaxed mb-6" data-error-msg>
+        No pudimos cargar el estado de tu solicitud.
+      </p>
+      <a
+        data-link-reintentar
+        href="#"
+        class="inline-block px-6 py-3 rounded-bento-sm bg-bento-blue text-white font-bold"
+      >
+        Volver al inicio
+      </a>
+    </div>
+  </div>
+</CuentaLayout>
+
+<script>
+  import { estadoRegistro } from '../../lib/registro';
+
+  const base = (import.meta.env?.BASE_URL ?? '/').replace(/\/$/, '');
+  const params = new URLSearchParams(window.location.search);
+  const registroId = params.get('id');
+
+  document.querySelectorAll<HTMLAnchorElement>('[data-link-volver], [data-link-reintentar]').forEach((a) => {
+    a.href = base + '/cuenta/unirme';
+  });
+  document.querySelectorAll<HTMLAnchorElement>('[data-link-cuenta]').forEach((a) => {
+    a.href = base + '/';
+  });
+
+  function mostrar(estado: 'esperando' | 'firmado' | 'error') {
+    document.querySelectorAll<HTMLElement>('[data-estado]').forEach((el) => {
+      el.classList.toggle('hidden', el.dataset.estado !== estado);
+    });
+  }
+
+  function mostrarError(msg: string) {
+    const m = document.querySelector<HTMLElement>('[data-error-msg]');
+    if (m) m.textContent = msg;
+    mostrar('error');
+  }
+
+  if (!registroId) {
+    mostrarError('URL inválida: falta el parámetro id.');
+  } else {
+    let polling = true;
+    let intentos = 0;
+
+    async function pollEstado() {
+      if (!polling) return;
+      intentos++;
+
+      const estado = await estadoRegistro(registroId!);
+      if (estado === 'firmado') {
+        polling = false;
+        mostrar('firmado');
+        return;
+      }
+      if (estado === 'rechazado' || estado === 'expirado') {
+        polling = false;
+        mostrarError(`La solicitud está en estado ${estado}. Vuelve a iniciar el registro.`);
+        return;
+      }
+
+      // Después de 60 intentos (5 min), bajar la frecuencia para no abusar
+      const intervalo = intentos < 60 ? 5000 : 30000;
+      setTimeout(pollEstado, intervalo);
+    }
+
+    pollEstado();
+
+    window.addEventListener('beforeunload', () => {
+      polling = false;
+    });
+  }
+</script>

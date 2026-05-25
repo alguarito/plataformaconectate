@@ -73,7 +73,7 @@ create table if not exists public.aulas (
   grado           int not null check (grado between 6 and 11),
   periodo         int not null check (periodo between 1 and 3),
   ano             int not null check (ano between 2025 and 2099),
-  codigo_acceso   text not null unique check (char_length(codigo_acceso) between 4 and 16),
+  codigo_acceso   text not null unique check (char_length(codigo_acceso) between 4 and 32),
   nombre          text,
   creado_en       timestamptz not null default now()
 );

@@ -77,27 +77,30 @@ export async function iniciarRegistro(input: {
     throw new Error('Auth deshabilitada');
   }
 
-  // 1. Insertar el registro pendiente (anon puede INSERT por policy)
-  const { data: insertado, error: errIns } = await supabase
-    .from('registros_pendientes')
-    .insert({
-      codigo_aula: input.codigoAula.trim().toUpperCase(),
-      estudiante_display_name: input.estudianteDisplayName.trim(),
-      estudiante_fecha_nacimiento: input.estudianteFechaNacimiento,
-      acudiente_email: input.acudienteEmail.trim().toLowerCase(),
-    })
-    .select('id')
-    .single();
+  // Generamos el UUID en el cliente para no necesitar leer el id de la BD
+  // después del INSERT. Sin esto, Supabase haría .insert().select() que
+  // dispara RLS de SELECT en registros_pendientes (que no permitimos a anon
+  // por privacidad — el acudiente no debe poder enumerar registros).
+  const registroId = crypto.randomUUID();
 
-  if (errIns || !insertado) {
+  // 1. Insertar el registro pendiente (anon puede INSERT por policy)
+  const { error: errIns } = await supabase.from('registros_pendientes').insert({
+    id: registroId,
+    codigo_aula: input.codigoAula.trim().toUpperCase(),
+    estudiante_display_name: input.estudianteDisplayName.trim(),
+    estudiante_fecha_nacimiento: input.estudianteFechaNacimiento,
+    acudiente_email: input.acudienteEmail.trim().toLowerCase(),
+  });
+
+  if (errIns) {
     console.error('[registro] insertar pendiente:', errIns);
-    throw new Error(errIns?.message ?? 'No se pudo iniciar el registro');
+    throw new Error(errIns.message ?? 'No se pudo iniciar el registro');
   }
 
   // 2. Disparar edge function enviar-solicitud-firma
   const { data, error: errFn } = await supabase.functions.invoke(
     'enviar-solicitud-firma',
-    { body: { registro_id: insertado.id } }
+    { body: { registro_id: registroId } }
   );
 
   if (errFn || data?.ok === false) {
@@ -106,7 +109,7 @@ export async function iniciarRegistro(input: {
     // desde el panel /docente (PR-3b). No bloqueamos al estudiante aquí.
   }
 
-  return { registro_id: insertado.id };
+  return { registro_id: registroId };
 }
 
 /**

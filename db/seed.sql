@@ -1,0 +1,71 @@
+-- ============================================================================
+-- Plataforma Conéctate · Proyecto Supabase "ConcienciA"
+-- Datos semilla mínimos para validar el esquema · Fase 1
+--
+-- ⚠️  Este archivo NO debe correrse en producción con datos reales.
+-- ⚠️  Solo introduce datos del docente (mayor de edad) y un aula vacía.
+-- ⚠️  NO crea estudiantes — esos se crean por el flujo de registro
+--     con consentimiento del acudiente (Fase 2).
+--
+-- Antes de aplicar, debes haber creado tu cuenta de Supabase Auth como
+-- alvaro.cardenas.orozco@gmail.com — el UUID de auth.users se usa abajo.
+-- ============================================================================
+
+-- ----------------------------------------------------------------------------
+-- Paso 1. Insertar el perfil del docente
+-- ----------------------------------------------------------------------------
+-- Reemplazar el UUID por el id de tu cuenta auth.users (lo obtienes en
+-- Supabase Dashboard → Authentication → Users → click sobre tu cuenta).
+
+-- insert into public.usuarios (id, display_name, fecha_nacimiento)
+-- values (
+--   '00000000-0000-0000-0000-000000000000'::uuid, -- ⚠️ reemplazar
+--   'Dr. Álvaro Cárdenas Orozco',
+--   null  -- no requerido para mayor de edad
+-- )
+-- on conflict (id) do nothing;
+
+-- ----------------------------------------------------------------------------
+-- Paso 2. Crear un aula de prueba para grado 6, periodo 1, año 2026
+-- ----------------------------------------------------------------------------
+
+-- insert into public.aulas (docente_id, grado, periodo, ano, codigo_acceso, nombre)
+-- values (
+--   '00000000-0000-0000-0000-000000000000'::uuid, -- ⚠️ mismo UUID del docente
+--   6, 1, 2026,
+--   'TEST-6A-2026',
+--   'Aula de prueba · Grado 6° A · Periodo 1 · 2026'
+-- )
+-- on conflict (codigo_acceso) do nothing;
+
+-- ----------------------------------------------------------------------------
+-- Paso 3. Inscribir al docente como teacher en el aula que acaba de crear
+-- ----------------------------------------------------------------------------
+
+-- insert into public.enrollments (usuario_id, aula_id, rol)
+-- select
+--   '00000000-0000-0000-0000-000000000000'::uuid,  -- ⚠️ UUID del docente
+--   id,
+--   'teacher'::rol_enrollment
+-- from public.aulas
+-- where codigo_acceso = 'TEST-6A-2026'
+-- on conflict (usuario_id, aula_id) do nothing;
+
+-- ============================================================================
+-- Cómo usar este archivo
+-- ============================================================================
+-- 1. Crear cuenta de auth en Supabase Dashboard (Authentication → Users → Add).
+-- 2. Copiar el UUID que aparece.
+-- 3. Reemplazar TODAS las apariciones de '00000000-...' por tu UUID real.
+-- 4. Descomentar las 3 secciones (quitar los '--' al inicio de cada línea).
+-- 5. Correr en el SQL Editor de Supabase.
+-- 6. Verificar:
+--      select * from public.usuarios;       -- debe haber 1 fila (tú)
+--      select * from public.aulas;          -- debe haber 1 fila (test 6A)
+--      select * from public.enrollments;    -- debe haber 1 fila (tu enrollment como teacher)
+--
+-- Para limpiar el seed (sin tocar el esquema):
+--      delete from public.enrollments where aula_id in (select id from public.aulas where codigo_acceso = 'TEST-6A-2026');
+--      delete from public.aulas where codigo_acceso = 'TEST-6A-2026';
+--      delete from public.usuarios where id = '00000000-0000-0000-0000-000000000000';
+-- ============================================================================

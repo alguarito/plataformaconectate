@@ -1,0 +1,78 @@
+---
+/**
+ * Card resumen de un aula para mostrar en listas (/docente).
+ *
+ * Diseño Bento:
+ * - Fondo blanco con borde sutil
+ * - Color de chip según grado (acoplado a la paleta de grados.ts)
+ * - Estadísticas a la derecha
+ * - Link completo para tocar fácil en móvil (≥ 44 px)
+ */
+
+import CodigoAcceso from './CodigoAcceso.astro';
+import { periodoLabel, type GradoValido, type PeriodoValido } from '../lib/aulas';
+
+interface Props {
+  id: string;
+  grado: number;
+  periodo: number;
+  ano: number;
+  codigoAcceso: string;
+  nombre?: string | null;
+  estudiantes?: number;
+}
+
+const { id, grado, periodo, ano, codigoAcceso, nombre, estudiantes = 0 } = Astro.props;
+const base = (import.meta.env.BASE_URL ?? '/').replace(/\/$/, '');
+
+// Color del chip según grado (igual mapping que src/data/grados.ts)
+const colorPorGrado: Record<number, string> = {
+  6: 'bg-bento-blue text-white',
+  7: 'bg-bento-lime text-neutral-950',
+  8: 'bg-bento-orange text-neutral-950',
+  9: 'bg-bento-purple text-white',
+  10: 'bg-bento-pink text-neutral-950',
+  11: 'bg-bento-cyan text-neutral-950',
+};
+const chipClase = colorPorGrado[grado] ?? 'bg-neutral-200 text-neutral-900';
+
+const periodoTexto = periodo >= 1 && periodo <= 3 ? periodoLabel(periodo as PeriodoValido) : `Periodo ${periodo}`;
+---
+
+<a
+  href={`${base}/docente/aulas/detalle?id=${id}`}
+  class="group block bg-white dark:bg-neutral-900 rounded-bento shadow-bento hover:shadow-bento-hover transition-shadow motion-reduce:transition-none p-5 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/40"
+>
+  <div class="flex items-start gap-4">
+    <!-- Chip de grado -->
+    <div
+      class:list={[
+        'flex-shrink-0 w-14 h-14 rounded-bento-sm flex items-center justify-center',
+        'font-black text-2xl tracking-tighter',
+        chipClase,
+      ]}
+      aria-hidden="true"
+    >
+      {grado}°
+    </div>
+
+    <!-- Cuerpo -->
+    <div class="flex-1 min-w-0">
+      <h3 class="text-lg font-black tracking-tight mb-1 truncate">
+        {nombre ?? `Grado ${grado}° · ${periodoTexto}`}
+      </h3>
+      <p class="text-xs text-neutral-600 dark:text-neutral-400 mb-2">
+        Año {ano} · {periodoTexto}
+      </p>
+      <CodigoAcceso codigo={codigoAcceso} size="sm" />
+    </div>
+
+    <!-- Estadística -->
+    <div class="flex-shrink-0 text-right">
+      <p class="text-3xl font-black tracking-tight text-bento-blue">{estudiantes}</p>
+      <p class="text-xs text-neutral-500 uppercase tracking-wider">
+        {estudiantes === 1 ? 'estudiante' : 'estudiantes'}
+      </p>
+    </div>
+  </div>
+</a>

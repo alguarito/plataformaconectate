@@ -1,0 +1,206 @@
+---
+/**
+ * /docente/aulas/detalle?id=<uuid> · detalle de un aula.
+ *
+ * Muestra el código de acceso (grande, copiable), datos del aula y un
+ * placeholder para la lista de estudiantes (que se llena en PR-3).
+ *
+ * Si la URL incluye ?nueva=1, muestra un banner "Aula creada" festivo.
+ */
+import CuentaLayout from '../../../layouts/CuentaLayout.astro';
+import CodigoAcceso from '../../../components/CodigoAcceso.astro';
+---
+
+<CuentaLayout title="Detalle de aula · Panel del docente">
+  <div class="space-y-6">
+    <!-- Volver -->
+    <div>
+      <a data-link-volver href="#" class="inline-flex items-center gap-1 text-sm font-semibold text-bento-blue hover:underline">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+        Volver al panel
+      </a>
+    </div>
+
+    <!-- Banner "aula creada" -->
+    <div data-banner-nueva class="hidden bg-bento-lime/15 border border-bento-lime rounded-bento-sm p-4">
+      <p class="text-sm font-bold text-neutral-950 dark:text-neutral-50">
+        ✓ Aula creada · comparte el código con tus estudiantes
+      </p>
+    </div>
+
+    <!-- Loading -->
+    <div data-loading class="text-center py-12">
+      <p class="text-sm text-neutral-500">Cargando aula…</p>
+    </div>
+
+    <!-- Error -->
+    <div data-error class="hidden bg-bento-pink/10 border border-bento-pink/30 rounded-bento-sm p-4">
+      <p class="text-sm text-bento-pink font-semibold" data-error-msg>
+        No se encontró el aula o no tienes permiso para verla.
+      </p>
+    </div>
+
+    <!-- Contenido del aula -->
+    <article data-contenido class="hidden space-y-6">
+      <!-- Cabecera -->
+      <div class="bg-bento-blue text-white rounded-bento shadow-bento p-6 md:p-8">
+        <p class="text-xs uppercase tracking-widest font-bold opacity-80 mb-2" data-aula-anio>Año</p>
+        <h1 class="text-huge font-black tracking-tight mb-2" data-aula-titulo>Aula</h1>
+        <p class="text-base text-white/85 leading-relaxed" data-aula-subtitulo></p>
+      </div>
+
+      <!-- Código de acceso destacado -->
+      <div class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-6 md:p-8 text-center">
+        <p class="text-xs uppercase tracking-widest font-bold text-neutral-500 mb-3">
+          Código de acceso · compártelo en clase
+        </p>
+        <div data-codigo-wrap class="inline-block"></div>
+        <p class="text-xs text-neutral-500 mt-4 max-w-md mx-auto leading-relaxed">
+          Tus estudiantes lo usarán para iniciar su registro. Sus acudientes
+          recibirán un correo para autorizar el tratamiento de datos.
+        </p>
+      </div>
+
+      <!-- Stats -->
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-6">
+          <p class="text-xs uppercase tracking-widest font-bold text-neutral-500 mb-2">Estudiantes</p>
+          <p class="text-4xl font-black tracking-tight text-bento-blue" data-stat-estudiantes>0</p>
+          <p class="text-xs text-neutral-500 mt-1">inscritos en este aula</p>
+        </div>
+        <div class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-6">
+          <p class="text-xs uppercase tracking-widest font-bold text-neutral-500 mb-2">Pendientes</p>
+          <p class="text-4xl font-black tracking-tight text-bento-mostaza" data-stat-pendientes>0</p>
+          <p class="text-xs text-neutral-500 mt-1">acudientes sin firmar consentimiento</p>
+        </div>
+      </div>
+
+      <!-- Placeholder · estudiantes -->
+      <div class="bg-neutral-50 dark:bg-neutral-800/50 rounded-bento-sm p-6 border border-dashed border-neutral-300 dark:border-neutral-700">
+        <h2 class="text-base font-black mb-2">Estudiantes</h2>
+        <p class="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          La lista de estudiantes y sus consentimientos estará disponible en la
+          próxima entrega (PR-3), cuando se habilite el flujo de registro con OTP
+          al acudiente.
+        </p>
+      </div>
+
+      <!-- Acciones destructivas -->
+      <details class="bg-neutral-50 dark:bg-neutral-800/50 rounded-bento-sm p-4">
+        <summary class="text-sm font-semibold cursor-pointer text-neutral-700 dark:text-neutral-300">
+          Zona peligrosa
+        </summary>
+        <div class="mt-3 pt-3 border-t border-neutral-200 dark:border-neutral-700">
+          <p class="text-xs text-neutral-600 dark:text-neutral-400 mb-3 leading-relaxed">
+            Eliminar el aula borrará también todos los enrollments, progreso e
+            intentos de quiz asociados. Esta acción no se puede deshacer.
+          </p>
+          <button
+            type="button"
+            data-eliminar
+            class="px-4 py-2 rounded-bento-sm border border-bento-pink text-bento-pink text-sm font-semibold hover:bg-bento-pink/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bento-pink"
+          >
+            Eliminar aula permanentemente
+          </button>
+        </div>
+      </details>
+    </article>
+  </div>
+</CuentaLayout>
+
+<script>
+  import { getAulaById, contarEstudiantes, eliminarAula, periodoLabel } from '../../../lib/aulas';
+
+  const base = (import.meta.env?.BASE_URL ?? '/').replace(/\/$/, '');
+  const escape = (s: string) =>
+    s.replace(/[&<>"']/g, (c) =>
+      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!)
+    );
+
+  document.querySelectorAll<HTMLAnchorElement>('[data-link-volver]').forEach((a) => {
+    a.href = base + '/docente';
+  });
+
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+  const esNueva = params.get('nueva') === '1';
+
+  if (esNueva) {
+    document.querySelector<HTMLElement>('[data-banner-nueva]')?.classList.remove('hidden');
+  }
+
+  async function cargar() {
+    const loading = document.querySelector<HTMLElement>('[data-loading]');
+    const error = document.querySelector<HTMLElement>('[data-error]');
+    const errorMsg = document.querySelector<HTMLElement>('[data-error-msg]');
+    const contenido = document.querySelector<HTMLElement>('[data-contenido]');
+    if (!loading || !error || !contenido) return;
+
+    if (!id) {
+      loading.classList.add('hidden');
+      if (errorMsg) errorMsg.textContent = 'URL inválida: falta el parámetro id.';
+      error.classList.remove('hidden');
+      return;
+    }
+
+    try {
+      const aula = await getAulaById(id);
+      loading.classList.add('hidden');
+      if (!aula) {
+        error.classList.remove('hidden');
+        return;
+      }
+
+      const titulo = aula.nombre ?? `Grado ${aula.grado}° · ${periodoLabel(aula.periodo as 1 | 2 | 3)}`;
+      const subtitulo = `Grado ${aula.grado}° · ${periodoLabel(aula.periodo as 1 | 2 | 3)} · Año ${aula.ano}`;
+
+      contenido.querySelector<HTMLElement>('[data-aula-titulo]')!.textContent = titulo;
+      contenido.querySelector<HTMLElement>('[data-aula-subtitulo]')!.textContent = subtitulo;
+      contenido.querySelector<HTMLElement>('[data-aula-anio]')!.textContent = `Año lectivo ${aula.ano}`;
+
+      // Inyectar el componente CodigoAcceso vía innerHTML (no podemos importar Astro components en script).
+      const wrap = contenido.querySelector<HTMLElement>('[data-codigo-wrap]');
+      if (wrap) {
+        wrap.innerHTML = `
+          <div class="inline-flex items-center rounded-bento-sm bg-bento-blue/10 text-bento-blue dark:bg-bento-blue/20 border border-bento-blue/30 font-mono font-bold text-2xl md:text-3xl px-5 py-3 gap-3 tracking-wider">
+            <span>${escape(aula.codigo_acceso)}</span>
+            <button type="button" data-copiar-codigo="${escape(aula.codigo_acceso)}"
+                    class="inline-flex items-center justify-center w-10 h-10 rounded-full hover:bg-bento-blue/20 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bento-blue"
+                    aria-label="Copiar código al portapapeles" title="Copiar al portapapeles">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+              </svg>
+            </button>
+          </div>`;
+        wrap.querySelector('[data-copiar-codigo]')?.addEventListener('click', async () => {
+          await navigator.clipboard.writeText(aula.codigo_acceso);
+        });
+      }
+
+      const estudiantes = await contarEstudiantes(aula.id);
+      contenido.querySelector<HTMLElement>('[data-stat-estudiantes]')!.textContent = String(estudiantes);
+
+      contenido.classList.remove('hidden');
+
+      contenido.querySelector('[data-eliminar]')?.addEventListener('click', async () => {
+        const ok = confirm(`¿Eliminar el aula "${titulo}" definitivamente? Esta acción borra todos los enrollments, progreso e intentos de quiz asociados. No se puede deshacer.`);
+        if (!ok) return;
+        try {
+          await eliminarAula(aula.id);
+          window.location.replace(base + '/docente');
+        } catch (err: any) {
+          alert('No se pudo eliminar: ' + (err.message || err));
+        }
+      });
+    } catch (err) {
+      console.error('[detalle aula] error:', err);
+      loading.classList.add('hidden');
+      error.classList.remove('hidden');
+    }
+  }
+
+  cargar();
+</script>

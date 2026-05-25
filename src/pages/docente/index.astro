@@ -1,63 +1,161 @@
 ---
 /**
- * /docente · panel del docente.
- *
- * Placeholder. En PR-2 listará aulas, generará códigos y mostrará progreso
- * agregado por aula.
+ * /docente · panel del docente con lista de aulas.
  */
 import CuentaLayout from '../../layouts/CuentaLayout.astro';
 ---
 
 <CuentaLayout title="Panel del docente · Plataforma Conéctate">
   <div class="space-y-6">
+    <!-- Cabecera -->
     <div class="bg-bento-blue text-white rounded-bento shadow-bento p-6 md:p-8">
-      <h1 class="text-huge font-black tracking-tight mb-2">
-        Panel del docente
-      </h1>
+      <h1 class="text-huge font-black tracking-tight mb-2">Panel del docente</h1>
       <p class="text-base text-white/85 leading-relaxed max-w-2xl">
-        Desde aquí podrás crear aulas, generar códigos de acceso para que tus
-        estudiantes se registren, y ver el progreso agregado de cada grupo.
+        Administra tus aulas, genera códigos de acceso para que tus estudiantes se
+        registren con autorización de sus acudientes, y revisa el progreso de cada
+        grupo.
       </p>
     </div>
 
-    <div class="grid sm:grid-cols-2 gap-4">
-      <div class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-6">
-        <h2 class="text-2xl font-black mb-2">Aulas</h2>
-        <p class="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed mb-4">
-          Aún no tienes aulas creadas.
-        </p>
-        <button
-          type="button"
-          disabled
-          class="px-5 py-3 rounded-bento-sm bg-bento-blue text-white font-semibold opacity-60 cursor-not-allowed"
-          title="Disponible en PR-2"
+    <!-- Lista de aulas -->
+    <section>
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-2xl font-black tracking-tight">Tus aulas</h2>
+        <a
+          data-link-nueva
+          href="#"
+          class="inline-flex items-center gap-2 px-4 py-2 rounded-bento-sm bg-bento-blue text-white font-bold text-sm hover:scale-[1.02] transition-transform motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/40"
         >
-          Crear primera aula
-        </button>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          Nueva aula
+        </a>
       </div>
 
-      <div class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-6">
-        <h2 class="text-2xl font-black mb-2">Resumen</h2>
-        <dl class="text-sm space-y-2 text-neutral-700 dark:text-neutral-300">
-          <div class="flex justify-between">
-            <dt>Aulas activas</dt>
-            <dd class="font-black">0</dd>
-          </div>
-          <div class="flex justify-between">
-            <dt>Estudiantes registrados</dt>
-            <dd class="font-black">0</dd>
-          </div>
-          <div class="flex justify-between">
-            <dt>Guías con progreso</dt>
-            <dd class="font-black">0</dd>
-          </div>
-        </dl>
+      <!-- Estado vacío -->
+      <div data-estado-vacio class="hidden bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-10 text-center">
+        <div class="text-6xl mb-4" aria-hidden="true">📚</div>
+        <h3 class="text-xl font-black mb-2">Aún no tienes aulas</h3>
+        <p class="text-sm text-neutral-600 dark:text-neutral-400 max-w-md mx-auto mb-6 leading-relaxed">
+          Crea tu primera aula para generar un código de acceso. Tus estudiantes lo
+          usarán para que sus acudientes los registren en la plataforma.
+        </p>
+        <a
+          data-link-nueva-vacio
+          href="#"
+          class="inline-flex items-center gap-2 px-5 py-3 rounded-bento-sm bg-bento-blue text-white font-bold hover:scale-[1.02] transition-transform motion-reduce:transition-none"
+        >
+          Crear mi primera aula
+        </a>
       </div>
-    </div>
 
-    <p class="text-xs text-neutral-500 dark:text-neutral-400 text-center">
-      Esta vista está en construcción · funcionalidad completa disponible en
-      próximas entregas (PR-2 y PR-3).
-    </p>
+      <!-- Lista (se llena por JS) -->
+      <div data-lista-aulas class="grid gap-3 hidden"></div>
+
+      <!-- Loading -->
+      <div data-loading-aulas class="text-center py-12">
+        <p class="text-sm text-neutral-500">Cargando aulas…</p>
+      </div>
+
+      <!-- Error -->
+      <div data-error-aulas class="hidden bg-bento-pink/10 border border-bento-pink/30 rounded-bento-sm p-4">
+        <p class="text-sm text-bento-pink font-semibold">
+          No se pudieron cargar tus aulas. <button data-reintentar class="underline">Reintentar</button>
+        </p>
+      </div>
+    </section>
   </div>
 </CuentaLayout>
+
+<script>
+  import { listarAulas, contarEstudiantes, periodoLabel } from '../../lib/aulas';
+
+  const base = (import.meta.env?.BASE_URL ?? '/').replace(/\/$/, '');
+  const linkNueva = document.querySelector<HTMLAnchorElement>('[data-link-nueva]');
+  const linkNuevaVacio = document.querySelector<HTMLAnchorElement>('[data-link-nueva-vacio]');
+  if (linkNueva) linkNueva.href = base + '/docente/aulas/nueva';
+  if (linkNuevaVacio) linkNuevaVacio.href = base + '/docente/aulas/nueva';
+
+  const colorPorGrado: Record<number, string> = {
+    6: 'bg-bento-blue text-white',
+    7: 'bg-bento-lime text-neutral-950',
+    8: 'bg-bento-orange text-neutral-950',
+    9: 'bg-bento-purple text-white',
+    10: 'bg-bento-pink text-neutral-950',
+    11: 'bg-bento-cyan text-neutral-950',
+  };
+
+  const escape = (s: string) =>
+    s.replace(/[&<>"']/g, (c) =>
+      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!)
+    );
+
+  async function cargar() {
+    const loading = document.querySelector<HTMLElement>('[data-loading-aulas]');
+    const vacio = document.querySelector<HTMLElement>('[data-estado-vacio]');
+    const lista = document.querySelector<HTMLElement>('[data-lista-aulas]');
+    const error = document.querySelector<HTMLElement>('[data-error-aulas]');
+    if (!loading || !vacio || !lista || !error) return;
+
+    loading.classList.remove('hidden');
+    vacio.classList.add('hidden');
+    lista.classList.add('hidden');
+    error.classList.add('hidden');
+
+    try {
+      const aulas = await listarAulas();
+      loading.classList.add('hidden');
+
+      if (aulas.length === 0) {
+        vacio.classList.remove('hidden');
+        return;
+      }
+
+      // Contar estudiantes en paralelo
+      const conteos = await Promise.all(aulas.map((a) => contarEstudiantes(a.id)));
+
+      lista.innerHTML = aulas
+        .map((aula, idx) => {
+          const chip = colorPorGrado[aula.grado] ?? 'bg-neutral-200 text-neutral-900';
+          const titulo = aula.nombre ?? `Grado ${aula.grado}° · ${periodoLabel(aula.periodo as 1 | 2 | 3)}`;
+          const estudiantes = conteos[idx];
+          return `
+            <a href="${base}/docente/aulas/detalle?id=${escape(aula.id)}"
+               class="group block bg-white dark:bg-neutral-900 rounded-bento shadow-bento hover:shadow-bento-hover transition-shadow motion-reduce:transition-none p-5 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/40">
+              <div class="flex items-start gap-4">
+                <div class="flex-shrink-0 w-14 h-14 rounded-bento-sm flex items-center justify-center font-black text-2xl tracking-tighter ${chip}" aria-hidden="true">
+                  ${aula.grado}°
+                </div>
+                <div class="flex-1 min-w-0">
+                  <h3 class="text-lg font-black tracking-tight mb-1 truncate">${escape(titulo)}</h3>
+                  <p class="text-xs text-neutral-600 dark:text-neutral-400 mb-2">
+                    Año ${aula.ano} · ${periodoLabel(aula.periodo as 1 | 2 | 3)}
+                  </p>
+                  <code class="text-xs font-mono text-bento-blue bg-bento-blue/10 px-2 py-1 rounded">
+                    ${escape(aula.codigo_acceso)}
+                  </code>
+                </div>
+                <div class="flex-shrink-0 text-right">
+                  <p class="text-3xl font-black tracking-tight text-bento-blue">${estudiantes}</p>
+                  <p class="text-xs text-neutral-500 uppercase tracking-wider">${estudiantes === 1 ? 'estudiante' : 'estudiantes'}</p>
+                </div>
+              </div>
+            </a>`;
+        })
+        .join('');
+      lista.classList.remove('hidden');
+    } catch (err) {
+      console.error('[docente] Error cargando aulas:', err);
+      loading.classList.add('hidden');
+      error.classList.remove('hidden');
+    }
+  }
+
+  document.querySelectorAll('[data-reintentar]').forEach((b) => {
+    b.addEventListener('click', cargar);
+  });
+
+  cargar();
+</script>

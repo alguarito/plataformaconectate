@@ -1,0 +1,100 @@
+---
+/**
+ * /cuenta/callback · página intermedia tras volver de Google.
+ *
+ * Supabase Auth procesa el ?code en el fragmento de la URL y crea la sesión
+ * automáticamente cuando se inicializa el cliente. Esta página solo:
+ *   1. Espera a que la sesión esté creada.
+ *   2. Redirige a ?next o a /cuenta.
+ *
+ * Si algo falla, muestra un mensaje claro y un botón para volver al login.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Procesando inicio de sesión…"
+  description="Finalizando autenticación con Google."
+>
+  <main class="min-h-[60vh] flex items-center justify-center p-6">
+    <div
+      data-callback-card
+      class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-8 max-w-md text-center"
+    >
+      <div data-estado="cargando">
+        <div class="mb-4">
+          <span class="inline-block w-12 h-12 rounded-full border-4 border-bento-blue/30 border-t-bento-blue animate-spin motion-reduce:animate-none"></span>
+        </div>
+        <h1 class="text-lg font-black mb-2">Finalizando inicio de sesión…</h1>
+        <p class="text-sm text-neutral-600 dark:text-neutral-400">
+          Validando tu cuenta de Google con Conéctate.
+        </p>
+      </div>
+
+      <div data-estado="error" class="hidden">
+        <h1 class="text-lg font-black mb-3 text-bento-pink">No se pudo completar el inicio de sesión</h1>
+        <p data-error-msg class="text-sm text-neutral-700 dark:text-neutral-300 mb-6">
+          Hubo un problema al validar tu cuenta.
+        </p>
+        <a
+          data-volver
+          href="#"
+          class="inline-block px-5 py-3 rounded-bento-sm bg-bento-blue text-white font-semibold hover:scale-[1.02] transition-transform motion-reduce:transition-none"
+        >
+          Volver al login
+        </a>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<script>
+  import { getSesion, onAuthChange } from '../../lib/auth';
+
+  const base = (import.meta.env?.BASE_URL ?? '/').replace(/\/$/, '');
+  const params = new URLSearchParams(window.location.search);
+  const next = params.get('next') || base + '/cuenta';
+  const errorParam = params.get('error_description') || params.get('error');
+
+  function mostrarError(msg: string) {
+    document.querySelector<HTMLElement>('[data-estado="cargando"]')?.classList.add('hidden');
+    const errEl = document.querySelector<HTMLElement>('[data-estado="error"]');
+    const msgEl = document.querySelector<HTMLElement>('[data-error-msg]');
+    const volver = document.querySelector<HTMLAnchorElement>('[data-volver]');
+    if (msgEl) msgEl.textContent = msg;
+    if (volver) volver.href = base + '/cuenta/login';
+    errEl?.classList.remove('hidden');
+  }
+
+  // Caso 1: Google devolvió error en query params
+  if (errorParam) {
+    mostrarError(decodeURIComponent(errorParam));
+  } else {
+    // Caso 2: esperar la sesión (Supabase la procesa automáticamente)
+    let resuelto = false;
+
+    const timeout = setTimeout(() => {
+      if (!resuelto) mostrarError('Tiempo de espera agotado. Intenta de nuevo.');
+    }, 10000);
+
+    const sub = onAuthChange((sesion) => {
+      if (sesion && !resuelto) {
+        resuelto = true;
+        clearTimeout(timeout);
+        sub.unsubscribe();
+        window.location.replace(next);
+      }
+    });
+
+    // Por si la sesión ya está lista al cargar
+    (async () => {
+      const sesion = await getSesion();
+      if (sesion && !resuelto) {
+        resuelto = true;
+        clearTimeout(timeout);
+        sub.unsubscribe();
+        window.location.replace(next);
+      }
+    })();
+  }
+</script>

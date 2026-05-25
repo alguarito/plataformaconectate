@@ -1,0 +1,63 @@
+---
+/**
+ * /cuenta/login · página de inicio de sesión.
+ *
+ * - Pública (no requiere sesión).
+ * - Botón "Continuar con Google" hace OAuth via Supabase.
+ * - Si ya hay sesión, redirige al destino en ?next o a /cuenta.
+ * - Si PUBLIC_AUTH_ENABLED=false, redirige a home (no debería verse).
+ */
+import CuentaLayout from '../../layouts/CuentaLayout.astro';
+import BotonLoginGoogle from '../../components/BotonLoginGoogle.astro';
+
+const base = (import.meta.env.BASE_URL ?? '/').replace(/\/$/, '');
+---
+
+<CuentaLayout
+  title="Iniciar sesión · Plataforma Conéctate"
+  description="Iniciar sesión en Plataforma Conéctate con tu cuenta de Google."
+  conHeader={false}
+  publica={true}
+>
+  <div class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-6 md:p-10">
+    <div class="text-center mb-8">
+      <h1 class="text-huge font-black tracking-tight mb-3 text-bento-blue">
+        Iniciar sesión
+      </h1>
+      <p class="text-base text-neutral-700 dark:text-neutral-300 max-w-md mx-auto leading-relaxed">
+        Accede a tu cuenta de docente para administrar aulas, ver progreso de
+        estudiantes y publicar guías.
+      </p>
+    </div>
+
+    <div class="flex justify-center mb-6">
+      <BotonLoginGoogle />
+    </div>
+
+    <div class="text-center text-xs text-neutral-500 dark:text-neutral-400 max-w-md mx-auto leading-relaxed mt-8 space-y-2">
+      <p>
+        Al iniciar sesión aceptas la <a href={base + '/cuenta/politica'} class="text-bento-blue underline underline-offset-2">política de privacidad</a>
+        de la plataforma. Tus datos se tratan conforme a la Ley 1581 de 2012.
+      </p>
+      <p>
+        Si eres estudiante, no necesitas crear cuenta aquí. Tu docente te dará un
+        código de aula y un enlace específico.
+      </p>
+    </div>
+  </div>
+</CuentaLayout>
+
+<script>
+  // Si ya hay sesión, redirigir al destino o a /cuenta.
+  import { getSesion } from '../../lib/auth';
+
+  (async () => {
+    const base = (import.meta.env?.BASE_URL ?? '/').replace(/\/$/, '');
+    const sesion = await getSesion();
+    if (sesion) {
+      const params = new URLSearchParams(window.location.search);
+      const next = params.get('next');
+      window.location.replace(next || base + '/cuenta');
+    }
+  })();
+</script>

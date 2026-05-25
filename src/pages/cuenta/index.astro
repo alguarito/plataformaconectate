@@ -1,0 +1,81 @@
+---
+/**
+ * /cuenta · dashboard personal del usuario autenticado.
+ *
+ * Placeholder por ahora. En PR-2 mostrará progreso (si es estudiante) o
+ * aulas (si es docente). En PR-3 mostrará botones ARCO.
+ */
+import CuentaLayout from '../../layouts/CuentaLayout.astro';
+---
+
+<CuentaLayout title="Mi cuenta · Plataforma Conéctate">
+  <div class="space-y-6">
+    <div class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-6">
+      <h1 class="text-huge font-black tracking-tight mb-2 text-bento-blue">
+        Bienvenido/a
+      </h1>
+      <p class="text-base text-neutral-700 dark:text-neutral-300 leading-relaxed">
+        Tu cuenta está activa. Pronto verás aquí tu progreso, tus aulas y
+        herramientas según tu rol.
+      </p>
+    </div>
+
+    <div class="grid sm:grid-cols-2 gap-4">
+      <a
+        data-link-docente
+        href="#"
+        class="block p-6 rounded-bento bg-bento-blue text-white shadow-bento hover:shadow-bento-hover hover:scale-[1.01] transition motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/40"
+      >
+        <h2 class="text-2xl font-black mb-2">Panel de docente</h2>
+        <p class="text-sm text-white/85 leading-relaxed">
+          Crea aulas, gestiona códigos de acceso y revisa el progreso de tu
+          clase.
+        </p>
+      </a>
+
+      <div class="block p-6 rounded-bento bg-neutral-100 dark:bg-neutral-800 opacity-70 cursor-not-allowed">
+        <h2 class="text-2xl font-black mb-2 text-neutral-700 dark:text-neutral-300">
+          Mi progreso
+        </h2>
+        <p class="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          Próximamente · disponible cuando completes el flujo de registro como
+          estudiante.
+        </p>
+      </div>
+    </div>
+
+    <details class="bg-neutral-50 dark:bg-neutral-800/50 rounded-bento-sm p-4 text-sm">
+      <summary class="font-semibold cursor-pointer">Información de tu cuenta</summary>
+      <pre data-debug class="mt-3 text-xs overflow-x-auto whitespace-pre-wrap break-all text-neutral-600 dark:text-neutral-400">
+Cargando…
+      </pre>
+    </details>
+  </div>
+</CuentaLayout>
+
+<script>
+  import { getSesion, getPerfil } from '../../lib/auth';
+
+  (async () => {
+    const base = (import.meta.env?.BASE_URL ?? '/').replace(/\/$/, '');
+    const linkDocente = document.querySelector<HTMLAnchorElement>('[data-link-docente]');
+    if (linkDocente) linkDocente.href = base + '/docente';
+
+    const sesion = await getSesion();
+    const perfil = await getPerfil();
+    const debug = document.querySelector<HTMLElement>('[data-debug]');
+    if (debug) {
+      debug.textContent = JSON.stringify(
+        {
+          usuario_id: sesion?.user.id,
+          email: sesion?.user.email,
+          provider: sesion?.user.app_metadata?.provider,
+          display_name: perfil?.display_name,
+          creado_en: perfil?.creado_en,
+        },
+        null,
+        2
+      );
+    }
+  })();
+</script>

@@ -250,6 +250,39 @@ as $$
   );
 $$;
 
+-- ----------------------------------------------------------------------------
+-- 13. Funciones helper para romper recursión RLS entre aulas y enrollments
+--     Sin estas, una policy en aulas que consulte enrollments + una policy
+--     en enrollments que consulte aulas crean un ciclo infinito (error 42P17).
+--     SECURITY DEFINER bypassa RLS dentro de la función.
+-- ----------------------------------------------------------------------------
+
+create or replace function public.es_miembro_de_aula(_usuario_id uuid, _aula_id uuid)
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.enrollments
+    where usuario_id = _usuario_id and aula_id = _aula_id
+  );
+$$;
+
+create or replace function public.es_docente_del_aula(_docente_id uuid, _aula_id uuid)
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.aulas
+    where id = _aula_id and docente_id = _docente_id
+  );
+$$;
+
 -- ============================================================================
 -- Fin de schema.sql
 -- Siguiente paso: aplicar db/policies.sql para activar Row Level Security.

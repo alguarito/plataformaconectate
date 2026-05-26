@@ -1,13 +1,13 @@
 ---
 /**
- * /cuenta/unirme · página pública donde el estudiante ingresa el código
- * de aula que su docente le dio.
+ * /cuenta/unirme · página pública con flujo dual según edad del estudiante.
  *
- * Flujo (paso 1 / 3):
- *   1. Ingresa código → valida con info_aula_por_codigo (RPC SECURITY DEFINER)
- *   2. Muestra info del aula → estudiante confirma
- *   3. Pide datos del estudiante (nombre, fecha nac) + email del acudiente
- *   4. Submit → llama iniciarRegistro → redirige a /cuenta/solicitud-enviada
+ * Pasos:
+ *   1. Ingresa código de aula → validar
+ *   2. Diligencia nombre + fecha de nacimiento
+ *   3. Calcular edad:
+ *      - <14 años → pedir email del acudiente → email al acudiente → solicitud-enviada
+ *      - ≥14 años → pedir email propio → OTP al estudiante → /cuenta/verificar-otp
  */
 import CuentaLayout from '../../layouts/CuentaLayout.astro';
 ---
@@ -31,13 +31,11 @@ import CuentaLayout from '../../layouts/CuentaLayout.astro';
       </p>
     </header>
 
-    <!-- Paso 1: código de aula -->
+    <!-- PASO 1 · Código de aula -->
     <section data-paso="codigo">
       <form data-form-codigo class="space-y-4">
         <div>
-          <label for="codigo-input" class="block text-sm font-bold mb-2">
-            Código de aula
-          </label>
+          <label for="codigo-input" class="block text-sm font-bold mb-2">Código de aula</label>
           <input
             id="codigo-input"
             name="codigo"
@@ -62,20 +60,16 @@ import CuentaLayout from '../../layouts/CuentaLayout.astro';
       </div>
     </section>
 
-    <!-- Paso 2: datos del estudiante + acudiente -->
+    <!-- PASO 2 · Nombre + fecha nacimiento -->
     <section data-paso="datos" class="hidden">
       <div class="bg-bento-lime/15 border border-bento-lime rounded-bento-sm p-4 mb-6">
-        <p class="text-sm font-bold text-neutral-950 dark:text-neutral-50 mb-1">
-          ✓ Aula encontrada
-        </p>
+        <p class="text-sm font-bold text-neutral-950 dark:text-neutral-50 mb-1">✓ Aula encontrada</p>
         <p class="text-sm text-neutral-800 dark:text-neutral-200" data-aula-resumen></p>
       </div>
 
       <form data-form-datos class="space-y-5">
         <div>
-          <label for="nombre-input" class="block text-sm font-bold mb-2">
-            Tu nombre o seudónimo
-          </label>
+          <label for="nombre-input" class="block text-sm font-bold mb-2">Tu nombre o seudónimo</label>
           <input
             id="nombre-input"
             name="estudiante_display_name"
@@ -86,28 +80,52 @@ import CuentaLayout from '../../layouts/CuentaLayout.astro';
             placeholder="Ej: Juan Pablo R."
             class="w-full px-4 py-3 rounded-bento-sm border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/40"
           />
-          <p class="text-xs text-neutral-500 mt-1">
-            Puedes usar tu nombre completo o un seudónimo. Es lo que verá el docente.
-          </p>
+          <p class="text-xs text-neutral-500 mt-1">Es lo que verá el docente.</p>
         </div>
 
         <div>
-          <label for="fecha-nac-input" class="block text-sm font-bold mb-2">
-            Tu fecha de nacimiento
-          </label>
+          <label for="fecha-nac-input" class="block text-sm font-bold mb-2">Tu fecha de nacimiento</label>
           <input
             id="fecha-nac-input"
             name="estudiante_fecha_nacimiento"
             type="date"
             required
-            max="2015-12-31"
-            min="2005-01-01"
+            max="2018-12-31"
+            min="2003-01-01"
             class="w-full px-4 py-3 rounded-bento-sm border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/40"
           />
         </div>
 
-        <hr class="border-neutral-200 dark:border-neutral-700">
+        <div class="flex flex-col sm:flex-row gap-3 pt-2">
+          <button
+            type="submit"
+            data-btn-continuar
+            class="flex-1 min-h-[48px] px-5 py-3 rounded-bento-sm bg-bento-blue text-white font-bold hover:scale-[1.01] transition-transform motion-reduce:transition-none disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/40"
+          >
+            Continuar
+          </button>
+          <button
+            type="button"
+            data-btn-volver-codigo
+            class="px-5 py-3 rounded-bento-sm border border-neutral-300 dark:border-neutral-700 font-semibold hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors"
+          >
+            Cambiar código
+          </button>
+        </div>
+      </form>
+    </section>
 
+    <!-- PASO 3A · email del acudiente (estudiante <14) -->
+    <section data-paso="email-acudiente" class="hidden">
+      <div class="bg-bento-blue/10 border border-bento-blue/30 rounded-bento-sm p-4 mb-6">
+        <p class="text-sm font-bold mb-1">Necesitamos la autorización de tu acudiente</p>
+        <p class="text-xs text-neutral-700 dark:text-neutral-300 leading-relaxed">
+          Como tienes menos de 14 años, la <strong>Ley 1581 de 2012</strong> requiere
+          que tu padre, madre o tutor autorice el tratamiento de tus datos.
+        </p>
+      </div>
+
+      <form data-form-acudiente class="space-y-5">
         <div>
           <label for="acudiente-email-input" class="block text-sm font-bold mb-2">
             Correo electrónico de tu acudiente
@@ -121,55 +139,119 @@ import CuentaLayout from '../../layouts/CuentaLayout.astro';
             class="w-full px-4 py-3 rounded-bento-sm border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/40"
           />
           <p class="text-xs text-neutral-500 mt-1">
-            Le enviaremos un correo para que autorice tu registro. Sin esa
-            autorización no podemos tratar tus datos (Ley 1581 de 2012).
+            Le enviaremos un correo para que firme la autorización.
           </p>
         </div>
-
-        <div class="flex flex-col sm:flex-row gap-3 pt-2">
+        <div class="flex flex-col sm:flex-row gap-3">
           <button
             type="submit"
-            data-btn-enviar
-            class="flex-1 min-h-[48px] px-5 py-3 rounded-bento-sm bg-bento-blue text-white font-bold hover:scale-[1.01] transition-transform motion-reduce:transition-none disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/40"
+            data-btn-enviar-acudiente
+            class="flex-1 min-h-[48px] px-5 py-3 rounded-bento-sm bg-bento-blue text-white font-bold hover:scale-[1.01] transition-transform motion-reduce:transition-none disabled:opacity-60 disabled:cursor-not-allowed"
           >
             Solicitar autorización
           </button>
           <button
             type="button"
-            data-btn-volver
-            class="px-5 py-3 rounded-bento-sm border border-neutral-300 dark:border-neutral-700 font-semibold hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors"
+            data-btn-volver-datos
+            class="px-5 py-3 rounded-bento-sm border border-neutral-300 dark:border-neutral-700 font-semibold hover:bg-neutral-50 dark:hover:bg-neutral-800"
           >
-            Cambiar código
+            Volver
           </button>
         </div>
       </form>
-
-      <div data-error-datos class="hidden mt-4 bg-bento-pink/10 border border-bento-pink/30 rounded-bento-sm p-3">
-        <p class="text-sm text-bento-pink font-semibold" data-error-datos-msg></p>
-      </div>
     </section>
+
+    <!-- PASO 3B · email propio (estudiante ≥14) -->
+    <section data-paso="email-auto" class="hidden">
+      <div class="bg-bento-lime/15 border border-bento-lime rounded-bento-sm p-4 mb-6">
+        <p class="text-sm font-bold mb-1">Puedes registrarte tú mismo</p>
+        <p class="text-xs text-neutral-700 dark:text-neutral-300 leading-relaxed">
+          Como tienes 14 años o más, puedes autorizar el tratamiento de tus datos
+          directamente. Te enviaremos un código de 6 dígitos a tu correo para
+          verificar que es tuyo.
+        </p>
+      </div>
+
+      <form data-form-auto class="space-y-5">
+        <div>
+          <label for="estudiante-email-input" class="block text-sm font-bold mb-2">
+            Tu correo electrónico personal
+          </label>
+          <input
+            id="estudiante-email-input"
+            name="estudiante_email"
+            type="email"
+            required
+            placeholder="tucorreo@gmail.com"
+            class="w-full px-4 py-3 rounded-bento-sm border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/40"
+          />
+          <p class="text-xs text-neutral-500 mt-1">
+            Importante: debe ser <strong>tuyo personal</strong>, al que solo tú accedes.
+          </p>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-3">
+          <button
+            type="submit"
+            data-btn-enviar-auto
+            class="flex-1 min-h-[48px] px-5 py-3 rounded-bento-sm bg-bento-blue text-white font-bold hover:scale-[1.01] transition-transform motion-reduce:transition-none disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            Enviarme el código
+          </button>
+          <button
+            type="button"
+            data-btn-volver-datos-2
+            class="px-5 py-3 rounded-bento-sm border border-neutral-300 dark:border-neutral-700 font-semibold hover:bg-neutral-50 dark:hover:bg-neutral-800"
+          >
+            Volver
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Error compartido -->
+    <div data-error-global class="hidden mt-4 bg-bento-pink/10 border border-bento-pink/30 rounded-bento-sm p-3">
+      <p class="text-sm text-bento-pink font-semibold" data-error-global-msg></p>
+    </div>
   </div>
 </CuentaLayout>
 
 <script>
-  import { validarCodigoAula, iniciarRegistro } from '../../lib/registro';
+  import {
+    validarCodigoAula,
+    iniciarRegistroAcudiente,
+    iniciarRegistroAuto,
+    requiereAcudiente,
+  } from '../../lib/registro';
 
   const base = (import.meta.env?.BASE_URL ?? '/').replace(/\/$/, '');
-  const pasoCodigo = document.querySelector<HTMLElement>('[data-paso="codigo"]');
-  const pasoDatos = document.querySelector<HTMLElement>('[data-paso="datos"]');
-  const aulaResumen = document.querySelector<HTMLElement>('[data-aula-resumen]');
 
+  // Estado del flujo en variables del closure
   let codigoActual = '';
+  let nombreActual = '';
+  let fechaNacActual = '';
 
-  // Si la URL trae ?codigo=, pre-llena el input (link directo del docente)
-  const paramsURL = new URLSearchParams(window.location.search);
-  const codigoEnURL = paramsURL.get('codigo');
+  function mostrarPaso(paso: 'codigo' | 'datos' | 'email-acudiente' | 'email-auto') {
+    document.querySelectorAll<HTMLElement>('[data-paso]').forEach((el) => {
+      el.classList.toggle('hidden', el.dataset.paso !== paso);
+    });
+    document.querySelector('[data-error-global]')?.classList.add('hidden');
+  }
+
+  function mostrarErrorGlobal(msg: string) {
+    const m = document.querySelector<HTMLElement>('[data-error-global-msg]');
+    if (m) m.textContent = msg;
+    document.querySelector('[data-error-global]')?.classList.remove('hidden');
+  }
+
+  // ─── Si la URL trae ?codigo=, pre-llena ───
+  const params = new URLSearchParams(window.location.search);
+  const codigoEnURL = params.get('codigo');
   if (codigoEnURL) {
     const input = document.querySelector<HTMLInputElement>('#codigo-input');
     if (input) input.value = codigoEnURL.toUpperCase();
   }
 
-  // Paso 1: validar código
+  // ─── PASO 1 · validar código ───
   document.querySelector<HTMLFormElement>('[data-form-codigo]')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = document.querySelector<HTMLButtonElement>('[data-btn-validar]')!;
@@ -185,7 +267,7 @@ import CuentaLayout from '../../layouts/CuentaLayout.astro';
     const info = await validarCodigoAula(codigo);
 
     if (!info) {
-      errorMsg.textContent = 'No encontramos un aula con ese código. Verifica que esté escrito igual al que te entregó tu docente.';
+      errorMsg.textContent = 'No encontramos un aula con ese código. Verifica que esté igual al que te entregó tu docente.';
       errorEl.classList.remove('hidden');
       btn.disabled = false;
       btn.textContent = 'Verificar código';
@@ -194,48 +276,87 @@ import CuentaLayout from '../../layouts/CuentaLayout.astro';
 
     codigoActual = codigo;
     const periodos = ['Primer', 'Segundo', 'Tercer'];
-    aulaResumen!.textContent =
+    const resumen =
       `Grado ${info.grado}° · ${periodos[info.periodo - 1]} periodo · Año ${info.ano}` +
       (info.nombre ? ` · ${info.nombre}` : '');
-
-    pasoCodigo!.classList.add('hidden');
-    pasoDatos!.classList.remove('hidden');
+    document.querySelector<HTMLElement>('[data-aula-resumen]')!.textContent = resumen;
+    mostrarPaso('datos');
   });
 
-  // Paso 2 botón "Cambiar código"
-  document.querySelector('[data-btn-volver]')?.addEventListener('click', () => {
-    pasoDatos!.classList.add('hidden');
-    pasoCodigo!.classList.remove('hidden');
+  // ─── PASO 2 · nombre + fecha → continuar ───
+  document.querySelector<HTMLFormElement>('[data-form-datos]')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const form = e.currentTarget as HTMLFormElement;
+    const data = new FormData(form);
+    nombreActual = String(data.get('estudiante_display_name') ?? '').trim();
+    fechaNacActual = String(data.get('estudiante_fecha_nacimiento') ?? '').trim();
+
+    if (!nombreActual || !fechaNacActual) {
+      mostrarErrorGlobal('Faltan datos.');
+      return;
+    }
+
+    if (requiereAcudiente(fechaNacActual)) {
+      mostrarPaso('email-acudiente');
+    } else {
+      mostrarPaso('email-auto');
+    }
+  });
+
+  document.querySelector('[data-btn-volver-codigo]')?.addEventListener('click', () => {
+    mostrarPaso('codigo');
     codigoActual = '';
   });
 
-  // Paso 2 submit
-  document.querySelector<HTMLFormElement>('[data-form-datos]')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const btn = document.querySelector<HTMLButtonElement>('[data-btn-enviar]')!;
-    const errorEl = document.querySelector<HTMLElement>('[data-error-datos]')!;
-    const errorMsg = document.querySelector<HTMLElement>('[data-error-datos-msg]')!;
+  document.querySelectorAll('[data-btn-volver-datos], [data-btn-volver-datos-2]').forEach((b) => {
+    b.addEventListener('click', () => mostrarPaso('datos'));
+  });
 
-    errorEl.classList.add('hidden');
+  // ─── PASO 3A · flujo acudiente ───
+  document.querySelector<HTMLFormElement>('[data-form-acudiente]')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.querySelector<HTMLButtonElement>('[data-btn-enviar-acudiente]')!;
     btn.disabled = true;
     btn.textContent = 'Enviando…';
-
     const form = e.currentTarget as HTMLFormElement;
     const data = new FormData(form);
     try {
-      const { registro_id } = await iniciarRegistro({
+      const { registro_id } = await iniciarRegistroAcudiente({
         codigoAula: codigoActual,
-        estudianteDisplayName: String(data.get('estudiante_display_name') ?? ''),
-        estudianteFechaNacimiento: String(data.get('estudiante_fecha_nacimiento') ?? ''),
+        estudianteDisplayName: nombreActual,
+        estudianteFechaNacimiento: fechaNacActual,
         acudienteEmail: String(data.get('acudiente_email') ?? ''),
       });
       window.location.replace(`${base}/cuenta/solicitud-enviada?id=${registro_id}`);
     } catch (err: any) {
-      console.error('[unirme] iniciarRegistro:', err);
-      errorMsg.textContent = err.message ?? 'No se pudo enviar la solicitud. Intenta de nuevo.';
-      errorEl.classList.remove('hidden');
+      console.error('[unirme] acudiente:', err);
+      mostrarErrorGlobal(err.message ?? 'No se pudo enviar la solicitud.');
       btn.disabled = false;
       btn.textContent = 'Solicitar autorización';
+    }
+  });
+
+  // ─── PASO 3B · flujo auto ─14 ───
+  document.querySelector<HTMLFormElement>('[data-form-auto]')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.querySelector<HTMLButtonElement>('[data-btn-enviar-auto]')!;
+    btn.disabled = true;
+    btn.textContent = 'Enviando código…';
+    const form = e.currentTarget as HTMLFormElement;
+    const data = new FormData(form);
+    try {
+      const { registro_id } = await iniciarRegistroAuto({
+        codigoAula: codigoActual,
+        estudianteDisplayName: nombreActual,
+        estudianteFechaNacimiento: fechaNacActual,
+        estudianteEmail: String(data.get('estudiante_email') ?? ''),
+      });
+      window.location.replace(`${base}/cuenta/verificar-otp?id=${registro_id}`);
+    } catch (err: any) {
+      console.error('[unirme] auto:', err);
+      mostrarErrorGlobal(err.message ?? 'No se pudo enviar el código.');
+      btn.disabled = false;
+      btn.textContent = 'Enviarme el código';
     }
   });
 </script>

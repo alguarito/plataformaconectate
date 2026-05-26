@@ -61,56 +61,156 @@ export async function validarCodigoAula(
 }
 
 /**
- * Inicia el registro creando una fila en registros_pendientes y disparando
- * el envío del email al acudiente.
- *
- * Devuelve el id del registro pendiente para que el estudiante pueda hacer
- * polling del estado.
+ * Calcula la edad en años cumplidos dado un YYYY-MM-DD.
  */
-export async function iniciarRegistro(input: {
+export function calcularEdad(fechaNacimientoISO: string, hoy: Date = new Date()): number {
+  const nac = new Date(fechaNacimientoISO + 'T00:00:00');
+  let edad = hoy.getFullYear() - nac.getFullYear();
+  if (
+    hoy.getMonth() < nac.getMonth() ||
+    (hoy.getMonth() === nac.getMonth() && hoy.getDate() < nac.getDate())
+  ) {
+    edad--;
+  }
+  return edad;
+}
+
+/**
+ * Umbral legal para auto-consentimiento.
+ * Estándar internacional: 14 (Colombia proyecto 247/2025, Chile, Argentina).
+ */
+export const EDAD_AUTO_CONSENTIMIENTO = 14;
+
+/**
+ * ¿Este estudiante necesita firma del acudiente?
+ */
+export function requiereAcudiente(fechaNacimientoISO: string): boolean {
+  return calcularEdad(fechaNacimientoISO) < EDAD_AUTO_CONSENTIMIENTO;
+}
+
+/**
+ * Inicia el registro con firma del acudiente (estudiantes <14 años).
+ */
+export async function iniciarRegistroAcudiente(input: {
   codigoAula: string;
   estudianteDisplayName: string;
-  estudianteFechaNacimiento: string; // 'YYYY-MM-DD'
+  estudianteFechaNacimiento: string;
   acudienteEmail: string;
 }): Promise<{ registro_id: string }> {
-  if (!authEnabled) {
-    throw new Error('Auth deshabilitada');
-  }
+  if (!authEnabled) throw new Error('Auth deshabilitada');
 
-  // Generamos el UUID en el cliente para no necesitar leer el id de la BD
-  // después del INSERT. Sin esto, Supabase haría .insert().select() que
-  // dispara RLS de SELECT en registros_pendientes (que no permitimos a anon
-  // por privacidad — el acudiente no debe poder enumerar registros).
   const registroId = crypto.randomUUID();
-
-  // 1. Insertar el registro pendiente (anon puede INSERT por policy)
   const { error: errIns } = await supabase.from('registros_pendientes').insert({
     id: registroId,
     codigo_aula: input.codigoAula.trim().toUpperCase(),
     estudiante_display_name: input.estudianteDisplayName.trim(),
     estudiante_fecha_nacimiento: input.estudianteFechaNacimiento,
     acudiente_email: input.acudienteEmail.trim().toLowerCase(),
+    tipo_registro: 'acudiente',
   });
 
   if (errIns) {
-    console.error('[registro] insertar pendiente:', errIns);
+    console.error('[registro] iniciarRegistroAcudiente:', errIns);
     throw new Error(errIns.message ?? 'No se pudo iniciar el registro');
   }
 
-  // 2. Disparar edge function enviar-solicitud-firma
-  const { data, error: errFn } = await supabase.functions.invoke(
-    'enviar-solicitud-firma',
-    { body: { registro_id: registroId } }
-  );
+  const { error: errFn } = await supabase.functions.invoke('enviar-solicitud-firma', {
+    body: { registro_id: registroId },
+  });
+  if (errFn) console.warn('[registro] enviar-solicitud-firma (no bloqueante):', errFn);
 
+  return { registro_id: registroId };
+}
+
+/**
+ * Inicia el registro con auto-firma (estudiantes ≥14 años).
+ * Envía OTP de 6 dígitos al email del propio estudiante.
+ */
+export async function iniciarRegistroAuto(input: {
+  codigoAula: string;
+  estudianteDisplayName: string;
+  estudianteFechaNacimiento: string;
+  estudianteEmail: string;
+}): Promise<{ registro_id: string }> {
+  if (!authEnabled) throw new Error('Auth deshabilitada');
+
+  if (requiereAcudiente(input.estudianteFechaNacimiento)) {
+    throw new Error('Este flujo solo aplica para estudiantes ≥14 años');
+  }
+
+  const registroId = crypto.randomUUID();
+  const email = input.estudianteEmail.trim().toLowerCase();
+  const { error: errIns } = await supabase.from('registros_pendientes').insert({
+    id: registroId,
+    codigo_aula: input.codigoAula.trim().toUpperCase(),
+    estudiante_display_name: input.estudianteDisplayName.trim(),
+    estudiante_fecha_nacimiento: input.estudianteFechaNacimiento,
+    acudiente_email: email, // mismo email; semánticamente es el contacto del registro
+    estudiante_email: email,
+    tipo_registro: 'auto',
+  });
+
+  if (errIns) {
+    console.error('[registro] iniciarRegistroAuto:', errIns);
+    throw new Error(errIns.message ?? 'No se pudo iniciar el registro');
+  }
+
+  const { data, error: errFn } = await supabase.functions.invoke('enviar-otp-estudiante', {
+    body: { registro_id: registroId },
+  });
   if (errFn || data?.ok === false) {
-    console.error('[registro] enviar-solicitud-firma:', errFn ?? data);
-    // El registro queda pendiente; el docente puede re-disparar el email
-    // desde el panel /docente (PR-3b). No bloqueamos al estudiante aquí.
+    console.error('[registro] enviar-otp-estudiante:', errFn ?? data);
+    throw new Error(data?.error ?? 'No se pudo enviar el código de verificación');
   }
 
   return { registro_id: registroId };
 }
+
+/**
+ * El estudiante ≥14 verifica su OTP y firma su propio consentimiento.
+ */
+export async function firmarAutoConsentimiento(input: {
+  registroId: string;
+  otp: string;
+  declaraciones: string[];
+  versionPolitica: string;
+}): Promise<{ estudiante_id: string; codigo_pin: string }> {
+  if (!authEnabled) throw new Error('Auth deshabilitada');
+
+  const { data, error } = await supabase.functions.invoke('firmar-auto-consentimiento', {
+    body: {
+      registro_id: input.registroId,
+      otp: input.otp.trim(),
+      declaraciones: input.declaraciones,
+      version_politica: input.versionPolitica,
+      user_agent: navigator.userAgent,
+    },
+  });
+
+  if (error) throw new Error(error.message ?? 'No se pudo firmar');
+  if (!data || data.ok === false) throw new Error(data?.error ?? 'Error al firmar');
+
+  return { estudiante_id: data.estudiante_id, codigo_pin: data.codigo_pin };
+}
+
+/**
+ * Re-envía OTP al estudiante (si expiró o no llegó).
+ */
+export async function reenviarOtp(registroId: string): Promise<void> {
+  if (!authEnabled) throw new Error('Auth deshabilitada');
+  const { data, error } = await supabase.functions.invoke('enviar-otp-estudiante', {
+    body: { registro_id: registroId },
+  });
+  if (error || data?.ok === false) {
+    throw new Error(data?.error ?? error?.message ?? 'No se pudo reenviar el código');
+  }
+}
+
+/**
+ * @deprecated usar iniciarRegistroAcudiente o iniciarRegistroAuto explícitamente.
+ * Mantenido por compatibilidad con código de PR-3a — equivale al flujo acudiente.
+ */
+export const iniciarRegistro = iniciarRegistroAcudiente;
 
 /**
  * El acudiente envía la firma del consentimiento.

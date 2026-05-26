@@ -1,0 +1,314 @@
+---
+/**
+ * /cuenta/verificar-otp?id=<uuid> · paso final del flujo de auto-registro
+ * para estudiantes ≥14 años.
+ *
+ * El estudiante:
+ *   1. Recibe OTP de 6 dígitos por correo.
+ *   2. Lo ingresa aquí.
+ *   3. Marca las 3 declaraciones obligatorias.
+ *   4. Firma → la edge function crea su cuenta inmediatamente.
+ */
+import CuentaLayout from '../../layouts/CuentaLayout.astro';
+
+const VERSION_POLITICA = '2026.06';
+---
+
+<CuentaLayout
+  title="Verifica tu código · Plataforma Conéctate"
+  description="Ingresa el código que te enviamos por correo y firma tu autorización."
+  conHeader={false}
+  publica={true}
+>
+  <!-- Loading -->
+  <div data-estado="cargando" class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-10 text-center">
+    <span class="inline-block w-12 h-12 rounded-full border-4 border-bento-blue/30 border-t-bento-blue animate-spin motion-reduce:animate-none mb-4"></span>
+    <p class="text-sm text-neutral-600 dark:text-neutral-400">Cargando…</p>
+  </div>
+
+  <!-- Error de carga -->
+  <div data-estado="error-carga" class="hidden bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-8 text-center">
+    <div class="text-5xl mb-4" aria-hidden="true">⚠️</div>
+    <h1 class="text-2xl font-black mb-2 text-bento-pink">No se pudo cargar</h1>
+    <p class="text-sm text-neutral-700 dark:text-neutral-300 max-w-md mx-auto mb-6" data-error-carga-msg>
+      Tu solicitud no existe o ya fue procesada.
+    </p>
+    <a data-link-volver href="#" class="inline-block px-5 py-3 rounded-bento-sm bg-bento-blue text-white font-bold">
+      Volver al inicio
+    </a>
+  </div>
+
+  <!-- Formulario OTP + firma -->
+  <article data-estado="formulario" class="hidden space-y-6">
+    <header class="bg-bento-blue text-white rounded-bento shadow-bento p-6">
+      <p class="text-xs uppercase tracking-widest font-bold opacity-80 mb-1">
+        Verificación · {VERSION_POLITICA}
+      </p>
+      <h1 class="text-3xl md:text-4xl font-black tracking-tight mb-2">
+        Confirma tu cuenta
+      </h1>
+      <p class="text-base text-white/85 leading-relaxed">
+        Te enviamos un código de 6 dígitos a tu correo. Ingrésalo abajo y firma
+        tu autorización para empezar.
+      </p>
+    </header>
+
+    <!-- OTP -->
+    <section class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-6 md:p-8">
+      <h2 class="text-lg font-black mb-4">Código de verificación</h2>
+      <form data-form-otp class="space-y-4">
+        <div>
+          <label for="otp-input" class="block text-sm font-bold mb-2">
+            Pega o escribe el código de 6 dígitos
+          </label>
+          <input
+            id="otp-input"
+            name="otp"
+            type="text"
+            inputmode="numeric"
+            required
+            minlength="6"
+            maxlength="6"
+            pattern="[0-9]{6}"
+            placeholder="000000"
+            autocomplete="one-time-code"
+            class="w-full px-4 py-3 rounded-bento-sm border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 font-mono font-bold text-center text-3xl tracking-[0.5em] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/40"
+          />
+          <p class="text-xs text-neutral-500 mt-2">
+            ¿No te llegó?
+            <button
+              type="button"
+              data-reenviar
+              class="text-bento-blue underline font-semibold"
+            >
+              Reenviar código
+            </button>
+            (puede tardar 1-2 minutos · revisa carpeta de spam)
+          </p>
+        </div>
+      </form>
+    </section>
+
+    <!-- Texto consentimiento -->
+    <section class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-6 md:p-8">
+      <h2 class="text-lg font-black mb-4">Lee y autoriza</h2>
+      <details class="text-sm leading-relaxed mb-6 group">
+        <summary class="cursor-pointer font-semibold mb-2 text-bento-blue group-open:mb-4">
+          Mostrar texto completo del consentimiento v2026.06
+        </summary>
+        <div class="prose-conectate text-neutral-800 dark:text-neutral-200 space-y-3 text-sm max-h-[400px] overflow-y-auto p-4 bg-neutral-50 dark:bg-neutral-800/50 rounded-bento-sm">
+          <p class="font-bold">Autorización de tratamiento de datos personales · estudiante ≥14 años</p>
+          <p>
+            En cumplimiento de la <strong>Ley 1581 de 2012</strong>, el
+            <strong>Decreto 1377 de 2013</strong> y estándares internacionales
+            (GDPR-K, COPPA, proyecto de Ley 247/2025 Colombia), te solicitamos
+            leer este texto antes de firmar.
+          </p>
+          <p>
+            <strong>Quién</strong>: Dr. Álvaro Cárdenas Orozco · CC 14.570.923 ·
+            docente en I.E. Sor María Juliana, Cartago.
+          </p>
+          <p>
+            <strong>Datos que tratamos</strong>: nombre/seudónimo, grado, fecha
+            de nacimiento, correo, progreso académico, intentos de quizzes.
+            <strong>No tratamos</strong> tu cédula, dirección, teléfono ni datos
+            sensibles.
+          </p>
+          <p>
+            <strong>Finalidades</strong>: seguimiento de tu progreso, reportes
+            pedagógicos al docente, consulta de tu progreso desde cualquier
+            dispositivo. <strong>No</strong> publicidad, venta o entrenamiento
+            de IA externa.
+          </p>
+          <p>
+            <strong>Conservación</strong>: año lectivo + 2 años. Puedes pedir
+            eliminación inmediata.
+          </p>
+          <p>
+            <strong>Tus derechos ARCO</strong>: conocer, actualizar, rectificar,
+            suprimir, oponerte, revocar. Plazos: 10 días hábiles para consultas,
+            15 para reclamos. Autoridad de control: SIC.
+          </p>
+          <p class="text-xs text-neutral-500">
+            Texto completo en
+            <code>docs/cuentas/consentimiento-auto-v2026.06.md</code>.
+          </p>
+        </div>
+      </details>
+
+      <fieldset class="space-y-3">
+        <legend class="block text-sm font-bold mb-2">
+          Tienes que marcar las 3 declaraciones para poder firmar
+        </legend>
+        <label class="flex items-start gap-3 p-3 rounded-bento-sm border border-neutral-200 dark:border-neutral-700 cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-800 has-[input:checked]:bg-bento-blue/5 has-[input:checked]:border-bento-blue/30">
+          <input type="checkbox" name="decl" value="mayor_14" data-decl class="mt-0.5 w-4 h-4 accent-bento-blue" />
+          <span class="text-sm">Confirmo que tengo <strong>14 años o más cumplidos</strong>.</span>
+        </label>
+        <label class="flex items-start gap-3 p-3 rounded-bento-sm border border-neutral-200 dark:border-neutral-700 cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-800 has-[input:checked]:bg-bento-blue/5 has-[input:checked]:border-bento-blue/30">
+          <input type="checkbox" name="decl" value="email_propio" data-decl class="mt-0.5 w-4 h-4 accent-bento-blue" />
+          <span class="text-sm">El correo que ingresé es <strong>mío personal</strong>, no de un acudiente.</span>
+        </label>
+        <label class="flex items-start gap-3 p-3 rounded-bento-sm border border-neutral-200 dark:border-neutral-700 cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-800 has-[input:checked]:bg-bento-blue/5 has-[input:checked]:border-bento-blue/30">
+          <input type="checkbox" name="decl" value="autoriza" data-decl class="mt-0.5 w-4 h-4 accent-bento-blue" />
+          <span class="text-sm">Entiendo y <strong>autorizo</strong> el tratamiento de mis datos personales descrito arriba.</span>
+        </label>
+      </fieldset>
+
+      <button
+        type="button"
+        data-btn-firmar
+        disabled
+        class="w-full mt-6 min-h-[52px] px-5 py-4 rounded-bento-sm bg-bento-blue text-white font-bold text-lg hover:scale-[1.01] transition-transform motion-reduce:transition-none disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/40"
+      >
+        Confirmar OTP y firmar
+      </button>
+
+      <div data-error-firma class="hidden mt-4 bg-bento-pink/10 border border-bento-pink/30 rounded-bento-sm p-3">
+        <p class="text-sm text-bento-pink font-semibold" data-error-firma-msg></p>
+      </div>
+    </section>
+  </article>
+
+  <!-- Firmado: éxito -->
+  <article data-estado="firmado" class="hidden bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-8 md:p-10 text-center">
+    <div class="text-6xl mb-6" aria-hidden="true">✅</div>
+    <h1 class="text-huge font-black tracking-tight mb-3 text-bento-lime">
+      ¡Listo! Tu cuenta está activa
+    </h1>
+    <p class="text-base text-neutral-700 dark:text-neutral-300 max-w-md mx-auto leading-relaxed mb-6">
+      Recibirás un correo de confirmación. Ya puedes comenzar a usar la
+      plataforma.
+    </p>
+    <div class="bg-bento-blue/10 rounded-bento-sm p-6 mb-6 max-w-md mx-auto">
+      <p class="text-xs uppercase tracking-widest font-bold text-neutral-600 dark:text-neutral-400 mb-2">
+        Tu PIN para entrar desde otros dispositivos
+      </p>
+      <p class="text-5xl font-black font-mono tracking-widest text-bento-blue" data-pin-display></p>
+      <p class="text-xs text-neutral-500 mt-3">
+        Anótalo. También está en el correo que te enviamos.
+      </p>
+    </div>
+    <a data-link-home href="#" class="inline-block px-6 py-3 rounded-bento-sm bg-bento-blue text-white font-bold">
+      Ir a la plataforma
+    </a>
+  </article>
+</CuentaLayout>
+
+<script>
+  import { firmarAutoConsentimiento, reenviarOtp } from '../../lib/registro';
+  import { supabase } from '../../lib/supabase';
+
+  const VERSION_POLITICA = '2026.06';
+  const base = (import.meta.env?.BASE_URL ?? '/').replace(/\/$/, '');
+  const params = new URLSearchParams(window.location.search);
+  const registroId = params.get('id');
+
+  document.querySelectorAll<HTMLAnchorElement>('[data-link-volver]').forEach((a) => {
+    a.href = base + '/cuenta/unirme';
+  });
+  document.querySelectorAll<HTMLAnchorElement>('[data-link-home]').forEach((a) => {
+    a.href = base + '/';
+  });
+
+  function mostrar(estado: 'cargando' | 'error-carga' | 'formulario' | 'firmado') {
+    document.querySelectorAll<HTMLElement>('[data-estado]').forEach((el) => {
+      el.classList.toggle('hidden', el.dataset.estado !== estado);
+    });
+  }
+
+  function mostrarErrorCarga(msg: string) {
+    const m = document.querySelector<HTMLElement>('[data-error-carga-msg]');
+    if (m) m.textContent = msg;
+    mostrar('error-carga');
+  }
+
+  // Habilitar botón firmar cuando las 3 declaraciones están marcadas
+  function recalcularBoton() {
+    const checks = Array.from(document.querySelectorAll<HTMLInputElement>('[data-decl]:checked'));
+    const btn = document.querySelector<HTMLButtonElement>('[data-btn-firmar]');
+    if (btn) btn.disabled = checks.length !== 3;
+  }
+
+  document.querySelectorAll('[data-decl]').forEach((c) => {
+    c.addEventListener('change', recalcularBoton);
+  });
+
+  async function init() {
+    if (!registroId) {
+      mostrarErrorCarga('URL inválida: falta el parámetro id.');
+      return;
+    }
+    const { data: estado } = await supabase.rpc('estado_registro_por_id', { _id: registroId });
+    if (!estado) {
+      mostrarErrorCarga('Tu solicitud no existe o expiró.');
+      return;
+    }
+    if (estado !== 'pendiente') {
+      mostrarErrorCarga(`Tu solicitud está en estado ${estado} y no se puede continuar.`);
+      return;
+    }
+    mostrar('formulario');
+  }
+
+  init();
+
+  // Reenviar OTP
+  document.querySelector('[data-reenviar]')?.addEventListener('click', async () => {
+    if (!registroId) return;
+    const btn = event!.target as HTMLButtonElement;
+    btn.disabled = true;
+    const original = btn.textContent;
+    btn.textContent = 'Enviando…';
+    try {
+      await reenviarOtp(registroId);
+      btn.textContent = '✓ Código reenviado';
+      setTimeout(() => {
+        btn.textContent = original;
+        btn.disabled = false;
+      }, 3000);
+    } catch (err: any) {
+      btn.textContent = original;
+      btn.disabled = false;
+      alert('No se pudo reenviar: ' + err.message);
+    }
+  });
+
+  // Firmar
+  document.querySelector('[data-btn-firmar]')?.addEventListener('click', async () => {
+    if (!registroId) return;
+    const otp = (document.querySelector<HTMLInputElement>('#otp-input')?.value ?? '').trim();
+    if (!/^[0-9]{6}$/.test(otp)) {
+      const m = document.querySelector<HTMLElement>('[data-error-firma-msg]');
+      if (m) m.textContent = 'El código debe ser de 6 dígitos.';
+      document.querySelector('[data-error-firma]')?.classList.remove('hidden');
+      return;
+    }
+    const declaraciones = Array.from(
+      document.querySelectorAll<HTMLInputElement>('[data-decl]:checked')
+    ).map((c) => c.value);
+
+    const btn = document.querySelector<HTMLButtonElement>('[data-btn-firmar]')!;
+    const errorEl = document.querySelector<HTMLElement>('[data-error-firma]')!;
+    errorEl.classList.add('hidden');
+    btn.disabled = true;
+    btn.textContent = 'Firmando…';
+
+    try {
+      const { codigo_pin } = await firmarAutoConsentimiento({
+        registroId,
+        otp,
+        declaraciones,
+        versionPolitica: VERSION_POLITICA,
+      });
+      document.querySelector<HTMLElement>('[data-pin-display]')!.textContent = codigo_pin;
+      mostrar('firmado');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (err: any) {
+      const m = document.querySelector<HTMLElement>('[data-error-firma-msg]');
+      if (m) m.textContent = err.message ?? 'No se pudo firmar.';
+      errorEl.classList.remove('hidden');
+      btn.disabled = false;
+      btn.textContent = 'Confirmar OTP y firmar';
+    }
+  });
+</script>

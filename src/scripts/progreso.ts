@@ -123,6 +123,7 @@ export function setGradoActual(grado: number | null): void {
   const e = leerEstado();
   e.gradoActual = grado;
   escribirEstado(e);
+  // gradoActual NO se sincroniza a BD — es preferencia local del dispositivo.
 }
 
 export function marcarGuia(
@@ -136,6 +137,10 @@ export function marcarGuia(
   if (completar) e.guias[k] = { ts: Date.now() };
   else delete e.guias[k];
   escribirEstado(e);
+  // Sync a BD fire-and-forget. No bloquea ni falla la mutación local.
+  void import('../lib/progreso-sync').then((m) =>
+    m.syncGuia(grado, periodo, sesion, completar),
+  );
 }
 
 export function marcarProyecto(
@@ -148,6 +153,22 @@ export function marcarProyecto(
   if (completar) e.proyectos[k] = { ts: Date.now() };
   else delete e.proyectos[k];
   escribirEstado(e);
+  // Sync a BD fire-and-forget.
+  void import('../lib/progreso-sync').then((m) =>
+    m.syncProyecto(grado, periodo, completar),
+  );
+}
+
+/* ─────────── Hidratación desde BD (llamada por auth hook) ─────────── */
+
+/**
+ * Reemplaza el estado local con uno fusionado entre local + BD. Útil al
+ * login para traer progreso de otros dispositivos.
+ *
+ * Se llama desde src/lib/auth.ts cuando detecta una sesión nueva.
+ */
+export function setEstadoCompleto(nuevo: EstadoProgreso): void {
+  escribirEstado(nuevo);
 }
 
 export function reiniciarTodo(): void {

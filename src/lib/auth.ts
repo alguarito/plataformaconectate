@@ -53,10 +53,23 @@ export async function signInWithGoogle(redirectTo?: string): Promise<void> {
 }
 
 /**
- * Cierra la sesión actual y limpia localStorage.
+ * Cierra la sesión actual y limpia localStorage del progreso.
+ * Esto evita que el siguiente usuario en el mismo dispositivo vea
+ * progreso ajeno (recomendación A del diseño de Fase 3).
  */
 export async function signOut(): Promise<void> {
   if (!authEnabled) return;
+
+  // Limpiar localStorage del progreso ANTES de signOut. Si la llamada
+  // a Supabase fallara, al menos el progreso ya quedó borrado del
+  // dispositivo.
+  try {
+    const sync = await import('./progreso-sync');
+    sync.limpiarLocal();
+  } catch (err) {
+    console.warn('[auth] no se pudo limpiar localStorage:', err);
+  }
+
   const { error } = await supabase.auth.signOut();
   if (error) {
     console.error('[auth] signOut falló:', error);
@@ -134,4 +147,66 @@ export function onAuthChange(cb: (sesion: Sesion | null) => void) {
     cb(sesion);
   });
   return data.subscription;
+}
+
+/* ─────────── Hook automático de sync con progreso ─────────── */
+
+let yaInicializado = false;
+const MARCADOR_MIGRADO = 'conectate.progreso.migrado.v1';
+
+/**
+ * Conecta el sistema de auth con el sistema de progreso:
+ *
+ *   - Al cargar la página con sesión activa: carga progreso desde BD,
+ *     fusiona con localStorage, procesa cola offline pendiente.
+ *   - Al login: si es la primera vez en este dispositivo, migra todo el
+ *     localStorage acumulado como invitado a BD.
+ *
+ * Se debe llamar UNA vez al cargar la app (lo hacemos desde BaseLayout
+ * via import dinámico, así no carga si auth está deshabilitada).
+ */
+export async function inicializarSyncProgreso(): Promise<void> {
+  if (!authEnabled || yaInicializado) return;
+  yaInicializado = true;
+
+  try {
+    const [{ leerEstado, setEstadoCompleto }, sync] = await Promise.all([
+      import('../scripts/progreso'),
+      import('./progreso-sync'),
+    ]);
+
+    async function sincronizar() {
+      const sesion = await getSesion();
+      if (!sesion) return;
+
+      const local = leerEstado();
+
+      // Primera vez: migrar TODO el localStorage acumulado como invitado
+      const migrado = localStorage.getItem(MARCADOR_MIGRADO);
+      if (!migrado) {
+        await sync.migrarLocalABD(local);
+        localStorage.setItem(MARCADOR_MIGRADO, sesion.user.id);
+      }
+
+      // Procesar cola de operaciones offline
+      await sync.procesarCola();
+
+      // Hidratar con lo que haya en BD (otros dispositivos)
+      const remoto = await sync.cargarDesdeBD();
+      if (remoto) {
+        const fusionado = sync.fusionar(local, remoto);
+        setEstadoCompleto(fusionado);
+      }
+    }
+
+    // Sync inicial
+    await sincronizar();
+
+    // Re-sync en cada cambio de sesión (login después de iniciar la pestaña)
+    onAuthChange((sesion) => {
+      if (sesion) void sincronizar();
+    });
+  } catch (err) {
+    console.warn('[auth] inicializarSyncProgreso falló:', err);
+  }
 }

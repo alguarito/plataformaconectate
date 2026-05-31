@@ -2,59 +2,111 @@
 /**
  * /cuenta · dashboard personal del usuario autenticado.
  *
- * Placeholder por ahora. En PR-2 mostrará progreso (si es estudiante) o
- * aulas (si es docente). En PR-3 mostrará botones ARCO.
+ * Muestra stats reales del progreso del estudiante leyendo de localStorage
+ * (que está sincronizado con Supabase via Fase 3). Si es docente, ve link
+ * directo a su panel.
  */
 import CuentaLayout from '../../layouts/CuentaLayout.astro';
 ---
 
 <CuentaLayout title="Mi cuenta · Plataforma Conéctate">
-  <div class="space-y-6">
+  <div class="space-y-6" data-cuenta-dashboard>
+    <!-- Cabecera con saludo -->
     <div class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-6">
-      <h1 class="text-huge font-black tracking-tight mb-2 text-bento-blue">
-        Bienvenido/a
+      <p class="text-xs uppercase tracking-widest font-bold text-neutral-500 mb-1">Hola,</p>
+      <h1 class="text-huge font-black tracking-tight mb-3 text-bento-blue" data-display-name>
+        Estudiante
       </h1>
       <p class="text-base text-neutral-700 dark:text-neutral-300 leading-relaxed">
-        Tu cuenta está activa. Pronto verás aquí tu progreso, tus aulas y
-        herramientas según tu rol.
+        Aquí ves tu progreso en la plataforma. Cada guía que completes y cada
+        quiz que respondas se guarda en tu cuenta — sigues desde el dispositivo
+        que quieras.
       </p>
     </div>
 
-    <div class="grid sm:grid-cols-2 gap-4">
-      <a
-        data-link-docente
-        href="#"
-        class="block p-6 rounded-bento bg-bento-blue text-white shadow-bento hover:shadow-bento-hover hover:scale-[1.01] transition motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/40"
-      >
-        <h2 class="text-2xl font-black mb-2">Panel de docente</h2>
-        <p class="text-sm text-white/85 leading-relaxed">
-          Crea aulas, gestiona códigos de acceso y revisa el progreso de tu
-          clase.
-        </p>
-      </a>
-
-      <div class="block p-6 rounded-bento bg-neutral-100 dark:bg-neutral-800 opacity-70 cursor-not-allowed">
-        <h2 class="text-2xl font-black mb-2 text-neutral-700 dark:text-neutral-300">
-          Mi progreso
-        </h2>
-        <p class="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed">
-          Próximamente · disponible cuando completes el flujo de registro como
-          estudiante.
+    <!-- Stats principales del estudiante -->
+    <section data-stats-estudiante class="hidden grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-4">
+        <p class="text-xs uppercase tracking-widest font-bold text-neutral-500">Nivel</p>
+        <p class="text-2xl font-black mt-1 flex items-center gap-2">
+          <span data-nivel-emoji>🌱</span>
+          <span data-nivel-nombre>Novato</span>
         </p>
       </div>
+      <div class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-4">
+        <p class="text-xs uppercase tracking-widest font-bold text-neutral-500">XP en tu grado</p>
+        <p class="text-2xl font-black text-bento-blue mt-1" data-xp-grado>0</p>
+      </div>
+      <div class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-4">
+        <p class="text-xs uppercase tracking-widest font-bold text-neutral-500">Guías completadas</p>
+        <p class="text-2xl font-black text-bento-lime mt-1" data-items-grado>0</p>
+      </div>
+      <div class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-4">
+        <p class="text-xs uppercase tracking-widest font-bold text-neutral-500">Exploración</p>
+        <p class="text-2xl font-black text-bento-purple mt-1" data-items-otros>0</p>
+      </div>
+    </section>
+
+    <!-- Barra de progreso del grado -->
+    <section data-progreso-grado class="hidden bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-6">
+      <div class="flex items-center justify-between mb-2 text-sm">
+        <span class="font-bold">Progreso de tu grado</span>
+        <span class="font-bold text-bento-blue" data-pct>0%</span>
+      </div>
+      <div class="w-full h-3 rounded-full overflow-hidden bg-neutral-200 dark:bg-neutral-800">
+        <div data-barra class="h-full rounded-full bg-bento-blue transition-all duration-500 motion-reduce:transition-none" style="width: 0%;"></div>
+      </div>
+      <p class="text-xs text-neutral-500 mt-2">
+        <span data-items-grado-pct>0</span> de 33 piezas curriculares del grado.
+      </p>
+    </section>
+
+    <!-- Continuar aprendiendo -->
+    <section data-continuar class="hidden bg-bento-blue text-white rounded-bento shadow-bento p-6">
+      <p class="text-xs uppercase tracking-widest font-bold opacity-80 mb-2">Continuar aprendiendo</p>
+      <h2 class="text-2xl font-black mb-3" data-continuar-titulo>Última guía visitada</h2>
+      <a
+        data-continuar-link
+        href="#"
+        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-bento-sm bg-white text-bento-blue font-bold hover:scale-[1.02] transition-transform motion-reduce:transition-none"
+      >
+        Volver a esa guía
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="5" y1="12" x2="19" y2="12"/>
+          <polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </a>
+    </section>
+
+    <!-- Panel docente · solo si el usuario tiene aulas creadas -->
+    <a
+      data-link-docente
+      href="#"
+      class="hidden p-6 rounded-bento bg-bento-purple text-white shadow-bento hover:shadow-bento-hover hover:scale-[1.01] transition motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/40 sm:block"
+    >
+      <h2 class="text-2xl font-black mb-2">Panel de docente</h2>
+      <p class="text-sm text-white/85 leading-relaxed">
+        Crea aulas, gestiona códigos de acceso y revisa el progreso de tu clase.
+      </p>
+    </a>
+
+    <!-- Estado de sincronización -->
+    <div data-sync-estado class="bg-neutral-50 dark:bg-neutral-800/50 rounded-bento-sm p-3 text-xs text-neutral-600 dark:text-neutral-400 text-center">
+      ✓ Tu progreso se sincroniza con la nube en tiempo real.
     </div>
 
+    <!-- Info técnica colapsable -->
     <details class="bg-neutral-50 dark:bg-neutral-800/50 rounded-bento-sm p-4 text-sm">
-      <summary class="font-semibold cursor-pointer">Información de tu cuenta</summary>
-      <pre data-debug class="mt-3 text-xs overflow-x-auto whitespace-pre-wrap break-all text-neutral-600 dark:text-neutral-400">
-Cargando…
-      </pre>
+      <summary class="font-semibold cursor-pointer">Información técnica de tu cuenta</summary>
+      <pre data-debug class="mt-3 text-xs overflow-x-auto whitespace-pre-wrap break-all text-neutral-600 dark:text-neutral-400">Cargando…</pre>
     </details>
   </div>
 </CuentaLayout>
 
 <script>
   import { getSesion, getPerfil } from '../../lib/auth';
+  import { calcStats, ultimaCompletada, onCambio } from '../../scripts/progreso';
+  import { supabase } from '../../lib/supabase';
 
   (async () => {
     const base = (import.meta.env?.BASE_URL ?? '/').replace(/\/$/, '');
@@ -63,6 +115,63 @@ Cargando…
 
     const sesion = await getSesion();
     const perfil = await getPerfil();
+
+    // Saludo personalizado
+    const nombre = perfil?.display_name ?? sesion?.user.email?.split('@')[0] ?? 'estudiante';
+    document.querySelector<HTMLElement>('[data-display-name]')!.textContent = nombre;
+
+    // Verificar si el usuario tiene aulas como docente para mostrar el panel
+    if (sesion) {
+      const { count } = await supabase
+        .from('aulas')
+        .select('id', { count: 'exact', head: true })
+        .eq('docente_id', sesion.user.id);
+      if ((count ?? 0) > 0 && linkDocente) {
+        linkDocente.classList.remove('hidden');
+      }
+    }
+
+    // Función para renderizar stats (se llama al inicio y en cada cambio)
+    function renderStats() {
+      const stats = calcStats();
+      const ultima = ultimaCompletada();
+
+      // Si el estudiante no tiene grado elegido, mostrar mensaje neutro
+      if (stats.gradoActual === null && stats.itemsGrado === 0 && stats.itemsOtros === 0) {
+        return; // sin stats que mostrar todavía
+      }
+
+      // Mostrar bloques de stats
+      document.querySelectorAll('[data-stats-estudiante], [data-progreso-grado]').forEach((el) => {
+        el.classList.remove('hidden');
+      });
+
+      // Llenar valores
+      document.querySelector<HTMLElement>('[data-nivel-emoji]')!.textContent = stats.nivel.emoji;
+      document.querySelector<HTMLElement>('[data-nivel-nombre]')!.textContent = stats.nivel.nombre;
+      document.querySelector<HTMLElement>('[data-xp-grado]')!.textContent = String(stats.xpGrado);
+      document.querySelector<HTMLElement>('[data-items-grado]')!.textContent = String(stats.itemsGrado);
+      document.querySelector<HTMLElement>('[data-items-otros]')!.textContent = String(stats.itemsOtros);
+      document.querySelector<HTMLElement>('[data-pct]')!.textContent = stats.porcentajeGrado + '%';
+      document.querySelector<HTMLElement>('[data-items-grado-pct]')!.textContent = String(stats.itemsGrado);
+      const barra = document.querySelector<HTMLElement>('[data-barra]');
+      if (barra) barra.style.width = stats.porcentajeGrado + '%';
+
+      // Continuar aprendiendo · última guía
+      if (ultima) {
+        const cont = document.querySelector<HTMLElement>('[data-continuar]');
+        const titulo = document.querySelector<HTMLElement>('[data-continuar-titulo]');
+        const link = document.querySelector<HTMLAnchorElement>('[data-continuar-link]');
+        if (titulo) titulo.textContent = `Grado ${ultima.grado}° · Periodo ${ultima.periodo} · Guía ${ultima.sesion}`;
+        if (link) link.href = `${base}/grado-${ultima.grado}/periodo-${ultima.periodo}/guia-${ultima.sesion}`;
+        cont?.classList.remove('hidden');
+      }
+    }
+
+    renderStats();
+    onCambio(renderStats);
+
+    // Info técnica
     const debug = document.querySelector<HTMLElement>('[data-debug]');
     if (debug) {
       debug.textContent = JSON.stringify(
@@ -74,7 +183,7 @@ Cargando…
           creado_en: perfil?.creado_en,
         },
         null,
-        2
+        2,
       );
     }
   })();

@@ -103,6 +103,10 @@ const { data, id } = Astro.props;
     let aciertos = 0;
     /** ya respondidas (por idx pregunta) — evita double-tap */
     const respondidas = new Set();
+    /** respuestas elegidas (preguntaIdx → opcionIdx) para persistir en BD al final */
+    const respuestasUsuario = new Map();
+    /** timestamp al primer click para calcular duración del intento */
+    let inicioMs = null;
 
     const $ = (sel, base = root) => base.querySelector(sel);
     const $$ = (sel, base = root) => Array.from(base.querySelectorAll(sel));
@@ -146,11 +150,38 @@ const { data, id } = Astro.props;
         if (emoji) emoji.textContent = '💪';
         if (titulo) titulo.textContent = 'Repasa y vuelve a intentar';
       }
+
+      // Persistir intento en BD si hay sesión. Fire-and-forget.
+      const m = window.location.pathname.match(/grado-(\d+)\/periodo-(\d+)\/guia-(\d+)/);
+      if (m) {
+        const guiaClave = `${m[1]}-${m[2]}-${m[3]}`;
+        const respuestasArray = [];
+        for (const [preguntaIdx, opcionIdx] of respuestasUsuario.entries()) {
+          respuestasArray.push({
+            pregunta_idx: preguntaIdx,
+            opcion_idx: opcionIdx,
+            correcta: preguntas[preguntaIdx]?.respuestaIndex === opcionIdx,
+          });
+        }
+        const duracionSeg = inicioMs ? Math.max(0, Math.round((Date.now() - inicioMs) / 1000)) : null;
+        const puntaje = total > 0 ? Math.round((aciertos / total) * 100) : 0;
+        import('../lib/progreso-sync').then((mod) =>
+          mod.syncIntentoQuiz({
+            guiaClave,
+            quizId: id,
+            respuestas: { items: respuestasArray, total, aciertos },
+            puntaje,
+            duracionSeg,
+          }),
+        ).catch(() => { /* silencioso: no bloquea UX */ });
+      }
     }
 
     function resetear() {
       aciertos = 0;
       respondidas.clear();
+      respuestasUsuario.clear();
+      inicioMs = null;
       $$('[data-quiz-pregunta-idx]').forEach((li) => {
         $$('[data-quiz-opcion-idx]', li).forEach((b) => {
           b.disabled = false;
@@ -180,6 +211,8 @@ const { data, id } = Astro.props;
         const opcionIdx = parseInt(btn.dataset.quizOpcionIdx || '0', 10);
         if (respondidas.has(preguntaIdx)) return;
         respondidas.add(preguntaIdx);
+        respuestasUsuario.set(preguntaIdx, opcionIdx);
+        if (inicioMs === null) inicioMs = Date.now();
 
         const p = preguntas[preguntaIdx];
         const correcta = p.respuestaIndex === opcionIdx;

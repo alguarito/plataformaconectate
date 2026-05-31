@@ -39,10 +39,18 @@ const base = (import.meta.env.BASE_URL ?? '/').replace(/\/$/, '');
     >
       Cargando…
     </p>
-    <p
-      data-email
-      class="text-xs text-neutral-600 dark:text-neutral-400 truncate"
-    ></p>
+    <p class="flex items-center gap-2 text-xs text-neutral-600 dark:text-neutral-400 truncate">
+      <span data-email class="truncate"></span>
+      <span
+        data-xp-badge
+        class="hidden inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-bento-blue/10 text-bento-blue font-bold text-[10px] flex-shrink-0"
+        title="Tu nivel y XP actuales"
+      >
+        <span data-xp-emoji>🌱</span>
+        <span data-xp-monto>0</span>
+        <span class="opacity-70">XP</span>
+      </span>
+    </p>
   </div>
 
   <!-- Acciones -->
@@ -93,6 +101,25 @@ const base = (import.meta.env.BASE_URL ?? '/').replace(/\/$/, '');
       const wrap = root.querySelector<HTMLElement>('[data-avatar-wrap]')!;
       wrap.innerHTML = `<img src="${avatarUrl}" alt="" class="w-full h-full object-cover" />`;
     }
+
+    // Badge XP (se actualiza también en cada cambio de progreso)
+    const { calcStats, onCambio } = await import('../scripts/progreso');
+    function renderBadge() {
+      const stats = calcStats();
+      const totalXP = stats.xpGrado + stats.xpExploracion;
+      const badge = root!.querySelector<HTMLElement>('[data-xp-badge]');
+      const emoji = root!.querySelector<HTMLElement>('[data-xp-emoji]');
+      const monto = root!.querySelector<HTMLElement>('[data-xp-monto]');
+      if (totalXP === 0) {
+        badge?.classList.add('hidden');
+        return;
+      }
+      badge?.classList.remove('hidden');
+      if (emoji) emoji.textContent = stats.nivel.emoji;
+      if (monto) monto.textContent = String(totalXP);
+    }
+    renderBadge();
+    onCambio(renderBadge);
   }
 
   document.querySelectorAll('[data-logout]').forEach((btn) => {

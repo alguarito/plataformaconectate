@@ -1,0 +1,411 @@
+---
+/**
+ * SlidesViewer · galería accesible para la presentación MILC.
+ *
+ * Features:
+ *  - Slide principal grande + tira de miniaturas debajo (estilo "lightbox light")
+ *  - Lightbox fullscreen al hacer click sobre la slide principal
+ *  - Navegación por teclado: ← → Home End ESC
+ *  - Swipe táctil en móvil
+ *  - Lazy loading nativo (loading="lazy") en todas las slides menos la primera
+ *  - Indicador "N de 13" + barra de progreso
+ *  - ARIA: role="region", aria-label, aria-current
+ *  - Respeta prefers-reduced-motion
+ *  - Dark mode listo
+ */
+import { slidesMilc, presentacionMilc } from '../data/presentacionMilc';
+
+const base = (import.meta.env?.BASE_URL ?? '/').replace(/\/$/, '');
+const dir = `${base}/presentaciones/milc-onlife`;
+const pdfUrl = `${dir}/${presentacionMilc.archivoPdf}`;
+const pptxUrl = `${dir}/${presentacionMilc.archivoPptx}`;
+---
+
+<section
+  class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-4 md:p-6"
+  data-slides-viewer
+  aria-label={`Presentación ${presentacionMilc.titulo}`}
+>
+  <!-- Header con info y descargas -->
+  <header class="mb-4 md:mb-6">
+    <div class="flex flex-wrap items-start justify-between gap-3 mb-3">
+      <div>
+        <p class="text-xs uppercase tracking-widest font-bold text-bento-blue mb-1">
+          Presentación · {presentacionMilc.duracionEstimada}
+        </p>
+        <h3 class="text-xl md:text-2xl font-black tracking-tight">
+          {presentacionMilc.titulo}
+        </h3>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <a
+          href={pdfUrl}
+          download
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-bento-sm bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/40"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          PDF
+        </a>
+        <a
+          href={pptxUrl}
+          download
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-bento-sm bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/40"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          PPTX
+        </a>
+      </div>
+    </div>
+    <p class="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed">
+      {presentacionMilc.subtitulo}
+    </p>
+  </header>
+
+  <!-- Slide principal -->
+  <div class="relative">
+    <button
+      type="button"
+      data-slide-main-button
+      class="block w-full aspect-[16/9] rounded-bento-sm overflow-hidden bg-neutral-100 dark:bg-neutral-800 group focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/50 cursor-zoom-in"
+      aria-label="Abrir slide a pantalla completa"
+    >
+      {slidesMilc.map((slide, idx) => (
+        <img
+          src={`${dir}/slide-${String(slide.numero).padStart(2, '0')}.webp`}
+          alt={`Slide ${slide.numero} de ${slidesMilc.length}: ${slide.titulo}. ${slide.descripcion}`}
+          loading={idx === 0 ? 'eager' : 'lazy'}
+          decoding="async"
+          width="1920"
+          height="1080"
+          class={`w-full h-full object-contain transition-opacity duration-200 motion-reduce:transition-none ${idx === 0 ? '' : 'hidden'}`}
+          data-slide-main
+          data-slide-index={idx}
+        />
+      ))}
+      <!-- Overlay hint de fullscreen -->
+      <div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition motion-reduce:transition-none pointer-events-none">
+        <span class="inline-flex items-center gap-1 px-2 py-1 rounded-bento-sm bg-black/70 text-white text-xs font-bold">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+          </svg>
+          Ampliar
+        </span>
+      </div>
+    </button>
+
+    <!-- Controles prev / next -->
+    <button
+      type="button"
+      data-slide-prev
+      class="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/90 dark:bg-neutral-900/90 shadow-bento backdrop-blur-sm hover:scale-110 transition motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/50 flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:scale-100"
+      aria-label="Slide anterior"
+    >
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+    </button>
+    <button
+      type="button"
+      data-slide-next
+      class="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/90 dark:bg-neutral-900/90 shadow-bento backdrop-blur-sm hover:scale-110 transition motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/50 flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:scale-100"
+      aria-label="Slide siguiente"
+    >
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="9 18 15 12 9 6"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Caption + indicador + barra de progreso -->
+  <div class="mt-4">
+    <div class="flex items-start justify-between gap-3 mb-2">
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-black tracking-tight" data-slide-titulo>
+          {slidesMilc[0].titulo}
+        </p>
+        <p class="text-xs text-neutral-600 dark:text-neutral-400 mt-1 leading-relaxed" data-slide-descripcion>
+          {slidesMilc[0].descripcion}
+        </p>
+      </div>
+      <p class="text-xs font-bold text-neutral-500 whitespace-nowrap shrink-0">
+        <span data-slide-actual>1</span> de {slidesMilc.length}
+      </p>
+    </div>
+    <div class="w-full h-1.5 rounded-full overflow-hidden bg-neutral-200 dark:bg-neutral-800">
+      <div
+        data-slide-progreso
+        class="h-full rounded-full bg-bento-blue transition-all duration-300 motion-reduce:transition-none"
+        style={`width: ${(1 / slidesMilc.length) * 100}%`}
+      ></div>
+    </div>
+  </div>
+
+  <!-- Tira de miniaturas -->
+  <div class="mt-4 -mx-1 px-1">
+    <div
+      class="flex gap-2 overflow-x-auto scrollbar-thin scrollbar-thumb-neutral-300 dark:scrollbar-thumb-neutral-700 pb-2"
+      data-slide-thumbs
+      role="tablist"
+      aria-label="Lista de slides"
+    >
+      {slidesMilc.map((slide, idx) => (
+        <button
+          type="button"
+          role="tab"
+          aria-selected={idx === 0 ? 'true' : 'false'}
+          aria-label={`Slide ${slide.numero}: ${slide.titulo}`}
+          data-slide-thumb
+          data-thumb-index={idx}
+          class="shrink-0 w-20 md:w-24 aspect-[16/9] rounded-bento-sm overflow-hidden border-2 transition motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/50 hover:scale-105 motion-reduce:hover:scale-100"
+          style="border-color: transparent;"
+        >
+          <img
+            src={`${dir}/slide-${String(slide.numero).padStart(2, '0')}.webp`}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            width="1920"
+            height="1080"
+            class="w-full h-full object-cover"
+          />
+        </button>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- LIGHTBOX FULLSCREEN -->
+<div
+  data-lightbox
+  class="fixed inset-0 z-50 bg-black/95 hidden items-center justify-center p-4 md:p-8"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Vista completa del slide"
+>
+  <button
+    type="button"
+    data-lightbox-close
+    class="absolute top-4 right-4 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/50 z-10"
+    aria-label="Cerrar vista completa"
+  >
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <line x1="18" y1="6" x2="6" y2="18"/>
+      <line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+  </button>
+
+  <button
+    type="button"
+    data-lightbox-prev
+    class="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/50 disabled:opacity-30 disabled:cursor-not-allowed"
+    aria-label="Slide anterior"
+  >
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <polyline points="15 18 9 12 15 6"/>
+    </svg>
+  </button>
+  <button
+    type="button"
+    data-lightbox-next
+    class="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/50 disabled:opacity-30 disabled:cursor-not-allowed"
+    aria-label="Slide siguiente"
+  >
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <polyline points="9 18 15 12 9 6"/>
+    </svg>
+  </button>
+
+  <figure class="max-w-7xl w-full max-h-full flex flex-col items-center justify-center">
+    <img
+      data-lightbox-img
+      src=""
+      alt=""
+      class="max-w-full max-h-[80vh] object-contain rounded-bento-sm"
+    />
+    <figcaption class="mt-4 text-center text-white max-w-3xl">
+      <p class="text-lg md:text-xl font-black tracking-tight" data-lightbox-titulo></p>
+      <p class="text-sm md:text-base text-white/80 mt-2 leading-relaxed" data-lightbox-descripcion></p>
+      <p class="text-xs text-white/60 mt-3">
+        <span data-lightbox-actual>1</span> de {slidesMilc.length} · ESC para cerrar · ← → para navegar
+      </p>
+    </figcaption>
+  </figure>
+</div>
+
+<script>
+  import { slidesMilc } from '../data/presentacionMilc';
+
+  type SlideMilc = (typeof slidesMilc)[number];
+  const slides: readonly SlideMilc[] = slidesMilc;
+
+  let actual = 0;
+
+  const viewer = document.querySelector<HTMLElement>('[data-slides-viewer]')!;
+  const imgs = Array.from(viewer.querySelectorAll<HTMLImageElement>('[data-slide-main]'));
+  const tituloEl = viewer.querySelector<HTMLElement>('[data-slide-titulo]')!;
+  const descripcionEl = viewer.querySelector<HTMLElement>('[data-slide-descripcion]')!;
+  const actualEl = viewer.querySelector<HTMLElement>('[data-slide-actual]')!;
+  const progresoEl = viewer.querySelector<HTMLElement>('[data-slide-progreso]')!;
+  const btnPrev = viewer.querySelector<HTMLButtonElement>('[data-slide-prev]')!;
+  const btnNext = viewer.querySelector<HTMLButtonElement>('[data-slide-next]')!;
+  const btnMain = viewer.querySelector<HTMLButtonElement>('[data-slide-main-button]')!;
+  const thumbs = Array.from(viewer.querySelectorAll<HTMLButtonElement>('[data-slide-thumb]'));
+
+  // Lightbox
+  const lightbox = document.querySelector<HTMLElement>('[data-lightbox]')!;
+  const lbImg = lightbox.querySelector<HTMLImageElement>('[data-lightbox-img]')!;
+  const lbTitulo = lightbox.querySelector<HTMLElement>('[data-lightbox-titulo]')!;
+  const lbDescripcion = lightbox.querySelector<HTMLElement>('[data-lightbox-descripcion]')!;
+  const lbActual = lightbox.querySelector<HTMLElement>('[data-lightbox-actual]')!;
+  const lbClose = lightbox.querySelector<HTMLButtonElement>('[data-lightbox-close]')!;
+  const lbPrev = lightbox.querySelector<HTMLButtonElement>('[data-lightbox-prev]')!;
+  const lbNext = lightbox.querySelector<HTMLButtonElement>('[data-lightbox-next]')!;
+
+  const total = slides.length;
+
+  function render() {
+    const slide = slides[actual];
+
+    // Slide principal: ocultar todos menos el actual
+    imgs.forEach((img, idx) => {
+      img.classList.toggle('hidden', idx !== actual);
+    });
+
+    tituloEl.textContent = slide.titulo;
+    descripcionEl.textContent = slide.descripcion;
+    actualEl.textContent = String(slide.numero);
+    progresoEl.style.width = `${((actual + 1) / total) * 100}%`;
+
+    btnPrev.disabled = actual === 0;
+    btnNext.disabled = actual === total - 1;
+
+    // Miniaturas: estado seleccionado + scroll a vista
+    thumbs.forEach((thumb, idx) => {
+      const seleccionado = idx === actual;
+      thumb.setAttribute('aria-selected', seleccionado ? 'true' : 'false');
+      thumb.style.borderColor = seleccionado ? 'var(--tw-color-bento-blue, #0066FF)' : 'transparent';
+      if (seleccionado) {
+        thumb.style.boxShadow = '0 0 0 2px #0066FF';
+      } else {
+        thumb.style.boxShadow = 'none';
+      }
+    });
+
+    // Scroll suave a la miniatura activa
+    thumbs[actual]?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+
+    // Si lightbox está abierto, actualizar también
+    if (!lightbox.classList.contains('hidden')) {
+      renderLightbox();
+    }
+  }
+
+  function renderLightbox() {
+    const slide = slides[actual];
+    const src = imgs[actual]?.src ?? '';
+    lbImg.src = src;
+    lbImg.alt = `Slide ${slide.numero}: ${slide.titulo}. ${slide.descripcion}`;
+    lbTitulo.textContent = slide.titulo;
+    lbDescripcion.textContent = slide.descripcion;
+    lbActual.textContent = String(slide.numero);
+    lbPrev.disabled = actual === 0;
+    lbNext.disabled = actual === total - 1;
+  }
+
+  function ir(idx: number) {
+    actual = Math.max(0, Math.min(total - 1, idx));
+    render();
+  }
+
+  function abrirLightbox() {
+    lightbox.classList.remove('hidden');
+    lightbox.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+    renderLightbox();
+    lbClose.focus();
+  }
+
+  function cerrarLightbox() {
+    lightbox.classList.add('hidden');
+    lightbox.classList.remove('flex');
+    document.body.style.overflow = '';
+    btnMain.focus();
+  }
+
+  // Eventos
+  btnPrev.addEventListener('click', () => ir(actual - 1));
+  btnNext.addEventListener('click', () => ir(actual + 1));
+  btnMain.addEventListener('click', abrirLightbox);
+
+  thumbs.forEach((thumb, idx) => {
+    thumb.addEventListener('click', () => ir(idx));
+  });
+
+  lbClose.addEventListener('click', cerrarLightbox);
+  lbPrev.addEventListener('click', () => ir(actual - 1));
+  lbNext.addEventListener('click', () => ir(actual + 1));
+
+  // Click fuera de la figura → cerrar
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) cerrarLightbox();
+  });
+
+  // Teclado global cuando el viewer o lightbox tienen foco
+  document.addEventListener('keydown', (e) => {
+    const lightboxAbierto = !lightbox.classList.contains('hidden');
+    // Solo capturamos si el lightbox está abierto, o si el foco está dentro del viewer
+    const dentroDeViewer = viewer.contains(document.activeElement);
+    if (!lightboxAbierto && !dentroDeViewer) return;
+
+    switch (e.key) {
+      case 'ArrowLeft':
+        e.preventDefault();
+        ir(actual - 1);
+        break;
+      case 'ArrowRight':
+        e.preventDefault();
+        ir(actual + 1);
+        break;
+      case 'Home':
+        e.preventDefault();
+        ir(0);
+        break;
+      case 'End':
+        e.preventDefault();
+        ir(total - 1);
+        break;
+      case 'Escape':
+        if (lightboxAbierto) {
+          e.preventDefault();
+          cerrarLightbox();
+        }
+        break;
+    }
+  });
+
+  // Swipe táctil sobre el slide principal
+  let touchStartX = 0;
+  let touchEndX = 0;
+  btnMain.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+  }, { passive: true });
+  btnMain.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    const delta = touchEndX - touchStartX;
+    if (Math.abs(delta) > 50) {
+      if (delta > 0) ir(actual - 1);
+      else ir(actual + 1);
+    }
+  }, { passive: true });
+
+  // Render inicial (sincroniza estado visual con índice 0)
+  render();
+</script>

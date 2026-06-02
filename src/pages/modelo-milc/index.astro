@@ -3,6 +3,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import IndiceDocumento from '../../components/IndiceDocumento.astro';
 import DiagramaCicloMILC from '../../components/DiagramaCicloMILC.astro';
 import DiagramaPipeline from '../../components/DiagramaPipeline.astro';
+import SlidesViewer from '../../components/SlidesViewer.astro';
+import { presentacionMilc, slidesMilc } from '../../data/presentacionMilc';
 import { grados } from '../../data/grados';
 import {
   planArea,
@@ -24,6 +26,10 @@ const planAreaHref = `${base}/plan-de-area/${planArea.pdf}`;
 const libroMilcHref = `${base}/libro-milc/libro-milc-2026.pdf`;
 const libroMilcPaginas = 226;
 const libroMilcSubtitulo = 'MILC: Modelo de Investigación Liberadora y Científica';
+
+const presentacionDir = `${base}/presentaciones/milc-onlife`;
+const presentacionPdfHref = `${presentacionDir}/${presentacionMilc.archivoPdf}`;
+const presentacionPptxHref = `${presentacionDir}/${presentacionMilc.archivoPptx}`;
 
 // ─── Schema.org · Book + Article ─────────────────────────────────────────
 const origen = (Astro.site ?? new URL('https://alguarito.github.io')).toString().replace(/\/$/, '');
@@ -58,6 +64,33 @@ const jsonLdExtra = [
     ],
   },
   {
+    '@type': 'PresentationDigitalDocument',
+    '@id': `${inicio}/modelo-milc#presentacion`,
+    name: presentacionMilc.titulo,
+    alternateName: presentacionMilc.subtitulo,
+    description:
+      'Presentación de 13 slides que resume el modelo MILC: la crisis del mercado de la mirada, el cambio de paradigma, el ecosistema, el método espiral, los hábitos del inforg, la soberanía de datos y la escalabilidad de la Red MILC.',
+    inLanguage: 'es-CO',
+    datePublished: '2026-05-26',
+    license: 'https://creativecommons.org/licenses/by-nc-sa/4.0/',
+    url: `${inicio}/modelo-milc#presentacion`,
+    associatedMedia: [
+      {
+        '@type': 'MediaObject',
+        contentUrl: `${origen}${presentacionPdfHref}`,
+        encodingFormat: 'application/pdf',
+      },
+      {
+        '@type': 'MediaObject',
+        contentUrl: `${origen}${presentacionPptxHref}`,
+        encodingFormat:
+          'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+      },
+    ],
+    author: { '@id': `${inicio}/acerca#person` },
+    publisher: { '@id': `${inicio}#organization` },
+  },
+  {
     '@type': 'Article',
     '@id': `${inicio}/modelo-milc#article`,
     headline: 'Modelo MILC · pedagogía propia',
@@ -86,6 +119,7 @@ const colorLente: Record<string, string> = {
 };
 
 const seccionesMilc = [
+  { id: 'presentacion',    titulo: 'Presentación · 13 slides',         emoji: '🎞' },
   { id: 'fases',           titulo: 'Las 4 fases del modelo',           emoji: '🌀' },
   { id: 'diagrama',        titulo: 'Diagrama del ciclo completo',      emoji: '🗺' },
   { id: 'triangulo',       titulo: 'Triángulo de pensamiento',          emoji: '🔺' },
@@ -175,8 +209,13 @@ const seccionesMilc = [
       <IndiceDocumento
         secciones={seccionesMilc}
         titulo="Recorré el modelo a tu ritmo."
-        introduccion="11 estaciones del modelo MILC, desde las 4 fases hasta el pipeline editorial. Toca cualquiera para saltar."
+        introduccion="12 estaciones del modelo MILC, desde la presentación visual hasta el pipeline editorial. Toca cualquiera para saltar."
       />
+
+      <!-- PRESENTACIÓN DEL MODELO · 13 slides -->
+      <div id="presentacion" class="mb-10 scroll-mt-24">
+        <SlidesViewer />
+      </div>
 
       <!-- IDEA FUERZA -->
       <div class="bento-card-color bg-bento-yellow mb-10 py-12 px-6 md:py-16 md:px-10 text-center">

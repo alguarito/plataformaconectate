@@ -1,0 +1,136 @@
+---
+/**
+ * Laboratorio · Emparejar (relacionar dos columnas).
+ *
+ * El estudiante asocia cada elemento de la izquierda con su pareja correcta
+ * mediante un <select> por fila (accesible: teclado, touch y lector de
+ * pantalla). Al pulsar "Comprobar" se marca cada fila (correcta/incorrecta),
+ * se muestra el puntaje y se habilita "Reintentar".
+ *
+ * No depende del schema de guías: define su propio tipo y se usa directamente
+ * en páginas Astro (ej. Explora / Salomé). Pensado para reutilizarse en
+ * futuras guías MILC que necesiten ejercicios de relacionar.
+ */
+export interface ParEmparejar {
+  /** Elemento fijo de la columna izquierda */
+  izquierda: string;
+  /** Pareja correcta (columna derecha) */
+  derecha: string;
+}
+
+export interface DataEmparejar {
+  titulo: string;
+  instrucciones: string;
+  etiquetaIzq?: string;
+  etiquetaDer?: string;
+  pares: ParEmparejar[];
+}
+
+interface Props {
+  data: DataEmparejar;
+  /** ID único de este lab en la página */
+  id: string;
+}
+
+const { data, id } = Astro.props;
+
+// Opciones de la derecha ordenadas alfabéticamente (estable, sin azar) para
+// que la respuesta correcta no coincida con la fila de al lado.
+const opcionesDerecha = [...new Set(data.pares.map((p) => p.derecha))].sort((a, b) =>
+  a.localeCompare(b, 'es'),
+);
+---
+
+<div class="bento-card" data-lab-emparejar={id}>
+  <span class="chip-bento mb-2">🔗 Laboratorio · Relaciona</span>
+  <h3 class="text-xl md:text-2xl font-black tracking-tight leading-tight">{data.titulo}</h3>
+  <p class="text-sm leading-relaxed mt-2 mb-5" style="color: var(--fg-muted);">{data.instrucciones}</p>
+
+  {(data.etiquetaIzq || data.etiquetaDer) && (
+    <div class="hidden sm:grid grid-cols-2 gap-3 mb-2 px-1">
+      <span class="text-[11px] font-black uppercase tracking-widest" style="color: var(--fg-muted);">{data.etiquetaIzq}</span>
+      <span class="text-[11px] font-black uppercase tracking-widest" style="color: var(--fg-muted);">{data.etiquetaDer}</span>
+    </div>
+  )}
+
+  <ul class="space-y-3">
+    {data.pares.map((p, idx) => (
+      <li
+        data-empareja-fila={idx}
+        data-correcta={p.derecha}
+        class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 items-center p-3 rounded-bento-sm border-2 transition-colors"
+        style="border-color: var(--border);"
+      >
+        <div class="flex items-center gap-2 font-bold text-sm md:text-base">
+          <span class="w-7 h-7 rounded-full bg-bento-blue text-white flex items-center justify-center text-xs font-black shrink-0">{idx + 1}</span>
+          <span>{p.izquierda}</span>
+        </div>
+        <label class="sr-only" for={`${id}-sel-${idx}`}>Pareja para: {p.izquierda}</label>
+        <select
+          id={`${id}-sel-${idx}`}
+          data-empareja-select
+          class="w-full p-2.5 rounded-bento-sm border-2 font-semibold text-sm"
+          style="border-color: var(--border); color: var(--fg); background: var(--bg-card);"
+        >
+          <option value="">Elige…</option>
+          {opcionesDerecha.map((op) => (
+            <option value={op}>{op}</option>
+          ))}
+        </select>
+      </li>
+    ))}
+  </ul>
+
+  <div class="flex items-center gap-3 mt-5 flex-wrap">
+    <button type="button" data-empareja-comprobar class="btn-bento text-sm px-5 py-2">Comprobar</button>
+    <button type="button" data-empareja-reset class="hidden px-4 py-2 rounded-full text-xs font-bold border-2 hover:opacity-70 transition-opacity" style="border-color: var(--border); color: var(--fg-muted);">🔄 Reintentar</button>
+    <span data-empareja-puntaje class="hidden text-sm font-black" style="color: var(--fg);"></span>
+  </div>
+</div>
+
+<script define:vars={{ id }}>
+  const root = document.querySelector(`[data-lab-emparejar="${id}"]`);
+  if (root) {
+    const filas = Array.from(root.querySelectorAll('[data-empareja-fila]'));
+    const btnComprobar = root.querySelector('[data-empareja-comprobar]');
+    const btnReset = root.querySelector('[data-empareja-reset]');
+    const puntajeEl = root.querySelector('[data-empareja-puntaje]');
+
+    function pintar(fila, estado) {
+      fila.style.borderColor = estado === 'ok' ? '#A3FF12' : estado === 'mal' ? '#FF2D87' : 'var(--border)';
+      fila.style.background = estado === 'ok' ? 'rgba(163,255,18,0.12)' : estado === 'mal' ? 'rgba(255,45,135,0.10)' : 'transparent';
+    }
+
+    function comprobar() {
+      let aciertos = 0;
+      filas.forEach((fila) => {
+        const sel = fila.querySelector('[data-empareja-select]');
+        const correcta = fila.getAttribute('data-correcta');
+        if (sel.value && sel.value === correcta) { aciertos++; pintar(fila, 'ok'); }
+        else { pintar(fila, 'mal'); }
+        sel.disabled = true;
+      });
+      const total = filas.length;
+      puntajeEl.classList.remove('hidden');
+      puntajeEl.textContent = aciertos === total
+        ? `🏆 ${aciertos}/${total} — ¡perfecto!`
+        : `${aciertos}/${total} correctas — revisa las rosadas`;
+      btnComprobar.classList.add('hidden');
+      btnReset.classList.remove('hidden');
+    }
+
+    function resetear() {
+      filas.forEach((fila) => {
+        const sel = fila.querySelector('[data-empareja-select]');
+        sel.disabled = false; sel.value = '';
+        pintar(fila, 'reset');
+      });
+      puntajeEl.classList.add('hidden');
+      btnReset.classList.add('hidden');
+      btnComprobar.classList.remove('hidden');
+    }
+
+    btnComprobar?.addEventListener('click', comprobar);
+    btnReset?.addEventListener('click', resetear);
+  }
+</script>

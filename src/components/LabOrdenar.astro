@@ -1,0 +1,150 @@
+---
+/**
+ * Laboratorio · Ordenar (secuenciar pasos).
+ *
+ * El estudiante reordena una lista con botones subir/bajar hasta dejarla en
+ * la secuencia correcta. Al "Comprobar" se marca cada posición y se muestra
+ * el puntaje. El orden inicial se baraja de forma DETERMINISTA (sin azar) para
+ * no romper el render del lado del servidor.
+ *
+ * No depende del schema de guías: tipo propio, reutilizable en páginas Astro.
+ */
+export interface DataOrdenar {
+  titulo: string;
+  instrucciones: string;
+  /** Pasos en el ORDEN CORRECTO. */
+  pasos: string[];
+}
+
+interface Props {
+  data: DataOrdenar;
+  id: string;
+}
+
+const { data, id } = Astro.props;
+
+// Barajado determinista (PRNG con semilla fija) — reproducible en SSR.
+function barajarDeterminista(n: number): number[] {
+  const orden = Array.from({ length: n }, (_, i) => i);
+  let s = 1234567 + n * 97;
+  const rnd = () => {
+    s = (s + 0x6d2b79f5) | 0;
+    let t = Math.imul(s ^ (s >>> 15), 1 | s);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+  for (let i = n - 1; i > 0; i--) {
+    const j = Math.floor(rnd() * (i + 1));
+    [orden[i], orden[j]] = [orden[j], orden[i]];
+  }
+  // Garantiza que no quede ya en el orden correcto.
+  if (n > 1 && orden.every((v, i) => v === i)) orden.push(orden.shift() as number);
+  return orden;
+}
+
+const pasosBarajados = barajarDeterminista(data.pasos.length).map((i) => ({
+  idx: i,
+  texto: data.pasos[i],
+}));
+---
+
+<div class="bento-card" data-lab-ordenar={id}>
+  <span class="chip-bento mb-2">🔢 Laboratorio · Ordena</span>
+  <h3 class="text-xl md:text-2xl font-black tracking-tight leading-tight">{data.titulo}</h3>
+  <p class="text-sm leading-relaxed mt-2 mb-5" style="color: var(--fg-muted);">{data.instrucciones}</p>
+
+  <ol data-ordenar-lista class="space-y-2">
+    {pasosBarajados.map((p) => (
+      <li
+        data-ordenar-item={p.idx}
+        class="flex items-center gap-3 p-3 rounded-bento-sm border-2 transition-colors"
+        style="border-color: var(--border); background: var(--bg);"
+      >
+        <span data-ordenar-pos class="w-7 h-7 rounded-full bg-bento-blue text-white flex items-center justify-center text-xs font-black shrink-0">•</span>
+        <span class="flex-1 text-sm md:text-base leading-snug">{p.texto}</span>
+        <span class="flex flex-col gap-1 shrink-0">
+          <button type="button" data-ordenar-subir aria-label="Subir un lugar" class="w-9 h-9 rounded-md border-2 flex items-center justify-center text-xs hover:opacity-70 disabled:opacity-30 transition-opacity" style="border-color: var(--border); color: var(--fg);">▲</button>
+          <button type="button" data-ordenar-bajar aria-label="Bajar un lugar" class="w-9 h-9 rounded-md border-2 flex items-center justify-center text-xs hover:opacity-70 disabled:opacity-30 transition-opacity" style="border-color: var(--border); color: var(--fg);">▼</button>
+        </span>
+      </li>
+    ))}
+  </ol>
+
+  <div class="flex items-center gap-3 mt-5 flex-wrap">
+    <button type="button" data-ordenar-comprobar class="btn-bento text-sm px-5 py-2">Comprobar</button>
+    <button type="button" data-ordenar-reset class="hidden px-4 py-2 rounded-full text-xs font-bold border-2 hover:opacity-70 transition-opacity" style="border-color: var(--border); color: var(--fg-muted);">🔄 Reintentar</button>
+    <span data-ordenar-puntaje class="hidden text-sm font-black" style="color: var(--fg);"></span>
+  </div>
+</div>
+
+<script define:vars={{ id }}>
+  const root = document.querySelector(`[data-lab-ordenar="${id}"]`);
+  if (root) {
+    const lista = root.querySelector('[data-ordenar-lista]');
+    const btnComprobar = root.querySelector('[data-ordenar-comprobar]');
+    const btnReset = root.querySelector('[data-ordenar-reset]');
+    const puntajeEl = root.querySelector('[data-ordenar-puntaje]');
+
+    const items = () => Array.from(lista.querySelectorAll('[data-ordenar-item]'));
+
+    function renumerar() {
+      const arr = items();
+      arr.forEach((it, i) => {
+        const pos = it.querySelector('[data-ordenar-pos]');
+        if (pos) pos.textContent = String(i + 1);
+        const subir = it.querySelector('[data-ordenar-subir]');
+        const bajar = it.querySelector('[data-ordenar-bajar]');
+        if (subir) subir.disabled = i === 0;
+        if (bajar) bajar.disabled = i === arr.length - 1;
+      });
+    }
+
+    function mover(it, dir) {
+      if (dir === 'subir' && it.previousElementSibling) lista.insertBefore(it, it.previousElementSibling);
+      else if (dir === 'bajar' && it.nextElementSibling) lista.insertBefore(it.nextElementSibling, it);
+      renumerar();
+    }
+
+    lista.addEventListener('click', (e) => {
+      const btn = e.target.closest('button');
+      if (!btn || btn.disabled) return;
+      const it = btn.closest('[data-ordenar-item]');
+      if (btn.hasAttribute('data-ordenar-subir')) mover(it, 'subir');
+      else if (btn.hasAttribute('data-ordenar-bajar')) mover(it, 'bajar');
+    });
+
+    function comprobar() {
+      let aciertos = 0;
+      items().forEach((it, i) => {
+        const ok = parseInt(it.getAttribute('data-ordenar-item'), 10) === i;
+        if (ok) aciertos++;
+        it.style.borderColor = ok ? '#A3FF12' : '#FF2D87';
+        it.style.background = ok ? 'rgba(163,255,18,0.12)' : 'rgba(255,45,135,0.10)';
+        it.querySelectorAll('button').forEach((b) => (b.disabled = true));
+      });
+      const total = items().length;
+      puntajeEl.classList.remove('hidden');
+      puntajeEl.textContent = aciertos === total
+        ? `🏆 ${aciertos}/${total} — ¡secuencia correcta!`
+        : `${aciertos}/${total} en su lugar — sigue intentando`;
+      btnComprobar.classList.add('hidden');
+      btnReset.classList.remove('hidden');
+    }
+
+    function resetear() {
+      items().forEach((it) => {
+        it.style.borderColor = 'var(--border)';
+        it.style.background = 'var(--bg)';
+        it.querySelectorAll('button').forEach((b) => (b.disabled = false));
+      });
+      puntajeEl.classList.add('hidden');
+      btnReset.classList.add('hidden');
+      btnComprobar.classList.remove('hidden');
+      renumerar();
+    }
+
+    btnComprobar?.addEventListener('click', comprobar);
+    btnReset?.addEventListener('click', resetear);
+    renumerar();
+  }
+</script>

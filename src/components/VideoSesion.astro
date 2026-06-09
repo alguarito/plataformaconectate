@@ -1,0 +1,123 @@
+---
+/**
+ * Bloque 👁 OBSERVA · Video de sesión (YouTube, lazy-load).
+ *
+ * Usa el patrón "facade": muestra la miniatura del video con un botón ▶ y
+ * carga el iframe de YouTube SOLO al hacer clic. Así la página carga rápido y
+ * funciona offline-first (el video es un extra cuando hay conexión). Los
+ * subtítulos en español se piden por defecto.
+ *
+ * Tipo propio (no depende del schema de guías); reutilizable en cualquier
+ * página Astro: Explora, guías, etc.
+ */
+export interface DataVideo {
+  /** ID del video de YouTube (la parte v= de la URL) */
+  youtubeId: string;
+  /** Título del video */
+  titulo: string;
+  /** Descripción corta · qué vas a ver */
+  descripcion?: string;
+  /** Atribución (ej. "Video de RECA · Proyecto Salomé") */
+  credito?: string;
+  /** Enlace a la guía resumen oficial (PDF), opcional */
+  resumenUrl?: string;
+}
+
+interface Props {
+  data: DataVideo;
+}
+
+const { data } = Astro.props;
+
+// Miniatura de YouTube (no requiere API key).
+const thumb = `https://i.ytimg.com/vi/${data.youtubeId}/hqdefault.jpg`;
+// Embed: subtítulos ES por defecto, dominio sin cookies, sin sugeridos externos.
+const embedSrc =
+  `https://www.youtube-nocookie.com/embed/${data.youtubeId}` +
+  `?cc_load_policy=1&cc_lang_pref=es&hl=es&rel=0&modestbranding=1&autoplay=1`;
+---
+
+<section class="bento-card mb-6" aria-labelledby={`video-${data.youtubeId}-titulo`}>
+  <div class="flex items-center gap-3 mb-3 flex-wrap">
+    <span class="chip-bento">👁 Observa</span>
+    {data.credito && (
+      <span class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">{data.credito}</span>
+    )}
+  </div>
+
+  <h3 id={`video-${data.youtubeId}-titulo`} class="text-xl md:text-2xl font-black tracking-tight leading-tight mb-2">
+    {data.titulo}
+  </h3>
+  {data.descripcion && (
+    <p class="text-sm leading-relaxed mb-4" style="color: var(--fg-muted);">{data.descripcion}</p>
+  )}
+
+  <!-- Facade: miniatura + play; el iframe se inyecta al hacer clic -->
+  <div
+    class="relative w-full rounded-bento-sm overflow-hidden bg-black"
+    style="aspect-ratio: 16 / 9;"
+    data-video-facade
+    data-embed={embedSrc}
+  >
+    <button
+      type="button"
+      data-video-play
+      class="group absolute inset-0 w-full h-full flex items-center justify-center"
+      aria-label={`Reproducir video: ${data.titulo}`}
+    >
+      <img
+        src={thumb}
+        alt=""
+        loading="lazy"
+        class="absolute inset-0 w-full h-full object-cover opacity-85 group-hover:opacity-60 transition-opacity"
+      />
+      <span class="relative z-10 w-16 h-16 rounded-full bg-bento-pink text-white flex items-center justify-center shadow-bento group-hover:scale-110 transition-transform">
+        <svg class="w-7 h-7 ml-1" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>
+      </span>
+    </button>
+  </div>
+
+  <div class="flex items-center gap-4 mt-3 flex-wrap">
+    <span class="text-xs leading-relaxed" style="color: var(--fg-muted);">
+      Subtítulos en español. El video se carga al tocar play (requiere conexión).
+    </span>
+    {data.resumenUrl && (
+      <a
+        href={data.resumenUrl}
+        target="_blank"
+        rel="noopener"
+        class="inline-flex items-center gap-1.5 text-xs font-black text-bento-blue hover:opacity-70 transition-opacity sm:ml-auto"
+      >
+        📄 Descargar resumen oficial (RECA)
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+          <polyline points="15 3 21 3 21 9"></polyline>
+          <line x1="10" y1="14" x2="21" y2="3"></line>
+        </svg>
+      </a>
+    )}
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll('[data-video-facade]').forEach((facade) => {
+    const btn = facade.querySelector('[data-video-play]');
+    btn?.addEventListener('click', () => {
+      const src = facade.getAttribute('data-embed');
+      if (!src) return;
+      const iframe = document.createElement('iframe');
+      iframe.setAttribute('src', src);
+      iframe.setAttribute('title', 'Video de RECA');
+      iframe.setAttribute(
+        'allow',
+        'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share',
+      );
+      iframe.setAttribute('allowfullscreen', '');
+      iframe.setAttribute('loading', 'lazy');
+      iframe.className = 'absolute inset-0 w-full h-full';
+      iframe.style.border = '0';
+      facade.innerHTML = '';
+      facade.appendChild(iframe);
+    });
+  });
+</script>

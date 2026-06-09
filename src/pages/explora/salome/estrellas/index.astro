@@ -3,6 +3,8 @@ import BaseLayout from '../../../../layouts/BaseLayout.astro';
 import SaberAncestralBlock from '../../../../components/SaberAncestralBlock.astro';
 import MapaRutaBlock from '../../../../components/MapaRutaBlock.astro';
 import ActividadBlock from '../../../../components/ActividadBlock.astro';
+import LabEmparejar from '../../../../components/LabEmparejar.astro';
+import LabOrdenar from '../../../../components/LabOrdenar.astro';
 import LabQuiz from '../../../../components/LabQuiz.astro';
 import TrianguloBlock from '../../../../components/TrianguloBlock.astro';
 import CincoDimensionesBlock from '../../../../components/CincoDimensionesBlock.astro';
@@ -14,25 +16,29 @@ import type {
   Triangulo,
   CincoDimensiones,
 } from '../../../../data/guiasContenido/_schema';
+import type { DataEmparejar } from '../../../../components/LabEmparejar.astro';
+import type { DataOrdenar } from '../../../../components/LabOrdenar.astro';
 
 const base = import.meta.env.BASE_URL;
 const recursosOficiales = 'https://www.astroreca.org/educacion/salome-comic-exoplanetas/recursos';
 
 const saberAncestral: SaberAncestral = {
   saber:
-    'Mucho antes de los telescopios, los abuelos y abuelas campesinas del norte del Valle del Cauca leían el cielo para vivir. Cuando «las Cabrillas» —el racimo de estrellas que la ciencia llama las Pléyades— aparecían al amanecer sobre el horizonte, sabían que llegaba el tiempo de preparar la tierra. La luna les decía cuándo sembrar y cuándo cosechar. El cielo no era un adorno: era calendario, reloj y mapa al mismo tiempo.',
-  fuente: 'Saber campesino andino · tradición oral del Valle del Cauca',
+    'En las veredas del norte del Valle del Cauca, mucho antes de que existieran los pronósticos del clima o los telescopios, los campesinos sabían leer el cielo como quien lee un reloj. Las abuelas señalaban un pequeño racimo de estrellas apretadas —las que ellos llamaban «las Cabrillas» y la ciencia llama las Pléyades— y, por la época del año en que aparecían sobre el horizonte al amanecer, decidían cuándo preparar la tierra y cuándo sembrar el maíz. La luna completaba el calendario: por su forma sabían cuándo podar y cuándo cosechar para que el fruto durara. Nadie les había enseñado astrofísica; habían heredado, de generación en generación, una observación paciente del cielo. Para ellos las estrellas no eran adorno ni misterio lejano: eran calendario, reloj y mapa, todo a la vez.',
+  fuente: 'Saber campesino andino · tradición oral del norte del Valle del Cauca',
   preguntaPuente:
-    'Si nuestros abuelos leían el tiempo de siembra en un puñado de estrellas, ¿qué más esconde esa luz que viaja años para llegar a tus ojos?',
+    'Nuestros abuelos sabían CUÁNDO aparecían las estrellas y para qué servían. Hoy te toca una pregunta nueva: ¿QUÉ es, en realidad, cada uno de esos puntos, y por qué brilla?',
 };
 
 const mapaRuta: EstacionMapa[] = [
   { numero: 1, iconos: ['🌱'], titulo: 'El cielo de los abuelos', duracionMin: 5 },
-  { numero: 2, iconos: ['📖'], titulo: '¿Qué es una estrella?', duracionMin: 12 },
-  { numero: 3, iconos: ['📖', '👁'], titulo: 'Color, tamaño y el diagrama HR', duracionMin: 12 },
-  { numero: 4, iconos: ['✏️'], titulo: 'Clasifica estrellas reales', duracionMin: 15 },
-  { numero: 5, iconos: ['✅'], titulo: 'Pon a prueba lo que sabes', duracionMin: 8 },
-  { numero: 6, iconos: ['💭'], titulo: 'Tres voces para mirar el cielo', duracionMin: 8 },
+  { numero: 2, iconos: ['📖'], titulo: '¿Qué es una estrella?', duracionMin: 10 },
+  { numero: 3, iconos: ['🔎'], titulo: 'Relaciona conceptos y ordena la fusión', duracionMin: 12 },
+  { numero: 4, iconos: ['📖', '👁'], titulo: 'Color, tamaño y distancia', duracionMin: 10 },
+  { numero: 5, iconos: ['🔎'], titulo: 'Relaciona estrellas reales', duracionMin: 6 },
+  { numero: 6, iconos: ['✏️'], titulo: 'Calcula el tamaño del Sol', duracionMin: 15 },
+  { numero: 7, iconos: ['✅'], titulo: 'Pon a prueba lo que sabes', duracionMin: 8 },
+  { numero: 8, iconos: ['✏️', '💭'], titulo: 'El cielo de tu familia + cierre', duracionMin: 14 },
 ];
 
 const conceptosQueEs = [
@@ -40,23 +46,25 @@ const conceptosQueEs = [
     emoji: '🔥',
     termino: 'Una bola de gas que brilla',
     definicion:
-      'Una estrella es una enorme esfera de gas, hecha sobre todo de hidrógeno y helio, que brilla porque está muy caliente.',
+      'Una estrella es una esfera gigantesca de gas, hecha sobre todo de hidrógeno y helio, que brilla porque está extremadamente caliente.',
     ejemplo:
-      'El universo es 92% hidrógeno, 7% helio y apenas 1% de todo lo demás (carbono, hierro, oxígeno…).',
+      'El Sol no es una bola de fuego: es gas tan caliente y comprimido que emite luz propia, a diferencia de la Luna, que solo refleja.',
   },
   {
     emoji: '⚛️',
     termino: 'Fusión nuclear',
     definicion:
-      'En el núcleo, a millones de grados, los núcleos de hidrógeno se fusionan formando helio y liberan muchísima energía. Esa energía es la luz y el calor que ves.',
-    ejemplo: 'Es el mismo proceso que hace brillar al Sol cada día.',
+      'En el núcleo, a millones de grados y bajo una presión enorme, los núcleos de hidrógeno se fusionan formando helio y liberan muchísima energía.',
+    ejemplo:
+      'Esa energía tarda miles de años en salir del Sol; la luz que hoy te calienta nació en su núcleo hace mucho tiempo.',
   },
   {
     emoji: '☀️',
     termino: 'El Sol, nuestra estrella',
     definicion:
-      'El Sol es una estrella mediana de tipo G (amarilla). Mide cerca de 1.500.000 km de diámetro: ¡cuatro veces la distancia de la Tierra a la Luna!',
-    ejemplo: 'Su brillo es la referencia: decimos que el Sol tiene luminosidad 1.',
+      'El Sol es una estrella mediana de tipo G (amarilla). Mide cerca de 1.500.000 km de diámetro: cuatro veces la distancia de la Tierra a la Luna.',
+    ejemplo:
+      'Su brillo es la unidad de medida de los astrónomos: decimos que el Sol tiene luminosidad 1, y comparamos las demás con él.',
   },
 ];
 
@@ -65,8 +73,8 @@ const conceptosColor = [
     emoji: '🌈',
     termino: 'El color delata la temperatura',
     definicion:
-      'Las estrellas más calientes se ven azules; las más frías, rojas; las intermedias, como el Sol, amarillas. Los astrónomos las ordenan en tipos: O, B, A, F, G, K, M.',
-    ejemplo: 'Betelgeuse es roja y «fría»; Vega es blanca azulada y muy caliente.',
+      'Las estrellas más calientes se ven azules; las más frías, rojas; las intermedias, como el Sol, amarillas. Se ordenan en tipos: O, B, A, F, G, K, M.',
+    ejemplo: 'Betelgeuse es roja y «fría»; Vega es blanca azulada y mucho más caliente.',
   },
   {
     emoji: '📊',
@@ -80,69 +88,109 @@ const conceptosColor = [
     termino: 'Tan lejos que ves el pasado',
     definicion:
       'La estrella más cercana al Sol, Próxima Centauri, está a 4,5 años luz: su luz tarda 4,5 años en llegar. Mirar una estrella es mirar cómo era hace años.',
-    ejemplo: 'En la nave más rápida construida, tardarías 18.000 años en llegar.',
+    ejemplo: 'En la nave más rápida jamás construida tardarías unos 18.000 años en llegar a ella.',
   },
 ];
 
-const actividades: Actividad[] = [
-  {
-    numero: 1,
-    verbo: 'ANALIZA',
-    titulo: 'Ubica cuatro estrellas reales en el diagrama HR',
-    tiempoMin: 15,
-    modalidad: 'parejas',
-    pasos: [
-      'Dibuja en tu cuaderno los dos ejes del diagrama HR: la temperatura (de caliente/azul a fría/roja) y la luminosidad (de débil a brillante).',
-      'Lee las pistas: el Sol (tipo G, amarillo, referencia), Betelgeuse (supergigante roja, fría pero muy brillante), Vega (blanca azulada, caliente y brillante) y Sirius B (enana blanca, caliente pero muy poco luminosa).',
-      'Ubica cada estrella con un punto y su nombre en la región que le corresponde.',
-      'Encierra a Betelgeuse y escribe en una frase por qué crees que el semillero de tu colegio lleva su nombre.',
-    ],
-    cuaderno: {
-      titulo: 'El diagrama HR de mi clase',
-      formato: 'diagrama de dos ejes + 4 puntos rotulados',
-      extension: '1 página, con los 4 nombres y una frase de cierre',
-    },
-    criterios: [
-      'Las 4 estrellas quedaron en regiones distintas y coherentes con su color y su brillo.',
-      'Betelgeuse aparece arriba a la derecha (fría pero muy luminosa).',
-      'Explicaste por qué Betelgeuse da nombre al semillero.',
-    ],
+const emparejarConceptos: DataEmparejar = {
+  titulo: 'Relaciona cada concepto con su significado',
+  instrucciones: 'Elige en cada fila el significado correcto. Pulsa «Comprobar» cuando termines.',
+  etiquetaIzq: 'Concepto',
+  etiquetaDer: 'Significado',
+  pares: [
+    { izquierda: 'Estrella', derecha: 'Esfera de gas que brilla por fusión nuclear' },
+    { izquierda: 'Fusión nuclear', derecha: 'Unión de núcleos de hidrógeno que libera energía' },
+    { izquierda: 'Diagrama HR', derecha: 'Mapa de estrellas por temperatura y luminosidad' },
+    { izquierda: 'Año luz', derecha: 'Distancia que la luz recorre en un año' },
+    { izquierda: 'Tipo espectral', derecha: 'Clasificación O-B-A-F-G-K-M según la temperatura' },
+  ],
+};
+
+const ordenarFusion: DataOrdenar = {
+  titulo: 'Ordena la cadena que hace brillar una estrella',
+  instrucciones: 'Usa las flechas para poner los pasos de la fusión nuclear del primero al último.',
+  pasos: [
+    'En el núcleo se acumulan núcleos de hidrógeno y la presión es enorme.',
+    'La temperatura llega a millones de grados y las partículas se mueven muy rápido.',
+    'Los núcleos de hidrógeno chocan con más fuerza y más frecuencia.',
+    'Varios núcleos de hidrógeno se fusionan y forman helio.',
+    'La fusión libera una enorme cantidad de energía.',
+    'Esa energía mantiene caliente a la estrella y la hace brillar.',
+  ],
+};
+
+const emparejarEstrellas: DataEmparejar = {
+  titulo: 'Relaciona cada estrella con cómo es',
+  instrucciones: 'Conecta cada estrella real con su descripción. Apóyate en lo que acabas de leer.',
+  etiquetaIzq: 'Estrella',
+  etiquetaDer: 'Cómo es',
+  pares: [
+    { izquierda: 'El Sol', derecha: 'Tipo G, amarilla — la usamos como referencia' },
+    { izquierda: 'Betelgeuse', derecha: 'Supergigante roja: fría pero enorme y muy brillante' },
+    { izquierda: 'Vega', derecha: 'Blanca azulada: muy caliente' },
+    { izquierda: 'Sirius B', derecha: 'Enana blanca: caliente pero poco luminosa' },
+    { izquierda: 'Próxima Centauri', derecha: 'La más cercana al Sol: a 4,5 años luz' },
+  ],
+};
+
+const actividadCalculo: Actividad = {
+  numero: 1,
+  verbo: 'APLICA',
+  titulo: 'Calcula el verdadero tamaño del Sol',
+  tiempoMin: 15,
+  modalidad: 'individual',
+  pasos: [
+    'El Sol mide 1.500.000 km de diámetro. Calcula su perímetro con P = π × diámetro (usa π = 3,14).',
+    'Imagina que caminas alrededor del Sol a 5 km/h sin parar. Calcula las horas: perímetro ÷ 5.',
+    'Convierte esas horas a días (÷ 24) y luego a años (÷ 365). Redondea.',
+    'Escribe una frase: ¿qué te dice ese número sobre por qué las estrellas se ven pequeñas?',
+  ],
+  cuaderno: {
+    titulo: 'El tamaño del Sol',
+    formato: 'tres operaciones + resultado + una frase de conclusión',
+    extension: 'los 3 cálculos y la conclusión',
   },
-  {
-    numero: 2,
-    verbo: 'CREA',
-    titulo: 'Rescata el saber estelar de tu familia',
-    tiempoMin: 15,
-    modalidad: 'individual',
-    pasos: [
-      'Pregúntale a un abuelo, abuela o vecino mayor cómo se guiaban por el cielo, la luna o «las Cabrillas» para sembrar, viajar o saber la hora.',
-      'Anota el saber tal como te lo contaron, sin corregirlo.',
-      'Conéctalo con un concepto de hoy: por qué esas estrellas aparecen en cierta época, qué es realmente la luna o por qué cambia el cielo según el mes.',
-    ],
-    cuaderno: {
-      titulo: 'El cielo de mi familia',
-      formato: 'relato corto + conexión científica',
-      extension: '8 a 10 renglones',
-    },
-    criterios: [
-      'Recogiste un saber real, contado por alguien mayor.',
-      'Lo conectaste con al menos un concepto de esta estación.',
-      'Escribiste con respeto, nombrando a quién te lo contó.',
-    ],
+  criterios: [
+    'El perímetro te da aproximadamente 4.710.000 km.',
+    'Caminando sin parar tardarías cerca de 107 años en darle la vuelta.',
+    'Tu frase conecta ese tamaño enorme con la idea de que lo vemos pequeño porque está lejísimos.',
+  ],
+};
+
+const actividadFamilia: Actividad = {
+  numero: 2,
+  verbo: 'CREA',
+  titulo: 'Rescata el saber estelar de tu familia',
+  tiempoMin: 14,
+  modalidad: 'individual',
+  pasos: [
+    'Pregúntale a un abuelo, abuela o vecino mayor cómo se guiaban por el cielo, la luna o «las Cabrillas» para sembrar, viajar o saber la hora.',
+    'Anota el saber tal como te lo contaron, sin corregirlo.',
+    'Conéctalo con un concepto de esta estación: ¿por qué esas estrellas aparecen en cierta época?, ¿qué es realmente la luna?',
+  ],
+  cuaderno: {
+    titulo: 'El cielo de mi familia',
+    formato: 'relato corto + conexión científica',
+    extension: '8 a 10 renglones',
   },
-];
+  criterios: [
+    'Recogiste un saber real, contado por alguien mayor.',
+    'Lo conectaste con al menos un concepto de esta estación.',
+    'Escribiste con respeto, nombrando a quién te lo contó.',
+  ],
+};
 
 const quiz: LabQuizData = {
   tipo: 'quiz',
   titulo: 'Pon a prueba lo que sabes',
-  instrucciones: 'Elige una respuesta en cada pregunta. Recibirás retroalimentación al instante.',
+  instrucciones: 'Elige una respuesta en cada pregunta. Recibirás retroalimentación que te explica el porqué.',
   preguntas: [
     {
-      enunciado: '¿De qué está hecha principalmente una estrella?',
-      opciones: ['Hidrógeno y helio', 'Roca y metal', 'Hielo y polvo', 'Fuego y humo'],
-      respuestaIndex: 0,
-      feedbackCorrecto: 'Exacto: sobre todo hidrógeno y helio, los elementos más abundantes del universo.',
-      feedbackIncorrecto: 'Repasa: una estrella es una bola de gas hecha sobre todo de hidrógeno y helio.',
+      enunciado: '¿Cuál es el elemento más abundante en el universo y principal componente de una estrella?',
+      opciones: ['El oxígeno', 'El hidrógeno', 'El hierro', 'El carbono'],
+      respuestaIndex: 1,
+      feedbackCorrecto: 'Correcto. El universo es ~92% hidrógeno y ~7% helio; todo lo demás (carbono, hierro, oxígeno…) suma apenas el 1%.',
+      feedbackIncorrecto: 'No: el más abundante es el hidrógeno (~92% del universo). El helio le sigue con ~7%.',
     },
     {
       enunciado: '¿Por qué brilla una estrella?',
@@ -153,30 +201,35 @@ const quiz: LabQuizData = {
         'Porque gira muy rápido',
       ],
       respuestaIndex: 1,
-      feedbackCorrecto: 'Sí: la fusión de hidrógeno en helio libera la energía que vemos como luz.',
-      feedbackIncorrecto: 'No: una estrella brilla por la fusión nuclear de su núcleo, no por reflejo ni por girar.',
+      feedbackCorrecto: 'Sí: en su núcleo el hidrógeno se fusiona en helio y libera la energía que vemos como luz y calor.',
+      feedbackIncorrecto: 'Una estrella brilla por la fusión nuclear de su núcleo, no por reflejo, fuego ni rotación. La Luna sí refleja; una estrella produce su propia luz.',
     },
     {
-      enunciado: 'Una estrella que se ve azul, comparada con una roja, es…',
-      opciones: ['Más fría', 'Más caliente', 'Siempre más pequeña', 'Más cercana'],
-      respuestaIndex: 1,
-      feedbackCorrecto: 'Correcto: el azul indica mayor temperatura; el rojo, menor.',
-      feedbackIncorrecto: 'Recuerda: el color delata la temperatura — azul = más caliente, rojo = más fría.',
-    },
-    {
-      enunciado: 'Próxima Centauri está a 4,5 años luz. Cuando la miras, ves…',
+      enunciado: 'Tienes dos estrellas: una azul y una roja. ¿Qué puedes afirmar?',
       opciones: [
-        'Cómo es en este instante',
-        'Cómo era hace 4,5 años',
-        'Una estrella que ya no existe',
-        'El futuro de esa estrella',
+        'La roja es más caliente que la azul',
+        'La azul es más caliente que la roja',
+        'Tienen exactamente la misma temperatura',
+        'El color no dice nada de la temperatura',
       ],
       respuestaIndex: 1,
-      feedbackCorrecto: '¡Eso es! Su luz tardó 4,5 años en llegar: estás viendo el pasado.',
-      feedbackIncorrecto: 'Piensa: su luz tarda 4,5 años en llegar, así que la ves como era hace 4,5 años.',
+      feedbackCorrecto: 'Exacto: el color delata la temperatura. Azul = más caliente; rojo = más frío; el Sol, amarillo, está en medio.',
+      feedbackIncorrecto: 'Al revés: el azul indica MÁS temperatura y el rojo MENOS. Por eso una fogata azul quema más que una roja.',
     },
     {
-      enunciado: 'En el diagrama HR, Betelgeuse (supergigante roja) está…',
+      enunciado: 'Próxima Centauri está a 4,5 años luz. Cuando la observas esta noche, ves…',
+      opciones: [
+        'Cómo es en este preciso instante',
+        'Cómo era hace 4,5 años',
+        'Una estrella que con seguridad ya no existe',
+        'Su aspecto dentro de 4,5 años',
+      ],
+      respuestaIndex: 1,
+      feedbackCorrecto: '¡Eso es! Su luz tardó 4,5 años en llegar, así que la ves tal como era hace 4,5 años: mirar lejos es mirar al pasado.',
+      feedbackIncorrecto: 'Su luz tarda 4,5 años en llegar, así que la ves como era hace 4,5 años. No necesariamente desapareció: 4,5 años es poco para una estrella.',
+    },
+    {
+      enunciado: 'En el diagrama HR, ¿dónde se ubica Betelgeuse (supergigante roja)?',
       opciones: [
         'Entre las estrellas frías pero muy luminosas',
         'Entre las enanas blancas',
@@ -184,8 +237,20 @@ const quiz: LabQuizData = {
         'Entre las más calientes y azules',
       ],
       respuestaIndex: 0,
-      feedbackCorrecto: 'Correcto: fría pero enorme y brillante, va arriba a la derecha.',
-      feedbackIncorrecto: 'Betelgeuse es fría (roja) pero muy luminosa: va arriba a la derecha del diagrama.',
+      feedbackCorrecto: 'Correcto: es fría (roja) pero enorme y brillante, así que va arriba (muy luminosa) a la derecha (fría).',
+      feedbackIncorrecto: 'Betelgeuse es fría (roja) pero muy luminosa por su tamaño: va arriba a la derecha, no entre las calientes ni las enanas.',
+    },
+    {
+      enunciado: '¿Qué clasifica el diagrama HR?',
+      opciones: [
+        'El tamaño y la edad de los planetas',
+        'La temperatura y la luminosidad de las estrellas',
+        'La distancia y la masa de las galaxias',
+        'El color y la forma de las nebulosas',
+      ],
+      respuestaIndex: 1,
+      feedbackCorrecto: 'Sí: el diagrama HR ordena las estrellas según su temperatura (eje horizontal) y su luminosidad (eje vertical).',
+      feedbackIncorrecto: 'El diagrama HR clasifica ESTRELLAS por dos rasgos: su temperatura y su luminosidad. No es de planetas ni galaxias.',
     },
   ],
 };
@@ -230,7 +295,7 @@ const cincoDimensiones: CincoDimensiones = {
 
 <BaseLayout
   title="Estación 1 · Con la cabeza en las estrellas — Salomé · ConectaTE"
-  description="Qué es una estrella, por qué brilla y cómo clasificamos las estrellas en el diagrama HR. Una estación del programa Salomé adaptada al modelo MILC, desde el cielo de nuestros abuelos."
+  description="Qué es una estrella, por qué brilla y cómo se clasifican en el diagrama HR. Estación del programa Salomé adaptada al modelo MILC, con ejercicios para relacionar, ordenar y calcular."
   ogType="article"
 >
   <article class="pt-12 pb-20">
@@ -251,7 +316,7 @@ const cincoDimensiones: CincoDimensiones = {
         <div class="flex flex-wrap gap-2 mb-4">
           <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">Estación 1 · Tomo 1</span>
           <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">Estrellas</span>
-          <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">~60 min</span>
+          <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">~75 min</span>
         </div>
         <h1 class="heading-giant text-balance mb-3">Con la cabeza en las estrellas</h1>
         <p class="text-base md:text-lg font-semibold opacity-95 leading-relaxed">
@@ -266,14 +331,15 @@ const cincoDimensiones: CincoDimensiones = {
       <!-- 🗺 Ruta -->
       <MapaRutaBlock estaciones={mapaRuta} />
 
-      <!-- Propósito de aprendizaje -->
-      <div class="bento-card mb-10">
+      <!-- Propósito -->
+      <div class="bento-card mb-6">
         <span class="chip-bento mb-4">🎯 Lo que vas a poder hacer</span>
         <ul class="space-y-3 mt-3">
           {[
             'IDENTIFICAR de qué está hecha una estrella y por qué brilla.',
             'EXPLICAR cómo el color de una estrella revela su temperatura.',
-            'ANALIZAR y ubicar estrellas reales en el diagrama HR.',
+            'RELACIONAR conceptos y ORDENAR el proceso de la fusión nuclear.',
+            'APLICAR un cálculo real para dimensionar el tamaño del Sol.',
             'CREAR un puente entre la ciencia de hoy y el saber del cielo de tu familia.',
           ].map((d) => (
             <li class="flex items-start gap-3">
@@ -282,8 +348,18 @@ const cincoDimensiones: CincoDimensiones = {
             </li>
           ))}
         </ul>
-        <p class="text-sm leading-relaxed mt-5 pt-4 border-t" style="border-color: var(--border); color: var(--fg-muted);">
-          <strong style="color: var(--fg);">Producto final:</strong> el «diagrama HR de mi clase» y el «cielo de mi familia», ambos en tu cuaderno.
+      </div>
+
+      <!-- Pregunta detonante -->
+      <div class="bento-card-color bg-bento-cyan mb-10">
+        <span class="chip-bento mb-3 bg-black/10">💡 La pregunta que abre todo</span>
+        <p class="text-lg md:text-xl font-black leading-snug">
+          Una estrella es una explosión nuclear del tamaño de un millón de Tierras.
+          Entonces, ¿por qué la ves como un punto quieto y silencioso en el cielo?
+        </p>
+        <p class="text-sm leading-relaxed mt-3 opacity-90">
+          Guarda esa pregunta. Al terminar la estación vas a poder responderla con
+          tres ideas: tamaño, temperatura y distancia.
         </p>
       </div>
 
@@ -308,7 +384,37 @@ const cincoDimensiones: CincoDimensiones = {
             </article>
           ))}
         </div>
+
+        <!-- Proporción del universo -->
+        <div class="mt-5 p-4 rounded-bento-sm" style="background: var(--bg);">
+          <h3 class="font-black text-sm mb-3">De qué está hecho el universo</h3>
+          <div class="flex w-full h-9 rounded-full overflow-hidden text-[11px] font-black" role="img" aria-label="92 por ciento hidrógeno, 7 por ciento helio, 1 por ciento otros elementos">
+            <div class="bg-bento-blue text-white flex items-center justify-center" style="width: 92%;">92% H</div>
+            <div class="bg-bento-cyan text-neutral-950 flex items-center justify-center" style="width: 7%;">7%</div>
+            <div class="bg-bento-pink" style="width: 1%;" title="1% otros"></div>
+          </div>
+          <p class="text-xs leading-relaxed mt-2" style="color: var(--fg-muted);">
+            <strong style="color: var(--fg);">92%</strong> hidrógeno ·
+            <strong style="color: var(--fg);">7%</strong> helio ·
+            <strong style="color: var(--fg);">1%</strong> todo lo demás (carbono, hierro, oxígeno…). Tú y todo lo que te rodea estáis hechos de ese 1%.
+          </p>
+        </div>
       </section>
+
+      <!-- 🔎 Relaciona conceptos -->
+      <div class="mb-6">
+        <LabEmparejar data={emparejarConceptos} id="empareja-conceptos" />
+      </div>
+
+      <!-- 🔎 Ordena la fusión -->
+      <div class="mb-6">
+        <LabOrdenar data={ordenarFusion} id="ordena-fusion" />
+      </div>
+
+      <!-- Puente -->
+      <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+        Ya sabes qué es una estrella y por qué brilla. Ahora, ¿por qué no todas son iguales?
+      </p>
 
       <!-- 📖 Marco conceptual · color, tamaño y distancia -->
       <section class="bento-card mb-6">
@@ -327,23 +433,30 @@ const cincoDimensiones: CincoDimensiones = {
         </div>
       </section>
 
-      <!-- Puente -->
-      <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
-        Ya tienes los conceptos. Es hora de usarlos con estrellas de verdad.
-      </p>
-
-      <!-- ✏️ Actividades -->
-      {actividades.map((a) => <ActividadBlock data={a} />)}
-
-      <!-- ✅ Laboratorio -->
+      <!-- 🔎 Relaciona estrellas -->
       <div class="mb-6">
-        <LabQuiz data={quiz} id="salome-estrellas-quiz" />
+        <LabEmparejar data={emparejarEstrellas} id="empareja-estrellas" />
       </div>
 
       <!-- Puente -->
       <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
-        Aprendiste qué es una estrella. Cerremos pensando qué significa, para ti,
-        mirar el cielo.
+        Hablamos de tamaños «gigantes». Comprobémoslo tú mismo con números reales.
+      </p>
+
+      <!-- ✏️ Actividad de cálculo -->
+      <ActividadBlock data={actividadCalculo} />
+
+      <!-- ✅ Quiz -->
+      <div class="mb-6">
+        <LabQuiz data={quiz} id="salome-estrellas-quiz" />
+      </div>
+
+      <!-- ✏️ Actividad CREA -->
+      <ActividadBlock data={actividadFamilia} />
+
+      <!-- Puente -->
+      <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+        Aprendiste qué es una estrella. Cerremos pensando qué significa, para ti, mirar el cielo.
       </p>
 
       <!-- 💭 Triángulo -->
@@ -352,7 +465,7 @@ const cincoDimensiones: CincoDimensiones = {
       <!-- 🌱 Cinco dimensiones -->
       <CincoDimensionesBlock data={cincoDimensiones} />
 
-      <!-- Créditos / atribución -->
+      <!-- Créditos -->
       <div class="bento-card mb-10 border-l-4 border-bento-purple">
         <span class="chip-bento mb-3">🛰 Créditos</span>
         <p class="text-sm leading-relaxed mt-2" style="color: var(--fg-muted);">

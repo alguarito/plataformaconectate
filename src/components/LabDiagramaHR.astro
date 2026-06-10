@@ -1,13 +1,11 @@
 ---
 /**
- * Laboratorio · Diagrama HR interactivo.
+ * Laboratorio · Diagrama HR interactivo (look mapa estelar).
  *
- * Muestra el diagrama de Hertzsprung-Russell (temperatura vs luminosidad) con
- * cuatro estrellas reales ubicadas en su lugar correcto. El estudiante hace
- * clic en cada una y descubre su tipo, su temperatura y por qué cae en esa
- * zona (secuencia principal, supergigante, enana blanca).
- *
- * Las posiciones se calculan en el servidor (deterministas). Tipo propio.
+ * El diagrama de Hertzsprung-Russell sobre un cielo nocturno: cuatro estrellas
+ * reales ubicadas en su lugar, con resplandor y tamaño según su tipo. El
+ * estudiante toca cada una y descubre por qué cae en esa zona. Las etiquetas de
+ * región se ubican lejos de los puntos para no taparlos.
  */
 export interface DataDiagramaHR {
   titulo: string;
@@ -22,38 +20,42 @@ interface Props {
 const { data, id } = Astro.props;
 
 const W = 660;
-const H = 340;
-const ml = 58;
-const mr = 24;
-const mt = 26;
-const mb = 52;
+const H = 360;
+const ml = 56;
+const mr = 26;
+const mt = 34;
+const mb = 54;
 const x0 = ml;
 const x1 = W - mr;
 const y0 = mt;
 const y1 = H - mb;
 
-// Escalas logarítmicas (temperatura decreciente hacia la derecha, como el HR real)
 const tempMin = 3000;
 const tempMax = 30000;
 const lumMin = 0.001;
 const lumMax = 1000000;
-const xT = (temp: number) => {
-  const f = (Math.log10(temp) - Math.log10(tempMin)) / (Math.log10(tempMax) - Math.log10(tempMin));
-  return x0 + (1 - f) * (x1 - x0);
-};
-const yL = (lum: number) => {
-  const f = (Math.log10(lum) - Math.log10(lumMin)) / (Math.log10(lumMax) - Math.log10(lumMin));
-  return y1 - f * (y1 - y0);
-};
+const xT = (temp: number) => x0 + (1 - (Math.log10(temp) - Math.log10(tempMin)) / (Math.log10(tempMax) - Math.log10(tempMin))) * (x1 - x0);
+const yL = (lum: number) => y1 - ((Math.log10(lum) - Math.log10(lumMin)) / (Math.log10(lumMax) - Math.log10(lumMin))) * (y1 - y0);
 
 const estrellas = [
-  { nombre: 'Sol', temp: 5800, lum: 1, color: '#FFC93A', info: 'Tipo G, amarilla · ~5.800 °C · en la secuencia principal. Es nuestra estrella de referencia (luminosidad 1).' },
-  { nombre: 'Betelgeuse', temp: 3500, lum: 100000, color: '#FF5A36', info: 'Supergigante roja · fría (~3.300 °C) pero ENORME, por eso brilla muchísimo: va arriba a la derecha. Da nombre a tu semillero.' },
-  { nombre: 'Vega', temp: 9600, lum: 40, color: '#9BB8FF', info: 'Tipo A, blanca azulada · muy caliente (~9.600 °C) · también en la secuencia principal, pero más a la izquierda que el Sol.' },
-  { nombre: 'Sirius B', temp: 25000, lum: 0.03, color: '#D5E6FF', info: 'Enana blanca · calientísima (~25.000 °C) pero diminuta, así que casi no brilla: va abajo a la izquierda.' },
+  { nombre: 'Sol', temp: 5800, lum: 1, color: '#FFCB3A', r: 8, info: 'Tipo G, amarilla · ~5.800 °C · en la secuencia principal. Es nuestra estrella de referencia (luminosidad 1).' },
+  { nombre: 'Betelgeuse', temp: 3500, lum: 100000, color: '#FF6A45', r: 13, info: 'Supergigante roja · fría (~3.300 °C) pero ENORME, por eso brilla muchísimo: va arriba a la derecha. Da nombre a tu semillero.' },
+  { nombre: 'Vega', temp: 9600, lum: 40, color: '#A7C4FF', r: 8, info: 'Tipo A, blanca azulada · muy caliente (~9.600 °C) · también en la secuencia principal, pero más a la izquierda que el Sol.' },
+  { nombre: 'Sirius B', temp: 25000, lum: 0.03, color: '#E4EEFF', r: 5, info: 'Enana blanca · calientísima (~25.000 °C) pero diminuta, así que casi no brilla: va abajo a la izquierda.' },
 ].map((e) => ({ ...e, x: xT(e.temp), y: yL(e.lum) }));
 
+// Estrellitas de fondo (deterministas, LCG simple)
+let seed = 7;
+const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
+const fondo = Array.from({ length: 46 }, () => ({ cx: +(rnd() * W).toFixed(1), cy: +(rnd() * H).toFixed(1), r: +(0.4 + rnd() * 1.3).toFixed(1), op: +(0.15 + rnd() * 0.5).toFixed(2) }));
+
 const ticksTemp = [20000, 10000, 6000, 4000];
+// Etiquetas de zona en puntos vacíos del diagrama
+const zonas = [
+  { txt: 'supergigantes', x: xT(13000), y: yL(120000), rot: 0 },
+  { txt: 'secuencia principal', x: xT(19000), y: yL(120), rot: 24 },
+  { txt: 'enanas blancas', x: xT(10500), y: yL(0.006), rot: 0 },
+];
 ---
 
 <div class="bento-card" data-lab-hr={id}>
@@ -61,31 +63,47 @@ const ticksTemp = [20000, 10000, 6000, 4000];
   <h3 class="text-xl md:text-2xl font-black tracking-tight leading-tight">{data.titulo}</h3>
   <p class="text-sm leading-relaxed mt-2 mb-4" style="color: var(--fg-muted);">{data.instrucciones}</p>
 
-  <div class="rounded-bento-sm p-3 overflow-x-auto" style="background: var(--bg);">
-    <svg viewBox={`0 0 ${W} ${H}`} class="w-full h-auto" style="min-width: 480px;" role="img"
-      aria-label="Diagrama HR: clasifica estrellas según su temperatura (horizontal) y su luminosidad (vertical).">
-      <!-- Marco -->
-      <line x1={x0} y1={y1} x2={x1} y2={y1} stroke="var(--fg-muted)" stroke-width="1.5" />
-      <line x1={x0} y1={y0} x2={x0} y2={y1} stroke="var(--fg-muted)" stroke-width="1.5" />
+  <div class="rounded-bento-sm overflow-hidden" style="line-height:0;">
+    <svg viewBox={`0 0 ${W} ${H}`} class="w-full h-auto" role="img"
+      aria-label="Diagrama HR sobre un cielo nocturno: clasifica estrellas según su temperatura (horizontal) y su luminosidad (vertical).">
+      <defs>
+        <linearGradient id={`${id}-sky`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#0b1030" />
+          <stop offset="100%" stop-color="#1a1248" />
+        </linearGradient>
+        <filter id={`${id}-glow`} x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="4" />
+        </filter>
+      </defs>
 
-      <!-- Etiquetas de zonas -->
-      <text x={xT(7000)} y={yL(3)} font-size="11" font-weight="800" fill="var(--fg-muted)" opacity="0.7" transform={`rotate(20 ${xT(7000)} ${yL(3)})`}>secuencia principal</text>
-      <text x={xT(4200)} y={yL(60000)} font-size="11" font-weight="800" fill="var(--fg-muted)" opacity="0.7">supergigantes</text>
-      <text x={xT(16000)} y={yL(0.02)} font-size="11" font-weight="800" fill="var(--fg-muted)" opacity="0.7">enanas blancas</text>
-
-      <!-- Ticks temperatura -->
-      {ticksTemp.map((t) => (
-        <text x={xT(t)} y={y1 + 18} text-anchor="middle" font-size="11" font-weight="700" fill="var(--fg-muted)">{t / 1000}k°</text>
+      <!-- Cielo -->
+      <rect x="0" y="0" width={W} height={H} fill={`url(#${id}-sky)`} />
+      {fondo.map((s) => (
+        <circle cx={s.cx} cy={s.cy} r={s.r} fill="#ffffff" opacity={s.op} />
       ))}
-      <text x={(x0 + x1) / 2} y={H - 24} text-anchor="middle" font-size="12" font-weight="800" fill="var(--fg)">← más caliente   ·   Temperatura   ·   más fría →</text>
-      <text transform={`rotate(-90 16 ${(y0 + y1) / 2})`} x="16" y={(y0 + y1) / 2} text-anchor="middle" font-size="12" font-weight="800" fill="var(--fg)">Luminosidad →</text>
+
+      <!-- Etiquetas de zona (lejos de las estrellas) -->
+      {zonas.map((z) => (
+        <text x={z.x} y={z.y} text-anchor="middle" font-size="11" font-weight="800" fill="#aab2d5" opacity="0.65"
+          transform={z.rot ? `rotate(${z.rot} ${z.x} ${z.y})` : undefined}>{z.txt}</text>
+      ))}
+
+      <!-- Ejes -->
+      <line x1={x0} y1={y1} x2={x1} y2={y1} stroke="#6b74a0" stroke-width="1.5" />
+      <line x1={x0} y1={y0} x2={x0} y2={y1} stroke="#6b74a0" stroke-width="1.5" />
+      {ticksTemp.map((t) => (
+        <text x={xT(t)} y={y1 + 18} text-anchor="middle" font-size="11" font-weight="700" fill="#9aa2c8">{t / 1000}k°</text>
+      ))}
+      <text x={(x0 + x1) / 2} y={H - 22} text-anchor="middle" font-size="12" font-weight="800" fill="#e3e7f6">← más caliente · Temperatura · más fría →</text>
+      <text transform={`rotate(-90 16 ${(y0 + y1) / 2})`} x="16" y={(y0 + y1) / 2} text-anchor="middle" font-size="12" font-weight="800" fill="#e3e7f6">Luminosidad →</text>
 
       <!-- Estrellas -->
       {estrellas.map((e, i) => (
         <g data-hr-estrella={i} style="cursor: pointer;">
-          <circle data-hr-halo cx={e.x} cy={e.y} r="14" fill={e.color} opacity="0" />
-          <circle cx={e.x} cy={e.y} r="7" fill={e.color} stroke="var(--fg)" stroke-width="1.5" />
-          <text x={e.x} y={e.y - 12} text-anchor="middle" font-size="11" font-weight="800" fill="var(--fg)">{e.nombre}</text>
+          <circle cx={e.x} cy={e.y} r={e.r * 2.4} fill={e.color} opacity="0.55" filter={`url(#${id}-glow)`} />
+          <circle data-hr-sel cx={e.x} cy={e.y} r={e.r + 5} fill="none" stroke="#ffffff" stroke-width="2" opacity="0" />
+          <circle cx={e.x} cy={e.y} r={e.r} fill={e.color} stroke="#ffffff" stroke-width="1.5" />
+          <text x={e.x} y={e.y - e.r - 7} text-anchor="middle" font-size="12" font-weight="800" fill="#ffffff">{e.nombre}</text>
         </g>
       ))}
     </svg>
@@ -105,15 +123,13 @@ const ticksTemp = [20000, 10000, 6000, 4000];
   if (root) {
     const info = root.querySelector('[data-hr-info]');
     const grupos = root.querySelectorAll('[data-hr-estrella]');
-
     grupos.forEach((g) => {
       g.addEventListener('click', () => {
         const idx = parseInt(g.getAttribute('data-hr-estrella'), 10);
         const e = estrellas[idx];
-        // resaltar halo
-        root.querySelectorAll('[data-hr-halo]').forEach((h) => h.setAttribute('opacity', '0'));
-        const halo = g.querySelector('[data-hr-halo]');
-        if (halo) halo.setAttribute('opacity', '0.3');
+        root.querySelectorAll('[data-hr-sel]').forEach((s) => s.setAttribute('opacity', '0'));
+        const sel = g.querySelector('[data-hr-sel]');
+        if (sel) sel.setAttribute('opacity', '0.9');
         if (info) {
           info.innerHTML =
             '<span class="text-2xl shrink-0" aria-hidden="true" style="color:' + e.color + '">●</span>' +

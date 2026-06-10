@@ -1,0 +1,197 @@
+---
+/**
+ * Laboratorio · Curva de luz (método de tránsito).
+ *
+ * Dibuja una curva de luz (brillo de una estrella en el tiempo) con varios
+ * tránsitos de un exoplaneta. El estudiante explora la gráfica con botones que
+ * resaltan: el brillo normal, un tránsito, su profundidad y el período. Puede
+ * descargar los datos en CSV para trabajarlos también en una hoja de cálculo.
+ *
+ * Los datos se generan de forma DETERMINISTA (sin azar) a partir de unos pocos
+ * parámetros, para que el render del servidor sea reproducible. Tipo propio;
+ * reutilizable en cualquier página Astro.
+ */
+export interface DataCurvaLuz {
+  titulo: string;
+  instrucciones: string;
+  /** Tiempo entre dos tránsitos (período orbital), en la unidad indicada. */
+  periodo?: number;
+  /** Profundidad del bajón de brillo, en %. */
+  profundidad?: number;
+  /** Unidad del eje de tiempo (p. ej. "días"). */
+  unidadTiempo?: string;
+  /** Nombre de la estrella/planeta del ejemplo. */
+  objeto?: string;
+}
+
+interface Props {
+  data: DataCurvaLuz;
+  id: string;
+}
+
+const { data, id } = Astro.props;
+const periodo = data.periodo ?? 8;
+const profundidad = data.profundidad ?? 1.5;
+const unidad = data.unidadTiempo ?? 'días';
+const objeto = data.objeto ?? 'la estrella';
+
+// ── Generación determinista de la curva ──
+const brilloBase = 100;
+const tMax = 4 * periodo; // 4 tránsitos visibles
+const centros = [0.5, 1.5, 2.5, 3.5].map((k) => k * periodo); // tránsitos centrados
+const anchoMedio = periodo * 0.09; // duración media del tránsito
+const yMin = brilloBase - profundidad - 0.7;
+const yMax = brilloBase + 0.5;
+
+// Geometría del SVG
+const W = 640;
+const H = 300;
+const ml = 60;
+const mr = 18;
+const mt = 26;
+const mb = 50;
+const x0 = ml;
+const x1 = W - mr;
+const y0 = mt;
+const y1 = H - mb;
+const xScale = (t: number) => x0 + (t / tMax) * (x1 - x0);
+const yScale = (b: number) => y1 - ((b - yMin) / (yMax - yMin)) * (y1 - y0);
+
+function brilloEn(t: number): number {
+  for (const c of centros) {
+    const d = Math.abs(t - c);
+    if (d <= anchoMedio * 0.6) return brilloBase - profundidad; // fondo plano
+    if (d <= anchoMedio) {
+      const frac = (d - anchoMedio * 0.6) / (anchoMedio * 0.4); // rampa de bajada/subida
+      return brilloBase - profundidad * (1 - frac);
+    }
+  }
+  return brilloBase;
+}
+
+const linea: { t: number; b: number }[] = [];
+for (let t = 0; t <= tMax + 0.001; t += tMax / 240) linea.push({ t, b: brilloEn(t) });
+const polyPoints = linea.map((p) => `${xScale(p.t).toFixed(1)},${yScale(p.b).toFixed(1)}`).join(' ');
+
+const marcadores: { t: number; b: number }[] = [];
+for (let t = 0; t <= tMax + 0.001; t += periodo / 8) marcadores.push({ t, b: brilloEn(t) });
+
+const ticksX = [0, 1, 2, 3, 4].map((k) => k * periodo);
+const ticksY = [98, 99, 100];
+
+const csv = 'tiempo_' + unidad + ',brillo_pct\n' + marcadores.map((p) => `${p.t.toFixed(2)},${p.b.toFixed(2)}`).join('\n');
+
+// Coordenadas de las anotaciones (primer tránsito y período entre el 1.º y 2.º)
+const cA = centros[0];
+const cB = centros[1];
+---
+
+<div class="bento-card" data-lab-curva={id}>
+  <span class="chip-bento mb-2">🔭 Laboratorio · Curva de luz</span>
+  <h3 class="text-xl md:text-2xl font-black tracking-tight leading-tight">{data.titulo}</h3>
+  <p class="text-sm leading-relaxed mt-2 mb-4" style="color: var(--fg-muted);">{data.instrucciones}</p>
+
+  <!-- Gráfica -->
+  <div class="rounded-bento-sm p-3 overflow-x-auto" style="background: var(--bg);">
+    <svg viewBox={`0 0 ${W} ${H}`} class="w-full h-auto" style="min-width: 460px;" role="img"
+      aria-label={`Curva de luz de ${objeto}: el brillo se mantiene en 100% y baja ${profundidad}% cada ${periodo} ${unidad} cuando el planeta pasa por delante (tránsito).`}>
+      <!-- Grid horizontal + eje Y -->
+      {ticksY.map((b) => (
+        <g>
+          <line x1={x0} y1={yScale(b)} x2={x1} y2={yScale(b)} stroke="var(--border)" stroke-width="1" stroke-dasharray="3 4" />
+          <text x={x0 - 8} y={yScale(b) + 4} text-anchor="end" font-size="12" font-weight="700" fill="var(--fg-muted)">{b}%</text>
+        </g>
+      ))}
+      <!-- Eje X -->
+      <line x1={x0} y1={y1} x2={x1} y2={y1} stroke="var(--fg-muted)" stroke-width="1.5" />
+      {ticksX.map((t) => (
+        <g>
+          <line x1={xScale(t)} y1={y1} x2={xScale(t)} y2={y1 + 5} stroke="var(--fg-muted)" stroke-width="1.5" />
+          <text x={xScale(t)} y={y1 + 22} text-anchor="middle" font-size="12" font-weight="700" fill="var(--fg-muted)">{t}</text>
+        </g>
+      ))}
+      <text x={(x0 + x1) / 2} y={H - 8} text-anchor="middle" font-size="12" font-weight="800" fill="var(--fg)">Tiempo ({unidad})</text>
+      <text transform={`rotate(-90 16 ${(y0 + y1) / 2})`} x="16" y={(y0 + y1) / 2} text-anchor="middle" font-size="12" font-weight="800" fill="var(--fg)">Brillo</text>
+
+      <!-- Anotación: brillo normal (oculta) -->
+      <g data-anota="normal" style="visibility: hidden;">
+        <line x1={x0} y1={yScale(100)} x2={x1} y2={yScale(100)} stroke="#0066FF" stroke-width="2" stroke-dasharray="2 3" />
+        <rect x={x1 - 150} y={yScale(100) - 26} width="140" height="20" rx="6" fill="#0066FF" />
+        <text x={x1 - 80} y={yScale(100) - 12} text-anchor="middle" font-size="11" font-weight="800" fill="#fff">100% · sin tránsito</text>
+      </g>
+
+      <!-- Anotación: tránsito (oculta) -->
+      <g data-anota="transito" style="visibility: hidden;">
+        <rect x={xScale(cA - anchoMedio)} y={y0} width={xScale(cA + anchoMedio) - xScale(cA - anchoMedio)} height={y1 - y0} fill="#FF2D87" opacity="0.16" />
+        <text x={xScale(cA)} y={y0 + 14} text-anchor="middle" font-size="11" font-weight="800" fill="#FF2D87">¡tránsito!</text>
+      </g>
+
+      <!-- Anotación: profundidad (oculta) -->
+      <g data-anota="profundidad" style="visibility: hidden;">
+        <line x1={xScale(cA) + 26} y1={yScale(100)} x2={xScale(cA) + 26} y2={yScale(100 - profundidad)} stroke="#FF6B35" stroke-width="2.5" />
+        <line x1={xScale(cA) + 21} y1={yScale(100)} x2={xScale(cA) + 31} y2={yScale(100)} stroke="#FF6B35" stroke-width="2.5" />
+        <line x1={xScale(cA) + 21} y1={yScale(100 - profundidad)} x2={xScale(cA) + 31} y2={yScale(100 - profundidad)} stroke="#FF6B35" stroke-width="2.5" />
+        <rect x={xScale(cA) + 36} y={yScale(100 - profundidad / 2) - 10} width="150" height="20" rx="6" fill="#FF6B35" />
+        <text x={xScale(cA) + 111} y={yScale(100 - profundidad / 2) + 4} text-anchor="middle" font-size="11" font-weight="800" fill="#fff">{profundidad}% → tamaño</text>
+      </g>
+
+      <!-- Anotación: período (oculta) -->
+      <g data-anota="periodo" style="visibility: hidden;">
+        <line x1={xScale(cA)} y1={y0 + 24} x2={xScale(cB)} y2={y0 + 24} stroke="#1a8f00" stroke-width="2.5" />
+        <line x1={xScale(cA)} y1={y0 + 19} x2={xScale(cA)} y2={y0 + 29} stroke="#1a8f00" stroke-width="2.5" />
+        <line x1={xScale(cB)} y1={y0 + 19} x2={xScale(cB)} y2={y0 + 29} stroke="#1a8f00" stroke-width="2.5" />
+        <rect x={(xScale(cA) + xScale(cB)) / 2 - 78} y={y0 + 30} width="156" height="20" rx="6" fill="#1a8f00" />
+        <text x={(xScale(cA) + xScale(cB)) / 2} y={y0 + 44} text-anchor="middle" font-size="11" font-weight="800" fill="#fff">{periodo} {unidad} → período</text>
+      </g>
+
+      <!-- Curva de datos -->
+      <polyline points={polyPoints} fill="none" stroke="#0066FF" stroke-width="2.5" stroke-linejoin="round" />
+      {marcadores.map((p) => (
+        <circle cx={xScale(p.t)} cy={yScale(p.b)} r="3" fill="#0066FF" />
+      ))}
+    </svg>
+  </div>
+
+  <!-- Controles -->
+  <div class="flex flex-wrap gap-2 mt-4">
+    <button type="button" data-curva-toggle="normal" class="px-3 py-1.5 rounded-full text-xs font-bold border-2 transition-colors" style="border-color: var(--border); color: var(--fg);">Brillo normal</button>
+    <button type="button" data-curva-toggle="transito" class="px-3 py-1.5 rounded-full text-xs font-bold border-2 transition-colors" style="border-color: var(--border); color: var(--fg);">Marca un tránsito</button>
+    <button type="button" data-curva-toggle="profundidad" class="px-3 py-1.5 rounded-full text-xs font-bold border-2 transition-colors" style="border-color: var(--border); color: var(--fg);">Profundidad</button>
+    <button type="button" data-curva-toggle="periodo" class="px-3 py-1.5 rounded-full text-xs font-bold border-2 transition-colors" style="border-color: var(--border); color: var(--fg);">Período</button>
+    <button type="button" data-curva-csv class="px-3 py-1.5 rounded-full text-xs font-black bg-bento-blue text-white ml-auto hover:opacity-80 transition-opacity">⬇ Descargar datos (CSV)</button>
+  </div>
+  <p class="text-xs leading-relaxed mt-3" style="color: var(--fg-muted);">
+    Pulsa cada botón para resaltar lo que mide un astrónomo. La <strong style="color: var(--fg);">profundidad</strong> del bajón revela el tamaño del planeta; el <strong style="color: var(--fg);">tiempo entre dos bajones</strong> es su período orbital.
+  </p>
+</div>
+
+<script define:vars={{ id, csv }}>
+  const root = document.querySelector(`[data-lab-curva="${id}"]`);
+  if (root) {
+    root.querySelectorAll('[data-curva-toggle]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const key = btn.getAttribute('data-curva-toggle');
+        const g = root.querySelector(`[data-anota="${key}"]`);
+        if (!g) return;
+        const visible = g.style.visibility !== 'hidden';
+        g.style.visibility = visible ? 'hidden' : 'visible';
+        btn.style.background = visible ? 'transparent' : 'var(--fg)';
+        btn.style.color = visible ? 'var(--fg)' : 'var(--bg-card)';
+        btn.style.borderColor = visible ? 'var(--border)' : 'var(--fg)';
+      });
+    });
+
+    const btnCsv = root.querySelector('[data-curva-csv]');
+    btnCsv?.addEventListener('click', () => {
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `curva-de-luz-${id}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+  }
+</script>

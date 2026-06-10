@@ -1,0 +1,522 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import SaberAncestralBlock from '../../../../components/SaberAncestralBlock.astro';
+import MapaRutaBlock from '../../../../components/MapaRutaBlock.astro';
+import ActividadBlock from '../../../../components/ActividadBlock.astro';
+import LabEmparejar from '../../../../components/LabEmparejar.astro';
+import LabOrdenar from '../../../../components/LabOrdenar.astro';
+import LabQuiz from '../../../../components/LabQuiz.astro';
+import TrianguloBlock from '../../../../components/TrianguloBlock.astro';
+import CincoDimensionesBlock from '../../../../components/CincoDimensionesBlock.astro';
+import GuiasRECA from '../../../../components/GuiasRECA.astro';
+import type {
+  SaberAncestral,
+  EstacionMapa,
+  Actividad,
+  LabQuiz as LabQuizData,
+  Triangulo,
+  CincoDimensiones,
+} from '../../../../data/guiasContenido/_schema';
+import type { DataEmparejar } from '../../../../components/LabEmparejar.astro';
+import type { DataOrdenar } from '../../../../components/LabOrdenar.astro';
+
+const base = import.meta.env.BASE_URL;
+const recursosOficiales = 'https://www.astroreca.org/educacion/salome-comic-exoplanetas/recursos';
+
+const saberAncestral: SaberAncestral = {
+  saber:
+    'Pregúntale a un campesino del Valle si va a llover y muchas veces, antes de mirar el cielo, te dirá: «huele a agua». Los abuelos leen el aire. Saben que poco antes del aguacero la tierra suelta un olor particular —el olor a tierra mojada—, que el viento cambia de lado, que la humedad se pega a la piel y que los pájaros vuelan más bajo. Nada de eso se ve: el aire es invisible. Pero está lleno de señales para quien aprendió a leerlo. Ese aire que envuelve la vereda tiene un nombre científico: atmósfera. Y resulta que la forma en que el campesino interroga el aire de su tierra para anticipar la lluvia es, a otra escala, exactamente lo que hacen los astrónomos cuando interrogan el aire de un planeta lejano para anticipar algo mucho más grande: la vida.',
+  fuente: 'Saber campesino del Valle del Cauca · leer el aire antes de la lluvia',
+  preguntaPuente:
+    'Si el aire invisible de tu vereda puede anunciar la lluvia, ¿qué crees que podría anunciar el aire de un planeta que está a billones de kilómetros?',
+};
+
+const mapaRuta: EstacionMapa[] = [
+  { numero: 1, iconos: ['🌱'], titulo: 'Leer el aire', duracionMin: 5 },
+  { numero: 2, iconos: ['📖'], titulo: '¿Qué es una atmósfera y para qué sirve?', duracionMin: 10 },
+  { numero: 3, iconos: ['📖', '👁'], titulo: 'Cada planeta, su propio aire', duracionMin: 9 },
+  { numero: 4, iconos: ['🔎'], titulo: 'Relaciona cada planeta con su atmósfera', duracionMin: 6 },
+  { numero: 5, iconos: ['📖'], titulo: 'Cómo se lee el aire de otro mundo', duracionMin: 13 },
+  { numero: 6, iconos: ['🔎'], titulo: 'Ordena la detección y relaciona conceptos', duracionMin: 8 },
+  { numero: 7, iconos: ['✅', '✏️'], titulo: 'Quiz, detective de atmósferas y crea', duracionMin: 22 },
+  { numero: 8, iconos: ['💭'], titulo: 'Tres voces para cerrar', duracionMin: 8 },
+];
+
+const ordenarDeteccion: DataOrdenar = {
+  titulo: 'Ordena cómo se detecta la atmósfera de un exoplaneta',
+  instrucciones: 'Acabas de leer el método. Une el tránsito (Tomo 1) con la espectroscopía (módulo anterior) ordenando los seis pasos.',
+  pasos: [
+    'El exoplaneta pasa justo por delante de su estrella (un tránsito).',
+    'Parte de la luz de la estrella atraviesa el delgado borde de la atmósfera del planeta.',
+    'Los gases de esa atmósfera absorben ciertos colores de esa luz.',
+    'El telescopio capta la luz y la abre en su espectro.',
+    'Aparecen líneas negras nuevas que no estaban en la luz de la estrella sola.',
+    'Esas líneas revelan de qué gases está hecha la atmósfera del planeta.',
+  ],
+};
+
+const emparejarPlanetas: DataEmparejar = {
+  titulo: 'Relaciona cada planeta con su atmósfera',
+  instrucciones: 'Acabas de conocer cuatro mundos muy distintos. Conecta cada uno con su aire.',
+  etiquetaIzq: 'Planeta',
+  etiquetaDer: 'Su atmósfera',
+  pares: [
+    { izquierda: 'La Tierra', derecha: 'Nitrógeno y oxígeno: respirable y templada' },
+    { izquierda: 'Venus', derecha: 'CO₂ densísimo: un horno de ~465 °C' },
+    { izquierda: 'Marte', derecha: 'CO₂ tan tenue que casi no protege: frío y seco' },
+    { izquierda: 'Júpiter', derecha: 'Hidrógeno y helio: un gigante gaseoso sin suelo' },
+  ],
+};
+
+const emparejarConceptos: DataEmparejar = {
+  titulo: 'Repaso: relaciona cada concepto con su significado',
+  instrucciones: 'Cierra la lectura conectando los cinco conceptos clave de la estación con su definición.',
+  etiquetaIzq: 'Concepto',
+  etiquetaDer: 'Significado',
+  pares: [
+    { izquierda: 'Atmósfera', derecha: 'La capa de gases que envuelve un planeta' },
+    { izquierda: 'Efecto invernadero', derecha: 'Cuando la atmósfera atrapa calor y sube la temperatura' },
+    { izquierda: 'Biofirma', derecha: 'Un gas que podría ser una señal de vida' },
+    { izquierda: 'Espectroscopía de transmisión', derecha: 'Leer la atmósfera con la luz que la atraviesa' },
+    { izquierda: 'Exo-Tierra', derecha: 'Un exoplaneta parecido a la Tierra' },
+  ],
+};
+
+const actividadDetective: Actividad = {
+  numero: 1,
+  verbo: 'APLICA',
+  titulo: 'El detective de atmósferas',
+  tiempoMin: 10,
+  modalidad: 'individual',
+  pasos: [
+    'Tres telescopios analizaron tres exoplanetas. Planeta A: solo CO₂. Planeta B: hidrógeno y helio. Planeta C: oxígeno, vapor de agua y algo de metano.',
+    'Decide cuál es el mejor candidato a tener vida y escribe cuál descartas y por qué.',
+    'Justifica tu elección con el criterio de biofirma que leíste (oxígeno + agua + metano juntos son sospechosos de vida).',
+  ],
+  cuaderno: {
+    titulo: 'El detective de atmósferas',
+    formato: 'elección + justificación de cada planeta',
+    extension: '5 a 7 renglones',
+  },
+  criterios: [
+    'Eliges el Planeta C como mejor candidato.',
+    'Descartas A (solo CO₂, como Venus o Marte) y B (gigante gaseoso, sin suelo).',
+    'Tu justificación menciona que el oxígeno con metano y agua es un fuerte indicio de vida.',
+  ],
+};
+
+const actividadExoTierra: Actividad = {
+  numero: 2,
+  verbo: 'CREA',
+  titulo: 'Diseña una exo-Tierra',
+  tiempoMin: 12,
+  modalidad: 'individual',
+  pasos: [
+    'Inventa un exoplaneta: ponle nombre y decide a qué distancia está de su estrella.',
+    'Describe su atmósfera: ¿qué gases tiene? Decide si sería respirable, un horno o un congelador.',
+    'Argumenta si podría albergar vida y qué biofirma buscarías para confirmarlo.',
+  ],
+  cuaderno: {
+    titulo: 'Mi exo-Tierra',
+    formato: 'ficha del planeta (nombre, distancia, atmósfera) + argumento de habitabilidad',
+    extension: '8 a 10 renglones',
+  },
+  criterios: [
+    'Tu planeta tiene una atmósfera coherente con su distancia a la estrella.',
+    'Explicas si hay o no condiciones para la vida y por qué.',
+    'Nombras al menos una biofirma que buscarías en su aire.',
+  ],
+};
+
+const quiz: LabQuizData = {
+  tipo: 'quiz',
+  titulo: 'Pon a prueba lo que sabes',
+  instrucciones: 'Seis preguntas sobre lo que leíste. Recibirás una explicación en cada una.',
+  preguntas: [
+    {
+      enunciado: '¿Qué es una atmósfera?',
+      opciones: [
+        'El núcleo caliente de un planeta',
+        'La capa de gases que envuelve un planeta',
+        'Un anillo de rocas',
+        'La luz que emite un planeta',
+      ],
+      respuestaIndex: 1,
+      feedbackCorrecto: 'Exacto: es la capa de gases que rodea un planeta. La nuestra nos da el aire, nos protege y regula la temperatura.',
+      feedbackIncorrecto: 'Una atmósfera es la capa de gases que envuelve un planeta, como el aire que respiras alrededor de la Tierra.',
+    },
+    {
+      enunciado: 'La atmósfera de la Tierra es, sobre todo, de…',
+      opciones: ['Oxígeno puro', 'Nitrógeno y oxígeno', 'Dióxido de carbono', 'Hidrógeno y helio'],
+      respuestaIndex: 1,
+      feedbackCorrecto: 'Correcto: 78% nitrógeno y 21% oxígeno. Solo ese 21% de oxígeno es el que respiras.',
+      feedbackIncorrecto: 'Es 78% nitrógeno y 21% oxígeno. No es oxígeno puro: el gas más abundante es el nitrógeno.',
+    },
+    {
+      enunciado: 'En Venus, el CO₂ atrapa tanto calor que la superficie llega a ~465 °C. Eso es…',
+      opciones: ['El efecto invernadero descontrolado', 'Por estar cerca del Sol solamente', 'Un error de medición', 'Porque no tiene atmósfera'],
+      respuestaIndex: 0,
+      feedbackCorrecto: 'Así es: su densa atmósfera de CO₂ atrapa el calor. Venus es la gran advertencia del efecto invernadero.',
+      feedbackIncorrecto: 'Es el efecto invernadero: su atmósfera de CO₂ atrapa el calor. Por eso Venus es más caliente incluso que Mercurio.',
+    },
+    {
+      enunciado: 'Para leer la atmósfera de un exoplaneta, combinamos…',
+      opciones: [
+        'Un viaje espacial y una sonda',
+        'El tránsito del planeta y la espectroscopía de su luz',
+        'Una foto con mucho zoom',
+        'El sonido que emite',
+      ],
+      respuestaIndex: 1,
+      feedbackCorrecto: '¡Eso es! Cuando el planeta transita, su atmósfera filtra la luz; leemos las líneas que faltan en el espectro.',
+      feedbackIncorrecto: 'Se unen el tránsito (Tomo 1) y la espectroscopía (módulo anterior): la luz que cruza la atmósfera trae sus huellas.',
+    },
+    {
+      enunciado: '¿Cuál sería una fuerte señal de vida (biofirma) en otro planeta?',
+      opciones: [
+        'Mucho CO₂ solo',
+        'Hidrógeno y helio',
+        'Oxígeno junto con metano y agua',
+        'Que tenga anillos',
+      ],
+      respuestaIndex: 2,
+      feedbackCorrecto: 'Correcto: oxígeno con metano es muy sospechoso, porque se destruyen entre sí; si ambos siguen ahí, algo los repone… quizá la vida.',
+      feedbackIncorrecto: 'La pista fuerte es oxígeno + metano (y agua) a la vez: como se destruyen mutuamente, que coexistan sugiere que la vida los repone.',
+    },
+    {
+      enunciado: 'El telescopio James Webb hoy estudia atmósferas de exoplanetas. Ante una posible biofirma, la ciencia…',
+      opciones: [
+        'Anuncia de inmediato que hay extraterrestres',
+        'Es prudente y descarta primero las causas sin vida',
+        'Ignora el dato',
+        'Deja de mirar ese planeta',
+      ],
+      respuestaIndex: 1,
+      feedbackCorrecto: 'Sí: una biofirma es un indicio, no una prueba. La buena ciencia es prudente y verifica antes de afirmar.',
+      feedbackIncorrecto: 'La ciencia es prudente: una biofirma es un indicio que hay que confirmar descartando causas no vivas. No se anuncia a la ligera.',
+    },
+  ],
+};
+
+const triangulo: Triangulo = {
+  dussel: {
+    autor: 'Enrique Dussel',
+    lente: 'lente del nosotros',
+    cita: 'Buscamos otra Tierra mientras descuidamos la única que nos sostiene; mirar lejos no puede ser excusa para no mirar aquí.',
+    preguntaEspejo:
+      'Gastamos esfuerzo en hallar mundos habitables. ¿Cuidamos con el mismo empeño el aire de nuestra propia casa?',
+  },
+  estoico: {
+    autor: 'Marco Aurelio',
+    lente: 'lente del cuidado interior',
+    cita: 'Todo lo que respiras lo compartes con todos los seres; el aire no es tuyo, es de todos.',
+    preguntaEspejo:
+      'Cada respiro depende de una atmósfera que no fabricaste. ¿Qué tan agradecido vivo por algo tan invisible y tan tuyo a la vez?',
+  },
+  floridi: {
+    autor: 'Luciano Floridi',
+    lente: 'lente de la infoesfera',
+    cita: 'El aire de un planeta es un mensaje escrito en gases; buscar vida es buscar a otro autor en el silencio del cosmos.',
+    preguntaEspejo:
+      'Si hallar una sola biofirma cambiaría nuestra idea de estar solos, ¿qué responsabilidad trae saber leer ese mensaje?',
+  },
+};
+
+const cincoDimensiones: CincoDimensiones = {
+  personal:
+    'Ahora sabes que el aire invisible que te rodea —tu atmósfera— es lo que te mantiene vivo, y que ese mismo tipo de aire es lo que buscamos en otros mundos.',
+  emocional:
+    'Pensar que quizá no estamos solos asombra; pensar que la Tierra es, por ahora, el único hogar con vida, conmueve y compromete.',
+  ciudadana:
+    'Lo que le pasó a Venus por su CO₂ es la advertencia del cambio climático. Entender atmósferas ajenas nos enseña a cuidar la propia.',
+  local:
+    'El aire que el campesino del Valle lee antes de la lluvia es la misma atmósfera que regula tu clima. Cuidar el aire de Cartago es ciencia y es deber.',
+  intergeneracional:
+    'Tus abuelos leían el aire para sembrar y cosechar; tú aprendes a leer el aire de otros planetas. Heredas el oficio de interrogar lo invisible.',
+};
+
+// Mundos para el bloque de lectura comparada de atmósferas.
+const planetas = [
+  { nombre: 'La Tierra', emoji: '🌍', texto: 'Nitrógeno (78%) y oxígeno (21%). Es respirable, nos protege de la radiación y mantiene una temperatura templada. La única que conocemos con vida.' },
+  { nombre: 'Venus', emoji: '🟠', texto: 'Casi todo CO₂, densísima. Atrapa tanto calor (efecto invernadero) que su superficie llega a ~465 °C: más caliente que un horno. Una advertencia.' },
+  { nombre: 'Marte', emoji: '🔴', texto: 'También CO₂, pero tan tenue que casi no protege ni abriga. Frío y seco. Alguna vez tuvo más aire y agua líquida.' },
+  { nombre: 'Júpiter', emoji: '🟤', texto: 'Hidrógeno y helio, como una estrella que no llegó a encender. Es un gigante gaseoso: no tiene superficie donde pararse.' },
+];
+
+// Pasos visuales de la espectroscopía de transmisión.
+const pasosTransmision = [
+  { emoji: '🌟', texto: 'La estrella emite su luz completa.' },
+  { emoji: '🪐', texto: 'Al transitar, la atmósfera del planeta absorbe ciertos colores.' },
+  { emoji: '🔭', texto: 'El telescopio ve el espectro con líneas: las huellas de esos gases.' },
+];
+---
+
+<BaseLayout
+  title="Tomo 2 · Estación 3 · Señales de vida en la atmósfera — Salomé · ConectaTE"
+  description="Qué es una atmósfera, cómo se comparan las de la Tierra, Venus y Marte, y cómo la luz que atraviesa el aire de un exoplaneta revela sus gases y posibles señales de vida (biofirmas). Estación del programa Salomé (Tomo 2) adaptada al modelo MILC."
+  ogType="article"
+>
+  <article class="pt-12 pb-20">
+    <div class="bento-container max-w-5xl">
+      <div class="max-w-3xl mx-auto">
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-sm font-semibold mb-8 flex-wrap" style="color: var(--fg-muted);">
+        <a href={base || '/'} class="hover:opacity-60 transition-opacity">Inicio</a>
+        <span>/</span>
+        <a href={`${base}/explora`} class="hover:opacity-60 transition-opacity">Explora</a>
+        <span>/</span>
+        <a href={`${base}/explora/salome`} class="hover:opacity-60 transition-opacity">Salomé</a>
+        <span>/</span>
+        <span style="color: var(--fg);">Tomo 2 · Estación 3</span>
+      </nav>
+
+      <!-- Hero -->
+      <div class="bento-card-color bg-bento-purple text-white mb-10">
+        <div class="flex flex-wrap gap-2 mb-4">
+          <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">🌍 Estación 3 · Tomo 2</span>
+          <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">Atmósferas y vida</span>
+          <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">~80 min</span>
+        </div>
+        <h1 class="heading-giant text-balance mb-3">Señales de vida en la atmósfera</h1>
+        <p class="text-base md:text-lg font-semibold opacity-95 leading-relaxed">
+          Qué es el aire de un planeta, por qué la Tierra es habitable y Venus un
+          horno, y cómo la luz que atraviesa la atmósfera de un mundo lejano podría
+          traernos la noticia más grande: que no estamos solos.
+        </p>
+      </div>
+
+      <!-- 🌱 Saber ancestral -->
+      <SaberAncestralBlock data={saberAncestral} />
+
+      <!-- 🗺 Ruta -->
+      <MapaRutaBlock estaciones={mapaRuta} />
+
+      <!-- Propósito -->
+      <div class="bento-card mb-6">
+        <span class="chip-bento mb-4">🎯 Lo que vas a poder hacer</span>
+        <ul class="space-y-3 mt-3">
+          {[
+            'IDENTIFICAR qué es una atmósfera y para qué sirve.',
+            'EXPLICAR por qué la Tierra es habitable y Venus un horno.',
+            'RELACIONAR cada planeta con su atmósfera y ORDENAR cómo se detecta la de un exoplaneta.',
+            'APLICAR el criterio de biofirma para juzgar si un mundo podría tener vida.',
+            'CREAR el diseño de una exo-Tierra y argumentar su habitabilidad.',
+          ].map((d) => (
+            <li class="flex items-start gap-3">
+              <span class="w-6 h-6 rounded-md bg-bento-lime/30 text-black flex items-center justify-center text-xs font-black shrink-0 mt-0.5">✓</span>
+              <span class="text-sm md:text-base leading-relaxed">{d}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Pregunta detonante -->
+      <div class="bento-card-color bg-bento-cyan mb-10">
+        <span class="chip-bento mb-3 bg-black/10">💡 La pregunta que abre todo</span>
+        <p class="text-lg md:text-xl font-black leading-snug">
+          ¿Cómo podríamos saber si en un planeta a billones de kilómetros hay vida, sin
+          enviar a nadie, sin una sola foto de su superficie?
+        </p>
+        <p class="text-sm leading-relaxed mt-3 opacity-90">
+          La respuesta está en su aire — y en la luz que lo atraviesa.
+        </p>
+      </div>
+
+      <!-- 👁 Observa · video en proceso en RECA -->
+      <div class="bento-card mb-6 flex items-start gap-3">
+        <span class="text-2xl shrink-0" aria-hidden="true">🎬</span>
+        <div>
+          <div class="font-black text-sm">El video de este módulo está en camino</div>
+          <p class="text-sm leading-relaxed mt-1" style="color: var(--fg-muted);">
+            RECA aún está produciendo los videos del Tomo 2. Mientras llega, esta
+            estación es autosuficiente: tienes toda la lectura que necesitas. Y aquí
+            abajo está la guía oficial para profundizar.
+          </p>
+        </div>
+      </div>
+      <GuiasRECA tomo={2} modulo={3} />
+
+      <!-- Puente -->
+      <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+        Ya sabes leer la luz (módulo anterior). Ahora la vas a usar para lo más
+        ambicioso del tomo: oler el aire de otros mundos. Empecemos por el aire que ya conoces.
+      </p>
+
+      <!-- 📖 LEE 1 · Qué es una atmósfera -->
+      <section class="bento-card mb-6">
+        <span class="chip-bento mb-4">📖 Lee · ¿Qué es una atmósfera y para qué sirve?</span>
+        <div class="space-y-4 text-sm md:text-base leading-relaxed">
+          <p>
+            Una <strong>atmósfera</strong> es la capa de <strong>gases</strong> que envuelve un planeta,
+            sostenida por su gravedad. La de la Tierra es una mezcla de <strong>nitrógeno</strong>
+            (78%) y <strong>oxígeno</strong> (21%), con un 1% de otros gases. Ese delgado colchón
+            de aire —comparado con el planeta, es más fino que la cáscara de una
+            manzana— hace tres trabajos enormes.
+          </p>
+          <p>
+            Primero, te da el <strong>oxígeno</strong> que respiras. Segundo, te <strong>protege</strong>:
+            filtra la radiación dañina del Sol y desintegra la mayoría de meteoritos
+            antes de que toquen el suelo. Tercero, <strong>regula la temperatura</strong>: atrapa
+            algo de calor para que la noche no sea un congelador. Sin atmósfera, la
+            Tierra sería un páramo muerto como la Luna.
+          </p>
+        </div>
+      </section>
+
+      <!-- 📖 LEE 2 · Cada planeta su aire -->
+      <section class="bento-card mb-6">
+        <span class="chip-bento mb-4">📖 Lee · Cada planeta, su propio aire</span>
+        <p class="text-sm md:text-base leading-relaxed mb-4">
+          No hay dos atmósferas iguales, y de ellas depende que un mundo sea un hogar o
+          un infierno. Compara estos cuatro:
+        </p>
+        <ul class="space-y-3">
+          {planetas.map((p) => (
+            <li class="flex items-start gap-3 p-3 rounded-bento-sm" style="background: var(--bg);">
+              <span class="text-2xl shrink-0" aria-hidden="true">{p.emoji}</span>
+              <span class="text-sm md:text-base leading-relaxed"><strong>{p.nombre}:</strong> {p.texto}</span>
+            </li>
+          ))}
+        </ul>
+        <p class="text-sm md:text-base leading-relaxed mt-4">
+          Venus y la Tierra son casi del mismo tamaño y nacieron vecinas; sin embargo,
+          su atmósfera las volvió mundos opuestos. <strong>El aire lo decide casi todo.</strong>
+        </p>
+      </section>
+
+      <!-- 🔎 Relaciona planetas -->
+      <div class="mb-6">
+        <LabEmparejar data={emparejarPlanetas} id="empareja-planetas" />
+      </div>
+
+      <!-- Puente -->
+      <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+        Conoces el aire de los vecinos. Pero, ¿cómo conocemos el aire de un planeta que
+        ni siquiera podemos ver, alrededor de otra estrella?
+      </p>
+
+      <!-- 📖 LEE 3 · Cómo se lee el aire de otro mundo -->
+      <section class="bento-card mb-6">
+        <span class="chip-bento mb-4">📖 Lee · Cómo se lee el aire de otro mundo</span>
+        <div class="space-y-4 text-sm md:text-base leading-relaxed">
+          <p>
+            Aquí se unen las dos herramientas que ya tienes. Del Tomo 1: el
+            <strong>tránsito</strong>, cuando un exoplaneta pasa por delante de su estrella. Del
+            módulo anterior: la <strong>espectroscopía</strong>, leer la luz por sus colores. Júntalas
+            y obtienes la <strong>espectroscopía de transmisión</strong>.
+          </p>
+          <p>
+            Durante el tránsito, una pizca de la luz de la estrella <strong>atraviesa el borde
+            de la atmósfera</strong> del planeta antes de llegarnos. Esos gases le roban colores
+            muy precisos. Comparando la luz de la estrella <em>sola</em> con la luz <em>filtrada por
+            el planeta</em>, vemos qué líneas nuevas aparecen — y esas líneas dicen exactamente
+            qué gases hay en ese aire.
+          </p>
+        </div>
+
+        <!-- Visualización: pasos de la transmisión -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-5">
+          {pasosTransmision.map((s, i) => (
+            <div class="p-4 rounded-bento-sm flex flex-col gap-2" style="background: var(--bg);">
+              <div class="flex items-center gap-2">
+                <span class="text-2xl" aria-hidden="true">{s.emoji}</span>
+                <span class="w-6 h-6 rounded-full bg-bento-purple text-white flex items-center justify-center text-xs font-black shrink-0">{i + 1}</span>
+              </div>
+              <span class="text-xs leading-relaxed" style="color: var(--fg-muted);">{s.texto}</span>
+            </div>
+          ))}
+        </div>
+
+        <div class="space-y-4 text-sm md:text-base leading-relaxed mt-5">
+          <p>
+            ¿Y qué buscamos en ese aire? <strong>Biofirmas</strong>: gases que serían una señal de
+            vida. El <strong>oxígeno</strong> en gran cantidad es difícil de mantener sin algo que lo
+            produzca (en la Tierra lo fabrican las plantas y las algas). Y si junto al
+            oxígeno aparece <strong>metano</strong> —dos gases que se destruyen entre sí—, la sospecha
+            crece: si ambos siguen ahí, <strong>algo los está reponiendo</strong>. Quizá la vida.
+          </p>
+          <p>
+            Esto no es ciencia ficción: el telescopio espacial <strong>James Webb</strong> ya analiza
+            atmósferas de exoplanetas y ha detectado vapor de agua y CO₂. Pero la ciencia
+            es <strong>prudente</strong>: una biofirma es un <em>indicio</em>, no una prueba. Antes de
+            anunciar vida, hay que descartar toda causa que no la necesite.
+          </p>
+        </div>
+      </section>
+
+      <!-- 🔎 Ordena la detección -->
+      <div class="mb-6">
+        <LabOrdenar data={ordenarDeteccion} id="ordena-deteccion" />
+      </div>
+
+      <!-- 🔎 Relaciona conceptos (repaso integrador) -->
+      <div class="mb-6">
+        <LabEmparejar data={emparejarConceptos} id="empareja-conceptos-atmosfera" />
+      </div>
+
+      <!-- ✅ Quiz -->
+      <div class="mb-6">
+        <LabQuiz data={quiz} id="salome-atmosfera-quiz" />
+      </div>
+
+      <!-- Puente -->
+      <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+        Tienes el método y el criterio. Ahora ponte en los zapatos de quien busca vida
+        ahí afuera.
+      </p>
+
+      <!-- ✏️ Actividad APLICA -->
+      <ActividadBlock data={actividadDetective} />
+
+      <!-- ✏️ Actividad CREA -->
+      <ActividadBlock data={actividadExoTierra} />
+
+      <!-- Puente -->
+      <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+        Buscar aire con vida en otros mundos cambia cómo miras el de tu propio planeta.
+        Cerremos pensando en eso.
+      </p>
+      </div>
+
+      <!-- 💭 Triángulo (ancho completo) -->
+      <TrianguloBlock data={triangulo} />
+
+      <!-- 🌱 Cinco dimensiones (ancho completo) -->
+      <CincoDimensionesBlock data={cincoDimensiones} />
+
+      <div class="max-w-3xl mx-auto">
+      <!-- Créditos -->
+      <div class="bento-card mb-10 border-l-4 border-bento-purple">
+        <span class="chip-bento mb-3">🛰 Créditos</span>
+        <p class="text-sm leading-relaxed mt-2" style="color: var(--fg-muted);">
+          Esta estación adapta al modelo MILC los conceptos del Módulo 3 («Señales de
+          vida en la atmósfera») del <strong style="color: var(--fg);">Tomo 2</strong> del proyecto
+          <strong style="color: var(--fg);">Salomé: investigación de exoplanetas</strong>, de la Association Ágora de
+          Hipatia (Suiza), ejecutado en Colombia por <strong style="color: var(--fg);">RECA</strong>. El cómic y las
+          fichas originales son de sus autores.
+        </p>
+        <a href={recursosOficiales} target="_blank" rel="noopener" class="inline-flex items-center gap-2 mt-4 font-black text-sm text-bento-blue hover:opacity-70 transition-opacity">
+          Leer el cómic y ver el material oficial
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
+          </svg>
+        </a>
+      </div>
+
+      <!-- Volver -->
+      <a href={`${base}/explora/salome`} class="bento-card-hover flex items-center gap-4">
+        <svg class="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 12H5"></path>
+          <path d="m12 19-7-7 7-7"></path>
+        </svg>
+        <div>
+          <div class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">Volver al programa</div>
+          <div class="font-black text-lg">Salomé</div>
+        </div>
+      </a>
+      </div>
+    </div>
+  </article>
+</BaseLayout>

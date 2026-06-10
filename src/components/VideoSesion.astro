@@ -1,11 +1,15 @@
 ---
 /**
- * Bloque 👁 OBSERVA · Video de sesión (YouTube, lazy-load).
+ * Bloque 👁 OBSERVA · Video de sesión (enlace a YouTube).
  *
- * Usa el patrón "facade": muestra la miniatura del video con un botón ▶ y
- * carga el iframe de YouTube SOLO al hacer clic. Así la página carga rápido y
- * funciona offline-first (el video es un extra cuando hay conexión). Los
- * subtítulos en español se piden por defecto.
+ * Muchos videos educativos llevan música licenciada que BLOQUEA la
+ * reproducción incrustada fuera de YouTube (p. ej. "contenido de
+ * LatinAutor-UMPG"). Para que el video SIEMPRE funcione, este bloque no
+ * incrusta el reproductor: muestra una miniatura atractiva que abre el video
+ * en YouTube (pestaña nueva), con los subtítulos en español activados.
+ *
+ * Ventaja extra: cero peso de terceros en la carga y nada que rompa el
+ * offline-first (solo se carga la miniatura, con lazy-load).
  *
  * Tipo propio (no depende del schema de guías); reutilizable en cualquier
  * página Astro: Explora, guías, etc.
@@ -31,10 +35,8 @@ const { data } = Astro.props;
 
 // Miniatura de YouTube (no requiere API key).
 const thumb = `https://i.ytimg.com/vi/${data.youtubeId}/hqdefault.jpg`;
-// Embed: subtítulos ES por defecto, dominio sin cookies, sin sugeridos externos.
-const embedSrc =
-  `https://www.youtube-nocookie.com/embed/${data.youtubeId}` +
-  `?cc_load_policy=1&cc_lang_pref=es&hl=es&rel=0&modestbranding=1&autoplay=1`;
+// Abrir en YouTube con subtítulos activados (cc_load_policy=1) e interfaz en español.
+const watchUrl = `https://www.youtube.com/watch?v=${data.youtubeId}&cc_load_policy=1&hl=es`;
 ---
 
 <section class="bento-card mb-6" aria-labelledby={`video-${data.youtubeId}-titulo`}>
@@ -52,34 +54,35 @@ const embedSrc =
     <p class="text-sm leading-relaxed mb-4" style="color: var(--fg-muted);">{data.descripcion}</p>
   )}
 
-  <!-- Facade: miniatura + play; el iframe se inyecta al hacer clic -->
-  <div
-    class="relative w-full rounded-bento-sm overflow-hidden bg-black"
+  <!-- Tarjeta-enlace: miniatura + play; abre el video en YouTube -->
+  <a
+    href={watchUrl}
+    target="_blank"
+    rel="noopener"
+    class="group relative block w-full rounded-bento-sm overflow-hidden bg-black"
     style="aspect-ratio: 16 / 9;"
-    data-video-facade
-    data-embed={embedSrc}
+    aria-label={`Ver en YouTube: ${data.titulo} (se abre en una pestaña nueva)`}
   >
-    <button
-      type="button"
-      data-video-play
-      class="group absolute inset-0 w-full h-full flex items-center justify-center"
-      aria-label={`Reproducir video: ${data.titulo}`}
-    >
-      <img
-        src={thumb}
-        alt=""
-        loading="lazy"
-        class="absolute inset-0 w-full h-full object-cover opacity-85 group-hover:opacity-60 transition-opacity"
-      />
-      <span class="relative z-10 w-16 h-16 rounded-full bg-bento-pink text-white flex items-center justify-center shadow-bento group-hover:scale-110 transition-transform">
+    <img
+      src={thumb}
+      alt=""
+      loading="lazy"
+      class="absolute inset-0 w-full h-full object-cover opacity-85 group-hover:opacity-60 transition-opacity"
+    />
+    <span class="relative z-10 flex items-center justify-center w-full h-full">
+      <span class="w-16 h-16 rounded-full bg-bento-pink text-white flex items-center justify-center shadow-bento group-hover:scale-110 transition-transform">
         <svg class="w-7 h-7 ml-1" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>
       </span>
-    </button>
-  </div>
+    </span>
+    <span class="absolute bottom-0 left-0 right-0 flex items-center gap-2 px-4 py-2.5 bg-black/65 text-white text-xs font-bold backdrop-blur-sm">
+      <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.5 15.5v-7l6.3 3.5-6.3 3.5z"></path></svg>
+      Ver en YouTube · subtítulos en español
+    </span>
+  </a>
 
   <div class="flex items-center gap-4 mt-3 flex-wrap">
     <span class="text-xs leading-relaxed" style="color: var(--fg-muted);">
-      Subtítulos en español. El video se carga al tocar play (requiere conexión).
+      Se abre en YouTube, en una pestaña nueva.
     </span>
     {data.resumenUrl && (
       <a
@@ -98,26 +101,3 @@ const embedSrc =
     )}
   </div>
 </section>
-
-<script>
-  document.querySelectorAll('[data-video-facade]').forEach((facade) => {
-    const btn = facade.querySelector('[data-video-play]');
-    btn?.addEventListener('click', () => {
-      const src = facade.getAttribute('data-embed');
-      if (!src) return;
-      const iframe = document.createElement('iframe');
-      iframe.setAttribute('src', src);
-      iframe.setAttribute('title', 'Video de RECA');
-      iframe.setAttribute(
-        'allow',
-        'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share',
-      );
-      iframe.setAttribute('allowfullscreen', '');
-      iframe.setAttribute('loading', 'lazy');
-      iframe.className = 'absolute inset-0 w-full h-full';
-      iframe.style.border = '0';
-      facade.innerHTML = '';
-      facade.appendChild(iframe);
-    });
-  });
-</script>

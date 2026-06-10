@@ -1,13 +1,10 @@
 ---
 /**
- * Laboratorio · Zona habitable.
+ * Laboratorio · Zona habitable (look mapa estelar).
  *
- * Una estrella tipo Sol con su "zona habitable" (la franja donde podría existir
- * agua líquida). El estudiante mueve un planeta con un slider de distancia: si
- * cae en la franja verde, podría tener agua; muy cerca se evapora, muy lejos se
- * congela. Conecta con la idea de exo-Tierra.
- *
- * Vista cenital del sistema. Cálculo en el cliente. Tipo propio.
+ * Vista cenital de un sistema sobre un cielo nocturno: la estrella resplandece
+ * en el centro, una franja verde marca la zona habitable y el estudiante mueve
+ * un planeta con un slider. Si cae en la franja, podría tener agua líquida.
  */
 export interface DataZonaHabitable {
   titulo: string;
@@ -22,12 +19,16 @@ interface Props {
 const { data, id } = Astro.props;
 
 const W = 560;
-const H = 300;
+const H = 320;
 const cx = W / 2;
 const cy = H / 2;
-const escala = 40; // px por UA
+const escala = 42; // px por UA
 const rIntHab = 0.9 * escala;
 const rExtHab = 1.5 * escala;
+
+let seed = 11;
+const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
+const fondo = Array.from({ length: 44 }, () => ({ cx: +(rnd() * W).toFixed(1), cy: +(rnd() * H).toFixed(1), r: +(0.4 + rnd() * 1.2).toFixed(1), op: +(0.15 + rnd() * 0.5).toFixed(2) }));
 ---
 
 <div class="bento-card" data-lab-zona={id}>
@@ -35,30 +36,51 @@ const rExtHab = 1.5 * escala;
   <h3 class="text-xl md:text-2xl font-black tracking-tight leading-tight">{data.titulo}</h3>
   <p class="text-sm leading-relaxed mt-2 mb-4" style="color: var(--fg-muted);">{data.instrucciones}</p>
 
-  <div class="rounded-bento-sm p-3" style="background: var(--bg);">
+  <div class="rounded-bento-sm overflow-hidden" style="line-height:0;">
     <svg viewBox={`0 0 ${W} ${H}`} class="w-full h-auto" role="img"
       aria-label="Sistema visto desde arriba: una estrella en el centro con su zona habitable (franja verde) y un planeta cuya distancia ajustas.">
-      <!-- Zona habitable (anillo verde) -->
-      <circle cx={cx} cy={cy} r={(rIntHab + rExtHab) / 2} fill="none" stroke="#3FbF52" stroke-width={rExtHab - rIntHab} opacity="0.28" />
-      <text x={cx} y={cy - rExtHab - 8} text-anchor="middle" font-size="11" font-weight="800" fill="#2a8f3a">💧 zona habitable</text>
+      <defs>
+        <linearGradient id={`${id}-sky`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#0b1030" />
+          <stop offset="100%" stop-color="#1a1248" />
+        </linearGradient>
+        <radialGradient id={`${id}-star`}>
+          <stop offset="0%" stop-color="#FFF3C4" />
+          <stop offset="55%" stop-color="#FFC93A" />
+          <stop offset="100%" stop-color="#FF8A00" />
+        </radialGradient>
+        <filter id={`${id}-glow`} x="-80%" y="-80%" width="260%" height="260%">
+          <feGaussianBlur stdDeviation="5" />
+        </filter>
+      </defs>
 
-      <!-- Órbita del planeta -->
-      <circle data-zona-orbita cx={cx} cy={cy} r={2 * escala} fill="none" stroke="var(--fg-muted)" stroke-width="1" stroke-dasharray="3 4" />
+      <rect x="0" y="0" width={W} height={H} fill={`url(#${id}-sky)`} />
+      {fondo.map((s) => (<circle cx={s.cx} cy={s.cy} r={s.r} fill="#ffffff" opacity={s.op} />))}
+
+      <!-- Zona habitable -->
+      <circle cx={cx} cy={cy} r={(rIntHab + rExtHab) / 2} fill="none" stroke="#37D45A" stroke-width={rExtHab - rIntHab} opacity="0.16" filter={`url(#${id}-glow)`} />
+      <circle cx={cx} cy={cy} r={(rIntHab + rExtHab) / 2} fill="none" stroke="#37D45A" stroke-width={rExtHab - rIntHab} opacity="0.22" />
+      <text x={cx} y={cy - rExtHab - 9} text-anchor="middle" font-size="11" font-weight="800" fill="#6BE88A">💧 zona habitable</text>
+
+      <!-- Órbita -->
+      <circle data-zona-orbita cx={cx} cy={cy} r={2 * escala} fill="none" stroke="#aab2d5" stroke-width="1" stroke-dasharray="3 5" opacity="0.6" />
 
       <!-- Estrella -->
-      <circle cx={cx} cy={cy} r="15" fill="#FFC93A" />
-      <circle cx={cx} cy={cy} r="15" fill="none" stroke="#FF8A00" stroke-width="2" opacity="0.5" />
+      <circle cx={cx} cy={cy} r="26" fill="#FFC93A" opacity="0.5" filter={`url(#${id}-glow)`} />
+      <circle cx={cx} cy={cy} r="15" fill={`url(#${id}-star)`} />
 
       <!-- Planeta -->
-      <circle data-zona-planeta cx={cx + 2 * escala} cy={cy} r="7" fill="#0066FF" stroke="var(--fg)" stroke-width="1.5" />
+      <g data-zona-planeta transform={`translate(${2 * escala}, 0)`}>
+        <circle cx={cx} cy={cy} r="13" data-zona-halo fill="#0066FF" opacity="0.5" filter={`url(#${id}-glow)`} />
+        <circle cx={cx} cy={cy} r="7" data-zona-cuerpo fill="#3b82f6" stroke="#ffffff" stroke-width="1.2" />
+        <circle cx={cx - 2.4} cy={cy - 2.4} r="2.2" fill="#ffffff" opacity="0.7" />
+      </g>
 
-      <!-- Marcas de distancia -->
-      <text x={cx + 1 * escala} y={cy + 18} text-anchor="middle" font-size="9" font-weight="700" fill="var(--fg-muted)" opacity="0.6">1 UA</text>
-      <text x={cx + 3 * escala} y={cy + 18} text-anchor="middle" font-size="9" font-weight="700" fill="var(--fg-muted)" opacity="0.6">3 UA</text>
+      <text x={cx + 1 * escala} y={cy + 20} text-anchor="middle" font-size="9" font-weight="700" fill="#9aa2c8" opacity="0.7">1 UA</text>
+      <text x={cx + 3 * escala} y={cy + 20} text-anchor="middle" font-size="9" font-weight="700" fill="#9aa2c8" opacity="0.7">3 UA</text>
     </svg>
   </div>
 
-  <!-- Control -->
   <div class="mt-4">
     <label class="flex items-center justify-between text-sm font-black mb-1" for={`${id}-d`}>
       <span>📏 Distancia del planeta a su estrella</span>
@@ -68,7 +90,6 @@ const rExtHab = 1.5 * escala;
     <div class="flex justify-between text-[10px] font-bold mt-0.5" style="color: var(--fg-muted);"><span>cerca (caliente)</span><span>lejos (frío)</span></div>
   </div>
 
-  <!-- Veredicto -->
   <div data-zona-veredicto class="mt-4 p-4 rounded-bento-sm flex items-start gap-3" style="background: var(--bg); border: 2px solid var(--border);">
     <span data-zona-emoji class="text-2xl shrink-0">🌍</span>
     <div>
@@ -85,6 +106,8 @@ const rExtHab = 1.5 * escala;
   if (root) {
     const orbita = root.querySelector('[data-zona-orbita]');
     const planeta = root.querySelector('[data-zona-planeta]');
+    const cuerpo = root.querySelector('[data-zona-cuerpo]');
+    const halo = root.querySelector('[data-zona-halo]');
     const slider = root.querySelector('[data-slider-dist]');
     const outDist = root.querySelector('[data-out-dist]');
     const emoji = root.querySelector('[data-zona-emoji]');
@@ -95,9 +118,8 @@ const rExtHab = 1.5 * escala;
       const d = parseFloat(slider.value);
       const r = d * escala;
       orbita.setAttribute('r', r.toFixed(1));
-      planeta.setAttribute('cx', (cx + r).toFixed(1));
+      planeta.setAttribute('transform', `translate(${r.toFixed(1)}, 0)`);
       if (outDist) outDist.textContent = d.toFixed(1) + ' UA';
-      // temperatura de equilibrio aproximada (°C)
       const tC = Math.round(279 / Math.sqrt(d) - 273);
       let em, ti, tx, col;
       if (d < 0.9) {
@@ -105,7 +127,7 @@ const rExtHab = 1.5 * escala;
         tx = 'A esta distancia hace ~' + tC + ' °C: el agua se evaporaría. Es la zona de los «Júpiter calientes».';
       } else if (d <= 1.5) {
         em = '💧'; ti = '¡Zona habitable!'; col = '#1a8f00';
-        tx = 'A ~' + tC + ' °C el agua puede ser líquida. Aquí podría existir vida como la conocemos: sería una candidata a exo-Tierra.';
+        tx = 'A ~' + tC + ' °C el agua puede ser líquida. Aquí podría existir vida: sería candidata a exo-Tierra.';
       } else {
         em = '❄️'; ti = 'Demasiado frío'; col = '#0066FF';
         tx = 'A esta distancia hace ~' + tC + ' °C: el agua se congelaría. Demasiado lejos de la estrella.';
@@ -113,7 +135,9 @@ const rExtHab = 1.5 * escala;
       if (emoji) emoji.textContent = em;
       if (titulo) { titulo.textContent = ti; titulo.style.color = col; }
       if (texto) texto.textContent = tx;
-      if (planeta) planeta.setAttribute('fill', d >= 0.9 && d <= 1.5 ? '#1a8f00' : '#0066FF');
+      const pc = d >= 0.9 && d <= 1.5 ? '#37D45A' : d < 0.9 ? '#FF6A45' : '#3b82f6';
+      if (cuerpo) cuerpo.setAttribute('fill', pc);
+      if (halo) halo.setAttribute('fill', pc);
     }
 
     slider?.addEventListener('input', redibujar);

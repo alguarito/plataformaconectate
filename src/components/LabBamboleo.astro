@@ -1,0 +1,161 @@
+---
+/**
+ * Laboratorio · Bamboleo de la estrella (método de velocidades radiales).
+ *
+ * El segundo método de detección: un planeta hace que su estrella se bambolee
+ * (se acerca y se aleja de nosotros), y eso se mide como una curva de velocidad
+ * en el tiempo —una sinusoide—. El estudiante mueve la masa del planeta
+ * (→ amplitud del bamboleo) y su distancia (→ período), y la onda responde en
+ * vivo. Complementa al método de tránsito: el tránsito da el TAMAÑO; el
+ * bamboleo, la MASA.
+ *
+ * Curva calculada en el cliente (interactivo). Tipo propio, reutilizable.
+ */
+export interface DataBamboleo {
+  titulo: string;
+  instrucciones: string;
+}
+
+interface Props {
+  data: DataBamboleo;
+  id: string;
+}
+
+const { data, id } = Astro.props;
+
+const W = 680;
+const H = 300;
+const ml = 62;
+const mr = 20;
+const mt = 26;
+const mb = 48;
+const tMax = 32;
+const vMax = 40; // m/s (eje de -40 a +40)
+const x0 = ml;
+const x1 = W - mr;
+const y0 = mt;
+const y1 = H - mb;
+const yCenter = (y0 + y1) / 2;
+const xScale = (t: number) => x0 + (t / tMax) * (x1 - x0);
+const yScale = (v: number) => yCenter - (v / vMax) * ((y1 - y0) / 2);
+
+const ticksX = [0, 8, 16, 24, 32];
+const ticksV = [-30, 0, 30];
+---
+
+<div class="bento-card" data-lab-bamboleo={id}>
+  <span class="chip-bento mb-2">📉 Laboratorio · Bamboleo de la estrella</span>
+  <h3 class="text-xl md:text-2xl font-black tracking-tight leading-tight">{data.titulo}</h3>
+  <p class="text-sm leading-relaxed mt-2 mb-4" style="color: var(--fg-muted);">{data.instrucciones}</p>
+
+  <div class="rounded-bento-sm p-3 overflow-x-auto" style="background: var(--bg);">
+    <svg viewBox={`0 0 ${W} ${H}`} class="w-full h-auto" style="min-width: 460px;" role="img"
+      aria-label="Curva de velocidad de la estrella: oscila entre acercarse (positivo) y alejarse (negativo); su amplitud depende de la masa del planeta y su período, de la distancia.">
+      {ticksV.map((v) => (
+        <g>
+          <line x1={x0} y1={yScale(v)} x2={x1} y2={yScale(v)} stroke="var(--border)" stroke-width="1" stroke-dasharray={v === 0 ? '0' : '3 4'} />
+          <text x={x0 - 8} y={yScale(v) + 4} text-anchor="end" font-size="11" font-weight="700" fill="var(--fg-muted)">{v}</text>
+        </g>
+      ))}
+      <text x={x0 - 30} y={yScale(28)} text-anchor="middle" font-size="10" font-weight="800" fill="#1a8f00">se acerca</text>
+      <text x={x0 - 30} y={yScale(-28)} text-anchor="middle" font-size="10" font-weight="800" fill="#FF2D87">se aleja</text>
+      <line x1={x0} y1={y1} x2={x1} y2={y1} stroke="var(--fg-muted)" stroke-width="1.5" />
+      {ticksX.map((t) => (
+        <g>
+          <line x1={xScale(t)} y1={y1} x2={xScale(t)} y2={y1 + 5} stroke="var(--fg-muted)" stroke-width="1.5" />
+          <text x={xScale(t)} y={y1 + 22} text-anchor="middle" font-size="12" font-weight="700" fill="var(--fg-muted)">{t}</text>
+        </g>
+      ))}
+      <text x={(x0 + x1) / 2} y={H - 6} text-anchor="middle" font-size="12" font-weight="800" fill="var(--fg)">Tiempo (días)</text>
+      <text transform={`rotate(-90 14 ${(y0 + y1) / 2})`} x="14" y={(y0 + y1) / 2} text-anchor="middle" font-size="11" font-weight="800" fill="var(--fg)">Velocidad (m/s)</text>
+
+      <polyline data-bamboleo-curva points="" fill="none" stroke="#0066FF" stroke-width="2.5" stroke-linejoin="round" />
+    </svg>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5">
+    <div>
+      <label class="flex items-center justify-between text-sm font-black mb-1" for={`${id}-m`}>
+        <span>⚖️ Masa del planeta</span>
+        <span data-out-masa style="color: var(--fg-muted);">1.0 × Júpiter</span>
+      </label>
+      <input id={`${id}-m`} data-slider-masa type="range" min="0.2" max="3" step="0.1" value="1" class="w-full" style="accent-color:#0066FF;" />
+      <div class="flex justify-between text-[10px] font-bold mt-0.5" style="color: var(--fg-muted);"><span>ligero</span><span>masivo</span></div>
+    </div>
+    <div>
+      <label class="flex items-center justify-between text-sm font-black mb-1" for={`${id}-d`}>
+        <span>📏 Distancia a la estrella</span>
+        <span data-out-periodo style="color: var(--fg-muted);">— días</span>
+      </label>
+      <input id={`${id}-d`} data-slider-dist type="range" min="0.04" max="0.16" step="0.005" value="0.1" class="w-full" style="accent-color:#FF6B35;" />
+      <div class="flex justify-between text-[10px] font-bold mt-0.5" style="color: var(--fg-muted);"><span>cerca</span><span>lejos</span></div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-3 gap-2 mt-5">
+    <div class="p-3 rounded-bento-sm text-center" style="background: var(--bg);">
+      <div class="text-[10px] font-black uppercase tracking-widest" style="color: var(--fg-muted);">Bamboleo</div>
+      <div data-out-amp class="font-black text-lg mt-1">—</div>
+    </div>
+    <div class="p-3 rounded-bento-sm text-center" style="background: var(--bg);">
+      <div class="text-[10px] font-black uppercase tracking-widest" style="color: var(--fg-muted);">Período</div>
+      <div data-out-periodo2 class="font-black text-lg mt-1">—</div>
+    </div>
+    <div class="p-3 rounded-bento-sm text-center" style="background: var(--bg);">
+      <div class="text-[10px] font-black uppercase tracking-widest" style="color: var(--fg-muted);">Da</div>
+      <div class="font-black text-sm mt-1 leading-tight">la masa del planeta</div>
+    </div>
+  </div>
+
+  <p class="text-xs leading-relaxed mt-4 p-3 rounded-bento-sm" style="background: var(--bg); color: var(--fg-muted);">
+    💡 Junto con el método de <strong style="color: var(--fg);">tránsito</strong> (que da el tamaño), el bamboleo da la <strong style="color: var(--fg);">masa</strong>.
+    Con tamaño y masa, los astrónomos calculan la <strong style="color: var(--fg);">densidad</strong> del planeta y saben si es rocoso o gaseoso.
+  </p>
+</div>
+
+<script define:vars={{ id, W, H, ml, mr, mt, mb, tMax, vMax }}>
+  const root = document.querySelector(`[data-lab-bamboleo="${id}"]`);
+  if (root) {
+    const x0 = ml, x1 = W - mr, y0 = mt, y1 = H - mb;
+    const yCenter = (y0 + y1) / 2;
+    const xS = (t) => x0 + (t / tMax) * (x1 - x0);
+    const yS = (v) => yCenter - (v / vMax) * ((y1 - y0) / 2);
+    const periodoDe = (dist) => Math.max(2, Math.round(365.25 * Math.pow(dist, 1.5)));
+
+    const poly = root.querySelector('[data-bamboleo-curva]');
+    const sM = root.querySelector('[data-slider-masa]');
+    const sD = root.querySelector('[data-slider-dist]');
+    const outMasa = root.querySelector('[data-out-masa]');
+    const outAmp = root.querySelector('[data-out-amp]');
+    const outPer = root.querySelector('[data-out-periodo]');
+    const outPer2 = root.querySelector('[data-out-periodo2]');
+
+    function tipo(m) {
+      if (m < 0.3) return 'tipo Neptuno';
+      if (m <= 1.6) return 'gigante (tipo Júpiter)';
+      return 'súper-Júpiter';
+    }
+
+    function redibujar() {
+      const masa = parseFloat(sM.value);
+      const dist = parseFloat(sD.value);
+      const periodo = periodoDe(dist);
+      const amp = Math.min(vMax * 0.92, masa * 12); // m/s
+      const pts = [];
+      const step = tMax / 240;
+      for (let t = 0; t <= tMax + 1e-9; t += step) {
+        const v = amp * Math.sin((2 * Math.PI * t) / periodo);
+        pts.push(xS(t).toFixed(1) + ',' + yS(v).toFixed(1));
+      }
+      poly.setAttribute('points', pts.join(' '));
+      if (outMasa) outMasa.textContent = masa.toFixed(1) + ' × Júpiter';
+      if (outAmp) outAmp.textContent = '±' + Math.round(amp) + ' m/s';
+      if (outPer) outPer.textContent = periodo + ' días';
+      if (outPer2) outPer2.textContent = periodo + ' días';
+    }
+
+    sM?.addEventListener('input', redibujar);
+    sD?.addEventListener('input', redibujar);
+    redibujar();
+  }
+</script>

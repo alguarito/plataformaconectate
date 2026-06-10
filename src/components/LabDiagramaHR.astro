@@ -1,0 +1,125 @@
+---
+/**
+ * Laboratorio · Diagrama HR interactivo.
+ *
+ * Muestra el diagrama de Hertzsprung-Russell (temperatura vs luminosidad) con
+ * cuatro estrellas reales ubicadas en su lugar correcto. El estudiante hace
+ * clic en cada una y descubre su tipo, su temperatura y por qué cae en esa
+ * zona (secuencia principal, supergigante, enana blanca).
+ *
+ * Las posiciones se calculan en el servidor (deterministas). Tipo propio.
+ */
+export interface DataDiagramaHR {
+  titulo: string;
+  instrucciones: string;
+}
+
+interface Props {
+  data: DataDiagramaHR;
+  id: string;
+}
+
+const { data, id } = Astro.props;
+
+const W = 660;
+const H = 340;
+const ml = 58;
+const mr = 24;
+const mt = 26;
+const mb = 52;
+const x0 = ml;
+const x1 = W - mr;
+const y0 = mt;
+const y1 = H - mb;
+
+// Escalas logarítmicas (temperatura decreciente hacia la derecha, como el HR real)
+const tempMin = 3000;
+const tempMax = 30000;
+const lumMin = 0.001;
+const lumMax = 1000000;
+const xT = (temp: number) => {
+  const f = (Math.log10(temp) - Math.log10(tempMin)) / (Math.log10(tempMax) - Math.log10(tempMin));
+  return x0 + (1 - f) * (x1 - x0);
+};
+const yL = (lum: number) => {
+  const f = (Math.log10(lum) - Math.log10(lumMin)) / (Math.log10(lumMax) - Math.log10(lumMin));
+  return y1 - f * (y1 - y0);
+};
+
+const estrellas = [
+  { nombre: 'Sol', temp: 5800, lum: 1, color: '#FFC93A', info: 'Tipo G, amarilla · ~5.800 °C · en la secuencia principal. Es nuestra estrella de referencia (luminosidad 1).' },
+  { nombre: 'Betelgeuse', temp: 3500, lum: 100000, color: '#FF5A36', info: 'Supergigante roja · fría (~3.300 °C) pero ENORME, por eso brilla muchísimo: va arriba a la derecha. Da nombre a tu semillero.' },
+  { nombre: 'Vega', temp: 9600, lum: 40, color: '#9BB8FF', info: 'Tipo A, blanca azulada · muy caliente (~9.600 °C) · también en la secuencia principal, pero más a la izquierda que el Sol.' },
+  { nombre: 'Sirius B', temp: 25000, lum: 0.03, color: '#D5E6FF', info: 'Enana blanca · calientísima (~25.000 °C) pero diminuta, así que casi no brilla: va abajo a la izquierda.' },
+].map((e) => ({ ...e, x: xT(e.temp), y: yL(e.lum) }));
+
+const ticksTemp = [20000, 10000, 6000, 4000];
+---
+
+<div class="bento-card" data-lab-hr={id}>
+  <span class="chip-bento mb-2">✨ Laboratorio · Diagrama HR</span>
+  <h3 class="text-xl md:text-2xl font-black tracking-tight leading-tight">{data.titulo}</h3>
+  <p class="text-sm leading-relaxed mt-2 mb-4" style="color: var(--fg-muted);">{data.instrucciones}</p>
+
+  <div class="rounded-bento-sm p-3 overflow-x-auto" style="background: var(--bg);">
+    <svg viewBox={`0 0 ${W} ${H}`} class="w-full h-auto" style="min-width: 480px;" role="img"
+      aria-label="Diagrama HR: clasifica estrellas según su temperatura (horizontal) y su luminosidad (vertical).">
+      <!-- Marco -->
+      <line x1={x0} y1={y1} x2={x1} y2={y1} stroke="var(--fg-muted)" stroke-width="1.5" />
+      <line x1={x0} y1={y0} x2={x0} y2={y1} stroke="var(--fg-muted)" stroke-width="1.5" />
+
+      <!-- Etiquetas de zonas -->
+      <text x={xT(7000)} y={yL(3)} font-size="11" font-weight="800" fill="var(--fg-muted)" opacity="0.7" transform={`rotate(20 ${xT(7000)} ${yL(3)})`}>secuencia principal</text>
+      <text x={xT(4200)} y={yL(60000)} font-size="11" font-weight="800" fill="var(--fg-muted)" opacity="0.7">supergigantes</text>
+      <text x={xT(16000)} y={yL(0.02)} font-size="11" font-weight="800" fill="var(--fg-muted)" opacity="0.7">enanas blancas</text>
+
+      <!-- Ticks temperatura -->
+      {ticksTemp.map((t) => (
+        <text x={xT(t)} y={y1 + 18} text-anchor="middle" font-size="11" font-weight="700" fill="var(--fg-muted)">{t / 1000}k°</text>
+      ))}
+      <text x={(x0 + x1) / 2} y={H - 24} text-anchor="middle" font-size="12" font-weight="800" fill="var(--fg)">← más caliente   ·   Temperatura   ·   más fría →</text>
+      <text transform={`rotate(-90 16 ${(y0 + y1) / 2})`} x="16" y={(y0 + y1) / 2} text-anchor="middle" font-size="12" font-weight="800" fill="var(--fg)">Luminosidad →</text>
+
+      <!-- Estrellas -->
+      {estrellas.map((e, i) => (
+        <g data-hr-estrella={i} style="cursor: pointer;">
+          <circle data-hr-halo cx={e.x} cy={e.y} r="14" fill={e.color} opacity="0" />
+          <circle cx={e.x} cy={e.y} r="7" fill={e.color} stroke="var(--fg)" stroke-width="1.5" />
+          <text x={e.x} y={e.y - 12} text-anchor="middle" font-size="11" font-weight="800" fill="var(--fg)">{e.nombre}</text>
+        </g>
+      ))}
+    </svg>
+  </div>
+
+  <!-- Panel de info -->
+  <div data-hr-info class="mt-4 p-4 rounded-bento-sm flex items-start gap-3" style="background: var(--bg); border: 2px solid var(--border);">
+    <span class="text-2xl shrink-0" aria-hidden="true">👆</span>
+    <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">
+      Toca una estrella del diagrama para descubrir su tipo y por qué cae en esa zona.
+    </p>
+  </div>
+</div>
+
+<script define:vars={{ id, estrellas }}>
+  const root = document.querySelector(`[data-lab-hr="${id}"]`);
+  if (root) {
+    const info = root.querySelector('[data-hr-info]');
+    const grupos = root.querySelectorAll('[data-hr-estrella]');
+
+    grupos.forEach((g) => {
+      g.addEventListener('click', () => {
+        const idx = parseInt(g.getAttribute('data-hr-estrella'), 10);
+        const e = estrellas[idx];
+        // resaltar halo
+        root.querySelectorAll('[data-hr-halo]').forEach((h) => h.setAttribute('opacity', '0'));
+        const halo = g.querySelector('[data-hr-halo]');
+        if (halo) halo.setAttribute('opacity', '0.3');
+        if (info) {
+          info.innerHTML =
+            '<span class="text-2xl shrink-0" aria-hidden="true" style="color:' + e.color + '">●</span>' +
+            '<p class="text-sm leading-relaxed"><strong>' + e.nombre + '.</strong> ' + e.info + '</p>';
+        }
+      });
+    });
+  }
+</script>

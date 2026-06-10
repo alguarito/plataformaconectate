@@ -1,26 +1,20 @@
 ---
 /**
- * Laboratorio · Curva de luz (método de tránsito).
+ * Laboratorio · Simulador de curva de luz (método de tránsito).
  *
- * Dibuja una curva de luz (brillo de una estrella en el tiempo) con varios
- * tránsitos de un exoplaneta. El estudiante explora la gráfica con botones que
- * resaltan: el brillo normal, un tránsito, su profundidad y el período. Puede
- * descargar los datos en CSV para trabajarlos también en una hoja de cálculo.
+ * El estudiante mueve dos controles —tamaño del planeta y distancia a la
+ * estrella— y la curva de luz se redibuja EN VIVO. Un panel de lecturas (sin
+ * tapar la gráfica) muestra la profundidad, el período, el tamaño y el tipo de
+ * planeta que va creando. Incluye una curva objetivo (gris) y un reto: replicar
+ * la "estrella misteriosa".
  *
- * Los datos se generan de forma DETERMINISTA (sin azar) a partir de unos pocos
- * parámetros, para que el render del servidor sea reproducible. Tipo propio;
- * reutilizable en cualquier página Astro.
+ * El SVG de ejes/grid se renderiza en el servidor; las curvas se calculan en el
+ * cliente con JavaScript (interactividad). Tipo propio, reutilizable.
  */
 export interface DataCurvaLuz {
   titulo: string;
   instrucciones: string;
-  /** Tiempo entre dos tránsitos (período orbital), en la unidad indicada. */
-  periodo?: number;
-  /** Profundidad del bajón de brillo, en %. */
-  profundidad?: number;
-  /** Unidad del eje de tiempo (p. ej. "días"). */
-  unidadTiempo?: string;
-  /** Nombre de la estrella/planeta del ejemplo. */
+  /** Nombre del objeto del ejemplo (decorativo). */
   objeto?: string;
 }
 
@@ -30,26 +24,17 @@ interface Props {
 }
 
 const { data, id } = Astro.props;
-const periodo = data.periodo ?? 8;
-const profundidad = data.profundidad ?? 1.5;
-const unidad = data.unidadTiempo ?? 'días';
-const objeto = data.objeto ?? 'la estrella';
-
-// ── Generación determinista de la curva ──
-const brilloBase = 100;
-const tMax = 4 * periodo; // 4 tránsitos visibles
-const centros = [0.5, 1.5, 2.5, 3.5].map((k) => k * periodo); // tránsitos centrados
-const anchoMedio = periodo * 0.09; // duración media del tránsito
-const yMin = brilloBase - profundidad - 0.7;
-const yMax = brilloBase + 0.5;
 
 // Geometría del SVG
-const W = 640;
+const W = 680;
 const H = 300;
-const ml = 60;
-const mr = 18;
-const mt = 26;
-const mb = 50;
+const ml = 58;
+const mr = 20;
+const mt = 24;
+const mb = 48;
+const tMax = 32;
+const yMin = 97.3;
+const yMax = 100.4;
 const x0 = ml;
 const x1 = W - mr;
 const y0 = mt;
@@ -57,52 +42,35 @@ const y1 = H - mb;
 const xScale = (t: number) => x0 + (t / tMax) * (x1 - x0);
 const yScale = (b: number) => y1 - ((b - yMin) / (yMax - yMin)) * (y1 - y0);
 
-function brilloEn(t: number): number {
-  for (const c of centros) {
-    const d = Math.abs(t - c);
-    if (d <= anchoMedio * 0.6) return brilloBase - profundidad; // fondo plano
-    if (d <= anchoMedio) {
-      const frac = (d - anchoMedio * 0.6) / (anchoMedio * 0.4); // rampa de bajada/subida
-      return brilloBase - profundidad * (1 - frac);
-    }
-  }
-  return brilloBase;
-}
+// Objetivo del reto: un "Júpiter caliente" (grande y cercano)
+const targetR = 12; // radios terrestres → profundidad ≈ 1,44 %
+const targetDist = 0.08; // UA → período ≈ 8 días
 
-const linea: { t: number; b: number }[] = [];
-for (let t = 0; t <= tMax + 0.001; t += tMax / 240) linea.push({ t, b: brilloEn(t) });
-const polyPoints = linea.map((p) => `${xScale(p.t).toFixed(1)},${yScale(p.b).toFixed(1)}`).join(' ');
-
-const marcadores: { t: number; b: number }[] = [];
-for (let t = 0; t <= tMax + 0.001; t += periodo / 8) marcadores.push({ t, b: brilloEn(t) });
-
-const ticksX = [0, 1, 2, 3, 4].map((k) => k * periodo);
+const ticksX = [0, 8, 16, 24, 32];
 const ticksY = [98, 99, 100];
-
-const csv = 'tiempo_' + unidad + ',brillo_pct\n' + marcadores.map((p) => `${p.t.toFixed(2)},${p.b.toFixed(2)}`).join('\n');
-
-// Coordenadas de las anotaciones (primer tránsito y período entre el 1.º y 2.º)
-const cA = centros[0];
-const cB = centros[1];
 ---
 
 <div class="bento-card" data-lab-curva={id}>
-  <span class="chip-bento mb-2">🔭 Laboratorio · Curva de luz</span>
+  <span class="chip-bento mb-2">🔭 Laboratorio · Simulador de tránsito</span>
   <h3 class="text-xl md:text-2xl font-black tracking-tight leading-tight">{data.titulo}</h3>
   <p class="text-sm leading-relaxed mt-2 mb-4" style="color: var(--fg-muted);">{data.instrucciones}</p>
+
+  <!-- Leyenda -->
+  <div class="flex flex-wrap gap-4 mb-2 text-xs font-bold">
+    <span class="flex items-center gap-2"><span style="display:inline-block;width:18px;height:0;border-top:3px solid #0066FF;"></span> Tu planeta</span>
+    <span class="flex items-center gap-2" style="color: var(--fg-muted);"><span style="display:inline-block;width:18px;height:0;border-top:3px dashed #9aa0a6;"></span> Estrella misteriosa (reto)</span>
+  </div>
 
   <!-- Gráfica -->
   <div class="rounded-bento-sm p-3 overflow-x-auto" style="background: var(--bg);">
     <svg viewBox={`0 0 ${W} ${H}`} class="w-full h-auto" style="min-width: 460px;" role="img"
-      aria-label={`Curva de luz de ${objeto}: el brillo se mantiene en 100% y baja ${profundidad}% cada ${periodo} ${unidad} cuando el planeta pasa por delante (tránsito).`}>
-      <!-- Grid horizontal + eje Y -->
+      aria-label="Simulador de curva de luz: mueve los controles de tamaño del planeta y distancia para cambiar la profundidad y el período de los tránsitos.">
       {ticksY.map((b) => (
         <g>
           <line x1={x0} y1={yScale(b)} x2={x1} y2={yScale(b)} stroke="var(--border)" stroke-width="1" stroke-dasharray="3 4" />
           <text x={x0 - 8} y={yScale(b) + 4} text-anchor="end" font-size="12" font-weight="700" fill="var(--fg-muted)">{b}%</text>
         </g>
       ))}
-      <!-- Eje X -->
       <line x1={x0} y1={y1} x2={x1} y2={y1} stroke="var(--fg-muted)" stroke-width="1.5" />
       {ticksX.map((t) => (
         <g>
@@ -110,88 +78,144 @@ const cB = centros[1];
           <text x={xScale(t)} y={y1 + 22} text-anchor="middle" font-size="12" font-weight="700" fill="var(--fg-muted)">{t}</text>
         </g>
       ))}
-      <text x={(x0 + x1) / 2} y={H - 8} text-anchor="middle" font-size="12" font-weight="800" fill="var(--fg)">Tiempo ({unidad})</text>
-      <text transform={`rotate(-90 16 ${(y0 + y1) / 2})`} x="16" y={(y0 + y1) / 2} text-anchor="middle" font-size="12" font-weight="800" fill="var(--fg)">Brillo</text>
+      <text x={(x0 + x1) / 2} y={H - 6} text-anchor="middle" font-size="12" font-weight="800" fill="var(--fg)">Tiempo (días)</text>
+      <text transform={`rotate(-90 15 ${(y0 + y1) / 2})`} x="15" y={(y0 + y1) / 2} text-anchor="middle" font-size="12" font-weight="800" fill="var(--fg)">Brillo</text>
 
-      <!-- Anotación: brillo normal (oculta) -->
-      <g data-anota="normal" style="visibility: hidden;">
-        <line x1={x0} y1={yScale(100)} x2={x1} y2={yScale(100)} stroke="#0066FF" stroke-width="2" stroke-dasharray="2 3" />
-        <rect x={x1 - 150} y={yScale(100) - 26} width="140" height="20" rx="6" fill="#0066FF" />
-        <text x={x1 - 80} y={yScale(100) - 12} text-anchor="middle" font-size="11" font-weight="800" fill="#fff">100% · sin tránsito</text>
-      </g>
+      <!-- Guía 100% -->
+      <line x1={x0} y1={yScale(100)} x2={x1} y2={yScale(100)} stroke="#0066FF" stroke-width="1" stroke-dasharray="1 4" opacity="0.5" />
 
-      <!-- Anotación: tránsito (oculta) -->
-      <g data-anota="transito" style="visibility: hidden;">
-        <rect x={xScale(cA - anchoMedio)} y={y0} width={xScale(cA + anchoMedio) - xScale(cA - anchoMedio)} height={y1 - y0} fill="#FF2D87" opacity="0.16" />
-        <text x={xScale(cA)} y={y0 + 14} text-anchor="middle" font-size="11" font-weight="800" fill="#FF2D87">¡tránsito!</text>
-      </g>
-
-      <!-- Anotación: profundidad (oculta) -->
-      <g data-anota="profundidad" style="visibility: hidden;">
-        <line x1={xScale(cA) + 26} y1={yScale(100)} x2={xScale(cA) + 26} y2={yScale(100 - profundidad)} stroke="#FF6B35" stroke-width="2.5" />
-        <line x1={xScale(cA) + 21} y1={yScale(100)} x2={xScale(cA) + 31} y2={yScale(100)} stroke="#FF6B35" stroke-width="2.5" />
-        <line x1={xScale(cA) + 21} y1={yScale(100 - profundidad)} x2={xScale(cA) + 31} y2={yScale(100 - profundidad)} stroke="#FF6B35" stroke-width="2.5" />
-        <rect x={xScale(cA) + 36} y={yScale(100 - profundidad / 2) - 10} width="150" height="20" rx="6" fill="#FF6B35" />
-        <text x={xScale(cA) + 111} y={yScale(100 - profundidad / 2) + 4} text-anchor="middle" font-size="11" font-weight="800" fill="#fff">{profundidad}% → tamaño</text>
-      </g>
-
-      <!-- Anotación: período (oculta) -->
-      <g data-anota="periodo" style="visibility: hidden;">
-        <line x1={xScale(cA)} y1={y0 + 24} x2={xScale(cB)} y2={y0 + 24} stroke="#1a8f00" stroke-width="2.5" />
-        <line x1={xScale(cA)} y1={y0 + 19} x2={xScale(cA)} y2={y0 + 29} stroke="#1a8f00" stroke-width="2.5" />
-        <line x1={xScale(cB)} y1={y0 + 19} x2={xScale(cB)} y2={y0 + 29} stroke="#1a8f00" stroke-width="2.5" />
-        <rect x={(xScale(cA) + xScale(cB)) / 2 - 78} y={y0 + 30} width="156" height="20" rx="6" fill="#1a8f00" />
-        <text x={(xScale(cA) + xScale(cB)) / 2} y={y0 + 44} text-anchor="middle" font-size="11" font-weight="800" fill="#fff">{periodo} {unidad} → período</text>
-      </g>
-
-      <!-- Curva de datos -->
-      <polyline points={polyPoints} fill="none" stroke="#0066FF" stroke-width="2.5" stroke-linejoin="round" />
-      {marcadores.map((p) => (
-        <circle cx={xScale(p.t)} cy={yScale(p.b)} r="3" fill="#0066FF" />
-      ))}
+      <!-- Curvas (las llena el JS) -->
+      <polyline data-curva-objetivo points="" fill="none" stroke="#9aa0a6" stroke-width="2" stroke-dasharray="5 4" stroke-linejoin="round" />
+      <polyline data-curva-estudiante points="" fill="none" stroke="#0066FF" stroke-width="2.5" stroke-linejoin="round" />
     </svg>
   </div>
 
   <!-- Controles -->
-  <div class="flex flex-wrap gap-2 mt-4">
-    <button type="button" data-curva-toggle="normal" class="px-3 py-1.5 rounded-full text-xs font-bold border-2 transition-colors" style="border-color: var(--border); color: var(--fg);">Brillo normal</button>
-    <button type="button" data-curva-toggle="transito" class="px-3 py-1.5 rounded-full text-xs font-bold border-2 transition-colors" style="border-color: var(--border); color: var(--fg);">Marca un tránsito</button>
-    <button type="button" data-curva-toggle="profundidad" class="px-3 py-1.5 rounded-full text-xs font-bold border-2 transition-colors" style="border-color: var(--border); color: var(--fg);">Profundidad</button>
-    <button type="button" data-curva-toggle="periodo" class="px-3 py-1.5 rounded-full text-xs font-bold border-2 transition-colors" style="border-color: var(--border); color: var(--fg);">Período</button>
-    <button type="button" data-curva-csv class="px-3 py-1.5 rounded-full text-xs font-black bg-bento-blue text-white ml-auto hover:opacity-80 transition-opacity">⬇ Descargar datos (CSV)</button>
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5">
+    <div>
+      <label class="flex items-center justify-between text-sm font-black mb-1" for={`${id}-r`}>
+        <span>🪐 Tamaño del planeta</span>
+        <span data-out-tamano style="color: var(--fg-muted);">4 × Tierra</span>
+      </label>
+      <input id={`${id}-r`} data-slider-radio type="range" min="1" max="14" step="0.5" value="4" class="w-full" style="accent-color:#0066FF;" />
+      <div class="flex justify-between text-[10px] font-bold mt-0.5" style="color: var(--fg-muted);"><span>pequeño</span><span>gigante</span></div>
+    </div>
+    <div>
+      <label class="flex items-center justify-between text-sm font-black mb-1" for={`${id}-d`}>
+        <span>📏 Distancia a la estrella</span>
+        <span data-out-periodo style="color: var(--fg-muted);">— días</span>
+      </label>
+      <input id={`${id}-d`} data-slider-dist type="range" min="0.04" max="0.16" step="0.005" value="0.13" class="w-full" style="accent-color:#FF6B35;" />
+      <div class="flex justify-between text-[10px] font-bold mt-0.5" style="color: var(--fg-muted);"><span>cerca</span><span>lejos</span></div>
+    </div>
   </div>
-  <p class="text-xs leading-relaxed mt-3" style="color: var(--fg-muted);">
-    Pulsa cada botón para resaltar lo que mide un astrónomo. La <strong style="color: var(--fg);">profundidad</strong> del bajón revela el tamaño del planeta; el <strong style="color: var(--fg);">tiempo entre dos bajones</strong> es su período orbital.
-  </p>
+
+  <!-- Panel de lecturas -->
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-5">
+    <div class="p-3 rounded-bento-sm text-center" style="background: var(--bg);">
+      <div class="text-[10px] font-black uppercase tracking-widest" style="color: var(--fg-muted);">Profundidad</div>
+      <div data-out-prof class="font-black text-lg mt-1">—</div>
+    </div>
+    <div class="p-3 rounded-bento-sm text-center" style="background: var(--bg);">
+      <div class="text-[10px] font-black uppercase tracking-widest" style="color: var(--fg-muted);">Período</div>
+      <div data-out-periodo2 class="font-black text-lg mt-1">—</div>
+    </div>
+    <div class="p-3 rounded-bento-sm text-center" style="background: var(--bg);">
+      <div class="text-[10px] font-black uppercase tracking-widest" style="color: var(--fg-muted);">Tamaño</div>
+      <div data-out-tamano2 class="font-black text-lg mt-1">—</div>
+    </div>
+    <div class="p-3 rounded-bento-sm text-center" style="background: var(--bg);">
+      <div class="text-[10px] font-black uppercase tracking-widest" style="color: var(--fg-muted);">Tipo</div>
+      <div data-out-tipo class="font-black text-sm mt-1 leading-tight">—</div>
+    </div>
+  </div>
+
+  <!-- Reto -->
+  <div class="mt-4 p-4 rounded-bento-sm flex items-start gap-3" style="background: var(--bg); border: 2px solid var(--border);">
+    <span class="text-2xl shrink-0" aria-hidden="true">🎯</span>
+    <div>
+      <div class="font-black text-sm">Reto: descubre la estrella misteriosa</div>
+      <p data-out-reto class="text-sm leading-relaxed mt-1" style="color: var(--fg-muted);">
+        Ajusta los controles para que tu curva (azul) coincida con la misteriosa (gris).
+      </p>
+    </div>
+  </div>
 </div>
 
-<script define:vars={{ id, csv }}>
+<script define:vars={{ id, W, H, ml, mr, mt, mb, tMax, yMin, yMax, targetR, targetDist }}>
   const root = document.querySelector(`[data-lab-curva="${id}"]`);
   if (root) {
-    root.querySelectorAll('[data-curva-toggle]').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const key = btn.getAttribute('data-curva-toggle');
-        const g = root.querySelector(`[data-anota="${key}"]`);
-        if (!g) return;
-        const visible = g.style.visibility !== 'hidden';
-        g.style.visibility = visible ? 'hidden' : 'visible';
-        btn.style.background = visible ? 'transparent' : 'var(--fg)';
-        btn.style.color = visible ? 'var(--fg)' : 'var(--bg-card)';
-        btn.style.borderColor = visible ? 'var(--border)' : 'var(--fg)';
-      });
-    });
+    const xS = (t) => ml + (t / tMax) * (W - mr - ml);
+    const yS = (b) => (H - mb) - ((b - yMin) / (yMax - yMin)) * ((H - mb) - mt);
 
-    const btnCsv = root.querySelector('[data-curva-csv]');
-    btnCsv?.addEventListener('click', () => {
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `curva-de-luz-${id}.csv`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    });
+    const periodoDe = (dist) => Math.max(2, Math.round(365.25 * Math.pow(dist, 1.5)));
+    const profDe = (r) => (r * r) / 100; // %
+
+    function genPoints(r, dist) {
+      const prof = profDe(r);
+      const periodo = periodoDe(dist);
+      const centros = [];
+      for (let k = 0; ; k++) { const c = periodo * (k + 0.5); if (c > tMax) break; centros.push(c); }
+      const pts = [];
+      const step = tMax / 220;
+      for (let t = 0; t <= tMax + 1e-9; t += step) {
+        let b = 100;
+        for (const c of centros) {
+          const d = Math.abs(t - c);
+          if (d <= 0.45) { b = 100 - prof; break; }
+          if (d <= 0.7) { b = 100 - prof * (1 - (d - 0.45) / 0.25); break; }
+        }
+        pts.push(xS(t).toFixed(1) + ',' + yS(b).toFixed(1));
+      }
+      return { points: pts.join(' '), prof, periodo };
+    }
+
+    function tipoPlaneta(r) {
+      if (r < 1.6) return 'como la Tierra 🌍';
+      if (r < 4) return 'super-Tierra';
+      if (r < 8) return 'tipo Neptuno';
+      return 'gigante gaseoso 🪐';
+    }
+
+    const polyEst = root.querySelector('[data-curva-estudiante]');
+    const polyObj = root.querySelector('[data-curva-objetivo]');
+    const sliderR = root.querySelector('[data-slider-radio]');
+    const sliderD = root.querySelector('[data-slider-dist]');
+    const outProf = root.querySelector('[data-out-prof]');
+    const outPer2 = root.querySelector('[data-out-periodo2]');
+    const outPerLabel = root.querySelector('[data-out-periodo]');
+    const outTam2 = root.querySelector('[data-out-tamano2]');
+    const outTamLabel = root.querySelector('[data-out-tamano]');
+    const outTipo = root.querySelector('[data-out-tipo]');
+    const outReto = root.querySelector('[data-out-reto]');
+
+    // Curva objetivo (fija)
+    polyObj?.setAttribute('points', genPoints(targetR, targetDist).points);
+    const objPer = periodoDe(targetDist);
+
+    function redibujar() {
+      const r = parseFloat(sliderR.value);
+      const dist = parseFloat(sliderD.value);
+      const { points, prof, periodo } = genPoints(r, dist);
+      polyEst.setAttribute('points', points);
+      if (outProf) outProf.textContent = prof.toFixed(2) + ' %';
+      if (outPer2) outPer2.textContent = periodo + ' días';
+      if (outPerLabel) outPerLabel.textContent = periodo + ' días';
+      if (outTam2) outTam2.textContent = r.toFixed(1) + '×';
+      if (outTamLabel) outTamLabel.textContent = r.toFixed(1) + ' × Tierra';
+      if (outTipo) outTipo.textContent = tipoPlaneta(r);
+
+      const logrado = Math.abs(r - targetR) <= 1.5 && Math.abs(periodo - objPer) <= 1.5;
+      if (outReto) {
+        outReto.innerHTML = logrado
+          ? '<strong>🎉 ¡Lo lograste!</strong> Es un planeta gigante muy cerca de su estrella: un «Júpiter caliente».'
+          : 'Ajusta los controles para que tu curva (azul) coincida con la misteriosa (gris).';
+        outReto.style.color = logrado ? '#1a8f00' : 'var(--fg-muted)';
+      }
+    }
+
+    sliderR?.addEventListener('input', redibujar);
+    sliderD?.addEventListener('input', redibujar);
+    redibujar();
   }
 </script>

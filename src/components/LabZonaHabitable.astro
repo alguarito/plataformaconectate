@@ -1,0 +1,122 @@
+---
+/**
+ * Laboratorio · Zona habitable.
+ *
+ * Una estrella tipo Sol con su "zona habitable" (la franja donde podría existir
+ * agua líquida). El estudiante mueve un planeta con un slider de distancia: si
+ * cae en la franja verde, podría tener agua; muy cerca se evapora, muy lejos se
+ * congela. Conecta con la idea de exo-Tierra.
+ *
+ * Vista cenital del sistema. Cálculo en el cliente. Tipo propio.
+ */
+export interface DataZonaHabitable {
+  titulo: string;
+  instrucciones: string;
+}
+
+interface Props {
+  data: DataZonaHabitable;
+  id: string;
+}
+
+const { data, id } = Astro.props;
+
+const W = 560;
+const H = 300;
+const cx = W / 2;
+const cy = H / 2;
+const escala = 40; // px por UA
+const rIntHab = 0.9 * escala;
+const rExtHab = 1.5 * escala;
+---
+
+<div class="bento-card" data-lab-zona={id}>
+  <span class="chip-bento mb-2">🌍 Laboratorio · Zona habitable</span>
+  <h3 class="text-xl md:text-2xl font-black tracking-tight leading-tight">{data.titulo}</h3>
+  <p class="text-sm leading-relaxed mt-2 mb-4" style="color: var(--fg-muted);">{data.instrucciones}</p>
+
+  <div class="rounded-bento-sm p-3" style="background: var(--bg);">
+    <svg viewBox={`0 0 ${W} ${H}`} class="w-full h-auto" role="img"
+      aria-label="Sistema visto desde arriba: una estrella en el centro con su zona habitable (franja verde) y un planeta cuya distancia ajustas.">
+      <!-- Zona habitable (anillo verde) -->
+      <circle cx={cx} cy={cy} r={(rIntHab + rExtHab) / 2} fill="none" stroke="#3FbF52" stroke-width={rExtHab - rIntHab} opacity="0.28" />
+      <text x={cx} y={cy - rExtHab - 8} text-anchor="middle" font-size="11" font-weight="800" fill="#2a8f3a">💧 zona habitable</text>
+
+      <!-- Órbita del planeta -->
+      <circle data-zona-orbita cx={cx} cy={cy} r={2 * escala} fill="none" stroke="var(--fg-muted)" stroke-width="1" stroke-dasharray="3 4" />
+
+      <!-- Estrella -->
+      <circle cx={cx} cy={cy} r="15" fill="#FFC93A" />
+      <circle cx={cx} cy={cy} r="15" fill="none" stroke="#FF8A00" stroke-width="2" opacity="0.5" />
+
+      <!-- Planeta -->
+      <circle data-zona-planeta cx={cx + 2 * escala} cy={cy} r="7" fill="#0066FF" stroke="var(--fg)" stroke-width="1.5" />
+
+      <!-- Marcas de distancia -->
+      <text x={cx + 1 * escala} y={cy + 18} text-anchor="middle" font-size="9" font-weight="700" fill="var(--fg-muted)" opacity="0.6">1 UA</text>
+      <text x={cx + 3 * escala} y={cy + 18} text-anchor="middle" font-size="9" font-weight="700" fill="var(--fg-muted)" opacity="0.6">3 UA</text>
+    </svg>
+  </div>
+
+  <!-- Control -->
+  <div class="mt-4">
+    <label class="flex items-center justify-between text-sm font-black mb-1" for={`${id}-d`}>
+      <span>📏 Distancia del planeta a su estrella</span>
+      <span data-out-dist style="color: var(--fg-muted);">2.0 UA</span>
+    </label>
+    <input id={`${id}-d`} data-slider-dist type="range" min="0.2" max="3" step="0.05" value="2" class="w-full" style="accent-color:#0066FF;" />
+    <div class="flex justify-between text-[10px] font-bold mt-0.5" style="color: var(--fg-muted);"><span>cerca (caliente)</span><span>lejos (frío)</span></div>
+  </div>
+
+  <!-- Veredicto -->
+  <div data-zona-veredicto class="mt-4 p-4 rounded-bento-sm flex items-start gap-3" style="background: var(--bg); border: 2px solid var(--border);">
+    <span data-zona-emoji class="text-2xl shrink-0">🌍</span>
+    <div>
+      <div data-zona-titulo class="font-black text-sm">Mueve el planeta…</div>
+      <p data-zona-texto class="text-sm leading-relaxed mt-1" style="color: var(--fg-muted);">
+        Busca la franja verde: ahí el agua podría ser líquida y existir vida como la conocemos.
+      </p>
+    </div>
+  </div>
+</div>
+
+<script define:vars={{ id, cx, cy, escala }}>
+  const root = document.querySelector(`[data-lab-zona="${id}"]`);
+  if (root) {
+    const orbita = root.querySelector('[data-zona-orbita]');
+    const planeta = root.querySelector('[data-zona-planeta]');
+    const slider = root.querySelector('[data-slider-dist]');
+    const outDist = root.querySelector('[data-out-dist]');
+    const emoji = root.querySelector('[data-zona-emoji]');
+    const titulo = root.querySelector('[data-zona-titulo]');
+    const texto = root.querySelector('[data-zona-texto]');
+
+    function redibujar() {
+      const d = parseFloat(slider.value);
+      const r = d * escala;
+      orbita.setAttribute('r', r.toFixed(1));
+      planeta.setAttribute('cx', (cx + r).toFixed(1));
+      if (outDist) outDist.textContent = d.toFixed(1) + ' UA';
+      // temperatura de equilibrio aproximada (°C)
+      const tC = Math.round(279 / Math.sqrt(d) - 273);
+      let em, ti, tx, col;
+      if (d < 0.9) {
+        em = '🔥'; ti = 'Demasiado caliente'; col = '#FF2D87';
+        tx = 'A esta distancia hace ~' + tC + ' °C: el agua se evaporaría. Es la zona de los «Júpiter calientes».';
+      } else if (d <= 1.5) {
+        em = '💧'; ti = '¡Zona habitable!'; col = '#1a8f00';
+        tx = 'A ~' + tC + ' °C el agua puede ser líquida. Aquí podría existir vida como la conocemos: sería una candidata a exo-Tierra.';
+      } else {
+        em = '❄️'; ti = 'Demasiado frío'; col = '#0066FF';
+        tx = 'A esta distancia hace ~' + tC + ' °C: el agua se congelaría. Demasiado lejos de la estrella.';
+      }
+      if (emoji) emoji.textContent = em;
+      if (titulo) { titulo.textContent = ti; titulo.style.color = col; }
+      if (texto) texto.textContent = tx;
+      if (planeta) planeta.setAttribute('fill', d >= 0.9 && d <= 1.5 ? '#1a8f00' : '#0066FF');
+    }
+
+    slider?.addEventListener('input', redibujar);
+    redibujar();
+  }
+</script>

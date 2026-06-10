@@ -1,0 +1,521 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import SaberAncestralBlock from '../../../../components/SaberAncestralBlock.astro';
+import MapaRutaBlock from '../../../../components/MapaRutaBlock.astro';
+import ActividadBlock from '../../../../components/ActividadBlock.astro';
+import LabEmparejar from '../../../../components/LabEmparejar.astro';
+import LabOrdenar from '../../../../components/LabOrdenar.astro';
+import LabQuiz from '../../../../components/LabQuiz.astro';
+import TrianguloBlock from '../../../../components/TrianguloBlock.astro';
+import CincoDimensionesBlock from '../../../../components/CincoDimensionesBlock.astro';
+import GuiasRECA from '../../../../components/GuiasRECA.astro';
+import type {
+  SaberAncestral,
+  EstacionMapa,
+  Actividad,
+  LabQuiz as LabQuizData,
+  Triangulo,
+  CincoDimensiones,
+} from '../../../../data/guiasContenido/_schema';
+import type { DataEmparejar } from '../../../../components/LabEmparejar.astro';
+import type { DataOrdenar } from '../../../../components/LabOrdenar.astro';
+
+const base = import.meta.env.BASE_URL;
+const recursosOficiales = 'https://www.astroreca.org/educacion/salome-comic-exoplanetas/recursos';
+
+const saberAncestral: SaberAncestral = {
+  saber:
+    'En los campos del norte del Valle del Cauca, cuando el sol se va y el cielo se enciende de naranja y rojo, los campesinos dicen que «hay arreboles». Y de ese color leen el clima: «cielo rojo al anochecer, buen sol al amanecer». Lo que las abuelas no escribían en fórmulas, pero sabían por generaciones de mirar el horizonte, es que la luz del sol cambia de color según cuánto aire atraviesa: al atardecer entra de lado y recorre muchísima más atmósfera, que le va «robando» los azules y deja pasar los rojos. Ese mismo principio —que la luz se transforma al cruzar una atmósfera— es, sin que ellos lo supieran, la llave con la que hoy los astrónomos averiguan de qué está hecho el aire de planetas que están a billones de kilómetros.',
+  fuente: 'Saber campesino del norte del Valle del Cauca · la lectura de los arreboles',
+  preguntaPuente:
+    'Los abuelos leían el color del atardecer para anticipar la lluvia. Si la luz puede «contarnos» algo con solo cambiar de color, ¿qué es, en el fondo, la luz, y cuánta información trae escondida?',
+};
+
+const mapaRuta: EstacionMapa[] = [
+  { numero: 1, iconos: ['🌱'], titulo: 'El cielo rojo de los abuelos', duracionMin: 5 },
+  { numero: 2, iconos: ['📖'], titulo: '¿Qué es la luz y a qué velocidad viaja?', duracionMin: 12 },
+  { numero: 3, iconos: ['🔎'], titulo: 'Ordena el espectro por energía', duracionMin: 6 },
+  { numero: 4, iconos: ['📖', '👁'], titulo: 'La luz invisible y la luz mensajera', duracionMin: 13 },
+  { numero: 5, iconos: ['🔎'], titulo: 'Relaciona cada luz con su uso', duracionMin: 8 },
+  { numero: 6, iconos: ['✅'], titulo: 'Pon a prueba lo que sabes', duracionMin: 8 },
+  { numero: 7, iconos: ['✏️'], titulo: 'Calcula la luz del Sol y caza el espectro', duracionMin: 16 },
+  { numero: 8, iconos: ['💭'], titulo: 'Tres voces para cerrar', duracionMin: 8 },
+];
+
+const ordenarEspectro: DataOrdenar = {
+  titulo: 'Ordena el espectro de menor a mayor energía',
+  instrucciones: 'Acabas de leer el abanico de la luz. Usa las flechas para ordenarlo desde la luz de MENOS energía hasta la de MÁS energía.',
+  pasos: [
+    'Ondas de radio — las de menor energía; llevan la señal de las emisoras.',
+    'Infrarrojo — el calor; lo usa el control remoto del televisor.',
+    'Luz visible — la única franja que ven tus ojos: los colores.',
+    'Ultravioleta — quema la piel; por eso usamos bloqueador solar.',
+    'Rayos X — atraviesan el cuerpo y muestran los huesos.',
+    'Rayos gamma — la luz más energética que existe.',
+  ],
+};
+
+const emparejarLuz: DataEmparejar = {
+  titulo: 'Relaciona cada tipo de luz con su uso cotidiano',
+  instrucciones: 'Toda esta «luz» te rodea a diario. Conecta cada tipo con dónde lo usas.',
+  etiquetaIzq: 'Tipo de luz',
+  etiquetaDer: 'Dónde la usas',
+  pares: [
+    { izquierda: 'Ondas de radio', derecha: 'La señal de las emisoras FM y del celular' },
+    { izquierda: 'Infrarrojo', derecha: 'El control remoto del TV y el calor que sientes' },
+    { izquierda: 'Luz visible', derecha: 'Los colores: lo único que ven tus ojos' },
+    { izquierda: 'Ultravioleta', derecha: 'Te quema la piel; por eso usas bloqueador' },
+    { izquierda: 'Rayos X', derecha: 'Las radiografías que muestran tus huesos' },
+  ],
+};
+
+const emparejarConceptos: DataEmparejar = {
+  titulo: 'Repaso: relaciona cada concepto con su significado',
+  instrucciones: 'Cierra la lectura conectando los cinco conceptos clave de la estación con su definición.',
+  etiquetaIzq: 'Concepto',
+  etiquetaDer: 'Significado',
+  pares: [
+    { izquierda: 'Luz', derecha: 'Energía que viaja, incluso por el vacío del espacio' },
+    { izquierda: 'Fotón', derecha: 'El «paquete» mínimo en que viaja la luz' },
+    { izquierda: 'Velocidad de la luz', derecha: '300.000 km/s: lo más rápido que existe' },
+    { izquierda: 'Espectro', derecha: 'El abanico completo de todas las luces' },
+    { izquierda: 'Año luz', derecha: 'La distancia que la luz recorre en un año' },
+  ],
+};
+
+const actividadCalculo: Actividad = {
+  numero: 1,
+  verbo: 'APLICA',
+  titulo: 'Calcula cuánto tarda en llegarte la luz del Sol',
+  tiempoMin: 10,
+  modalidad: 'individual',
+  pasos: [
+    'El Sol está a 150.000.000 km de la Tierra. La luz viaja a 300.000 km/s. Calcula el tiempo: distancia ÷ velocidad.',
+    'El resultado te da los segundos. Conviértelos a minutos dividiendo entre 60.',
+    'Escribe una frase: si el Sol se apagara de golpe, ¿en cuánto tiempo nos daríamos cuenta?',
+  ],
+  cuaderno: {
+    titulo: 'La luz del Sol tarda en llegar',
+    formato: 'dos operaciones + resultado + una frase de conclusión',
+    extension: 'los 2 cálculos y la conclusión',
+  },
+  criterios: [
+    'El primer cálculo da 500 segundos.',
+    'Al convertir, son unos 8,3 minutos.',
+    'Tu frase concluye que veríamos apagarse el Sol unos 8 minutos después: siempre lo vemos como era hace 8 minutos.',
+  ],
+};
+
+const actividadCaza: Actividad = {
+  numero: 2,
+  verbo: 'CREA',
+  titulo: 'Caza el espectro escondido en tu casa',
+  tiempoMin: 14,
+  modalidad: 'individual',
+  pasos: [
+    'Recorre tu casa y encuentra cinco aparatos que usen una «luz» distinta: el radio (ondas de radio), el control remoto (infrarrojo), un bombillo (luz visible), el sol que entra por la ventana (ultravioleta), el horno microondas (microondas).',
+    'Arma una tabla con tres columnas: aparato · tipo de luz · para qué la usa.',
+    'Escribe una conclusión: ¿cuántas «luces invisibles» estabas usando sin darte cuenta?',
+  ],
+  cuaderno: {
+    titulo: 'El espectro en mi casa',
+    formato: 'tabla de 5 filas × 3 columnas + una conclusión',
+    extension: 'la tabla completa y 3 a 4 renglones de conclusión',
+  },
+  criterios: [
+    'Identificaste cinco aparatos reales de tu casa.',
+    'A cada uno le asignaste correctamente su tipo de luz.',
+    'Tu conclusión reconoce que usamos a diario muchas luces que el ojo no ve.',
+  ],
+};
+
+const quiz: LabQuizData = {
+  tipo: 'quiz',
+  titulo: 'Pon a prueba lo que sabes',
+  instrucciones: 'Seis preguntas sobre lo que leíste. Recibirás una explicación en cada una.',
+  preguntas: [
+    {
+      enunciado: '¿Qué es la luz, en el fondo?',
+      opciones: [
+        'Un tipo de aire muy fino',
+        'Una forma de energía que viaja, incluso por el vacío',
+        'Algo que solo existe cuando hay una bombilla',
+        'Un líquido invisible',
+      ],
+      respuestaIndex: 1,
+      feedbackCorrecto: 'Exacto: la luz es energía que viaja, y no necesita un medio. Por eso nos llega la del Sol cruzando el vacío del espacio.',
+      feedbackIncorrecto: 'La luz es energía que viaja, y puede hacerlo incluso por el vacío (por eso nos llega la del Sol). No es aire ni líquido.',
+    },
+    {
+      enunciado: '¿A qué velocidad viaja la luz?',
+      opciones: ['A 300 km/h', 'A la velocidad del sonido', 'A unos 300.000 km/s', 'Depende del color'],
+      respuestaIndex: 2,
+      feedbackCorrecto: '¡Sí! Unos 300.000 km/s: en un segundo le daría casi siete vueltas a la Tierra. Es lo más rápido que existe.',
+      feedbackIncorrecto: 'La luz viaja a unos 300.000 km/s, lo más rápido que existe: en un segundo daría casi siete vueltas a la Tierra.',
+    },
+    {
+      enunciado: 'De todas estas «luces», ¿cuál pueden ver tus ojos?',
+      opciones: ['El infrarrojo', 'Las ondas de radio', 'La luz visible', 'Los rayos X'],
+      respuestaIndex: 2,
+      feedbackCorrecto: 'Correcto: el ojo humano solo percibe la luz visible, una franja diminuta de todo el espectro.',
+      feedbackIncorrecto: 'Tus ojos solo ven la luz visible. El infrarrojo, la radio y los rayos X son reales, pero invisibles para nosotros.',
+    },
+    {
+      enunciado: 'El control remoto de tu televisor funciona con…',
+      opciones: ['Rayos gamma', 'Luz infrarroja', 'Ondas de radio', 'Ultravioleta'],
+      respuestaIndex: 1,
+      feedbackCorrecto: 'Así es: envía luz infrarroja, que tú no ves pero el televisor sí «entiende».',
+      feedbackIncorrecto: 'Usa luz infrarroja: invisible para ti, pero el sensor del televisor la detecta. No son rayos gamma ni radio.',
+    },
+    {
+      enunciado: '¿Cómo sabemos de qué está hecha la atmósfera de un exoplaneta sin ir hasta allá?',
+      opciones: [
+        'Enviando una sonda con astronautas',
+        'Porque su atmósfera le «roba» ciertos colores a la luz que la atraviesa',
+        'Adivinando por su tamaño',
+        'No se puede saber',
+      ],
+      respuestaIndex: 1,
+      feedbackCorrecto: '¡Esa es la idea central del tomo! Cada gas absorbe colores distintos; al ver qué colores faltan, sabemos qué gases hay. Es el principio de los arreboles, llevado al cosmos.',
+      feedbackIncorrecto: 'No hace falta viajar: cuando la luz atraviesa la atmósfera del planeta, esos gases le quitan ciertos colores. Leyendo cuáles faltan, sabemos de qué está hecha.',
+    },
+    {
+      enunciado: 'La luz del Sol tarda unos 8 minutos en llegar a la Tierra. Entonces, cuando lo miras…',
+      opciones: [
+        'Lo ves tal como es en este instante',
+        'Lo ves como era hace 8 minutos',
+        'Lo ves como será dentro de 8 minutos',
+        'No tiene nada que ver',
+      ],
+      respuestaIndex: 1,
+      feedbackCorrecto: 'Correcto: su luz salió hace 8 minutos. Igual que con las estrellas, mirar el cielo es mirar al pasado.',
+      feedbackIncorrecto: 'Su luz tardó 8 minutos en llegar, así que lo ves como era hace 8 minutos, no como es ahora.',
+    },
+  ],
+};
+
+const triangulo: Triangulo = {
+  dussel: {
+    autor: 'Enrique Dussel',
+    lente: 'lente del nosotros',
+    cita: 'Quien controla la información tiene poder; nombrar la luz desde nuestra tierra también es una forma de dignidad.',
+    preguntaEspejo:
+      'La ciencia de la luz casi siempre se cuenta desde Europa. ¿Qué cambiaría si la contáramos desde el atardecer rojo de Cartago?',
+  },
+  estoico: {
+    autor: 'Marco Aurelio',
+    lente: 'lente del cuidado interior',
+    cita: 'La luz del sol es una sola, aunque se reparta entre muros, montañas e infinidad de cosas.',
+    preguntaEspejo:
+      'La misma luz ilumina a todos por igual. ¿Trato lo que sé como algo que ilumina a la comunidad, o solo a mí?',
+  },
+  floridi: {
+    autor: 'Luciano Floridi',
+    lente: 'lente de la infoesfera',
+    cita: 'Somos inforgs que habitan la infoesfera; y la luz es el cartero más antiguo del universo.',
+    preguntaEspejo:
+      'Toda la luz que veo es información que viajó desde el pasado. ¿Qué tanto de lo que «veo» del mundo es, en realidad, información de hace rato?',
+  },
+};
+
+const cincoDimensiones: CincoDimensiones = {
+  personal:
+    'Ahora sabes que la luz no es solo «lo que ilumina»: es energía que viaja y trae información. No vuelves a mirar un atardecer igual.',
+  emocional:
+    'Saber que la luz del Sol que te toca salió hace 8 minutos —y la de las estrellas, hace años— mezcla asombro y pequeñez. Está bien sentir las dos cosas a la vez.',
+  ciudadana:
+    'El espectro (radio, celular, internet) es un bien común que los países reparten y regulan. Entender la luz es entender un recurso de todos.',
+  local:
+    'El mismo atardecer rojo que leían los campesinos del Valle es pura física de la luz. La ciencia no está lejos: está en el cielo de Cartago.',
+  intergeneracional:
+    'Tus abuelos leían los arreboles para predecir la lluvia; tú lees el espectro para saber de qué están hechos otros mundos. Es el mismo gesto humano: leer la luz, a través de las generaciones.',
+};
+
+// Tipos de luz para el bloque de lectura del espectro.
+const tiposLuz = [
+  { nombre: 'Ondas de radio', emoji: '📻', texto: 'Las de menor energía. Llevan la señal de las emisoras, la televisión y el celular. Los radiotelescopios «escuchan» con ellas el universo.' },
+  { nombre: 'Infrarrojo', emoji: '🔥', texto: 'Es el calor. Lo emite tu cuerpo y lo usa el control remoto. Telescopios como el James Webb ven en infrarrojo lo que el ojo no puede.' },
+  { nombre: 'Luz visible', emoji: '🌈', texto: 'La única franja que ven tus ojos: del rojo al violeta. Es una porción diminuta de todo el espectro.' },
+  { nombre: 'Ultravioleta', emoji: '🧴', texto: 'Más energética que el violeta. Es la que quema la piel; por eso existe el bloqueador solar.' },
+  { nombre: 'Rayos X', emoji: '🦴', texto: 'Tan energéticos que atraviesan el cuerpo: por eso sirven para las radiografías.' },
+  { nombre: 'Rayos gamma', emoji: '☢️', texto: 'La luz de mayor energía del universo. Se produce en explosiones estelares y se usa en medicina.' },
+];
+---
+
+<BaseLayout
+  title="Tomo 2 · Estación 1 · Una perspectiva diferente sobre la luz — Salomé · ConectaTE"
+  description="Qué es la luz, a qué velocidad viaja, el espectro electromagnético y cómo la luz nos trae información de otros mundos. Estación del programa Salomé (Tomo 2) adaptada al modelo MILC, con lectura desarrollada y ejercicios para ordenar y relacionar."
+  ogType="article"
+>
+  <article class="pt-12 pb-20">
+    <div class="bento-container max-w-5xl">
+      <div class="max-w-3xl mx-auto">
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-sm font-semibold mb-8 flex-wrap" style="color: var(--fg-muted);">
+        <a href={base || '/'} class="hover:opacity-60 transition-opacity">Inicio</a>
+        <span>/</span>
+        <a href={`${base}/explora`} class="hover:opacity-60 transition-opacity">Explora</a>
+        <span>/</span>
+        <a href={`${base}/explora/salome`} class="hover:opacity-60 transition-opacity">Salomé</a>
+        <span>/</span>
+        <span style="color: var(--fg);">Tomo 2 · Estación 1</span>
+      </nav>
+
+      <!-- Hero -->
+      <div class="bento-card-color bg-bento-purple text-white mb-10">
+        <div class="flex flex-wrap gap-2 mb-4">
+          <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">Estación 1 · Tomo 2</span>
+          <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">La luz</span>
+          <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">~70 min</span>
+        </div>
+        <h1 class="heading-giant text-balance mb-3">Una perspectiva diferente sobre la luz</h1>
+        <p class="text-base md:text-lg font-semibold opacity-95 leading-relaxed">
+          Qué es la luz, a qué velocidad viaja y cómo se convierte en la mensajera
+          que nos cuenta de qué están hechos otros mundos — empezando por el cielo
+          rojo que leían nuestros abuelos.
+        </p>
+      </div>
+
+      <!-- 🌱 Saber ancestral -->
+      <SaberAncestralBlock data={saberAncestral} />
+
+      <!-- 🗺 Ruta -->
+      <MapaRutaBlock estaciones={mapaRuta} />
+
+      <!-- Propósito -->
+      <div class="bento-card mb-6">
+        <span class="chip-bento mb-4">🎯 Lo que vas a poder hacer</span>
+        <ul class="space-y-3 mt-3">
+          {[
+            'IDENTIFICAR qué es la luz y a qué velocidad viaja.',
+            'EXPLICAR por qué la luz visible es solo una parte del espectro.',
+            'ORDENAR el espectro por energía y RELACIONAR cada luz con su uso.',
+            'APLICAR un cálculo real para medir cuánto tarda en llegarte la luz del Sol.',
+            'CREAR un inventario de las «luces invisibles» que usas cada día.',
+          ].map((d) => (
+            <li class="flex items-start gap-3">
+              <span class="w-6 h-6 rounded-md bg-bento-lime/30 text-black flex items-center justify-center text-xs font-black shrink-0 mt-0.5">✓</span>
+              <span class="text-sm md:text-base leading-relaxed">{d}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Pregunta detonante -->
+      <div class="bento-card-color bg-bento-cyan mb-10">
+        <span class="chip-bento mb-3 bg-black/10">💡 La pregunta que abre todo</span>
+        <p class="text-lg md:text-xl font-black leading-snug">
+          Nunca has tocado una estrella ni un planeta lejano. Entonces, ¿cómo es que
+          sabemos de qué están hechos, qué temperatura tienen y hasta si podrían
+          albergar vida?
+        </p>
+        <p class="text-sm leading-relaxed mt-3 opacity-90">
+          La respuesta es una sola palabra, y es la protagonista de todo este tomo:
+          la <strong>luz</strong>.
+        </p>
+      </div>
+
+      <!-- 👁 Observa · video en proceso en RECA -->
+      <div class="bento-card mb-6 flex items-start gap-3">
+        <span class="text-2xl shrink-0" aria-hidden="true">🎬</span>
+        <div>
+          <div class="font-black text-sm">El video de este módulo está en camino</div>
+          <p class="text-sm leading-relaxed mt-1" style="color: var(--fg-muted);">
+            RECA aún está produciendo los videos del Tomo 2. Mientras llega, esta
+            estación es autosuficiente: tienes toda la lectura que necesitas. Y aquí
+            abajo está la guía oficial para profundizar.
+          </p>
+        </div>
+      </div>
+      <GuiasRECA tomo={2} modulo={1} />
+
+      <!-- Puente -->
+      <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+        En el Tomo 1 dijiste que el color de una estrella revela su temperatura. Eso
+        ya era leer la luz. Ahora vas a entender qué es la luz de verdad, porque con
+        eso resolverás los ejercicios que siguen.
+      </p>
+
+      <!-- 📖 LEE 1 · ¿Qué es la luz? -->
+      <section class="bento-card mb-6">
+        <span class="chip-bento mb-4">📖 Lee · ¿Qué es la luz y a qué velocidad viaja?</span>
+        <div class="space-y-4 text-sm md:text-base leading-relaxed">
+          <p>
+            La <strong>luz</strong> es una forma de <strong>energía que viaja</strong>. Y tiene algo
+            extraordinario: no necesita aire ni agua ni nada para desplazarse. Puede
+            cruzar el <strong>vacío</strong> del espacio. Por eso la luz del Sol llega hasta ti
+            atravesando 150 millones de kilómetros de vacío, mientras que su sonido
+            —si lo tuviera— jamás llegaría: el sonido sí necesita aire.
+          </p>
+          <p>
+            ¿Y qué tan rápido viaja? A <strong>300.000 kilómetros por segundo</strong>. Es la
+            velocidad máxima del universo: nada puede ir más rápido. Para que lo
+            sientas: en <strong>un solo segundo</strong>, un rayo de luz le daría casi
+            <strong>siete vueltas completas a la Tierra</strong>.
+          </p>
+          <p>
+            Los científicos descubrieron que la luz se comporta de dos maneras a la
+            vez: como una <strong>onda</strong> (por eso tiene color, igual que las olas tienen
+            tamaños distintos) y como pequeños <strong>paquetes de energía</strong> llamados
+            <strong>fotones</strong>. No tienes que elegir una: la luz es las dos cosas. Y viaja
+            siempre en <strong>línea recta</strong>… hasta que algo la desvía: una gota de agua,
+            un vidrio o la atmósfera de un planeta.
+          </p>
+        </div>
+      </section>
+
+      <!-- 📖 LEE 2 · El espectro -->
+      <section class="bento-card mb-6">
+        <span class="chip-bento mb-4">📖 Lee · La luz que no ves: el espectro</span>
+        <div class="space-y-4 text-sm md:text-base leading-relaxed">
+          <p>
+            Aquí viene la gran sorpresa: lo que tus ojos ven —los colores del rojo al
+            violeta— es apenas una <strong>franja diminuta</strong> de un abanico enorme de
+            luces. A ese abanico completo lo llamamos <strong>espectro electromagnético</strong>.
+            Todas son «luz», pero la mayoría es <strong>invisible</strong> para nosotros.
+          </p>
+          <p>
+            Lo que diferencia a una luz de otra es su <strong>energía</strong>. De menos a más
+            energía, el espectro va así: ondas de <strong>radio</strong>, microondas,
+            <strong>infrarrojo</strong>, la <strong>luz visible</strong>, <strong>ultravioleta</strong>,
+            <strong>rayos X</strong> y <strong>rayos gamma</strong>. Tú usas casi todas a diario sin verlas.
+          </p>
+        </div>
+
+        <!-- Visualización del espectro -->
+        <div class="mt-5 p-4 rounded-bento-sm" style="background: var(--bg);">
+          <h3 class="font-black text-sm mb-3">El espectro electromagnético</h3>
+          <div class="w-full h-8 rounded-full" style="background: linear-gradient(90deg, #7f1d1d, #dc2626, #f97316, #facc15, #22c55e, #2563eb, #7c3aed, #4c1d95);" role="img" aria-label="Banda de colores que va del rojo (menos energía) al violeta (más energía); el centro es la luz visible."></div>
+          <div class="flex justify-between items-center text-[10px] font-bold mt-2" style="color: var(--fg-muted);">
+            <span>← menos energía<br/>(radio, infrarrojo)</span>
+            <span class="font-black text-center" style="color: var(--fg);">luz visible<br/>(lo que ves)</span>
+            <span class="text-right">más energía →<br/>(UV, rayos X, gamma)</span>
+          </div>
+        </div>
+
+        <ul class="space-y-3 mt-5">
+          {tiposLuz.map((t) => (
+            <li class="flex items-start gap-3 p-3 rounded-bento-sm" style="background: var(--bg);">
+              <span class="text-2xl shrink-0" aria-hidden="true">{t.emoji}</span>
+              <span class="text-sm md:text-base leading-relaxed"><strong>{t.nombre}:</strong> {t.texto}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- 🔎 Ordena el espectro (después de leerlo) -->
+      <div class="mb-6">
+        <LabOrdenar data={ordenarEspectro} id="ordena-espectro" />
+      </div>
+
+      <!-- Puente -->
+      <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+        Ya sabes qué es la luz y cuántas clases hay. Falta lo más importante: por qué
+        la luz es la herramienta número uno de toda la astronomía.
+      </p>
+
+      <!-- 📖 LEE 3 · La luz mensajera -->
+      <section class="bento-card mb-6">
+        <span class="chip-bento mb-4">📖 Lee · La luz, mensajera del universo</span>
+        <div class="space-y-4 text-sm md:text-base leading-relaxed">
+          <p>
+            A las estrellas y a los planetas lejanos <strong>no los tocamos, no los
+            visitamos, no los tomamos en la mano</strong>. Y, sin embargo, sabemos su
+            temperatura, su tamaño y de qué están hechos. ¿Cómo? Porque todos ellos
+            nos envían una sola cosa: su <strong>luz</strong>. Y esa luz viene cargada de
+            <strong>información</strong>.
+          </p>
+          <p>
+            Su <strong>brillo</strong> nos dice cuánta energía emiten. Su <strong>color</strong> nos dice
+            su temperatura (eso ya lo viste con las estrellas: azul = caliente,
+            rojo = frío). Y —lo que descubrirás en los próximos módulos— los colores
+            que le <strong>faltan</strong> nos dicen de qué está hecha.
+          </p>
+          <p>
+            Aquí se cierra el círculo con tus abuelos. Cuando la luz de una estrella
+            atraviesa la <strong>atmósfera</strong> de un exoplaneta, esa atmósfera le «roba»
+            ciertos colores —exactamente como el aire del atardecer le roba los azules
+            al sol y deja los arreboles rojos—. Leyendo <strong>qué colores faltan</strong>, los
+            astrónomos saben qué gases hay en ese planeta… y si alguno es señal de
+            <strong>vida</strong>. El saber campesino y la astrofísica de punta usan el mismo
+            principio: la luz que cruza un aire vuelve cambiada, y ese cambio es un mensaje.
+          </p>
+        </div>
+      </section>
+
+      <!-- 🔎 Relaciona luz con uso -->
+      <div class="mb-6">
+        <LabEmparejar data={emparejarLuz} id="empareja-luz" />
+      </div>
+
+      <!-- 🔎 Relaciona conceptos (repaso integrador) -->
+      <div class="mb-6">
+        <LabEmparejar data={emparejarConceptos} id="empareja-conceptos-luz" />
+      </div>
+
+      <!-- ✅ Quiz -->
+      <div class="mb-6">
+        <LabQuiz data={quiz} id="salome-luz-quiz" />
+      </div>
+
+      <!-- Puente -->
+      <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+        Hablamos de que la luz es rapidísima, pero el universo es tan grande que ni
+        ella llega «al instante». Compruébalo con números reales.
+      </p>
+
+      <!-- ✏️ Actividad de cálculo -->
+      <ActividadBlock data={actividadCalculo} />
+
+      <!-- ✏️ Actividad CREA -->
+      <ActividadBlock data={actividadCaza} />
+
+      <!-- Puente -->
+      <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+        Entendiste qué es la luz y cuánta información trae. Cerremos pensando qué
+        significa, para ti, que casi todo lo que sabes del cielo te llegó como luz.
+      </p>
+      </div>
+
+      <!-- 💭 Triángulo (ancho completo) -->
+      <TrianguloBlock data={triangulo} />
+
+      <!-- 🌱 Cinco dimensiones (ancho completo) -->
+      <CincoDimensionesBlock data={cincoDimensiones} />
+
+      <div class="max-w-3xl mx-auto">
+      <!-- Créditos -->
+      <div class="bento-card mb-10 border-l-4 border-bento-purple">
+        <span class="chip-bento mb-3">🛰 Créditos</span>
+        <p class="text-sm leading-relaxed mt-2" style="color: var(--fg-muted);">
+          Esta estación adapta al modelo MILC los conceptos del Módulo 1 («Una
+          perspectiva diferente sobre la luz») del <strong style="color: var(--fg);">Tomo 2</strong> del proyecto
+          <strong style="color: var(--fg);">Salomé: investigación de exoplanetas</strong>, de la Association Ágora de
+          Hipatia (Suiza), ejecutado en Colombia por <strong style="color: var(--fg);">RECA</strong>. El cómic y las
+          fichas originales son de sus autores.
+        </p>
+        <a href={recursosOficiales} target="_blank" rel="noopener" class="inline-flex items-center gap-2 mt-4 font-black text-sm text-bento-blue hover:opacity-70 transition-opacity">
+          Leer el cómic y ver el material oficial
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
+          </svg>
+        </a>
+      </div>
+
+      <!-- Volver -->
+      <a href={`${base}/explora/salome`} class="bento-card-hover flex items-center gap-4">
+        <svg class="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 12H5"></path>
+          <path d="m12 19-7-7 7-7"></path>
+        </svg>
+        <div>
+          <div class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">Volver al programa</div>
+          <div class="font-black text-lg">Salomé</div>
+        </div>
+      </a>
+      </div>
+    </div>
+  </article>
+</BaseLayout>

@@ -1,0 +1,516 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import SaberAncestralBlock from '../../../../components/SaberAncestralBlock.astro';
+import MapaRutaBlock from '../../../../components/MapaRutaBlock.astro';
+import ActividadBlock from '../../../../components/ActividadBlock.astro';
+import LabEmparejar from '../../../../components/LabEmparejar.astro';
+import LabOrdenar from '../../../../components/LabOrdenar.astro';
+import LabQuiz from '../../../../components/LabQuiz.astro';
+import TrianguloBlock from '../../../../components/TrianguloBlock.astro';
+import CincoDimensionesBlock from '../../../../components/CincoDimensionesBlock.astro';
+import GuiasRECA from '../../../../components/GuiasRECA.astro';
+import type {
+  SaberAncestral,
+  EstacionMapa,
+  Actividad,
+  LabQuiz as LabQuizData,
+  Triangulo,
+  CincoDimensiones,
+} from '../../../../data/guiasContenido/_schema';
+import type { DataEmparejar } from '../../../../components/LabEmparejar.astro';
+import type { DataOrdenar } from '../../../../components/LabOrdenar.astro';
+
+const base = import.meta.env.BASE_URL;
+const recursosOficiales = 'https://www.astroreca.org/educacion/salome-comic-exoplanetas/recursos';
+
+const saberAncestral: SaberAncestral = {
+  saber:
+    'En los Andes y en los campos de Colombia, el arcoíris nunca fue solo un adorno del cielo. Muchos pueblos andinos lo nombraban kuychi y lo veían como una serpiente de colores que baja a beber a los ríos y une el cielo con la tierra; los abuelos campesinos advertían a los niños que no lo señalaran con el dedo. Y siempre aparecía con la misma receta: después de la lluvia, con el sol a la espalda. Lo que la tradición guardaba como respeto y misterio, la ciencia lo guardaba como pregunta: ¿por qué ese arco surge justo ahí, y por qué siempre con los mismos colores en el mismo orden? Las dos miradas contemplan el mismo arco; una le reza, la otra lo interroga — y ninguna sobra.',
+  fuente: 'Saberes andinos y campesinos de Colombia · el kuychi, el arcoíris',
+  preguntaPuente:
+    'Los abuelos veían en el arcoíris una serpiente sagrada; tú vas a aprender a verlo como un mensaje cifrado. ¿Qué secreto sobre la luz —y sobre las estrellas— esconde un simple arco de colores?',
+};
+
+const mapaRuta: EstacionMapa[] = [
+  { numero: 1, iconos: ['🌱'], titulo: 'La serpiente de colores', duracionMin: 5 },
+  { numero: 2, iconos: ['📖'], titulo: 'La luz blanca está hecha de colores', duracionMin: 11 },
+  { numero: 3, iconos: ['🔎'], titulo: 'Ordena cómo nace un arcoíris', duracionMin: 6 },
+  { numero: 4, iconos: ['📖', '👁'], titulo: 'El código de barras de las estrellas', duracionMin: 13 },
+  { numero: 5, iconos: ['🔎'], titulo: 'Relaciona fenómenos y conceptos', duracionMin: 8 },
+  { numero: 6, iconos: ['✅'], titulo: 'Pon a prueba lo que sabes', duracionMin: 8 },
+  { numero: 7, iconos: ['✏️'], titulo: 'Fabrica un arcoíris y descifra la luz', duracionMin: 16 },
+  { numero: 8, iconos: ['💭'], titulo: 'Tres voces para cerrar', duracionMin: 8 },
+];
+
+const ordenarArcoiris: DataOrdenar = {
+  titulo: 'Ordena cómo nace un arcoíris',
+  instrucciones: 'Acabas de leer el proceso. Usa las flechas para poner los seis pasos del primero al último.',
+  pasos: [
+    'El sol brilla detrás de ti y, al frente, está lloviendo.',
+    'La luz blanca del sol entra en una gota de lluvia.',
+    'Al entrar, la luz se dobla (se refracta) y empieza a separarse en colores.',
+    'Los colores rebotan en la parte de atrás de la gota.',
+    'Salen de la gota en direcciones ligeramente distintas.',
+    'Tus ojos ven un arco con los colores siempre en el mismo orden.',
+  ],
+};
+
+const emparejarFenomenos: DataEmparejar = {
+  titulo: 'Relaciona cada fenómeno con su explicación',
+  instrucciones: 'Todos estos colores del cielo tienen una causa física. Conéctalos.',
+  etiquetaIzq: 'Lo que ves',
+  etiquetaDer: 'Por qué pasa',
+  pares: [
+    { izquierda: 'El cielo de día es azul', derecha: 'El aire dispersa más el azul de la luz del sol' },
+    { izquierda: 'El atardecer es rojo', derecha: 'La luz cruza más aire y solo pasan los rojos' },
+    { izquierda: 'El arcoíris', derecha: 'La lluvia separa la luz blanca en sus colores' },
+    { izquierda: 'La luz blanca', derecha: 'Es la mezcla de todos los colores juntos' },
+    { izquierda: 'Una línea negra en el espectro', derecha: 'Un gas se «comió» ese color: su huella' },
+  ],
+};
+
+const emparejarConceptos: DataEmparejar = {
+  titulo: 'Repaso: relaciona cada concepto con su significado',
+  instrucciones: 'Cierra la lectura conectando los cinco conceptos clave de la estación con su definición.',
+  etiquetaIzq: 'Concepto',
+  etiquetaDer: 'Significado',
+  pares: [
+    { izquierda: 'Prisma', derecha: 'Objeto que separa la luz blanca en colores' },
+    { izquierda: 'Refracción', derecha: 'El doblez de la luz al cambiar de medio' },
+    { izquierda: 'Longitud de onda', derecha: 'El «tamaño» de la onda que define el color' },
+    { izquierda: 'Espectro', derecha: 'La luz separada en todos sus colores' },
+    { izquierda: 'Espectroscopía', derecha: 'Leer de qué está hecho algo por su luz' },
+  ],
+};
+
+const actividadArcoiris: Actividad = {
+  numero: 1,
+  verbo: 'APLICA',
+  titulo: 'Fabrica tu propio arcoíris',
+  tiempoMin: 8,
+  modalidad: 'individual',
+  pasos: [
+    'Elige un método: un CD bajo la luz, un vaso de agua junto a una ventana soleada, o una manguera con el sol a tu espalda.',
+    'Produce el arcoíris y obsérvalo con calma. Dibújalo y rotula el orden de los colores, de adentro hacia afuera.',
+    'Explica con lo aprendido: ¿qué le hizo el CD o el agua a la luz blanca para que aparecieran los colores?',
+  ],
+  cuaderno: {
+    titulo: 'Mi arcoíris',
+    formato: 'dibujo con los colores rotulados + explicación',
+    extension: 'el dibujo y 3 a 4 renglones de explicación',
+  },
+  criterios: [
+    'El orden de los colores va del rojo al violeta.',
+    'Tu explicación dice que la luz blanca se separó en los colores que la forman.',
+    'Relacionas tu CD o vaso de agua con lo que hace una gota de lluvia.',
+  ],
+};
+
+const actividadDescifra: Actividad = {
+  numero: 2,
+  verbo: 'CREA',
+  titulo: 'Descifra la luz de una estrella',
+  tiempoMin: 12,
+  modalidad: 'individual',
+  pasos: [
+    'Recuerda la idea clave: cada elemento químico deja siempre las mismas líneas negras en la luz, como un código de barras.',
+    'Escribe con tus palabras cómo, leyendo esas líneas, los astrónomos saben de qué está hecha una estrella que nunca tocaremos.',
+    'Inventa una comparación cotidiana para esa idea (por ejemplo, reconocer a alguien por su firma o su huella).',
+  ],
+  cuaderno: {
+    titulo: 'El código de barras de la luz',
+    formato: 'párrafo + una comparación propia',
+    extension: '6 a 8 renglones',
+  },
+  criterios: [
+    'Explicas que los colores que faltan revelan los elementos presentes.',
+    'Incluyes una comparación cotidiana creada por ti.',
+    'Concluyes que se puede saber de qué está hecha una estrella sin viajar hasta ella.',
+  ],
+};
+
+const quiz: LabQuizData = {
+  tipo: 'quiz',
+  titulo: 'Pon a prueba lo que sabes',
+  instrucciones: 'Seis preguntas sobre lo que leíste. Recibirás una explicación en cada una.',
+  preguntas: [
+    {
+      enunciado: '¿De qué está hecha la luz blanca del Sol?',
+      opciones: ['De un solo color, el blanco', 'De la mezcla de todos los colores', 'De aire iluminado', 'Solo de rojo y azul'],
+      respuestaIndex: 1,
+      feedbackCorrecto: 'Exacto: la luz blanca es la suma de todos los colores. Un prisma o una gota de lluvia los separa y los hace visibles.',
+      feedbackIncorrecto: 'La luz blanca es en realidad la mezcla de todos los colores juntos. Por eso un prisma puede separarlos.',
+    },
+    {
+      enunciado: 'Dentro del arcoíris, ¿qué color tiene MÁS energía?',
+      opciones: ['El rojo', 'El amarillo', 'El violeta', 'Todos la misma'],
+      respuestaIndex: 2,
+      feedbackCorrecto: 'Correcto: el violeta tiene la onda más corta y más energía; el rojo, la más larga y menos energía.',
+      feedbackIncorrecto: 'El violeta es el de más energía (onda más corta). El rojo es el de menos. Es el mismo orden del espectro del módulo anterior.',
+    },
+    {
+      enunciado: '¿Qué necesitas para ver un arcoíris en el cielo?',
+      opciones: [
+        'El sol de frente y nubes negras',
+        'El sol a tu espalda y lluvia al frente',
+        'Que sea de noche',
+        'Un cielo totalmente despejado',
+      ],
+      respuestaIndex: 1,
+      feedbackCorrecto: '¡Sí! El sol detrás de ti ilumina las gotas de lluvia que tienes al frente, y ahí aparece el arco.',
+      feedbackIncorrecto: 'La receta es: sol a tu espalda y lluvia al frente. Por eso el arcoíris siempre está en el lado opuesto al sol.',
+    },
+    {
+      enunciado: 'En un arcoíris natural, ¿qué separa la luz del Sol en colores?',
+      opciones: ['Las nubes', 'Las gotas de lluvia', 'El viento', 'La temperatura'],
+      respuestaIndex: 1,
+      feedbackCorrecto: 'Así es: cada gota de lluvia actúa como un pequeño prisma que dobla y separa la luz.',
+      feedbackIncorrecto: 'Son las gotas de lluvia: funcionan como millones de prismas diminutos que separan la luz blanca.',
+    },
+    {
+      enunciado: 'Las líneas negras en el espectro de una estrella nos dicen…',
+      opciones: [
+        'Que la estrella se está apagando',
+        'De qué elementos químicos está hecha',
+        'Su distancia exacta',
+        'Nada, son un error del telescopio',
+      ],
+      respuestaIndex: 1,
+      feedbackCorrecto: '¡Esa es la espectroscopía! Cada elemento absorbe colores propios; las líneas que faltan son su huella.',
+      feedbackIncorrecto: 'Son la huella de los elementos: cada gas «se come» ciertos colores, y leer cuáles faltan revela de qué está hecha.',
+    },
+    {
+      enunciado: '¿Dónde se descubrió primero el helio?',
+      opciones: [
+        'En una mina de Colombia',
+        'En el Sol, leyendo su luz, antes que en la Tierra',
+        'En un laboratorio de química',
+        'En la Luna',
+      ],
+      respuestaIndex: 1,
+      feedbackCorrecto: 'Correcto: se halló en el espectro del Sol en 1868 y por eso se llama helio, de Helios (sol). Leer la luz funciona.',
+      feedbackIncorrecto: 'El helio se detectó primero en la luz del Sol (1868) y luego en la Tierra. Su nombre viene de Helios, «sol».',
+    },
+  ],
+};
+
+const triangulo: Triangulo = {
+  dussel: {
+    autor: 'Enrique Dussel',
+    lente: 'lente del nosotros',
+    cita: 'El mismo arco que para unos es serpiente sagrada, para otros es dato: ninguna mirada sobra.',
+    preguntaEspejo:
+      '¿Puede convivir el respeto del abuelo por el arcoíris con la pregunta del científico, sin que una desprecie a la otra?',
+  },
+  estoico: {
+    autor: 'Marco Aurelio',
+    lente: 'lente del cuidado interior',
+    cita: 'Casi todo lo que ves nace y se desvanece en un instante; aprende a mirar sin querer atrapar.',
+    preguntaEspejo:
+      'El arcoíris dura segundos. ¿Disfruto lo bello aunque sea pasajero, o me frustro porque no permanece?',
+  },
+  floridi: {
+    autor: 'Luciano Floridi',
+    lente: 'lente de la infoesfera',
+    cita: 'La luz trae un código de barras del universo; leerlo es alfabetizarse en la lengua de las estrellas.',
+    preguntaEspejo:
+      'Si la luz es un mensaje, ¿quién aprende a leerlo y quién se queda solo viendo colores bonitos?',
+  },
+};
+
+const cincoDimensiones: CincoDimensiones = {
+  personal:
+    'Ya no ves el arcoíris igual: es la luz mostrando las piezas de las que está hecha. Y esas piezas, sabes ahora, son un mensaje.',
+  emocional:
+    'Entender cómo funciona el arcoíris no le quita la magia: le suma otra. Saber y asombrarse pueden ir juntos.',
+  ciudadana:
+    'La espectroscopía cuida tu vida diaria: revisa la pureza del agua, los alimentos y los medicamentos. Leer la luz es una herramienta de todos.',
+  local:
+    'El mismo arcoíris que aparece sobre los campos del Valle tras la lluvia es física que ya puedes explicar. La ciencia está en tu propio cielo.',
+  intergeneracional:
+    'Tus abuelos respetaban el arcoíris; tú lo descifras. El respeto y la pregunta caben juntos, y se heredan de una generación a otra.',
+};
+
+// Colores del arcoíris para el bloque de lectura.
+const colores = [
+  { nombre: 'Rojo', hex: '#e11d48', nota: 'La onda más larga: el color de menos energía.' },
+  { nombre: 'Naranja', hex: '#f97316', nota: 'Entre el rojo y el amarillo.' },
+  { nombre: 'Amarillo', hex: '#eab308', nota: 'El color al que el ojo es más sensible.' },
+  { nombre: 'Verde', hex: '#22c55e', nota: 'Justo en el centro del arcoíris.' },
+  { nombre: 'Azul', hex: '#2563eb', nota: 'Onda corta: bastante energía.' },
+  { nombre: 'Violeta', hex: '#7c3aed', nota: 'La onda más corta: el color de más energía.' },
+];
+
+// Posiciones (%) de líneas de absorción para la ilustración del espectro estelar.
+const lineasAbsorcion = [16, 27, 41, 58, 69, 84];
+---
+
+<BaseLayout
+  title="Tomo 2 · Estación 2 · Los colores del arcoíris — Salomé · ConectaTE"
+  description="Por qué la luz blanca se separa en colores, cómo nace un arcoíris y cómo el espectro de una estrella —su código de barras de líneas— revela de qué está hecha. Estación del programa Salomé (Tomo 2) adaptada al modelo MILC."
+  ogType="article"
+>
+  <article class="pt-12 pb-20">
+    <div class="bento-container max-w-5xl">
+      <div class="max-w-3xl mx-auto">
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-sm font-semibold mb-8 flex-wrap" style="color: var(--fg-muted);">
+        <a href={base || '/'} class="hover:opacity-60 transition-opacity">Inicio</a>
+        <span>/</span>
+        <a href={`${base}/explora`} class="hover:opacity-60 transition-opacity">Explora</a>
+        <span>/</span>
+        <a href={`${base}/explora/salome`} class="hover:opacity-60 transition-opacity">Salomé</a>
+        <span>/</span>
+        <span style="color: var(--fg);">Tomo 2 · Estación 2</span>
+      </nav>
+
+      <!-- Hero -->
+      <div class="bento-card-color bg-bento-blue text-white mb-10">
+        <div class="flex flex-wrap gap-2 mb-4">
+          <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">🌈 Estación 2 · Tomo 2</span>
+          <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">Color y espectro</span>
+          <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">~70 min</span>
+        </div>
+        <h1 class="heading-giant text-balance mb-3">Los colores del arcoíris</h1>
+        <p class="text-base md:text-lg font-semibold opacity-95 leading-relaxed">
+          Por qué la luz blanca se abre en colores, cómo nace un arcoíris y cómo ese
+          mismo arco, leído con cuidado, se convierte en el código de barras que
+          revela de qué están hechas las estrellas.
+        </p>
+      </div>
+
+      <!-- 🌱 Saber ancestral -->
+      <SaberAncestralBlock data={saberAncestral} />
+
+      <!-- 🗺 Ruta -->
+      <MapaRutaBlock estaciones={mapaRuta} />
+
+      <!-- Propósito -->
+      <div class="bento-card mb-6">
+        <span class="chip-bento mb-4">🎯 Lo que vas a poder hacer</span>
+        <ul class="space-y-3 mt-3">
+          {[
+            'IDENTIFICAR que la luz blanca es la mezcla de todos los colores.',
+            'EXPLICAR cómo se forma un arcoíris paso a paso.',
+            'ORDENAR el proceso del arcoíris y RELACIONAR fenómenos del cielo con su causa.',
+            'APLICAR lo aprendido fabricando tu propio arcoíris.',
+            'CREAR una explicación propia de cómo la luz revela de qué están hechas las estrellas.',
+          ].map((d) => (
+            <li class="flex items-start gap-3">
+              <span class="w-6 h-6 rounded-md bg-bento-lime/30 text-black flex items-center justify-center text-xs font-black shrink-0 mt-0.5">✓</span>
+              <span class="text-sm md:text-base leading-relaxed">{d}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Pregunta detonante -->
+      <div class="bento-card-color bg-bento-cyan mb-10">
+        <span class="chip-bento mb-3 bg-black/10">💡 La pregunta que abre todo</span>
+        <p class="text-lg md:text-xl font-black leading-snug">
+          Un arcoíris es bellísimo y dura un instante. Pero ese mismo arco de colores
+          es la herramienta más poderosa de toda la astronomía. ¿Cómo puede un puñado
+          de colores contarnos de qué está hecho el universo?
+        </p>
+        <p class="text-sm leading-relaxed mt-3 opacity-90">
+          Para responderlo, primero hay que entender por qué existen los colores.
+        </p>
+      </div>
+
+      <!-- 👁 Observa · video en proceso en RECA -->
+      <div class="bento-card mb-6 flex items-start gap-3">
+        <span class="text-2xl shrink-0" aria-hidden="true">🎬</span>
+        <div>
+          <div class="font-black text-sm">El video de este módulo está en camino</div>
+          <p class="text-sm leading-relaxed mt-1" style="color: var(--fg-muted);">
+            RECA aún está produciendo los videos del Tomo 2. Mientras llega, esta
+            estación es autosuficiente: tienes toda la lectura que necesitas. Y aquí
+            abajo está la guía oficial para profundizar.
+          </p>
+        </div>
+      </div>
+      <GuiasRECA tomo={2} modulo={2} />
+
+      <!-- Puente -->
+      <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+        En la estación anterior dijiste que la luz visible era una franja del espectro.
+        Hoy vas a abrir esa franja y ver lo que esconde, porque con eso resolverás los
+        ejercicios que siguen.
+      </p>
+
+      <!-- 📖 LEE 1 · La luz blanca está hecha de colores -->
+      <section class="bento-card mb-6">
+        <span class="chip-bento mb-4">📖 Lee · La luz blanca está hecha de colores</span>
+        <div class="space-y-4 text-sm md:text-base leading-relaxed">
+          <p>
+            La luz del Sol parece <strong>blanca</strong>, pero esconde un truco: es la
+            <strong>mezcla de todos los colores</strong> a la vez. Hace más de 300 años, Isaac
+            Newton lo demostró con un <strong>prisma</strong>: hizo entrar un rayo de luz blanca
+            y salió convertido en un abanico de colores, del rojo al violeta. Y cuando
+            puso un segundo prisma, los colores se volvieron a juntar… en blanco otra vez.
+          </p>
+          <p>
+            Cada color es una <strong>onda</strong> de distinto tamaño (su <strong>longitud de onda</strong>):
+            el <strong>rojo</strong> es la onda más larga, de menos energía; el <strong>violeta</strong>, la
+            más corta, de más energía. Es el mismo orden de energía que viste en el
+            espectro del módulo anterior, ahora dentro de la luz que sí puedes ver.
+          </p>
+        </div>
+
+        <!-- Visualización del espectro visible -->
+        <div class="mt-5 p-4 rounded-bento-sm" style="background: var(--bg);">
+          <h3 class="font-black text-sm mb-3">La luz blanca, abierta en colores</h3>
+          <div class="w-full h-8 rounded-full" style="background: linear-gradient(90deg, #e11d48, #f97316, #eab308, #22c55e, #2563eb, #7c3aed);" role="img" aria-label="Banda de colores del rojo al violeta: el espectro visible."></div>
+          <div class="flex justify-between text-[10px] font-bold mt-2" style="color: var(--fg-muted);">
+            <span>rojo · menos energía</span>
+            <span>violeta · más energía</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 📖 LEE 2 · Cómo nace un arcoíris -->
+      <section class="bento-card mb-6">
+        <span class="chip-bento mb-4">📖 Lee · Cómo nace un arcoíris</span>
+        <div class="space-y-4 text-sm md:text-base leading-relaxed">
+          <p>
+            Un arcoíris es ese mismo truco del prisma, pero hecho por la naturaleza con
+            <strong>millones de gotas de lluvia</strong>. La receta es exacta: el <strong>sol a tu
+            espalda</strong> y la <strong>lluvia al frente</strong>. La luz blanca del sol entra en cada
+            gota, se <strong>dobla</strong> (se refracta), <strong>rebota</strong> en el fondo de la gota y
+            sale <strong>separada</strong> en colores, cada uno en una dirección un poco distinta.
+          </p>
+          <p>
+            Por eso ves un <strong>arco</strong> con los colores siempre en el mismo orden —rojo
+            por fuera, violeta por dentro— y siempre en el lado <strong>opuesto al sol</strong>. No
+            hay dos personas que vean exactamente el mismo arcoíris: cada quien ve el suyo,
+            formado por las gotas que están justo en el ángulo correcto para sus ojos.
+          </p>
+        </div>
+      </section>
+
+      <!-- 🔎 Ordena el arcoíris (después de leerlo) -->
+      <div class="mb-6">
+        <LabOrdenar data={ordenarArcoiris} id="ordena-arcoiris" />
+      </div>
+
+      <!-- Puente -->
+      <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+        Hasta aquí, los colores son belleza. Ahora viene el giro: esos colores son
+        también un mensaje, y aprender a leerlo cambió para siempre la astronomía.
+      </p>
+
+      <!-- 📖 LEE 3 · El código de barras de las estrellas -->
+      <section class="bento-card mb-6">
+        <span class="chip-bento mb-4">📖 Lee · El código de barras de las estrellas</span>
+        <div class="space-y-4 text-sm md:text-base leading-relaxed">
+          <p>
+            Si haces pasar la luz de una estrella por un prisma (un aparato llamado
+            <strong>espectroscopio</strong>), obtienes su <strong>espectro</strong>: su propio arcoíris. Pero
+            al mirarlo de cerca aparece algo raro: el arco no está completo. Tiene
+            <strong>líneas negras</strong>, colores que <strong>faltan</strong>.
+          </p>
+          <p>
+            ¿Por qué faltan? Porque los gases de la estrella —y de cualquier atmósfera
+            que la luz atraviese— <strong>absorben colores muy específicos</strong>. Cada elemento
+            químico se «come» siempre los mismos: es su <strong>huella</strong>, su código de barras
+            personal. El hidrógeno deja unas líneas; el helio, otras; el oxígeno, otras.
+          </p>
+          <p>
+            Leyendo <strong>qué líneas faltan</strong>, los astrónomos descubren de qué está hecha
+            una estrella o la atmósfera de un exoplaneta, <strong>sin viajar hasta allá</strong>. Tan
+            potente es esto que el <strong>helio se descubrió en el Sol</strong> —leyendo su luz, en
+            1868— antes que en la Tierra; por eso lleva el nombre de Helios, «sol». El
+            arcoíris de tus abuelos y el telescopio más moderno leen, al final, el mismo arco.
+          </p>
+        </div>
+
+        <!-- Ilustración del espectro estelar con líneas de absorción -->
+        <div class="mt-5 p-4 rounded-bento-sm" style="background: var(--bg);">
+          <h3 class="font-black text-sm mb-3">El espectro de una estrella: las líneas que faltan</h3>
+          <div class="relative w-full h-10 rounded-bento-sm overflow-hidden" role="img" aria-label="Banda de colores del arcoíris cruzada por líneas negras verticales: los colores que los elementos de la estrella absorbieron.">
+            <div class="absolute inset-0" style="background: linear-gradient(90deg, #e11d48, #f97316, #eab308, #22c55e, #2563eb, #7c3aed);"></div>
+            {lineasAbsorcion.map((x) => (
+              <div class="absolute top-0 bottom-0" style={`left: ${x}%; width: 3px; background: #0a0a0a;`}></div>
+            ))}
+          </div>
+          <p class="text-xs leading-relaxed mt-2" style="color: var(--fg-muted);">
+            Cada <strong style="color: var(--fg);">línea negra</strong> es un color que un elemento de la estrella absorbió. Su posición es la huella de ese elemento.
+          </p>
+        </div>
+      </section>
+
+      <!-- 🔎 Relaciona fenómenos -->
+      <div class="mb-6">
+        <LabEmparejar data={emparejarFenomenos} id="empareja-fenomenos" />
+      </div>
+
+      <!-- 🔎 Relaciona conceptos (repaso integrador) -->
+      <div class="mb-6">
+        <LabEmparejar data={emparejarConceptos} id="empareja-conceptos-color" />
+      </div>
+
+      <!-- ✅ Quiz -->
+      <div class="mb-6">
+        <LabQuiz data={quiz} id="salome-colores-quiz" />
+      </div>
+
+      <!-- Puente -->
+      <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+        Ya entendiste de dónde salen los colores. Compruébalo con tus propias manos.
+      </p>
+
+      <!-- ✏️ Actividad APLICA -->
+      <ActividadBlock data={actividadArcoiris} />
+
+      <!-- ✏️ Actividad CREA -->
+      <ActividadBlock data={actividadDescifra} />
+
+      <!-- Puente -->
+      <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+        Aprendiste a leer la luz como un mensaje. Cerremos pensando qué significa eso
+        para tu manera de mirar el mundo.
+      </p>
+      </div>
+
+      <!-- 💭 Triángulo (ancho completo) -->
+      <TrianguloBlock data={triangulo} />
+
+      <!-- 🌱 Cinco dimensiones (ancho completo) -->
+      <CincoDimensionesBlock data={cincoDimensiones} />
+
+      <div class="max-w-3xl mx-auto">
+      <!-- Créditos -->
+      <div class="bento-card mb-10 border-l-4 border-bento-purple">
+        <span class="chip-bento mb-3">🛰 Créditos</span>
+        <p class="text-sm leading-relaxed mt-2" style="color: var(--fg-muted);">
+          Esta estación adapta al modelo MILC los conceptos del Módulo 2 («Los colores
+          del arcoíris») del <strong style="color: var(--fg);">Tomo 2</strong> del proyecto
+          <strong style="color: var(--fg);">Salomé: investigación de exoplanetas</strong>, de la Association Ágora de
+          Hipatia (Suiza), ejecutado en Colombia por <strong style="color: var(--fg);">RECA</strong>. El cómic y las
+          fichas originales son de sus autores.
+        </p>
+        <a href={recursosOficiales} target="_blank" rel="noopener" class="inline-flex items-center gap-2 mt-4 font-black text-sm text-bento-blue hover:opacity-70 transition-opacity">
+          Leer el cómic y ver el material oficial
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
+          </svg>
+        </a>
+      </div>
+
+      <!-- Volver -->
+      <a href={`${base}/explora/salome`} class="bento-card-hover flex items-center gap-4">
+        <svg class="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 12H5"></path>
+          <path d="m12 19-7-7 7-7"></path>
+        </svg>
+        <div>
+          <div class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">Volver al programa</div>
+          <div class="font-black text-lg">Salomé</div>
+        </div>
+      </a>
+      </div>
+    </div>
+  </article>
+</BaseLayout>

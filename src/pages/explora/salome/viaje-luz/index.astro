@@ -1,0 +1,492 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import SaberAncestralBlock from '../../../../components/SaberAncestralBlock.astro';
+import MapaRutaBlock from '../../../../components/MapaRutaBlock.astro';
+import ActividadBlock from '../../../../components/ActividadBlock.astro';
+import LabEmparejar from '../../../../components/LabEmparejar.astro';
+import LabOrdenar from '../../../../components/LabOrdenar.astro';
+import LabQuiz from '../../../../components/LabQuiz.astro';
+import TrianguloBlock from '../../../../components/TrianguloBlock.astro';
+import CincoDimensionesBlock from '../../../../components/CincoDimensionesBlock.astro';
+import GuiasRECA from '../../../../components/GuiasRECA.astro';
+import type {
+  SaberAncestral,
+  EstacionMapa,
+  Actividad,
+  LabQuiz as LabQuizData,
+  Triangulo,
+  CincoDimensiones,
+} from '../../../../data/guiasContenido/_schema';
+import type { DataEmparejar } from '../../../../components/LabEmparejar.astro';
+import type { DataOrdenar } from '../../../../components/LabOrdenar.astro';
+
+const base = import.meta.env.BASE_URL;
+const recursosOficiales = 'https://www.astroreca.org/educacion/salome-comic-exoplanetas/recursos';
+
+const saberAncestral: SaberAncestral = {
+  saber:
+    'Mucho antes del teléfono y del internet, los pueblos de los Andes y de las montañas del mundo ya enviaban mensajes a la velocidad de la luz. En lo alto de los cerros encendían fogatas en la noche o levantaban columnas de humo de día, y un vecino a kilómetros de distancia las veía y entendía el aviso: hay peligro, reúnanse, llegó la noticia. La luz del fuego cruzaba el valle en un instante y llevaba el mensaje sin que nadie tuviera que caminar. Sin escribirlo en fórmulas, sabían algo profundo: la luz puede viajar lejos y llegar cargada de significado. La astronomía lleva esa misma idea al extremo — la luz de una estrella también es un mensaje que viaja, solo que su viaje no dura un instante: dura años, siglos o millones de años antes de tocar nuestros ojos.',
+  fuente: 'Saberes andinos y de montaña · señales de fuego y humo',
+  preguntaPuente:
+    'Una fogata en el cerro cruza el valle en un instante. Pero la luz de una estrella tarda años en llegar: ¿qué le pasa —o qué NO le pasa— a su mensaje durante un viaje tan largo?',
+};
+
+const mapaRuta: EstacionMapa[] = [
+  { numero: 1, iconos: ['🌱'], titulo: 'Mensajes de fuego en los cerros', duracionMin: 5 },
+  { numero: 2, iconos: ['📖'], titulo: 'El nacimiento y la fuga de un rayo de luz', duracionMin: 12 },
+  { numero: 3, iconos: ['🔎'], titulo: 'Ordena el viaje de un fotón', duracionMin: 6 },
+  { numero: 4, iconos: ['📖', '👁'], titulo: 'La luz, una cápsula del tiempo', duracionMin: 12 },
+  { numero: 5, iconos: ['🔎'], titulo: 'Relaciona distancias con el pasado que ves', duracionMin: 8 },
+  { numero: 6, iconos: ['✅'], titulo: 'Pon a prueba lo que sabes', duracionMin: 8 },
+  { numero: 7, iconos: ['✏️'], titulo: 'Calcula viajes de luz y escribe al cosmos', duracionMin: 16 },
+  { numero: 8, iconos: ['💭'], titulo: 'Tres voces para cerrar', duracionMin: 8 },
+];
+
+const ordenarViaje: DataOrdenar = {
+  titulo: 'Ordena el viaje de un rayo de luz',
+  instrucciones: 'Acabas de leer el recorrido completo. Usa las flechas para ordenar los seis pasos, desde que nace la luz hasta que la captamos.',
+  pasos: [
+    'En el núcleo de la estrella, la fusión nuclear crea un rayo de luz.',
+    'El rayo rebota millones de veces dentro de la estrella y tarda muchísimo en salir.',
+    'Por fin escapa de la superficie de la estrella hacia el espacio.',
+    'Viaja en línea recta por el vacío a 300.000 km/s.',
+    'Cruza años o millones de años de distancia sin perder su mensaje.',
+    'Entra en un telescopio (o en tus ojos) y entrega su información.',
+  ],
+};
+
+const emparejarPasado: DataEmparejar = {
+  titulo: 'Relaciona cada objeto con el pasado que ves al mirarlo',
+  instrucciones: 'Cuanto más lejos está algo, más antiguo es lo que ves. Conecta cada objeto con «cuándo» salió su luz.',
+  etiquetaIzq: 'Objeto del cielo',
+  etiquetaDer: 'Lo ves como era hace…',
+  pares: [
+    { izquierda: 'La Luna', derecha: 'Poco más de 1 segundo' },
+    { izquierda: 'El Sol', derecha: '8 minutos' },
+    { izquierda: 'Próxima Centauri', derecha: '4 años' },
+    { izquierda: 'La galaxia de Andrómeda', derecha: '2,5 millones de años' },
+    { izquierda: 'Las galaxias del James Webb', derecha: 'Más de 13.000 millones de años' },
+  ],
+};
+
+const emparejarConceptos: DataEmparejar = {
+  titulo: 'Repaso: relaciona cada concepto con su significado',
+  instrucciones: 'Cierra la lectura conectando los cinco conceptos clave de la estación con su definición.',
+  etiquetaIzq: 'Concepto',
+  etiquetaDer: 'Significado',
+  pares: [
+    { izquierda: 'Fotón', derecha: 'Un paquete de luz que viaja por el espacio' },
+    { izquierda: 'Año luz', derecha: 'La distancia que la luz recorre en un año' },
+    { izquierda: 'Cápsula del tiempo', derecha: 'La luz que nos muestra cómo era el pasado' },
+    { izquierda: 'Máquina del tiempo', derecha: 'Lo que es un telescopio al mirar muy lejos' },
+    { izquierda: 'Corrimiento al rojo', derecha: 'La luz estirada por la expansión del universo' },
+  ],
+};
+
+const actividadCalculo: Actividad = {
+  numero: 1,
+  verbo: 'APLICA',
+  titulo: 'Calcula viajes de luz a través del tiempo',
+  tiempoMin: 10,
+  modalidad: 'individual',
+  pasos: [
+    'La Luna está a 384.000 km y la luz viaja a 300.000 km/s. Calcula cuántos segundos tarda su luz en llegarte (distancia ÷ velocidad).',
+    'Una estrella está a 100 años luz. ¿En qué año salió la luz que ves de ella esta noche? (resta 100 al año actual).',
+    'Piensa o averigua qué pasaba en Colombia o en el mundo en ese año, y escribe una frase conectándolo con la estrella.',
+  ],
+  cuaderno: {
+    titulo: 'Viajes de luz',
+    formato: 'dos cálculos + una frase de conexión histórica',
+    extension: 'los 2 cálculos y la frase',
+  },
+  criterios: [
+    'La luz de la Luna tarda aproximadamente 1,3 segundos.',
+    'Restaste bien: si hoy es 2026, la luz salió hacia 1926.',
+    'Tu frase conecta esa estrella con algo real de aquella época.',
+  ],
+};
+
+const actividadCarta: Actividad = {
+  numero: 2,
+  verbo: 'CREA',
+  titulo: 'Escribe un mensaje a 50 años luz',
+  tiempoMin: 12,
+  modalidad: 'individual',
+  pasos: [
+    'Imagina que envías un mensaje de luz (un láser) a una civilización en una estrella a 50 años luz.',
+    'Tu mensaje tardará 50 años en llegar, y su respuesta otros 50: cien años de ida y vuelta.',
+    'Escribe el mensaje corto que enviarías y una reflexión: ¿cómo cambia una conversación cuando cada respuesta tarda medio siglo?',
+  ],
+  cuaderno: {
+    titulo: 'Mensaje a 50 años luz',
+    formato: 'mensaje breve + reflexión',
+    extension: '4 a 6 renglones en total',
+  },
+  criterios: [
+    'Tu mensaje está pensado para alguien lejanísimo, que no te conoce.',
+    'Reconoces que quizá no vivirías para escuchar la respuesta.',
+    'Reflexionas sobre lo que significa comunicarse a la escala del cosmos.',
+  ],
+};
+
+const quiz: LabQuizData = {
+  tipo: 'quiz',
+  titulo: 'Pon a prueba lo que sabes',
+  instrucciones: 'Seis preguntas sobre lo que leíste. Recibirás una explicación en cada una.',
+  preguntas: [
+    {
+      enunciado: '¿Dónde nace un rayo de luz de una estrella?',
+      opciones: ['En su superficie', 'En su núcleo, por la fusión nuclear', 'En el espacio que la rodea', 'En los planetas que la orbitan'],
+      respuestaIndex: 1,
+      feedbackCorrecto: 'Correcto: nace en el núcleo, donde la fusión nuclear libera energía. Es la misma fusión que viste en el Tomo 1.',
+      feedbackIncorrecto: 'Nace en el núcleo, por la fusión nuclear (la misma del Tomo 1). Desde ahí empieza su largo viaje hacia afuera.',
+    },
+    {
+      enunciado: '¿Por qué un rayo de luz tarda tanto en SALIR de la estrella?',
+      opciones: [
+        'Porque viaja muy despacio dentro de ella',
+        'Porque rebota millones de veces en su interior tan denso',
+        'Porque se detiene a descansar',
+        'Porque la estrella lo retiene a propósito',
+      ],
+      respuestaIndex: 1,
+      feedbackCorrecto: 'Exacto: el interior es tan denso que el rayo rebota sin parar y puede tardar miles de años en llegar a la superficie.',
+      feedbackIncorrecto: 'El interior de la estrella es tan denso que el rayo rebota millones de veces; por eso tarda muchísimo en escapar.',
+    },
+    {
+      enunciado: 'Una vez en el vacío del espacio, la luz viaja…',
+      opciones: ['En zigzag', 'En línea recta a 300.000 km/s', 'Cada vez más lento', 'Solo si hay aire'],
+      respuestaIndex: 1,
+      feedbackCorrecto: '¡Sí! En el vacío no hay nada que la frene: viaja recta y a máxima velocidad durante todo el tiempo que haga falta.',
+      feedbackIncorrecto: 'En el vacío viaja en línea recta y a 300.000 km/s, sin frenarse. No necesita aire; al contrario, el aire la desviaría.',
+    },
+    {
+      enunciado: 'Cuando observas la galaxia de Andrómeda (a 2,5 millones de años luz), la ves…',
+      opciones: [
+        'Tal como es ahora mismo',
+        'Como era hace 2,5 millones de años',
+        'Como será en el futuro',
+        'No se puede ver',
+      ],
+      respuestaIndex: 1,
+      feedbackCorrecto: 'Correcto: su luz tardó 2,5 millones de años en llegar. La ves como era antes de que existiera el ser humano actual.',
+      feedbackIncorrecto: 'La ves como era hace 2,5 millones de años: ese es el tiempo que tardó su luz en llegarte. Mirar lejos es mirar al pasado.',
+    },
+    {
+      enunciado: '¿Por qué se dice que un telescopio es una «máquina del tiempo»?',
+      opciones: [
+        'Porque puede viajar al futuro',
+        'Porque cuanto más lejos mira, más atrás en el tiempo ve',
+        'Porque mide la hora con exactitud',
+        'Porque acelera el tiempo',
+      ],
+      respuestaIndex: 1,
+      feedbackCorrecto: 'Eso es: ver más lejos es ver luz más antigua. El James Webb observa galaxias de hace más de 13.000 millones de años.',
+      feedbackIncorrecto: 'Porque mirar más lejos es ver luz que salió hace más tiempo: el telescopio nos muestra el pasado del universo.',
+    },
+    {
+      enunciado: 'Durante su viaje por el vacío, el mensaje de la luz (su color y sus líneas)…',
+      opciones: [
+        'Se borra poco a poco',
+        'Llega intacto, por eso podemos leerlo',
+        'Cambia al azar',
+        'Se vuelve más brillante',
+      ],
+      respuestaIndex: 1,
+      feedbackCorrecto: 'Correcto: en el vacío el mensaje se conserva. Por eso podemos leer estrellas y galaxias lejanísimas. Solo cambia si atraviesa algo.',
+      feedbackIncorrecto: 'En el vacío el mensaje llega intacto: su color y sus líneas se conservan. Por eso la astronomía funciona a distancias enormes.',
+    },
+  ],
+};
+
+const triangulo: Triangulo = {
+  dussel: {
+    autor: 'Enrique Dussel',
+    lente: 'lente del nosotros',
+    cita: 'Toda voz que llega desde lejos merece ser escuchada; también la de quienes nos precedieron y ya no están.',
+    preguntaEspejo:
+      'La luz nos trae el mensaje de estrellas del pasado. ¿Escucho con la misma atención las voces lejanas de mi propia comunidad y de mis mayores?',
+  },
+  estoico: {
+    autor: 'Marco Aurelio',
+    lente: 'lente del cuidado interior',
+    cita: 'Lo que ahora contemplas ya viajó desde el pasado; todo fluye, y mirarlo de frente serena el alma.',
+    preguntaEspejo:
+      'Si la luz de una estrella me recuerda lo breve que es mi instante, ¿qué cosas dejo de tomar tan en serio?',
+  },
+  floridi: {
+    autor: 'Luciano Floridi',
+    lente: 'lente de la infoesfera',
+    cita: 'La luz es información que sobrevive a quien la emitió; el universo entero es un mensaje en tránsito.',
+    preguntaEspejo:
+      'Recibo mensajes de estrellas que quizá ya no existen. ¿Qué información dejo yo hoy que podría seguir viajando cuando yo no esté?',
+  },
+};
+
+const cincoDimensiones: CincoDimensiones = {
+  personal:
+    'Cada vez que miras el cielo estás recibiendo mensajes del pasado. Ver ya no es solo ver: es escuchar lo que la luz trae desde lejos.',
+  emocional:
+    'Algunas estrellas que ves quizá ya no existen, pero su luz aún viaja hacia ti. Hay belleza y un poco de melancolía en esa idea, y está bien sentirlas.',
+  ciudadana:
+    'La información que viaja —la luz, los datos, las noticias— es valiosa y frágil. Cuidarla, no distorsionarla y compartirla con verdad también es ciudadanía.',
+  local:
+    'La misma luz del Sol que cae sobre Cartago salió hace 8 minutos. Tu cielo cotidiano es, literalmente, una ventana al pasado.',
+  intergeneracional:
+    'Los pueblos enviaban mensajes de fuego de cerro en cerro; las estrellas nos envían mensajes de hace millones de años. Recibir y cuidar lo que viene de lejos es un puente entre tiempos.',
+};
+
+// Escala del pasado: cuándo salió la luz que vemos de cada objeto.
+const escalaPasado = [
+  { objeto: 'La Luna', emoji: '🌙', tiempo: '1,3 segundos', nota: 'Casi en directo… pero no del todo.' },
+  { objeto: 'El Sol', emoji: '☀️', tiempo: '8 minutos', nota: 'Lo ves como era hace 8 minutos.' },
+  { objeto: 'Próxima Centauri', emoji: '🔴', tiempo: '4 años', nota: 'La estrella más cercana al Sol.' },
+  { objeto: 'Galaxia de Andrómeda', emoji: '🌀', tiempo: '2,5 millones de años', nota: 'Su luz salió antes que el ser humano actual.' },
+  { objeto: 'Galaxias del James Webb', emoji: '🔭', tiempo: '13.000 millones de años', nota: 'Casi el comienzo del universo.' },
+];
+---
+
+<BaseLayout
+  title="Tomo 2 · Estación 4 · El viaje de un rayo de luz — Salomé · ConectaTE"
+  description="Cómo nace un rayo de luz en una estrella, su viaje por el espacio y por qué mirar lejos es mirar al pasado: la luz como cápsula del tiempo y el telescopio como máquina del tiempo. Estación del programa Salomé (Tomo 2) adaptada al modelo MILC."
+  ogType="article"
+>
+  <article class="pt-12 pb-20">
+    <div class="bento-container max-w-5xl">
+      <div class="max-w-3xl mx-auto">
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-sm font-semibold mb-8 flex-wrap" style="color: var(--fg-muted);">
+        <a href={base || '/'} class="hover:opacity-60 transition-opacity">Inicio</a>
+        <span>/</span>
+        <a href={`${base}/explora`} class="hover:opacity-60 transition-opacity">Explora</a>
+        <span>/</span>
+        <a href={`${base}/explora/salome`} class="hover:opacity-60 transition-opacity">Salomé</a>
+        <span>/</span>
+        <span style="color: var(--fg);">Tomo 2 · Estación 4</span>
+      </nav>
+
+      <!-- Hero -->
+      <div class="bento-card-color bg-bento-blue text-white mb-10">
+        <div class="flex flex-wrap gap-2 mb-4">
+          <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">🛰 Estación 4 · Tomo 2</span>
+          <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">La luz mensajera</span>
+          <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">~70 min</span>
+        </div>
+        <h1 class="heading-giant text-balance mb-3">El viaje de un rayo de luz</h1>
+        <p class="text-base md:text-lg font-semibold opacity-95 leading-relaxed">
+          De dónde sale la luz de una estrella, su largísimo viaje por el espacio y
+          por qué, al mirar el cielo, en realidad estás mirando el pasado.
+        </p>
+      </div>
+
+      <!-- 🌱 Saber ancestral -->
+      <SaberAncestralBlock data={saberAncestral} />
+
+      <!-- 🗺 Ruta -->
+      <MapaRutaBlock estaciones={mapaRuta} />
+
+      <!-- Propósito -->
+      <div class="bento-card mb-6">
+        <span class="chip-bento mb-4">🎯 Lo que vas a poder hacer</span>
+        <ul class="space-y-3 mt-3">
+          {[
+            'IDENTIFICAR dónde nace un rayo de luz y cómo escapa de la estrella.',
+            'EXPLICAR por qué mirar lejos en el espacio es mirar atrás en el tiempo.',
+            'ORDENAR el viaje de un fotón y RELACIONAR distancias con el pasado que vemos.',
+            'APLICAR cálculos para medir cuánto tarda la luz en llegarnos.',
+            'CREAR un mensaje pensado para viajar décadas por el cosmos.',
+          ].map((d) => (
+            <li class="flex items-start gap-3">
+              <span class="w-6 h-6 rounded-md bg-bento-lime/30 text-black flex items-center justify-center text-xs font-black shrink-0 mt-0.5">✓</span>
+              <span class="text-sm md:text-base leading-relaxed">{d}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Pregunta detonante -->
+      <div class="bento-card-color bg-bento-cyan mb-10">
+        <span class="chip-bento mb-3 bg-black/10">💡 La pregunta que abre todo</span>
+        <p class="text-lg md:text-xl font-black leading-snug">
+          Cuando miras una estrella, ¿la ves tal como es esta noche… o estás viendo
+          algo que ocurrió hace muchísimo tiempo?
+        </p>
+        <p class="text-sm leading-relaxed mt-3 opacity-90">
+          La respuesta convierte a cada telescopio en una máquina del tiempo.
+        </p>
+      </div>
+
+      <!-- 👁 Observa · video en proceso en RECA -->
+      <div class="bento-card mb-6 flex items-start gap-3">
+        <span class="text-2xl shrink-0" aria-hidden="true">🎬</span>
+        <div>
+          <div class="font-black text-sm">El video de este módulo está en camino</div>
+          <p class="text-sm leading-relaxed mt-1" style="color: var(--fg-muted);">
+            RECA aún está produciendo los videos del Tomo 2. Mientras llega, esta
+            estación es autosuficiente: tienes toda la lectura que necesitas. Y aquí
+            abajo está la guía oficial para profundizar.
+          </p>
+        </div>
+      </div>
+      <GuiasRECA tomo={2} modulo={4} />
+
+      <!-- Puente -->
+      <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+        Ya sabes que la luz trae información (módulos anteriores). Ahora vas a seguir a
+        un rayo de luz en todo su viaje, porque con eso resolverás los ejercicios que siguen.
+      </p>
+
+      <!-- 📖 LEE 1 · Nacimiento y fuga -->
+      <section class="bento-card mb-6">
+        <span class="chip-bento mb-4">📖 Lee · El nacimiento y la fuga de un rayo de luz</span>
+        <div class="space-y-4 text-sm md:text-base leading-relaxed">
+          <p>
+            Sigue a un solo rayo de luz desde el principio. Nace en el <strong>núcleo</strong> de
+            una estrella, en plena <strong>fusión nuclear</strong> (la misma que estudiaste en el
+            Tomo 1). Pero entonces ocurre algo sorprendente: <strong>tarda muchísimo en
+            salir</strong>. El interior de la estrella es tan denso que el rayo no avanza
+            recto: <strong>rebota</strong> en las partículas millones de veces, dando tumbos. Puede
+            pasar <strong>miles de años</strong> atrapado antes de alcanzar la superficie.
+          </p>
+          <p>
+            Una vez que <strong>escapa</strong> al espacio, todo cambia. Ahí afuera hay
+            <strong>vacío</strong>: nada que lo frene, nada contra qué rebotar. Entonces viaja
+            <strong>en línea recta a 300.000 km/s</strong>, sin descanso, durante todo el tiempo que
+            sea necesario. Curiosamente, la luz que hoy te calienta la cara pudo
+            fabricarse en el corazón del Sol hace miles de años; solo el <strong>último
+            tramo</strong>, del Sol a tus ojos, le tomó 8 minutos.
+          </p>
+        </div>
+      </section>
+
+      <!-- 🔎 Ordena el viaje -->
+      <div class="mb-6">
+        <LabOrdenar data={ordenarViaje} id="ordena-viaje" />
+      </div>
+
+      <!-- Puente -->
+      <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+        Ese viaje tan largo tiene una consecuencia asombrosa: cambia lo que significa
+        «mirar» el cielo.
+      </p>
+
+      <!-- 📖 LEE 2 · Cápsula del tiempo -->
+      <section class="bento-card mb-6">
+        <span class="chip-bento mb-4">📖 Lee · La luz, una cápsula del tiempo</span>
+        <div class="space-y-4 text-sm md:text-base leading-relaxed">
+          <p>
+            Como la luz tarda en viajar, <strong>siempre vemos las cosas como ERAN</strong>, no como
+            son ahora mismo. Cuanto más lejos está algo, más viejo es el retrato que nos
+            llega. Mira la escala:
+          </p>
+        </div>
+
+        <!-- Escala del pasado -->
+        <ul class="space-y-2 mt-4">
+          {escalaPasado.map((e) => (
+            <li class="flex items-center gap-3 p-3 rounded-bento-sm" style="background: var(--bg);">
+              <span class="text-2xl shrink-0" aria-hidden="true">{e.emoji}</span>
+              <div class="flex-1 min-w-0">
+                <div class="font-black text-sm leading-tight">{e.objeto}</div>
+                <div class="text-xs mt-0.5" style="color: var(--fg-muted);">{e.nota}</div>
+              </div>
+              <span class="text-xs font-black text-right shrink-0 text-bento-blue">{e.tiempo}</span>
+            </li>
+          ))}
+        </ul>
+
+        <div class="space-y-4 text-sm md:text-base leading-relaxed mt-5">
+          <p>
+            Por eso un <strong>telescopio es una máquina del tiempo</strong>: cuanto más lejos
+            mira, más atrás en el tiempo ve. El telescopio <strong>James Webb</strong> capta luz de
+            galaxias tan distantes que las observa como eran hace más de <strong>13.000
+            millones de años</strong>, casi en el origen del universo.
+          </p>
+          <p>
+            ¿Y el mensaje no se daña en un viaje tan largo? En el <strong>vacío, no</strong>: el
+            color, el brillo y las líneas de la luz (lo que aprendiste a leer en los
+            módulos anteriores) llegan <strong>intactos</strong>. Solo cambia cuando la luz
+            atraviesa algo —una atmósfera, una nube de gas— y, como ya sabes, <strong>ese
+            cambio también es información</strong>. Hay una excepción famosa: la luz de las
+            galaxias más lejanas llega un poco <strong>estirada hacia el rojo</strong> (el
+            «corrimiento al rojo»), porque el universo entero se está expandiendo. Hasta
+            eso nos cuenta algo: que el cosmos crece.
+          </p>
+        </div>
+      </section>
+
+      <!-- 🔎 Relaciona el pasado -->
+      <div class="mb-6">
+        <LabEmparejar data={emparejarPasado} id="empareja-pasado" />
+      </div>
+
+      <!-- 🔎 Relaciona conceptos (repaso integrador) -->
+      <div class="mb-6">
+        <LabEmparejar data={emparejarConceptos} id="empareja-conceptos-viaje" />
+      </div>
+
+      <!-- ✅ Quiz -->
+      <div class="mb-6">
+        <LabQuiz data={quiz} id="salome-viaje-quiz" />
+      </div>
+
+      <!-- Puente -->
+      <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+        Si la luz tarda tanto en viajar, los números cuentan historias. Hazlos tú mismo.
+      </p>
+
+      <!-- ✏️ Actividad APLICA -->
+      <ActividadBlock data={actividadCalculo} />
+
+      <!-- ✏️ Actividad CREA -->
+      <ActividadBlock data={actividadCarta} />
+
+      <!-- Puente -->
+      <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+        Recibir mensajes del pasado y enviarlos al futuro cambia cómo te paras frente
+        al tiempo. Cerremos con eso.
+      </p>
+      </div>
+
+      <!-- 💭 Triángulo (ancho completo) -->
+      <TrianguloBlock data={triangulo} />
+
+      <!-- 🌱 Cinco dimensiones (ancho completo) -->
+      <CincoDimensionesBlock data={cincoDimensiones} />
+
+      <div class="max-w-3xl mx-auto">
+      <!-- Créditos -->
+      <div class="bento-card mb-10 border-l-4 border-bento-purple">
+        <span class="chip-bento mb-3">🛰 Créditos</span>
+        <p class="text-sm leading-relaxed mt-2" style="color: var(--fg-muted);">
+          Esta estación adapta al modelo MILC los conceptos del Módulo 4 («El viaje de
+          un rayo de luz») del <strong style="color: var(--fg);">Tomo 2</strong> del proyecto
+          <strong style="color: var(--fg);">Salomé: investigación de exoplanetas</strong>, de la Association Ágora de
+          Hipatia (Suiza), ejecutado en Colombia por <strong style="color: var(--fg);">RECA</strong>. El cómic y las
+          fichas originales son de sus autores.
+        </p>
+        <a href={recursosOficiales} target="_blank" rel="noopener" class="inline-flex items-center gap-2 mt-4 font-black text-sm text-bento-blue hover:opacity-70 transition-opacity">
+          Leer el cómic y ver el material oficial
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
+          </svg>
+        </a>
+      </div>
+
+      <!-- Volver -->
+      <a href={`${base}/explora/salome`} class="bento-card-hover flex items-center gap-4">
+        <svg class="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 12H5"></path>
+          <path d="m12 19-7-7 7-7"></path>
+        </svg>
+        <div>
+          <div class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">Volver al programa</div>
+          <div class="font-black text-lg">Salomé</div>
+        </div>
+      </a>
+      </div>
+    </div>
+  </article>
+</BaseLayout>

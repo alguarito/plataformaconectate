@@ -1,0 +1,252 @@
+---
+/**
+ * Laboratorio · Corrimiento al rojo (look espacial).
+ *
+ * La prueba de que el universo se expande, en las manos del estudiante: el
+ * espectro de una galaxia muestra la huella del hidrógeno (las mismas líneas
+ * Hα 656 · Hβ 486 · Hγ 434 del espectroscopio), pero CORRIDA hacia el rojo.
+ * Con el slider aleja la galaxia: a mayor distancia, mayor velocidad de fuga
+ * (ley de Hubble, v ≈ 21,5 km/s por millón de años luz) y mayor estiramiento
+ * de la luz (z = v/c). Con corrimiento grande, Hα se sale del visible hacia
+ * el infrarrojo — por eso el James Webb es un telescopio infrarrojo.
+ *
+ * Referencia en reposo (lime, punteada) vs líneas observadas (negras): el
+ * desplazamiento se VE, con una flecha que mide el estirón de Hα.
+ */
+export interface DataCorrimientoRojo {
+  titulo: string;
+  instrucciones: string;
+}
+
+interface Props {
+  data: DataCorrimientoRojo;
+  id: string;
+}
+
+const { data, id } = Astro.props;
+
+const W = 680;
+const H = 240;
+const ml = 40;
+const mr = 16;
+const nmMin = 380;
+const nmMax = 780;
+const yBand0 = 112;
+const yBand1 = 182;
+const xDe = (nm: number) => ml + ((nm - nmMin) / (nmMax - nmMin)) * (W - ml - mr);
+
+// Huella del hidrógeno en reposo (nm) — la misma del espectroscopio.
+const LINEAS_H = [656.3, 486.1, 434.0];
+const ETIQUETAS = ['Hα 656', 'Hβ 486', 'Hγ 434'];
+const ticks = [400, 450, 500, 550, 600, 650, 700, 750];
+
+// Estrellitas decorativas de fondo (deterministas).
+let seed = 73;
+const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
+const fondo = Array.from({ length: 30 }, () => ({ cx: +(rnd() * W).toFixed(1), cy: +(rnd() * 80).toFixed(1), r: +(0.4 + rnd() * 1.0).toFixed(1), op: +(0.12 + rnd() * 0.38).toFixed(2) }));
+---
+
+<div class="bento-card" data-lab-corrimiento={id}>
+  <span class="chip-bento mb-2">🌌 Laboratorio · Corrimiento al rojo</span>
+  <h3 class="text-xl md:text-2xl font-black tracking-tight leading-tight">{data.titulo}</h3>
+  <p class="text-sm leading-relaxed mt-2 mb-4" style="color: var(--fg-muted);">{data.instrucciones}</p>
+
+  <div class="rounded-bento-sm overflow-hidden" style="line-height:0;">
+    <svg viewBox={`0 0 ${W} ${H}`} class="w-full h-auto" style="min-width: 460px;" role="img"
+      aria-label="Espectro de una galaxia: la huella del hidrógeno aparece corrida hacia el rojo respecto a su posición de laboratorio; al alejar la galaxia, el corrimiento crece y la línea Hα se sale del visible hacia el infrarrojo.">
+      <defs>
+        <linearGradient id={`${id}-sky`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#0b1030" />
+          <stop offset="100%" stop-color="#161038" />
+        </linearGradient>
+        <linearGradient id={`${id}-banda`} x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#6d28d9" />
+          <stop offset="17.5%" stop-color="#2563eb" />
+          <stop offset="27.5%" stop-color="#06b6d4" />
+          <stop offset="37.5%" stop-color="#22c55e" />
+          <stop offset="50%" stop-color="#eab308" />
+          <stop offset="60%" stop-color="#f97316" />
+          <stop offset="70%" stop-color="#ef4444" />
+          <stop offset="80%" stop-color="#b91c1c" />
+          <stop offset="100%" stop-color="#2d0a0a" />
+        </linearGradient>
+      </defs>
+
+      <rect x="0" y="0" width={W} height={H} fill={`url(#${id}-sky)`} />
+      {fondo.map((s) => (<circle cx={s.cx} cy={s.cy} r={s.r} fill="#ffffff" opacity={s.op} />))}
+
+      <!-- Galaxia que se aleja -->
+      <g data-galaxia transform="translate(596, 42) scale(1)">
+        <ellipse rx="30" ry="10" fill="#cfe0ff" opacity="0.55" transform="rotate(-18)" />
+        <ellipse rx="16" ry="5.5" fill="#cfe0ff" opacity="0.85" transform="rotate(-18)" />
+        <circle r="4.5" fill="#ffffff" />
+      </g>
+      <text data-gal-cap x="596" y="78" text-anchor="middle" font-size="10" font-weight="700" fill="#9aa2c8">galaxia vecina</text>
+      <text x={ml} y="24" font-size="11" font-weight="800" fill="#e3e7f6">La galaxia se aleja → el espacio estira su luz</text>
+
+      <!-- Huella del hidrógeno en reposo (referencia de laboratorio) -->
+      {LINEAS_H.map((nm, i) => (
+        <g>
+          <line x1={xDe(nm)} y1="86" x2={xDe(nm)} y2={yBand1} stroke="#A3FF12" stroke-width="2" stroke-dasharray="4 3" opacity="0.85" />
+          <text x={xDe(nm)} y="82" text-anchor="middle" font-size="9" font-weight="800" fill="#A3FF12">{ETIQUETAS[i]}</text>
+        </g>
+      ))}
+
+      <!-- Banda del espectro -->
+      <rect x={ml} y={yBand0} width={W - ml - mr} height={yBand1 - yBand0} rx="6" fill={`url(#${id}-banda)`} opacity="0.92" />
+
+      <!-- Frontera del visible -->
+      <line x1={xDe(700)} y1={yBand0 - 6} x2={xDe(700)} y2={yBand1 + 6} stroke="#e3e7f6" stroke-width="1.5" stroke-dasharray="2 4" opacity="0.8" />
+      <text x={xDe(700) + 5} y={yBand0 - 10} font-size="9" font-weight="800" fill="#e3e7f6">fin del visible · infrarrojo →</text>
+
+      <!-- Líneas observadas de la galaxia (las mueve el cliente) -->
+      <g data-obs>
+        {LINEAS_H.map((nm) => (
+          <rect x={xDe(nm) - 2} y={yBand0} width="4" height={yBand1 - yBand0} fill="#05060f" opacity="0.92" />
+        ))}
+      </g>
+
+      <!-- Flecha del estirón de Hα -->
+      <g data-flecha opacity="0">
+        <line data-flecha-linea x1={xDe(656.3)} y1="98" x2={xDe(656.3)} y2="98" stroke="#FF2D87" stroke-width="2.5" />
+        <path data-flecha-punta d="" fill="#FF2D87" />
+      </g>
+
+      <!-- Eje -->
+      {ticks.map((nm) => (
+        <g>
+          <line x1={xDe(nm)} y1={yBand1 + 4} x2={xDe(nm)} y2={yBand1 + 9} stroke="#6b74a0" stroke-width="1.5" />
+          <text x={xDe(nm)} y={yBand1 + 22} text-anchor="middle" font-size="10" font-weight="700" fill="#9aa2c8">{nm}</text>
+        </g>
+      ))}
+      <text x={(ml + W - mr) / 2} y={H - 6} text-anchor="middle" font-size="11" font-weight="800" fill="#e3e7f6">Longitud de onda (nm) · <tspan fill="#A3FF12">huella en reposo</tspan> vs <tspan fill="#9aa2c8">líneas observadas (negras)</tspan></text>
+    </svg>
+  </div>
+
+  <!-- Control -->
+  <div class="mt-4">
+    <label class="flex items-center justify-between text-sm font-black mb-1" for={`${id}-d`}>
+      <span>📏 Aleja la galaxia</span>
+      <span data-out-dist style="color: var(--fg-muted);">galaxia vecina</span>
+    </label>
+    <input id={`${id}-d`} data-slider-dist type="range" min="0" max="2000" step="50" value="0" class="w-full" style="accent-color:#FF2D87;" />
+    <div class="flex justify-between text-[10px] font-bold mt-0.5" style="color: var(--fg-muted);"><span>cerca</span><span>2.000 millones de años luz</span></div>
+  </div>
+
+  <!-- Lecturas -->
+  <div class="grid grid-cols-3 gap-2 mt-5">
+    <div class="p-3 rounded-bento-sm text-center" style="background: var(--bg);">
+      <div class="text-[10px] font-black uppercase tracking-widest" style="color: var(--fg-muted);">Se aleja a</div>
+      <div data-out-vel class="font-black text-lg mt-1">0 km/s</div>
+    </div>
+    <div class="p-3 rounded-bento-sm text-center" style="background: var(--bg);">
+      <div class="text-[10px] font-black uppercase tracking-widest" style="color: var(--fg-muted);">Corrimiento z</div>
+      <div data-out-z class="font-black text-lg mt-1">0,000</div>
+    </div>
+    <div class="p-3 rounded-bento-sm text-center" style="background: var(--bg);">
+      <div class="text-[10px] font-black uppercase tracking-widest" style="color: var(--fg-muted);">Hα llega en</div>
+      <div data-out-ha class="font-black text-lg mt-1">656 nm</div>
+    </div>
+  </div>
+
+  <!-- Veredicto -->
+  <div class="mt-4 p-4 rounded-bento-sm flex items-start gap-3" style="background: var(--bg); border: 2px solid var(--border);">
+    <span data-corr-emoji class="text-2xl shrink-0">🌌</span>
+    <div>
+      <div data-corr-titulo class="font-black text-sm">Vecindario galáctico</div>
+      <p data-corr-texto class="text-sm leading-relaxed mt-1" style="color: var(--fg-muted);">
+        Tan cerca, el corrimiento casi no se nota: las líneas negras siguen sobre la huella del laboratorio.
+      </p>
+    </div>
+  </div>
+
+  <p class="text-xs leading-relaxed mt-4 p-3 rounded-bento-sm" style="background: var(--bg); color: var(--fg-muted);">
+    💡 <strong style="color: var(--fg);">Ley de Hubble (1929): cuanto más lejos, más rápido se aleja.</strong> No es que las galaxias
+    corran por el espacio: es el espacio mismo el que se estira, y estira la luz con él. Las galaxias más lejanas
+    se corrieron tanto al rojo que solo se ven en infrarrojo — <strong style="color: var(--fg);">por eso el James Webb es un telescopio infrarrojo</strong>.
+  </p>
+</div>
+
+<script define:vars={{ id, W, ml, mr, nmMin, nmMax, yBand0, yBand1 }}>
+  const root = document.querySelector(`[data-lab-corrimiento="${id}"]`);
+  if (root) {
+    const LINEAS_H = [656.3, 486.1, 434.0];
+    const xDe = (nm) => ml + ((nm - nmMin) / (nmMax - nmMin)) * (W - ml - mr);
+    const lerpHex = (a, b, t) => {
+      const pa = [1, 3, 5].map((i) => parseInt(a.slice(i, i + 2), 16));
+      const pb = [1, 3, 5].map((i) => parseInt(b.slice(i, i + 2), 16));
+      return '#' + pa.map((v, i) => Math.round(v + (pb[i] - v) * t).toString(16).padStart(2, '0')).join('');
+    };
+
+    const slider = root.querySelector('[data-slider-dist]');
+    const obs = root.querySelectorAll('[data-obs] rect');
+    const galaxia = root.querySelector('[data-galaxia]');
+    const galCap = root.querySelector('[data-gal-cap]');
+    const flecha = root.querySelector('[data-flecha]');
+    const flechaLinea = root.querySelector('[data-flecha-linea]');
+    const flechaPunta = root.querySelector('[data-flecha-punta]');
+    const outDist = root.querySelector('[data-out-dist]');
+    const outVel = root.querySelector('[data-out-vel]');
+    const outZ = root.querySelector('[data-out-z]');
+    const outHa = root.querySelector('[data-out-ha]');
+    const emoji = root.querySelector('[data-corr-emoji]');
+    const titulo = root.querySelector('[data-corr-titulo]');
+    const texto = root.querySelector('[data-corr-texto]');
+
+    function redibujar() {
+      const d = parseFloat(slider.value);
+      // Ley de Hubble en unidades escolares: ~21,5 km/s por millón de años luz.
+      const v = 21.5 * d;
+      const z = v / 300000;
+      const vTxt = Math.round(v).toLocaleString('es-CO') + ' km/s';
+
+      obs.forEach((r, i) => {
+        const nmObs = LINEAS_H[i] * (1 + z);
+        r.setAttribute('x', (xDe(nmObs) - 2).toFixed(1));
+      });
+
+      // Flecha del estirón de Hα
+      const x0 = xDe(656.3);
+      const x1 = xDe(656.3 * (1 + z));
+      if (x1 - x0 > 8) {
+        flecha.setAttribute('opacity', '1');
+        flechaLinea.setAttribute('x1', x0.toFixed(1));
+        flechaLinea.setAttribute('x2', (x1 - 7).toFixed(1));
+        flechaPunta.setAttribute('d', `M ${(x1 - 8).toFixed(1)} 93 L ${x1.toFixed(1)} 98 L ${(x1 - 8).toFixed(1)} 103 Z`);
+      } else {
+        flecha.setAttribute('opacity', '0');
+      }
+
+      // Galaxia: se encoge y enrojece con la distancia.
+      const t = d / 2000;
+      const s = (1 - 0.45 * t).toFixed(3);
+      galaxia.setAttribute('transform', `translate(596, 42) scale(${s})`);
+      const col = lerpHex('#cfe0ff', '#ff7a55', t);
+      galaxia.querySelectorAll('ellipse').forEach((e) => e.setAttribute('fill', col));
+      if (galCap) galCap.textContent = d === 0 ? 'galaxia vecina' : `a ${d.toLocaleString('es-CO')} millones de años luz`;
+
+      if (outDist) outDist.textContent = d === 0 ? 'galaxia vecina' : `${d.toLocaleString('es-CO')} M años luz`;
+      if (outVel) outVel.textContent = vTxt;
+      if (outZ) outZ.textContent = z.toFixed(3).replace('.', ',');
+      if (outHa) outHa.textContent = Math.round(656.3 * (1 + z)) + ' nm';
+
+      let em, ti, tx;
+      if (d < 200) {
+        em = '🌌'; ti = 'Vecindario galáctico';
+        tx = 'Tan cerca, el corrimiento casi no se nota: las líneas negras siguen sobre la huella del laboratorio.';
+      } else if (d < 1200) {
+        em = '🚀'; ti = 'La galaxia huye';
+        tx = `Las líneas del hidrógeno ya no están donde el laboratorio manda: se corrieron hacia el rojo. Esta galaxia se aleja a ${vTxt}.`;
+      } else {
+        em = '🔭'; ti = 'Rumbo al infrarrojo';
+        tx = `El corrimiento es tan grande (z = ${z.toFixed(3).replace('.', ',')}) que Hα se está saliendo del visible. Las galaxias más lejanas solo se ven en infrarrojo — el territorio del James Webb.`;
+      }
+      if (emoji) emoji.textContent = em;
+      if (titulo) titulo.textContent = ti;
+      if (texto) texto.textContent = tx;
+    }
+
+    slider?.addEventListener('input', redibujar);
+    redibujar();
+  }
+</script>

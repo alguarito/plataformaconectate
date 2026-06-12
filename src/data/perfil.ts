@@ -415,6 +415,15 @@ export const publicaciones: Publicacion[] = [
     emoji: '📖',
   },
   {
+    titulo: 'El Mercado de la Atención',
+    subtitulo: 'Colección MILC · Tomo I — Cómo se disputa la atención de los jóvenes y cómo educar el criterio en la era onlife',
+    ano: 2026,
+    paginas: 118,
+    rol: 'Autor',
+    href: '/libro-milc/tomo-1-mercado-de-la-atencion.pdf',
+    emoji: '📕',
+  },
+  {
     titulo: 'Plan de Área 2026 · Tecnología e Informática',
     subtitulo: 'Documento rector institucional',
     ano: 2026,

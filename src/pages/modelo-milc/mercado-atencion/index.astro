@@ -1,0 +1,241 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import SlidesViewer from '../../../components/SlidesViewer.astro';
+import { presentacionMercado, slidesMercado } from '../../../data/presentacionMercado';
+
+const base = import.meta.env.BASE_URL;
+
+const libroHref = `${base}/libro-milc/tomo-1-mercado-de-la-atencion.pdf`;
+const libroPaginas = 118;
+const doi = 'https://doi.org/10.5281/zenodo.20644820';
+const subtitulo = 'Cómo se disputa la atención de los jóvenes y cómo educar el criterio en la era onlife';
+
+const presentacionDir = `${base}/presentaciones/mercado-atencion`;
+const presentacionPdfHref = `${presentacionDir}/${presentacionMercado.archivoPdf}`;
+const presentacionPptxHref = `${presentacionDir}/${presentacionMercado.archivoPptx}`;
+
+// ─── Schema.org · Book (mismo @id que en /modelo-milc) + Presentación ─────
+const origen = (Astro.site ?? new URL('https://alguarito.github.io')).toString().replace(/\/$/, '');
+const inicio = `${origen}${base.replace(/\/$/, '')}`;
+const jsonLdExtra = [
+  {
+    '@type': 'Book',
+    '@id': `${inicio}/modelo-milc#tomo1`,
+    name: 'El Mercado de la Atención',
+    alternateName: subtitulo,
+    bookEdition: 'Primera edición 2026',
+    bookFormat: 'EBook',
+    inLanguage: 'es-CO',
+    numberOfPages: libroPaginas,
+    datePublished: '2026-06-11',
+    license: 'https://creativecommons.org/licenses/by-sa/4.0/',
+    identifier: doi,
+    sameAs: 'https://zenodo.org/doi/10.5281/zenodo.20644820',
+    url: `${inicio}/modelo-milc/mercado-atencion`,
+    mainEntityOfPage: `${inicio}/modelo-milc/mercado-atencion`,
+    encodingFormat: 'application/pdf',
+    position: 1,
+    isPartOf: { '@type': 'BookSeries', name: 'Colección MILC' },
+    associatedMedia: {
+      '@type': 'MediaObject',
+      contentUrl: `${origen}${libroHref}`,
+      encodingFormat: 'application/pdf',
+    },
+    author: { '@id': `${inicio}/acerca#person` },
+    publisher: { '@id': `${inicio}#organization` },
+    about: [
+      'Economía de la atención',
+      'Educación mediática',
+      'Era onlife',
+      'Pedagogía crítica',
+    ],
+  },
+  {
+    '@type': 'PresentationDigitalDocument',
+    '@id': `${inicio}/modelo-milc/mercado-atencion#presentacion`,
+    name: presentacionMercado.titulo,
+    alternateName: presentacionMercado.subtitulo,
+    description:
+      'Presentación de 12 slides del Tomo I: la premisa de Herbert Simon, la arquitectura de la captura, el semáforo de la evidencia, los costos cognitivo e identitario, la soberanía atencional del MILC, el aula como gimnasio y la justicia atencional.',
+    inLanguage: 'es-CO',
+    datePublished: '2026-06-11',
+    license: 'https://creativecommons.org/licenses/by-sa/4.0/',
+    url: `${inicio}/modelo-milc/mercado-atencion#presentacion`,
+    associatedMedia: [
+      {
+        '@type': 'MediaObject',
+        contentUrl: `${origen}${presentacionPdfHref}`,
+        encodingFormat: 'application/pdf',
+      },
+      {
+        '@type': 'MediaObject',
+        contentUrl: `${origen}${presentacionPptxHref}`,
+        encodingFormat:
+          'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+      },
+    ],
+    author: { '@id': `${inicio}/acerca#person` },
+    publisher: { '@id': `${inicio}#organization` },
+  },
+];
+
+// El recorrido del tomo, en 4 movimientos (mapea las 12 slides).
+const recorrido = [
+  {
+    emoji: '🎯',
+    titulo: 'La captura',
+    texto: 'La premisa de Herbert Simon y la arquitectura del diseño persuasivo: disparador, acción fácil, recompensa variable.',
+  },
+  {
+    emoji: '🧠',
+    titulo: 'Los costos',
+    texto: 'Qué dice la evidencia sin pánico: hiperatención vs. atención profunda, y el yo espejo de la audiencia permanente.',
+  },
+  {
+    emoji: '🧭',
+    titulo: 'La respuesta MILC',
+    texto: 'Soberanía atencional como competencia entrenable: de consumidor a autor, con el aula como gimnasio por etapas.',
+  },
+  {
+    emoji: '⚖️',
+    titulo: 'Justicia atencional',
+    texto: 'La atención como bien común: enseñar a gobernar la mirada en la escuela pública es devolver el derecho a decidir la propia biografía.',
+  },
+];
+---
+
+<BaseLayout
+  title="El Mercado de la Atención · Tomo I — Colección MILC · ConectaTE"
+  description="Tomo I de la Colección MILC: cómo se disputa la atención de los jóvenes y cómo educar el criterio en la era onlife. Libro en acceso abierto (CC BY-SA 4.0, DOI en Zenodo) y presentación de 12 slides."
+  ogType="article"
+  jsonLd={jsonLdExtra}
+>
+  <article class="pt-12 pb-20">
+    <div class="bento-container max-w-5xl">
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-sm font-semibold mb-8 flex-wrap" style="color: var(--fg-muted);">
+        <a href={base || '/'} class="hover:opacity-60 transition-opacity">Inicio</a>
+        <span>/</span>
+        <a href={`${base}/modelo-milc`} class="hover:opacity-60 transition-opacity">Modelo MILC</a>
+        <span>/</span>
+        <span style="color: var(--fg);">Tomo I · El Mercado de la Atención</span>
+      </nav>
+
+      <!-- HERO editorial -->
+      <div class="bento-card-color bg-bento-black grid-pattern text-white mb-10 py-12 md:py-16 px-6 md:px-10">
+        <div class="max-w-3xl">
+          <div class="flex flex-wrap gap-2 mb-6">
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">Colección MILC · Tomo I</span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">Ensayo pedagógico situado</span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">{libroPaginas} páginas</span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">CC BY-SA 4.0</span>
+          </div>
+          <p class="text-base md:text-lg italic opacity-80 mb-2">
+            Porque la escuela pública aún puede formar <strong>sujetos libres</strong>.
+          </p>
+          <h1 class="heading-giant text-balance leading-[0.95] mb-4">
+            El Mercado de la Atención
+          </h1>
+          <p class="text-base md:text-lg font-semibold opacity-90 leading-relaxed mb-3">
+            {subtitulo}.
+          </p>
+          <p class="text-sm opacity-70 mb-8">
+            Dr. Álvaro Cárdenas Orozco · Sor María Juliana Ediciones · 2026 ·
+            DOI 10.5281/zenodo.20644820
+          </p>
+
+          <div class="flex items-center gap-2.5 flex-wrap">
+            <a href={libroHref} download class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-bento-lime text-neutral-950 text-sm font-black hover:opacity-85 transition-opacity">
+              Descargar el libro
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+            </a>
+            <a href={doi} target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full border-2 border-white/30 text-sm font-black hover:border-white transition-colors" aria-label="Registro citable en Zenodo (se abre en una pestaña nueva)">
+              DOI · Zenodo
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+            </a>
+            <a href="#presentacion" class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-sm font-black opacity-80 hover:opacity-100 transition-opacity">
+              Ver la presentación ↓
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- La tesis -->
+      <div class="bento-card-color bg-bento-cyan mb-10">
+        <span class="chip-bento mb-3 bg-black/10">💡 La tesis, en una línea</span>
+        <p class="text-lg md:text-2xl font-black leading-snug">
+          «Una riqueza de información crea una pobreza de atención.»
+        </p>
+        <p class="text-sm leading-relaxed mt-3 opacity-90">
+          Herbert Simon lo advirtió en 1971. Este tomo recorre cómo esa premisa se
+          volvió industria sobre la mirada de los jóvenes — y cómo la escuela pública
+          puede responder: no con pánico, sino formando la <strong>soberanía atencional</strong>.
+        </p>
+      </div>
+
+      <!-- PRESENTACIÓN · 12 slides -->
+      <div id="presentacion" class="mb-10 scroll-mt-24">
+        <SlidesViewer
+          presentacion={presentacionMercado}
+          slides={slidesMercado}
+          dirNombre="mercado-atencion"
+        />
+      </div>
+
+      <!-- El recorrido del tomo -->
+      <section class="mb-10">
+        <div class="flex items-center justify-between flex-wrap gap-3 mb-6">
+          <h2 class="heading-huge">El recorrido, en 4 movimientos.</h2>
+          <span class="chip-bento">12 slides · {libroPaginas} páginas</span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {recorrido.map((r, i) => (
+            <div class="bento-card">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="text-3xl" aria-hidden="true">{r.emoji}</span>
+                <span class="w-7 h-7 rounded-full bg-bento-blue text-white flex items-center justify-center text-xs font-black shrink-0">{i + 1}</span>
+              </div>
+              <h3 class="font-black text-base leading-tight mb-2">{r.titulo}</h3>
+              <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">{r.texto}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- Cómo citar -->
+      <div class="bento-card mb-10 border-l-4 border-bento-blue">
+        <span class="chip-bento mb-3">📚 Cómo citar este tomo</span>
+        <p class="text-sm leading-relaxed mt-2 p-4 rounded-bento-sm font-mono" style="background: var(--bg); color: var(--fg);">
+          Cárdenas Orozco, Á. (2026). <em>El Mercado de la Atención</em> (Colección
+          MILC, Tomo I). Cartago, Valle del Cauca: Sor María Juliana Ediciones.
+          https://doi.org/10.5281/zenodo.20644820
+        </p>
+        <p class="text-xs leading-relaxed mt-3" style="color: var(--fg-muted);">
+          Obra académica de acceso abierto bajo licencia <strong style="color: var(--fg);">CC BY-SA 4.0</strong>:
+          puedes compartirla y adaptarla citando al autor y conservando la misma licencia.
+          Obra matriz: <em>Educación en la Era Onlife</em> (MILC, 2026).
+        </p>
+      </div>
+
+      <!-- Volver -->
+      <a href={`${base}/modelo-milc`} class="bento-card-hover flex items-center gap-4">
+        <svg class="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 12H5"></path>
+          <path d="m12 19-7-7 7-7"></path>
+        </svg>
+        <div>
+          <div class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">Volver al</div>
+          <div class="font-black text-lg">Modelo MILC</div>
+        </div>
+      </a>
+    </div>
+  </article>
+</BaseLayout>

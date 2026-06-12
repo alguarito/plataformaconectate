@@ -62,13 +62,35 @@ const grados = gradosData.map((g) => ({
         >
           Plan de Área
         </a>
-        <a
-          href={`${base}/modelo-milc`}
-          class="px-3 py-1.5 rounded-full text-sm font-semibold hover:bg-[var(--border)] transition-colors"
-          title="Modelo MILC · pedagogía propia"
-        >
-          Modelo MILC
-        </a>
+        <div class="relative" data-milc-dropdown>
+          <button
+            type="button"
+            data-milc-trigger
+            aria-expanded="false"
+            aria-haspopup="true"
+            class="px-3 py-1.5 rounded-full text-sm font-semibold hover:bg-[var(--border)] transition-colors inline-flex items-center gap-1"
+            title="Modelo MILC · pedagogía propia y Colección MILC"
+          >
+            Modelo MILC
+            <svg class="w-3.5 h-3.5 transition-transform" data-milc-chevron viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+          <div
+            data-milc-panel
+            class="hidden absolute right-0 top-full mt-2 w-72 rounded-2xl border p-2 z-50"
+            style="background: var(--bg-card); border-color: var(--border); box-shadow: 0 16px 40px rgba(0, 0, 0, 0.16);"
+          >
+            <a href={`${base}/modelo-milc`} class="block px-3.5 py-2.5 rounded-xl hover:bg-[var(--border)] transition-colors">
+              <span class="block text-sm font-bold">El modelo MILC</span>
+              <span class="block text-xs font-semibold mt-0.5" style="color: var(--fg-muted);">Pedagogía propia · libro y presentación</span>
+            </a>
+            <a href={`${base}/modelo-milc/mercado-atencion`} class="block px-3.5 py-2.5 rounded-xl hover:bg-[var(--border)] transition-colors">
+              <span class="block text-sm font-bold">Tomo I · El Mercado de la Atención</span>
+              <span class="block text-xs font-semibold mt-0.5" style="color: var(--fg-muted);">Colección MILC · libro, DOI y presentación</span>
+            </a>
+          </div>
+        </div>
         <a
           href={`${base}/acerca`}
           class="px-3 py-1.5 rounded-full text-sm font-semibold hover:bg-[var(--border)] transition-colors"
@@ -169,6 +191,13 @@ const grados = gradosData.map((g) => ({
           class="menu-mobile-link"
         >
           Modelo MILC
+        </a>
+        <a
+          href={`${base}/modelo-milc/mercado-atencion`}
+          class="menu-mobile-link"
+          style="padding-left: 30px; font-size: 14px;"
+        >
+          ↳ Tomo I · El Mercado de la Atención
         </a>
         <a
           href={`${base}/acerca`}
@@ -326,5 +355,38 @@ const grados = gradosData.map((g) => ({
     mq.addEventListener('change', (e) => {
       if (e.matches && dialog.open) cerrar();
     });
+  }
+
+  /* ── Dropdown «Modelo MILC» (desktop) ── */
+  const dd = document.querySelector<HTMLElement>('[data-milc-dropdown]');
+  if (dd) {
+    const trigger = dd.querySelector<HTMLButtonElement>('[data-milc-trigger]')!;
+    const panel = dd.querySelector<HTMLElement>('[data-milc-panel]')!;
+    const chevron = dd.querySelector<SVGElement>('[data-milc-chevron]');
+
+    function ponerAbierto(abierto: boolean) {
+      panel.classList.toggle('hidden', !abierto);
+      trigger.setAttribute('aria-expanded', String(abierto));
+      if (chevron) chevron.style.transform = abierto ? 'rotate(180deg)' : '';
+    }
+
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      ponerAbierto(panel.classList.contains('hidden'));
+    });
+
+    /* Cerrar: click fuera, Escape, o al elegir una opción */
+    document.addEventListener('click', (e) => {
+      if (!dd.contains(e.target as Node)) ponerAbierto(false);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !panel.classList.contains('hidden')) {
+        ponerAbierto(false);
+        trigger.focus();
+      }
+    });
+    panel.querySelectorAll('a').forEach((a) =>
+      a.addEventListener('click', () => ponerAbierto(false)),
+    );
   }
 </script>

@@ -1,0 +1,272 @@
+---
+/**
+ * Laboratorio · Espectroscopio estelar (look espacial).
+ *
+ * El estudiante ve el espectro de una estrella misteriosa —un arcoíris cruzado
+ * por líneas negras de absorción— y superpone la «huella» (líneas) de cinco
+ * elementos químicos. Si TODAS las líneas de un elemento caen sobre líneas
+ * negras, ese elemento está en la estrella. Marca presentes/ausentes y
+ * comprueba. Dos estrellas con composiciones distintas.
+ *
+ * Las longitudes de onda son reales (nm): H 656/486/434 · He 668/447 ·
+ * Na 589 · Ca 395 · Mg 518. El simulador NO delata la respuesta: el
+ * estudiante juzga la alineación con sus propios ojos (nivel ANALIZA).
+ */
+export interface DataEspectroscopio {
+  titulo: string;
+  instrucciones: string;
+}
+
+interface Props {
+  data: DataEspectroscopio;
+  id: string;
+}
+
+const { data, id } = Astro.props;
+
+const W = 680;
+const H = 210;
+const ml = 36;
+const mr = 16;
+const nmMin = 380;
+const nmMax = 700;
+const yBand0 = 58;
+const yBand1 = 148;
+const xDe = (nm: number) => ml + ((nm - nmMin) / (nmMax - nmMin)) * (W - ml - mr);
+
+// Composición de la estrella inicial (A): H + Na + Ca (tipo Sol).
+const lineasInicialesA = [656, 486, 434, 589, 395];
+const ticks = [400, 450, 500, 550, 600, 650, 700];
+
+// Estrellitas decorativas de fondo (deterministas).
+let seed = 23;
+const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
+const fondo = Array.from({ length: 34 }, () => ({ cx: +(rnd() * W).toFixed(1), cy: +(rnd() * H).toFixed(1), r: +(0.4 + rnd() * 1.1).toFixed(1), op: +(0.12 + rnd() * 0.4).toFixed(2) }));
+---
+
+<div class="bento-card" data-lab-espectro={id}>
+  <span class="chip-bento mb-2">🌈 Laboratorio · Espectroscopio estelar</span>
+  <h3 class="text-xl md:text-2xl font-black tracking-tight leading-tight">{data.titulo}</h3>
+  <p class="text-sm leading-relaxed mt-2 mb-4" style="color: var(--fg-muted);">{data.instrucciones}</p>
+
+  <!-- Selector de estrella -->
+  <div class="flex flex-wrap gap-2 mb-2">
+    <button type="button" data-estrella="a" class="px-3.5 py-2 rounded-full text-xs font-black border-2 transition-colors bg-bento-lime text-neutral-950 border-transparent">⭐ Estrella A</button>
+    <button type="button" data-estrella="b" class="px-3.5 py-2 rounded-full text-xs font-black border-2 transition-colors" style="border-color: var(--border); color: var(--fg-muted);">⭐ Estrella B</button>
+  </div>
+  <p class="text-sm font-bold mb-3" data-desc-estrella>«La vecina amarilla» — una estrella parecida al Sol.</p>
+
+  <div class="rounded-bento-sm overflow-hidden" style="line-height:0;">
+    <svg viewBox={`0 0 ${W} ${H}`} class="w-full h-auto" style="min-width: 460px;" role="img"
+      aria-label="Espectro de una estrella: banda de colores del violeta al rojo cruzada por líneas negras verticales (los colores que sus gases absorbieron). Puedes superponer las líneas de un elemento para ver si coinciden.">
+      <defs>
+        <linearGradient id={`${id}-sky`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#0b1030" />
+          <stop offset="100%" stop-color="#161038" />
+        </linearGradient>
+        <linearGradient id={`${id}-arcoiris`} x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#6d28d9" />
+          <stop offset="12%" stop-color="#4338ca" />
+          <stop offset="25%" stop-color="#2563eb" />
+          <stop offset="34%" stop-color="#06b6d4" />
+          <stop offset="44%" stop-color="#22c55e" />
+          <stop offset="56%" stop-color="#84cc16" />
+          <stop offset="63%" stop-color="#eab308" />
+          <stop offset="75%" stop-color="#f97316" />
+          <stop offset="88%" stop-color="#ef4444" />
+          <stop offset="100%" stop-color="#b91c1c" />
+        </linearGradient>
+        <filter id={`${id}-glow`} x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="2" />
+        </filter>
+      </defs>
+
+      <rect x="0" y="0" width={W} height={H} fill={`url(#${id}-sky)`} />
+      {fondo.map((s) => (<circle cx={s.cx} cy={s.cy} r={s.r} fill="#ffffff" opacity={s.op} />))}
+
+      <!-- Banda del espectro -->
+      <rect x={ml} y={yBand0} width={W - ml - mr} height={yBand1 - yBand0} rx="6" fill={`url(#${id}-arcoiris)`} />
+
+      <!-- Líneas de absorción de la estrella (negras) -->
+      <g data-abs>
+        {lineasInicialesA.map((nm) => (
+          <rect x={xDe(nm) - 2} y={yBand0} width="4" height={yBand1 - yBand0} fill="#05060f" opacity="0.92" />
+        ))}
+      </g>
+
+      <!-- Huella del elemento superpuesto (la pinta el cliente) -->
+      <g data-marcas></g>
+
+      <!-- Eje de longitud de onda -->
+      {ticks.map((nm) => (
+        <g>
+          <line x1={xDe(nm)} y1={yBand1 + 4} x2={xDe(nm)} y2={yBand1 + 9} stroke="#6b74a0" stroke-width="1.5" />
+          <text x={xDe(nm)} y={yBand1 + 24} text-anchor="middle" font-size="11" font-weight="700" fill="#9aa2c8">{nm}</text>
+        </g>
+      ))}
+      <text x={(ml + W - mr) / 2} y={H - 8} text-anchor="middle" font-size="11" font-weight="800" fill="#e3e7f6">Longitud de onda (nm) · violeta → rojo</text>
+      <text x={ml} y={yBand0 - 14} font-size="10" font-weight="700" fill="#9aa2c8">líneas negras = colores que los gases de la estrella absorbieron</text>
+    </svg>
+  </div>
+
+  <!-- Huellas de elementos -->
+  <div class="mt-4">
+    <div class="text-xs font-black uppercase tracking-widest mb-2" style="color: var(--fg-muted);">🧪 Superpón la huella de un elemento</div>
+    <div class="flex flex-wrap gap-2" data-chips></div>
+    <p class="text-xs leading-relaxed mt-2 p-3 rounded-bento-sm" data-lectura style="background: var(--bg); color: var(--fg-muted);">
+      Elige un elemento: sus líneas aparecerán punteadas sobre el espectro. Si <strong style="color: var(--fg);">todas</strong> caen sobre líneas negras, el elemento está en la estrella.
+    </p>
+  </div>
+
+  <!-- Dictamen del estudiante -->
+  <div class="mt-5">
+    <div class="text-xs font-black uppercase tracking-widest mb-2" style="color: var(--fg-muted);">📋 Tu dictamen: ¿qué hay en esta estrella?</div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2" data-checks></div>
+    <div class="flex items-center gap-3 mt-3 flex-wrap">
+      <button type="button" data-comprobar class="px-5 py-2.5 rounded-full bg-bento-blue text-white text-sm font-black hover:opacity-85 transition-opacity">Comprobar composición</button>
+      <span class="text-sm font-black" data-puntaje></span>
+    </div>
+    <div class="space-y-1.5 mt-3" data-veredicto></div>
+  </div>
+</div>
+
+<script define:vars={{ id, W, ml, mr, nmMin, nmMax, yBand0, yBand1 }}>
+  const root = document.querySelector(`[data-lab-espectro="${id}"]`);
+  if (root) {
+    const ELEMENTOS = [
+      { id: 'h', nombre: 'Hidrógeno', simbolo: 'H', lineas: [656, 486, 434] },
+      { id: 'he', nombre: 'Helio', simbolo: 'He', lineas: [668, 447] },
+      { id: 'na', nombre: 'Sodio', simbolo: 'Na', lineas: [589] },
+      { id: 'ca', nombre: 'Calcio', simbolo: 'Ca', lineas: [395] },
+      { id: 'mg', nombre: 'Magnesio', simbolo: 'Mg', lineas: [518] },
+    ];
+    const ESTRELLAS = {
+      a: { desc: '«La vecina amarilla» — una estrella parecida al Sol.', comp: ['h', 'na', 'ca'] },
+      b: { desc: '«La gigante caliente» — una estrella azul, mucho más caliente.', comp: ['h', 'he'] },
+    };
+    const SVGNS = 'http://www.w3.org/2000/svg';
+    const xDe = (nm) => ml + ((nm - nmMin) / (nmMax - nmMin)) * (W - ml - mr);
+
+    let estrella = 'a';
+    let elemento = null;
+
+    const gAbs = root.querySelector('[data-abs]');
+    const gMarcas = root.querySelector('[data-marcas]');
+    const desc = root.querySelector('[data-desc-estrella]');
+    const chips = root.querySelector('[data-chips]');
+    const checks = root.querySelector('[data-checks]');
+    const veredicto = root.querySelector('[data-veredicto]');
+    const puntaje = root.querySelector('[data-puntaje]');
+    const btnsEstrella = root.querySelectorAll('[data-estrella]');
+
+    function el(tag, attrs) {
+      const n = document.createElementNS(SVGNS, tag);
+      for (const k in attrs) n.setAttribute(k, attrs[k]);
+      return n;
+    }
+
+    function pintarAbsorcion() {
+      gAbs.innerHTML = '';
+      const lineas = ESTRELLAS[estrella].comp.flatMap((cid) => ELEMENTOS.find((e) => e.id === cid).lineas);
+      for (const nm of lineas) {
+        gAbs.appendChild(el('rect', { x: (xDe(nm) - 2).toFixed(1), y: yBand0, width: 4, height: yBand1 - yBand0, fill: '#05060f', opacity: '0.92' }));
+      }
+    }
+
+    function pintarMarcas() {
+      gMarcas.innerHTML = '';
+      if (!elemento) return;
+      const e = ELEMENTOS.find((x) => x.id === elemento);
+      for (const nm of e.lineas) {
+        const x = +xDe(nm).toFixed(1);
+        gMarcas.appendChild(el('line', { x1: x, y1: yBand0 - 12, x2: x, y2: yBand1 + 6, stroke: '#ffffff', 'stroke-width': 2, 'stroke-dasharray': '4 3' }));
+        gMarcas.appendChild(el('path', { d: `M ${x - 5} ${yBand0 - 18} L ${x + 5} ${yBand0 - 18} L ${x} ${yBand0 - 11} Z`, fill: '#A3FF12' }));
+        const t = el('text', { x, y: yBand0 - 22, 'text-anchor': 'middle', 'font-size': 9, 'font-weight': 800, fill: '#e3e7f6' });
+        t.textContent = `${e.simbolo} ${nm}`;
+        gMarcas.appendChild(t);
+      }
+    }
+
+    function pintarChips() {
+      chips.innerHTML = '';
+      for (const e of ELEMENTOS) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'px-3 py-1.5 rounded-full text-xs font-black border-2 transition-colors';
+        const activo = elemento === e.id;
+        b.style.borderColor = activo ? '#A3FF12' : 'var(--border)';
+        b.style.color = activo ? 'var(--fg)' : 'var(--fg-muted)';
+        b.textContent = `${e.simbolo} · ${e.nombre}`;
+        b.addEventListener('click', () => { elemento = elemento === e.id ? null : e.id; pintarChips(); pintarMarcas(); });
+        chips.appendChild(b);
+      }
+    }
+
+    function pintarChecks() {
+      checks.innerHTML = '';
+      for (const e of ELEMENTOS) {
+        const lab = document.createElement('label');
+        lab.className = 'flex items-center gap-2.5 p-2.5 rounded-bento-sm cursor-pointer';
+        lab.style.background = 'var(--bg)';
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.dataset.check = e.id;
+        input.style.accentColor = '#0066FF';
+        input.style.width = '18px';
+        input.style.height = '18px';
+        const span = document.createElement('span');
+        span.className = 'text-sm font-bold';
+        span.textContent = `${e.nombre} está presente`;
+        lab.appendChild(input);
+        lab.appendChild(span);
+        checks.appendChild(lab);
+      }
+    }
+
+    function comprobar() {
+      const comp = ESTRELLAS[estrella].comp;
+      veredicto.innerHTML = '';
+      let ok = 0;
+      for (const e of ELEMENTOS) {
+        const marcado = checks.querySelector(`[data-check="${e.id}"]`).checked;
+        const presente = comp.includes(e.id);
+        const correcto = marcado === presente;
+        if (correcto) ok++;
+        const fila = document.createElement('div');
+        fila.className = 'flex items-start gap-2 p-2.5 rounded-bento-sm text-xs font-bold';
+        fila.style.background = correcto ? 'rgba(163,255,18,0.16)' : 'rgba(255,45,135,0.12)';
+        fila.style.color = 'var(--fg)';
+        const detalle = presente
+          ? `sus líneas (${e.lineas.join(', ')} nm) sí caen sobre líneas negras → está presente`
+          : `sus líneas (${e.lineas.join(', ')} nm) caen sobre colores sin absorber → no está`;
+        fila.textContent = `${correcto ? '✓' : '✗'} ${e.nombre}: ${detalle}`;
+        veredicto.appendChild(fila);
+      }
+      puntaje.textContent = ok === ELEMENTOS.length ? `${ok}/5 · ¡Análisis de astrónomo! 🔭` : `${ok}/5 — revisa con la huella superpuesta`;
+      puntaje.style.color = ok === ELEMENTOS.length ? '#1a8f00' : '#FF2D87';
+    }
+
+    function cambiarEstrella(idE) {
+      estrella = idE;
+      desc.textContent = ESTRELLAS[idE].desc;
+      btnsEstrella.forEach((b) => {
+        const activo = b.dataset.estrella === idE;
+        b.className = `px-3.5 py-2 rounded-full text-xs font-black border-2 transition-colors${activo ? ' bg-bento-lime text-neutral-950 border-transparent' : ''}`;
+        b.style.borderColor = activo ? 'transparent' : 'var(--border)';
+        b.style.color = activo ? '' : 'var(--fg-muted)';
+      });
+      checks.querySelectorAll('input').forEach((i) => { i.checked = false; });
+      veredicto.innerHTML = '';
+      puntaje.textContent = '';
+      pintarAbsorcion();
+      pintarMarcas();
+    }
+
+    btnsEstrella.forEach((b) => b.addEventListener('click', () => cambiarEstrella(b.dataset.estrella)));
+    root.querySelector('[data-comprobar]')?.addEventListener('click', comprobar);
+
+    pintarChips();
+    pintarChecks();
+    pintarAbsorcion();
+  }
+</script>

@@ -1,0 +1,349 @@
+---
+/**
+ * Laboratorio · Cazador de biofirmas (look espacial).
+ *
+ * El estudiante analiza el ESPECTRO DE TRANSMISIÓN de tres exoplanetas en
+ * tránsito —la gráfica real que produce el telescopio James Webb—: una curva
+ * en el infrarrojo (0,5–5 μm) con PICOS donde los gases de la atmósfera
+ * absorben luz. Superpone las bandas de 4 moléculas (posiciones reales:
+ * O₂ 0,76 · H₂O 1,4 y 1,9 · CH₄ 2,3 y 3,3 · CO₂ 2,7 y 4,3 μm), marca cuáles
+ * detecta y emite su dictamen de habitabilidad. El criterio es el del módulo 3:
+ * O₂ y CH₄ juntos se destruyen entre sí — si coexisten, algo los repone.
+ *
+ * Mecánica distinta al LabEspectroscopio (allí: líneas negras sobre arcoíris;
+ * aquí: leer PICOS en una curva científica). El simulador no delata: el
+ * estudiante juzga la alineación y su dictamen (nivel EVALÚA).
+ */
+export interface DataBiofirmas {
+  titulo: string;
+  instrucciones: string;
+}
+
+interface Props {
+  data: DataBiofirmas;
+  id: string;
+}
+
+const { data, id } = Astro.props;
+
+const W = 680;
+const H = 300;
+const ml = 58;
+const mr = 14;
+const mt = 18;
+const mb = 44;
+const umMin = 0.5;
+const umMax = 5.0;
+const x0 = ml;
+const x1 = W - mr;
+const y0 = mt;
+const y1 = H - mb;
+const xDe = (um: number) => x0 + ((um - umMin) / (umMax - umMin)) * (x1 - x0);
+const yDe = (prof: number) => y1 - prof * (y1 - y0 - 14);
+
+// Bandas de absorción (centro μm, ancho) — las mismas del cliente.
+const BANDAS: Record<string, { c: number; w: number }[]> = {
+  o2: [{ c: 0.76, w: 0.05 }],
+  h2o: [{ c: 1.4, w: 0.15 }, { c: 1.9, w: 0.15 }],
+  ch4: [{ c: 2.3, w: 0.15 }, { c: 3.3, w: 0.2 }],
+  co2: [{ c: 2.7, w: 0.2 }, { c: 4.3, w: 0.25 }],
+};
+
+// Curva inicial (planeta 1 «Cenizo»: solo CO₂), renderizada en el servidor.
+const compInicial = ['co2'];
+const puntosIniciales = (() => {
+  const pts: string[] = [];
+  for (let um = umMin; um <= umMax + 1e-9; um += 0.018) {
+    let prof = 0.16 + 0.012 * Math.sin(um * 37 + 1);
+    for (const m of compInicial) {
+      for (const b of BANDAS[m]) {
+        const d = (um - b.c) / b.w;
+        prof += 0.52 * Math.exp(-d * d);
+      }
+    }
+    pts.push(xDe(um).toFixed(1) + ',' + yDe(Math.min(prof, 0.95)).toFixed(1));
+  }
+  return pts.join(' ');
+})();
+
+const ticks = [1, 2, 3, 4, 5];
+
+// Estrellitas decorativas de fondo (deterministas).
+let seed = 41;
+const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
+const fondo = Array.from({ length: 36 }, () => ({ cx: +(rnd() * W).toFixed(1), cy: +(rnd() * H).toFixed(1), r: +(0.4 + rnd() * 1.1).toFixed(1), op: +(0.12 + rnd() * 0.4).toFixed(2) }));
+---
+
+<div class="bento-card" data-lab-biofirmas={id}>
+  <span class="chip-bento mb-2">🛰 Laboratorio · Cazador de biofirmas</span>
+  <h3 class="text-xl md:text-2xl font-black tracking-tight leading-tight">{data.titulo}</h3>
+  <p class="text-sm leading-relaxed mt-2 mb-4" style="color: var(--fg-muted);">{data.instrucciones}</p>
+
+  <!-- Selector de planeta -->
+  <div class="flex flex-wrap gap-2 mb-2">
+    <button type="button" data-planeta="1" class="px-3.5 py-2 rounded-full text-xs font-black border-2 transition-colors bg-bento-lime text-neutral-950 border-transparent">🪐 Planeta 1 · Cenizo</button>
+    <button type="button" data-planeta="2" class="px-3.5 py-2 rounded-full text-xs font-black border-2 transition-colors" style="border-color: var(--border); color: var(--fg-muted);">🪐 Planeta 2 · Yaku</button>
+    <button type="button" data-planeta="3" class="px-3.5 py-2 rounded-full text-xs font-black border-2 transition-colors" style="border-color: var(--border); color: var(--fg-muted);">🪐 Planeta 3 · Esperanza</button>
+  </div>
+  <p class="text-sm font-bold mb-3" data-desc-planeta>Un mundo rocoso con atmósfera densa, a 0,7 UA de su estrella.</p>
+
+  <div class="rounded-bento-sm overflow-hidden" style="line-height:0;">
+    <svg viewBox={`0 0 ${W} ${H}`} class="w-full h-auto" style="min-width: 460px;" role="img"
+      aria-label="Espectro de transmisión de un exoplaneta: curva con picos en el infrarrojo; cada pico es una banda donde un gas de la atmósfera absorbe luz de la estrella durante el tránsito.">
+      <defs>
+        <linearGradient id={`${id}-sky`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#0b1030" />
+          <stop offset="100%" stop-color="#161038" />
+        </linearGradient>
+        <filter id={`${id}-glow`} x="-10%" y="-30%" width="120%" height="160%">
+          <feGaussianBlur stdDeviation="2" />
+        </filter>
+      </defs>
+
+      <rect x="0" y="0" width={W} height={H} fill={`url(#${id}-sky)`} />
+      {fondo.map((s) => (<circle cx={s.cx} cy={s.cy} r={s.r} fill="#ffffff" opacity={s.op} />))}
+
+      <!-- Rejilla suave -->
+      {ticks.map((um) => (
+        <line x1={xDe(um)} y1={y0} x2={xDe(um)} y2={y1} stroke="#3a4170" stroke-width="1" stroke-dasharray="3 5" opacity="0.5" />
+      ))}
+      <line x1={x0} y1={y1} x2={x1} y2={y1} stroke="#6b74a0" stroke-width="1.5" />
+
+      <!-- Marcas de moléculas (las pinta el cliente) -->
+      <g data-marcas></g>
+
+      <!-- Curva del espectro de transmisión -->
+      <polyline data-curva points={puntosIniciales} fill="none" stroke="#5aa0ff" stroke-width="2.5" stroke-linejoin="round" filter={`url(#${id}-glow)`} />
+
+      <!-- Ejes -->
+      {ticks.map((um) => (
+        <text x={xDe(um)} y={y1 + 20} text-anchor="middle" font-size="11" font-weight="700" fill="#9aa2c8">{um}</text>
+      ))}
+      <text x={(x0 + x1) / 2} y={H - 6} text-anchor="middle" font-size="11" font-weight="800" fill="#e3e7f6">Longitud de onda (μm) · infrarrojo, como lo ve el James Webb</text>
+      <text transform={`rotate(-90 16 ${(y0 + y1) / 2})`} x="16" y={(y0 + y1) / 2} text-anchor="middle" font-size="10" font-weight="800" fill="#e3e7f6">Luz bloqueada en el tránsito</text>
+      <text x={x0 + 4} y={y0 + 12} font-size="10" font-weight="700" fill="#9aa2c8">picos = bandas donde un gas de la atmósfera absorbe</text>
+    </svg>
+  </div>
+
+  <!-- Bandas de moléculas -->
+  <div class="mt-4">
+    <div class="text-xs font-black uppercase tracking-widest mb-2" style="color: var(--fg-muted);">🧪 Superpón las bandas de una molécula</div>
+    <div class="flex flex-wrap gap-2" data-chips></div>
+    <p class="text-xs leading-relaxed mt-2 p-3 rounded-bento-sm" style="background: var(--bg); color: var(--fg-muted);">
+      Si los marcadores de la molécula caen sobre <strong style="color: var(--fg);">picos</strong> de la curva, esa molécula está en la atmósfera. Si caen sobre zonas planas, no está.
+    </p>
+  </div>
+
+  <!-- Detección -->
+  <div class="mt-5">
+    <div class="text-xs font-black uppercase tracking-widest mb-2" style="color: var(--fg-muted);">📋 Paso 1 · ¿Qué moléculas detectas?</div>
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" data-checks></div>
+  </div>
+
+  <!-- Dictamen -->
+  <div class="mt-5">
+    <div class="text-xs font-black uppercase tracking-widest mb-2" style="color: var(--fg-muted);">⚖️ Paso 2 · Tu dictamen sobre este mundo</div>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2" data-dictamen></div>
+    <div class="flex items-center gap-3 mt-3 flex-wrap">
+      <button type="button" data-comprobar class="px-5 py-2.5 rounded-full bg-bento-blue text-white text-sm font-black hover:opacity-85 transition-opacity">Comprobar análisis</button>
+      <span class="text-sm font-black" data-puntaje></span>
+    </div>
+    <div class="space-y-1.5 mt-3" data-veredicto></div>
+  </div>
+</div>
+
+<script define:vars={{ id, W, ml, mr, mt, mb, umMin, umMax }}>
+  const root = document.querySelector(`[data-lab-biofirmas="${id}"]`);
+  if (root) {
+    const MOLECULAS = [
+      { id: 'h2o', nombre: 'H₂O · vapor de agua', corto: 'H₂O', color: '#22d3ee', bandas: [{ c: 1.4, w: 0.15 }, { c: 1.9, w: 0.15 }] },
+      { id: 'co2', nombre: 'CO₂ · dióxido de carbono', corto: 'CO₂', color: '#fb923c', bandas: [{ c: 2.7, w: 0.2 }, { c: 4.3, w: 0.25 }] },
+      { id: 'ch4', nombre: 'CH₄ · metano', corto: 'CH₄', color: '#a3e635', bandas: [{ c: 2.3, w: 0.15 }, { c: 3.3, w: 0.2 }] },
+      { id: 'o2', nombre: 'O₂ · oxígeno', corto: 'O₂', color: '#f472b6', bandas: [{ c: 0.76, w: 0.05 }] },
+    ];
+    const DICTAMENES = [
+      { id: 'sin', texto: '🪨 Sin indicios de vida' },
+      { id: 'habitable', texto: '💧 Quizá habitable, sin biofirma clara' },
+      { id: 'biofirma', texto: '🌱 ¡Candidato a biofirma!' },
+    ];
+    const PLANETAS = {
+      1: {
+        desc: 'Un mundo rocoso con atmósfera densa, a 0,7 UA de su estrella.',
+        comp: ['co2'], dictamen: 'sin', seed: 1,
+        explica: 'Solo hay CO₂: una sopa asfixiante como la de Venus. Sin agua ni biofirmas, no hay indicios de vida.',
+      },
+      2: {
+        desc: 'Un mundo templado en la zona habitable de su estrella.',
+        comp: ['h2o', 'co2'], dictamen: 'habitable', seed: 2,
+        explica: 'Hay vapor de agua y CO₂: podría ser habitable. Pero sin O₂ ni CH₄ no hay biofirma clara — un océano vacío también daría esta señal.',
+      },
+      3: {
+        desc: 'Un mundo del tamaño de la Tierra, también en zona habitable.',
+        comp: ['h2o', 'o2', 'ch4'], dictamen: 'biofirma', seed: 3,
+        explica: '¡O₂ y CH₄ juntos! Se destruyen entre sí: si coexisten, algo los repone — quizá vida. Es un CANDIDATO… y ahora la ciencia exige prudencia: confirmar antes de anunciar.',
+      },
+    };
+    const SVGNS = 'http://www.w3.org/2000/svg';
+    const x0 = ml, x1 = W - mr, y0 = mt, y1 = 300 - mb;
+    const xDe = (um) => x0 + ((um - umMin) / (umMax - umMin)) * (x1 - x0);
+    const yDe = (prof) => y1 - prof * (y1 - y0 - 14);
+
+    let planeta = 1;
+    let molecula = null;
+
+    const curva = root.querySelector('[data-curva]');
+    const gMarcas = root.querySelector('[data-marcas]');
+    const desc = root.querySelector('[data-desc-planeta]');
+    const chips = root.querySelector('[data-chips]');
+    const checks = root.querySelector('[data-checks]');
+    const dictamenes = root.querySelector('[data-dictamen]');
+    const veredicto = root.querySelector('[data-veredicto]');
+    const puntaje = root.querySelector('[data-puntaje]');
+    const btnsPlaneta = root.querySelectorAll('[data-planeta]');
+    let dictamenElegido = null;
+
+    function el(tag, attrs) {
+      const n = document.createElementNS(SVGNS, tag);
+      for (const k in attrs) n.setAttribute(k, attrs[k]);
+      return n;
+    }
+
+    function pintarCurva() {
+      const p = PLANETAS[planeta];
+      const pts = [];
+      for (let um = umMin; um <= umMax + 1e-9; um += 0.018) {
+        let prof = 0.16 + 0.012 * Math.sin(um * 37 + p.seed);
+        for (const mid of p.comp) {
+          const m = MOLECULAS.find((x) => x.id === mid);
+          for (const b of m.bandas) {
+            const d = (um - b.c) / b.w;
+            prof += 0.52 * Math.exp(-d * d);
+          }
+        }
+        pts.push(xDe(um).toFixed(1) + ',' + yDe(Math.min(prof, 0.95)).toFixed(1));
+      }
+      curva.setAttribute('points', pts.join(' '));
+    }
+
+    function pintarMarcas() {
+      gMarcas.innerHTML = '';
+      if (!molecula) return;
+      const m = MOLECULAS.find((x) => x.id === molecula);
+      for (const b of m.bandas) {
+        const x = +xDe(b.c).toFixed(1);
+        gMarcas.appendChild(el('line', { x1: x, y1: y0 + 18, x2: x, y2: y1, stroke: m.color, 'stroke-width': 2, 'stroke-dasharray': '4 3' }));
+        gMarcas.appendChild(el('path', { d: `M ${x - 5} ${y0 + 12} L ${x + 5} ${y0 + 12} L ${x} ${y0 + 19} Z`, fill: m.color }));
+        const t = el('text', { x, y: y0 + 8, 'text-anchor': 'middle', 'font-size': 9, 'font-weight': 800, fill: m.color });
+        t.textContent = `${m.corto} ${b.c}`;
+        gMarcas.appendChild(t);
+      }
+    }
+
+    function pintarChips() {
+      chips.innerHTML = '';
+      for (const m of MOLECULAS) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'px-3 py-1.5 rounded-full text-xs font-black border-2 transition-colors';
+        const activo = molecula === m.id;
+        b.style.borderColor = activo ? m.color : 'var(--border)';
+        b.style.color = activo ? 'var(--fg)' : 'var(--fg-muted)';
+        b.textContent = m.nombre;
+        b.addEventListener('click', () => { molecula = molecula === m.id ? null : m.id; pintarChips(); pintarMarcas(); });
+        chips.appendChild(b);
+      }
+    }
+
+    function pintarChecks() {
+      checks.innerHTML = '';
+      for (const m of MOLECULAS) {
+        const lab = document.createElement('label');
+        lab.className = 'flex items-center gap-2 p-2.5 rounded-bento-sm cursor-pointer';
+        lab.style.background = 'var(--bg)';
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.dataset.check = m.id;
+        input.style.accentColor = '#0066FF';
+        input.style.width = '18px';
+        input.style.height = '18px';
+        const span = document.createElement('span');
+        span.className = 'text-sm font-bold';
+        span.textContent = m.corto;
+        lab.appendChild(input);
+        lab.appendChild(span);
+        checks.appendChild(lab);
+      }
+    }
+
+    function pintarDictamenes() {
+      dictamenes.innerHTML = '';
+      for (const d of DICTAMENES) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'px-3 py-2.5 rounded-bento-sm text-xs font-black border-2 text-left transition-colors';
+        const activo = dictamenElegido === d.id;
+        b.style.borderColor = activo ? '#0066FF' : 'var(--border)';
+        b.style.color = activo ? 'var(--fg)' : 'var(--fg-muted)';
+        b.style.background = activo ? 'rgba(0,102,255,0.08)' : 'var(--bg)';
+        b.textContent = d.texto;
+        b.addEventListener('click', () => { dictamenElegido = d.id; pintarDictamenes(); });
+        dictamenes.appendChild(b);
+      }
+    }
+
+    function comprobar() {
+      const p = PLANETAS[planeta];
+      veredicto.innerHTML = '';
+      let ok = 0;
+      for (const m of MOLECULAS) {
+        const marcado = checks.querySelector(`[data-check="${m.id}"]`).checked;
+        const presente = p.comp.includes(m.id);
+        const correcto = marcado === presente;
+        if (correcto) ok++;
+        const fila = document.createElement('div');
+        fila.className = 'flex items-start gap-2 p-2.5 rounded-bento-sm text-xs font-bold';
+        fila.style.background = correcto ? 'rgba(163,255,18,0.16)' : 'rgba(255,45,135,0.12)';
+        fila.style.color = 'var(--fg)';
+        const bandasTxt = m.bandas.map((b) => b.c).join(' y ');
+        fila.textContent = `${correcto ? '✓' : '✗'} ${m.corto}: ${presente ? `sus bandas (${bandasTxt} μm) sí forman picos → está` : `en ${bandasTxt} μm la curva es plana → no está`}`;
+        veredicto.appendChild(fila);
+      }
+      const dictamenOk = dictamenElegido === p.dictamen;
+      if (dictamenOk) ok++;
+      const fila = document.createElement('div');
+      fila.className = 'flex items-start gap-2 p-3 rounded-bento-sm text-xs font-bold';
+      fila.style.background = dictamenOk ? 'rgba(163,255,18,0.16)' : 'rgba(255,45,135,0.12)';
+      fila.style.color = 'var(--fg)';
+      fila.textContent = `${dictamenOk ? '✓ Dictamen correcto.' : '✗ Revisa tu dictamen.'} ${p.explica}`;
+      veredicto.appendChild(fila);
+      puntaje.textContent = ok === 5 ? '5/5 · ¡Análisis digno del James Webb! 🛰' : `${ok}/5 — apóyate en las bandas superpuestas`;
+      puntaje.style.color = ok === 5 ? '#1a8f00' : '#FF2D87';
+    }
+
+    function cambiarPlaneta(n) {
+      planeta = +n;
+      desc.textContent = PLANETAS[planeta].desc;
+      btnsPlaneta.forEach((b) => {
+        const activo = b.dataset.planeta === String(n);
+        b.className = `px-3.5 py-2 rounded-full text-xs font-black border-2 transition-colors${activo ? ' bg-bento-lime text-neutral-950 border-transparent' : ''}`;
+        b.style.borderColor = activo ? 'transparent' : 'var(--border)';
+        b.style.color = activo ? '' : 'var(--fg-muted)';
+      });
+      checks.querySelectorAll('input').forEach((i) => { i.checked = false; });
+      dictamenElegido = null;
+      veredicto.innerHTML = '';
+      puntaje.textContent = '';
+      pintarDictamenes();
+      pintarCurva();
+      pintarMarcas();
+    }
+
+    btnsPlaneta.forEach((b) => b.addEventListener('click', () => cambiarPlaneta(b.dataset.planeta)));
+    root.querySelector('[data-comprobar]')?.addEventListener('click', comprobar);
+
+    pintarChips();
+    pintarChecks();
+    pintarDictamenes();
+    pintarCurva();
+  }
+</script>

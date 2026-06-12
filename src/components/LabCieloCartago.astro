@@ -1,0 +1,247 @@
+---
+/**
+ * Laboratorio · El cielo de Cartago (dispersión de la luz).
+ *
+ * Escena del cielo sobre colinas del Valle: el estudiante mueve el sol del
+ * mediodía al atardecer y ve la física de los ARREBOLES en vivo. El aire
+ * dispersa las ondas cortas (azul); cuando el sol está bajo, su luz cruza
+ * hasta ~38 veces más atmósfera (masa de aire real) y el azul se pierde por
+ * el camino: solo llegan los rojos. Es el saber ancestral del Tomo 2
+ * («cielo rojo al anochecer, buen sol al amanecer») vuelto simulador, y la
+ * misma física con la que se leen atmósferas de exoplanetas a contraluz.
+ *
+ * El cielo interpola colores entre 5 momentos clave, el sol cambia de color
+ * y posición, y las estrellas aparecen en el crepúsculo.
+ */
+export interface DataCieloCartago {
+  titulo: string;
+  instrucciones: string;
+}
+
+interface Props {
+  data: DataCieloCartago;
+  id: string;
+}
+
+const { data, id } = Astro.props;
+
+const W = 680;
+const H = 320;
+const horizonY = 242;
+
+// Momentos clave del cielo: altura del sol → [cima, medio, horizonte, sol].
+const CLAVES: [number, string[]][] = [
+  [90, ['#1c5fd1', '#4a90e2', '#a5d4f2', '#fff3b0']],
+  [40, ['#2c66c8', '#7aa6dd', '#f0d9a0', '#ffe98a']],
+  [15, ['#3f4fae', '#e08a4a', '#f2a83c', '#ffb347']],
+  [5, ['#332a78', '#c75a35', '#e8512e', '#ff7a2f']],
+  [0, ['#1d1440', '#7a2d52', '#cf3b2a', '#ff4d24']],
+];
+
+const lerpHex = (a: string, b: string, t: number) => {
+  const pa = [1, 3, 5].map((i) => parseInt(a.slice(i, i + 2), 16));
+  const pb = [1, 3, 5].map((i) => parseInt(b.slice(i, i + 2), 16));
+  return '#' + pa.map((v, i) => Math.round(v + (pb[i] - v) * t).toString(16).padStart(2, '0')).join('');
+};
+
+const coloresDe = (alt: number) => {
+  let i = 0;
+  while (i < CLAVES.length - 2 && alt < CLAVES[i + 1][0]) i++;
+  const [a0, c0] = CLAVES[i];
+  const [a1, c1] = CLAVES[i + 1];
+  const t = Math.min(1, Math.max(0, (a0 - alt) / (a0 - a1)));
+  return c0.map((c, k) => lerpHex(c, c1[k], t));
+};
+
+// Posición del sol según el avance de la tarde p (0 = mediodía, 90 = horizonte).
+const solX = (p: number) => 180 + (p / 90) * 380;
+const solY = (p: number) => 46 + Math.pow(p / 90, 2) * (horizonY - 46);
+
+// Estado inicial: p = 15 (≈ 1:00 p. m., cielo azul).
+const p0 = 15;
+const alt0 = 90 - p0;
+const [cTop0, cMid0, cHor0, cSol0] = coloresDe(alt0);
+
+// Estrellas del crepúsculo (deterministas, invisibles al inicio).
+let seed = 57;
+const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
+const estrellas = Array.from({ length: 16 }, () => ({ cx: +(rnd() * W).toFixed(1), cy: +(rnd() * 150).toFixed(1), r: +(0.5 + rnd() * 1.1).toFixed(1), op: +(0.4 + rnd() * 0.5).toFixed(2) }));
+---
+
+<div class="bento-card" data-lab-cielo={id}>
+  <span class="chip-bento mb-2">🌇 Laboratorio · El cielo de Cartago</span>
+  <h3 class="text-xl md:text-2xl font-black tracking-tight leading-tight">{data.titulo}</h3>
+  <p class="text-sm leading-relaxed mt-2 mb-4" style="color: var(--fg-muted);">{data.instrucciones}</p>
+
+  <div class="rounded-bento-sm overflow-hidden" style="line-height:0;">
+    <svg viewBox={`0 0 ${W} ${H}`} class="w-full h-auto" role="img"
+      aria-label="Cielo sobre colinas del Valle: al mover el sol del mediodía al atardecer, el cielo pasa del azul a los naranjas y rojos de los arreboles, y al final aparecen las estrellas.">
+      <defs>
+        <linearGradient id={`${id}-cielo`} x1="0" y1="0" x2="0" y2="1">
+          <stop data-stop="top" offset="0%" stop-color={cTop0} />
+          <stop data-stop="mid" offset="58%" stop-color={cMid0} />
+          <stop data-stop="hor" offset="100%" stop-color={cHor0} />
+        </linearGradient>
+        <filter id={`${id}-glow`} x="-80%" y="-80%" width="260%" height="260%">
+          <feGaussianBlur stdDeviation="6" />
+        </filter>
+      </defs>
+
+      <!-- Cielo -->
+      <rect data-cielo x="0" y="0" width={W} height={horizonY} fill={`url(#${id}-cielo)`} />
+
+      <!-- Estrellas del crepúsculo -->
+      <g data-estrellas opacity="0">
+        {estrellas.map((s) => (<circle cx={s.cx} cy={s.cy} r={s.r} fill="#ffffff" opacity={s.op} />))}
+      </g>
+
+      <!-- Sol -->
+      <circle data-halo cx={solX(p0)} cy={solY(p0)} r="30" fill={cSol0} opacity="0.4" filter={`url(#${id}-glow)`} />
+      <circle data-sol cx={solX(p0)} cy={solY(p0)} r="15" fill={cSol0} />
+
+      <!-- Colinas del Valle -->
+      <path d={`M 0 232 Q 90 196 190 224 T 380 218 T 680 230 L ${W} ${H} L 0 ${H} Z`} fill="#142238" opacity="0.92" />
+      <path d={`M 0 258 Q 120 226 240 252 T 470 248 Q 580 238 680 256 L ${W} ${H} L 0 ${H} Z`} fill="#0c1626" />
+      <text x={W - 14} y={H - 12} text-anchor="end" font-size="10" font-weight="700" fill="#9aa2c8">Valle del Cauca · vista hacia el occidente</text>
+    </svg>
+  </div>
+
+  <!-- Control -->
+  <div class="mt-4">
+    <label class="flex items-center justify-between text-sm font-black mb-1" for={`${id}-p`}>
+      <span>🕐 Avanza la tarde</span>
+      <span data-out-hora style="color: var(--fg-muted);">1:00 p. m.</span>
+    </label>
+    <input id={`${id}-p`} data-slider-tarde type="range" min="0" max="90" step="1" value={p0} class="w-full" style="accent-color:#FF6B35;" />
+    <div class="flex justify-between text-[10px] font-bold mt-0.5" style="color: var(--fg-muted);"><span>mediodía</span><span>atardecer</span></div>
+  </div>
+
+  <!-- Lecturas -->
+  <div class="grid grid-cols-3 gap-2 mt-5">
+    <div class="p-3 rounded-bento-sm text-center" style="background: var(--bg);">
+      <div class="text-[10px] font-black uppercase tracking-widest" style="color: var(--fg-muted);">Altura del sol</div>
+      <div data-out-alt class="font-black text-lg mt-1">75°</div>
+    </div>
+    <div class="p-3 rounded-bento-sm text-center" style="background: var(--bg);">
+      <div class="text-[10px] font-black uppercase tracking-widest" style="color: var(--fg-muted);">Aire que cruza la luz</div>
+      <div data-out-aire class="font-black text-lg mt-1">×1,0</div>
+    </div>
+    <div class="p-3 rounded-bento-sm text-center" style="background: var(--bg);">
+      <div class="text-[10px] font-black uppercase tracking-widest" style="color: var(--fg-muted);">Colores que llegan</div>
+      <div data-out-color class="font-black text-sm mt-1 leading-tight">azul por todo el cielo</div>
+    </div>
+  </div>
+
+  <!-- Veredicto -->
+  <div class="mt-4 p-4 rounded-bento-sm flex items-start gap-3" style="background: var(--bg); border: 2px solid var(--border);">
+    <span data-cielo-emoji class="text-2xl shrink-0">☀️</span>
+    <div>
+      <div data-cielo-titulo class="font-black text-sm">Cielo azul de mediodía</div>
+      <p data-cielo-texto class="text-sm leading-relaxed mt-1" style="color: var(--fg-muted);">
+        La luz cruza poco aire. Las moléculas del aire dispersan el azul en todas
+        direcciones y la bóveda entera se pinta de azul.
+      </p>
+    </div>
+  </div>
+
+  <p class="text-xs leading-relaxed mt-4 p-3 rounded-bento-sm" style="background: var(--bg); color: var(--fg-muted);">
+    💡 Es la misma física con la que cazaste biofirmas: <strong style="color: var(--fg);">la luz que cruza un aire sale cambiada</strong>,
+    y ese cambio cuenta qué hay en el camino. Aquí, el aire del Valle; allá, la atmósfera de un exoplaneta.
+  </p>
+</div>
+
+<script define:vars={{ id, horizonY }}>
+  const root = document.querySelector(`[data-lab-cielo="${id}"]`);
+  if (root) {
+    const CLAVES = [
+      [90, ['#1c5fd1', '#4a90e2', '#a5d4f2', '#fff3b0']],
+      [40, ['#2c66c8', '#7aa6dd', '#f0d9a0', '#ffe98a']],
+      [15, ['#3f4fae', '#e08a4a', '#f2a83c', '#ffb347']],
+      [5, ['#332a78', '#c75a35', '#e8512e', '#ff7a2f']],
+      [0, ['#1d1440', '#7a2d52', '#cf3b2a', '#ff4d24']],
+    ];
+    const lerpHex = (a, b, t) => {
+      const pa = [1, 3, 5].map((i) => parseInt(a.slice(i, i + 2), 16));
+      const pb = [1, 3, 5].map((i) => parseInt(b.slice(i, i + 2), 16));
+      return '#' + pa.map((v, i) => Math.round(v + (pb[i] - v) * t).toString(16).padStart(2, '0')).join('');
+    };
+    const coloresDe = (alt) => {
+      let i = 0;
+      while (i < CLAVES.length - 2 && alt < CLAVES[i + 1][0]) i++;
+      const [a0, c0] = CLAVES[i];
+      const [a1, c1] = CLAVES[i + 1];
+      const t = Math.min(1, Math.max(0, (a0 - alt) / (a0 - a1)));
+      return c0.map((c, k) => lerpHex(c, c1[k], t));
+    };
+    const solX = (p) => 180 + (p / 90) * 380;
+    const solY = (p) => 46 + Math.pow(p / 90, 2) * (horizonY - 46);
+
+    const slider = root.querySelector('[data-slider-tarde]');
+    const stops = {
+      top: root.querySelector('[data-stop="top"]'),
+      mid: root.querySelector('[data-stop="mid"]'),
+      hor: root.querySelector('[data-stop="hor"]'),
+    };
+    const sol = root.querySelector('[data-sol]');
+    const halo = root.querySelector('[data-halo]');
+    const gEstrellas = root.querySelector('[data-estrellas]');
+    const outHora = root.querySelector('[data-out-hora]');
+    const outAlt = root.querySelector('[data-out-alt]');
+    const outAire = root.querySelector('[data-out-aire]');
+    const outColor = root.querySelector('[data-out-color]');
+    const emoji = root.querySelector('[data-cielo-emoji]');
+    const titulo = root.querySelector('[data-cielo-titulo]');
+    const texto = root.querySelector('[data-cielo-texto]');
+
+    function horaDe(p) {
+      const totalMin = Math.round(((p / 90) * 375) / 5) * 5;
+      const h = 12 + Math.floor(totalMin / 60);
+      const m = totalMin % 60;
+      const mm = String(m).padStart(2, '0');
+      if (h === 12 && m === 0) return '12:00 m.';
+      return `${h - 12 === 0 ? 12 : h - 12}:${mm} p. m.`;
+    }
+
+    function redibujar() {
+      const p = parseFloat(slider.value);
+      const alt = 90 - p;
+      const [cTop, cMid, cHor, cSol] = coloresDe(alt);
+      stops.top.setAttribute('stop-color', cTop);
+      stops.mid.setAttribute('stop-color', cMid);
+      stops.hor.setAttribute('stop-color', cHor);
+      const x = solX(p).toFixed(1);
+      const y = solY(p).toFixed(1);
+      sol.setAttribute('cx', x); sol.setAttribute('cy', y); sol.setAttribute('fill', cSol);
+      halo.setAttribute('cx', x); halo.setAttribute('cy', y); halo.setAttribute('fill', cSol);
+      halo.setAttribute('opacity', (0.35 + 0.4 * (p / 90)).toFixed(2));
+      gEstrellas.setAttribute('opacity', alt <= 8 ? ((8 - alt) / 8).toFixed(2) : '0');
+
+      // Masa de aire real: ×1 con el sol arriba, ~×38 en el horizonte.
+      const rad = (alt * Math.PI) / 180;
+      const aire = Math.min(38, 1 / Math.max(Math.sin(rad), 1 / 38));
+      if (outHora) outHora.textContent = horaDe(p);
+      if (outAlt) outAlt.textContent = Math.round(alt) + '°';
+      if (outAire) outAire.textContent = '×' + aire.toFixed(1).replace('.', ',');
+      const aireTxt = '×' + aire.toFixed(1).replace('.', ',');
+
+      let em, ti, tx, col;
+      if (alt > 30) {
+        em = '☀️'; ti = 'Cielo azul de mediodía'; col = 'azul por todo el cielo';
+        tx = `La luz cruza poco aire (${aireTxt}). Las moléculas del aire dispersan el azul en todas direcciones y la bóveda entera se pinta de azul.`;
+      } else if (alt > 10) {
+        em = '🌇'; ti = 'La tarde se enciende'; col = 'amarillos y naranjas';
+        tx = `El sol bajó y su luz ya cruza ${aireTxt} de aire. El azul se va dispersando por el camino y empiezan a dominar los naranjas.`;
+      } else {
+        em = '🌆'; ti = '¡Arreboles!'; col = 'rojos — ¡arreboles!';
+        tx = `La luz cruza ${aireTxt} de aire: casi todo el azul se dispersó antes de llegarte y solo sobreviven los rojos. Es el cielo que leían los abuelos: «cielo rojo al anochecer, buen sol al amanecer».`;
+      }
+      if (emoji) emoji.textContent = em;
+      if (titulo) titulo.textContent = ti;
+      if (texto) texto.textContent = tx;
+      if (outColor) outColor.textContent = col;
+    }
+
+    slider?.addEventListener('input', redibujar);
+    redibujar();
+  }
+</script>

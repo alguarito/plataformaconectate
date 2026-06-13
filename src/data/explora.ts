@@ -60,8 +60,8 @@ export const programas: Programa[] = [
     nombre: 'Solve for Tomorrow',
     categoria: 'Innovación social STEM',
     descripcion:
-      'Concurso de Samsung donde los estudiantes diseñan soluciones tecnológicas a un problema real de su comunidad.',
-    estado: 'proximamente',
+      'Concurso de Samsung donde los estudiantes diseñan soluciones tecnológicas a un problema real de su comunidad. Con guía de preparación ConectaTE.',
+    estado: 'activo',
     icono: '💡',
     bgClass: 'bg-bento-orange',
     aliado: 'Samsung',

@@ -1,0 +1,82 @@
+---
+/**
+ * Visor de PDF embebido · offline-first, sin dependencias.
+ *
+ * Usa el visor nativo del navegador mediante un <iframe> al PDF local (que el
+ * Service Worker ya cachea). Carga diferida (loading="lazy") para no pesar la
+ * página. Incluye barra con «Abrir» y «Descargar», y un fallback visible para
+ * los móviles que no renderizan PDF en línea. Reutilizable con cualquier PDF.
+ */
+interface Props {
+  /** Ruta al PDF (en public/). */
+  src: string;
+  /** Título accesible y visible en la barra. */
+  titulo?: string;
+  /** Chip corto opcional. */
+  etiqueta?: string;
+  /** Alto del visor en CSS (ej. "82vh"). */
+  altura?: string;
+}
+
+const { src, titulo = 'Documento PDF', etiqueta, altura = '80vh' } = Astro.props;
+// #view=FitH ajusta el ancho de la página al visor.
+const srcVisor = `${src}#view=FitH`;
+---
+
+<div class="bento-card">
+  <!-- Barra superior -->
+  <div class="flex items-center justify-between gap-3 mb-3 flex-wrap">
+    <div class="flex items-center gap-2 min-w-0">
+      {etiqueta && <span class="chip-bento">{etiqueta}</span>}
+      <span class="font-black text-sm md:text-base truncate">{titulo}</span>
+    </div>
+    <div class="flex items-center gap-2 shrink-0">
+      <a
+        href={src}
+        target="_blank"
+        rel="noopener"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border-2 text-xs font-black hover:opacity-70 transition-opacity"
+        style="border-color: var(--border);"
+        aria-label={`Abrir ${titulo} en una pestaña nueva`}
+      >
+        Abrir
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+          <polyline points="15 3 21 3 21 9"></polyline>
+          <line x1="10" y1="14" x2="21" y2="3"></line>
+        </svg>
+      </a>
+      <a
+        href={src}
+        download
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-bento-blue text-white text-xs font-black hover:opacity-85 transition-opacity"
+        aria-label={`Descargar ${titulo}`}
+      >
+        Descargar
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- Visor -->
+  <div class="rounded-bento-sm overflow-hidden border" style="border-color: var(--border); background: var(--bg);">
+    <iframe
+      src={srcVisor}
+      title={titulo}
+      loading="lazy"
+      class="w-full block"
+      style={`height: ${altura}; min-height: 440px; border: 0;`}
+    ></iframe>
+  </div>
+
+  <!-- Fallback discreto -->
+  <p class="text-xs leading-relaxed mt-3" style="color: var(--fg-muted);">
+    ¿No ves el documento? Algunos teléfonos no muestran PDF en línea:
+    <a href={src} target="_blank" rel="noopener" class="underline hover:opacity-70">ábrelo en una pestaña</a>
+    o <a href={src} download class="underline hover:opacity-70">descárgalo</a>.
+  </p>
+</div>

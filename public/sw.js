@@ -31,7 +31,7 @@
  * ─────────────────────────────────────────────────────────────────────────
  */
 
-const VERSION = 'v44';
+const VERSION = 'v45';
 const BASE_PATH = '/plataformaconectate';
 
 const CACHE_SHELL = `conectate-shell-${VERSION}`;
@@ -116,6 +116,12 @@ self.addEventListener('fetch', (event) => {
   // Imágenes: cache-first
   if (/\.(png|jpe?g|svg|webp|ico|gif|avif)$/i.test(url.pathname)) {
     event.respondWith(cacheFirst(request, CACHE_ASSETS));
+    return;
+  }
+
+  // Audio/video pesado: passthrough · NO se cachea (evita llenar el caché offline
+  // con archivos de decenas de MB; los <audio>/<video> usan preload="none").
+  if (/\.(m4a|mp3|mp4|m4v|webm|ogg|wav)$/i.test(url.pathname)) {
     return;
   }
 

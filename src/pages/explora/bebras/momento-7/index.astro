@@ -1,0 +1,536 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import SaberAncestralBlock from '../../../../components/SaberAncestralBlock.astro';
+import MapaRutaBlock from '../../../../components/MapaRutaBlock.astro';
+import ActividadBlock from '../../../../components/ActividadBlock.astro';
+import LabEmparejar from '../../../../components/LabEmparejar.astro';
+import LabQuiz from '../../../../components/LabQuiz.astro';
+import TrianguloBlock from '../../../../components/TrianguloBlock.astro';
+import CincoDimensionesBlock from '../../../../components/CincoDimensionesBlock.astro';
+import MetodologiaMILC from '../../../../components/MetodologiaMILC.astro';
+import type { MetodologiaMILCData } from '../../../../components/MetodologiaMILC.astro';
+import type {
+  SaberAncestral,
+  EstacionMapa,
+  Actividad,
+  LabQuiz as LabQuizData,
+  Triangulo,
+  CincoDimensiones,
+} from '../../../../data/guiasContenido/_schema';
+import type { DataEmparejar } from '../../../../components/LabEmparejar.astro';
+import { getMomento } from '../../../../data/bebras';
+
+const base = import.meta.env.BASE_URL;
+const momento = getMomento('momento-7')!;
+const archivoOficial = 'https://www.bebras.org';
+
+const saberAncestral: SaberAncestral = {
+  saber:
+    'En el Pacífico colombiano, la mayoría de los municipios no tienen carreteras que los comuniquen entre sí: el río es la carretera. Las comunidades afro e indígenas conocen de memoria qué quebrada desemboca en qué río, cuál caudal es más rápido en verano, qué desviación evita las piedras en temporada de lluvia. Cuando alguien necesita llevar un enfermo al hospital, vender su cosecha en el mercado o visitar a una familia en otra vereda, traza mentalmente una ruta por esa red de aguas: los caseríos son los nodos y los tramos de río son las conexiones. Eso que el navegante del Pacífico lleva en la cabeza — un mapa de puntos y caminos con pesos distintos — es, exactamente, lo que los matemáticos llaman un grafo.',
+  fuente: 'Saber de navegación fluvial de las comunidades del Pacífico colombiano',
+  preguntaPuente:
+    '¿Y si te dijera que un GPS, una red social o el mapa de rutas de bus de Cartago funcionan con el mismo principio? En este momento vas a aprender a leer ese mapa y a encontrar el mejor camino.',
+};
+
+const mapaRuta: EstacionMapa[] = [
+  { numero: 1, iconos: ['🌱'], titulo: 'Los ríos del Pacífico: un grafo vivo', duracionMin: 5 },
+  { numero: 2, iconos: ['📖'], titulo: 'Qué es un grafo y para qué sirve', duracionMin: 8 },
+  { numero: 3, iconos: ['🔎'], titulo: 'Relaciona cada red con su camino', duracionMin: 6 },
+  { numero: 4, iconos: ['✅'], titulo: 'Comprueba lo que entendiste', duracionMin: 6 },
+  { numero: 5, iconos: ['✏️'], titulo: 'Dibuja tu propia red de caminos', duracionMin: 12 },
+  { numero: 6, iconos: ['✏️'], titulo: 'Juzga cuál ruta conviene más', duracionMin: 10 },
+  { numero: 7, iconos: ['🔎'], titulo: 'Simulacro: tres retos de redes', duracionMin: 12 },
+  { numero: 8, iconos: ['💭'], titulo: 'Tres voces para cerrar', duracionMin: 6 },
+];
+
+// Conceptos clave del grafo, para el bloque de lectura.
+const conceptos = [
+  {
+    emoji: '🔵',
+    nombre: 'Nodo',
+    texto:
+      'Un punto en la red: una ciudad, una persona, una vereda, una parada de bus. En el grafo del Pacífico, cada caserío es un nodo.',
+  },
+  {
+    emoji: '➖',
+    nombre: 'Conexión (arista)',
+    texto:
+      'Una línea que une dos nodos: un tramo de río, una amistad, un cable, un camino. Puede tener un peso (distancia, tiempo, costo) o no.',
+  },
+  {
+    emoji: '📍',
+    nombre: 'Camino',
+    texto:
+      'Una secuencia de nodos unidos por conexiones. Hay caminos cortos y largos; la tarea es encontrar el más conveniente según el criterio que importa.',
+  },
+  {
+    emoji: '⚡',
+    nombre: 'Optimizar',
+    texto:
+      'Elegir la mejor opción según un criterio: el camino más corto, el más barato, el más rápido. Optimizar es la meta de muchas tareas Bebras.',
+  },
+];
+
+// Ejercicio de emparejar: cada red con su descripción de camino más corto.
+const emparejarRedes: DataEmparejar = {
+  titulo: 'Relaciona cada red con su camino',
+  instrucciones:
+    'Ya leíste sobre grafos. Conecta cada tipo de red con la descripción del camino que más importa encontrar en ella.',
+  etiquetaIzq: 'Tipo de red',
+  etiquetaDer: 'Lo que se busca en esa red',
+  pares: [
+    { izquierda: 'Red de ríos del Pacífico', derecha: 'La ruta en canoa más rápida entre dos veredas' },
+    { izquierda: 'Mapa de rutas de bus de Cartago', derecha: 'La combinación con menos transbordos para llegar al colegio' },
+    { izquierda: 'Red de amistades del salón', derecha: 'La cadena más corta de conocidos entre dos estudiantes' },
+    { izquierda: 'Red de cables de internet', derecha: 'El trayecto con menor pérdida de señal entre dos ciudades' },
+  ],
+};
+
+// Quiz de comprensión sobre grafos (antes del simulacro).
+const quiz: LabQuizData = {
+  tipo: 'quiz',
+  titulo: 'Comprueba lo que entendiste',
+  instrucciones: 'Cuatro preguntas sobre grafos y optimización. Cada una te deja una explicación.',
+  preguntas: [
+    {
+      enunciado: 'En un grafo, los "nodos" son…',
+      opciones: ['Las líneas que unen los puntos', 'Los puntos de la red (ciudades, personas, paradas)', 'El camino más corto', 'Los pesos de las conexiones'],
+      respuestaIndex: 1,
+      feedbackCorrecto: 'Correcto. Los nodos son los puntos — las ciudades, veredas, personas — que forman la red.',
+      feedbackIncorrecto: 'Los nodos son los puntos de la red. Las líneas que los unen se llaman conexiones o aristas.',
+    },
+    {
+      enunciado: 'Optimizar en un grafo significa…',
+      opciones: [
+        'Dibujar el grafo lo más bonito posible',
+        'Encontrar el camino más largo',
+        'Elegir la mejor opción según un criterio (más corto, más barato, más rápido)',
+        'Contar todos los nodos del grafo',
+      ],
+      respuestaIndex: 2,
+      feedbackCorrecto: 'Exacto. Optimizar es elegir la mejor opción con un criterio claro: tiempo, distancia, costo.',
+      feedbackIncorrecto: 'Optimizar es elegir la mejor opción según un criterio — no el camino más largo ni solo contar.',
+    },
+    {
+      enunciado: 'El mapa de rutas de bus de Cartago es un ejemplo de…',
+      opciones: ['Un algoritmo', 'Un grafo', 'Una abstracción sin nodos', 'Una secuencia sin conexiones'],
+      respuestaIndex: 1,
+      feedbackCorrecto: 'Sí: el mapa de rutas tiene paradas (nodos) unidas por tramos de ruta (conexiones). Es un grafo.',
+      feedbackIncorrecto: 'Es un grafo: las paradas son nodos y los tramos de ruta son conexiones entre ellas.',
+    },
+    {
+      enunciado: 'En un grafo circular de 5 nodos (1–2–3–4–5–1), ¿cuántos caminos distintos hay del nodo 1 al nodo 3?',
+      opciones: ['Solo uno', 'Dos (uno en cada sentido del círculo)', 'Cinco', 'Ninguno'],
+      respuestaIndex: 1,
+      feedbackCorrecto: 'Correcto. En un círculo puedes ir en sentido horario (1→2→3) o antihorario (1→5→4→3). Hay dos caminos.',
+      feedbackIncorrecto: 'En un círculo hay dos caminos: en sentido horario y en sentido antihorario. Ambos llegan al mismo nodo.',
+    },
+  ],
+};
+
+// Actividad 1: ANALIZA — dibuja la red de rutas de tu casa.
+const actividadDibujaRed: Actividad = {
+  numero: 1,
+  verbo: 'ANALIZA',
+  titulo: 'Dibuja la red de rutas de tu casa y analiza el camino más corto',
+  tiempoMin: 12,
+  modalidad: 'individual',
+  pasos: [
+    'Piensa en tres lugares a los que vas con frecuencia desde tu casa: el colegio, la tienda, el parque o la casa de un familiar.',
+    'Dibuja un grafo en tu cuaderno: un círculo por cada lugar (incluye tu casa) y una línea por cada camino directo que existe entre ellos. Anota el tiempo estimado en minutos sobre cada línea.',
+    'Analiza cuál es el camino más corto en tiempo para ir de tu casa a cada uno de los tres lugares, comparando si hay más de una ruta posible.',
+  ],
+  cuaderno: {
+    titulo: 'Mi red de caminos',
+    formato: 'dibujo del grafo (nodos con nombre + conexiones con tiempo) y debajo un análisis de 3 a 4 renglones',
+    extension: 'grafo con mínimo 4 nodos + análisis',
+  },
+  criterios: [
+    'El grafo tiene al menos 4 nodos identificados con nombre y conexiones con tiempos escritos.',
+    'Comparaste al menos una ruta donde había dos opciones y argumentaste cuál es más corta.',
+    'Tu análisis menciona el criterio usado para decidir (tiempo, distancia u otro).',
+  ],
+};
+
+// Actividad 2: EVALÚA — juzga cuál ruta conviene más con criterios.
+const actividadEvalua: Actividad = {
+  numero: 2,
+  verbo: 'EVALÚA',
+  titulo: 'Juzga cuál ruta conviene más con criterios claros',
+  tiempoMin: 10,
+  modalidad: 'parejas',
+  pasos: [
+    'Imagina que debes llevar un encargo urgente desde el mercado central de Cartago hasta una dirección. Hay dos rutas: la directa (15 minutos caminando, pero con una cuesta empinada) y la larga (22 minutos, plana y con sombra).',
+    'Junto con tu compañero o compañera, definan DOS criterios para comparar las rutas (por ejemplo: tiempo, esfuerzo físico, condición climática, seguridad).',
+    'Evalúen con esos dos criterios cuál ruta conviene más y escriban su veredicto con una justificación.',
+  ],
+  cuaderno: {
+    titulo: 'Evaluación de rutas',
+    formato: 'tabla de 2 columnas (Ruta directa / Ruta larga) con 2 filas de criterios + veredicto final en un párrafo',
+    extension: 'tabla 2×2 + párrafo de 3 a 5 renglones',
+  },
+  criterios: [
+    'Usaron exactamente dos criterios definidos por ustedes (no los mismos del enunciado).',
+    'La tabla compara las dos rutas en ambos criterios con argumentos concretos.',
+    'El veredicto final explica por qué eligieron esa ruta y no la otra.',
+  ],
+};
+
+// Simulacro: 3 retos originales estilo Bebras sobre grafos y redes.
+const simulacro: LabQuizData = {
+  tipo: 'quiz',
+  titulo: 'Simulacro · tres retos de redes',
+  instrucciones:
+    'Tres retos cortos, de fácil (A) a difícil (C), al estilo del concurso real. Lee con calma, dibuja si necesitas y razona paso a paso.',
+  preguntas: [
+    {
+      enunciado:
+        'Nivel A · Cuatro casas del barrio están conectadas con cuerdas: la casa 1 con la 2, la 2 con la 3 y la 3 con la 4. No hay más cuerdas. ¿Cuántas cuerdas hay en total?',
+      opciones: ['2 cuerdas', '3 cuerdas', '4 cuerdas', '6 cuerdas'],
+      respuestaIndex: 1,
+      feedbackCorrecto:
+        'Correcto. Hay exactamente 3 conexiones: 1–2, 2–3 y 3–4. En un grafo en fila de 4 nodos siempre hay 3 aristas.',
+      feedbackIncorrecto:
+        'Cuenta las conexiones descritas: 1–2, 2–3 y 3–4. Son 3. En una fila de N nodos siempre hay N–1 conexiones.',
+    },
+    {
+      enunciado:
+        'Nivel B · Para ir del colegio a tu casa hay dos rutas: la directa tarda 12 minutos; la que pasa por la tienda del barrio tarda 5 minutos hasta la tienda y 5 minutos más de la tienda a tu casa. ¿Cuál es la ruta MÁS corta y cuánto tarda?',
+      opciones: [
+        'La directa, 12 minutos',
+        'La que pasa por la tienda, 10 minutos',
+        'Las dos tardan igual',
+        'No se puede saber sin más datos',
+      ],
+      respuestaIndex: 1,
+      feedbackCorrecto:
+        'Exacto. La ruta por la tienda tarda 5 + 5 = 10 minutos, que es menos que los 12 de la directa. Agregar un nodo intermedio puede acortar el camino total.',
+      feedbackIncorrecto:
+        'Suma los tramos de la ruta por la tienda: 5 + 5 = 10 min. La directa tarda 12. La ruta con parada en la tienda es más corta.',
+    },
+    {
+      enunciado:
+        'Nivel C · Cinco veredas del Pacífico están conectadas en círculo: 1–2–3–4–5–1. Cada tramo de río entre veredas vecinas tarda exactamente 1 hora en canoa. ¿Cuál es el camino MÁS corto de la vereda 1 a la vereda 4, y cuánto tarda?',
+      opciones: [
+        '1→2→3→4, que tarda 3 horas',
+        '1→5→4, que tarda 2 horas',
+        'Las dos rutas tardan igual',
+        '1→2→3→4→5→1, que tarda 5 horas',
+      ],
+      respuestaIndex: 1,
+      feedbackCorrecto:
+        'Correcto. La ruta 1→2→3→4 tiene 3 tramos (3 horas). La ruta 1→5→4 tiene solo 2 tramos (2 horas). En un círculo, a veces ir "al revés" es más corto.',
+      feedbackIncorrecto:
+        'Compara las dos rutas posibles: 1→2→3→4 tiene 3 tramos (3 h) y 1→5→4 tiene 2 tramos (2 h). La ruta corta es ir "al revés" por el círculo.',
+    },
+  ],
+};
+
+const metodologia: MetodologiaMILCData = {
+  resumen:
+    'Este momento introduce los grafos como herramienta de modelado de redes reales. La clave pedagógica es que los estudiantes ya tienen intuición de redes (rutas de bus, ríos, redes sociales) y el trabajo consiste en formalizar esa intuición con un vocabulario preciso. El saber ancestral de los ríos del Pacífico es especialmente potente: ancla el concepto en una práctica viva que muchos estudiantes conocen o han escuchado. No se trabaja programación; se trabaja razonamiento sobre estructuras.',
+  objetivos: [
+    'Que los estudiantes reconozcan grafos en redes cotidianas (transporte, ríos, amistades, internet).',
+    'Que usen el vocabulario de nodo, conexión, camino y optimización con precisión.',
+    'Que resuelvan problemas de búsqueda de camino mínimo con razonamiento, sin fórmulas.',
+    'Que evalúen rutas con criterios propios, argumentando la decisión.',
+  ],
+  secuencia: [
+    { paso: 'Apertura con el río: pregunta quién conoce el Pacífico o ha viajado en canoa. Muestra cómo un mapa de ríos es un grafo.', tiempo: '5 min' },
+    { paso: 'Desarrolla los cuatro conceptos (nodo, conexión, camino, optimizar) con ejemplos del barrio y de Cartago.', tiempo: '10 min' },
+    { paso: 'Resuelvan juntos el ejercicio de emparejar y el quiz; comenta en qué se equivocaron y por qué.', tiempo: '12 min' },
+    { paso: 'Actividad 1 (individual): dibujar la red de rutas propias. Circula y señala errores de modelado.', tiempo: '12 min' },
+    { paso: 'Actividad 2 (parejas): evaluar rutas con criterios. Pide que comparten su veredicto.', tiempo: '10 min' },
+    { paso: 'Simulacro A·B·C: que lo resuelvan solos; recoge en qué nivel se traban.', tiempo: '12 min' },
+    { paso: 'Cierre filosófico (tres voces) y las cinco dimensiones, en conversación breve.', tiempo: '6 min' },
+  ],
+  evaluacion:
+    'Formativa: el ejercicio de emparejar y el quiz dan señal inmediata de comprensión del vocabulario. El simulacro NO se califica con nota: es diagnóstico de razonamiento. La evidencia evaluable es la Actividad 1 (grafo propio con análisis), con sus tres criterios observables. La Actividad 2 (evaluación de rutas) puede usarse como coevaluación entre parejas.',
+  diferenciacion:
+    'En 6.° y 7.° trabaja solo con los niveles A y B del simulacro; acepta grafos con 4 nodos y argumentos orales. En 8.° y 9.° exige también el nivel C y el grafo escrito con tiempos. En 10.° y 11.° pide que los estudiantes propongan un criterio adicional para la Actividad 2 y que lo justifiquen en términos de la estructura del grafo.',
+};
+
+const triangulo: Triangulo = {
+  dussel: {
+    autor: 'Enrique Dussel',
+    lente: 'lente del nosotros',
+    cita: 'El saber popular no es inferior al saber académico: es otro modo de conocer, nacido de otra experiencia del mundo.',
+    preguntaEspejo:
+      'El navegante del Pacífico lleva en la cabeza una teoría de grafos sin haber estudiado matemáticas. ¿Qué saberes de tu familia o comunidad son, en realidad, conocimiento técnico que nadie llamó así?',
+  },
+  estoico: {
+    autor: 'Epicteto',
+    lente: 'lente del cuidado interior',
+    cita: 'No te exijas el camino más corto a toda costa: a veces el desvío te enseña más que la llegada.',
+    preguntaEspejo:
+      'Cuando buscas el "camino más corto" en tu vida — terminar rápido, evitar el esfuerzo —, ¿qué pierdes en el trayecto? ¿Hay rutas que valen la pena aunque sean más largas?',
+  },
+  floridi: {
+    autor: 'Luciano Floridi',
+    lente: 'lente de la infoesfera',
+    cita: 'Las redes sociales son grafos: cada perfil es un nodo y cada amistad es una arista. Quien controla la estructura de la red, controla el flujo de información.',
+    preguntaEspejo:
+      'Internet y las redes sociales son grafos gigantes. ¿Sabes quién decide qué conexiones ves primero en tu feed? ¿Qué implica que un algoritmo elija por ti cuál es el "camino más corto" hasta una noticia?',
+  },
+};
+
+const cincoDimensiones: CincoDimensiones = {
+  personal:
+    'Aprendiste a ver redes donde antes solo veías caminos sueltos. Ahora puedes modelar un problema de rutas, comparar opciones y argumentar tu elección.',
+  emocional:
+    'Saber que siempre hay más de un camino — y que el más corto no siempre es el mejor — puede aliviar la presión de tener que acertar a la primera. Los errores son rutas que también enseñan.',
+  ciudadana:
+    'Las redes de transporte, internet y redes sociales son grafos que alguien diseñó con criterios propios. Entender su estructura te permite preguntar: ¿para quién se optimizó esta red? ¿Quién queda sin conexión?',
+  local:
+    'Del río del Pacífico al mapa de bus de Cartago: la misma lógica de nodos y caminos explica cómo se conecta tu territorio. Conocer el grafo de tu municipio es conocer su geografía de poder.',
+  intergeneracional:
+    'Tus mayores navegaban ríos con un grafo mental que tardaron años en construir. Tú heredas esa intuición y la llevas a un lenguaje que puede hablar con computadores, GPS y algoritmos.',
+};
+---
+
+<BaseLayout
+  title="Momento 7 · Mapas y redes — Bebras · ConectaTE"
+  description="Grafos y optimización: nodos, conexiones, camino más corto. Momento 7 del curso «Pensar como una máquina», con los ríos del Pacífico como saber ancestral y tres retos originales estilo Bebras."
+  ogType="article"
+>
+  <article class="pt-12 pb-20">
+    <div class="bento-container max-w-5xl">
+      <div class="max-w-3xl mx-auto">
+        <!-- Breadcrumb -->
+        <nav class="flex items-center gap-2 text-sm font-semibold mb-8 flex-wrap" style="color: var(--fg-muted);">
+          <a href={base || '/'} class="hover:opacity-60 transition-opacity">Inicio</a>
+          <span>/</span>
+          <a href={`${base}/explora`} class="hover:opacity-60 transition-opacity">Explora</a>
+          <span>/</span>
+          <a href={`${base}/explora/bebras`} class="hover:opacity-60 transition-opacity">Bebras</a>
+          <span>/</span>
+          <span style="color: var(--fg);">Momento 7</span>
+        </nav>
+
+        <!-- ① PRESENTACIÓN -->
+        <div class="flex items-center gap-3 mb-6">
+          <span class="w-8 h-8 rounded-full bg-bento-lime text-neutral-950 flex items-center justify-center text-sm font-black shrink-0" aria-hidden="true">1</span>
+          <span class="font-black text-lg">Presentación</span>
+          <span class="flex-1 h-0.5 rounded-full" style="background: var(--border);"></span>
+        </div>
+
+        <!-- Hero -->
+        <div class="bento-card-color bg-bento-blue text-white mb-10">
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">Momento {momento.numero} · {momento.dominio}</span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">🧠 {momento.verbo}</span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">~{momento.tiempo}</span>
+          </div>
+          <h1 class="heading-giant text-balance mb-3">{momento.nombre}</h1>
+          <p class="text-base md:text-lg font-semibold opacity-95 leading-relaxed">
+            Un río del Pacífico no es solo agua: es un camino con bifurcaciones,
+            pesos y decisiones. En este momento aprenderás a leer redes reales
+            como lo hace un matemático — y a encontrar el mejor camino entre
+            los posibles.
+          </p>
+        </div>
+
+        <!-- 🌱 Saber ancestral -->
+        <SaberAncestralBlock data={saberAncestral} etiqueta="Saber ancestral" />
+
+        <!-- 🗺 Ruta -->
+        <MapaRutaBlock estaciones={mapaRuta} />
+
+        <!-- Propósito -->
+        <div class="bento-card mb-6">
+          <span class="chip-bento mb-4">🎯 Lo que vas a poder hacer</span>
+          <ul class="space-y-3 mt-3">
+            {[
+              'IDENTIFICAR nodos, conexiones y caminos en redes reales (ríos, buses, amistades, internet).',
+              'EXPLICAR qué es un grafo y para qué sirve, con ejemplos de tu contexto.',
+              'ANALIZAR una red propia y encontrar el camino más corto entre dos puntos.',
+              'EVALUAR dos rutas con criterios propios y argumentar tu decisión.',
+            ].map((d) => (
+              <li class="flex items-start gap-3">
+                <span class="w-6 h-6 rounded-md bg-bento-lime/30 text-black flex items-center justify-center text-xs font-black shrink-0 mt-0.5">✓</span>
+                <span class="text-sm md:text-base leading-relaxed">{d}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <!-- Pregunta detonante -->
+        <div class="bento-card-color bg-bento-cyan mb-10">
+          <span class="chip-bento mb-3 bg-black/10">💡 La pregunta que abre todo</span>
+          <p class="text-lg md:text-xl font-black leading-snug">
+            ¿Cómo sabe un GPS cuál es la ruta más rápida entre miles de opciones
+            posibles — en menos de un segundo?
+          </p>
+          <p class="text-sm leading-relaxed mt-3 opacity-90">
+            La respuesta está en los grafos: la misma estructura que los
+            navegantes del Pacífico llevan en la cabeza desde hace siglos. Al
+            terminar, tú también sabrás buscar el camino óptimo.
+          </p>
+        </div>
+
+        <!-- ② GUÍA -->
+        <div class="flex items-center gap-3 mb-6">
+          <span class="w-8 h-8 rounded-full bg-bento-lime text-neutral-950 flex items-center justify-center text-sm font-black shrink-0" aria-hidden="true">2</span>
+          <span class="font-black text-lg">Guía</span>
+          <span class="flex-1 h-0.5 rounded-full" style="background: var(--border);"></span>
+        </div>
+
+        <!-- 📖 LEE 1 · Qué es un grafo -->
+        <section class="bento-card mb-6">
+          <span class="chip-bento mb-4">📖 Lee · ¿Qué es un grafo?</span>
+          <div class="space-y-4 text-sm md:text-base leading-relaxed">
+            <p>
+              Un <strong>grafo</strong> es una red: un conjunto de
+              <strong>nodos</strong> (puntos) unidos por
+              <strong>conexiones</strong> (líneas). Los nodos pueden ser
+              ciudades, personas, paradas de bus, caseríos o cualquier cosa que
+              se relacione con otra. Las conexiones representan esas relaciones:
+              caminos, amistades, cables o tramos de río.
+            </p>
+            <p>
+              Cuando una conexión tiene un número asociado — tiempo, distancia,
+              costo — se llama <strong>conexión con peso</strong>. El mapa de
+              ríos del Pacífico es un grafo con pesos: cada tramo de río tiene
+              un tiempo en canoa. El objetivo, casi siempre, es
+              <strong>optimizar</strong>: encontrar el camino que minimiza ese
+              peso (el más corto, el más barato, el más rápido).
+            </p>
+            <p>
+              Los grafos están en todas partes: el mapa de rutas de bus de
+              Cartago, la red de amistades de tu salón, el árbol genealógico de
+              tu familia, las páginas web conectadas por enlaces, el laberinto
+              del videojuego que juegas. Cada vez que un GPS calcula una ruta,
+              está resolviendo un problema de grafos.
+            </p>
+          </div>
+        </section>
+
+        <!-- 📖 LEE 2 · Las 4 piezas de un grafo -->
+        <section class="bento-card mb-6">
+          <span class="chip-bento mb-4">📖 Lee · Las cuatro piezas de un grafo</span>
+          <p class="text-sm md:text-base leading-relaxed mb-4">
+            Para leer cualquier red necesitas cuatro conceptos. Aplican tanto a
+            los ríos del Pacífico como a internet:
+          </p>
+          <ul class="space-y-3">
+            {conceptos.map((c) => (
+              <li class="flex items-start gap-3 p-3 rounded-bento-sm" style="background: var(--bg);">
+                <span class="text-2xl shrink-0" aria-hidden="true">{c.emoji}</span>
+                <span class="text-sm md:text-base leading-relaxed"><strong>{c.nombre}:</strong> {c.texto}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <!-- 🔎 Relaciona (después de la lectura) -->
+        <div class="mb-6">
+          <LabEmparejar data={emparejarRedes} id="bebras-m7-empareja-redes" />
+        </div>
+
+        <!-- Puente -->
+        <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+          Reconociste el vocabulario en redes reales. Ahora comprueba que
+          entiendes los conceptos antes de aplicarlos.
+        </p>
+
+        <!-- ✅ Quiz -->
+        <div class="mb-6">
+          <LabQuiz data={quiz} id="bebras-m7-quiz" />
+        </div>
+
+        <!-- Puente -->
+        <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+          Ya tienes el vocabulario y lo verificaste. Es hora de construir tu
+          propio grafo y de juzgar rutas con criterios que tú mismo defines.
+        </p>
+
+        <!-- ✏️ Actividades -->
+        <ActividadBlock data={actividadDibujaRed} />
+        <ActividadBlock data={actividadEvalua} />
+
+        <!-- ③ METODOLOGÍA MILC (docente) -->
+        <div class="flex items-center gap-3 mt-10 mb-6">
+          <span class="w-8 h-8 rounded-full bg-bento-lime text-neutral-950 flex items-center justify-center text-sm font-black shrink-0" aria-hidden="true">3</span>
+          <span class="font-black text-lg">Metodología MILC</span>
+          <span class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">para el docente</span>
+          <span class="flex-1 h-0.5 rounded-full" style="background: var(--border);"></span>
+        </div>
+
+        <MetodologiaMILC data={metodologia} />
+
+        <!-- ④ SIMULACIÓN -->
+        <div class="flex items-center gap-3 mt-10 mb-6">
+          <span class="w-8 h-8 rounded-full bg-bento-lime text-neutral-950 flex items-center justify-center text-sm font-black shrink-0" aria-hidden="true">4</span>
+          <span class="font-black text-lg">Simulación</span>
+          <span class="flex-1 h-0.5 rounded-full" style="background: var(--border);"></span>
+        </div>
+
+        <!-- Puente -->
+        <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+          Construiste grafos y evaluaste rutas. Ahora ponlos a prueba con tres
+          retos estilo Bebras: de fácil a difícil. Dibuja si necesitas — el
+          papel es tu aliado.
+        </p>
+
+        <!-- 🔎 Simulacro -->
+        <div class="mb-4">
+          <LabQuiz data={simulacro} id="bebras-m7-simulacro" />
+        </div>
+
+        <!-- Nota de atribución -->
+        <p class="text-xs leading-relaxed mb-10 px-1" style="color: var(--fg-muted);">
+          Estos tres retos son <strong style="color: var(--fg);">originales, al estilo Bebras</strong>, creados para
+          este momento de preparación. Las tareas reales de años anteriores —de
+          todos los países— están en el archivo oficial:
+          <a href={archivoOficial} target="_blank" rel="noopener" class="font-bold text-bento-blue hover:opacity-70 transition-opacity">bebras.org</a>.
+        </p>
+
+        <!-- Puente al cierre -->
+        <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+          Recorriste redes, encontraste caminos y optimizaste rutas. Cerremos
+          pensando qué significa, para ti, saber que el mundo está hecho de
+          conexiones.
+        </p>
+      </div>
+
+      <!-- 💭 Triángulo (ancho completo) -->
+      <TrianguloBlock data={triangulo} />
+
+      <!-- 🌱 Cinco dimensiones (ancho completo) -->
+      <CincoDimensionesBlock data={cincoDimensiones} />
+
+      <div class="max-w-3xl mx-auto">
+        <!-- Créditos -->
+        <div class="bento-card mb-10 border-l-4 border-bento-lime">
+          <span class="chip-bento mb-3">🦫 Créditos</span>
+          <p class="text-sm leading-relaxed mt-2" style="color: var(--fg-muted);">
+            Este momento adapta al modelo MILC la preparación para el reto
+            <strong style="color: var(--fg);">Bebras</strong>, iniciativa internacional creada por Valentina
+            Dagienė (Universidad de Vilnius, Lituania, 2004). Las tareas originales
+            son de Bebras International y sus organizadores nacionales.
+          </p>
+          <a href={archivoOficial} target="_blank" rel="noopener" class="inline-flex items-center gap-2 mt-4 font-black text-sm text-bento-blue hover:opacity-70 transition-opacity">
+            Ver el sitio oficial y el archivo de tareas
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+          </a>
+        </div>
+
+        <!-- Volver -->
+        <a href={`${base}/explora/bebras`} class="bento-card-hover flex items-center gap-4">
+          <svg class="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5"></path>
+            <path d="m12 19-7-7 7-7"></path>
+          </svg>
+          <div>
+            <div class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">Volver al programa</div>
+            <div class="font-black text-lg">Bebras</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </article>
+</BaseLayout>

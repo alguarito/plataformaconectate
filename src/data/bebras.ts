@@ -137,7 +137,7 @@ export const momentos: MomentoBebras[] = [
     saberAncestral: 'Los ríos del Pacífico como carreteras: una red de caminos para llegar más rápido.',
     verbo: 'ANALIZA',
     tiempo: '45 min',
-    estado: 'proximamente',
+    estado: 'activo',
   },
   {
     slug: 'momento-8',
@@ -148,7 +148,7 @@ export const momentos: MomentoBebras[] = [
     saberAncestral: 'Los juegos de canicas y trompo: saber cuándo arriesgar y cuándo guardar.',
     verbo: 'EVALÚA',
     tiempo: '45 min',
-    estado: 'proximamente',
+    estado: 'activo',
   },
   {
     slug: 'momento-9',
@@ -159,7 +159,7 @@ export const momentos: MomentoBebras[] = [
     saberAncestral: 'Volver a la minga: cerramos en comunidad lo que aprendimos en el camino.',
     verbo: 'CREA',
     tiempo: '45 min',
-    estado: 'proximamente',
+    estado: 'activo',
   },
 ];
 

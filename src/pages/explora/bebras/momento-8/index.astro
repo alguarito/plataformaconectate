@@ -1,0 +1,603 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import SaberAncestralBlock from '../../../../components/SaberAncestralBlock.astro';
+import MapaRutaBlock from '../../../../components/MapaRutaBlock.astro';
+import ActividadBlock from '../../../../components/ActividadBlock.astro';
+import LabEmparejar from '../../../../components/LabEmparejar.astro';
+import LabQuiz from '../../../../components/LabQuiz.astro';
+import TrianguloBlock from '../../../../components/TrianguloBlock.astro';
+import CincoDimensionesBlock from '../../../../components/CincoDimensionesBlock.astro';
+import MetodologiaMILC from '../../../../components/MetodologiaMILC.astro';
+import type { MetodologiaMILCData } from '../../../../components/MetodologiaMILC.astro';
+import type {
+  SaberAncestral,
+  EstacionMapa,
+  Actividad,
+  LabQuiz as LabQuizData,
+  Triangulo,
+  CincoDimensiones,
+} from '../../../../data/guiasContenido/_schema';
+import type { DataEmparejar } from '../../../../components/LabEmparejar.astro';
+import { getMomento } from '../../../../data/bebras';
+
+const base = import.meta.env.BASE_URL;
+const momento = getMomento('momento-8')!;
+const archivoOficial = 'https://www.bebras.org';
+
+const saberAncestral: SaberAncestral = {
+  saber:
+    'En los barrios de Cartago y en las calles del Valle del Cauca, las canicas y el trompo no eran solo diversión: eran escuela de estrategia. El buen jugador de canicas no tira al azar. Sabe cuál bolita arriesgar y cuál guardar. Estudia el terreno, lee la posición del contrario y decide con calma: "si tiro aquí, ¿qué gano?, ¿qué arriesgo?". Con el trompo pasa lo mismo: antes de lanzarlo, el experto lee el piso, elige el ángulo y sabe que un mal lanzamiento puede costar la peona más valiosa. Esa inteligencia táctica —arriesgar con cabeza, no por impulso— no estaba en ningún libro. La enseñaba la calle, la transmitía el vecino mayor, la perfeccionaba el juego mismo.',
+  fuente: 'Juegos tradicionales de calle colombianos · canicas y trompo, cultura popular del Valle del Cauca',
+  preguntaPuente:
+    'En los juegos de calle, ganar no dependía solo de habilidad: dependía de saber cuándo arriesgar y cuándo parar. ¿Y si en Bebras también ganaras no solo por saber la respuesta, sino por decidir bien cuándo responder, cuándo arriesgar y cuándo pasar?',
+};
+
+const mapaRuta: EstacionMapa[] = [
+  { numero: 1, iconos: ['🌱'], titulo: 'Canicas y trompo: la estrategia de la calle', duracionMin: 5 },
+  { numero: 2, iconos: ['📖'], titulo: 'La puntuación de Bebras (A, B y C)', duracionMin: 8 },
+  { numero: 3, iconos: ['🔎'], titulo: 'Situación ↔ mejor decisión estratégica', duracionMin: 6 },
+  { numero: 4, iconos: ['✅'], titulo: 'Comprueba que entendiste la puntuación', duracionMin: 6 },
+  { numero: 5, iconos: ['✏️'], titulo: 'Evalúa el escenario: ¿cuál es la mejor jugada?', duracionMin: 12 },
+  { numero: 6, iconos: ['✏️'], titulo: 'Diseña tu plan de ataque de 45 minutos', duracionMin: 10 },
+  { numero: 7, iconos: ['🔎'], titulo: 'Simulacro: tres retos con estrategia', duracionMin: 12 },
+  { numero: 8, iconos: ['💭'], titulo: 'Tres voces sobre decidir bajo presión', duracionMin: 6 },
+];
+
+// Las reglas de puntuación de Bebras, para el bloque de lectura.
+const reglas = [
+  {
+    nivel: 'A',
+    etiqueta: 'Fácil',
+    acierto: '+6',
+    error: '0 (no resta)',
+    enBlanco: '0',
+    estrategia:
+      'Responde SIEMPRE. Equivocarse no te cuesta nada, y dejar en blanco tampoco suma. Si tienes la mínima idea, escoge. Adivinar al azar vale la pena: en promedio ganas 6 ÷ 4 = 1,5 puntos por intento.',
+    color: 'bg-bento-lime/20',
+  },
+  {
+    nivel: 'B',
+    etiqueta: 'Media',
+    acierto: '+9',
+    error: '−2',
+    enBlanco: '0',
+    estrategia:
+      'Piensa antes de responder. Si puedes DESCARTAR al menos una opción, el riesgo mejora. Blanco (0) siempre es mejor que adivinar al azar (−2 en promedio con 4 opciones). Pero si descartaste 2 de 4, ¡arriesga!',
+    color: 'bg-bento-yellow/20',
+  },
+  {
+    nivel: 'C',
+    etiqueta: 'Difícil',
+    acierto: '+12',
+    error: '−4',
+    enBlanco: '0',
+    estrategia:
+      'Máxima cautela. Sin descartar, adivinar al azar da −1 en promedio (muy malo). Pero si descartaste 2 opciones, el valor esperado es +4 (¡positive!). Descarta primero, luego decide.',
+    color: 'bg-bento-pink/20',
+  },
+];
+
+const consejosGenerales = [
+  {
+    icono: '⏱',
+    titulo: 'Empieza por las fáciles (A)',
+    texto:
+      'Asegura esos puntos primero. Una A respondida correctamente vale 6; una A en blanco vale 0. Nunca dejes una fácil sin responder.',
+  },
+  {
+    icono: '⏭',
+    titulo: 'Si te trabas, PASA y vuelve',
+    texto:
+      'No le des más de 3 minutos a una tarea que no avanza. Márcala y continúa; puede que al resolver otra se despeje la mente.',
+  },
+  {
+    icono: '✂️',
+    titulo: 'Lee filtrando lo accesorio',
+    texto:
+      'Muchas tareas Bebras tienen contexto largo (historia, imagen, tabla). Lee buscando lo que cambia y lo que no cambia. Descarta el relleno.',
+  },
+  {
+    icono: '🎲',
+    titulo: 'En B y C, descarta antes de adivinar',
+    texto:
+      'Si eliminas 2 de 4 opciones, tienes 50 % de probabilidad: el valor esperado en C es +4. Si no puedes descartar ninguna, deja en blanco.',
+  },
+];
+
+const emparejarEstrategia: DataEmparejar = {
+  titulo: 'Situación ↔ mejor decisión estratégica',
+  instrucciones:
+    'Acabas de leer la puntuación y los consejos. Conecta cada situación de concurso con la decisión que maximiza tus puntos.',
+  etiquetaIzq: 'Situación',
+  etiquetaDer: 'Mejor decisión',
+  pares: [
+    {
+      izquierda: 'Pregunta fácil (A): leíste, no estás seguro del todo',
+      derecha: 'Responde de todos modos — no resta si fallas',
+    },
+    {
+      izquierda: 'Pregunta media (B): no descartaste ninguna opción',
+      derecha: 'Deja en blanco — adivinar al azar da pérdida esperada',
+    },
+    {
+      izquierda: 'Pregunta difícil (C): eliminaste 2 de 4 opciones',
+      derecha: 'Arriesga — con 2 opciones el valor esperado es positivo',
+    },
+    {
+      izquierda: 'Te quedan 8 minutos y tres tareas sin resolver (A, B, C)',
+      derecha: 'Empieza por la A para asegurar los 6 puntos seguros',
+    },
+  ],
+};
+
+const quizPuntuacion: LabQuizData = {
+  tipo: 'quiz',
+  titulo: 'Comprueba que entendiste la puntuación',
+  instrucciones:
+    'Cuatro preguntas sobre las reglas de Bebras y la estrategia básica. Cada respuesta lleva su explicación.',
+  preguntas: [
+    {
+      enunciado: '¿Cuántos puntos da una respuesta CORRECTA en una tarea difícil (nivel C)?',
+      opciones: ['+6', '+9', '+12', '+15'],
+      respuestaIndex: 2,
+      feedbackCorrecto:
+        'Correcto. Nivel C: +12 si aciertas, −4 si fallas, 0 si dejas en blanco.',
+      feedbackIncorrecto:
+        'La tabla de Bebras: A = +6/0, B = +9/−2, C = +12/−4. El nivel C da +12 por acierto.',
+    },
+    {
+      enunciado:
+        '¿Cuántos puntos recibes por dejar en blanco cualquier tarea, sea del nivel que sea?',
+      opciones: ['−2', '−1', '0', '+1'],
+      respuestaIndex: 2,
+      feedbackCorrecto:
+        'Exacto: dejar en blanco siempre da 0, en los tres niveles. Por eso en A nunca conviene dejar en blanco.',
+      feedbackIncorrecto:
+        'Dejar en blanco siempre da 0, sin importar el nivel. Nunca resta, pero tampoco suma.',
+    },
+    {
+      enunciado:
+        'En una pregunta media (B: +9/−2), si no puedes descartar NINGUNA opción y adivinas al azar entre 4, ¿qué esperas en promedio?',
+      opciones: ['+2,25', '+1,75', '−0,5', '−1,25'],
+      respuestaIndex: 2,
+      feedbackCorrecto:
+        'Correcto: valor esperado = (1/4)×9 + (3/4)×(−2) = 2,25 − 1,5 = −0,5. En promedio PIERDES puntos.',
+      feedbackIncorrecto:
+        'Cálculo: (1/4)×9 + (3/4)×(−2) = 2,25 − 1,5 = −0,5. Adivinar al azar en B sin descartar te perjudica.',
+    },
+    {
+      enunciado:
+        '¿Cuál es la primera acción recomendada al empezar los 45 minutos de Bebras?',
+      opciones: [
+        'Empezar por la tarea más difícil para ganar los +12',
+        'Leer todas las tareas antes de responder una',
+        'Responder primero todas las fáciles (A) para asegurar puntos',
+        'Dejar las fáciles para el final y concentrarse en las medias',
+      ],
+      respuestaIndex: 2,
+      feedbackCorrecto:
+        'Exacto. Las fáciles dan +6 y no penalizan: asegurarlas primero es la base de una buena puntuación.',
+      feedbackIncorrecto:
+        'La estrategia estándar: asegura primero las A (sin penalización), luego aborda las B y C con calma.',
+    },
+  ],
+};
+
+const actividadEvalua: Actividad = {
+  numero: 1,
+  verbo: 'EVALÚA',
+  titulo: 'Juzga la mejor jugada en un escenario de concurso',
+  tiempoMin: 12,
+  modalidad: 'individual',
+  pasos: [
+    'Lee este escenario: "Te quedan 10 minutos. Tienes 3 tareas sin responder: una A (no la has leído), una B (leíste y no puedes descartar ninguna opción), una C (leíste y descartaste 2 de 4 opciones)."',
+    'Usa la tabla de puntuación (A: +6/0, B: +9/−2, C: +12/−4) y calcula cuántos puntos esperarías en promedio en cada caso.',
+    'Decide el orden en que atacarías esas 3 tareas y justifica tu decisión con los números.',
+  ],
+  cuaderno: {
+    titulo: 'Mi mejor jugada en el escenario',
+    formato: 'tabla de 3 columnas (tarea | decisión | razón con puntos) + una frase de conclusión',
+    extension: '3 filas + 2 renglones de conclusión',
+  },
+  criterios: [
+    'Usaste los valores +6/0, +9/−2, +12/−4 de forma correcta en tu razonamiento.',
+    'Tu decisión sobre la B (dejar en blanco) y la C (arriesgar) está justificada con el valor esperado.',
+    'El orden propuesto es coherente con maximizar puntos, no solo con lo que "se siente" más fácil.',
+  ],
+};
+
+const actividadAplica: Actividad = {
+  numero: 2,
+  verbo: 'APLICA',
+  titulo: 'Escribe tu plan de ataque para los 45 minutos',
+  tiempoMin: 10,
+  modalidad: 'individual',
+  pasos: [
+    'Imagina que el concurso empieza en 5 minutos. Tienes 15 tareas: 5 A, 5 B y 5 C.',
+    'Decide cómo vas a repartir los 45 minutos: ¿qué haces primero?, ¿cuánto tiempo le das a cada nivel?, ¿cuándo decides dejar una tarea en blanco?',
+    'Escribe el plan en pasos concretos, como si fuera una guía para ti mismo el día del concurso.',
+  ],
+  cuaderno: {
+    titulo: 'Mi plan de ataque Bebras',
+    formato: 'lista numerada de pasos en orden cronológico',
+    extension: '5 a 7 pasos, cada uno en 1 o 2 renglones',
+  },
+  criterios: [
+    'El plan empieza atacando las tareas A antes que las C.',
+    'Incluye una regla clara sobre cuándo dejar una tarea en blanco (basada en la puntuación).',
+    'Los 45 minutos están distribuidos de forma realista entre los tres niveles.',
+  ],
+};
+
+const simulacro: LabQuizData = {
+  tipo: 'quiz',
+  titulo: 'Simulacro · tres retos con estrategia',
+  instrucciones:
+    'Tres tareas de dificultad A, B y C. Resuélvelas como si fuera el concurso real: usa la estrategia del momento. La explicación de cada una te dice qué decisión aplicaste.',
+  preguntas: [
+    {
+      enunciado:
+        'Nivel A · En una pregunta fácil de Bebras: si aciertas ganas +6, si fallas no te restan puntos. ¿Qué te conviene hacer SIEMPRE en las tareas fáciles, aunque no estés completamente seguro?',
+      opciones: [
+        'Dejar en blanco para no arriesgar',
+        'Responder siempre — aunque no estés del todo seguro',
+        'Esperar a terminar las difíciles primero',
+        'Solo responder si estás 100 % seguro',
+      ],
+      respuestaIndex: 1,
+      feedbackCorrecto:
+        'Correcto. En A no hay penalización: el peor resultado es 0 (mismo que dejar en blanco), y el mejor es +6. Siempre conviene responder.',
+      feedbackIncorrecto:
+        'En A, equivocarse da 0 — exactamente igual que dejar en blanco. Responder siempre es la decisión óptima: el mínimo que ganas es 0 y el máximo es +6.',
+    },
+    {
+      enunciado:
+        'Nivel B · Te quedan 5 minutos y tres tareas sin resolver: una fácil (A), una media (B) y una difícil (C). ¿Por cuál empiezas para asegurar la mayor cantidad de puntos?',
+      opciones: [
+        'Por la difícil (C) — da más puntos si aciertas',
+        'Por la media (B) — equilibrio entre riesgo y recompensa',
+        'Por la fácil (A) — segura y sin penalización',
+        'Da igual el orden si el tiempo es el mismo',
+      ],
+      respuestaIndex: 2,
+      feedbackCorrecto:
+        'Exacto. La A da +6 sin riesgo. Asegurarla primero garantiza esos puntos aunque no alcance el tiempo para las otras.',
+      feedbackIncorrecto:
+        'Con tiempo limitado, la A es la prioridad: +6 seguros, sin penalización. Si empiezas por la C y se te acaba el tiempo, perdiste los puntos más seguros.',
+    },
+    {
+      enunciado:
+        'Nivel C · En una tarea difícil (C: +12 si aciertas, −4 si fallas) no conoces la respuesta, pero puedes DESCARTAR 2 de las 4 opciones. ¿Te conviene arriesgar?',
+      opciones: [
+        'No — es mejor dejar en blanco y no arriesgar los −4',
+        'Sí — con 2 opciones tienes el 50 % y el valor esperado es positivo',
+        'Solo si el tiempo ya se acabó y no tienes nada que perder',
+        'Depende del nivel de dificultad del resto de las tareas',
+      ],
+      respuestaIndex: 1,
+      feedbackCorrecto:
+        'Correcto. Con 2 opciones: valor esperado = (1/2)×12 + (1/2)×(−4) = 6 − 2 = +4. Es decir, en promedio GANAS puntos. Arriesgar con 2 opciones es la jugada correcta.',
+      feedbackIncorrecto:
+        'Calcula: (1/2)×12 + (1/2)×(−4) = 6 − 2 = +4. Con 2 opciones, el valor esperado es positivo (+4). La misma lógica del jugador de canicas: descartaste la mitad del riesgo, ahora vale la pena lanzar.',
+    },
+  ],
+};
+
+const metodologia: MetodologiaMILCData = {
+  resumen:
+    'Este momento no enseña una pieza nueva del pensamiento computacional: enseña a competir bien usando la puntuación oficial. Es un momento metacognitivo — el estudiante aprende a tomar decisiones bajo presión con información incompleta. Parte del saber ancestral de los juegos de calle (canicas, trompo) para activar la intuición estratégica que los estudiantes ya tienen. La tabla de puntuación es el eje: A no penaliza, B y C sí. Una vez comprendida, la estrategia se deduce sola.',
+  objetivos: [
+    'Que el grupo comprenda la tabla de puntuación oficial de Bebras (A: +6/0, B: +9/−2, C: +12/−4) y la use para tomar decisiones.',
+    'Que distinga cuándo conviene responder, cuándo adivinar y cuándo dejar en blanco, según el nivel y la capacidad de descartar.',
+    'Que cada estudiante construya su propio plan de ataque para los 45 minutos del concurso.',
+    'Que conecte la estrategia de concurso con la inteligencia táctica presente en los juegos tradicionales de su comunidad.',
+  ],
+  secuencia: [
+    { paso: 'Apertura con los juegos de calle: pregunta quién juega canicas o trompo y qué decisiones tácticas implican.', tiempo: '5 min' },
+    { paso: 'Desarrolla la tabla de puntuación con ejemplos numéricos concretos; calcula en el tablero el valor esperado de adivinar al azar en B y en C.', tiempo: '12 min' },
+    { paso: 'Resuelvan juntos el ejercicio de emparejar (situación ↔ decisión) y el quiz de puntuación; comenta cada respuesta.', tiempo: '12 min' },
+    { paso: 'Actividad 1 (EVALÚA): trabajo individual sobre el escenario con 10 minutos y 3 tareas; puesta en común.', tiempo: '12 min' },
+    { paso: 'Actividad 2 (APLICA): cada estudiante redacta su plan de ataque; comparte con el compañero y discuten diferencias.', tiempo: '10 min' },
+    { paso: 'Simulacro estratégico A·B·C: los estudiantes lo resuelven solos con la estrategia aprendida.', tiempo: '8 min' },
+    { paso: 'Cierre filosófico (triángulo y cinco dimensiones), en conversación breve.', tiempo: '6 min' },
+  ],
+  evaluacion:
+    'Formativa: el ejercicio de emparejar y el quiz dan señal inmediata de comprensión de la tabla de puntuación. La evidencia evaluable es la Actividad 1 (con tabla y justificación numérica) y la Actividad 2 (plan de ataque). El simulacro no se califica con nota: sirve para que el docente vea si la estrategia aprendida se aplica en condición de presión.',
+  diferenciacion:
+    'En 6.º y 7.º basta con que comprendan la regla de A (siempre responder) y el principio general de B y C (descartar antes de arriesgar). En 8.º y 9.º pide el cálculo del valor esperado. En 10.º y 11.º exige que justifiquen por escrito la decisión con el valor esperado en los tres casos del escenario. Para el simulacro, todos los niveles pueden participar: la pregunta C explica el cálculo en el feedback.',
+};
+
+const triangulo: Triangulo = {
+  dussel: {
+    autor: 'Enrique Dussel',
+    lente: 'lente del nosotros',
+    cita:
+      'La sabiduría popular no es superstición: es razón práctica destilada por siglos de experiencia colectiva.',
+    preguntaEspejo:
+      'Los juegos de canicas y trompo enseñaban estrategia sin libros, solo con práctica y comunidad. ¿Qué otros saberes de tu barrio o vereda son, en realidad, inteligencia práctica que la escuela no ha reconocido?',
+  },
+  estoico: {
+    autor: 'Marco Aurelio',
+    lente: 'lente del cuidado interior',
+    cita:
+      'Si no está en tu poder cambiar el resultado, al menos está en tu poder elegir cómo afrontar la situación.',
+    preguntaEspejo:
+      'En el concurso, no puedes controlar qué tareas aparecen. Sí puedes controlar cómo decides bajo presión: con calma y estrategia, no dejándote llevar por el afán. ¿En qué otras situaciones de tu vida aplica esto?',
+  },
+  floridi: {
+    autor: 'Luciano Floridi',
+    lente: 'lente de la infoesfera',
+    cita:
+      'Tomar decisiones racionales bajo incertidumbre es una de las competencias más valiosas en la era de la información.',
+    preguntaEspejo:
+      'Los algoritmos de inteligencia artificial también "apuestan" con probabilidades cuando no tienen información completa. ¿Cómo se parece tu decisión de responder o no una tarea a la que toma una máquina al predecir algo con datos incompletos?',
+  },
+};
+
+const cincoDimensiones: CincoDimensiones = {
+  personal:
+    'Aprendiste que ganar en Bebras no es solo saber: es decidir con estrategia. Eso —pensar antes de actuar— es una habilidad que puedes cultivar en cualquier área de tu vida.',
+  emocional:
+    'El afán de concurso puede hacerte responder sin pensar. Reconocer esa presión y decidir con calma (dejar en blanco cuando no conviene arriesgar) es gestión emocional, no rendición.',
+  ciudadana:
+    'Arriesgar con cabeza, no por impulso, es una actitud ciudadana: quien decide bien bajo presión toma mejores decisiones en lo colectivo también, desde la elección de un representante hasta la resolución de un conflicto.',
+  local:
+    'Desde los juegos de calle de Cartago hasta el tablero de un concurso internacional, la misma lógica: lee el terreno, mide el riesgo, actúa. La sabiduría táctica popular no tiene fronteras.',
+  intergeneracional:
+    'La "malicia indígena" y la astucia criolla que heredaste de tus mayores —esa capacidad de leer situaciones y decidir con inteligencia práctica— es exactamente lo que Bebras pone a prueba. Los juegos de calle eran el entrenamiento.',
+};
+---
+
+<BaseLayout
+  title="Momento 8 · Modo concurso — Bebras · ConectaTE"
+  description="Aprende a competir bien en Bebras: la tabla de puntuación oficial (A: +6/0, B: +9/−2, C: +12/−4), estrategia de ataque y cuándo arriesgar o dejar en blanco. Momento 8 del curso de pensamiento computacional."
+  ogType="article"
+>
+  <article class="pt-12 pb-20">
+    <div class="bento-container max-w-5xl">
+      <div class="max-w-3xl mx-auto">
+        <!-- Breadcrumb -->
+        <nav class="flex items-center gap-2 text-sm font-semibold mb-8 flex-wrap" style="color: var(--fg-muted);">
+          <a href={base || '/'} class="hover:opacity-60 transition-opacity">Inicio</a>
+          <span>/</span>
+          <a href={`${base}/explora`} class="hover:opacity-60 transition-opacity">Explora</a>
+          <span>/</span>
+          <a href={`${base}/explora/bebras`} class="hover:opacity-60 transition-opacity">Bebras</a>
+          <span>/</span>
+          <span style="color: var(--fg);">Momento 8</span>
+        </nav>
+
+        <!-- ① PRESENTACIÓN -->
+        <div class="flex items-center gap-3 mb-6">
+          <span class="w-8 h-8 rounded-full bg-bento-lime text-neutral-950 flex items-center justify-center text-sm font-black shrink-0" aria-hidden="true">1</span>
+          <span class="font-black text-lg">Presentación</span>
+          <span class="flex-1 h-0.5 rounded-full" style="background: var(--border);"></span>
+        </div>
+
+        <!-- Hero -->
+        <div class="bento-card-color bg-bento-blue text-white mb-10">
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">Momento {momento.numero} · {momento.dominio}</span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">🧠 {momento.verbo}</span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">~{momento.tiempo}</span>
+          </div>
+          <h1 class="heading-giant text-balance mb-3">{momento.nombre}</h1>
+          <p class="text-base md:text-lg font-semibold opacity-95 leading-relaxed">
+            Saber la respuesta no es suficiente: hay que saber cuándo responder,
+            cuándo arriesgar y cuándo es mejor pasar. La puntuación de Bebras dicta
+            la estrategia — y la estrategia te da los puntos que el impulso te quitaría.
+          </p>
+        </div>
+
+        <!-- 🌱 Saber ancestral -->
+        <SaberAncestralBlock data={saberAncestral} etiqueta="Saber ancestral" />
+
+        <!-- 🗺 Ruta -->
+        <MapaRutaBlock estaciones={mapaRuta} />
+
+        <!-- Propósito -->
+        <div class="bento-card mb-6">
+          <span class="chip-bento mb-4">🎯 Lo que vas a poder hacer</span>
+          <ul class="space-y-3 mt-3">
+            {[
+              'LEER la tabla de puntuación oficial de Bebras y aplicarla en situaciones concretas.',
+              'CALCULAR si conviene responder, adivinar o dejar en blanco según el nivel (A, B o C).',
+              'EVALUAR escenarios de concurso y tomar la decisión estratégica que maximiza tus puntos.',
+              'DISEÑAR tu propio plan de ataque para los 45 minutos del concurso.',
+            ].map((d) => (
+              <li class="flex items-start gap-3">
+                <span class="w-6 h-6 rounded-md bg-bento-lime/30 text-black flex items-center justify-center text-xs font-black shrink-0 mt-0.5">✓</span>
+                <span class="text-sm md:text-base leading-relaxed">{d}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <!-- Pregunta detonante -->
+        <div class="bento-card-color bg-bento-cyan mb-10">
+          <span class="chip-bento mb-3 bg-black/10">💡 La pregunta que abre todo</span>
+          <p class="text-lg md:text-xl font-black leading-snug">
+            Tienes 45 minutos, 15 tareas y la decisión de si responder o no cada
+            una. ¿Cómo decides sin información completa y sin perder la calma?
+          </p>
+          <p class="text-sm leading-relaxed mt-3 opacity-90">
+            La respuesta está en los números. Una vez que entiendes la penalización,
+            la estrategia se vuelve lógica — no instinto.
+          </p>
+        </div>
+
+        <!-- ② GUÍA -->
+        <div class="flex items-center gap-3 mb-6">
+          <span class="w-8 h-8 rounded-full bg-bento-lime text-neutral-950 flex items-center justify-center text-sm font-black shrink-0" aria-hidden="true">2</span>
+          <span class="font-black text-lg">Guía</span>
+          <span class="flex-1 h-0.5 rounded-full" style="background: var(--border);"></span>
+        </div>
+
+        <!-- 📖 LEE 1 · La puntuación de Bebras -->
+        <section class="bento-card mb-6">
+          <span class="chip-bento mb-4">📖 Lee · La puntuación de Bebras dicta la estrategia</span>
+          <div class="space-y-4 text-sm md:text-base leading-relaxed">
+            <p>
+              Bebras tiene tres niveles de dificultad: <strong>A (fácil)</strong>, <strong>B (media)</strong> y
+              <strong>C (difícil)</strong>. Cada nivel tiene su propia puntuación. La clave está en la
+              <strong>penalización</strong>: en A no existe, en B y C sí. Eso cambia por completo la
+              estrategia de cuándo responder y cuándo no.
+            </p>
+            <p>
+              Fíjate bien en esta tabla: es el corazón de este momento. Antes de
+              continuar, léela con calma y asegúrate de entender cada fila.
+            </p>
+          </div>
+
+          <!-- Tabla de puntuación -->
+          <div class="mt-5 space-y-3">
+            {reglas.map((r) => (
+              <div class={`p-4 rounded-bento-sm ${r.color}`}>
+                <div class="flex flex-wrap items-center gap-3 mb-2">
+                  <span class="font-black text-lg">Nivel {r.nivel}</span>
+                  <span class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">{r.etiqueta}</span>
+                  <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-white/60">Acierto {r.acierto}</span>
+                  <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-white/60">Error {r.error}</span>
+                  <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-white/60">Blanco {r.enBlanco}</span>
+                </div>
+                <p class="text-sm leading-relaxed"><strong>Estrategia:</strong> {r.estrategia}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <!-- Puente -->
+        <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+          Hasta aquí tienes las reglas de puntuación. Ahora vienen los consejos
+          prácticos para aplicarlas en los 45 minutos del concurso.
+        </p>
+
+        <!-- 📖 LEE 2 · Consejos de estrategia -->
+        <section class="bento-card mb-6">
+          <span class="chip-bento mb-4">📖 Lee · Cuatro claves para el día del concurso</span>
+          <ul class="space-y-3">
+            {consejosGenerales.map((c) => (
+              <li class="flex items-start gap-3 p-3 rounded-bento-sm" style="background: var(--bg);">
+                <span class="text-2xl shrink-0" aria-hidden="true">{c.icono}</span>
+                <span class="text-sm md:text-base leading-relaxed"><strong>{c.titulo}:</strong> {c.texto}</span>
+              </li>
+            ))}
+          </ul>
+          <p class="text-sm leading-relaxed mt-4 font-semibold">
+            Recuerda: este momento te prepara para el simulacro cronometrado del
+            <strong>Momento 9</strong>, donde pondrás todo en práctica.
+          </p>
+        </section>
+
+        <!-- 🔎 Emparejar (después de leer la estrategia) -->
+        <div class="mb-6">
+          <LabEmparejar data={emparejarEstrategia} id="bebras-m8-empareja-estrategia" />
+        </div>
+
+        <!-- Puente -->
+        <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+          Ya conoces las reglas y las aplicaste en situaciones concretas. Comprueba
+          que tienes clara la puntuación antes de tomar decisiones en el simulacro.
+        </p>
+
+        <!-- ✅ Quiz de puntuación -->
+        <div class="mb-6">
+          <LabQuiz data={quizPuntuacion} id="bebras-m8-quiz-puntuacion" />
+        </div>
+
+        <!-- Puente -->
+        <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+          Las reglas son claras. Ahora viene lo difícil: aplicarlas bajo presión,
+          cuando el tiempo corre y el afán quiere que respondas sin pensar.
+        </p>
+
+        <!-- ✏️ Actividades -->
+        <ActividadBlock data={actividadEvalua} />
+        <ActividadBlock data={actividadAplica} />
+
+        <!-- ③ METODOLOGÍA MILC (docente) -->
+        <div class="flex items-center gap-3 mt-10 mb-6">
+          <span class="w-8 h-8 rounded-full bg-bento-lime text-neutral-950 flex items-center justify-center text-sm font-black shrink-0" aria-hidden="true">3</span>
+          <span class="font-black text-lg">Metodología MILC</span>
+          <span class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">para el docente</span>
+          <span class="flex-1 h-0.5 rounded-full" style="background: var(--border);"></span>
+        </div>
+
+        <MetodologiaMILC data={metodologia} />
+
+        <!-- ④ SIMULACIÓN -->
+        <div class="flex items-center gap-3 mt-10 mb-6">
+          <span class="w-8 h-8 rounded-full bg-bento-lime text-neutral-950 flex items-center justify-center text-sm font-black shrink-0" aria-hidden="true">4</span>
+          <span class="font-black text-lg">Simulación</span>
+          <span class="flex-1 h-0.5 rounded-full" style="background: var(--border);"></span>
+        </div>
+
+        <!-- Puente -->
+        <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+          Tienes la estrategia. Ahora ponla a prueba: tres retos, de fácil a
+          difícil, con la misma lógica del concurso. Lee, decide y fíjate si tu
+          razonamiento coincide con la estrategia óptima.
+        </p>
+
+        <!-- 🔎 Simulacro -->
+        <div class="mb-4">
+          <LabQuiz data={simulacro} id="bebras-m8-simulacro" />
+        </div>
+
+        <!-- Nota de atribución -->
+        <p class="text-xs leading-relaxed mb-10 px-1" style="color: var(--fg-muted);">
+          Estos tres retos son <strong style="color: var(--fg);">originales, al estilo Bebras</strong>, creados para
+          practicar la estrategia de puntuación. Las tareas reales de años
+          anteriores —de todos los países— están en el archivo oficial:
+          <a href={archivoOficial} target="_blank" rel="noopener" class="font-bold text-bento-blue hover:opacity-70 transition-opacity">bebras.org</a>.
+        </p>
+
+        <!-- Puente al cierre -->
+        <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+          Ya sabes competir con estrategia. Cerremos pensando qué significa, más
+          allá del concurso, aprender a decidir bien bajo presión.
+        </p>
+      </div>
+
+      <!-- 💭 Triángulo (ancho completo) -->
+      <TrianguloBlock data={triangulo} />
+
+      <!-- 🌱 Cinco dimensiones (ancho completo) -->
+      <CincoDimensionesBlock data={cincoDimensiones} />
+
+      <div class="max-w-3xl mx-auto">
+        <!-- Créditos -->
+        <div class="bento-card mb-10 border-l-4 border-bento-lime">
+          <span class="chip-bento mb-3">🦫 Créditos</span>
+          <p class="text-sm leading-relaxed mt-2" style="color: var(--fg-muted);">
+            Este momento adapta al modelo MILC la preparación estratégica para el reto
+            <strong style="color: var(--fg);">Bebras</strong>, iniciativa internacional creada por Valentina
+            Dagienė (Universidad de Vilnius, Lituania, 2004). La tabla de puntuación
+            (A: +6/0, B: +9/−2, C: +12/−4) es la del concurso oficial. Las tareas
+            originales son de Bebras International y sus organizadores nacionales.
+          </p>
+          <a href={archivoOficial} target="_blank" rel="noopener" class="inline-flex items-center gap-2 mt-4 font-black text-sm text-bento-blue hover:opacity-70 transition-opacity">
+            Ver el sitio oficial y el archivo de tareas
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+          </a>
+        </div>
+
+        <!-- Volver -->
+        <a href={`${base}/explora/bebras`} class="bento-card-hover flex items-center gap-4">
+          <svg class="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5"></path>
+            <path d="m12 19-7-7 7-7"></path>
+          </svg>
+          <div>
+            <div class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">Volver al programa</div>
+            <div class="font-black text-lg">Bebras</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </article>
+</BaseLayout>

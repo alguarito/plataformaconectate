@@ -1,0 +1,536 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import SaberAncestralBlock from '../../../../components/SaberAncestralBlock.astro';
+import MapaRutaBlock from '../../../../components/MapaRutaBlock.astro';
+import ActividadBlock from '../../../../components/ActividadBlock.astro';
+import LabEmparejar from '../../../../components/LabEmparejar.astro';
+import LabQuiz from '../../../../components/LabQuiz.astro';
+import TrianguloBlock from '../../../../components/TrianguloBlock.astro';
+import CincoDimensionesBlock from '../../../../components/CincoDimensionesBlock.astro';
+import MetodologiaMILC from '../../../../components/MetodologiaMILC.astro';
+import type { MetodologiaMILCData } from '../../../../components/MetodologiaMILC.astro';
+import type {
+  SaberAncestral,
+  EstacionMapa,
+  Actividad,
+  LabQuiz as LabQuizData,
+  Triangulo,
+  CincoDimensiones,
+} from '../../../../data/guiasContenido/_schema';
+import type { DataEmparejar } from '../../../../components/LabEmparejar.astro';
+import { getMomento } from '../../../../data/bebras';
+
+const base = import.meta.env.BASE_URL;
+const momento = getMomento('momento-9')!;
+const archivoOficial = 'https://www.bebras.org';
+
+// ─── 🌱 Saber ancestral ───────────────────────────────────────────────────────
+const saberAncestral: SaberAncestral = {
+  saber:
+    'Empezamos este curso con la minga — esa tradición del Valle del Cauca donde la comunidad entera llega un sábado al amanecer para levantar un techo, limpiar una acequia o recoger la cosecha antes de que llegue la lluvia. Nadie reparte un manual: el trabajo se organiza solo, cada quien con su parte, todos con un mismo propósito. Hoy cerramos igual: con minga. Lo que aprendiste en estos nueve momentos — a descomponer, a ver patrones, a abstraer, a dar algoritmos, a codificar datos, a deducir con lógica, a recorrer redes y a competir con estrategia — no es un tesoro para guardarlo solo. Es para ponerlo al servicio de tu comunidad. La minga del pensamiento es esto: quien aprende a pensar bien, le sirve a su gente.',
+  fuente: 'Minga · tradición de trabajo colectivo del Valle del Cauca',
+  preguntaPuente:
+    'Ya tienes las herramientas del pensamiento computacional. La minga siempre cierra con una pregunta: ¿para qué y para quién vas a usar lo que aprendiste?',
+};
+
+// ─── 🗺 Mapa de ruta ───────────────────────────────────────────────────────────
+const mapaRuta: EstacionMapa[] = [
+  { numero: 1, iconos: ['🌱'], titulo: 'Volver a la minga: cerrar en comunidad', duracionMin: 5 },
+  { numero: 2, iconos: ['📖'], titulo: 'Repaso integrador: las 8 piezas del camino', duracionMin: 8 },
+  { numero: 3, iconos: ['🔎'], titulo: 'Empareja cada pieza con su dominio', duracionMin: 6 },
+  { numero: 4, iconos: ['✏️'], titulo: 'Diseña tu propia tarea Bebras', duracionMin: 15 },
+  { numero: 5, iconos: ['✏️'], titulo: 'Evalúa la tarea de tu compañero', duracionMin: 8 },
+  { numero: 6, iconos: ['🔎'], titulo: 'Simulacro integrador: 6 retos, un reto por dominio', duracionMin: 20 },
+  { numero: 7, iconos: ['💭'], titulo: 'Triángulo de cierre del curso', duracionMin: 6 },
+];
+
+// ─── 📖 LEE · Repaso integrador ───────────────────────────────────────────────
+const dominios = [
+  {
+    emoji: '🧩',
+    nombre: 'Descomposición',
+    texto:
+      'Partir un problema grande en partes pequeñas que sí puedes resolver. Como la minga que reparte el techo en cargar, amarrar y subir.',
+  },
+  {
+    emoji: '🔁',
+    nombre: 'Reconocimiento de patrones',
+    texto:
+      'Notar lo que se repite para no resolver lo mismo dos veces. El currulao del Pacífico repite ritmos que el oído reconoce de inmediato.',
+  },
+  {
+    emoji: '🎯',
+    nombre: 'Abstracción',
+    texto:
+      'Quedarte con lo esencial e ignorar el resto. El campesino que te explica cómo llegar a la vereda no te dibuja cada ladrillo: solo las señas que importan.',
+  },
+  {
+    emoji: '📋',
+    nombre: 'Algoritmos',
+    texto:
+      'Pasos exactos en el orden correcto. La receta del sancocho: si cambias el orden o saltas un paso, el resultado cambia.',
+  },
+  {
+    emoji: '📡',
+    nombre: 'Representación de datos',
+    texto:
+      'Codificar la información de forma que una máquina pueda procesarla. Los tambores del Pacífico codificaban mensajes a distancia con golpes y silencios — igual que el código binario.',
+  },
+  {
+    emoji: '🔀',
+    nombre: 'Lógica y deducción',
+    texto:
+      'Descartar lo imposible hasta que solo queda lo verdadero. Las adivinanzas de la tradición oral afilaban la mente así, sin cuadernos.',
+  },
+  {
+    emoji: '🌐',
+    nombre: 'Grafos y optimización',
+    texto:
+      'Recorrer redes y encontrar el camino más corto. Los ríos del Pacífico funcionan como una red de carreteras: hay rutas mejores que otras.',
+  },
+  {
+    emoji: '♟️',
+    nombre: 'Estrategia de concurso',
+    texto:
+      'Saber cuándo arriesgar y cuándo guardar. Los juegos de canicas y trompo enseñan que en un reto con penalización, atacar a ciegas sale caro.',
+  },
+];
+
+// ─── 🔎 Emparejar · Dominio + Ejemplo ─────────────────────────────────────────
+const emparejarDominios: DataEmparejar = {
+  titulo: 'Empareja cada dominio con un ejemplo de la vida real',
+  instrucciones:
+    'Repasa los 8 dominios del curso. Conecta cada uno con la situación que mejor lo ilustra.',
+  etiquetaIzq: 'Dominio',
+  etiquetaDer: 'Ejemplo de la vida real',
+  pares: [
+    { izquierda: 'Descomposición', derecha: 'Repartir el aseo del colegio por zonas entre equipos' },
+    { izquierda: 'Reconocimiento de patrones', derecha: 'El bus siempre pasa a los minutos 00 y 30' },
+    { izquierda: 'Abstracción', derecha: 'Dibujar un croquis del barrio sin cada ladrillo' },
+    { izquierda: 'Algoritmos', derecha: 'Seguir los pasos exactos de la receta del sancocho' },
+    { izquierda: 'Representación de datos', derecha: 'Codificar el número 5 como 101 en binario' },
+    { izquierda: 'Lógica y deducción', derecha: 'Deducir el aguacate descartando opciones de la adivinanza' },
+    { izquierda: 'Grafos y optimización', derecha: 'Elegir la ruta más corta del colegio a casa' },
+    { izquierda: 'Estrategia de concurso', derecha: 'Responder primero los retos de nivel A para asegurar puntos' },
+  ],
+};
+
+// ─── ✏️ Actividades ────────────────────────────────────────────────────────────
+const actividadCrea: Actividad = {
+  numero: 1,
+  verbo: 'CREA',
+  titulo: 'Diseña tu propia tarea Bebras',
+  tiempoMin: 15,
+  modalidad: 'individual',
+  pasos: [
+    'Elige uno de los 8 dominios del curso (descomposición, patrones, abstracción, algoritmos, datos, lógica, grafos o estrategia).',
+    'Inventa una historia corta ambientada en Cartago, el Valle del Cauca o en tu barrio — algo que tus compañeros reconozcan.',
+    'Formula una pregunta con 4 opciones de respuesta: una sola correcta, las otras tres plausibles pero incorrectas.',
+    'Escribe la explicación de la respuesta correcta: por qué las otras tres no sirven y qué pieza del pensamiento computacional usaste.',
+  ],
+  cuaderno: {
+    titulo: 'Mi tarea Bebras',
+    formato: 'historia + pregunta con 4 opciones + explicación de la respuesta',
+    extension: 'historia de 3 a 5 renglones, 4 opciones claramente marcadas (A·B·C·D), explicación de 3 a 5 renglones',
+  },
+  criterios: [
+    'La historia está ambientada en un contexto conocido (Cartago, Valle, tu barrio).',
+    'Solo una de las 4 opciones es la respuesta correcta; las otras tres son plausibles pero se pueden descartar.',
+    'La explicación indica qué dominio del pensamiento computacional usa la tarea.',
+  ],
+};
+
+const actividadEvalua: Actividad = {
+  numero: 2,
+  verbo: 'EVALÚA',
+  titulo: 'Evalúa la tarea Bebras de tu compañero',
+  tiempoMin: 8,
+  modalidad: 'parejas',
+  pasos: [
+    'Intercambia tu cuaderno con el de un compañero y lee su tarea Bebras sin mirar la explicación.',
+    'Intenta resolver la pregunta solo con las 4 opciones.',
+    'Evalúa la tarea con tres criterios: ¿es la historia clara?, ¿hay una única respuesta posible?, ¿el dominio que señala es el correcto?',
+    'Escribe tu veredicto y, si hay algo que mejorar, una sugerencia concreta y respetuosa.',
+  ],
+  cuaderno: {
+    titulo: 'Evaluación de la tarea de mi compañero',
+    formato: 'veredicto en tres viñetas (una por criterio) + sugerencia de mejora',
+    extension: '3 viñetas + 2 a 3 renglones de sugerencia',
+  },
+  criterios: [
+    'Revisaste los tres criterios por separado (claridad, unicidad de respuesta, dominio correcto).',
+    'Tu veredicto es concreto: no "está bien" sino "la historia es clara porque… / la opción B también podría ser respuesta porque…".',
+    'La sugerencia es constructiva y señala algo específico que el compañero puede mejorar.',
+  ],
+};
+
+// ─── 🧭 Metodología MILC ──────────────────────────────────────────────────────
+const metodologia: MetodologiaMILCData = {
+  resumen:
+    'Este es el momento de cierre del curso. No hay conceptos nuevos: todo lo que el estudiante necesita ya lo tiene. El propósito es que integre los 8 dominios en un simulacro cronometrado real y que demuestre comprensión profunda diseñando su propia tarea Bebras. La minga como apertura y cierre da coherencia simbólica al arco completo del curso. Aprovecha la actividad de CREA para diagnosticar qué dominios cada estudiante domina mejor y cuáles todavía le generan duda.',
+  objetivos: [
+    'Integrar los 8 dominios del pensamiento computacional en un simulacro cronometrado que replique las condiciones del concurso real.',
+    'Demostrar comprensión profunda diseñando una tarea Bebras original con historia contextualizada, opciones plausibles y explicación del dominio.',
+    'Evaluar el trabajo de un par con criterios explícitos, practicando la retroalimentación constructiva.',
+    'Cerrar el curso con un horizonte filosófico sobre para qué y para quién sirve pensar bien.',
+  ],
+  secuencia: [
+    { paso: 'Apertura con la minga: retoma la imagen del momento 0 y pregunta qué cambió en su forma de pensar desde entonces.', tiempo: '5 min' },
+    { paso: 'Repaso integrador: los 8 dominios, rápido. Pide ejemplos al grupo, no los des tú solo.', tiempo: '8 min' },
+    { paso: 'Ejercicio de relacionar: en parejas, luego corrección en plenaria.', tiempo: '6 min' },
+    { paso: 'Actividad CREA: trabajo individual en cuaderno — diseña tu tarea Bebras. Es el corazón del cierre.', tiempo: '15 min' },
+    { paso: 'Actividad EVALÚA: intercambio de cuadernos entre pares. Recordar que la retroalimentación es concreta y respetuosa.', tiempo: '8 min' },
+    { paso: 'Simulacro integrador (20 min reales, como en el concurso): en silencio, sin ayuda.', tiempo: '20 min' },
+    { paso: 'Triángulo de cierre y las cinco dimensiones: conversación breve, no disertación.', tiempo: '6 min' },
+  ],
+  evaluacion:
+    'La evidencia evaluable principal es la actividad CREA (diseño de tarea Bebras): historia, opciones y explicación del dominio. La actividad EVALÚA es formativa entre pares. El simulacro puede calificarse si el docente lo decide, con el sistema de puntuación oficial Bebras (A: +6/0, B: +9/−2, C: +12/−4). El repaso y el ejercicio de relacionar son diagnósticos, sin nota.',
+  diferenciacion:
+    'En 6.º y 7.º acepta tareas Bebras de nivel A con historias muy cotidianas. En 8.º y 9.º exige nivel B con al menos dos opciones plausibles bien construidas. En 10.º y 11.º pide nivel C y que la explicación justifique por escrito por qué las otras tres opciones son incorrectas. El simulacro integrador, con sus 6 retos de niveles A·B·C, atiende a todo el salón al mismo tiempo.',
+};
+
+// ─── 🔎 Simulacro integrador ───────────────────────────────────────────────────
+const simulacro: LabQuizData = {
+  tipo: 'quiz',
+  titulo: 'Simulacro integrador · un reto por dominio',
+  instrucciones:
+    'Seis retos originales, uno por dominio. Ponte unos 20 minutos como en el concurso real: en silencio, sin ayuda, razonando cada uno. Cada reto está etiquetado con su dominio y nivel.',
+  preguntas: [
+    {
+      enunciado:
+        'Reto 1 · Nivel A · Descomposición\n\nPara la fiesta de cierre del año en el colegio hay que conseguir música, comida y decoración. ¿Cuál es una buena forma de DESCOMPONER el trabajo?',
+      opciones: [
+        'Una sola persona se encarga de todo para que haya coherencia',
+        'Tres comités, uno por cada cosa: música, comida y decoración',
+        'Primero se decide el presupuesto y después el resto',
+        'Se hace una votación y el que gane elige todo',
+      ],
+      respuestaIndex: 1,
+      feedbackCorrecto:
+        'Correcto. Descomponer es repartir el problema grande en partes independientes que se pueden resolver en paralelo. Tres comités, uno por área, es descomposición pura: cada equipo resuelve su parte sin bloquear a los demás.',
+      feedbackIncorrecto:
+        'Descomponer significa partir el problema en piezas independientes. Tres comités especializados (uno por tarea) permiten que cada equipo trabaje en paralelo sin esperar a los demás. Eso es descomposición.',
+    },
+    {
+      enunciado:
+        'Reto 2 · Nivel B · Reconocimiento de patrones\n\nUna secuencia de números: 5, 10, 20, 40, … ¿Cuál es el número que sigue?',
+      opciones: ['50', '60', '80', '100'],
+      respuestaIndex: 2,
+      feedbackCorrecto:
+        'Correcto. El patrón es que cada número se duplica respecto al anterior: 5 × 2 = 10, 10 × 2 = 20, 20 × 2 = 40, 40 × 2 = 80. Reconocer el patrón de multiplicación evita calcular cada paso desde cero.',
+      feedbackIncorrecto:
+        'Busca el patrón entre los números: 5 → 10 (×2) → 20 (×2) → 40 (×2) → ??? El patrón es duplicar. El siguiente es 40 × 2 = 80.',
+    },
+    {
+      enunciado:
+        'Reto 3 · Nivel A · Algoritmos\n\nEmpiezas mirando al SUR. Ejecutas estas instrucciones en orden: giras a la izquierda, luego vuelves a girar a la izquierda. ¿Hacia dónde miras ahora?',
+      opciones: ['Al sur', 'Al este', 'Al norte', 'Al oeste'],
+      respuestaIndex: 2,
+      feedbackCorrecto:
+        'Correcto. Seguiste el algoritmo paso a paso: Sur → giro izquierda 90° → Este. Este → giro izquierda 90° → Norte. Dos giros a la izquierda equivalen a media vuelta completa.',
+      feedbackIncorrecto:
+        'Sigue cada instrucción en orden, como un algoritmo: empiezas al Sur. Primer giro a la izquierda: quedas mirando al Este. Segundo giro a la izquierda: quedas mirando al Norte.',
+    },
+    {
+      enunciado:
+        'Reto 4 · Nivel B · Representación de datos (binario)\n\nTres focos valen 4, 2 y 1 punto de luz respectivamente. Si el foco está encendido vale su número; si está apagado vale 0. El código 101 equivale a 4 + 0 + 1 = 5. ¿Cuánto vale el código 111?',
+      opciones: ['3', '5', '6', '7'],
+      respuestaIndex: 3,
+      feedbackCorrecto:
+        'Correcto. Con el código 111, los tres focos están encendidos: 4 + 2 + 1 = 7. Así funciona el sistema binario: cada posición vale una potencia de 2, y el número total es la suma de las posiciones encendidas.',
+      feedbackIncorrecto:
+        '111 significa que los tres focos están encendidos: el de 4, el de 2 y el de 1. Suma: 4 + 2 + 1 = 7. En binario, cada dígito en 1 activa su valor de posición.',
+    },
+    {
+      enunciado:
+        'Reto 5 · Nivel C · Lógica y deducción\n\nRegla: «SI no estudio, ENTONCES no paso la materia.» Pedro pasó la materia. ¿Qué puedes afirmar con total seguridad?',
+      opciones: [
+        'Pedro no estudió',
+        'Pedro estudió',
+        'Pedro tuvo suerte',
+        'No se puede saber nada sobre Pedro',
+      ],
+      respuestaIndex: 1,
+      feedbackCorrecto:
+        'Correcto. Esto se llama la contrapositiva: si «no estudio → no paso», entonces su inversa lógica es «SI pasé, ENTONCES sí estudié». Pedro pasó, así que necesariamente estudió. La lógica no deja margen de duda.',
+      feedbackIncorrecto:
+        'Aquí se aplica la contrapositiva: la regla dice «no estudio → no paso». Si alguien SÍ pasó, la única forma de que eso sea posible es que SÍ estudió. Pedro pasó → Pedro estudió. No hay otra salida lógica.',
+    },
+    {
+      enunciado:
+        'Reto 6 · Nivel B · Grafos y optimización\n\nDel colegio a casa hay dos rutas: la directa tarda 12 minutos. La ruta por la tienda del barrio tarda 5 minutos hasta la tienda y 5 minutos más hasta casa. ¿Cuál es la ruta más corta y cuánto tarda?',
+      opciones: [
+        'La directa, 12 minutos',
+        'Por la tienda, 10 minutos',
+        'Las dos tardan lo mismo',
+        'No hay suficiente información para saberlo',
+      ],
+      respuestaIndex: 1,
+      feedbackCorrecto:
+        'Correcto. En grafos, comparas el peso total de cada camino: ruta directa = 12 min; ruta por la tienda = 5 + 5 = 10 min. El camino más corto es el de menor peso total: pasar por la tienda.',
+      feedbackIncorrecto:
+        'Suma el peso de cada ruta: directa = 12 min; por la tienda = 5 + 5 = 10 min. En grafos, la ruta óptima es la de menor peso total. Pasar por la tienda (10 min) es más rápido que ir directo (12 min).',
+    },
+  ],
+};
+
+// ─── 💭 Triángulo ──────────────────────────────────────────────────────────────
+const triangulo: Triangulo = {
+  dussel: {
+    autor: 'Enrique Dussel',
+    lente: 'lente del nosotros',
+    cita: 'El otro —el pobre, el excluido— es el punto de partida de toda ética. Pensar bien no es un privilegio: es una herramienta de liberación para quienes más la necesitan.',
+    preguntaEspejo:
+      'Aprendiste a pensar computacionalmente. ¿Quién en tu comunidad necesita que alguien con esas herramientas le ayude a resolver un problema? ¿Cómo podrías ser esa persona?',
+  },
+  estoico: {
+    autor: 'Marco Aurelio',
+    lente: 'lente del cuidado interior',
+    cita: 'El conocimiento que no mejora al que lo tiene es inútil. Aprende no para acumular, sino para vivir con más claridad.',
+    preguntaEspejo:
+      'Mira hacia adentro: ¿en quién te convierte haber aprendido a pensar así? ¿Hay algo en tu forma de enfrentar los problemas que ya cambió, aunque no te hayas dado cuenta?',
+  },
+  floridi: {
+    autor: 'Luciano Floridi',
+    lente: 'lente de la infoesfera',
+    cita: 'Somos inforgs: habitamos y somos constituidos por la infoesfera. Quien la entiende tiene una responsabilidad que quien no la entiende no puede tener.',
+    preguntaEspejo:
+      'Ahora sabes cómo piensa una máquina. Eso te da una responsabilidad que antes no tenías: la de actuar con conciencia en la infoesfera. ¿Qué harás diferente?',
+  },
+};
+
+// ─── 🌱 Cinco dimensiones ──────────────────────────────────────────────────────
+const cincoDimensiones: CincoDimensiones = {
+  personal:
+    'Mira hacia atrás: llegaste al momento 0 sin saber qué era Bebras ni qué era el pensamiento computacional. Hoy puedes nombrar 8 dominios, usarlos y enseñarlos. ¿Cómo cambió tu forma de enfrentar un problema difícil?',
+  emocional:
+    'Al inicio, un reto nivel C podía dar miedo o bloqueo. Con el camino recorrido, ese susto se convirtió en confianza. No porque los retos sean más fáciles, sino porque tú ya sabes cómo partirlos. ¿Qué sientes ahora frente a un problema que no entiendes de inmediato?',
+  ciudadana:
+    'Pensar bien no es solo un logro personal: es una herramienta para el bien común. Quien sabe descomponer, ver patrones y deducir con lógica puede ayudar a su comunidad a resolver problemas reales. ¿Cómo podrías usar lo que aprendiste para servir a alguien más?',
+  local:
+    'Empezaste con la minga de Cartago y terminaste con ella. El mismo espíritu que organiza un techo en la vereda puede organizar soluciones tecnológicas que mejoren tu barrio, tu colegio o tu municipio. Desde Cartago al mundo: eso no es metáfora.',
+  intergeneracional:
+    'Tus mayores resolvían problemas enormes en comunidad — la minga, los tejidos del Pacífico, los tambores que codificaban mensajes — sin computador. Tú heredas ese arte y lo llevas a un lenguaje nuevo. ¿Qué le contarías a alguien de tu familia sobre lo que aprendiste?',
+};
+---
+
+<BaseLayout
+  title="Momento 9 · Simulacro y cierre — Bebras · ConectaTE"
+  description="Simulacro integrador de los 8 dominios del pensamiento computacional, diseño de tarea Bebras propia y cierre filosófico del curso «Pensar como una máquina». Capstone del programa Bebras."
+  ogType="article"
+>
+  <article class="pt-12 pb-20">
+    <div class="bento-container max-w-5xl">
+      <div class="max-w-3xl mx-auto">
+        <!-- Breadcrumb -->
+        <nav class="flex items-center gap-2 text-sm font-semibold mb-8 flex-wrap" style="color: var(--fg-muted);">
+          <a href={base || '/'} class="hover:opacity-60 transition-opacity">Inicio</a>
+          <span>/</span>
+          <a href={`${base}/explora`} class="hover:opacity-60 transition-opacity">Explora</a>
+          <span>/</span>
+          <a href={`${base}/explora/bebras`} class="hover:opacity-60 transition-opacity">Bebras</a>
+          <span>/</span>
+          <span style="color: var(--fg);">Momento 9</span>
+        </nav>
+
+        <!-- ① PRESENTACIÓN -->
+        <div class="flex items-center gap-3 mb-6">
+          <span class="w-8 h-8 rounded-full bg-bento-lime text-neutral-950 flex items-center justify-center text-sm font-black shrink-0" aria-hidden="true">1</span>
+          <span class="font-black text-lg">Presentación</span>
+          <span class="flex-1 h-0.5 rounded-full" style="background: var(--border);"></span>
+        </div>
+
+        <!-- Hero -->
+        <div class="bento-card-color bg-bento-blue text-white mb-10">
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">Momento {momento.numero} · {momento.dominio}</span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">🧠 {momento.verbo}</span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">~{momento.tiempo}</span>
+          </div>
+          <h1 class="heading-giant text-balance mb-3">{momento.nombre}</h1>
+          <p class="text-base md:text-lg font-semibold opacity-95 leading-relaxed">
+            Nueve momentos, ocho dominios, un mismo espíritu: pensar con claridad.
+            Hoy cierras el curso como empezaste — en minga. Integras todo lo
+            aprendido en un simulacro real y demuestras que sabes crear, no solo
+            resolver.
+          </p>
+        </div>
+
+        <!-- 🌱 Saber ancestral -->
+        <SaberAncestralBlock data={saberAncestral} etiqueta="Saber ancestral" />
+
+        <!-- 🗺 Ruta -->
+        <MapaRutaBlock estaciones={mapaRuta} />
+
+        <!-- Propósito -->
+        <div class="bento-card mb-6">
+          <span class="chip-bento mb-4">🎯 Lo que vas a poder hacer</span>
+          <ul class="space-y-3 mt-3">
+            {[
+              'INTEGRAR los 8 dominios del pensamiento computacional en un simulacro cronometrado.',
+              'CREAR una tarea Bebras original con historia contextualizada, opciones plausibles y explicación del dominio.',
+              'EVALUAR el trabajo de un compañero con criterios explícitos y retroalimentación constructiva.',
+              'CERRAR el curso con una mirada filosófica sobre para qué y para quién sirve pensar bien.',
+            ].map((d) => (
+              <li class="flex items-start gap-3">
+                <span class="w-6 h-6 rounded-md bg-bento-lime/30 text-black flex items-center justify-center text-xs font-black shrink-0 mt-0.5">✓</span>
+                <span class="text-sm md:text-base leading-relaxed">{d}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <!-- Pregunta detonante -->
+        <div class="bento-card-color bg-bento-cyan mb-10">
+          <span class="chip-bento mb-3 bg-black/10">💡 La pregunta que abre el cierre</span>
+          <p class="text-lg md:text-xl font-black leading-snug">
+            Bebras no era el objetivo — era el entrenamiento. ¿Para qué te sirve
+            ahora saber pensar como una máquina?
+          </p>
+          <p class="text-sm leading-relaxed mt-3 opacity-90">
+            Al terminar habrás integrado los 8 dominios, diseñado tu propio reto
+            y respondido esa pregunta con una voz propia.
+          </p>
+        </div>
+
+        <!-- ② GUÍA -->
+        <div class="flex items-center gap-3 mb-6">
+          <span class="w-8 h-8 rounded-full bg-bento-lime text-neutral-950 flex items-center justify-center text-sm font-black shrink-0" aria-hidden="true">2</span>
+          <span class="font-black text-lg">Guía</span>
+          <span class="flex-1 h-0.5 rounded-full" style="background: var(--border);"></span>
+        </div>
+
+        <!-- 📖 LEE · Repaso integrador -->
+        <section class="bento-card mb-6">
+          <span class="chip-bento mb-4">📖 Lee · El camino recorrido: los 8 dominios</span>
+          <p class="text-sm md:text-base leading-relaxed mb-4">
+            Nueve momentos. Ocho dominios. Cada uno fue una pieza del pensamiento
+            computacional — la misma forma de pensar que usa un computador y que tú
+            ya usabas sin saberlo. Repasa el mapa completo antes del simulacro:
+          </p>
+          <ul class="space-y-3">
+            {dominios.map((d) => (
+              <li class="flex items-start gap-3 p-3 rounded-bento-sm" style="background: var(--bg);">
+                <span class="text-2xl shrink-0" aria-hidden="true">{d.emoji}</span>
+                <span class="text-sm md:text-base leading-relaxed"><strong>{d.nombre}:</strong> {d.texto}</span>
+              </li>
+            ))}
+          </ul>
+          <p class="text-sm md:text-base leading-relaxed mt-4 font-bold">
+            Bebras no era el objetivo: era el entrenamiento. El verdadero premio
+            es pensar con claridad.
+          </p>
+        </section>
+
+        <!-- 🔎 Emparejar dominios -->
+        <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+          Ya tienes el mapa completo. Conecta cada dominio con un ejemplo de la
+          vida real antes de entrar al simulacro.
+        </p>
+
+        <div class="mb-6">
+          <LabEmparejar data={emparejarDominios} id="bebras-m9-empareja-dominios" />
+        </div>
+
+        <!-- Puente actividades -->
+        <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+          Ahora viene el momento de mayor profundidad: no resolver una tarea, sino
+          <strong>crearla</strong>. Diseña tu propio reto Bebras — y luego evalúa
+          el de un compañero.
+        </p>
+
+        <!-- ✏️ Actividades -->
+        <ActividadBlock data={actividadCrea} />
+        <ActividadBlock data={actividadEvalua} />
+
+        <!-- ③ METODOLOGÍA MILC (docente) -->
+        <div class="flex items-center gap-3 mt-10 mb-6">
+          <span class="w-8 h-8 rounded-full bg-bento-lime text-neutral-950 flex items-center justify-center text-sm font-black shrink-0" aria-hidden="true">3</span>
+          <span class="font-black text-lg">Metodología MILC</span>
+          <span class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">para el docente</span>
+          <span class="flex-1 h-0.5 rounded-full" style="background: var(--border);"></span>
+        </div>
+
+        <MetodologiaMILC data={metodologia} />
+
+        <!-- ④ SIMULACIÓN -->
+        <div class="flex items-center gap-3 mt-10 mb-6">
+          <span class="w-8 h-8 rounded-full bg-bento-lime text-neutral-950 flex items-center justify-center text-sm font-black shrink-0" aria-hidden="true">4</span>
+          <span class="font-black text-lg">Simulación</span>
+          <span class="flex-1 h-0.5 rounded-full" style="background: var(--border);"></span>
+        </div>
+
+        <!-- Puente simulacro -->
+        <p class="text-base md:text-lg font-bold leading-relaxed mb-3 px-1">
+          Seis retos, un reto por dominio. Ponlos a prueba como en el concurso real:
+          en silencio, sin ayuda, razonando cada uno.
+        </p>
+        <p class="text-sm leading-relaxed mb-6 px-1" style="color: var(--fg-muted);">
+          Ponte unos <strong style="color: var(--fg);">20 minutos</strong>. No importa si no aciertas todos: lo que importa es notar
+          en cuáles dominios te sientes sólido y en cuáles todavía hay trabajo.
+        </p>
+
+        <!-- 🔎 Simulacro integrador -->
+        <div class="mb-4">
+          <LabQuiz data={simulacro} id="bebras-m9-simulacro" />
+        </div>
+
+        <!-- Nota de atribución -->
+        <p class="text-xs leading-relaxed mb-10 px-1" style="color: var(--fg-muted);">
+          Estos seis retos son <strong style="color: var(--fg);">originales, al estilo Bebras</strong>, creados para
+          el cierre integrador del curso. Las tareas reales de años anteriores —de
+          todos los países participantes— están en el archivo oficial:
+          <a href={archivoOficial} target="_blank" rel="noopener" class="font-bold text-bento-blue hover:opacity-70 transition-opacity">bebras.org</a>.
+          ¡Anímate a hacer el concurso real!
+        </p>
+
+        <!-- Puente al cierre -->
+        <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+          Completaste el simulacro. Ahora cerremos pensando qué significa,
+          para ti y para tu comunidad, haber aprendido a pensar así.
+        </p>
+      </div>
+
+      <!-- 💭 Triángulo (ancho completo) -->
+      <TrianguloBlock data={triangulo} />
+
+      <!-- 🌱 Cinco dimensiones (ancho completo) -->
+      <CincoDimensionesBlock data={cincoDimensiones} />
+
+      <div class="max-w-3xl mx-auto">
+        <!-- Créditos -->
+        <div class="bento-card mb-10 border-l-4 border-bento-lime">
+          <span class="chip-bento mb-3">🦫 Créditos</span>
+          <p class="text-sm leading-relaxed mt-2" style="color: var(--fg-muted);">
+            Este momento adapta al modelo MILC la preparación para el reto
+            <strong style="color: var(--fg);">Bebras</strong>, iniciativa internacional creada por Valentina
+            Dagienė (Universidad de Vilnius, Lituania, 2004). Las tareas originales
+            son de Bebras International y sus organizadores nacionales. Los seis
+            retos del simulacro integrador son originales, al estilo Bebras, y no
+            forman parte del archivo oficial.
+          </p>
+          <a href={archivoOficial} target="_blank" rel="noopener" class="inline-flex items-center gap-2 mt-4 font-black text-sm text-bento-blue hover:opacity-70 transition-opacity">
+            Ver el sitio oficial y el archivo de tareas
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+          </a>
+        </div>
+
+        <!-- Volver -->
+        <a href={`${base}/explora/bebras`} class="bento-card-hover flex items-center gap-4">
+          <svg class="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5"></path>
+            <path d="m12 19-7-7 7-7"></path>
+          </svg>
+          <div>
+            <div class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">Volver al programa</div>
+            <div class="font-black text-lg">Bebras</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </article>
+</BaseLayout>

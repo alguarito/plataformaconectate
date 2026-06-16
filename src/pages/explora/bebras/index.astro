@@ -1,0 +1,230 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { momentos, puntuacion, formato, getMomentosActivos } from '../../../data/bebras';
+
+const base = import.meta.env.BASE_URL;
+
+// El primer momento disponible alimenta el CTA principal. Mientras se construye
+// el espacio (todos 'proximamente'), el CTA simplemente no aparece.
+const primerActivo = getMomentosActivos()[0];
+
+// Color del badge de nivel en la tabla de puntuación (claros → texto oscuro).
+const colorNivel: Record<string, string> = {
+  A: 'bg-bento-lime',
+  B: 'bg-bento-yellow',
+  C: 'bg-bento-orange',
+};
+---
+
+<BaseLayout
+  title="Bebras · Pensar como una máquina — Explora · ConectaTE"
+  description="Preparación para el reto internacional Bebras de pensamiento computacional: resolver problemas con lógica e ingenio, sin escribir código. Diez momentos adaptados al modelo MILC con saberes del Valle y el Pacífico."
+  ogType="article"
+>
+  <article class="pt-12 pb-20">
+    <div class="bento-container max-w-5xl">
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-sm font-semibold mb-8 flex-wrap" style="color: var(--fg-muted);">
+        <a href={base || '/'} class="hover:opacity-60 transition-opacity">Inicio</a>
+        <span>/</span>
+        <a href={`${base}/explora`} class="hover:opacity-60 transition-opacity">Explora</a>
+        <span>/</span>
+        <span style="color: var(--fg);">Bebras</span>
+      </nav>
+
+      <!-- Hero -->
+      <div class="bento-card-color bg-bento-lime text-neutral-950 mb-10 min-h-[340px] flex flex-col justify-between">
+        <div class="flex items-start justify-between flex-wrap gap-3">
+          <div class="flex flex-wrap gap-2">
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-black/10">🦫 Pensamiento computacional</span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-black/10">Sin código</span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-black/10">Reto internacional</span>
+          </div>
+          <span class="text-8xl md:text-9xl leading-none" aria-hidden="true">🦫</span>
+        </div>
+        <div>
+          <span class="text-xs font-bold uppercase tracking-widest opacity-70">Programa · Explora</span>
+          <h1 class="heading-giant text-balance mt-2 mb-4">Bebras: pensar como una máquina</h1>
+          <p class="text-base md:text-lg font-semibold opacity-90 max-w-3xl leading-relaxed">
+            El reto de pensamiento computacional más grande del mundo. Aquí no
+            entrenamos para pasar un examen: aprendemos a descomponer, encontrar
+            patrones, abstraer y diseñar algoritmos — las cuatro piezas con las que
+            piensa una máquina, y que tú ya usas sin darte cuenta.
+          </p>
+        </div>
+      </div>
+
+      <!-- CTA principal (aparece cuando hay un momento disponible) -->
+      {primerActivo && (
+        <a
+          href={`${base}/explora/bebras/${primerActivo.slug}`}
+          class="bento-card-color bg-bento-blue text-white flex items-center gap-4 mb-10 hover:scale-[1.01] transition-transform group"
+        >
+          <div class="text-5xl shrink-0" aria-hidden="true">🚀</div>
+          <div class="flex-1">
+            <span class="text-xs font-bold uppercase tracking-widest opacity-80">Momento {primerActivo.numero} · Disponible</span>
+            <div class="font-black text-xl leading-tight mt-1">{primerActivo.nombre}</div>
+            <div class="text-sm opacity-80 mt-1">{primerActivo.resumen}</div>
+          </div>
+          <svg class="w-7 h-7 shrink-0 group-hover:translate-x-1 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14"></path>
+            <path d="m12 5 7 7-7 7"></path>
+          </svg>
+        </a>
+      )}
+
+      <!-- Qué es Bebras -->
+      <div class="bento-card mb-10">
+        <span class="chip-bento mb-4">De qué se trata</span>
+        <p class="text-base md:text-lg leading-relaxed mb-5">
+          <strong>Bebras</strong> — «castor» en lituano — es un reto internacional
+          que cada año reúne a millones de estudiantes en más de 50 países. Son
+          problemas cortos e ingeniosos que se resuelven <strong>con la cabeza, no
+          con código</strong>: lógica, patrones y un poco de astucia. Lo importante
+          no es la respuesta, sino <em>cómo</em> la pensaste.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-2">
+          {[
+            { i: '🧩', t: 'Cuatro piezas: descomponer, ver patrones, abstraer y crear algoritmos.' },
+            { i: '🌍', t: 'Un reto mundial nacido en Lituania en 2004, hoy en más de 50 países.' },
+            { i: '⌨️', t: 'Sin programar: solo razonamiento. Cualquiera de 6.º a 11.º puede entrar.' },
+            { i: '🧠', t: 'No se entrena para el test: se forma una manera de pensar para toda la vida.' },
+          ].map((o) => (
+            <div class="flex items-start gap-3 p-3 rounded-bento-sm" style="background: var(--bg);">
+              <span class="text-2xl shrink-0" aria-hidden="true">{o.i}</span>
+              <span class="text-sm leading-relaxed">{o.t}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Cómo puntúa -->
+      <section class="mb-10">
+        <div class="flex items-center justify-between flex-wrap gap-3 mb-6">
+          <h2 class="heading-huge">Cómo se juega</h2>
+          <span class="chip-bento">{formato.duracion} · {formato.tareas}</span>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          {puntuacion.map((n) => (
+            <div class="bento-card flex flex-col gap-3">
+              <div class="flex items-center gap-3">
+                <span class:list={['w-11 h-11 rounded-bento-sm flex items-center justify-center text-xl font-black shrink-0', colorNivel[n.nivel]]} style="color: #09090B;" aria-hidden="true">
+                  {n.nivel}
+                </span>
+                <div>
+                  <div class="font-black leading-none">Nivel {n.nivel}</div>
+                  <div class="text-xs mt-1" style="color: var(--fg-muted);">{n.etiqueta}</div>
+                </div>
+              </div>
+              <div class="flex items-baseline gap-2">
+                <span class="text-4xl font-black tracking-tight">+{n.acierto}</span>
+                <span class="text-sm font-bold" style="color: var(--fg-muted);">por acierto</span>
+              </div>
+              <div class="text-sm font-semibold" style="color: var(--fg-muted);">
+                {n.error === 0 ? 'Sin penalización por error' : `${n.error} por error`} · 0 en blanco
+              </div>
+            </div>
+          ))}
+        </div>
+        <div class="bento-card-color bg-bento-purple text-white flex items-start gap-4">
+          <span class="text-3xl shrink-0" aria-hidden="true">🎯</span>
+          <div>
+            <div class="font-black text-lg leading-tight mb-1">La estrategia que esto esconde</div>
+            <p class="text-sm leading-relaxed opacity-95">
+              Equivocarse en B y C <strong>resta</strong>; dejar en blanco nunca
+              quita. Por eso en las fáciles siempre conviene responder, y en las
+              difíciles solo se arriesga cuando puedes descartar opciones con
+              fundamento. Aprender a decidir bajo esa regla es parte del juego.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- La ruta del programa: 10 momentos -->
+      <section class="mb-10">
+        <div class="flex items-center justify-between flex-wrap gap-3 mb-6">
+          <h2 class="heading-huge">La ruta · 10 momentos</h2>
+          <span class="chip-bento">Pensar como una máquina</span>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {momentos.map((m) => {
+            const activo = m.estado === 'activo';
+            const Inner = (
+              <div class="bento-card h-full flex flex-col gap-2" style={!activo ? 'opacity: 0.85;' : ''}>
+                <div class="flex items-center gap-3">
+                  <span class:list={['w-9 h-9 rounded-full flex items-center justify-center text-sm font-black shrink-0', activo ? 'bg-bento-lime text-neutral-950' : '']} style={!activo ? 'background: var(--bg); color: var(--fg-muted); border: 1px solid var(--border);' : ''}>
+                    {m.numero}
+                  </span>
+                  <div class="flex-1 min-w-0">
+                    <div class="font-black leading-tight">{m.nombre}</div>
+                    <div class="text-xs mt-0.5" style="color: var(--fg-muted);">{m.dominio}</div>
+                  </div>
+                  {activo ? (
+                    <span class="text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-full bg-bento-lime text-neutral-950 shrink-0">Abrir</span>
+                  ) : (
+                    <span class="text-[10px] font-black uppercase tracking-widest shrink-0" style="color: var(--fg-muted);">Pronto</span>
+                  )}
+                </div>
+                <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">{m.resumen}</p>
+                <span class="text-[10px] font-black uppercase tracking-widest mt-auto pt-1" style="color: var(--fg-muted);">🧠 {m.verbo}</span>
+              </div>
+            );
+            return activo ? (
+              <a href={`${base}/explora/bebras/${m.slug}`} class="block hover:opacity-80 transition-opacity">{Inner}</a>
+            ) : (
+              <div>{Inner}</div>
+            );
+          })}
+        </div>
+      </section>
+
+      <!-- Créditos / atribución -->
+      <div class="bento-card mb-10 border-l-4 border-bento-lime">
+        <span class="chip-bento mb-4">🦫 Quién hace Bebras</span>
+        <div class="space-y-4 mt-2">
+          <div>
+            <h3 class="font-black text-base">Bebras International <span class="font-semibold" style="color: var(--fg-muted);">· desde Lituania, 2004</span></h3>
+            <p class="text-sm leading-relaxed mt-1" style="color: var(--fg-muted);">
+              Iniciativa creada por <strong style="color: var(--fg);">Valentina Dagienė</strong> en la Universidad de Vilnius. Hoy una red de organizadores en más de 50 países diseña y libera las tareas cada año.
+            </p>
+          </div>
+          <div>
+            <h3 class="font-black text-base">Adaptación ConectaTE <span class="font-semibold" style="color: var(--fg-muted);">· modelo MILC</span></h3>
+            <p class="text-sm leading-relaxed mt-1" style="color: var(--fg-muted);">
+              Aquí preparamos el reto con saberes del Valle y el Pacífico, lectura desarrollada antes de cada ejercicio y cierre reflexivo. Las tareas de práctica provienen del <strong style="color: var(--fg);">archivo público de Bebras</strong>, con crédito a sus autores.
+            </p>
+          </div>
+        </div>
+        <p class="text-xs leading-relaxed mt-5 pt-4 border-t" style="border-color: var(--border); color: var(--fg-muted);">
+          Las tareas originales son propiedad de Bebras International y de los organizadores nacionales. En ConectaTE adaptamos la <strong style="color: var(--fg);">preparación pedagógica</strong> al modelo MILC, con atribución y enlace al material oficial.
+        </p>
+      </div>
+
+      <!-- Recursos + club -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
+        <a href="https://www.bebras.org" target="_blank" rel="noopener" class="bento-card-hover flex flex-col gap-2">
+          <span class="text-3xl" aria-hidden="true">🌍</span>
+          <span class="font-black leading-tight">Bebras internacional</span>
+          <span class="text-xs leading-relaxed" style="color: var(--fg-muted);">Sitio oficial con el archivo de tareas de años anteriores en bebras.org</span>
+        </a>
+        <div class="bento-card-color bg-bento-blue flex flex-col gap-2">
+          <span class="text-3xl" aria-hidden="true">🦫</span>
+          <span class="font-black leading-tight">Club de los Castores</span>
+          <span class="text-xs leading-relaxed opacity-90">¿Quieres representar al colegio en Bebras? Pregúntale al profe Álvaro cómo entrenar.</span>
+        </div>
+      </div>
+
+      <!-- Volver -->
+      <a href={`${base}/explora`} class="bento-card-hover flex items-center gap-4">
+        <svg class="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 12H5"></path>
+          <path d="m12 19-7-7 7-7"></path>
+        </svg>
+        <div>
+          <div class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">Volver a</div>
+          <div class="font-black text-lg">Explora</div>
+        </div>
+      </a>
+    </div>
+  </article>
+</BaseLayout>

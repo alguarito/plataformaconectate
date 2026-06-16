@@ -1,0 +1,401 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra para todas las guias MILC v3
+% Ver scripts/generadores/build-guia-milc.py para la lista completa de
+% claves esperadas. El script valida que no queden placeholders sin
+% reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1.75cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\hyphenpenalty=200
+\exhyphenpenalty=200
+\pretolerance=400
+\tolerance=2000
+\setlength{\emergencystretch}{1em}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{84CC16}
+\definecolor{milcGradeDark}{HTML}{4D7C0F}
+\definecolor{milcGradeSoft}{HTML}{ECFCCB}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Tecnología e Informática · Bebras}
+\rhead{\small Momento 0 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{$\rightarrow$}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+\begin{document}
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[white] (current page.south west) rectangle (current page.north east);
+  \path[fill=milcGradePrimary,rounded corners=16mm]
+    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
+    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{14}{16}\selectfont MOMENTO};
+  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
+    {\sffamily\bfseries\fontsize{9}{11}\selectfont BEBRAS · PENSAR COMO UNA MÁQUINA};
+
+  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
+    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
+    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
+    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
+    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
+    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
+  \end{scope}
+
+  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{124}{124}\selectfont 0};
+  \draw[milcGradeText,line width=1.7pt]
+    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+
+  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+    {
+     {\sffamily\bfseries\fontsize{19}{22}\selectfont El castor que piensa --- las 4 piezas\\del pensamiento computacional}\\[4mm]
+     {\sffamily\bfseries\fontsize{23}{26}\selectfont Bebras · Momento 0}\\[2mm]
+     {\sffamily\fontsize{13}{16}\selectfont Curso «Pensar como una máquina» · Pensamiento computacional}\\[5mm]
+     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
+     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+    };
+
+  \path[fill=milcGradeSoft,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
+    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
+    \textcolor{milcGradeDark}{\bfseries Producto:} Tu primer reto estilo Bebras resuelto y la tabla «Las 4 piezas en mi día», con la pieza que más te costó reconocer.};
+\end{tikzpicture}
+\mbox{}
+\newpage
+
+\section*{Apertura: El castor que piensa: las 4 piezas del pensamiento computacional}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+En las veredas del Valle del Cauca, cuando una tarea es demasiado grande para una sola familia --- levantar un techo, limpiar una acequia tapada, recoger la cosecha antes de la lluvia ---, se convoca una \textbf{minga}. La comunidad llega un sábado al amanecer y, sin que nadie reparta un manual, el trabajo se organiza solo: unos cargan, otros amarran, otros cocinan el sancocho para todos. El grupo \textbf{parte la tarea enorme en partes pequeñas}, repite lo que funcionó la vez pasada y sigue un orden que todos entienden. Al caer la tarde, lo que era imposible para uno ya está hecho entre muchos. La minga no necesita computadores: es la prueba viva de que resolver algo grande es, sobre todo, \textbf{saber organizar partes pequeñas}.
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+\textbf{Bebras} --- «castor» en lituano --- es un reto internacional de \textbf{pensamiento computacional} que cada año reúne a millones de estudiantes en más de 50 países: 45 minutos, unas 15 tareas cortas que se resuelven \textbf{con la cabeza, no con código}. El pensamiento computacional es la forma de resolver problemas que usa un computador --- y que tú ya usabas en la minga ---. Tiene \textbf{cuatro piezas}: descomponer (partir lo grande en partes), reconocer patrones (ver lo que se repite), abstraer (quedarse con lo esencial) y crear algoritmos (escribir pasos exactos). El castor levanta represas que resisten crecientes sin estudiar ingeniería: observa, prueba y organiza. Lo importante no es la respuesta, sino \emph{cómo} la pensaste.
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{En la minga, la comunidad resuelve un problema enorme partiéndolo en partes y siguiendo un orden acordado. ¿Y si te dijera que una máquina «piensa» exactamente igual --- y que tú también lo haces, sin darte cuenta?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar podrás: (1) \textbf{identificar} las 4 piezas del pensamiento computacional --- descomposición, patrones, abstracción y algoritmos ---; (2) \textbf{explicar} con tus palabras qué hace cada pieza, con un ejemplo de tu vida; (3) \textbf{analizar} una tarea cotidiana para reconocer en ella las cuatro piezas; (4) \textbf{aplicar} las cuatro piezas para resolver tu primer reto estilo Bebras.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Desarrolla el pensamiento computacional --- descomposición, patrones, abstracción y algoritmos --- para resolver problemas (transversal 6°--11°, alineado a los lineamientos MEN de Tecnología e Informática)\\
+Referentes & Valentina Dagienė (Bebras) · Pensamiento computacional (Wing) · Dussel · Estoicismo · Floridi · Saberes del Valle y el Pacífico\\
+Producto final & Tu primer reto estilo Bebras resuelto y la tabla «Las 4 piezas en mi día», con la pieza que más te costó reconocer.\\
+\end{tabularx}
+\normalsize
+
+\puente{Ya sabes que la minga organiza lo grande en partes. Ahora mira el mapa de la sesión: vas a recorrer esas mismas cuatro piezas, una por una, hasta resolver tu primer reto.}
+
+\begin{titlebox}{milcGradeDark}
+Ruta MILC: así vamos a aprender
+\end{titlebox}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Antes de nombrar las piezas, conviene verlas en acción. Empieza por observar una minga o una tarea de tu casa: las cuatro ya están ahí, escondidas.}
+
+\begin{titlebox}{milcVerde}
+Fase 1 · Escucha
+\end{titlebox}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Observa una minga} --- o recuerda una en la que hayas estado: un grupo arreglando una casa, organizando un bazar, preparando un sancocho para muchos. Fíjate \emph{cómo} se organizan sin un jefe que dé cada orden. ¿Quién hace qué? ¿Qué repiten porque «así funcionó la vez pasada»? ¿Qué detalles ignoran para no perderse? ¿En qué orden hacen las cosas? Sin saberlo, el grupo ya usa las cuatro piezas del pensamiento computacional.
+\end{softbox}
+
+\checkbox Nombraste al menos dos tareas pequeñas en que se partió la tarea grande (descomposición).\\
+\checkbox Señalaste algo que el grupo repitió porque «así funcionó antes» (patrón).\\
+\checkbox Identificaste un orden de pasos que el grupo siguió (algoritmo).
+
+\begin{infoband}{milcVerde}
+\textbf{En tu cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1 --- La minga que pienso». \textbf{Formato:} lista de 4 a 6 viñetas. \textbf{Extensión:} una viñeta por cosa observada (quién hace qué, qué se repite, qué se ignora, en qué orden). \textbf{Sabes que terminaste cuando} tu lista nombra, en lenguaje cotidiano, al menos tres de las cuatro piezas en la minga.
+\end{infoband}
+
+\puente{Acabas de ver las piezas en lo cotidiano. Ahora vamos a nombrarlas y entenderlas una a una, porque con ellas vas a resolver todo lo que sigue.}
+
+\begin{titlebox}{milcTurquesa}
+Fase 2 · Sistematización con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+El pensamiento computacional es la manera de resolver problemas que usa un computador --- y que tú ya usabas en la minga ---. No es magia ni requiere código: son \textbf{cuatro piezas} que, juntas, convierten un problema imposible en algo que sí se puede hacer. Aquí las nombramos una a una, con ejemplos de tu barrio.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
+1. Descomposición & \textbf{Partir lo grande en partes pequeñas} que sí puedes resolver. Levantar el techo se vuelve «cargar las tejas», «amarrar las vigas», «subir la escalera». En Bebras, una tarea que parece imposible se vuelve fácil al partirla.\\
+2. Reconocimiento de patrones & \textbf{Ver lo que se repite} para no resolver lo mismo dos veces. Si el bus de la ruta 2 siempre pasa a los minutos 00 y 30, ya sabes cuándo salir sin mirar el horario.\\
+3. Abstracción & \textbf{Quedarte con lo esencial} e ignorar el resto. Cuando dibujas cómo llegar a tu casa, no dibujas cada ladrillo: solo las calles y las esquinas que importan.\\
+4. Algoritmo conceptual & \textbf{Escribir los pasos exactos}, en el orden correcto. La receta del sancocho es un algoritmo: si cambias el orden o saltas un paso, el resultado cambia.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcTurquesa}{Cómo se piensa una tarea Bebras}
+\textbf{1. Lee sin afán} y subraya solo lo que importa (abstracción). \\[1mm] \textbf{2. Parte} el problema en preguntas pequeñas (descomposición). \\[1mm] \textbf{3. Busca} algo que se repita (patrones). \\[1mm] \textbf{4. Arma} los pasos hasta la respuesta (algoritmo). \\[1mm] \textbf{5. Si te trabas, pasa} a otra y vuelve después. En Bebras no gana quien calcula más rápido, sino quien \emph{piensa con más claridad}.
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{Querer resolver todo de un golpe:} el problema parece imposible solo porque no lo has partido. \textbf{Confundir abstraer con «resumir mal»:} abstraer es \emph{elegir} qué dato importa, no quitar al azar. \textbf{Creer que hay que programar:} Bebras se piensa, no se codifica.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+\textbf{En tu cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2 --- Las 4 piezas con mis palabras». \textbf{Formato:} tabla de 2 columnas (pieza · ejemplo de mi día). \textbf{Extensión:} las cuatro piezas, cada una con un ejemplo distinto a los del texto. \textbf{Sabes que terminaste cuando} un compañero entendería tus ejemplos sin que se los expliques.
+\end{infoband}
+
+\puente{Ya distingues las cuatro piezas. Es hora de usarlas: vas a resolver tu primer reto estilo Bebras aplicándolas a propósito.}
+
+\begin{titlebox}{milcMagenta}
+Fase 3 · Praxis con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+Las piezas no son adorno: se usan. Vas a resolver tu \textbf{primer reto estilo Bebras} aplicando las cuatro a propósito. Lee con calma --- la clave está en pensar por partes, no en adivinar.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
+Descomposición & \textbf{Descomposición:} parte el enunciado en datos y pregunta. ¿Qué te dan? ¿Qué te piden?\\
+Patrones & \textbf{Patrones:} busca algo que se repita --- una secuencia, un ciclo, una regla.\\
+Abstracción & \textbf{Abstracción:} ignora los datos de adorno; quédate con los que cambian la respuesta.\\
+Algoritmo de armado & \textbf{Algoritmo:} escribe, en orden, los pasos que te llevan del enunciado a la respuesta.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcMagenta}{El reto: el robot repartidor}
+\checkbox \textbf{Reto (Nivel A).} Un robot mira al \textbf{norte}. Recibe estas órdenes, en orden: \emph{avanza, gira a la derecha, avanza, gira a la derecha, avanza}. ¿Hacia dónde mira al final? \\[2mm]
+\checkbox Marca: \quad \fbox{\phantom{x}}~Norte \quad \fbox{\phantom{x}}~Sur \quad \fbox{\phantom{x}}~Este \quad \fbox{\phantom{x}}~Oeste \\[2mm]
+\checkbox Escribe \textbf{qué pieza} usaste para resolverlo y por qué.
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Resuélvelo paso a paso (algoritmo).} Empiezas mirando al \textbf{norte}. Cada «gira a la derecha» cambia el rumbo 90°: norte $\to$ este $\to$ sur. Los «avanza» mueven al robot, pero \emph{no} cambian el rumbo. Por eso, al final, el robot mira al \textbf{sur}. Pieza usada: \textbf{algoritmo} --- seguir pasos exactos, en orden.
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+\textbf{En tu cuaderno (Actividad 3 · APLICA).} Título: «Actividad 3 --- Mi primer reto Bebras». \textbf{Formato:} respuesta marcada + 3 renglones de explicación. \textbf{Extensión:} la respuesta y por qué, nombrando la pieza usada. \textbf{Sabes que terminaste cuando} tu explicación convencería a alguien que aún no sabe la respuesta.
+\end{infoband}
+
+\puente{Resolviste el reto. Ahora deja tu evidencia: el reto explicado y la tabla de las piezas en tu día, para mostrar que sabes pensar así.}
+
+\begin{titlebox}{milcMostaza}
+Producto de la sesión
+\end{titlebox}
+\textbf{Tu primer reto Bebras --- resuelto y explicado --- más la tabla «Las 4 piezas en mi día»}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) Resolviste el reto y marcaste la respuesta correcta (el sur). (2) Explicaste con tus palabras cómo lo pensaste, nombrando al menos una de las cuatro piezas. (3) Tu tabla «Las 4 piezas en mi día» tiene un ejemplo propio por cada pieza. (4) Distingues claramente descomponer de abstraer, sin confundirlos. (5) Tu trabajo muestra que entendiste que Bebras se piensa, no se programa.
+\end{softbox}
+
+\puente{Terminaste el producto. Detente a mirar qué cambió en ti --- no la nota, sino tu manera de pensar.}
+
+\begin{titlebox}{milcVino}
+Fase 4 · Evaluación liberadora — cinco dimensiones
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos pensando en grande: tres voces para entender qué significa, para ti y para tu comunidad, aprender a pensar como una máquina.}
+
+\begin{titlebox}{milcGradeDark}
+Triángulo de pensamiento · cierre filosófico
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{``El saber del pueblo también es ciencia.''}
+
+La minga ya organizaba el trabajo como un algoritmo --- partir, repetir, ordenar --- mucho antes de que existiera la palabra «computador». El pensamiento computacional no llegó de afuera: tu comunidad ya lo practicaba.
+
+\textbf{¿Qué saberes de mi familia o mi comunidad ya eran «pensar como una máquina», aunque nadie los llamara así?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
+\textit{``Tienes poder sobre tu mente, no sobre los hechos externos. Date cuenta de esto y hallarás la fuerza.''}
+
+Cuando un problema se ve enorme y el tiempo corre, no controlas el reloj, pero sí tu manera de enfrentarlo: respira, pártelo en pasos pequeños y empieza por el primero.
+
+\textbf{¿Puedo calmarme y partir un problema difícil en pasos pequeños, en vez de bloquearme?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{``Somos inforgs: organismos informacionales que habitan la infoesfera.''}
+
+Pensar es procesar información paso a paso. Aprender las cuatro piezas es entender cómo piensan las máquinas con las que ya convives --- y cómo piensas tú.
+
+\textbf{¿En qué se parece mi mente a la de un computador, y en qué es distinta?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{titlebox}{milcVino}
+Compromiso final
+\end{titlebox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
+Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
+Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
+Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
+Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
+Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
+\end{tabularx}
+\normalsize
+
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Caza las cuatro piezas en una tarea de tu casa --- cocinar, alistar el morral, organizar tu cuarto: pártela en pasos, marca dónde usas un patrón y dónde abstraes, y escríbelo. Trae un ejemplo para compartir con el grupo.
+\end{infoband}
+
+\end{document}

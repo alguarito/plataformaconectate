@@ -4,6 +4,7 @@ import Hero from '../components/Hero.astro';
 import GradoCard from '../components/GradoCard.astro';
 import ProgresoCard from '../components/ProgresoCard.astro';
 import { grados } from '../data/grados';
+import { programas, fgSobreBento } from '../data/explora';
 
 const base = import.meta.env.BASE_URL;
 
@@ -73,6 +74,74 @@ gradosConTotales.sort((a, b) => {
             enConstruccion={g.enConstruccion}
           />
         ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Espacio Explora -->
+  <section class="pb-20">
+    <div class="bento-container">
+      <div class="flex items-end justify-between mb-10 flex-wrap gap-4">
+        <div>
+          <span class="chip-bento mb-4">Espacio Explora</span>
+          <h2 class="heading-huge text-balance max-w-2xl">
+            Más allá del currículo.
+          </h2>
+        </div>
+        <a href={`${base}/explora`} class="btn-bento-outline shrink-0 hidden md:inline-flex">
+          Ver todos los programas
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6">
+        {programas.map((p, i) => {
+          const fgClass = fgSobreBento(p.bgClass);
+          const isActivo = p.estado === 'activo';
+          const colSpan =
+            i === 0 ? 'md:col-span-5' :
+            i === 1 ? 'md:col-span-4' :
+            i === 2 ? 'md:col-span-3' :
+            'md:col-span-6';
+          const minH = i < 3 ? 'min-h-[280px]' : 'min-h-[200px]';
+          const Wrapper = isActivo ? 'a' : 'div';
+          return (
+            <Wrapper
+              href={isActivo ? `${base}/explora/${p.slug}` : undefined}
+              class:list={[
+                'bento-card-color flex flex-col justify-between relative',
+                p.bgClass, colSpan, minH,
+                isActivo && 'group hover:shadow-bento-hover transition-shadow motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/40',
+                !isActivo && 'opacity-75 cursor-default',
+              ]}
+            >
+              {!isActivo && (
+                <span class="absolute top-4 right-4 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wide bg-black/25 text-white">
+                  Próximamente
+                </span>
+              )}
+              <div class="text-5xl mb-4" aria-hidden="true">{p.icono}</div>
+              <div>
+                {p.aliado && (
+                  <p class:list={['text-[11px] font-bold uppercase tracking-widest mb-1 opacity-70', fgClass]}>
+                    {p.aliado}
+                  </p>
+                )}
+                <h3 class:list={[
+                  'font-black tracking-tight mb-1',
+                  i < 3 ? 'text-xl md:text-2xl' : 'text-lg md:text-xl',
+                  fgClass,
+                ]}>{p.nombre}</h3>
+                <p class:list={['text-sm opacity-80 leading-snug', fgClass]}>{p.descripcion}</p>
+              </div>
+            </Wrapper>
+          );
+        })}
+      </div>
+
+      <div class="mt-6 flex justify-center md:hidden">
+        <a href={`${base}/explora`} class="btn-bento-outline">
+          Ver todos los programas
+        </a>
       </div>
     </div>
   </section>

@@ -1,0 +1,513 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import SaberAncestralBlock from '../../../../components/SaberAncestralBlock.astro';
+import MapaRutaBlock from '../../../../components/MapaRutaBlock.astro';
+import ActividadBlock from '../../../../components/ActividadBlock.astro';
+import LabEmparejar from '../../../../components/LabEmparejar.astro';
+import LabQuiz from '../../../../components/LabQuiz.astro';
+import TrianguloBlock from '../../../../components/TrianguloBlock.astro';
+import CincoDimensionesBlock from '../../../../components/CincoDimensionesBlock.astro';
+import MetodologiaMILC from '../../../../components/MetodologiaMILC.astro';
+import type { MetodologiaMILCData } from '../../../../components/MetodologiaMILC.astro';
+import type {
+  SaberAncestral,
+  EstacionMapa,
+  Actividad,
+  LabQuiz as LabQuizData,
+  Triangulo,
+  CincoDimensiones,
+} from '../../../../data/guiasContenido/_schema';
+import type { DataEmparejar } from '../../../../components/LabEmparejar.astro';
+import { getMomento } from '../../../../data/bebras';
+
+const base = import.meta.env.BASE_URL;
+const momento = getMomento('momento-0')!;
+const archivoOficial = 'https://www.bebras.org';
+
+const saberAncestral: SaberAncestral = {
+  saber:
+    'En las veredas del Valle del Cauca, cuando una tarea es demasiado grande para una sola familia —levantar el techo de una casa, limpiar una acequia tapada, recoger la cosecha antes de que llegue la lluvia—, se convoca una minga. La comunidad entera llega un sábado al amanecer y, sin que nadie reparta un manual, el trabajo se organiza solo: unos cargan, otros amarran, otros cocinan el sancocho para todos. El grupo parte la tarea enorme en partes pequeñas, repite lo que funcionó la vez pasada y sigue un orden que todos entienden. Al caer la tarde, lo que era imposible para uno ya está hecho entre muchos. La minga no necesita computadores: es la prueba de que resolver algo grande es, sobre todo, saber organizar partes pequeñas.',
+  fuente: 'Minga · tradición de trabajo colectivo campesina del Valle del Cauca',
+  preguntaPuente:
+    'En la minga, la comunidad resuelve un problema enorme partiéndolo en partes y siguiendo un orden acordado. ¿Y si te dijera que una máquina "piensa" exactamente igual — y que tú también lo haces, sin darte cuenta?',
+};
+
+const mapaRuta: EstacionMapa[] = [
+  { numero: 1, iconos: ['🌱'], titulo: 'La minga: pensar entre todos', duracionMin: 5 },
+  { numero: 2, iconos: ['📖'], titulo: 'Qué es Bebras y por qué sin código', duracionMin: 8 },
+  { numero: 3, iconos: ['📖'], titulo: 'Las 4 piezas del pensamiento computacional', duracionMin: 14 },
+  { numero: 4, iconos: ['🔎'], titulo: 'Relaciona cada pieza con su ejemplo', duracionMin: 6 },
+  { numero: 5, iconos: ['✅'], titulo: 'Comprueba lo que entendiste', duracionMin: 6 },
+  { numero: 6, iconos: ['✏️'], titulo: 'Caza las 4 piezas en tu día', duracionMin: 12 },
+  { numero: 7, iconos: ['🔎'], titulo: 'Simulacro: tu primer reto Bebras', duracionMin: 12 },
+  { numero: 8, iconos: ['💭'], titulo: 'Tres voces para cerrar', duracionMin: 6 },
+];
+
+// Las 4 piezas, para el bloque de lectura (antes del ejercicio de relacionar).
+const piezas = [
+  {
+    emoji: '🧩',
+    nombre: 'Descomposición',
+    texto:
+      'Partir un problema grande en partes pequeñas que sí puedes resolver. En la minga, levantar el techo se vuelve "cargar las tejas", "amarrar las vigas" y "subir la escalera".',
+  },
+  {
+    emoji: '🔁',
+    nombre: 'Reconocimiento de patrones',
+    texto:
+      'Notar lo que se repite para no resolver lo mismo dos veces. Si el bus de la ruta 2 siempre pasa a los minutos 00 y 30, ya sabes a qué hora salir sin mirar el horario.',
+  },
+  {
+    emoji: '🎯',
+    nombre: 'Abstracción',
+    texto:
+      'Quedarte con lo esencial e ignorar el resto. Cuando le dibujas a alguien cómo llegar a tu casa, no dibujas cada ladrillo: solo las calles y las esquinas que importan.',
+  },
+  {
+    emoji: '📋',
+    nombre: 'Algoritmos',
+    texto:
+      'Escribir los pasos exactos, en el orden correcto, para lograr algo. La receta del sancocho es un algoritmo: si cambias el orden o saltas un paso, el resultado cambia.',
+  },
+];
+
+const emparejarPiezas: DataEmparejar = {
+  titulo: 'Relaciona cada pieza con un ejemplo de tu día',
+  instrucciones:
+    'Acabas de conocer las 4 piezas. Conéctalas con una situación cotidiana distinta a las del texto.',
+  etiquetaIzq: 'Pieza',
+  etiquetaDer: 'Ejemplo de tu día',
+  pares: [
+    { izquierda: 'Descomposición', derecha: 'Repartir el aseo del salón por zonas entre todos' },
+    { izquierda: 'Patrones', derecha: 'Notar que las placas de las motos del barrio empiezan igual' },
+    { izquierda: 'Abstracción', derecha: 'Resumir una película a un amigo en tres frases' },
+    { izquierda: 'Algoritmos', derecha: 'Seguir, en orden, los pasos para armar un mueble' },
+  ],
+};
+
+const quiz: LabQuizData = {
+  tipo: 'quiz',
+  titulo: 'Comprueba lo que entendiste',
+  instrucciones: 'Cuatro preguntas sobre las 4 piezas. Cada una te deja una explicación.',
+  preguntas: [
+    {
+      enunciado: 'Partir un problema grande en partes pequeñas que sí puedes resolver se llama…',
+      opciones: ['Abstracción', 'Descomposición', 'Algoritmo', 'Patrón'],
+      respuestaIndex: 1,
+      feedbackCorrecto: 'Correcto. Descomponer es convertir un problema enorme en pasos manejables, como hace la minga.',
+      feedbackIncorrecto: 'Eso es descomposición: partir lo grande en partes pequeñas. Las demás piezas hacen otra cosa.',
+    },
+    {
+      enunciado: 'Dibujar un mapa con solo las calles que importan, sin cada detalle, es un ejemplo de…',
+      opciones: ['Abstracción', 'Patrón', 'Descomposición', 'Bucle'],
+      respuestaIndex: 0,
+      feedbackCorrecto: 'Sí: abstraer es quedarse con lo esencial e ignorar lo que no aporta a la solución.',
+      feedbackIncorrecto: 'Es abstracción: te quedas con lo esencial (las calles) e ignoras el resto (cada ladrillo).',
+    },
+    {
+      enunciado: 'En Bebras, lo más importante para resolver una tarea es…',
+      opciones: [
+        'Saber programar muy rápido',
+        'Tener la mejor calculadora',
+        'Pensar con claridad: descomponer, ver patrones, abstraer y ordenar pasos',
+        'Memorizar muchas fórmulas',
+      ],
+      respuestaIndex: 2,
+      feedbackCorrecto: 'Exacto. Bebras no se programa: se piensa. Las 4 piezas son tus herramientas.',
+      feedbackIncorrecto: 'Bebras no pide programar ni memorizar: pide pensar con claridad usando las 4 piezas.',
+    },
+    {
+      enunciado: 'Una receta de cocina, con sus pasos en orden exacto, es sobre todo un ejemplo de…',
+      opciones: ['Patrón', 'Algoritmo', 'Abstracción', 'Descomposición'],
+      respuestaIndex: 1,
+      feedbackCorrecto: 'Correcto: un algoritmo es una secuencia de pasos exactos en el orden correcto.',
+      feedbackIncorrecto: 'Es un algoritmo: pasos exactos en un orden que, si cambia, cambia el resultado.',
+    },
+  ],
+};
+
+const actividadCaza: Actividad = {
+  numero: 1,
+  verbo: 'IDENTIFICA',
+  titulo: 'Caza las 4 piezas en una tarea de tu día',
+  tiempoMin: 12,
+  modalidad: 'individual',
+  pasos: [
+    'Elige una tarea cotidiana que hagas tú: preparar el desayuno, alistar el morral, llegar al colegio o cuidar un cultivo.',
+    'Pártela en 3 o 4 pasos pequeños y escríbelos en orden (eso ya es un algoritmo).',
+    'Marca en cuáles pasos usas un patrón (algo que se repite) y en cuáles abstraes (ignoras detalles que no importan).',
+  ],
+  cuaderno: {
+    titulo: 'Las 4 piezas en mi día',
+    formato: 'tabla de 2 columnas: paso · pieza(s) que uso',
+    extension: '3 a 4 filas + una frase final',
+  },
+  criterios: [
+    'Partiste una tarea real en pasos pequeños y ordenados.',
+    'Señalaste al menos un patrón y una abstracción en tus pasos.',
+    'Tu frase final explica cuál de las 4 piezas te costó más reconocer.',
+  ],
+};
+
+const actividadExplica: Actividad = {
+  numero: 2,
+  verbo: 'EXPLICA',
+  titulo: 'Enséñale el pensamiento del castor a alguien menor',
+  tiempoMin: 10,
+  modalidad: 'individual',
+  pasos: [
+    'Imagina que le explicas a un niño de primaria qué es "pensar como una máquina".',
+    'Escoge una de las 4 piezas y explícala con un ejemplo de la casa o del barrio, sin usar palabras técnicas.',
+    'Cierra con una frase que conecte esa pieza con la minga o con un saber de tu familia.',
+  ],
+  cuaderno: {
+    titulo: 'Se lo explico a un niño',
+    formato: 'párrafo corto en lenguaje sencillo',
+    extension: '5 a 7 renglones',
+  },
+  criterios: [
+    'Escogiste una pieza y la explicaste con un ejemplo cotidiano, sin tecnicismos.',
+    'Un niño de primaria entendería tu explicación.',
+    'Conectaste la pieza con un saber de tu comunidad.',
+  ],
+};
+
+// Simulación: 3 retos estilo Bebras (originales), de fácil a difícil (A·B·C).
+const simulacro: LabQuizData = {
+  tipo: 'quiz',
+  titulo: 'Simulacro · tu primer reto Bebras',
+  instrucciones:
+    'Tres retos cortos, de fácil (A) a difícil (C), como en el concurso real. Lee con calma y razona por partes: la explicación te dice qué pieza usaste.',
+  preguntas: [
+    {
+      enunciado:
+        'Nivel A · Un robot mira al norte. Recibe estas órdenes en orden: avanza, gira a la derecha, avanza, gira a la derecha, avanza. ¿Hacia dónde mira al final?',
+      opciones: ['Al norte', 'Al sur', 'Al este', 'Al oeste'],
+      respuestaIndex: 1,
+      feedbackCorrecto:
+        'Correcto. Seguiste el algoritmo paso a paso: cada giro a la derecha cambia el rumbo 90°. Norte → este → sur. Los "avanza" no cambian el rumbo.',
+      feedbackIncorrecto:
+        'Sigue el orden exacto, como un algoritmo: norte → (gira derecha) este → (gira derecha) sur. Solo los giros cambian el rumbo.',
+    },
+    {
+      enunciado:
+        'Nivel B · Una manilla teje cuentas con este patrón que se repite: 🔴🔵🔵🟡 🔴🔵🔵🟡 … ¿De qué color es la cuenta número 10?',
+      opciones: ['Roja', 'Azul', 'Amarilla', 'Verde'],
+      respuestaIndex: 1,
+      feedbackCorrecto:
+        'Exacto. El patrón se repite cada 4 cuentas. La cuenta 10 cae en la misma posición que la 2 (al dividir 10 entre 4 sobran 2), y la segunda es azul.',
+      feedbackIncorrecto:
+        'Usa el patrón: se repite cada 4 cuentas. La 10 ocupa la misma posición que la 2 (10 ÷ 4 deja resto 2). La segunda cuenta es azul.',
+    },
+    {
+      enunciado:
+        'Nivel C · Ana, Bibi y Caro están en una fila. Ana no es la primera. Caro está justo detrás de Ana. ¿Quién es la primera?',
+      opciones: ['Ana', 'Bibi', 'Caro', 'No se puede saber'],
+      respuestaIndex: 1,
+      feedbackCorrecto:
+        'Correcto. Como Caro va justo detrás de Ana, Ana no puede ser la última; y no es la primera, así que va en el medio. Caro queda última y Bibi, primera.',
+      feedbackIncorrecto:
+        'Razónalo por partes: Caro va pegada detrás de Ana, así que Ana no es la última. Y no es la primera → Ana va en el medio, Caro última y Bibi primera.',
+    },
+  ],
+};
+
+const metodologia: MetodologiaMILCData = {
+  resumen:
+    'Este es el momento de arranque: no se compite todavía. La meta es que el grupo reconozca las 4 piezas del pensamiento computacional, entienda el espíritu de Bebras (pensar, no programar) y que tú diagnostiques el nivel del salón con el simulacro final. Apóyate en la minga para activar saberes previos: casi todos ya descomponen y ven patrones sin saber que se llaman así.',
+  objetivos: [
+    'Activar el saber previo del grupo conectando el pensamiento computacional con la minga y los oficios de la comunidad.',
+    'Instalar el vocabulario común de las 4 piezas (descomposición, patrones, abstracción, algoritmos).',
+    'Diagnosticar el nivel del salón con el simulacro A·B·C, sin nota, para planear los momentos siguientes.',
+  ],
+  secuencia: [
+    { paso: 'Apertura con la minga: pregunta quién ha participado en una y cómo se organizó el trabajo.', tiempo: '5 min' },
+    { paso: 'Presenta Bebras y desarrolla las 4 piezas con los ejemplos del barrio; pide más ejemplos al grupo.', tiempo: '20 min' },
+    { paso: 'Resuelvan juntos el ejercicio de relacionar y el quiz; comenta cada respuesta.', tiempo: '12 min' },
+    { paso: 'Actividad de cuaderno (caza las 4 piezas): trabajo individual y puesta en común.', tiempo: '12 min' },
+    { paso: 'Simulacro diagnóstico A·B·C: que lo resuelvan solos; recoge en qué nivel se traban.', tiempo: '12 min' },
+    { paso: 'Cierre filosófico (tres voces) y las cinco dimensiones, en conversación.', tiempo: '6 min' },
+  ],
+  evaluacion:
+    'Formativa: el ejercicio de relacionar y el quiz dan señal inmediata de comprensión. El simulacro NO se califica con nota: es diagnóstico. La evidencia evaluable es la actividad de cuaderno, con sus tres criterios observables.',
+  diferenciacion:
+    'En 6.º y 7.º quédate en los niveles A y B y acepta el razonamiento oral. En 8.º y 9.º exige también el C. En 10.º y 11.º pide además que justifiquen por escrito qué pieza usaron en cada reto. El simulacro con niveles A·B·C permite atender a todo el salón con un mismo reto.',
+};
+
+const triangulo: Triangulo = {
+  dussel: {
+    autor: 'Enrique Dussel',
+    lente: 'lente del nosotros',
+    cita: 'El saber del pueblo también es ciencia: la minga ya organizaba el trabajo como un algoritmo, mucho antes de que existiera la palabra.',
+    preguntaEspejo:
+      'Nos dicen que "pensar como un computador" es cosa de otros países. ¿Qué saberes de mi familia o mi comunidad ya eran pensamiento computacional, aunque nadie los llamara así?',
+  },
+  estoico: {
+    autor: 'Marco Aurelio',
+    lente: 'lente del cuidado interior',
+    cita: 'Tienes poder sobre tu mente, no sobre los hechos externos. Date cuenta de esto y hallarás la fuerza.',
+    preguntaEspejo:
+      'Cuando un problema se ve enorme y el tiempo corre, ¿puedo calmarme y partirlo en pasos pequeños, en vez de bloquearme?',
+  },
+  floridi: {
+    autor: 'Luciano Floridi',
+    lente: 'lente de la infoesfera',
+    cita: 'Somos inforgs: organismos hechos de información que habitan la infoesfera.',
+    preguntaEspejo:
+      'Si pensar es procesar información paso a paso, ¿en qué se parece mi mente a la de un computador y en qué es distinta?',
+  },
+};
+
+const cincoDimensiones: CincoDimensiones = {
+  personal:
+    'Descubriste que ya sabías pensar por partes, ver patrones y seguir planes. Ahora les pones nombre y los usas a propósito.',
+  emocional:
+    'Un reto difícil puede dar susto. Partirlo en pasos pequeños cambia el "no puedo" por "puedo intentar el primer paso".',
+  ciudadana:
+    'El pensamiento computacional es de todos y para todos: no se compra ni se patenta. Compartir cómo resolviste también es ciudadanía.',
+  local:
+    'Desde Cartago puedes entrar a un reto mundial. Las mismas 4 piezas que usa tu comunidad en la minga te abren esa puerta.',
+  intergeneracional:
+    'Tus mayores resolvían problemas enormes en comunidad, sin computador. Tú heredas ese arte y lo llevas a un lenguaje nuevo.',
+};
+---
+
+<BaseLayout
+  title="Momento 0 · El castor que piensa — Bebras · ConectaTE"
+  description="Qué es Bebras y las 4 piezas del pensamiento computacional: descomposición, patrones, abstracción y algoritmos. Momento de arranque del curso «Pensar como una máquina», con la minga como saber ancestral y un primer simulacro estilo Bebras."
+  ogType="article"
+>
+  <article class="pt-12 pb-20">
+    <div class="bento-container max-w-5xl">
+      <div class="max-w-3xl mx-auto">
+        <!-- Breadcrumb -->
+        <nav class="flex items-center gap-2 text-sm font-semibold mb-8 flex-wrap" style="color: var(--fg-muted);">
+          <a href={base || '/'} class="hover:opacity-60 transition-opacity">Inicio</a>
+          <span>/</span>
+          <a href={`${base}/explora`} class="hover:opacity-60 transition-opacity">Explora</a>
+          <span>/</span>
+          <a href={`${base}/explora/bebras`} class="hover:opacity-60 transition-opacity">Bebras</a>
+          <span>/</span>
+          <span style="color: var(--fg);">Momento 0</span>
+        </nav>
+
+        <!-- ① PRESENTACIÓN -->
+        <div class="flex items-center gap-3 mb-6">
+          <span class="w-8 h-8 rounded-full bg-bento-lime text-neutral-950 flex items-center justify-center text-sm font-black shrink-0" aria-hidden="true">1</span>
+          <span class="font-black text-lg">Presentación</span>
+          <span class="flex-1 h-0.5 rounded-full" style="background: var(--border);"></span>
+        </div>
+
+        <!-- Hero -->
+        <div class="bento-card-color bg-bento-blue text-white mb-10">
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">Momento {momento.numero} · {momento.dominio}</span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">🧠 {momento.verbo}</span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">~{momento.tiempo}</span>
+          </div>
+          <h1 class="heading-giant text-balance mb-3">{momento.nombre}</h1>
+          <p class="text-base md:text-lg font-semibold opacity-95 leading-relaxed">
+            Un castor no estudió ingeniería, pero construye represas que resisten
+            las crecientes. Antes de tu primer reto, descubre las 4 piezas con las
+            que piensa — y con las que tú ya piensas.
+          </p>
+        </div>
+
+        <!-- 🌱 Saber ancestral -->
+        <SaberAncestralBlock data={saberAncestral} etiqueta="Saber ancestral" />
+
+        <!-- 🗺 Ruta -->
+        <MapaRutaBlock estaciones={mapaRuta} />
+
+        <!-- Propósito -->
+        <div class="bento-card mb-6">
+          <span class="chip-bento mb-4">🎯 Lo que vas a poder hacer</span>
+          <ul class="space-y-3 mt-3">
+            {[
+              'IDENTIFICAR las 4 piezas del pensamiento computacional.',
+              'EXPLICAR con tus palabras qué hace cada pieza, con un ejemplo de tu vida.',
+              'RECONOCER el espíritu de Bebras: pensar con claridad, no programar.',
+              'APLICAR las 4 piezas para resolver tu primer reto estilo Bebras.',
+            ].map((d) => (
+              <li class="flex items-start gap-3">
+                <span class="w-6 h-6 rounded-md bg-bento-lime/30 text-black flex items-center justify-center text-xs font-black shrink-0 mt-0.5">✓</span>
+                <span class="text-sm md:text-base leading-relaxed">{d}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <!-- Pregunta detonante -->
+        <div class="bento-card-color bg-bento-cyan mb-10">
+          <span class="chip-bento mb-3 bg-black/10">💡 La pregunta que abre todo</span>
+          <p class="text-lg md:text-xl font-black leading-snug">
+            ¿Qué tienen en común un castor que levanta una represa, una minga que
+            arma un techo en un día y un computador que ordena mil nombres en un
+            segundo?
+          </p>
+          <p class="text-sm leading-relaxed mt-3 opacity-90">
+            Los tres usan las mismas 4 piezas para pensar. Al terminar vas a
+            reconocerlas — y a usarlas tú mismo.
+          </p>
+        </div>
+
+        <!-- ② GUÍA -->
+        <div class="flex items-center gap-3 mb-6">
+          <span class="w-8 h-8 rounded-full bg-bento-lime text-neutral-950 flex items-center justify-center text-sm font-black shrink-0" aria-hidden="true">2</span>
+          <span class="font-black text-lg">Guía</span>
+          <span class="flex-1 h-0.5 rounded-full" style="background: var(--border);"></span>
+        </div>
+
+        <!-- 📖 LEE 1 · Qué es Bebras -->
+        <section class="bento-card mb-6">
+          <span class="chip-bento mb-4">📖 Lee · ¿Qué es Bebras?</span>
+          <div class="space-y-4 text-sm md:text-base leading-relaxed">
+            <p>
+              <strong>Bebras</strong> significa «castor» en lituano. Es un reto que cada
+              año reúne a millones de estudiantes en más de 50 países: 45 minutos,
+              unas 15 tareas cortas e ingeniosas. Lo sorprendente es que
+              <strong>no se programa nada</strong>: se resuelven con la cabeza, con lógica y
+              un poco de astucia.
+            </p>
+            <p>
+              ¿Por qué un castor? Porque el castor construye obras complejas sin que
+              nadie le enseñe ingeniería: observa, prueba y organiza. Eso es justo lo
+              que Bebras quiere despertar en ti. Aquí lo importante no es la respuesta
+              correcta, sino <strong>cómo</strong> la pensaste.
+            </p>
+          </div>
+        </section>
+
+        <!-- Puente -->
+        <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+          ¿Y cómo se piensa una tarea Bebras? Con cuatro herramientas. Léelas con
+          calma: con ellas vas a resolver todo lo que sigue.
+        </p>
+
+        <!-- 📖 LEE 2 · Las 4 piezas -->
+        <section class="bento-card mb-6">
+          <span class="chip-bento mb-4">📖 Lee · Las 4 piezas del pensamiento computacional</span>
+          <p class="text-sm md:text-base leading-relaxed mb-4">
+            El pensamiento computacional es la forma de resolver problemas que usa un
+            computador — y que tú ya usas sin saberlo. Tiene cuatro piezas:
+          </p>
+          <ul class="space-y-3">
+            {piezas.map((p) => (
+              <li class="flex items-start gap-3 p-3 rounded-bento-sm" style="background: var(--bg);">
+                <span class="text-2xl shrink-0" aria-hidden="true">{p.emoji}</span>
+                <span class="text-sm md:text-base leading-relaxed"><strong>{p.nombre}:</strong> {p.texto}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <!-- 🔎 Relaciona (después de leer las piezas) -->
+        <div class="mb-6">
+          <LabEmparejar data={emparejarPiezas} id="bebras-m0-empareja-piezas" />
+        </div>
+
+        <!-- Puente -->
+        <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+          Ya distingues las 4 piezas. Comprueba que de verdad las tienes claras
+          antes de usarlas.
+        </p>
+
+        <!-- ✅ Quiz -->
+        <div class="mb-6">
+          <LabQuiz data={quiz} id="bebras-m0-quiz" />
+        </div>
+
+        <!-- Puente -->
+        <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+          Las piezas no sirven de adorno: se usan. Lleva las 4 a una tarea tuya y
+          luego enséñaselas a alguien.
+        </p>
+
+        <!-- ✏️ Actividades -->
+        <ActividadBlock data={actividadCaza} />
+        <ActividadBlock data={actividadExplica} />
+
+        <!-- ③ METODOLOGÍA MILC (docente) -->
+        <div class="flex items-center gap-3 mt-10 mb-6">
+          <span class="w-8 h-8 rounded-full bg-bento-lime text-neutral-950 flex items-center justify-center text-sm font-black shrink-0" aria-hidden="true">3</span>
+          <span class="font-black text-lg">Metodología MILC</span>
+          <span class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">para el docente</span>
+          <span class="flex-1 h-0.5 rounded-full" style="background: var(--border);"></span>
+        </div>
+
+        <MetodologiaMILC data={metodologia} />
+
+        <!-- ④ SIMULACIÓN -->
+        <div class="flex items-center gap-3 mt-10 mb-6">
+          <span class="w-8 h-8 rounded-full bg-bento-lime text-neutral-950 flex items-center justify-center text-sm font-black shrink-0" aria-hidden="true">4</span>
+          <span class="font-black text-lg">Simulación</span>
+          <span class="flex-1 h-0.5 rounded-full" style="background: var(--border);"></span>
+        </div>
+
+        <!-- Puente -->
+        <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+          Ya tienes las herramientas. Pruébate como en el concurso real: tres retos
+          de fácil a difícil. Sin afán — lo que importa es cómo lo piensas.
+        </p>
+
+        <!-- 🔎 Simulacro -->
+        <div class="mb-4">
+          <LabQuiz data={simulacro} id="bebras-m0-simulacro" />
+        </div>
+
+        <!-- Nota de atribución de tareas -->
+        <p class="text-xs leading-relaxed mb-10 px-1" style="color: var(--fg-muted);">
+          Estos tres retos son <strong style="color: var(--fg);">originales, al estilo Bebras</strong>, para tu
+          primer contacto. Las tareas reales de años anteriores —de todos los
+          países— están en el archivo oficial:
+          <a href={archivoOficial} target="_blank" rel="noopener" class="font-bold text-bento-blue hover:opacity-70 transition-opacity">bebras.org</a>.
+        </p>
+
+        <!-- Puente al cierre -->
+        <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+          Reconociste las 4 piezas y resolviste tu primer reto. Cerremos pensando
+          qué significa, para ti, aprender a pensar así.
+        </p>
+      </div>
+
+      <!-- 💭 Triángulo (ancho completo) -->
+      <TrianguloBlock data={triangulo} />
+
+      <!-- 🌱 Cinco dimensiones (ancho completo) -->
+      <CincoDimensionesBlock data={cincoDimensiones} />
+
+      <div class="max-w-3xl mx-auto">
+        <!-- Créditos -->
+        <div class="bento-card mb-10 border-l-4 border-bento-lime">
+          <span class="chip-bento mb-3">🦫 Créditos</span>
+          <p class="text-sm leading-relaxed mt-2" style="color: var(--fg-muted);">
+            Este momento adapta al modelo MILC la preparación para el reto
+            <strong style="color: var(--fg);">Bebras</strong>, iniciativa internacional creada por Valentina
+            Dagienė (Universidad de Vilnius, Lituania, 2004). Las tareas originales
+            son de Bebras International y sus organizadores nacionales.
+          </p>
+          <a href={archivoOficial} target="_blank" rel="noopener" class="inline-flex items-center gap-2 mt-4 font-black text-sm text-bento-blue hover:opacity-70 transition-opacity">
+            Ver el sitio oficial y el archivo de tareas
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+          </a>
+        </div>
+
+        <!-- Volver -->
+        <a href={`${base}/explora/bebras`} class="bento-card-hover flex items-center gap-4">
+          <svg class="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5"></path>
+            <path d="m12 19-7-7 7-7"></path>
+          </svg>
+          <div>
+            <div class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">Volver al programa</div>
+            <div class="font-black text-lg">Bebras</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </article>
+</BaseLayout>

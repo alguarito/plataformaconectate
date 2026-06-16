@@ -60,7 +60,7 @@ export const momentos: MomentoBebras[] = [
     saberAncestral: 'La minga: organizar entre todos una tarea grande es pensar como una máquina, sin computador.',
     verbo: 'IDENTIFICA',
     tiempo: '45 min',
-    estado: 'proximamente',
+    estado: 'activo',
   },
   {
     slug: 'momento-1',

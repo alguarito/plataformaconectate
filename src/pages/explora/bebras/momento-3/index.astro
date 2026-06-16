@@ -1,0 +1,539 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import SaberAncestralBlock from '../../../../components/SaberAncestralBlock.astro';
+import MapaRutaBlock from '../../../../components/MapaRutaBlock.astro';
+import ActividadBlock from '../../../../components/ActividadBlock.astro';
+import LabEmparejar from '../../../../components/LabEmparejar.astro';
+import LabQuiz from '../../../../components/LabQuiz.astro';
+import TrianguloBlock from '../../../../components/TrianguloBlock.astro';
+import CincoDimensionesBlock from '../../../../components/CincoDimensionesBlock.astro';
+import MetodologiaMILC from '../../../../components/MetodologiaMILC.astro';
+import type { MetodologiaMILCData } from '../../../../components/MetodologiaMILC.astro';
+import type {
+  SaberAncestral,
+  EstacionMapa,
+  Actividad,
+  LabQuiz as LabQuizData,
+  Triangulo,
+  CincoDimensiones,
+} from '../../../../data/guiasContenido/_schema';
+import type { DataEmparejar } from '../../../../components/LabEmparejar.astro';
+import { getMomento } from '../../../../data/bebras';
+
+const base = import.meta.env.BASE_URL;
+const momento = getMomento('momento-3')!;
+const archivoOficial = 'https://www.bebras.org';
+
+const saberAncestral: SaberAncestral = {
+  saber:
+    'En el campo del Valle del Cauca, cuando un campesino te explica cómo llegar a su finca en la vereda, no te describe cada piedra del camino ni cada árbol del cafetal. Te da solo lo esencial: «pasas la tienda de doña Rosa, coges la trocha de la derecha, y en el guayacán grande volteas». Tres señas, y ya sabes llegar. No te menciona el color de la casa vecina, ni cuántos postes de luz hay, ni el perro que ladra en la curva, porque nada de eso te ayuda a no perderte. Ese campesino hace, sin nombrarlo, un trabajo finísimo: separa las pocas señas que de verdad importan del montón de detalles que solo serían ruido. Limpiar el camino hasta dejar lo justo —ni una seña de más, ni una de menos— es abstracción pura, heredada en la tradición oral mucho antes de que existieran los mapas digitales.',
+  fuente: 'Saber campesino del Valle del Cauca · tradición oral',
+  preguntaPuente:
+    'El campesino abstrae el camino: ignora el ruido y conserva solo lo que importa. ¿Y si te dijera que un computador hace exactamente eso con un modelo — y que en muchas tareas Bebras lo más difícil no es calcular, sino saber CUÁLES datos importan?',
+};
+
+const mapaRuta: EstacionMapa[] = [
+  { numero: 1, iconos: ['🌱'], titulo: 'Las señas de la vereda', duracionMin: 5 },
+  { numero: 2, iconos: ['📖'], titulo: 'Qué es abstraer y por qué ayuda', duracionMin: 12 },
+  { numero: 3, iconos: ['🔎'], titulo: 'Relaciona cada cosa con su abstracción', duracionMin: 6 },
+  { numero: 4, iconos: ['✅'], titulo: 'Comprueba lo que entendiste', duracionMin: 6 },
+  { numero: 5, iconos: ['✏️'], titulo: 'Modela algo complejo a lo esencial', duracionMin: 14 },
+  { numero: 6, iconos: ['🔎'], titulo: 'Simulacro: ignora el ruido', duracionMin: 12 },
+  { numero: 7, iconos: ['💭'], titulo: 'Tres voces para cerrar', duracionMin: 6 },
+];
+
+// Ejemplos cotidianos de abstracción, para el bloque de lectura (antes del ejercicio de relacionar).
+const ejemplos = [
+  {
+    emoji: '🗺',
+    nombre: 'El mapa del barrio',
+    texto:
+      'Un mapa de tu barrio en Cartago no dibuja cada ladrillo ni cada ventana: solo las calles, las esquinas y unos pocos puntos clave. Quitó todo lo que no te ayuda a llegar. Eso es un modelo: la realidad reducida a lo que importa para una tarea.',
+  },
+  {
+    emoji: '🔤',
+    nombre: 'Los íconos y emojis',
+    texto:
+      'Un ícono de batería, una señal de «pare» o un emoji guardan una idea entera en un solo símbolo. No muestran todos los detalles de la cosa real: muestran lo justo para que la entiendas de un vistazo.',
+  },
+  {
+    emoji: '🚌',
+    nombre: 'El plano de las rutas de bus',
+    texto:
+      'El plano de las rutas que cruzan Cartago no respeta las distancias reales ni cada curva de la vía: estira y endereza todo para que veas con claridad qué ruta te sirve. Sacrifica la exactitud del terreno a cambio de claridad.',
+  },
+  {
+    emoji: '🎬',
+    nombre: 'El resumen de una película',
+    texto:
+      'Cuando le cuentas una película a un amigo en tres frases, no narras escena por escena: te quedas con lo esencial de la historia. Abstraer es decidir qué se queda y qué se va.',
+  },
+];
+
+const emparejarAbstracciones: DataEmparejar = {
+  titulo: 'Relaciona cada cosa real con su buena abstracción',
+  instrucciones:
+    'Acabas de ver que abstraer es quedarse con lo esencial. Conecta cada cosa del mundo real con el símbolo o modelo que la representa bien para una tarea concreta.',
+  etiquetaIzq: 'Cosa real',
+  etiquetaDer: 'Su abstracción útil',
+  pares: [
+    { izquierda: 'Cómo llegar a la finca en la vereda', derecha: 'Tres señas: la tienda, la trocha y el guayacán' },
+    { izquierda: 'Todas las calles y casas de Cartago', derecha: 'Un mapa con solo calles y puntos clave' },
+    { izquierda: 'La carga que queda en tu celular', derecha: 'Un ícono de batería con su nivel' },
+    { izquierda: 'Una película de dos horas', derecha: 'Un resumen de tres frases' },
+  ],
+};
+
+const quiz: LabQuizData = {
+  tipo: 'quiz',
+  titulo: 'Comprueba lo que entendiste',
+  instrucciones: 'Cuatro preguntas sobre la abstracción. Cada una te deja una explicación.',
+  preguntas: [
+    {
+      enunciado: 'Abstraer significa, sobre todo…',
+      opciones: [
+        'Guardar todos los detalles para no perder nada',
+        'Quedarte con lo esencial e ignorar lo que no importa',
+        'Hacer las cosas más complicadas',
+        'Memorizar muchos datos de una vez',
+      ],
+      respuestaIndex: 1,
+      feedbackCorrecto: 'Correcto. Abstraer es limpiar el ruido y conservar solo lo esencial, como las señas del campesino.',
+      feedbackIncorrecto: 'Abstraer es lo contrario de guardar todo: es quedarse con lo esencial e ignorar el resto.',
+    },
+    {
+      enunciado: 'Un mapa del barrio con solo las calles y las esquinas es un ejemplo de…',
+      opciones: ['Un modelo (abstracción de la realidad)', 'Una copia exacta de la realidad', 'Un dato irrelevante', 'Un cálculo'],
+      respuestaIndex: 0,
+      feedbackCorrecto: 'Sí: un mapa es un modelo. Representa lo complejo (todo el barrio) con lo esencial (calles y puntos clave).',
+      feedbackIncorrecto: 'Es un modelo: una abstracción de la realidad. No es una copia exacta, porque deja por fuera casi todo a propósito.',
+    },
+    {
+      enunciado: 'Por qué abstraer ayuda a pensar mejor?',
+      opciones: [
+        'Porque agrega más detalles al problema',
+        'Porque con menos ruido es más fácil concentrarse en lo que importa',
+        'Porque hace los problemas más largos',
+        'Porque obliga a memorizar todo',
+      ],
+      respuestaIndex: 1,
+      feedbackCorrecto: 'Exacto. Menos ruido = más claridad. Por eso un buen modelo simple te deja resolver más rápido.',
+      feedbackIncorrecto: 'Abstraer quita ruido, no lo agrega. Con menos detalles que estorban, piensas con más claridad.',
+    },
+    {
+      enunciado: 'En muchas tareas Bebras te dan datos de sobra. Abstraer, ahí, es…',
+      opciones: [
+        'Usar todos los datos sin excepción',
+        'Saber cuáles datos importan para la pregunta y cuáles son ruido',
+        'Responder lo más rápido posible',
+        'Elegir siempre el número más grande',
+      ],
+      respuestaIndex: 1,
+      feedbackCorrecto: 'Correcto. La tarea trae ruido a propósito: tu trabajo es separar los datos que sí responden la pregunta.',
+      feedbackIncorrecto: 'No todos los datos sirven: muchas tareas traen ruido a propósito. Abstraer es elegir los que sí importan.',
+    },
+  ],
+};
+
+const actividadExplica: Actividad = {
+  numero: 1,
+  verbo: 'EXPLICA',
+  titulo: 'Explica qué conservarías y qué ignorarías para hacer un modelo simple',
+  tiempoMin: 14,
+  modalidad: 'individual',
+  pasos: [
+    'Escoge algo complejo que conozcas bien: tu colegio, la receta del sancocho de tu casa o un partido de fútbol del barrio.',
+    'Imagina que tienes que explicárselo a alguien en pocas frases, como las señas de la vereda.',
+    'Decide qué pocas cosas conservarías (lo esencial) y qué montón de detalles ignorarías (el ruido), y escríbelo con tus palabras.',
+  ],
+  cuaderno: {
+    titulo: 'Lo esencial y el ruido',
+    formato: 'párrafo + dos listas cortas (conservo · ignoro)',
+    extension: '6 a 8 renglones y 3 ítems en cada lista',
+  },
+  criterios: [
+    'Elegiste algo complejo y nombraste lo esencial que conservarías.',
+    'Listaste detalles concretos que ignorarías por ser ruido.',
+    'Explicaste, en una frase, por qué eso que conservaste es lo que de verdad importa.',
+  ],
+};
+
+const actividadCrea: Actividad = {
+  numero: 2,
+  verbo: 'CREA',
+  titulo: 'Dibuja un mapa o un ícono que abstraiga un lugar de tu barrio',
+  tiempoMin: 12,
+  modalidad: 'individual',
+  pasos: [
+    'Elige un lugar o una idea de tu barrio: la ruta de tu casa al colegio, la cancha, la tienda de la esquina o el parque.',
+    'Dibújalo en tu cuaderno como un mapa o un ícono, conservando solo lo esencial: nada de detalles que no ayuden a entenderlo.',
+    'Agrega una leyenda corta que explique qué representa cada seña o símbolo de tu dibujo.',
+  ],
+  cuaderno: {
+    titulo: 'Mi mapa de lo esencial',
+    formato: 'dibujo (mapa o ícono) + leyenda',
+    extension: 'un dibujo y 3 a 5 líneas de leyenda',
+  },
+  criterios: [
+    'Tu dibujo conserva solo lo esencial y deja por fuera el ruido.',
+    'Cualquiera de tu barrio entendería el lugar o la idea con tu dibujo.',
+    'La leyenda explica qué representa cada seña o símbolo.',
+  ],
+};
+
+// Simulación: 3 retos estilo Bebras (originales), de fácil a difícil (A·B·C).
+const simulacro: LabQuizData = {
+  tipo: 'quiz',
+  titulo: 'Simulacro · ignora el ruido',
+  instrucciones:
+    'Tres retos cortos, de fácil (A) a difícil (C), como en el concurso real. El secreto es el mismo en los tres: quédate con lo esencial e ignora lo que no importa. La explicación te dice cuál era el ruido.',
+  preguntas: [
+    {
+      enunciado:
+        'Nivel A · Quieres saber a qué hora salir de tu casa para alcanzar el bus de las 7:00 a.m. Para resolverlo, ¿cuál de estos datos es IRRELEVANTE (puro ruido)?',
+      opciones: [
+        'Cuántos minutos tardas caminando hasta el paradero',
+        'El color del bus',
+        'La hora a la que pasa el bus',
+        'A qué hora quieres llegar al paradero',
+      ],
+      respuestaIndex: 1,
+      feedbackCorrecto:
+        'Correcto. El color del bus no cambia nada: para calcular cuándo salir solo importan la hora del bus y lo que tardas en llegar al paradero. El color es ruido.',
+      feedbackIncorrecto:
+        'Piensa qué necesitas de verdad: la hora del bus y cuánto tardas caminando. El color del bus no afecta ese cálculo — ese es el dato irrelevante.',
+    },
+    {
+      enunciado:
+        'Nivel B · Llega un visitante a Cartago y debes darle un mapa para que se guíe solo por el centro. ¿Cuál mapa le sirve MÁS?',
+      opciones: [
+        'Un mapa que dibuja cada casa, cada poste y cada árbol del centro',
+        'Un mapa con solo las calles principales y unos pocos puntos clave (la plaza, la iglesia, el terminal)',
+        'Un mapa en blanco, sin ninguna calle',
+        'Una foto satelital con todos los techos pero sin nombres de calles',
+      ],
+      respuestaIndex: 1,
+      feedbackCorrecto:
+        'Exacto. El mejor modelo no es el más detallado, sino el que deja lo esencial para guiarse: calles principales y puntos clave. El mapa con cada casa abruma; la foto sin nombres no orienta.',
+      feedbackIncorrecto:
+        'El mapa con cada detalle abruma y la foto sin nombres no orienta. Una buena abstracción conserva solo lo esencial: las calles principales y unos puntos clave.',
+    },
+    {
+      enunciado:
+        'Nivel C · En una tienda de Cartago, una gaseosa cuesta $2.500, hay 7 sabores y el local abre a las 8 a.m. Si compras 3 gaseosas, ¿cuánto pagas en total?',
+      opciones: ['$5.000', '$7.500', '$10.000', '$17.500'],
+      respuestaIndex: 1,
+      feedbackCorrecto:
+        'Correcto: 3 × $2.500 = $7.500. Los 7 sabores y la hora de apertura eran ruido — datos que se ven útiles pero no entran en el cálculo. Abstraer fue ignorarlos.',
+      feedbackIncorrecto:
+        'Solo importan el precio ($2.500) y la cantidad (3): 3 × $2.500 = $7.500. Los 7 sabores y la hora de apertura eran ruido para distraerte; ignóralos.',
+    },
+  ],
+};
+
+const metodologia: MetodologiaMILCData = {
+  resumen:
+    'Este momento trabaja la abstracción: quedarse con lo esencial e ignorar el ruido. Es la pieza que más se confunde con «resumir», así que el eje es práctico: modelar algo conocido y, sobre todo, detectar datos distractores en problemas. El simulacro Nivel C es la prueba clave —un enunciado con números de sobra— porque revela quién calcula a ciegas y quién primero decide cuáles datos importan. Apóyate en las señas de la vereda: casi todos en el salón ya han dado o recibido indicaciones así, sin saber que eso era abstracción.',
+  objetivos: [
+    'Definir abstracción como quedarse con lo esencial e ignorar lo irrelevante, conectándola con las indicaciones para llegar a una vereda.',
+    'Explicar con palabras propias qué conservar y qué ignorar al construir un modelo simple de algo complejo.',
+    'Detectar y descartar datos distractores (ruido) en problemas con información de sobra, como en muchas tareas Bebras.',
+  ],
+  secuencia: [
+    { paso: 'Apertura con las señas de la vereda: pide a alguien que explique cómo llegar a su casa y cuenten cuántas señas usó.', tiempo: '5 min' },
+    { paso: 'Desarrolla qué es abstraer con los ejemplos del barrio (mapa, íconos, rutas de bus); pide más ejemplos al grupo.', tiempo: '12 min' },
+    { paso: 'Resuelvan juntos el ejercicio de relacionar y el quiz; comenta por qué cada abstracción conserva lo esencial.', tiempo: '12 min' },
+    { paso: 'Actividades de cuaderno (modela y dibuja): trabajo individual y puesta en común de uno o dos mapas.', tiempo: '14 min' },
+    { paso: 'Simulacro A·B·C: insiste en que primero identifiquen el ruido y luego respondan; recoge dónde se traban.', tiempo: '12 min' },
+    { paso: 'Cierre filosófico (tres voces) y las cinco dimensiones, en conversación.', tiempo: '6 min' },
+  ],
+  evaluacion:
+    'Formativa: el ejercicio de relacionar y el quiz dan señal inmediata. El simulacro NO se califica con nota: sirve para ver quién separa lo esencial del ruido. La evidencia evaluable son las dos actividades de cuaderno (EXPLICA y CREA), cada una con sus criterios observables; el mapa de la actividad 2 muestra de un vistazo si el estudiante logró abstraer.',
+  diferenciacion:
+    'En 6.º y 7.º quédate en los niveles A y B y acepta el razonamiento oral; basta con que nombren el dato de ruido. En 8.º y 9.º exige también el C y que digan en voz alta cuáles datos ignoraron. En 10.º y 11.º pide que justifiquen por escrito, en cada reto, qué conservaron y qué descartaron y por qué. El Nivel C con datos distractores permite subir o bajar la exigencia con un mismo enunciado.',
+};
+
+const triangulo: Triangulo = {
+  dussel: {
+    autor: 'Enrique Dussel',
+    lente: 'lente del nosotros',
+    cita: 'Dar buenas señas para llegar a una vereda ya era abstraer: el saber campesino limpiaba el camino hasta dejar lo esencial, mucho antes de que llegaran los mapas digitales.',
+    preguntaEspejo:
+      'Nos hacen creer que «hacer modelos» es cosa de ingenieros con pantallas. ¿Qué saberes de mi familia o mi vereda ya abstraían lo esencial, aunque nadie los llamara abstracción?',
+  },
+  estoico: {
+    autor: 'Marco Aurelio',
+    lente: 'lente del cuidado interior',
+    cita: 'En cada acto pregúntate: ¿es esto necesario? Suprime lo superfluo, y ganarás tiempo y serenidad.',
+    preguntaEspejo:
+      'Igual que abstraigo un problema quitándole el ruido, ¿qué «ruido» de mi vida —cosas que no importan pero me roban atención— podría empezar a ignorar para enfocarme en lo esencial?',
+  },
+  floridi: {
+    autor: 'Luciano Floridi',
+    lente: 'lente de la infoesfera',
+    cita: 'Todo modelo es un nivel de abstracción: muestra unas cosas y, al hacerlo, deja otras fuera.',
+    preguntaEspejo:
+      'Si un mapa, un dato o un perfil son abstracciones de algo más grande, ¿qué se pierde cada vez que abstraemos — y quién decide qué parte de la realidad queda por fuera?',
+  },
+};
+
+const cincoDimensiones: CincoDimensiones = {
+  personal:
+    'Antes mirabas un problema entero y te abrumabas. Ahora distingues lo esencial del ruido y eliges en qué fijarte a propósito.',
+  emocional:
+    'Cuando todo parece importante a la vez, agobia. Ignorar el ruido y quedarte con lo esencial te da calma y foco para empezar.',
+  ciudadana:
+    'Abstraer es poder: un mapa o un modelo deciden qué se ve y qué no. Una abstracción mal hecha deja por fuera a alguien — cuídalo cuando representes a otros.',
+  local:
+    'De las señas de la vereda al modelo en una pantalla, la misma idea: tu comunidad ya sabía quedarse con lo esencial para guiar a otros.',
+  intergeneracional:
+    'El arte de dar buenas señas —decir lo justo para que el otro no se pierda— se heredó de boca en boca. Tú lo recibes y lo llevas a los modelos de hoy.',
+};
+---
+
+<BaseLayout
+  title="Momento 3 · Lo esencial — Bebras · ConectaTE"
+  description="Abstracción: quedarte con lo esencial e ignorar el ruido para representar algo complejo con un modelo simple. Momento del curso «Pensar como una máquina», con las señas de la vereda como saber ancestral y un simulacro estilo Bebras de datos distractores."
+  ogType="article"
+>
+  <article class="pt-12 pb-20">
+    <div class="bento-container max-w-5xl">
+      <div class="max-w-3xl mx-auto">
+        <!-- Breadcrumb -->
+        <nav class="flex items-center gap-2 text-sm font-semibold mb-8 flex-wrap" style="color: var(--fg-muted);">
+          <a href={base || '/'} class="hover:opacity-60 transition-opacity">Inicio</a>
+          <span>/</span>
+          <a href={`${base}/explora`} class="hover:opacity-60 transition-opacity">Explora</a>
+          <span>/</span>
+          <a href={`${base}/explora/bebras`} class="hover:opacity-60 transition-opacity">Bebras</a>
+          <span>/</span>
+          <span style="color: var(--fg);">Momento 3</span>
+        </nav>
+
+        <!-- ① PRESENTACIÓN -->
+        <div class="flex items-center gap-3 mb-6">
+          <span class="w-8 h-8 rounded-full bg-bento-lime text-neutral-950 flex items-center justify-center text-sm font-black shrink-0" aria-hidden="true">1</span>
+          <span class="font-black text-lg">Presentación</span>
+          <span class="flex-1 h-0.5 rounded-full" style="background: var(--border);"></span>
+        </div>
+
+        <!-- Hero -->
+        <div class="bento-card-color bg-bento-blue text-white mb-10">
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">Momento {momento.numero} · {momento.dominio}</span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">🧠 {momento.verbo}</span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">~{momento.tiempo}</span>
+          </div>
+          <h1 class="heading-giant text-balance mb-3">{momento.nombre}</h1>
+          <p class="text-base md:text-lg font-semibold opacity-95 leading-relaxed">
+            Un campesino te explica cómo llegar a su finca con tres señas, no con
+            cien. Esa limpieza del camino —quedarse con lo justo— es lo que un
+            computador hace con un modelo, y lo que tú harás en muchas tareas
+            Bebras: ignorar el ruido y ver lo esencial.
+          </p>
+        </div>
+
+        <!-- 🌱 Saber ancestral -->
+        <SaberAncestralBlock data={saberAncestral} etiqueta="Saber ancestral" />
+
+        <!-- 🗺 Ruta -->
+        <MapaRutaBlock estaciones={mapaRuta} />
+
+        <!-- Propósito -->
+        <div class="bento-card mb-6">
+          <span class="chip-bento mb-4">🎯 Lo que vas a poder hacer</span>
+          <ul class="space-y-3 mt-3">
+            {[
+              'EXPLICAR qué es abstraer: quedarte con lo esencial e ignorar el ruido.',
+              'RECONOCER modelos (mapas, íconos, resúmenes) como abstracciones de la realidad.',
+              'DECIDIR qué conservar y qué ignorar al modelar algo complejo de tu vida.',
+              'IGNORAR datos distractores para resolver un reto estilo Bebras.',
+            ].map((d) => (
+              <li class="flex items-start gap-3">
+                <span class="w-6 h-6 rounded-md bg-bento-lime/30 text-black flex items-center justify-center text-xs font-black shrink-0 mt-0.5">✓</span>
+                <span class="text-sm md:text-base leading-relaxed">{d}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <!-- Pregunta detonante -->
+        <div class="bento-card-color bg-bento-cyan mb-10">
+          <span class="chip-bento mb-3 bg-black/10">💡 La pregunta que abre todo</span>
+          <p class="text-lg md:text-xl font-black leading-snug">
+            ¿Por qué un campesino te lleva a su finca con tres señas, pero un GPS
+            necesita un mapa entero — y cuál de los dos te haría perder menos?
+          </p>
+          <p class="text-sm leading-relaxed mt-3 opacity-90">
+            La respuesta es la abstracción: quedarse con lo justo. Al terminar vas a
+            distinguir lo esencial del ruido — y a usarlo tú mismo.
+          </p>
+        </div>
+
+        <!-- ② GUÍA -->
+        <div class="flex items-center gap-3 mb-6">
+          <span class="w-8 h-8 rounded-full bg-bento-lime text-neutral-950 flex items-center justify-center text-sm font-black shrink-0" aria-hidden="true">2</span>
+          <span class="font-black text-lg">Guía</span>
+          <span class="flex-1 h-0.5 rounded-full" style="background: var(--border);"></span>
+        </div>
+
+        <!-- 📖 LEE 1 · Qué es abstraer -->
+        <section class="bento-card mb-6">
+          <span class="chip-bento mb-4">📖 Lee · ¿Qué es abstraer?</span>
+          <div class="space-y-4 text-sm md:text-base leading-relaxed">
+            <p>
+              <strong>Abstraer</strong> es quedarte con lo esencial e ignorar lo que no importa.
+              Es representar algo complejo con un <strong>modelo simple</strong>: una versión
+              recortada de la realidad que conserva solo lo que necesitas para una
+              tarea. El campesino que da tres señas para llegar a su finca está
+              abstrayendo el camino.
+            </p>
+            <p>
+              ¿Por qué sirve? Porque <strong>menos ruido es más fácil de pensar</strong>. Cuando
+              quitas los detalles que estorban, tu cabeza se concentra en lo que de
+              verdad cambia el resultado. Un buen modelo no es el que tiene más
+              datos, sino el que tiene <strong>los datos justos</strong>.
+            </p>
+          </div>
+        </section>
+
+        <!-- Puente -->
+        <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+          Abstraer no es raro: lo ves todos los días sin notarlo. Mira estos cuatro
+          ejemplos antes de practicar.
+        </p>
+
+        <!-- 📖 LEE 2 · Cuatro abstracciones de tu día -->
+        <section class="bento-card mb-6">
+          <span class="chip-bento mb-4">📖 Lee · Cuatro abstracciones que usas sin darte cuenta</span>
+          <p class="text-sm md:text-base leading-relaxed mb-4">
+            Cada uno de estos es un <strong>modelo</strong>: la realidad reducida a lo esencial
+            para un propósito. Fíjate en qué conserva cada uno y qué decidió dejar
+            por fuera:
+          </p>
+          <ul class="space-y-3">
+            {ejemplos.map((e) => (
+              <li class="flex items-start gap-3 p-3 rounded-bento-sm" style="background: var(--bg);">
+                <span class="text-2xl shrink-0" aria-hidden="true">{e.emoji}</span>
+                <span class="text-sm md:text-base leading-relaxed"><strong>{e.nombre}:</strong> {e.texto}</span>
+              </li>
+            ))}
+          </ul>
+          <p class="text-sm md:text-base leading-relaxed mt-4">
+            Y aquí está la conexión con el concurso: <strong>muchas tareas Bebras traen
+            datos de sobra a propósito</strong>. Abstraer es saber CUÁLES importan para la
+            pregunta y cuáles son solo ruido para distraerte.
+          </p>
+        </section>
+
+        <!-- 🔎 Relaciona (después de leer los ejemplos) -->
+        <div class="mb-6">
+          <LabEmparejar data={emparejarAbstracciones} id="bebras-m3-empareja-abstracciones" />
+        </div>
+
+        <!-- Puente -->
+        <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+          Ya conectas cada cosa con su abstracción. Comprueba que tienes clara la
+          idea antes de usarla.
+        </p>
+
+        <!-- ✅ Quiz -->
+        <div class="mb-6">
+          <LabQuiz data={quiz} id="bebras-m3-quiz" />
+        </div>
+
+        <!-- Puente -->
+        <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+          Abstraer se aprende abstrayendo. Primero modela con palabras algo que
+          conoces; luego dibújalo a lo esencial.
+        </p>
+
+        <!-- ✏️ Actividades -->
+        <ActividadBlock data={actividadExplica} />
+        <ActividadBlock data={actividadCrea} />
+
+        <!-- ③ METODOLOGÍA MILC (docente) -->
+        <div class="flex items-center gap-3 mt-10 mb-6">
+          <span class="w-8 h-8 rounded-full bg-bento-lime text-neutral-950 flex items-center justify-center text-sm font-black shrink-0" aria-hidden="true">3</span>
+          <span class="font-black text-lg">Metodología MILC</span>
+          <span class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">para el docente</span>
+          <span class="flex-1 h-0.5 rounded-full" style="background: var(--border);"></span>
+        </div>
+
+        <MetodologiaMILC data={metodologia} />
+
+        <!-- ④ SIMULACIÓN -->
+        <div class="flex items-center gap-3 mt-10 mb-6">
+          <span class="w-8 h-8 rounded-full bg-bento-lime text-neutral-950 flex items-center justify-center text-sm font-black shrink-0" aria-hidden="true">4</span>
+          <span class="font-black text-lg">Simulación</span>
+          <span class="flex-1 h-0.5 rounded-full" style="background: var(--border);"></span>
+        </div>
+
+        <!-- Puente -->
+        <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+          Ya sabes separar lo esencial del ruido. Pruébate como en el concurso real:
+          tres retos de fácil a difícil. En todos, primero pregúntate qué datos de
+          verdad importan.
+        </p>
+
+        <!-- 🔎 Simulacro -->
+        <div class="mb-4">
+          <LabQuiz data={simulacro} id="bebras-m3-simulacro" />
+        </div>
+
+        <!-- Nota de atribución de tareas -->
+        <p class="text-xs leading-relaxed mb-10 px-1" style="color: var(--fg-muted);">
+          Estos tres retos son <strong style="color: var(--fg);">originales, al estilo Bebras</strong>, para
+          practicar la abstracción. Las tareas reales de años anteriores —de todos
+          los países— están en el archivo oficial:
+          <a href={archivoOficial} target="_blank" rel="noopener" class="font-bold text-bento-blue hover:opacity-70 transition-opacity">bebras.org</a>.
+        </p>
+
+        <!-- Puente al cierre -->
+        <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+          Aprendiste a quedarte con lo esencial e ignorar el ruido. Cerremos
+          pensando qué significa, para ti, mirar el mundo de esa forma.
+        </p>
+      </div>
+
+      <!-- 💭 Triángulo (ancho completo) -->
+      <TrianguloBlock data={triangulo} />
+
+      <!-- 🌱 Cinco dimensiones (ancho completo) -->
+      <CincoDimensionesBlock data={cincoDimensiones} />
+
+      <div class="max-w-3xl mx-auto">
+        <!-- Créditos -->
+        <div class="bento-card mb-10 border-l-4 border-bento-lime">
+          <span class="chip-bento mb-3">🦫 Créditos</span>
+          <p class="text-sm leading-relaxed mt-2" style="color: var(--fg-muted);">
+            Este momento adapta al modelo MILC la preparación para el reto
+            <strong style="color: var(--fg);">Bebras</strong>, iniciativa internacional creada por Valentina
+            Dagienė (Universidad de Vilnius, Lituania, 2004). Las tareas originales
+            son de Bebras International y sus organizadores nacionales.
+          </p>
+          <a href={archivoOficial} target="_blank" rel="noopener" class="inline-flex items-center gap-2 mt-4 font-black text-sm text-bento-blue hover:opacity-70 transition-opacity">
+            Ver el sitio oficial y el archivo de tareas
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+          </a>
+        </div>
+
+        <!-- Volver -->
+        <a href={`${base}/explora/bebras`} class="bento-card-hover flex items-center gap-4">
+          <svg class="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5"></path>
+            <path d="m12 19-7-7 7-7"></path>
+          </svg>
+          <div>
+            <div class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">Volver al programa</div>
+            <div class="font-black text-lg">Bebras</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </article>
+</BaseLayout>

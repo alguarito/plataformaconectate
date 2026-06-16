@@ -149,6 +149,45 @@ export function onAuthChange(cb: (sesion: Sesion | null) => void) {
   return data.subscription;
 }
 
+/**
+ * Obtiene el rol del usuario autenticado desde public.usuarios.
+ * Devuelve 'estudiante' si no hay sesión o el perfil no existe.
+ */
+export async function getRol(): Promise<'estudiante' | 'docente'> {
+  if (!authEnabled) return 'estudiante';
+  const sesion = await getSesion();
+  if (!sesion) return 'estudiante';
+  const { data } = await supabase
+    .from('usuarios')
+    .select('rol')
+    .eq('id', sesion.user.id)
+    .maybeSingle();
+  return (data?.rol as 'estudiante' | 'docente') ?? 'estudiante';
+}
+
+/**
+ * Protege páginas del panel docente.
+ * Redirige a /cuenta/login si no hay sesión; a /cuenta si el rol no es 'docente'.
+ */
+export async function requireDocente(): Promise<Sesion | null> {
+  if (!authEnabled) {
+    window.location.replace(rutaAbsoluta('/'));
+    return null;
+  }
+  const sesion = await getSesion();
+  if (!sesion) {
+    const next = encodeURIComponent(window.location.pathname + window.location.search);
+    window.location.replace(rutaAbsoluta('/cuenta/login') + '?next=' + next);
+    return null;
+  }
+  const rol = await getRol();
+  if (rol !== 'docente') {
+    window.location.replace(rutaAbsoluta('/cuenta'));
+    return null;
+  }
+  return sesion;
+}
+
 /* ─────────── Hook automático de sync con progreso ─────────── */
 
 let yaInicializado = false;

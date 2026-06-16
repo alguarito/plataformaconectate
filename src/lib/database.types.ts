@@ -34,6 +34,7 @@ export interface Database {
           id: string;
           display_name: string;
           fecha_nacimiento: string | null;
+          rol: 'estudiante' | 'docente';
           creado_en: string;
           actualizado_en: string;
         };
@@ -41,6 +42,7 @@ export interface Database {
           id: string;
           display_name: string;
           fecha_nacimiento?: string | null;
+          rol?: 'estudiante' | 'docente';
           creado_en?: string;
           actualizado_en?: string;
         };
@@ -48,6 +50,7 @@ export interface Database {
           id?: string;
           display_name?: string;
           fecha_nacimiento?: string | null;
+          rol?: 'estudiante' | 'docente';
           creado_en?: string;
           actualizado_en?: string;
         };

@@ -77,6 +77,49 @@ import CodigoAcceso from '../../../components/CodigoAcceso.astro';
         </div>
       </div>
 
+      <!-- Analítica del grupo -->
+      <section data-analitica class="hidden space-y-4">
+        <h2 class="text-base font-black">Analítica del grupo</h2>
+
+        <div class="grid sm:grid-cols-3 gap-4">
+          <div class="bg-white dark:bg-neutral-900 rounded-bento-sm shadow-bento p-4">
+            <p class="text-xs uppercase tracking-widest font-bold text-neutral-500 mb-1">Promedio</p>
+            <p class="text-3xl font-black tracking-tight text-bento-blue" data-analitica-promedio>—</p>
+            <p class="text-xs text-neutral-500 mt-1">del grupo</p>
+          </div>
+          <div class="bg-white dark:bg-neutral-900 rounded-bento-sm shadow-bento p-4">
+            <p class="text-xs uppercase tracking-widest font-bold text-neutral-500 mb-1">En riesgo</p>
+            <p class="text-3xl font-black tracking-tight text-bento-pink" data-analitica-riesgo>—</p>
+            <p class="text-xs text-neutral-500 mt-1">progreso &lt; 25%</p>
+          </div>
+          <div class="bg-white dark:bg-neutral-900 rounded-bento-sm shadow-bento p-4">
+            <p class="text-xs uppercase tracking-widest font-bold text-neutral-500 mb-1">Activos</p>
+            <p class="text-3xl font-black tracking-tight" style="color: var(--color-bento-lime, #84cc16)" data-analitica-activos>—</p>
+            <p class="text-xs text-neutral-500 mt-1">con ≥1 guía completada</p>
+          </div>
+        </div>
+
+        <div class="bg-white dark:bg-neutral-900 rounded-bento-sm shadow-bento p-5">
+          <p class="text-xs uppercase tracking-widest font-bold text-neutral-500 mb-3">Distribución por progreso</p>
+          <div data-distribucion class="space-y-2"></div>
+        </div>
+
+        <div class="flex justify-end">
+          <button
+            type="button"
+            data-exportar-csv
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-bento-sm border border-neutral-300 dark:border-neutral-700 text-sm font-semibold hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bento-blue"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Exportar CSV
+          </button>
+        </div>
+      </section>
+
       <!-- Lista de estudiantes -->
       <section>
         <h2 class="text-base font-black mb-3">Estudiantes</h2>
@@ -209,6 +252,7 @@ import CodigoAcceso from '../../../components/CodigoAcceso.astro';
         if (lista.length === 0) {
           vacioEst?.classList.remove('hidden');
         } else {
+          renderAnalitica(lista, titulo, contenido);
           listaEst!.innerHTML = lista
             .map((est) => {
               const iniciales = escape(est.display_name.trim().slice(0, 2).toUpperCase());
@@ -262,6 +306,69 @@ import CodigoAcceso from '../../../components/CodigoAcceso.astro';
       loading.classList.add('hidden');
       error.classList.remove('hidden');
     }
+  }
+
+  function renderAnalitica(
+    lista: Awaited<ReturnType<typeof listarEstudiantesConProgreso>>,
+    tituloAula: string,
+    root: HTMLElement
+  ) {
+    const total = lista.length;
+    const promedio = Math.round(lista.reduce((s, e) => s + e.progreso_promedio, 0) / total);
+    const enRiesgo = lista.filter((e) => e.progreso_promedio < 25).length;
+    const activos = lista.filter((e) => e.guias_completadas > 0).length;
+
+    const sec = root.querySelector<HTMLElement>('[data-analitica]');
+    if (!sec) return;
+    sec.querySelector<HTMLElement>('[data-analitica-promedio]')!.textContent = `${promedio}%`;
+    sec.querySelector<HTMLElement>('[data-analitica-riesgo]')!.textContent = String(enRiesgo);
+    sec.querySelector<HTMLElement>('[data-analitica-activos]')!.textContent = String(activos);
+
+    const buckets = [
+      { label: '0–25%',   from: 0,   to: 25,  color: 'bg-neutral-300 dark:bg-neutral-600' },
+      { label: '25–50%',  from: 25,  to: 50,  color: 'bg-bento-orange' },
+      { label: '50–75%',  from: 50,  to: 75,  color: 'bg-bento-blue' },
+      { label: '75–100%', from: 75,  to: 101, color: 'bg-bento-lime' },
+    ];
+    sec.querySelector('[data-distribucion]')!.innerHTML = buckets
+      .map((b) => {
+        const count = lista.filter((e) => e.progreso_promedio >= b.from && e.progreso_promedio < b.to).length;
+        const pct = Math.round((count / total) * 100);
+        return `
+          <div class="flex items-center gap-3">
+            <span class="text-xs font-semibold w-14 flex-shrink-0 tabular-nums">${b.label}</span>
+            <div class="flex-1 h-4 bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden">
+              <div class="h-full ${b.color} rounded-full" style="width:${pct}%"></div>
+            </div>
+            <span class="text-xs font-bold w-5 text-right tabular-nums">${count}</span>
+          </div>`;
+      })
+      .join('');
+
+    sec.querySelector('[data-exportar-csv]')?.addEventListener('click', () => {
+      const filas = [
+        ['Nombre', 'Guías iniciadas', 'Guías completadas', 'Progreso promedio (%)', 'Fecha inscripción'],
+        ...lista.map((e) => [
+          e.display_name,
+          e.guias_iniciadas,
+          e.guias_completadas,
+          e.progreso_promedio,
+          new Date(e.inscrito_en).toLocaleDateString('es-CO'),
+        ]),
+      ];
+      const csv = filas
+        .map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(','))
+        .join('\n');
+      const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${tituloAula.replace(/[^a-zA-Z0-9\-]/g, '_')}_progreso.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    sec.classList.remove('hidden');
   }
 
   requireDocente().then((sesion) => { if (sesion) void cargar(); });

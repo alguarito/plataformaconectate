@@ -113,6 +113,7 @@ import CodigoAcceso from '../../../components/CodigoAcceso.astro';
 <script>
   import { requireDocente } from '../../../lib/auth';
   import { getAulaById, contarEstudiantes, eliminarAula, periodoLabel } from '../../../lib/aulas';
+  import { supabase } from '../../../lib/supabase';
 
   const base = (import.meta.env?.BASE_URL ?? '/').replace(/\/$/, '');
   const escape = (s: string) =>
@@ -181,8 +182,12 @@ import CodigoAcceso from '../../../components/CodigoAcceso.astro';
         });
       }
 
-      const estudiantes = await contarEstudiantes(aula.id);
+      const [estudiantes, { data: pendientes }] = await Promise.all([
+        contarEstudiantes(aula.id),
+        supabase.rpc('contar_pendientes_por_aula', { _codigo_aula: aula.codigo_acceso }),
+      ]);
       contenido.querySelector<HTMLElement>('[data-stat-estudiantes]')!.textContent = String(estudiantes);
+      contenido.querySelector<HTMLElement>('[data-stat-pendientes]')!.textContent = String(pendientes ?? 0);
 
       contenido.classList.remove('hidden');
 

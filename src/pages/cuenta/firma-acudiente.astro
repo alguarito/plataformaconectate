@@ -10,7 +10,7 @@
 import CuentaLayout from '../../layouts/CuentaLayout.astro';
 import ConsentimientoTexto from '../../components/ConsentimientoTexto.astro';
 
-const VERSION_POLITICA = '2026.05';
+const VERSION_POLITICA = '2026.06';
 ---
 
 <CuentaLayout
@@ -183,7 +183,7 @@ const VERSION_POLITICA = '2026.05';
   import { firmarConsentimiento } from '../../lib/registro';
   import { supabase } from '../../lib/supabase';
 
-  const VERSION_POLITICA = '2026.05';
+  const VERSION_POLITICA = '2026.06';
   const params = new URLSearchParams(window.location.search);
   const registroId = params.get('id');
 
@@ -205,28 +205,24 @@ const VERSION_POLITICA = '2026.05';
       return;
     }
 
-    // Verificar que el registro está pendiente. No leemos detalles (RLS lo bloquea
-    // a propósito; el acudiente no debe enumerar otros registros). Solo el estado.
-    const { data: estado } = await supabase.rpc('estado_registro_por_id', {
+    const { data: info } = await supabase.rpc('info_registro_por_id', {
       _id: registroId,
     });
 
-    if (!estado) {
+    if (!info) {
       mostrarError('La solicitud no existe o expiró.');
       return;
     }
-    if (estado !== 'pendiente') {
-      if (estado === 'firmado') {
+    if (info.estado !== 'pendiente') {
+      if (info.estado === 'firmado') {
         mostrarError('Esta solicitud ya fue firmada anteriormente.');
       } else {
-        mostrarError(`La solicitud está en estado ${estado} y no se puede firmar.`);
+        mostrarError(`La solicitud está en estado ${info.estado} y no se puede firmar.`);
       }
       return;
     }
 
-    // Mostrar el formulario. El edge function se encarga de tener acceso pleno
-    // al registro_pendiente y validará todos los campos.
-    document.querySelector<HTMLElement>('[data-estudiante-nombre]')!.textContent = 'el estudiante';
+    document.querySelector<HTMLElement>('[data-estudiante-nombre]')!.textContent = info.nombre ?? 'el/la estudiante';
     document.querySelector<HTMLElement>('[data-aula-contexto]')!.textContent =
       'Lea el consentimiento y diligencie sus datos a continuación.';
     mostrar('firma');

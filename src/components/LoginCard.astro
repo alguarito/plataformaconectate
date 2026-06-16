@@ -85,7 +85,7 @@ import { grados } from '../data/grados';
                 Soy el docente
               </div>
               <div class="text-sm opacity-90 mt-1">
-                Acceso con email y contraseña institucional.
+                Acceso con cuenta de Google institucional.
               </div>
             </div>
             <svg class="w-6 h-6 group-hover:translate-x-1 transition-transform shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -193,68 +193,6 @@ import { grados } from '../data/grados';
           </button>
         </form>
 
-        {/* PASO 3 — formulario docente */}
-        <form
-          data-login-paso="docente"
-          class="hidden mt-6 space-y-5"
-        >
-          <button
-            type="button"
-            data-volver-rol
-            class="inline-flex items-center gap-2 text-sm font-semibold hover:opacity-60 transition-opacity"
-            style="color: var(--fg-muted);"
-          >
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M15 18l-6-6 6-6"></path>
-            </svg>
-            Volver
-          </button>
-
-          <div>
-            <label for="doc-email" class="block text-sm font-bold mb-2">Email institucional</label>
-            <input
-              id="doc-email"
-              type="email"
-              autocomplete="email"
-              required
-              placeholder="alvaro.cardenas.orozco@gmail.com"
-              class="w-full px-4 py-3 rounded-bento-sm border-2 outline-none focus:border-bento-purple transition-colors"
-              style="border-color: var(--border); background: var(--bg-card); color: var(--fg);"
-            />
-          </div>
-
-          <div>
-            <label for="doc-password" class="block text-sm font-bold mb-2">Contraseña</label>
-            <input
-              id="doc-password"
-              type="password"
-              autocomplete="current-password"
-              required
-              class="w-full px-4 py-3 rounded-bento-sm border-2 outline-none focus:border-bento-purple transition-colors"
-              style="border-color: var(--border); background: var(--bg-card); color: var(--fg);"
-            />
-          </div>
-
-          <div
-            data-doc-error
-            class="hidden p-3 rounded-bento-sm bg-bento-pink text-white text-sm font-bold"
-          ></div>
-
-          <div class="text-xs leading-relaxed p-3 rounded-bento-sm" style="background: var(--bg-card); color: var(--fg-muted); border: 1px solid var(--border);">
-            ⚠️ <strong>Fase A — autenticación local:</strong> esta verificación
-            ocurre en el navegador. No es seguridad real para datos sensibles.
-            La autenticación con backend llega en una fase futura.
-          </div>
-
-          <button type="submit" class="btn-bento-accent w-full">
-            Ingresar como docente
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M5 12h14"></path>
-              <path d="m12 5 7 7-7 7"></path>
-            </svg>
-          </button>
-        </form>
-
         <p class="text-xs mt-6 leading-relaxed" style="color: var(--fg-muted);">
           🔒 Privacidad: ConectaTE no recolecta datos personales en servidores.
           Todo lo que registres vive solo en tu dispositivo. Puedes borrarlo
@@ -267,11 +205,10 @@ import { grados } from '../data/grados';
 
 <script>
   import {
-    leerPerfil,
     loginEstudiante,
-    loginDocente,
     loginVisitante,
   } from '../scripts/perfilUsuario';
+  import { signInWithGoogle } from '../lib/auth';
 
   const dialog = document.getElementById('login-modal') as HTMLDialogElement | null;
   if (!dialog) {
@@ -281,9 +218,9 @@ import { grados } from '../data/grados';
 
     /* ─── Helpers de UI ─── */
 
-    type Paso = 'rol' | 'estudiante' | 'docente';
+    type Paso = 'rol' | 'estudiante';
     function mostrarPaso(paso: Paso) {
-      ['rol', 'estudiante', 'docente'].forEach((p) => {
+      ['rol', 'estudiante'].forEach((p) => {
         const el = dialog.querySelector(`[data-login-paso="${p}"]`);
         if (!el) return;
         if (p === paso) el.classList.remove('hidden');
@@ -328,9 +265,10 @@ import { grados } from '../data/grados';
     dialog.querySelector('[data-rol-estudiante]')?.addEventListener('click', () =>
       mostrarPaso('estudiante'),
     );
-    dialog.querySelector('[data-rol-docente]')?.addEventListener('click', () =>
-      mostrarPaso('docente'),
-    );
+    dialog.querySelector('[data-rol-docente]')?.addEventListener('click', async () => {
+      cerrar();
+      await signInWithGoogle((import.meta.env?.BASE_URL ?? '/').replace(/\/$/, '') + '/docente');
+    });
     dialog.querySelector('[data-rol-visitante]')?.addEventListener('click', () => {
       loginVisitante();
       cerrar();
@@ -371,27 +309,6 @@ import { grados } from '../data/grados';
       dialog.close();
       const homePath = (document.querySelector('meta[name="generator"]') ? '/plataformaconectate' : '');
       window.location.href = `${homePath}/dashboard`;
-    });
-
-    /* ─── Form docente ─── */
-
-    const formDoc = dialog.querySelector('[data-login-paso="docente"]') as HTMLFormElement;
-    const errBox = formDoc?.querySelector('[data-doc-error]') as HTMLElement;
-
-    formDoc?.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const email = (formDoc.querySelector('#doc-email') as HTMLInputElement).value;
-      const password = (formDoc.querySelector('#doc-password') as HTMLInputElement).value;
-      const r = loginDocente(email, password);
-      if (!r.ok) {
-        errBox.textContent = r.mensaje ?? 'No fue posible ingresar.';
-        errBox.classList.remove('hidden');
-        return;
-      }
-      errBox.classList.add('hidden');
-      dialog.close();
-      // Refrescar para que el chip de docente y demás estados se actualicen
-      window.location.reload();
     });
 
     /* ─── Reabrir desde otros componentes ─── */

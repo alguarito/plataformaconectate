@@ -17,12 +17,6 @@ import type { DimensionAC } from '../data/tests/autoconcepto';
 
 const STORAGE_KEY = 'conectate.perfilUsuario.v1';
 
-/** Credenciales del docente — Fase A (decorativas, no son seguridad real) */
-const DOCENTE_EMAIL = 'alvaro.cardenas.orozco@gmail.com';
-// Hash simple de la contraseña; quien lea el código puede verla. En Fase A es solo
-// un "candado simbólico" para evitar acceso accidental. La seguridad real es backend.
-const DOCENTE_PASSWORD = 'Mariana.0';
-
 export type Rol = 'visitante' | 'estudiante' | 'docente';
 
 export interface ResultadoTestIM {
@@ -108,27 +102,6 @@ export function loginEstudiante(
   escribirPerfil(p);
   // Sincroniza con el sistema de gamificación existente
   setGradoActual(grado);
-}
-
-export interface ResultadoLoginDocente {
-  ok: boolean;
-  mensaje?: string;
-}
-
-export function loginDocente(email: string, password: string): ResultadoLoginDocente {
-  const emailNorm = email.trim().toLowerCase();
-  const expected = DOCENTE_EMAIL.toLowerCase();
-  if (emailNorm !== expected) {
-    return { ok: false, mensaje: 'Email no registrado como docente.' };
-  }
-  if (password !== DOCENTE_PASSWORD) {
-    return { ok: false, mensaje: 'Contraseña incorrecta.' };
-  }
-  const p = leerPerfil();
-  p.rol = 'docente';
-  p.emailDocente = emailNorm;
-  escribirPerfil(p);
-  return { ok: true };
 }
 
 export function loginVisitante(): void {

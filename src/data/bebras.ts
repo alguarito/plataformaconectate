@@ -71,7 +71,7 @@ export const momentos: MomentoBebras[] = [
     saberAncestral: 'El tejido en werregue del Pacífico: un canasto complejo se teje fibra por fibra.',
     verbo: 'ANALIZA',
     tiempo: '45 min',
-    estado: 'proximamente',
+    estado: 'activo',
   },
   {
     slug: 'momento-2',
@@ -82,7 +82,7 @@ export const momentos: MomentoBebras[] = [
     saberAncestral: 'El currulao: la marimba del Pacífico repite patrones rítmicos que el oído reconoce.',
     verbo: 'IDENTIFICA',
     tiempo: '45 min',
-    estado: 'proximamente',
+    estado: 'activo',
   },
   {
     slug: 'momento-3',
@@ -93,7 +93,7 @@ export const momentos: MomentoBebras[] = [
     saberAncestral: 'Las indicaciones para llegar a una vereda: el campesino abstrae el camino en pocas señas.',
     verbo: 'EXPLICA',
     tiempo: '45 min',
-    estado: 'proximamente',
+    estado: 'activo',
   },
   {
     slug: 'momento-4',

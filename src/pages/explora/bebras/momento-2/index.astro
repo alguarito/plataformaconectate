@@ -1,0 +1,518 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import SaberAncestralBlock from '../../../../components/SaberAncestralBlock.astro';
+import MapaRutaBlock from '../../../../components/MapaRutaBlock.astro';
+import ActividadBlock from '../../../../components/ActividadBlock.astro';
+import LabEmparejar from '../../../../components/LabEmparejar.astro';
+import LabQuiz from '../../../../components/LabQuiz.astro';
+import TrianguloBlock from '../../../../components/TrianguloBlock.astro';
+import CincoDimensionesBlock from '../../../../components/CincoDimensionesBlock.astro';
+import MetodologiaMILC from '../../../../components/MetodologiaMILC.astro';
+import type { MetodologiaMILCData } from '../../../../components/MetodologiaMILC.astro';
+import type {
+  SaberAncestral,
+  EstacionMapa,
+  Actividad,
+  LabQuiz as LabQuizData,
+  Triangulo,
+  CincoDimensiones,
+} from '../../../../data/guiasContenido/_schema';
+import type { DataEmparejar } from '../../../../components/LabEmparejar.astro';
+import { getMomento } from '../../../../data/bebras';
+
+const base = import.meta.env.BASE_URL;
+const momento = getMomento('momento-2')!;
+const archivoOficial = 'https://www.bebras.org';
+
+const saberAncestral: SaberAncestral = {
+  saber:
+    'En el Pacífico colombiano, cuando suena el currulao, la marimba de chonta no toca cualquier cosa: teje una célula rítmica que vuelve una y otra vez. El cununo y el bombo marcan un golpe que se repite —pum, pa, pum-pum, pa— como un tejido sonoro que no se rompe. Sobre esa base predecible, el cantador improvisa y los bailarines responden. ¿Y cómo saben los bailarines cuándo viene el golpe fuerte, cuándo zapatear, cuándo girar el pañuelo? No lo adivinan: reconocen el patrón. Su oído ya aprendió lo que se repite, así que pueden anticipar lo que sigue. Lo mismo pasa con los tejidos del Pacífico y de La Guajira: una mochila wayuu o una canasta en werregue repiten un diseño —rombo, línea, rombo, línea— que la tejedora lleva en la memoria. Reconocer lo que se repite, en el sonido o en la fibra, es ya un acto de pensamiento matemático.',
+  fuente: 'Currulao · música de marimba del Pacífico colombiano',
+  preguntaPuente:
+    'Quien baila currulao "sabe" cuándo viene el golpe porque reconoce el patrón rítmico. ¿Y si te dijera que esa misma habilidad —ver lo que se repite para PREDECIR lo que sigue— es justo lo que te pide una tarea Bebras?',
+};
+
+const mapaRuta: EstacionMapa[] = [
+  { numero: 1, iconos: ['🌱'], titulo: 'El currulao: lo que se repite', duracionMin: 5 },
+  { numero: 2, iconos: ['📖'], titulo: 'Qué es reconocer un patrón', duracionMin: 8 },
+  { numero: 3, iconos: ['📖'], titulo: 'Predecir y generalizar', duracionMin: 6 },
+  { numero: 4, iconos: ['🔎'], titulo: 'Empareja cada secuencia con su regla', duracionMin: 6 },
+  { numero: 5, iconos: ['✅'], titulo: 'Comprueba lo que entendiste', duracionMin: 6 },
+  { numero: 6, iconos: ['✏️'], titulo: 'Caza 3 patrones en tu entorno', duracionMin: 12 },
+  { numero: 7, iconos: ['🔎'], titulo: 'Simulacro: patrones y secuencias', duracionMin: 12 },
+  { numero: 8, iconos: ['💭'], titulo: 'Tres voces para cerrar', duracionMin: 6 },
+];
+
+// Ideas clave del reconocimiento de patrones, para el bloque de lectura
+// (antes del ejercicio de emparejar).
+const claves = [
+  {
+    emoji: '🔁',
+    nombre: 'Repetición',
+    texto:
+      'Algo vuelve a aparecer igual, una y otra vez. El cununo del currulao repite su golpe; la mochila wayuu repite el rombo. Si lo notas, ya no tienes que mirar cada caso por separado.',
+  },
+  {
+    emoji: '📐',
+    nombre: 'La regla',
+    texto:
+      'Es la instrucción oculta que genera la secuencia. En la tabla del 5 (5, 10, 15, 20…) la regla es "suma 5 cada vez"; por eso siempre termina en 0 o en 5. Hallar la regla es el corazón del trabajo.',
+  },
+  {
+    emoji: '🔮',
+    nombre: 'Predecir',
+    texto:
+      'Si conoces la regla, sabes lo que sigue sin esperar a verlo. El bus de la ruta 2 pasa a los minutos 00 y 30: ya sabes a qué hora salir de casa sin mirar ningún horario.',
+  },
+  {
+    emoji: '🧮',
+    nombre: 'Generalizar',
+    texto:
+      'En vez de resolver mil casos uno por uno, resuelves la regla una sola vez y la aplicas a todos. Así un computador ordena mil nombres con el mismo método que usa para diez.',
+  },
+];
+
+const emparejarPatrones: DataEmparejar = {
+  titulo: 'Empareja cada secuencia con su regla',
+  instrucciones:
+    'Acabas de leer cómo se halla la regla de un patrón. Mira cada secuencia, descubre qué la genera y conéctala con su regla. Calcula mentalmente antes de elegir.',
+  etiquetaIzq: 'Secuencia',
+  etiquetaDer: 'Regla que la genera',
+  pares: [
+    { izquierda: '2, 4, 6, 8, 10, …', derecha: 'Suma 2 cada vez' },
+    { izquierda: '3, 6, 12, 24, 48, …', derecha: 'Multiplica por 2 cada vez' },
+    { izquierda: '5, 10, 15, 20, 25, …', derecha: 'Suma 5 cada vez' },
+    { izquierda: '1, 4, 9, 16, 25, …', derecha: 'Cuadrados: 1×1, 2×2, 3×3, …' },
+  ],
+};
+
+const quiz: LabQuizData = {
+  tipo: 'quiz',
+  titulo: 'Comprueba lo que entendiste',
+  instrucciones: 'Cuatro preguntas sobre patrones. Cada una te deja una explicación.',
+  preguntas: [
+    {
+      enunciado: 'Reconocer un patrón es, sobre todo…',
+      opciones: [
+        'Memorizar muchos números de una lista',
+        'Encontrar lo que se repite y hallar la regla que lo genera',
+        'Dibujar la secuencia con colores bonitos',
+        'Adivinar al azar el siguiente término',
+      ],
+      respuestaIndex: 1,
+      feedbackCorrecto: 'Correcto. Reconocer un patrón es hallar la regularidad y la regla detrás de ella, no memorizar ni adivinar.',
+      feedbackIncorrecto: 'Es encontrar lo que se repite y la regla que lo produce. Con esa regla puedes seguir la secuencia sin memorizarla.',
+    },
+    {
+      enunciado: '¿Para qué te sirve hallar la regla de un patrón?',
+      opciones: [
+        'Para PREDECIR lo que sigue sin tener que verlo',
+        'Para que la secuencia se vea más larga',
+        'Para no tener que pensar nunca más',
+        'Para cambiar el orden de los números',
+      ],
+      respuestaIndex: 0,
+      feedbackCorrecto: 'Exacto. Si conoces la regla, puedes anticipar el siguiente término —como el bailarín que sabe cuándo viene el golpe del cununo.',
+      feedbackIncorrecto: 'Sirve para PREDECIR: con la regla sabes lo que sigue sin esperar a verlo, igual que sabes a qué hora pasa el bus de la ruta 2.',
+    },
+    {
+      enunciado: 'En la secuencia 4, 8, 12, 16, … la regla es "suma 4". ¿Qué número sigue?',
+      opciones: ['18', '20', '24', '32'],
+      respuestaIndex: 1,
+      feedbackCorrecto: 'Correcto: 16 + 4 = 20. Aplicaste la regla para predecir el siguiente término.',
+      feedbackIncorrecto: 'Aplica la regla "suma 4": al último término (16) le sumas 4 y obtienes 20.',
+    },
+    {
+      enunciado: 'Que un computador ordene mil nombres con el mismo método que usa para diez es un ejemplo de…',
+      opciones: ['Repetir sin pensar', 'Generalizar', 'Memorizar', 'Adivinar'],
+      respuestaIndex: 1,
+      feedbackCorrecto: 'Sí: generalizar es resolver la regla una vez y aplicarla a todos los casos, sean diez o mil.',
+      feedbackIncorrecto: 'Es generalizar: hallas el método una vez y lo aplicas a cualquier cantidad, de diez nombres a mil.',
+    },
+  ],
+};
+
+const actividadCaza: Actividad = {
+  numero: 1,
+  verbo: 'IDENTIFICA',
+  titulo: 'Caza 3 patrones en tu entorno',
+  tiempoMin: 12,
+  modalidad: 'individual',
+  pasos: [
+    'Recorre con la mirada tu casa, tu barrio y tu colegio buscando cosas que se repitan: baldosas, rejas, horarios de buses, días de mercado, el diseño de una mochila o una ruana.',
+    'Elige 3 patrones distintos y, para cada uno, escribe qué elemento se repite.',
+    'Junto a cada patrón, anota una regla en tus palabras: cómo sabrías qué viene después (por ejemplo, "cada baldosa alterna color claro y oscuro").',
+  ],
+  cuaderno: {
+    titulo: 'Tres patrones de mi entorno',
+    formato: 'tabla de 3 columnas: dónde lo vi · qué se repite · regla',
+    extension: '3 filas + una frase final',
+  },
+  criterios: [
+    'Anotaste 3 patrones reales y distintos de tu entorno (no del texto).',
+    'Para cada uno describiste con claridad qué elemento se repite.',
+    'Tu frase final dice cuál de los 3 patrones te sirve para predecir algo útil.',
+  ],
+};
+
+const actividadExplica: Actividad = {
+  numero: 2,
+  verbo: 'EXPLICA',
+  titulo: 'Explica la regla de un patrón y cómo predecir',
+  tiempoMin: 10,
+  modalidad: 'individual',
+  pasos: [
+    'De los 3 patrones que cazaste, escoge el que más te guste.',
+    'Explica con tus palabras cuál es su regla: la instrucción que lo genera.',
+    'Muestra cómo usar esa regla para predecir lo que viene después, y conéctalo con el currulao o con un saber de tu familia.',
+  ],
+  cuaderno: {
+    titulo: 'La regla de mi patrón',
+    formato: 'párrafo corto en lenguaje sencillo',
+    extension: '5 a 7 renglones',
+  },
+  criterios: [
+    'Explicaste la regla del patrón con tus palabras, sin tecnicismos.',
+    'Mostraste con un ejemplo cómo predecir el siguiente elemento usando esa regla.',
+    'Conectaste tu patrón con el ritmo del currulao o un saber de tu comunidad.',
+  ],
+};
+
+// Simulación: 3 retos estilo Bebras (originales), de fácil a difícil (A·B·C).
+const simulacro: LabQuizData = {
+  tipo: 'quiz',
+  titulo: 'Simulacro · patrones y secuencias',
+  instrucciones:
+    'Tres retos cortos, de fácil (A) a difícil (C), como en el concurso real. Lee con calma y halla la regla antes de responder: la explicación te dice qué pensaste.',
+  preguntas: [
+    {
+      enunciado:
+        'Nivel A · Una manilla del Pacífico repite este patrón de cuentas: 🟢🟡🟢🟡🟢🟡 … Si sigue igual, ¿de qué color es la cuenta que va justo después de la última 🟡?',
+      opciones: ['Verde', 'Amarilla', 'Roja', 'Azul'],
+      respuestaIndex: 0,
+      feedbackCorrecto:
+        'Correcto. El patrón alterna verde y amarillo (ciclo de 2). Después de una amarilla siempre viene una verde.',
+      feedbackIncorrecto:
+        'Mira el ciclo: verde, amarillo, verde, amarillo… Se repite cada 2 cuentas. Después de una amarilla siempre sigue una verde.',
+    },
+    {
+      enunciado:
+        'Nivel B · El tambor del currulao marca golpes que se duplican: 3, 6, 12, 24, … Cada número es el doble del anterior. ¿Cuál es el siguiente término?',
+      opciones: ['30', '36', '48', '27'],
+      respuestaIndex: 2,
+      feedbackCorrecto:
+        'Exacto. La regla es "multiplica por 2": 24 × 2 = 48. Hallaste la regla y la aplicaste para predecir el siguiente término.',
+      feedbackIncorrecto:
+        'La regla es "multiplica por 2", no "suma". El último término es 24, así que 24 × 2 = 48.',
+    },
+    {
+      enunciado:
+        'Nivel C · Una tejedora wayuu arma un collar repitiendo SIEMPRE este patrón de 5 cuentas en este orden: 1.roja 2.negra 3.verde 4.amarilla 5.azul, y vuelve a empezar. ¿De qué color es la cuenta número 23?',
+      opciones: ['Roja', 'Negra', 'Verde', 'Azul'],
+      respuestaIndex: 2,
+      feedbackCorrecto:
+        'Correcto. El patrón se repite cada 5 cuentas. Divide 23 entre 5: caben 4 grupos completos (20 cuentas) y sobran 3. El residuo 3 cae en la 3.ª cuenta del patrón, que es verde. Ese truco del residuo sirve para cualquier posición lejana.',
+      feedbackIncorrecto:
+        'Usa el truco del residuo: el patrón mide 5, así que divide 23 entre 5. Caben 4 grupos (20) y sobran 3 → la posición 3 del patrón, que es verde. No necesitas dibujar las 23 cuentas.',
+    },
+  ],
+};
+
+const metodologia: MetodologiaMILCData = {
+  resumen:
+    'Este momento desarrolla el reconocimiento de patrones, la segunda pieza del pensamiento computacional. La meta es que el grupo pase de "ver" repeticiones a "usarlas": hallar la regla para predecir y generalizar. Apóyate en el currulao para activar saberes previos: casi todos en el Pacífico y el Valle ya leen patrones rítmicos y de tejido sin saber que eso es matemática. El cierre del simulacro introduce el truco del residuo (módulo), clave para tareas Bebras de ciclos largos.',
+  objetivos: [
+    'Conectar el reconocimiento de patrones con el currulao y los tejidos del Pacífico y La Guajira.',
+    'Instalar la secuencia de trabajo: observar lo que se repite, hallar la regla, predecir y generalizar.',
+    'Resolver patrones de ciclo lejano con el truco del residuo (división con resto / módulo).',
+  ],
+  secuencia: [
+    { paso: 'Apertura con el currulao: pon o canta un golpe repetido y pregunta cómo sabe el bailarín qué sigue.', tiempo: '5 min' },
+    { paso: 'Desarrolla las cuatro ideas (repetición, regla, predecir, generalizar) con ejemplos del barrio; pide más.', tiempo: '14 min' },
+    { paso: 'Resuelvan juntos el ejercicio de emparejar y el quiz; comenta cómo se halló cada regla.', tiempo: '12 min' },
+    { paso: 'Actividad de cuaderno (caza 3 patrones): trabajo individual y puesta en común.', tiempo: '12 min' },
+    { paso: 'Simulacro A·B·C: que lo resuelvan solos; en el C, modela el truco del residuo en el tablero.', tiempo: '12 min' },
+    { paso: 'Cierre filosófico (tres voces) y las cinco dimensiones, en conversación.', tiempo: '6 min' },
+  ],
+  evaluacion:
+    'Formativa: el ejercicio de emparejar y el quiz dan señal inmediata de si distinguen la regla. El simulacro NO se califica con nota: es práctica. La evidencia evaluable es la actividad de cuaderno (caza 3 patrones), con sus tres criterios observables.',
+  diferenciacion:
+    'En 6.º y 7.º quédate en patrones de suma y ciclos cortos (niveles A y B) y acepta el conteo a mano. En 8.º y 9.º exige el C con el truco del residuo. En 10.º y 11.º pide además que escriban la regla en lenguaje general (por ejemplo, "posición n cae en n mod 5"). El simulacro A·B·C deja atender a todo el salón con un mismo reto.',
+};
+
+const triangulo: Triangulo = {
+  dussel: {
+    autor: 'Enrique Dussel',
+    lente: 'lente del nosotros',
+    cita: 'Los patrones del currulao, de la mochila wayuu y de la canasta en werregue son conocimiento matemático del Sur: ritmo y geometría que nuestros pueblos pensaron mucho antes que cualquier manual.',
+    preguntaEspejo:
+      'Nos enseñan que las secuencias y los patrones son "matemática de libro". ¿Qué patrones de mi cultura —en la música, el tejido o la cocina— ya eran matemática, aunque nadie los llamara así?',
+  },
+  estoico: {
+    autor: 'Marco Aurelio',
+    lente: 'lente del cuidado interior',
+    cita: 'Observa el curso regular de las cosas: todo lo que sucede vuelve a suceder, y quien lo comprende deja de turbarse por ello.',
+    preguntaEspejo:
+      'Si observo el curso regular de las cosas, ¿qué patrones reconozco en mis propios hábitos —cuándo me distraigo, cuándo rindo— y qué podría predecir y mejorar en mí?',
+  },
+  floridi: {
+    autor: 'Luciano Floridi',
+    lente: 'lente de la infoesfera',
+    cita: 'Los algoritmos que nos rodean viven de patrones: aprenden lo que se repite en nuestros datos para anticipar lo que haremos después.',
+    preguntaEspejo:
+      'Las apps que uso reconocen patrones en mí: qué veo, a qué hora, qué compro. ¿Qué patrones míos crees que ya conocen, y para qué los usan?',
+  },
+};
+
+const cincoDimensiones: CincoDimensiones = {
+  personal:
+    'Antes veías cosas sueltas; ahora reconoces regularidades. Donde había ruido empiezas a ver reglas que puedes nombrar y usar.',
+  emocional:
+    'Lo predecible calma. Cuando entiendes el patrón de algo —un horario, un examen, una rutina— el "no sé qué viene" se vuelve "ya sé qué esperar".',
+  ciudadana:
+    'Los patrones también se usan para vigilarte y recomendarte: apps y cámaras leen lo que repites. Reconocer eso es cuidar tus datos y tu libertad.',
+  local:
+    'Del golpe del currulao a una secuencia numérica hay un solo paso: el mismo oído que lee el ritmo del Pacífico te abre la puerta de un reto mundial.',
+  intergeneracional:
+    'El ritmo y los diseños que se repiten son herencia: tus mayores los memorizaron y los pasaron. Tú heredas ese arte de ver lo que vuelve.',
+};
+---
+
+<BaseLayout
+  title="Momento 2 · Cazador de patrones — Bebras · ConectaTE"
+  description="Reconocimiento de patrones: encontrar lo que se repite, hallar la regla, predecir y generalizar. Segundo momento del curso «Pensar como una máquina», con el currulao del Pacífico como saber ancestral y un simulacro de secuencias estilo Bebras."
+  ogType="article"
+>
+  <article class="pt-12 pb-20">
+    <div class="bento-container max-w-5xl">
+      <div class="max-w-3xl mx-auto">
+        <!-- Breadcrumb -->
+        <nav class="flex items-center gap-2 text-sm font-semibold mb-8 flex-wrap" style="color: var(--fg-muted);">
+          <a href={base || '/'} class="hover:opacity-60 transition-opacity">Inicio</a>
+          <span>/</span>
+          <a href={`${base}/explora`} class="hover:opacity-60 transition-opacity">Explora</a>
+          <span>/</span>
+          <a href={`${base}/explora/bebras`} class="hover:opacity-60 transition-opacity">Bebras</a>
+          <span>/</span>
+          <span style="color: var(--fg);">Momento 2</span>
+        </nav>
+
+        <!-- ① PRESENTACIÓN -->
+        <div class="flex items-center gap-3 mb-6">
+          <span class="w-8 h-8 rounded-full bg-bento-lime text-neutral-950 flex items-center justify-center text-sm font-black shrink-0" aria-hidden="true">1</span>
+          <span class="font-black text-lg">Presentación</span>
+          <span class="flex-1 h-0.5 rounded-full" style="background: var(--border);"></span>
+        </div>
+
+        <!-- Hero -->
+        <div class="bento-card-color bg-bento-blue text-white mb-10">
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">Momento {momento.numero} · {momento.dominio}</span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">🧠 {momento.verbo}</span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">~{momento.tiempo}</span>
+          </div>
+          <h1 class="heading-giant text-balance mb-3">{momento.nombre}</h1>
+          <p class="text-base md:text-lg font-semibold opacity-95 leading-relaxed">
+            El oído que baila currulao adivina el golpe antes de que suene, porque
+            reconoce lo que se repite. Hoy harás lo mismo con secuencias y figuras:
+            hallar la regla para PREDECIR lo que sigue.
+          </p>
+        </div>
+
+        <!-- 🌱 Saber ancestral -->
+        <SaberAncestralBlock data={saberAncestral} etiqueta="Saber ancestral" />
+
+        <!-- 🗺 Ruta -->
+        <MapaRutaBlock estaciones={mapaRuta} />
+
+        <!-- Propósito -->
+        <div class="bento-card mb-6">
+          <span class="chip-bento mb-4">🎯 Lo que vas a poder hacer</span>
+          <ul class="space-y-3 mt-3">
+            {[
+              'IDENTIFICAR lo que se repite en una secuencia de números, colores o figuras.',
+              'EXPLICAR con tus palabras la regla que genera un patrón.',
+              'PREDECIR el siguiente elemento de una secuencia usando su regla.',
+              'APLICAR el truco del residuo para hallar una posición lejana en un patrón cíclico.',
+            ].map((d) => (
+              <li class="flex items-start gap-3">
+                <span class="w-6 h-6 rounded-md bg-bento-lime/30 text-black flex items-center justify-center text-xs font-black shrink-0 mt-0.5">✓</span>
+                <span class="text-sm md:text-base leading-relaxed">{d}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <!-- Pregunta detonante -->
+        <div class="bento-card-color bg-bento-cyan mb-10">
+          <span class="chip-bento mb-3 bg-black/10">💡 La pregunta que abre todo</span>
+          <p class="text-lg md:text-xl font-black leading-snug">
+            ¿Qué tienen en común el golpe del cununo en el currulao, el rombo que
+            se repite en una mochila wayuu y la secuencia 3, 6, 12, 24…?
+          </p>
+          <p class="text-sm leading-relaxed mt-3 opacity-90">
+            En los tres hay una regla escondida que hace que algo vuelva. Al
+            terminar vas a hallar esa regla — y a usarla para predecir lo que sigue.
+          </p>
+        </div>
+
+        <!-- ② GUÍA -->
+        <div class="flex items-center gap-3 mb-6">
+          <span class="w-8 h-8 rounded-full bg-bento-lime text-neutral-950 flex items-center justify-center text-sm font-black shrink-0" aria-hidden="true">2</span>
+          <span class="font-black text-lg">Guía</span>
+          <span class="flex-1 h-0.5 rounded-full" style="background: var(--border);"></span>
+        </div>
+
+        <!-- 📖 LEE 1 · Qué es reconocer un patrón -->
+        <section class="bento-card mb-6">
+          <span class="chip-bento mb-4">📖 Lee · ¿Qué es reconocer un patrón?</span>
+          <div class="space-y-4 text-sm md:text-base leading-relaxed">
+            <p>
+              <strong>Reconocer un patrón</strong> es encontrar las regularidades,
+              repeticiones y secuencias que hay en algo. Un patrón es cualquier cosa
+              que vuelve a aparecer siguiendo una <strong>regla</strong>: el golpe del
+              cununo en el currulao, los días de mercado en Cartago, las baldosas que
+              alternan color, el rombo de una mochila wayuu.
+            </p>
+            <p>
+              No se trata de memorizar la secuencia, sino de descubrir <strong>la regla
+              que la genera</strong>. La tabla del 5 (5, 10, 15, 20…) siempre termina en
+              0 o en 5 porque la regla es "suma 5 cada vez". Cuando ves la regla, dejas
+              de mirar cada caso por separado: ya entiendes cómo funciona el conjunto.
+            </p>
+          </div>
+        </section>
+
+        <!-- Puente -->
+        <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+          ¿Y para qué sirve hallar la regla? Para dos cosas muy poderosas. Léelas:
+          con ellas vas a resolver todo lo que sigue.
+        </p>
+
+        <!-- 📖 LEE 2 · Predecir y generalizar -->
+        <section class="bento-card mb-6">
+          <span class="chip-bento mb-4">📖 Lee · Predecir y generalizar</span>
+          <p class="text-sm md:text-base leading-relaxed mb-4">
+            Reconocer patrones es la segunda pieza del pensamiento computacional. Una
+            vez que tienes la regla, ganas dos superpoderes:
+          </p>
+          <ul class="space-y-3">
+            {claves.map((c) => (
+              <li class="flex items-start gap-3 p-3 rounded-bento-sm" style="background: var(--bg);">
+                <span class="text-2xl shrink-0" aria-hidden="true">{c.emoji}</span>
+                <span class="text-sm md:text-base leading-relaxed"><strong>{c.nombre}:</strong> {c.texto}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <!-- 🔎 Empareja (después de leer) -->
+        <div class="mb-6">
+          <LabEmparejar data={emparejarPatrones} id="bebras-m2-empareja-patrones" />
+        </div>
+
+        <!-- Puente -->
+        <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+          Ya sabes hallar la regla de una secuencia. Comprueba que de verdad la
+          tienes clara antes de usarla en los retos.
+        </p>
+
+        <!-- ✅ Quiz -->
+        <div class="mb-6">
+          <LabQuiz data={quiz} id="bebras-m2-quiz" />
+        </div>
+
+        <!-- Puente -->
+        <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+          Reconocer patrones no es solo para los números: está en tu casa, tu barrio
+          y tu colegio. Sal a cazarlos y luego explica uno con tus palabras.
+        </p>
+
+        <!-- ✏️ Actividades -->
+        <ActividadBlock data={actividadCaza} />
+        <ActividadBlock data={actividadExplica} />
+
+        <!-- ③ METODOLOGÍA MILC (docente) -->
+        <div class="flex items-center gap-3 mt-10 mb-6">
+          <span class="w-8 h-8 rounded-full bg-bento-lime text-neutral-950 flex items-center justify-center text-sm font-black shrink-0" aria-hidden="true">3</span>
+          <span class="font-black text-lg">Metodología MILC</span>
+          <span class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">para el docente</span>
+          <span class="flex-1 h-0.5 rounded-full" style="background: var(--border);"></span>
+        </div>
+
+        <MetodologiaMILC data={metodologia} />
+
+        <!-- ④ SIMULACIÓN -->
+        <div class="flex items-center gap-3 mt-10 mb-6">
+          <span class="w-8 h-8 rounded-full bg-bento-lime text-neutral-950 flex items-center justify-center text-sm font-black shrink-0" aria-hidden="true">4</span>
+          <span class="font-black text-lg">Simulación</span>
+          <span class="flex-1 h-0.5 rounded-full" style="background: var(--border);"></span>
+        </div>
+
+        <!-- Puente -->
+        <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+          Ya hallas reglas y predices. Pruébate como en el concurso real: tres retos
+          de patrones, de fácil a difícil. Sin afán — primero halla la regla.
+        </p>
+
+        <!-- 🔎 Simulacro -->
+        <div class="mb-4">
+          <LabQuiz data={simulacro} id="bebras-m2-simulacro" />
+        </div>
+
+        <!-- Nota de atribución de tareas -->
+        <p class="text-xs leading-relaxed mb-10 px-1" style="color: var(--fg-muted);">
+          Estos tres retos son <strong style="color: var(--fg);">originales, al estilo Bebras</strong>, para
+          practicar el reconocimiento de patrones. Las tareas reales de años
+          anteriores —de todos los países— están en el archivo oficial:
+          <a href={archivoOficial} target="_blank" rel="noopener" class="font-bold text-bento-blue hover:opacity-70 transition-opacity">bebras.org</a>.
+        </p>
+
+        <!-- Puente al cierre -->
+        <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+          Hallaste reglas y predijiste lo que seguía. Cerremos pensando qué
+          significa, para ti, aprender a ver lo que se repite.
+        </p>
+      </div>
+
+      <!-- 💭 Triángulo (ancho completo) -->
+      <TrianguloBlock data={triangulo} />
+
+      <!-- 🌱 Cinco dimensiones (ancho completo) -->
+      <CincoDimensionesBlock data={cincoDimensiones} />
+
+      <div class="max-w-3xl mx-auto">
+        <!-- Créditos -->
+        <div class="bento-card mb-10 border-l-4 border-bento-lime">
+          <span class="chip-bento mb-3">🦫 Créditos</span>
+          <p class="text-sm leading-relaxed mt-2" style="color: var(--fg-muted);">
+            Este momento adapta al modelo MILC la preparación para el reto
+            <strong style="color: var(--fg);">Bebras</strong>, iniciativa internacional creada por Valentina
+            Dagienė (Universidad de Vilnius, Lituania, 2004). Las tareas originales
+            son de Bebras International y sus organizadores nacionales.
+          </p>
+          <a href={archivoOficial} target="_blank" rel="noopener" class="inline-flex items-center gap-2 mt-4 font-black text-sm text-bento-blue hover:opacity-70 transition-opacity">
+            Ver el sitio oficial y el archivo de tareas
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+          </a>
+        </div>
+
+        <!-- Volver -->
+        <a href={`${base}/explora/bebras`} class="bento-card-hover flex items-center gap-4">
+          <svg class="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5"></path>
+            <path d="m12 19-7-7 7-7"></path>
+          </svg>
+          <div>
+            <div class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">Volver al programa</div>
+            <div class="font-black text-lg">Bebras</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </article>
+</BaseLayout>

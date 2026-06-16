@@ -1,0 +1,530 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra para todas las guias MILC v3
+% Ver scripts/generadores/build-guia-milc.py para la lista completa de
+% claves esperadas. El script valida que no queden placeholders sin
+% reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1.75cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\hyphenpenalty=200
+\exhyphenpenalty=200
+\pretolerance=400
+\tolerance=2000
+\setlength{\emergencystretch}{1em}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{84CC16}
+\definecolor{milcGradeDark}{HTML}{4D7C0F}
+\definecolor{milcGradeSoft}{HTML}{ECFCCB}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Tecnología e Informática · Bebras}
+\rhead{\small Momento 3 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{$\rightarrow$}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+\begin{document}
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[white] (current page.south west) rectangle (current page.north east);
+  \path[fill=milcGradePrimary,rounded corners=16mm]
+    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
+    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{14}{16}\selectfont MOMENTO};
+  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
+    {\sffamily\bfseries\fontsize{9}{11}\selectfont BEBRAS · PENSAR COMO UNA MÁQUINA};
+
+  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
+    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
+    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
+    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
+    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
+    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
+  \end{scope}
+
+  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{124}{124}\selectfont 3};
+  \draw[milcGradeText,line width=1.7pt]
+    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+
+  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+    {
+     {\sffamily\bfseries\fontsize{19}{22}\selectfont Lo esencial y nada más --- la abstracción\\como tercera pieza del pensamiento computacional}\\[4mm]
+     {\sffamily\bfseries\fontsize{23}{26}\selectfont Bebras · Momento 3}\\[2mm]
+     {\sffamily\fontsize{13}{16}\selectfont Curso «Pensar como una máquina» · Pensamiento computacional}\\[5mm]
+     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
+     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+    };
+
+  \path[fill=milcGradeSoft,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
+    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
+    \textcolor{milcGradeDark}{\bfseries Producto:} Tu modelo escrito de algo complejo (conservo · ignoro) más un mapa o ícono a mano alzada que abstraiga un lugar de tu barrio, con leyenda.};
+\end{tikzpicture}
+\mbox{}
+\newpage
+
+\section*{Apertura: Lo esencial y nada más: la abstracción como tercera pieza del pensamiento computacional}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+En las veredas del Valle del Cauca, cuando un campesino te explica cómo
+llegar a su finca, no describe cada árbol del cafetal ni el color de cada
+casa del camino. Te da solo lo esencial: \textbf{«pasas la tienda de doña
+Rosa, coges la trocha de la derecha y en el guayacán grande volteas»}. Tres
+señas y ya sabes llegar. No menciona el perro que ladra en la curva, ni
+cuántos postes de luz hay, ni el nombre del vecino, porque nada de eso te
+ayuda a no perderte. Ese campesino hace, sin nombrarlo, un trabajo
+finísimo: \textbf{separa las pocas señas que de verdad importan} del montón
+de detalles que solo serían ruido. Limpiar el camino hasta dejar lo justo
+--- ni una seña de más, ni una de menos --- es abstracción pura, heredada
+en la tradición oral del campo mucho antes de que existieran los mapas
+digitales.
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+\textbf{Abstraer} es quedarte con lo esencial e ignorar lo que no importa
+para la tarea que tienes entre manos. Es construir un \textbf{modelo}: una
+versión simplificada de la realidad que conserva solo los datos que
+cambian el resultado. Un mapa de Cartago no dibuja cada ladrillo ni cada
+ventana; dibuja las calles y unos puntos clave. Una app de clima no
+almacena el nombre de cada nube; guarda temperatura, humedad y presión.
+Un ícono de batería muestra el nivel, no la química interna. En todos los
+casos la idea es la misma: \textbf{menos ruido es más claridad}. En Bebras,
+muchas tareas traen datos de sobra a propósito; abstraer es saber
+\emph{cuáles} importan para la pregunta y cuáles son puro ruido para
+distraerte.
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{El campesino abstrae el camino a su vereda: ignora el ruido y conserva
+solo lo que sirve para llegar. ¿Y si te dijera que un computador hace
+exactamente eso con cada modelo que construye --- y que en muchas tareas
+Bebras lo más difícil no es calcular, sino decidir \emph{cuáles} datos
+importan?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar podrás: (1) \textbf{identificar} qué es una abstracción y
+reconocer modelos cotidianos como mapas, íconos y resúmenes; (2)
+\textbf{explicar} con tus palabras qué conservar y qué ignorar al
+modelar algo complejo de tu entorno; (3) \textbf{aplicar} la abstracción
+para ignorar datos distractores en un reto estilo Bebras y llegar a la
+respuesta correcta.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Desarrolla el pensamiento computacional --- descomposición, patrones, abstracción y algoritmos --- para resolver problemas (transversal 6°--11°, alineado a los lineamientos MEN de Tecnología e Informática)\\
+Referentes & Valentina Dagienė (Bebras) · Pensamiento computacional (Wing) · Dussel · Estoicismo · Floridi · Saberes del Valle y el Pacífico\\
+Producto final & Tu modelo escrito de algo complejo (conservo · ignoro) más un mapa o ícono a mano alzada que abstraiga un lugar de tu barrio, con leyenda.\\
+\end{tabularx}
+\normalsize
+
+\puente{Ya sabes que el campesino reduce el camino a tres señas. Ahora mira el
+mapa de la sesión: vas a recorrer los mismos movimientos de la
+abstracción hasta modelar algo tuyo y resolver un reto con datos
+distractores.}
+
+\begin{titlebox}{milcGradeDark}
+Ruta MILC: así vamos a aprender
+\end{titlebox}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Antes de nombrar la pieza, conviene verla en tu propia experiencia.
+Recuerda una vez en que alguien te dio indicaciones para llegar a algún
+lugar: la abstracción ya estaba ahí, aunque nadie le pusiera ese nombre.}
+
+\begin{titlebox}{milcVerde}
+Fase 1 · Escucha
+\end{titlebox}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Recuerda una vez en que alguien te dio indicaciones para llegar a
+un lugar} --- un familiar, un vecino, un amigo. Puede ser cómo llegar a
+una finca, a una casa nueva o a un lugar del barrio. Fíjate en qué
+\emph{sí} te dijeron y qué \emph{no} te dijeron. ¿Mencionaron el color
+de cada casa? ¿El nombre de cada árbol? ¿O solo las señas que de verdad
+te servían para no perderte? Cada dato que dejaron por fuera fue una
+decisión: ese detalle no cambiaba el resultado. Sin saberlo, la persona
+que te dio las indicaciones ya estaba abstrayendo.
+\end{softbox}
+
+\checkbox Recordaste al menos tres señas o datos que sí te dieron para llegar
+(lo que conservaron).\\
+\checkbox Nombraste al menos dos detalles que nadie mencionó, aunque existían
+en el camino (lo que ignoraron).\\
+\checkbox Explicaste, en una frase, por qué esos detalles ignorados no cambiaban
+el resultado de llegar.
+
+\begin{infoband}{milcVerde}
+\textbf{En tu cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1
+--- Las señas que importan». \textbf{Formato:} dos listas cortas:
+«conservaron» e «ignoraron». \textbf{Extensión:} 3 ítems en la primera
+lista y 2 en la segunda, más una frase final que explique por qué lo
+ignorado no importaba. \textbf{Sabes que terminaste cuando} tu lista
+muestra claramente qué se quedó y qué se descartó, y por qué.
+\end{infoband}
+
+\puente{Acabas de ver la abstracción en lo cotidiano. Ahora vamos a nombrarla y
+entender qué conserva y qué descarta un buen modelo, porque con eso vas a
+resolver todo lo que sigue.}
+
+\begin{titlebox}{milcTurquesa}
+Fase 2 · Sistematización con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+Abstraer es la tercera pieza del pensamiento computacional. Su trabajo es
+\textbf{construir un modelo}: una versión simplificada de algo real que
+conserva solo lo que importa para la tarea. No es resumir mal --- es
+\emph{elegir} a propósito qué se queda y qué se va. Aquí están las cuatro
+ideas que hacen funcionar esta pieza.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
+1. Descomposición & \textbf{Lo esencial es lo que cambia el resultado.} Un dato es esencial si,
+al quitarlo, la respuesta cambia. Si al quitarlo la respuesta es la misma,
+es ruido. Las señas de la vereda son esenciales; el color de la casa de al
+lado, no.\\
+2. Reconocimiento de patrones & \textbf{Un modelo nunca es la realidad: es lo suficiente.} Un mapa de
+Cartago que dibuja cada ladrillo no sirve para guiarse: hay demasiado ruido.
+El mejor modelo no es el más completo, sino el que tiene \emph{los datos
+justos} para la tarea.\\
+3. Abstracción & \textbf{Abstraer es una decisión, no un accidente.} El campesino elige
+cuáles señas dar. El diseñador elige qué poner en el ícono. Tú decides
+qué datos del enunciado Bebras importan. Cada vez que abstraes estás
+tomando una decisión sobre qué parte de la realidad vale la pena ver.\\
+4. Algoritmo conceptual & \textbf{Menos ruido es más claridad.} Cuando quitas los detalles que
+estorban, tu cabeza puede concentrarse en lo que de verdad mueve la aguja.
+Por eso abstraer no es pereza: es una habilidad que hace el pensamiento
+más rápido y más preciso.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcTurquesa}{Cómo abstraer un problema Bebras}
+\textbf{1. Lee el enunciado} sin afán y subraya los datos que recibes. \\[1mm]
+\textbf{2. Marca la pregunta} exacta que te hacen. \\[1mm]
+\textbf{3. Clasifica} cada dato: ¿cambia la respuesta si lo quito? Si sí,
+es esencial. Si no, es ruido. \\[1mm]
+\textbf{4. Tacha el ruido} y trabaja solo con los datos esenciales. \\[1mm]
+\textbf{5. Responde} con lo que quedó. Si te trabas, revisa si hay más
+ruido que no descartaste.
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{Confundir abstraer con resumir mal:} abstraer es \emph{elegir} qué
+dato importa, no quitar al azar. \textbf{Usar todos los datos del enunciado:}
+muchas tareas Bebras traen ruido a propósito; usar todo casi siempre
+complica la respuesta. \textbf{Confundir esencial con «el número más
+grande»:} el dato esencial es el que cambia la respuesta, no el que parece
+más importante a primera vista.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+\textbf{En tu cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2 ---
+Los cuatro movimientos de la abstracción». \textbf{Formato:} tabla de 2
+columnas (movimiento · ejemplo de mi día). \textbf{Extensión:} los cuatro
+movimientos, cada uno con un ejemplo distinto a los del texto.
+\textbf{Sabes que terminaste cuando} un compañero entendería tus ejemplos
+sin que se los expliques.
+\end{infoband}
+
+\puente{Ya distingues lo esencial del ruido. Es hora de usarlo: vas a modelar
+algo complejo de tu entorno y luego ignorar datos distractores en un
+reto estilo Bebras.}
+
+\begin{titlebox}{milcMagenta}
+Fase 3 · Praxis con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+La abstracción no es adorno: se usa para resolver. Vas a enfrentarte a un
+\textbf{reto estilo Bebras con datos de sobra}, igual que en el concurso
+real. La clave no es calcular rápido --- es decidir primero qué datos
+importan y cuáles son puro ruido.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
+Descomposición & \textbf{Abstracción al foco:} antes de calcular nada, identifica la
+pregunta exacta. Solo cuando sabes qué te piden puedes decidir qué dato
+importa.\\
+Patrones & \textbf{Clasifica los datos:} recorre cada dato del enunciado y pregúntate:
+«¿si lo quito, cambia la respuesta?». Separa los esenciales de los que
+son ruido.\\
+Abstracción & \textbf{Descarta con decisión:} tacha el ruido en tu mente o en el papel.
+No lo uses. Tener datos que no sirven y no usarlos es tan importante como
+usar los que sí sirven.\\
+Algoritmo de armado & \textbf{Responde con lo esencial:} trabaja solo con los datos que
+sobrevivieron al descarte. Si la respuesta parece rara, revisa si
+descartaste algo que sí importaba o si usaste algo que era ruido.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcMagenta}{El reto: la tienda de la esquina}
+\checkbox \textbf{Reto (Nivel C).} En una tienda de Cartago, una gaseosa
+cuesta \textbf{\$2.500}. El local tiene \textbf{7 sabores} y abre a las
+\textbf{8~a.m.} Compras \textbf{3 gaseosas}. ¿Cuánto pagas en total? \\[2mm]
+\checkbox Marca: \quad \fbox{\phantom{x}}~\$5.000 \quad
+\fbox{\phantom{x}}~\$7.500 \quad \fbox{\phantom{x}}~\$10.000 \quad
+\fbox{\phantom{x}}~\$17.500 \\[2mm]
+\checkbox Escribe qué datos eran \textbf{ruido} y por qué los ignoraste.
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Resuélvelo paso a paso (abstracción + algoritmo).} La pregunta es
+cuánto pagas por 3 gaseosas. Para responderla solo necesitas: el precio
+(\$2.500) y la cantidad (3). Los 7 sabores y la hora de apertura (8~a.m.)
+no entran en el cálculo --- son ruido a propósito, para ver si los
+descartas. Operación: $3 \times \$2.500 = \$7.500$. El ruido eran el
+número de sabores y la hora de apertura; ninguno cambia cuánto pagas.
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+\textbf{En tu cuaderno (Actividad 3 · APLICA).} Título: «Actividad 3 ---
+Mi primer reto Bebras de abstracción». \textbf{Formato:} respuesta marcada
++ lista de datos de ruido + 2 renglones de explicación. \textbf{Extensión:}
+la respuesta, los datos que descartaste nombrados, y la razón en una frase.
+\textbf{Sabes que terminaste cuando} tu explicación convencería a alguien
+que aún no sabe la respuesta, diciéndole qué ignoró y por qué.
+\end{infoband}
+
+\puente{Resolviste el reto. Ahora deja tu evidencia: el modelo escrito y el mapa
+o ícono que muestran que ya sabes quedarte con lo esencial.}
+
+\begin{titlebox}{milcMostaza}
+Producto de la sesión
+\end{titlebox}
+\textbf{Modelo escrito (conservo · ignoro) + mapa o ícono de tu barrio con leyenda}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) Tu modelo escrito nombra al menos 3 datos esenciales y 2 datos de ruido
+del objeto o lugar que elegiste. (2) Explicaste en una frase por qué cada dato de ruido no cambia el resultado. (3) Tu mapa o ícono deja por fuera los detalles que no ayudan y conserva
+solo lo esencial para entender el lugar. (4) La leyenda del mapa o ícono explica qué representa cada seña o símbolo. (5) En el reto de la tienda marcaste \$7.500 y nombraste los dos datos de
+ruido (los 7 sabores y la hora de apertura).
+\end{softbox}
+
+\puente{Terminaste el producto. Detente a mirar qué cambió en ti --- no la nota,
+sino tu manera de ver la información que te rodea.}
+
+\begin{titlebox}{milcVino}
+Fase 4 · Evaluación liberadora — cinco dimensiones
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos pensando en grande: tres voces para entender qué significa, para
+ti y para tu comunidad, aprender a limpiar el ruido del mundo.}
+
+\begin{titlebox}{milcGradeDark}
+Triángulo de pensamiento · cierre filosófico
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{``El saber del pueblo también es ciencia.''}
+
+Dar buenas señas para llegar a una vereda ya era abstraer: el campesino
+limpiaba el camino hasta dejar lo esencial, mucho antes de que existieran
+los mapas digitales. Ese saber no llegó de afuera; tu comunidad ya lo
+practicaba, aunque nadie lo llamara pensamiento computacional.
+
+\textbf{¿Qué saberes de mi familia o mi vereda ya abstraían lo esencial, aunque nadie los llamara abstracción?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
+\textit{``En cada acto pregúntate: ¿es esto necesario? Suprime lo superfluo, y ganarás tiempo y serenidad.''}
+
+Abstraer un problema es un acto estoico: quitas lo que estorba y te
+quedas con lo que importa. Lo mismo sirve fuera del papel: cuánto ruido
+--- notificaciones, preocupaciones ajenas, distracciones --- lleva tu
+atención lejos de lo esencial.
+
+\textbf{Igual que abstraigo un problema quitándole el ruido, ¿qué «ruido» de mi vida podría empezar a ignorar para enfocarme en lo que de verdad importa?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{``Todo modelo es un nivel de abstracción: muestra unas cosas y, al hacerlo, deja otras fuera.''}
+
+Un mapa, un ícono, un perfil de red social: todos son abstracciones que
+deciden qué parte de la realidad se ve y qué queda invisible. Esa
+decisión no es neutral: quien construye el modelo elige qué importa.
+
+\textbf{Si un mapa o un perfil son abstracciones de algo más grande, ¿qué se pierde cada vez que abstraemos — y quién decide qué parte de la realidad queda por fuera?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{titlebox}{milcVino}
+Compromiso final
+\end{titlebox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
+Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
+Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
+Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
+Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
+Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
+\end{tabularx}
+\normalsize
+
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Elige una app, una señal de tránsito o un
+ícono que uses con frecuencia --- puede ser el ícono del wifi, la señal de
+«pare» o el logo de tu tienda favorita --- y escribe en tu cuaderno: ¿qué
+conserva esa abstracción? ¿Qué dejó por fuera? ¿Cambiaría algo si hubiera
+guardado un detalle más? Trae tu ejemplo para compartirlo con el grupo.
+\end{infoband}
+
+\end{document}

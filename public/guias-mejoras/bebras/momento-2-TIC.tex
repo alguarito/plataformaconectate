@@ -1,0 +1,401 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra para todas las guias MILC v3
+% Ver scripts/generadores/build-guia-milc.py para la lista completa de
+% claves esperadas. El script valida que no queden placeholders sin
+% reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1.75cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\hyphenpenalty=200
+\exhyphenpenalty=200
+\pretolerance=400
+\tolerance=2000
+\setlength{\emergencystretch}{1em}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{84CC16}
+\definecolor{milcGradeDark}{HTML}{4D7C0F}
+\definecolor{milcGradeSoft}{HTML}{ECFCCB}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Tecnología e Informática · Bebras}
+\rhead{\small Momento 2 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{$\rightarrow$}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+\begin{document}
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[white] (current page.south west) rectangle (current page.north east);
+  \path[fill=milcGradePrimary,rounded corners=16mm]
+    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
+    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{14}{16}\selectfont MOMENTO};
+  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
+    {\sffamily\bfseries\fontsize{9}{11}\selectfont BEBRAS · PENSAR COMO UNA MÁQUINA};
+
+  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
+    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
+    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
+    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
+    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
+    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
+  \end{scope}
+
+  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{124}{124}\selectfont 2};
+  \draw[milcGradeText,line width=1.7pt]
+    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+
+  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+    {
+     {\sffamily\bfseries\fontsize{19}{22}\selectfont Cazador de patrones --- ver lo que se repite\\para predecir lo que sigue}\\[4mm]
+     {\sffamily\bfseries\fontsize{23}{26}\selectfont Bebras · Momento 2}\\[2mm]
+     {\sffamily\fontsize{13}{16}\selectfont Curso «Pensar como una máquina» · Pensamiento computacional}\\[5mm]
+     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
+     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+    };
+
+  \path[fill=milcGradeSoft,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
+    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
+    \textcolor{milcGradeDark}{\bfseries Producto:} Tu tabla «Tres patrones de mi entorno» con regla y predicción, más el simulacro A·B·C resuelto y explicado con el truco del residuo.};
+\end{tikzpicture}
+\mbox{}
+\newpage
+
+\section*{Apertura: Cazador de patrones: ver lo que se repite para predecir lo que sigue}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+En el Pacífico colombiano, cuando suena el \textbf{currulao}, la marimba de chonta no toca cualquier cosa: teje una célula rítmica que vuelve una y otra vez. El cununo y el bombo marcan un golpe que se repite ---\emph{pum, pa, pum-pum, pa}--- como un tejido sonoro que no se rompe. Sobre esa base predecible, el cantador improvisa y los bailarines responden. ¿Y cómo saben los bailarines cuándo viene el golpe fuerte, cuándo zapatear, cuándo girar el pañuelo? No lo adivinan: \textbf{reconocen el patrón}. Su oído ya aprendió lo que se repite, así que pueden anticipar lo que sigue. Lo mismo pasa con los tejidos del Pacífico y de La Guajira: una mochila wayuu o una canasta en werregue repiten un diseño ---rombo, línea, rombo, línea--- que la tejedora lleva en la memoria. Reconocer lo que se repite, en el sonido o en la fibra, \textbf{es ya un acto de pensamiento matemático}.
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+\textbf{Reconocer patrones} es la segunda pieza del pensamiento computacional: encontrar regularidades, repeticiones y secuencias en un conjunto de datos. Un patrón es cualquier cosa que vuelve a aparecer siguiendo una \textbf{regla}: la tabla del 5 siempre termina en 0 o en 5 porque la regla es ``suma 5 cada vez''. Una vez que ves la regla, ganas dos superpoderes: \textbf{predecir} lo que sigue sin verlo (como saber a qué hora pasa el bus de la ruta 2 sin mirar el horario) y \textbf{generalizar} (resolver la regla una vez y aplicarla a mil casos, no solo a diez). En las tareas Bebras, el reconocimiento de patrones aparece en secuencias numéricas, ciclos de colores y diseños repetidos. La clave no es dibujar cada paso: es hallar la regla y \emph{usarla}.
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{Quien baila currulao ``sabe'' cuándo viene el golpe porque reconoce el patrón rítmico. ¿Y si te dijera que esa misma habilidad ---ver lo que se repite para predecir lo que sigue--- es justo lo que te pide una tarea Bebras?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar podrás: (1) \textbf{identificar} lo que se repite en una secuencia de números, colores o figuras, nombrando la regla que la genera; (2) \textbf{explicar} con tus palabras la diferencia entre repetición, regla, predicción y generalización, con ejemplos de tu entorno; (3) \textbf{aplicar} el truco del residuo para hallar una posición lejana en un patrón cíclico, sin dibujar todos los casos; (4) resolver un simulacro A·B·C de patrones justificando cada respuesta.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Desarrolla el pensamiento computacional --- descomposición, patrones, abstracción y algoritmos --- para resolver problemas (transversal 6°--11°, alineado a los lineamientos MEN de Tecnología e Informática)\\
+Referentes & Valentina Dagienė (Bebras) · Pensamiento computacional (Wing) · Dussel · Estoicismo · Floridi · Saberes del Valle y el Pacífico\\
+Producto final & Tu tabla «Tres patrones de mi entorno» con regla y predicción, más el simulacro A·B·C resuelto y explicado con el truco del residuo.\\
+\end{tabularx}
+\normalsize
+
+\puente{Ya sabes que el currulao predice el golpe porque reconoce el patrón. Ahora mira el mapa de la sesión: vas a pasar de ver lo que se repite a usarlo para predecir, paso por paso.}
+
+\begin{titlebox}{milcGradeDark}
+Ruta MILC: así vamos a aprender
+\end{titlebox}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Antes de nombrar qué es un patrón, conviene buscarlo en lo que ya conoces. Recorre tu casa, tu barrio y tu colegio: los patrones están ahí, esperando que los veas.}
+
+\begin{titlebox}{milcVerde}
+Fase 1 · Escucha
+\end{titlebox}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Recorre con la mirada tu casa, tu barrio y tu colegio} buscando cosas que se repitan: baldosas que alternan color, rejas con el mismo diseño, el horario del bus de la ruta 2, los días de mercado en Cartago, el diseño de una mochila o una ruana. Elige \textbf{tres patrones distintos}. Para cada uno, anota qué elemento se repite y cuál es la regla que lo genera ---en tus palabras, sin tecnicismos.
+\end{softbox}
+
+\checkbox Encontraste 3 patrones reales de tu entorno (no del texto): uno puede ser visual, uno numérico o de tiempo, uno de otro tipo.\\
+\checkbox Para cada patrón describiste qué elemento se repite con claridad suficiente para que un compañero lo entienda.\\
+\checkbox Para al menos uno de los tres escribiste cómo usarías la regla para predecir algo útil (por ejemplo, a qué hora pasa el bus).
+
+\begin{infoband}{milcVerde}
+\textbf{En tu cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1 --- Tres patrones de mi entorno». \textbf{Formato:} tabla de 3 columnas: \emph{dónde lo vi} · \emph{qué se repite} · \emph{regla en mis palabras}. \textbf{Extensión:} 3 filas completas + una frase final que diga cuál de los tres patrones te sirve para predecir algo útil. \textbf{Sabes que terminaste cuando} tu tabla tiene los tres patrones, cada uno con su regla escrita, y la frase final está redactada.
+\end{infoband}
+
+\puente{Acabas de cazar patrones en tu entorno. Ahora vamos a ponerles nombre y a entender las cuatro ideas que hacen que un patrón sea útil: repetición, regla, predicción y generalización.}
+
+\begin{titlebox}{milcTurquesa}
+Fase 2 · Sistematización con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+Reconocer patrones no es memorizar: es descubrir la regla que genera la secuencia. Esa regla te da dos poderes: \textbf{predecir} (saber lo que sigue sin verlo) y \textbf{generalizar} (resolver una vez y aplicar a mil casos). Aquí están las cuatro ideas que hacen que un patrón sea útil, con ejemplos de Cartago y el Pacífico.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
+1. Descomposición & \textbf{Repetición:} algo vuelve a aparecer igual, una y otra vez. El cununo del currulao repite su golpe; la mochila wayuu repite el rombo. Si lo notas, ya no tienes que mirar cada caso por separado: el patrón hace el trabajo.\\
+2. Reconocimiento de patrones & \textbf{La regla:} es la instrucción oculta que genera la secuencia. En la tabla del 5 (5, 10, 15, 20\ldots) la regla es ``suma 5 cada vez''; por eso siempre termina en 0 o en 5. Hallar la regla es el corazón del trabajo: con ella predices cualquier término.\\
+3. Abstracción & \textbf{Predecir:} si conoces la regla, sabes lo que sigue sin esperar a verlo. El bus de la ruta 2 pasa a los minutos 00 y 30: ya sabes a qué hora salir de casa sin mirar ningún horario. En Bebras, predecir te ahorra dibujarlo todo.\\
+4. Algoritmo conceptual & \textbf{Generalizar:} en vez de resolver mil casos uno por uno, resuelves la regla una sola vez y la aplicas a todos. El \textbf{truco del residuo}: si el ciclo mide 5 y quieres la posición 23, divide 23 entre 5 --- caben 4 grupos (20) y sobran 3 --- la posición 3 del ciclo es tu respuesta.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcTurquesa}{Cómo hallar la regla de un patrón}
+\textbf{1. Mira los primeros términos} y pregúntate: ¿qué cambia de uno al otro? \\[1mm] \textbf{2. Prueba una operación simple:} ¿suma, resta, multiplicación, ciclo? \\[1mm] \textbf{3. Comprueba} que tu regla funciona en todos los términos que ya ves. \\[1mm] \textbf{4. Aplica la regla} para predecir el siguiente término sin dibujarlo. \\[1mm] \textbf{5. Para posiciones lejanas,} usa el truco del residuo: divide la posición entre el tamaño del ciclo y usa el resto. Si el resto es 0, es el último del ciclo.
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{Copiar la secuencia sin buscar la regla:} el problema no pide que dibujes los 23 pasos, sino que halles la regla y la apliques. \textbf{Confundir el ciclo con la posición:} el ciclo tiene longitud fija (por ejemplo, 5), pero la posición puede ser cualquier número. \textbf{Olvidar que el residuo 0 es el último del ciclo:} si divides 20 entre 5 y el resto es 0, la cuenta es la 5.ª del patrón, no la 0.ª.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+\textbf{En tu cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2 --- La regla de mi patrón». \textbf{Formato:} párrafo corto en lenguaje sencillo. \textbf{Extensión:} 5 a 7 renglones. \textbf{Sabes que terminaste cuando} explicaste la regla de uno de tus tres patrones con tus palabras, mostraste cómo predecir el siguiente elemento y conectaste tu patrón con el ritmo del currulao o un saber de tu familia.
+\end{infoband}
+
+\puente{Ya distingues la regla de la secuencia. Es hora de usarla en retos reales al estilo Bebras, donde lo que importa es hallar la regla antes de responder.}
+
+\begin{titlebox}{milcMagenta}
+Fase 3 · Praxis con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+La regla no es adorno: se usa. Vas a resolver tres retos al estilo Bebras sobre reconocimiento de patrones, de fácil (A) a difícil (C). Lee con calma --- la clave está en hallar la regla antes de responder, no en adivinar.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
+Descomposición & \textbf{Descomposición:} parte el enunciado en datos y pregunta. ¿Qué patrón te dan? ¿Qué posición te piden?\\
+Patrones & \textbf{Patrones:} identifica el ciclo y su longitud. ¿Cuántos elementos tiene antes de repetirse?\\
+Abstracción & \textbf{Abstracción:} ignora los datos de adorno; quédate solo con el ciclo y la posición pedida.\\
+Algoritmo de armado & \textbf{Algoritmo:} aplica el truco del residuo --- divide la posición entre la longitud del ciclo y usa el resto para ubicarte dentro del patrón.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcMagenta}{El reto: la tejedora wayuu y la cuenta 23}
+\checkbox \textbf{Reto (Nivel C).} Una tejedora wayuu arma un collar repitiendo \emph{siempre} este patrón de 5 cuentas en este orden: 1.~roja · 2.~negra · 3.~verde · 4.~amarilla · 5.~azul, y vuelve a empezar. ¿De qué color es la cuenta número~23? \\[2mm]
+\checkbox Marca: \quad \fbox{\phantom{x}}~Roja \quad \fbox{\phantom{x}}~Negra \quad \fbox{\phantom{x}}~Verde \quad \fbox{\phantom{x}}~Amarilla \quad \fbox{\phantom{x}}~Azul \\[2mm]
+\checkbox Escribe el \textbf{truco que usaste} (residuo) y explica por qué funciona sin dibujar las 23 cuentas.
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Resuélvelo paso a paso (truco del residuo).} El patrón tiene \textbf{5 cuentas} que se repiten. Quieres la posición 23. Divide: $23 \div 5 = 4$ grupos completos con \textbf{residuo 3}. El residuo 3 corresponde a la \textbf{3.ª cuenta del patrón}, que es \textbf{verde}. La respuesta es \textbf{verde}. ¿Por qué funciona? Porque 4 grupos completos (20 cuentas) ya se «cerraron»; las 3 que sobran son el inicio del quinto grupo: roja, negra, \textbf{verde}. No necesitabas dibujar las 23 cuentas.
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+\textbf{En tu cuaderno (Actividad 3 · APLICA).} Título: «Actividad 3 --- El collar de la tejedora wayuu». \textbf{Formato:} respuesta marcada + 4 a 5 renglones de explicación con el truco del residuo. \textbf{Extensión:} la operación de división, el residuo, la posición en el patrón y el color. \textbf{Sabes que terminaste cuando} tu explicación permite a alguien verificar la respuesta \emph{sin dibujar las 23 cuentas}.
+\end{infoband}
+
+\puente{Resolviste el simulacro. Ahora deja tu evidencia: la tabla de patrones y las soluciones explicadas, para mostrar que entiendes por qué funciona cada respuesta.}
+
+\begin{titlebox}{milcMostaza}
+Producto de la sesión
+\end{titlebox}
+\textbf{Tabla «Tres patrones de mi entorno» + simulacro A·B·C resuelto con el truco del residuo explicado}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) Tu tabla tiene 3 patrones reales y distintos, cada uno con la regla escrita en tus palabras y una predicción útil. (2) En el reto A (manilla) identificaste el ciclo de 2 colores y marcaste la respuesta correcta (verde). (3) En el reto B (tambor del currulao) aplicaste la regla ``multiplica por 2'' y obtuviste 48. (4) En el reto C (collar wayuu) usaste el truco del residuo ($23 \div 5 = 4$ r.~3 $\to$ verde) y lo explicaste sin dibujar las 23 cuentas. (5) Tu trabajo muestra que entendiste que generalizar es resolver la regla una vez y aplicarla a cualquier posición, no contar caso por caso.
+\end{softbox}
+
+\puente{Terminaste el producto. Detente a mirar qué cambió en ti --- no la nota, sino tu manera de ver el mundo: ¿ya ves reglas donde antes solo veías cosas sueltas?}
+
+\begin{titlebox}{milcVino}
+Fase 4 · Evaluación liberadora — cinco dimensiones
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos pensando en grande: tres voces para entender qué significa, para ti y para tu comunidad, aprender a ver lo que se repite.}
+
+\begin{titlebox}{milcGradeDark}
+Triángulo de pensamiento · cierre filosófico
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{``Los saberes del pueblo también son ciencia.''}
+
+Los patrones del currulao, de la mochila wayuu y de la canasta en werregue son conocimiento matemático del Sur: ritmo y geometría que nuestros pueblos pensaron mucho antes que cualquier manual escolar. El reconocimiento de patrones no llegó de afuera --- tu comunidad ya lo practicaba en el tejido y en la música.
+
+\textbf{¿Qué patrones de mi cultura ---en la música, el tejido o la cocina--- ya eran matemática, aunque nadie los llamara así?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
+\textit{``Observa el curso regular de las cosas: todo lo que sucede vuelve a suceder, y quien lo comprende deja de turbarse por ello.''}
+
+Cuando algo parece impredecible y el tiempo corre --- un examen, una situación difícil ---, busca el patrón: ¿qué se repite aquí? Reconocer la regularidad no elimina el problema, pero sí te devuelve el control sobre cómo lo enfrentas.
+
+\textbf{¿Qué patrones reconozco en mis propios hábitos ---cuándo me distraigo, cuándo rindo--- y qué podría predecir y mejorar en mí?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{``Los algoritmos que nos rodean viven de patrones: aprenden lo que se repite en nuestros datos para anticipar lo que haremos después.''}
+
+Las aplicaciones que usas cada día reconocen patrones en ti: qué ves, a qué hora, qué compras, con quién hablas. Aprender a ver patrones es también aprender a entender cómo te leen las máquinas --- y a decidir qué muestras.
+
+\textbf{¿Qué patrones míos crees que ya conocen las apps que uso, y para qué los usan?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{titlebox}{milcVino}
+Compromiso final
+\end{titlebox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
+Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
+Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
+Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
+Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
+Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
+\end{tabularx}
+\normalsize
+
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Elige UNA secuencia numérica que hayas visto esta semana --- en el precio de algo, en el horario del bus, en los números de las casas de tu cuadra --- y escribe: cuál es la regla, cómo predecirías el siguiente elemento y si el truco del residuo sirve para encontrar un término lejano. Trae el ejemplo para compartir con el grupo.
+\end{infoband}
+
+\end{document}

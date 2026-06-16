@@ -1,0 +1,517 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import SaberAncestralBlock from '../../../../components/SaberAncestralBlock.astro';
+import MapaRutaBlock from '../../../../components/MapaRutaBlock.astro';
+import ActividadBlock from '../../../../components/ActividadBlock.astro';
+import LabEmparejar from '../../../../components/LabEmparejar.astro';
+import LabQuiz from '../../../../components/LabQuiz.astro';
+import TrianguloBlock from '../../../../components/TrianguloBlock.astro';
+import CincoDimensionesBlock from '../../../../components/CincoDimensionesBlock.astro';
+import MetodologiaMILC from '../../../../components/MetodologiaMILC.astro';
+import type { MetodologiaMILCData } from '../../../../components/MetodologiaMILC.astro';
+import type {
+  SaberAncestral,
+  EstacionMapa,
+  Actividad,
+  LabQuiz as LabQuizData,
+  Triangulo,
+  CincoDimensiones,
+} from '../../../../data/guiasContenido/_schema';
+import type { DataEmparejar } from '../../../../components/LabEmparejar.astro';
+import { getMomento } from '../../../../data/bebras';
+
+const base = import.meta.env.BASE_URL;
+const momento = getMomento('momento-5')!;
+const archivoOficial = 'https://www.bebras.org';
+
+const saberAncestral: SaberAncestral = {
+  saber:
+    'En los ríos del Pacífico colombiano, mucho antes del celular, las comunidades afro se hablaban a distancia con tambores. Un tamborero experto no enviaba palabras: enviaba patrones. Combinando golpes y silencios —un toque fuerte y otro suave, uno largo y otro corto— armaba avisos que el río llevaba de vereda en vereda: "llegó la canoa", "viene la creciente", "esta noche hay fiesta". El secreto es asombroso por lo simple: con apenas dos estados —suena o no suena— se podía decir casi cualquier cosa, si emisor y receptor acordaban antes qué significaba cada combinación. No hacía falta un alfabeto entero; bastaban dos señales bien ordenadas. Ese es, sin que nadie lo bautizara así, el mismo principio con el que hoy una máquina guarda una foto, una canción o tu nombre: todo cabe en dos estados.',
+  fuente: 'Tradición tamborera afro del Pacífico colombiano',
+  preguntaPuente:
+    'Si el tambor podía decir tanto con solo dos sonidos —golpe y silencio—, ¿será que un computador guarda TODO lo que ves —fotos, audios, mensajes, videos— usando también apenas dos estados?',
+};
+
+const mapaRuta: EstacionMapa[] = [
+  { numero: 1, iconos: ['🌱'], titulo: 'El tambor del Pacífico: dos sonidos lo dicen todo', duracionMin: 5 },
+  { numero: 2, iconos: ['📖'], titulo: 'Qué es representar datos', duracionMin: 8 },
+  { numero: 3, iconos: ['📖'], titulo: 'Binario, listas, tablas y árboles', duracionMin: 14 },
+  { numero: 4, iconos: ['🔎'], titulo: 'Relaciona cada representación con lo que codifica', duracionMin: 6 },
+  { numero: 5, iconos: ['✅'], titulo: 'Comprueba lo que entendiste', duracionMin: 6 },
+  { numero: 6, iconos: ['✏️'], titulo: 'Codifica algo tuyo con dos estados', duracionMin: 12 },
+  { numero: 7, iconos: ['🔎'], titulo: 'Simulacro: codifica y decodifica', duracionMin: 12 },
+  { numero: 8, iconos: ['💭'], titulo: 'Tres voces para cerrar', duracionMin: 6 },
+];
+
+// Las representaciones, para el bloque de lectura (antes del ejercicio de relacionar).
+const representaciones = [
+  {
+    emoji: '💡',
+    nombre: 'Binario (0 y 1)',
+    texto:
+      'Solo dos símbolos: 0 (apagado) y 1 (encendido), como el tambor que suena o calla. Cada posición vale el DOBLE de la de su derecha (…, 4, 2, 1), así que con pocos bits formas muchos números. Ejemplo: 101 son 4 + 0 + 1 = 5.',
+  },
+  {
+    emoji: '📜',
+    nombre: 'Listas',
+    texto:
+      'Datos puestos en un orden que importa. La fila para el bus en el terminal de Cartago es una lista: el primero sube primero. Cambiar el orden cambia el significado.',
+  },
+  {
+    emoji: '📊',
+    nombre: 'Tablas',
+    texto:
+      'Datos organizados en filas y columnas para cruzarlos. El horario de tu salón es una tabla: una casilla te dice qué clase hay el martes a la segunda hora.',
+  },
+  {
+    emoji: '🌳',
+    nombre: 'Árboles',
+    texto:
+      'Datos que se ramifican, donde cada rama abre otras. El árbol genealógico de tu familia es un árbol: de tus abuelos salen tus papás, y de ellos sales tú y tus hermanos.',
+  },
+];
+
+const emparejarRepresentaciones: DataEmparejar = {
+  titulo: 'Relaciona cada representación con lo que codifica',
+  instrucciones:
+    'Acabas de conocer cuatro formas de guardar datos. Conecta cada una con un ejemplo de tu día distinto a los del texto.',
+  etiquetaIzq: 'Representación',
+  etiquetaDer: 'Qué codifica',
+  pares: [
+    { izquierda: 'Binario (101)', derecha: 'El número 5 con solo ceros y unos' },
+    { izquierda: 'Lista', derecha: 'El orden de turnos para pasar al tablero' },
+    { izquierda: 'Tabla', derecha: 'Las notas del salon por estudiante y materia' },
+    { izquierda: 'Arbol', derecha: 'Tu apellido paterno y materno ramificándose' },
+  ],
+};
+
+const quiz: LabQuizData = {
+  tipo: 'quiz',
+  titulo: 'Comprueba lo que entendiste',
+  instrucciones: 'Cuatro preguntas sobre cómo se representan los datos. Cada una te deja una explicación.',
+  preguntas: [
+    {
+      enunciado: 'Codificar la información para guardarla o enviarla, usando pocos símbolos, se llama…',
+      opciones: ['Representación de datos', 'Memorización', 'Decoración', 'Multiplicación'],
+      respuestaIndex: 0,
+      feedbackCorrecto: 'Correcto. Representar datos es elegir cómo escribir la información para guardarla o transmitirla, como el tamborero que codifica avisos con golpes.',
+      feedbackIncorrecto: 'Es representación de datos: la forma de codificar la información con pocos símbolos para guardarla o enviarla.',
+    },
+    {
+      enunciado: 'En binario las posiciones valen 2 y 1 (de izquierda a derecha). Si 11 vale 3, entonces el número 10 vale…',
+      opciones: ['1', '2', '3', '4'],
+      respuestaIndex: 1,
+      feedbackCorrecto: 'Sí: 10 es (1×2) + (0×1) = 2. El 1 está en la posición que vale 2 y la posición que vale 1 está apagada.',
+      feedbackIncorrecto: 'Cuenta el valor de cada posición: 10 es (1×2) + (0×1) = 2. Solo está encendida la posición que vale 2.',
+    },
+    {
+      enunciado: 'Los toques de tambor del Pacífico se parecen al binario porque ambos…',
+      opciones: [
+        'Usan muchos símbolos distintos',
+        'Necesitan electricidad para funcionar',
+        'Representan mensajes con solo dos estados acordados de antemano',
+        'Solo sirven para hacer música',
+      ],
+      respuestaIndex: 2,
+      feedbackCorrecto: 'Exacto. Golpe/silencio o 1/0: con dos estados y un acuerdo previo se puede codificar casi cualquier mensaje.',
+      feedbackIncorrecto: 'El parecido es el corazón del tema: ambos representan mensajes con apenas dos estados que emisor y receptor acordaron antes.',
+    },
+    {
+      enunciado: 'Un árbol genealógico de tu familia es un buen ejemplo de datos que…',
+      opciones: ['Se ramifican', 'Van en una sola fila', 'No tienen orden', 'Solo son números'],
+      respuestaIndex: 0,
+      feedbackCorrecto: 'Correcto: en un árbol cada rama abre otras, como los abuelos que se ramifican en hijos y nietos.',
+      feedbackIncorrecto: 'Es un árbol: datos que se ramifican, donde de cada rama salen otras (abuelos → padres → tú).',
+    },
+  ],
+};
+
+const actividadCodifica: Actividad = {
+  numero: 1,
+  verbo: 'EXPLICA',
+  titulo: 'Explica cómo codificar algo tuyo con dos estados',
+  tiempoMin: 12,
+  modalidad: 'individual',
+  pasos: [
+    'Escoge algo de tu día que sea información: una canción que te gusta, una foto del celular o tu propio nombre.',
+    'Imagina que solo tienes dos estados, como el tambor: suena (1) o calla (0), encendido o apagado.',
+    'Explica con tus palabras cómo ESO que escogiste podría guardarse o enviarse usando únicamente esos dos estados.',
+  ],
+  cuaderno: {
+    titulo: 'Lo mío en dos estados',
+    formato: 'párrafo en lenguaje sencillo',
+    extensión: '6 a 8 renglones',
+  },
+  criterios: [
+    'Escogiste algo concreto de tu vida (canción, foto o nombre).',
+    'Explicaste, con tus palabras, cómo se reduciría a solo dos estados.',
+    'Tu párrafo conecta la idea con el tambor o con el 0 y el 1 del computador.',
+  ],
+};
+
+const actividadInventa: Actividad = {
+  numero: 2,
+  verbo: 'APLICA',
+  titulo: 'Inventa tu propio código de tambor',
+  tiempoMin: 12,
+  modalidad: 'parejas',
+  pasos: [
+    'Con un compañero, elige 4 mensajes que quieras poder enviar (por ejemplo: "ya llegué", "espérame", "peligro", "todo bien").',
+    'Asígnale a cada mensaje un código distinto hecho solo de golpes (G) y silencios (S): por ejemplo GG, GS, SG, SSG.',
+    'Verifica que ningún código se repita y que ambos lo entiendan igual; luego pruébenlo dando los golpes en la mesa.',
+  ],
+  cuaderno: {
+    titulo: 'Mi código de tambor',
+    formato: 'tabla de 2 columnas: mensaje · código (G/S)',
+    extensión: '4 filas',
+  },
+  criterios: [
+    'Tu tabla tiene 4 mensajes, cada uno con su código de golpes y silencios.',
+    'Ningún código se repite: cada mensaje es distinguible del otro.',
+    'Tu compañero pudo decodificar un mensaje tuyo usando solo la tabla.',
+  ],
+};
+
+// Simulación: 3 retos estilo Bebras (originales), de fácil a difícil (A·B·C).
+const simulacro: LabQuizData = {
+  tipo: 'quiz',
+  titulo: 'Simulacro · codifica y decodifica',
+  instrucciones:
+    'Tres retos cortos, de fácil (A) a difícil (C), como en el concurso real. Lee con calma: cada enunciado te da todo lo que necesitas para resolverlo.',
+  preguntas: [
+    {
+      enunciado:
+        'Nivel A · Un tamborero acuerda este código: dos golpes seguidos (GG) significan "peligro" y un solo golpe (G) significa "todo bien". Escuchas en el río: GG. ¿Qué mensaje recibiste?',
+      opciones: ['Peligro', 'Todo bien', 'No significa nada', 'Hay fiesta'],
+      respuestaIndex: 0,
+      feedbackCorrecto:
+        'Correcto. Decodificaste el mensaje: dos golpes seguidos (GG) es, por acuerdo previo, "peligro". Eso es leer un dato representado con dos estados.',
+      feedbackIncorrecto:
+        'Vuelve al acuerdo: GG (dos golpes seguidos) significa "peligro"; un solo golpe G sería "todo bien". Escuchaste GG.',
+    },
+    {
+      enunciado:
+        'Nivel B · En binario, las tres posiciones valen 4, 2 y 1 (de izquierda a derecha). Cada posición está encendida (1) o apagada (0) y se suma lo encendido. Ejemplo: 101 = 4 + 0 + 1 = 5. ¿Cuánto vale 110?',
+      opciones: ['3', '5', '6', '7'],
+      respuestaIndex: 2,
+      feedbackCorrecto:
+        'Exacto. 110 enciende las posiciones que valen 4 y 2, y apaga la que vale 1: 4 + 2 + 0 = 6.',
+      feedbackIncorrecto:
+        'Suma solo las posiciones encendidas: 110 prende el 4 y el 2, y apaga el 1. 4 + 2 + 0 = 6.',
+    },
+    {
+      enunciado:
+        'Nivel C · Tienes 3 bombillos en fila y cada uno puede estar encendido o apagado, sin importar los demás. ¿Cuántas combinaciones distintas de encendido/apagado puedes formar en total?',
+      opciones: ['3', '6', '8', '9'],
+      respuestaIndex: 2,
+      feedbackCorrecto:
+        'Correcto. Cada bombillo dobla las posibilidades: 1 bombillo da 2, dos dan 2×2 = 4 y tres dan 2×2×2 = 2³ = 8 combinaciones.',
+      feedbackIncorrecto:
+        'Cada bombillo nuevo DOBLA las opciones: 2 × 2 × 2 = 2³ = 8. No se suman (no es 3+3), se multiplican.',
+    },
+  ],
+};
+
+const metodologia: MetodologiaMILCData = {
+  resumen:
+    'Este momento desarrolla la representación de datos: la idea de que con pocos símbolos —en el límite, solo dos— se puede codificar toda la información. El tambor del Pacífico es el anclaje perfecto: el grupo ya intuye que con golpe/silencio se dicen cosas. Desde ahí se llega al binario y a las estructuras (listas, tablas, árboles). La meta no es que calculen binario rápido, sino que entiendan POR QUÉ basta con dos estados y reconozcan estas representaciones en su entorno.',
+  objetivos: [
+    'Conectar la representación de datos con los tambores del Pacífico y con saberes de codificación de la comunidad.',
+    'Explicar con un ejemplo propio cómo la información puede reducirse a dos estados (0 y 1).',
+    'Leer el valor posicional del binario en números pequeños y reconocer listas, tablas y árboles en el entorno.',
+  ],
+  secuencia: [
+    { paso: 'Apertura con el tambor: pregunta si alguien conoce los toques del Pacífico y cómo se entendían a distancia.', tiempo: '5 min' },
+    { paso: 'Desarrolla qué es representar datos y las cuatro representaciones (binario, listas, tablas, árboles) con ejemplos del entorno.', tiempo: '20 min' },
+    { paso: 'Resuelvan juntos el ejercicio de relacionar y el quiz; detente en la pregunta de binario.', tiempo: '12 min' },
+    { paso: 'Actividades de cuaderno: codificar algo propio (EXPLICA) e inventar un código de tambor en parejas (APLICA).', tiempo: '12 min' },
+    { paso: 'Simulacro A·B·C de codificar/decodificar: que lo resuelvan solos; observa quién traba en el valor posicional.', tiempo: '12 min' },
+    { paso: 'Cierre filosófico (tres voces) y las cinco dimensiones, en conversación.', tiempo: '6 min' },
+  ],
+  evaluación:
+    'Formativa: el ejercicio de relacionar y el quiz dan señal inmediata de comprensión, sobre todo la pregunta de binario. La evidencia evaluable son las dos actividades de cuaderno, con sus criterios observables; la tabla del código de tambor muestra si dominan la idea de codificar con dos estados.',
+  diferenciación:
+    'En 6.º y 7.º quédate en el código de tambor y en binario hasta 3 bits, aceptando el razonamiento oral. En 8.º y 9.º exige leer binario de 3 bits sin ayuda y resolver el nivel C. En 10.º y 11.º pide además que expliquen por escrito por qué 3 bombillos dan 8 combinaciones (la potencia de 2). El simulacro con niveles A·B·C permite atender a todo el salón con un mismo reto.',
+};
+
+const triangulo: Triangulo = {
+  dussel: {
+    autor: 'Enrique Dussel',
+    lente: 'lente del nosotros',
+    cita: 'El tambor del Pacífico ya era tecnología de la información: el pueblo afro codificaba y transmitía mensajes mucho antes de que se hablara de "datos".',
+    preguntaEspejo:
+      'Nos enseñan que la informática nació lejos y en otro idioma. ¿Qué formas de codificar y transmitir información ya existían en mi región, creadas por mi propia gente?',
+  },
+  estoico: {
+    autor: 'Séneca',
+    lente: 'lente del cuidado interior',
+    cita: 'No es pobre el que tiene poco, sino el que desea más. Lo esencial cabe en lo simple.',
+    preguntaEspejo:
+      'Si con solo dos señales se puede decir tanto, ¿cuántas veces complico de más algo que, bien pensado, se reduce a lo esencial?',
+  },
+  floridi: {
+    autor: 'Luciano Floridi',
+    lente: 'lente de la infoesfera',
+    cita: 'Todo lo que habita la infoesfera es, en el fondo, información codificada.',
+    preguntaEspejo:
+      'Mi foto, mi voz, mi nombre: todo se vuelve unos y ceros que alguien guarda. ¿Qué tanto de mi vida ya está convertido en datos sin que yo lo decida?',
+  },
+};
+
+const cincoDimensiones: CincoDimensiones = {
+  personal:
+    'Ya no es magia: entiendes que una foto o una canción se guardan como patrones de dos estados. Saber cómo funciona algo te da poder sobre ello.',
+  emocional:
+    'Lo que parecía complejísimo —representar todo el mundo digital— cabe en una idea simple: dos estados. Lo complejo, bien partido, se vuelve sencillo.',
+  ciudadana:
+    'Tus fotos, tu voz y tus mensajes son unos y ceros que viajan y que alguien almacena. Entender eso es el primer paso para decidir qué compartes y cuidarlo.',
+  local:
+    'Del tambor del Pacífico al binario hay una sola idea: codificar con dos estados. Tu región ya inventó informática, aunque no la llamara así.',
+  intergeneracional:
+    'Tus mayores heredaron del Pacífico el arte de codificar mensajes con golpes y silencios. Tú heredas ese arte y lo reconoces hoy en cada pantalla.',
+};
+---
+
+<BaseLayout
+  title="Momento 5 · El idioma de los datos — Bebras · ConectaTE"
+  description="Representación de datos: cómo se codifica la información con binario (0 y 1), listas, tablas y árboles. Momento del curso «Pensar como una máquina», con los tambores del Pacífico como saber ancestral y un simulacro estilo Bebras de codificar y decodificar."
+  ogType="article"
+>
+  <article class="pt-12 pb-20">
+    <div class="bento-container max-w-5xl">
+      <div class="max-w-3xl mx-auto">
+        <!-- Breadcrumb -->
+        <nav class="flex items-center gap-2 text-sm font-semibold mb-8 flex-wrap" style="color: var(--fg-muted);">
+          <a href={base || '/'} class="hover:opacity-60 transition-opacity">Inicio</a>
+          <span>/</span>
+          <a href={`${base}/explora`} class="hover:opacity-60 transition-opacity">Explora</a>
+          <span>/</span>
+          <a href={`${base}/explora/bebras`} class="hover:opacity-60 transition-opacity">Bebras</a>
+          <span>/</span>
+          <span style="color: var(--fg);">Momento 5</span>
+        </nav>
+
+        <!-- ① PRESENTACIÓN -->
+        <div class="flex items-center gap-3 mb-6">
+          <span class="w-8 h-8 rounded-full bg-bento-lime text-neutral-950 flex items-center justify-center text-sm font-black shrink-0" aria-hidden="true">1</span>
+          <span class="font-black text-lg">Presentación</span>
+          <span class="flex-1 h-0.5 rounded-full" style="background: var(--border);"></span>
+        </div>
+
+        <!-- Hero -->
+        <div class="bento-card-color bg-bento-blue text-white mb-10">
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">Momento {momento.numero} · {momento.dominio}</span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">🧠 {momento.verbo}</span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">~{momento.tiempo}</span>
+          </div>
+          <h1 class="heading-giant text-balance mb-3">{momento.nombre}</h1>
+          <p class="text-base md:text-lg font-semibold opacity-95 leading-relaxed">
+            Una foto, una canción y tu nombre parecen cosas muy distintas. Pero el
+            computador las guarda todas igual: con apenas dos estados, como el
+            tambor del Pacífico que dice todo con golpes y silencios.
+          </p>
+        </div>
+
+        <!-- 🌱 Saber ancestral -->
+        <SaberAncestralBlock data={saberAncestral} etiqueta="Saber ancestral" />
+
+        <!-- 🗺 Ruta -->
+        <MapaRutaBlock estaciones={mapaRuta} />
+
+        <!-- Propósito -->
+        <div class="bento-card mb-6">
+          <span class="chip-bento mb-4">🎯 Lo que vas a poder hacer</span>
+          <ul class="space-y-3 mt-3">
+            {[
+              'IDENTIFICAR cuatro formas de representar datos: binario, listas, tablas y árboles.',
+              'EXPLICAR con tus palabras cómo la información se reduce a dos estados (0 y 1).',
+              'LEER el valor de un número binario pequeño sumando lo encendido.',
+              'APLICAR la idea de codificar con dos estados creando tu propio código de tambor.',
+            ].map((d) => (
+              <li class="flex items-start gap-3">
+                <span class="w-6 h-6 rounded-md bg-bento-lime/30 text-black flex items-center justify-center text-xs font-black shrink-0 mt-0.5">✓</span>
+                <span class="text-sm md:text-base leading-relaxed">{d}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <!-- Pregunta detonante -->
+        <div class="bento-card-color bg-bento-cyan mb-10">
+          <span class="chip-bento mb-3 bg-black/10">💡 La pregunta que abre todo</span>
+          <p class="text-lg md:text-xl font-black leading-snug">
+            ¿Cómo hace un computador para guardar una foto a color, tu canción
+            favorita y todo tu nombre usando solamente dos cosas: encendido y
+            apagado?
+          </p>
+          <p class="text-sm leading-relaxed mt-3 opacity-90">
+            La respuesta es la misma que descubrió el tambor del Pacífico: con dos
+            estados bien ordenados se puede representar casi cualquier cosa. Al
+            terminar vas a entender cómo.
+          </p>
+        </div>
+
+        <!-- ② GUÍA -->
+        <div class="flex items-center gap-3 mb-6">
+          <span class="w-8 h-8 rounded-full bg-bento-lime text-neutral-950 flex items-center justify-center text-sm font-black shrink-0" aria-hidden="true">2</span>
+          <span class="font-black text-lg">Guía</span>
+          <span class="flex-1 h-0.5 rounded-full" style="background: var(--border);"></span>
+        </div>
+
+        <!-- 📖 LEE 1 · Qué es representar datos -->
+        <section class="bento-card mb-6">
+          <span class="chip-bento mb-4">📖 Lee · ¿Qué es representar datos?</span>
+          <div class="space-y-4 text-sm md:text-base leading-relaxed">
+            <p>
+              <strong>Representar datos</strong> es decidir CÓMO escribimos la información
+              para poder guardarla o enviarla. La misma idea —"está lloviendo"— se
+              puede representar de muchas formas: con palabras, con un dibujo de una
+              nube, o con un toque de tambor acordado. Representar es elegir el código.
+            </p>
+            <p>
+              La gran idea de este momento es sorprendente: <strong>con pocos símbolos
+              se puede representar todo</strong>. El tamborero del Pacífico lo probó con
+              apenas dos —golpe y silencio—. El computador hace lo mismo: guarda fotos,
+              audios y textos con solo dos estados, <strong>encendido (1) y apagado (0)</strong>.
+              Lo importante no es la cantidad de símbolos, sino el acuerdo de qué
+              significa cada combinación.
+            </p>
+          </div>
+        </section>
+
+        <!-- Puente -->
+        <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+          ¿Y de qué formas concretas se guardan los datos? Aquí tienes cuatro. Léelas
+          con calma: con ellas vas a resolver todo lo que sigue.
+        </p>
+
+        <!-- 📖 LEE 2 · Las representaciones -->
+        <section class="bento-card mb-6">
+          <span class="chip-bento mb-4">📖 Lee · Binario, listas, tablas y árboles</span>
+          <p class="text-sm md:text-base leading-relaxed mb-4">
+            Toda la información de un computador se organiza con unas pocas formas
+            básicas. Estas son las cuatro que más vas a encontrar en Bebras:
+          </p>
+          <ul class="space-y-3">
+            {representaciones.map((r) => (
+              <li class="flex items-start gap-3 p-3 rounded-bento-sm" style="background: var(--bg);">
+                <span class="text-2xl shrink-0" aria-hidden="true">{r.emoji}</span>
+                <span class="text-sm md:text-base leading-relaxed"><strong>{r.nombre}:</strong> {r.texto}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <!-- 🔎 Relaciona (después de leer las representaciones) -->
+        <div class="mb-6">
+          <LabEmparejar data={emparejarRepresentaciones} id="bebras-m5-empareja-representaciones" />
+        </div>
+
+        <!-- Puente -->
+        <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+          Ya distingues las cuatro representaciones. Comprueba que de verdad las
+          tienes claras —sobre todo el binario— antes de usarlas.
+        </p>
+
+        <!-- ✅ Quiz -->
+        <div class="mb-6">
+          <LabQuiz data={quiz} id="bebras-m5-quiz" />
+        </div>
+
+        <!-- Puente -->
+        <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+          Representar datos no es teoría: se hace. Codifica algo tuyo con dos estados
+          y luego inventa tu propio código de tambor.
+        </p>
+
+        <!-- ✏️ Actividades -->
+        <ActividadBlock data={actividadCodifica} />
+        <ActividadBlock data={actividadInventa} />
+
+        <!-- ③ METODOLOGÍA MILC (docente) -->
+        <div class="flex items-center gap-3 mt-10 mb-6">
+          <span class="w-8 h-8 rounded-full bg-bento-lime text-neutral-950 flex items-center justify-center text-sm font-black shrink-0" aria-hidden="true">3</span>
+          <span class="font-black text-lg">Metodología MILC</span>
+          <span class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">para el docente</span>
+          <span class="flex-1 h-0.5 rounded-full" style="background: var(--border);"></span>
+        </div>
+
+        <MetodologiaMILC data={metodologia} />
+
+        <!-- ④ SIMULACIÓN -->
+        <div class="flex items-center gap-3 mt-10 mb-6">
+          <span class="w-8 h-8 rounded-full bg-bento-lime text-neutral-950 flex items-center justify-center text-sm font-black shrink-0" aria-hidden="true">4</span>
+          <span class="font-black text-lg">Simulación</span>
+          <span class="flex-1 h-0.5 rounded-full" style="background: var(--border);"></span>
+        </div>
+
+        <!-- Puente -->
+        <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+          Ya tienes las herramientas. Pruébate como en el concurso real: tres retos
+          de fácil a difícil, de codificar y decodificar. Sin afán — lo que importa
+          es cómo lo piensas.
+        </p>
+
+        <!-- 🔎 Simulacro -->
+        <div class="mb-4">
+          <LabQuiz data={simulacro} id="bebras-m5-simulacro" />
+        </div>
+
+        <!-- Nota de atribución de tareas -->
+        <p class="text-xs leading-relaxed mb-10 px-1" style="color: var(--fg-muted);">
+          Estos tres retos son <strong style="color: var(--fg);">originales, al estilo Bebras</strong>, para
+          practicar la representación de datos. Las tareas reales de años
+          anteriores —de todos los países— están en el archivo oficial:
+          <a href={archivoOficial} target="_blank" rel="noopener" class="font-bold text-bento-blue hover:opacity-70 transition-opacity">bebras.org</a>.
+        </p>
+
+        <!-- Puente al cierre -->
+        <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+          Aprendiste que todo cabe en dos estados y resolviste tres retos de
+          codificación. Cerremos pensando qué significa, para ti, que tu vida se
+          vuelva datos.
+        </p>
+      </div>
+
+      <!-- 💭 Triángulo (ancho completo) -->
+      <TrianguloBlock data={triangulo} />
+
+      <!-- 🌱 Cinco dimensiones (ancho completo) -->
+      <CincoDimensionesBlock data={cincoDimensiones} />
+
+      <div class="max-w-3xl mx-auto">
+        <!-- Créditos -->
+        <div class="bento-card mb-10 border-l-4 border-bento-lime">
+          <span class="chip-bento mb-3">🦫 Créditos</span>
+          <p class="text-sm leading-relaxed mt-2" style="color: var(--fg-muted);">
+            Este momento adapta al modelo MILC la preparación para el reto
+            <strong style="color: var(--fg);">Bebras</strong>, iniciativa internacional creada por Valentina
+            Dagienė (Universidad de Vilnius, Lituania, 2004). Las tareas originales
+            son de Bebras International y sus organizadores nacionales.
+          </p>
+          <a href={archivoOficial} target="_blank" rel="noopener" class="inline-flex items-center gap-2 mt-4 font-black text-sm text-bento-blue hover:opacity-70 transition-opacity">
+            Ver el sitio oficial y el archivo de tareas
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+          </a>
+        </div>
+
+        <!-- Volver -->
+        <a href={`${base}/explora/bebras`} class="bento-card-hover flex items-center gap-4">
+          <svg class="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5"></path>
+            <path d="m12 19-7-7 7-7"></path>
+          </svg>
+          <div>
+            <div class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">Volver al programa</div>
+            <div class="font-black text-lg">Bebras</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </article>
+</BaseLayout>

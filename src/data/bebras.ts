@@ -104,7 +104,7 @@ export const momentos: MomentoBebras[] = [
     saberAncestral: 'La receta del sancocho: pasos en orden exacto que siempre llevan al mismo resultado.',
     verbo: 'APLICA',
     tiempo: '45 min',
-    estado: 'proximamente',
+    estado: 'activo',
   },
   {
     slug: 'momento-5',
@@ -115,7 +115,7 @@ export const momentos: MomentoBebras[] = [
     saberAncestral: 'Los tambores del Pacífico: codificar mensajes a distancia con golpes y silencios.',
     verbo: 'EXPLICA',
     tiempo: '45 min',
-    estado: 'proximamente',
+    estado: 'activo',
   },
   {
     slug: 'momento-6',
@@ -126,7 +126,7 @@ export const momentos: MomentoBebras[] = [
     saberAncestral: 'Las adivinanzas de la tradición oral: deducir la respuesta con pistas y lógica.',
     verbo: 'ANALIZA',
     tiempo: '45 min',
-    estado: 'proximamente',
+    estado: 'activo',
   },
   {
     slug: 'momento-7',

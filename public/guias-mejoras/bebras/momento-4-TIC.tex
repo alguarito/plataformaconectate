@@ -1,0 +1,401 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra para todas las guias MILC v3
+% Ver scripts/generadores/build-guia-milc.py para la lista completa de
+% claves esperadas. El script valida que no queden placeholders sin
+% reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1.75cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\hyphenpenalty=200
+\exhyphenpenalty=200
+\pretolerance=400
+\tolerance=2000
+\setlength{\emergencystretch}{1em}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{84CC16}
+\definecolor{milcGradeDark}{HTML}{4D7C0F}
+\definecolor{milcGradeSoft}{HTML}{ECFCCB}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Tecnología e Informática · Bebras}
+\rhead{\small Momento 4 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{$\rightarrow$}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+\begin{document}
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[white] (current page.south west) rectangle (current page.north east);
+  \path[fill=milcGradePrimary,rounded corners=16mm]
+    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
+    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{14}{16}\selectfont MOMENTO};
+  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
+    {\sffamily\bfseries\fontsize{9}{11}\selectfont BEBRAS · PENSAR COMO UNA MÁQUINA};
+
+  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
+    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
+    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
+    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
+    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
+    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
+  \end{scope}
+
+  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{124}{124}\selectfont 4};
+  \draw[milcGradeText,line width=1.7pt]
+    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+
+  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+    {
+     {\sffamily\bfseries\fontsize{19}{22}\selectfont Receta exacta --- secuencia,\\condición y repetición}\\[4mm]
+     {\sffamily\bfseries\fontsize{23}{26}\selectfont Bebras · Momento 4}\\[2mm]
+     {\sffamily\fontsize{13}{16}\selectfont Curso «Pensar como una máquina» · Pensamiento computacional}\\[5mm]
+     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
+     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+    };
+
+  \path[fill=milcGradeSoft,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
+    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
+    \textcolor{milcGradeDark}{\bfseries Producto:} Tu algoritmo escrito paso a paso con al menos una condición \textbf{SI\ldots ENTONCES\ldots}, más el algoritmo con bucle que ejecutó tu compañero sin pedirte ayuda.};
+\end{tikzpicture}
+\mbox{}
+\newpage
+
+\section*{Apertura: Receta exacta: secuencia, condición y repetición}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+En las cocinas del Valle del Cauca, el sancocho de gallina no se improvisa: se sigue una receta heredada, paso a paso, en un orden exacto. La abuela primero sofríe el hogao, luego pone a hervir la gallina hasta que ablanda, y \textbf{solo cuando el caldo ya hierve} echa la papa, la yuca y el plátano --- cada uno a su tiempo, porque la yuca tarda más que el plátano ---. Si alguien altera ese orden y echa la papa antes que la carne, o no espera a que el agua hierva, el plato cambia: la papa se deshace, la gallina queda dura, el caldo sale aguado. La receta funciona porque es siempre la misma secuencia: si la sigues igual, obtienes el mismo sancocho; si saltas o cambias un paso, obtienes otro resultado. La abuela no adivina ni improvisa: ejecuta una secuencia que el pueblo del Valle afinó durante generaciones.
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+Un \textbf{algoritmo} es una secuencia de pasos exactos, en orden, para resolver un problema o lograr un resultado. La receta del sancocho es un algoritmo; las instrucciones para armar un mueble también; y las indicaciones para llegar a una calle de Cartago, también. Lo clave es esto: una máquina \emph{no ``entiende''} lo que quisiste decir --- \textbf{ejecuta literalmente}, al pie de la letra ---. Si un paso es ambiguo o está fuera de orden, la máquina no lo corrige: hace lo que dice y el resultado sale mal. Todo algoritmo se arma con tres ingredientes: \textbf{secuencia} (un paso tras otro, en orden), \textbf{condición} (\emph{SI\ldots ENTONCES\ldots}, una decisión que depende de algo) y \textbf{repetición o bucle} (hacer lo mismo varias veces sin reescribirlo). En Bebras tendrás que leer, seguir y corregir algoritmos: ese es el músculo que entrenas aquí.
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{La abuela sigue la receta en el mismo orden de siempre: si cambia un paso, el sancocho cambia. ¿Y si te dijera que un computador funciona idéntico --- hace exactamente lo que le dices, paso a paso --- y que por eso las instrucciones que le das tienen que ser perfectas?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar podrás: (1) \textbf{identificar} los tres ingredientes de un algoritmo --- secuencia, condición y repetición ---; (2) \textbf{explicar} por qué una máquina ejecuta literalmente y no adivina lo que quisiste decir; (3) \textbf{aplicar} el pensamiento algorítmico para escribir y corregir algoritmos cortos al estilo Bebras; (4) \textbf{evaluar} si un algoritmo está correcto siguiéndolo paso a paso en tu cabeza y detectando dónde falla.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Desarrolla el pensamiento computacional --- descomposición, patrones, abstracción y algoritmos --- para resolver problemas (transversal 6°--11°, alineado a los lineamientos MEN de Tecnología e Informática)\\
+Referentes & Valentina Dagienė (Bebras) · Pensamiento computacional (Wing) · Dussel · Estoicismo · Floridi · Saberes del Valle y el Pacífico\\
+Producto final & Tu algoritmo escrito paso a paso con al menos una condición \textbf{SI\ldots ENTONCES\ldots}, más el algoritmo con bucle que ejecutó tu compañero sin pedirte ayuda.\\
+\end{tabularx}
+\normalsize
+
+\puente{Ya sabes que la receta del sancocho sigue un orden exacto. Ahora mira el mapa de la sesión: vas a recorrer los tres ingredientes del algoritmo, uno por uno, hasta escribir y corregir los tuyos.}
+
+\begin{titlebox}{milcGradeDark}
+Ruta MILC: así vamos a aprender
+\end{titlebox}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Antes de nombrar los ingredientes, conviene observarlos en una rutina real. Empieza por pensar en una tarea que haces todos los días: los tres ya están ahí, escondidos.}
+
+\begin{titlebox}{milcVerde}
+Fase 1 · Escucha
+\end{titlebox}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Observa una rutina tuya de todos los días} --- alistar el morral, preparar el desayuno, lavar los platos ---. Fíjate en \emph{cómo} la haces: ¿hay pasos que siempre van en el mismo orden? ¿Hay un momento en que decides algo según lo que pase --- ``si el agua ya hirvió, echo el café''? ¿Hay algo que repites varias veces --- ``revuelve tres veces''? Sin saberlo, ya estás usando los tres ingredientes de un algoritmo: secuencia, condición y repetición.
+\end{softbox}
+
+\checkbox Nombraste al menos tres pasos en el orden exacto en que los haces (secuencia).\\
+\checkbox Señalaste un momento en que decidiste algo según lo que pasaba (condición).\\
+\checkbox Identificaste algo que repetiste más de una vez sin reescribirlo (repetición o bucle).
+
+\begin{infoband}{milcVerde}
+\textbf{En tu cuaderno (Actividad 1 \textbullet{} IDENTIFICA).} Título: «Actividad 1 --- La rutina que ya es un algoritmo». \textbf{Formato:} lista numerada de 4 a 6 pasos. \textbf{Extensión:} un paso por línea, en el orden exacto; señala con una flecha o un asterisco dónde hay una condición y dónde hay una repetición. \textbf{Sabes que terminaste cuando} tu lista nombra, en lenguaje cotidiano, los tres ingredientes dentro de una misma rutina.
+\end{infoband}
+
+\puente{Acabas de ver los ingredientes en lo cotidiano. Ahora vamos a nombrarlos y entenderlos uno a uno, porque con ellos vas a leer, escribir y arreglar todo lo que sigue.}
+
+\begin{titlebox}{milcTurquesa}
+Fase 2 · Sistematización con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+Un algoritmo es la manera de dar instrucciones que entiende una máquina --- y que tú ya usabas en la cocina ---. No requiere código: son \textbf{tres ingredientes} que, juntos, convierten cualquier tarea en pasos que cualquiera puede seguir sin adivinar. Aquí los nombramos uno a uno, con ejemplos de tu barrio.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
+1. Descomposición & \textbf{Secuencia:} un paso tras otro, en orden. Primero sofreír el hogao, luego hervir la gallina, luego echar las verduras. El orden no es un capricho: cambiarlo cambia el resultado.\\
+2. Reconocimiento de patrones & \textbf{Condición (\emph{SI\ldots ENTONCES\ldots}):} una decisión que depende de algo. ``SI el caldo ya hierve, ENTONCES echa la papa; SI todavía no, ENTONCES espera.'' El algoritmo toma un camino u otro según lo que ocurra.\\
+3. Abstracción & \textbf{Repetición o bucle:} hacer lo mismo varias veces sin reescribirlo. ``Repite 3 veces: revuelve el caldo'' o ``revuelve HASTA QUE espese''. En vez de escribir el paso diez veces, dices cuántas veces repetirlo.\\
+4. Algoritmo conceptual & \textbf{Exactitud:} la máquina ejecuta \emph{literalmente} --- no adivina, no corrige ---. Una instrucción ambigua o fuera de orden produce un resultado incorrecto o un error. Por eso los tres ingredientes deben estar bien escritos y en el orden correcto.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcTurquesa}{Cómo leer un algoritmo en Bebras}
+\textbf{1. Lee sin afán} y subraya solo los pasos, las condiciones y los bucles. \\[1mm] \textbf{2. Ejecuta en tu cabeza}, paso a paso, como si fueras la máquina: no supongas nada, sigue literalmente. \\[1mm] \textbf{3. En las condiciones, evalúa} si la condición se cumple o no antes de seguir. \\[1mm] \textbf{4. En los bucles, cuenta} cuántas veces se repite y cuándo termina. \\[1mm] \textbf{5. Si algo falla, busca} el paso que está mal escrito o fuera de orden. En Bebras no gana quien calcula más rápido, sino quien \emph{sigue los pasos con más claridad}.
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{Saltar pasos porque ``se entiende'':} la máquina no entiende --- ejecuta; un paso que falta produce un error. \textbf{Confundir condición con bucle:} la condición decide un camino; el bucle repite un paso. \textbf{Creer que el orden no importa:} en la receta, si cambias el orden, cambia el plato; en el algoritmo, también.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+\textbf{En tu cuaderno (Actividad 2 \textbullet{} EXPLICA).} Título: «Actividad 2 --- Los 3 ingredientes con mis palabras». \textbf{Formato:} tabla de 2 columnas (ingrediente \textbullet{} ejemplo de mi día). \textbf{Extensión:} los tres ingredientes, cada uno con un ejemplo distinto a los del texto. \textbf{Sabes que terminaste cuando} un compañero entendería tus ejemplos sin que se los expliques.
+\end{infoband}
+
+\puente{Ya distingues secuencia, condición y repetición. Es hora de usarlos: vas a resolver un reto estilo Bebras aplicándolos a propósito.}
+
+\begin{titlebox}{milcMagenta}
+Fase 3 · Praxis con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+Los ingredientes no son adorno: se usan. Vas a resolver un \textbf{reto estilo Bebras sobre algoritmos}, aplicando los tres a propósito. Lee con calma --- la clave está en ejecutar paso a paso, no en adivinar.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
+Descomposición & \textbf{Secuencia:} sigue cada paso en el orden en que aparece, sin adelantarte ni saltarte ninguno.\\
+Patrones & \textbf{Condición:} cada vez que aparezca un ``SI\ldots ENTONCES\ldots'', evalúa si la condición se cumple antes de seguir el camino.\\
+Abstracción & \textbf{Repetición:} cuando haya un bucle, cuenta exactamente cuántas veces se repite y qué cambia en cada vuelta.\\
+Algoritmo de armado & \textbf{Exactitud:} no supongas nada que el enunciado no diga. Si la instrucción no lo menciona, la máquina no lo hace.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcMagenta}{El reto: el robot que dibuja}
+\checkbox \textbf{Reto (Nivel B).} Un robot ejecuta este algoritmo: \emph{repite 4 veces: avanza un paso y gira 90° a la derecha}. Por error, alguien cambia el \textbf{4} por un \textbf{3}: \emph{repite 3 veces: avanza un paso y gira 90° a la derecha}. ¿Cuántos lados tiene la figura que dibuja ahora el robot? \\[2mm]
+\checkbox Marca: \quad \fbox{\phantom{x}}~2 lados \quad \fbox{\phantom{x}}~3 lados \quad \fbox{\phantom{x}}~4 lados \quad \fbox{\phantom{x}}~6 lados \\[2mm]
+\checkbox Escribe \textbf{qué ingrediente} del algoritmo cambió y por qué afecta el resultado.
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Resuélvelo paso a paso.} El bucle original repite 4 veces «avanza y gira 90°»: cada repetición dibuja un lado y un giro; 4 lados $\to$ cuadrado. Al cambiar 4 por 3, el bucle repite solo 3 veces: dibuja 3 lados y 3 giros de 90° $\to$ triángulo. El ingrediente que cambió es la \textbf{repetición (bucle)}: al reducir su contador de 4 a 3, la figura pasa de 4 lados a 3 lados.
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+\textbf{En tu cuaderno (Actividad 3 \textbullet{} APLICA).} Título: «Actividad 3 --- El robot que dibuja». \textbf{Formato:} respuesta marcada + 3 renglones de explicación. \textbf{Extensión:} la respuesta y por qué, nombrando el ingrediente del algoritmo que cambió. \textbf{Sabes que terminaste cuando} tu explicación convencería a alguien que aún no sabe la respuesta.
+\end{infoband}
+
+\puente{Resolviste el reto. Ahora deja tu evidencia: el algoritmo escrito con condición y el algoritmo con bucle que ejecutó tu compañero, para mostrar que sabes pensar así.}
+
+\begin{titlebox}{milcMostaza}
+Producto de la sesión
+\end{titlebox}
+\textbf{Mi algoritmo con condición y el algoritmo con bucle ejecutado por un compañero}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) Resolviste el reto y marcaste la respuesta correcta (3 lados --- triángulo). (2) Explicaste qué ingrediente cambió (el bucle, de 4 a 3 repeticiones) y cómo afectó el resultado. (3) Tu algoritmo de cuaderno tiene pasos en orden exacto y al menos una condición \emph{SI\ldots ENTONCES\ldots}. (4) Tu compañero pudo ejecutar tu algoritmo con bucle siguiendo solo lo que está escrito, sin que le explicaras de viva voz. (5) Tu trabajo muestra que entendiste que una máquina ejecuta literalmente y no adivina.
+\end{softbox}
+
+\puente{Terminaste el producto. Detente a mirar qué cambió en ti --- no la nota, sino tu manera de dar instrucciones.}
+
+\begin{titlebox}{milcVino}
+Fase 4 · Evaluación liberadora — cinco dimensiones
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos pensando en grande: tres voces para entender qué significa, para ti y para tu comunidad, aprender a ordenar el mundo en pasos exactos.}
+
+\begin{titlebox}{milcGradeDark}
+Triángulo de pensamiento · cierre filosófico
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{``El saber del pueblo también es ciencia.''}
+
+La receta del sancocho es un algoritmo que el Valle del Cauca afinó durante generaciones: pasos exactos, condiciones y repeticiones heredadas de madre en madre. El pensamiento algorítmico no llegó de afuera con los computadores: tu comunidad ya lo practicaba en la cocina.
+
+\textbf{¿Qué recetas, oficios o rutinas de mi familia ya eran algoritmos exactos, aunque nadie los llamara así?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
+\textit{``Haz cada cosa de la vida como si fuera la última, con orden y sin precipitación.''}
+
+Cuando haces las cosas con afán y saltas pasos, el resultado falla --- igual que un algoritmo con un paso fuera de orden ---. No controlas el tiempo que tienes, pero sí tu manera de ordenar lo que haces: paso a paso, con calma, verificando cada condición antes de seguir.
+
+\textbf{¿Puedo hacer mis tareas cotidianas en su orden exacto, sin saltarme pasos por la prisa?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{``Los computadores no interpretan nuestras intenciones: ejecutan, literalmente, las instrucciones que reciben.''}
+
+Una máquina no adivina lo que quisiste decir: sigue al pie de la letra. Por eso escribir un buen algoritmo --- claro, ordenado, sin ambigüedades --- es un acto de responsabilidad: si el resultado sale mal, la instrucción estaba mal escrita.
+
+\textbf{Si una máquina hace exactamente lo que le digo, ¿de quién es la responsabilidad cuando el resultado sale mal?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{titlebox}{milcVino}
+Compromiso final
+\end{titlebox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
+Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
+Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
+Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
+Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
+Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
+\end{tabularx}
+\normalsize
+
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Elige una tarea de tu casa --- preparar el desayuno, organizar tu cuarto, llegar al colegio --- y escríbela como un algoritmo completo: pasos numerados en orden exacto, al menos una condición \emph{SI\ldots ENTONCES\ldots} y al menos un bucle. Trae tu algoritmo escrito para intercambiarlo con un compañero y que lo ejecute sin tu ayuda.
+\end{infoband}
+
+\end{document}

@@ -50,7 +50,7 @@ export const programas: Programa[] = [
     categoria: 'Pensamiento computacional',
     descripcion:
       'Reto internacional de pensamiento computacional: resolver problemas con lógica e ingenio, sin escribir una sola línea de código.',
-    estado: 'proximamente',
+    estado: 'activo',
     icono: '🦫',
     bgClass: 'bg-bento-lime',
     aliado: 'Bebras International',

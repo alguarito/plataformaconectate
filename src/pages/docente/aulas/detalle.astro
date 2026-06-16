@@ -77,15 +77,22 @@ import CodigoAcceso from '../../../components/CodigoAcceso.astro';
         </div>
       </div>
 
-      <!-- Placeholder · estudiantes -->
-      <div class="bg-neutral-50 dark:bg-neutral-800/50 rounded-bento-sm p-6 border border-dashed border-neutral-300 dark:border-neutral-700">
-        <h2 class="text-base font-black mb-2">Estudiantes</h2>
-        <p class="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed">
-          La lista de estudiantes y sus consentimientos estará disponible en la
-          próxima entrega (PR-3), cuando se habilite el flujo de registro con OTP
-          al acudiente.
-        </p>
-      </div>
+      <!-- Lista de estudiantes -->
+      <section>
+        <h2 class="text-base font-black mb-3">Estudiantes</h2>
+
+        <div data-estudiantes-loading class="text-center py-6">
+          <p class="text-sm text-neutral-500">Cargando estudiantes…</p>
+        </div>
+
+        <div data-estudiantes-vacio class="hidden bg-neutral-50 dark:bg-neutral-800/50 rounded-bento-sm p-6 text-center border border-dashed border-neutral-300 dark:border-neutral-700">
+          <p class="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed">
+            Aún no hay estudiantes inscritos. Comparte el código de acceso con tu clase.
+          </p>
+        </div>
+
+        <div data-lista-estudiantes class="hidden space-y-2"></div>
+      </section>
 
       <!-- Acciones destructivas -->
       <details class="bg-neutral-50 dark:bg-neutral-800/50 rounded-bento-sm p-4">
@@ -112,7 +119,7 @@ import CodigoAcceso from '../../../components/CodigoAcceso.astro';
 
 <script>
   import { requireDocente } from '../../../lib/auth';
-  import { getAulaById, contarEstudiantes, eliminarAula, periodoLabel } from '../../../lib/aulas';
+  import { getAulaById, contarEstudiantes, eliminarAula, periodoLabel, listarEstudiantesConProgreso } from '../../../lib/aulas';
   import { supabase } from '../../../lib/supabase';
 
   const base = (import.meta.env?.BASE_URL ?? '/').replace(/\/$/, '');
@@ -190,6 +197,55 @@ import CodigoAcceso from '../../../components/CodigoAcceso.astro';
       contenido.querySelector<HTMLElement>('[data-stat-pendientes]')!.textContent = String(pendientes ?? 0);
 
       contenido.classList.remove('hidden');
+
+      // Cargar lista de estudiantes
+      const loadingEst = contenido.querySelector<HTMLElement>('[data-estudiantes-loading]');
+      const vacioEst = contenido.querySelector<HTMLElement>('[data-estudiantes-vacio]');
+      const listaEst = contenido.querySelector<HTMLElement>('[data-lista-estudiantes]');
+
+      try {
+        const lista = await listarEstudiantesConProgreso(aula.id);
+        loadingEst?.classList.add('hidden');
+        if (lista.length === 0) {
+          vacioEst?.classList.remove('hidden');
+        } else {
+          listaEst!.innerHTML = lista
+            .map((est) => {
+              const iniciales = escape(est.display_name.trim().slice(0, 2).toUpperCase());
+              const pct = est.progreso_promedio;
+              const barraColor = pct >= 80 ? 'bg-bento-lime' : pct >= 40 ? 'bg-bento-blue' : 'bg-neutral-300 dark:bg-neutral-600';
+              return `
+                <div class="bg-white dark:bg-neutral-900 rounded-bento-sm shadow-bento p-4 flex items-center gap-4">
+                  <div class="w-10 h-10 rounded-full bg-bento-blue/10 flex items-center justify-center font-black text-bento-blue text-sm flex-shrink-0" aria-hidden="true">
+                    ${iniciales}
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="font-bold text-sm truncate">${escape(est.display_name)}</p>
+                    <p class="text-xs text-neutral-500 mt-0.5">
+                      ${est.guias_completadas} completadas · ${est.guias_iniciadas} iniciadas
+                    </p>
+                    ${est.guias_iniciadas > 0 ? `
+                    <div class="mt-1.5 h-1.5 bg-neutral-100 dark:bg-neutral-700 rounded-full overflow-hidden" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100">
+                      <div class="h-full ${barraColor} rounded-full transition-all" style="width:${pct}%"></div>
+                    </div>` : ''}
+                  </div>
+                  <div class="flex-shrink-0 text-right">
+                    <p class="text-2xl font-black tracking-tight ${pct >= 80 ? 'text-bento-lime dark:text-lime-400' : 'text-bento-blue'}">${pct}<span class="text-xs font-semibold">%</span></p>
+                    <p class="text-xs text-neutral-500">progreso</p>
+                  </div>
+                </div>`;
+            })
+            .join('');
+          listaEst?.classList.remove('hidden');
+        }
+      } catch (err) {
+        console.error('[detalle] error cargando estudiantes:', err);
+        loadingEst?.classList.add('hidden');
+        if (vacioEst) {
+          vacioEst.querySelector('p')!.textContent = 'No se pudo cargar la lista de estudiantes.';
+          vacioEst.classList.remove('hidden');
+        }
+      }
 
       contenido.querySelector('[data-eliminar]')?.addEventListener('click', async () => {
         const ok = confirm(`¿Eliminar el aula "${titulo}" definitivamente? Esta acción borra todos los enrollments, progreso e intentos de quiz asociados. No se puede deshacer.`);

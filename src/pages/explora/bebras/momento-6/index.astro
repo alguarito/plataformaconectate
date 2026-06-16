@@ -1,0 +1,543 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import SaberAncestralBlock from '../../../../components/SaberAncestralBlock.astro';
+import MapaRutaBlock from '../../../../components/MapaRutaBlock.astro';
+import ActividadBlock from '../../../../components/ActividadBlock.astro';
+import LabEmparejar from '../../../../components/LabEmparejar.astro';
+import LabQuiz from '../../../../components/LabQuiz.astro';
+import TrianguloBlock from '../../../../components/TrianguloBlock.astro';
+import CincoDimensionesBlock from '../../../../components/CincoDimensionesBlock.astro';
+import MetodologiaMILC from '../../../../components/MetodologiaMILC.astro';
+import type { MetodologiaMILCData } from '../../../../components/MetodologiaMILC.astro';
+import type {
+  SaberAncestral,
+  EstacionMapa,
+  Actividad,
+  LabQuiz as LabQuizData,
+  Triangulo,
+  CincoDimensiones,
+} from '../../../../data/guiasContenido/_schema';
+import type { DataEmparejar } from '../../../../components/LabEmparejar.astro';
+import { getMomento } from '../../../../data/bebras';
+
+const base = import.meta.env.BASE_URL;
+const momento = getMomento('momento-6')!;
+const archivoOficial = 'https://www.bebras.org';
+
+const saberAncestral: SaberAncestral = {
+  saber:
+    'En los patios de Cartago, en las cocinas a leña del Valle y en las noches del Pacífico, los abuelos no enseñaban a pensar con cuadernos: enseñaban con adivinanzas. "Agua pasa por mi casa, cate de mi corazón": el que escucha no adivina al azar, deduce. Tiene pistas —"agua" al comienzo, "cate" al final— y, juntándolas con lógica, llega a la única respuesta que las cumple todas: el aguacate. Una buena adivinanza nunca tiene dos respuestas: da exactamente las señas necesarias para descartar lo imposible hasta que solo queda lo verdadero. Así los mayores afilaban la mente de los niños sin que pareciera estudio. El acertijo de "quién tiene qué", el de la liebre y la tortuga, el de las tres puertas: todos piden lo mismo, descartar lo falso, juntar lo que sabes y quedarte con la única salida posible.',
+  fuente: 'Adivinanzas y acertijos de la tradición oral colombiana',
+  preguntaPuente:
+    'Cuando deduces el aguacate de una adivinanza, descartas lo falso hasta que solo queda lo verdadero. ¿Y si te dijera que eso —separar lo verdadero de lo falso para deducir con certeza— es exactamente lo que hace por dentro un computador, y lo que te van a pedir muchas tareas Bebras?',
+};
+
+const mapaRuta: EstacionMapa[] = [
+  { numero: 1, iconos: ['🌱'], titulo: 'La adivinanza: deducir con pistas', duracionMin: 5 },
+  { numero: 2, iconos: ['📖'], titulo: 'Verdadero, falso y el condicional SI… ENTONCES', duracionMin: 8 },
+  { numero: 3, iconos: ['📖'], titulo: 'Deducir: descartar lo imposible', duracionMin: 8 },
+  { numero: 4, iconos: ['🔎'], titulo: 'Empareja cada pista con lo que descarta', duracionMin: 6 },
+  { numero: 5, iconos: ['✅'], titulo: 'Comprueba lo que entendiste', duracionMin: 6 },
+  { numero: 6, iconos: ['✏️'], titulo: 'Resuelve un acertijo de tres pistas', duracionMin: 12 },
+  { numero: 7, iconos: ['🔎'], titulo: 'Simulacro: tres retos de deducción', duracionMin: 12 },
+  { numero: 8, iconos: ['💭'], titulo: 'Tres voces para cerrar', duracionMin: 6 },
+];
+
+// Las herramientas de la lógica, para el bloque de lectura (antes del ejercicio de relacionar).
+const herramientas = [
+  {
+    emoji: '🔀',
+    nombre: 'Condicional (SI… ENTONCES…)',
+    texto:
+      'Una regla que ata dos cosas. "SI llueve ENTONCES llevo paraguas." No dice que siempre llueva: dice que cada vez que llueve, hay paraguas. Es la pieza con la que se deduce.',
+  },
+  {
+    emoji: '🚫',
+    nombre: 'Negación (NO)',
+    texto:
+      'Voltea el valor de verdad. Si "está lloviendo" es verdadero, "NO está lloviendo" es falso. Saber que algo NO ocurre suele ser tan util como saber que si ocurre.',
+  },
+  {
+    emoji: '🔗',
+    nombre: 'Y / O',
+    texto:
+      '"Y" pide que se cumplan las dos cosas a la vez (tener arroz Y tener pollo). "O" pide al menos una de las dos (pagar en efectivo O por Nequi). Cambian por completo lo que puedes concluir.',
+  },
+  {
+    emoji: '🧩',
+    nombre: 'Deducción (descartar lo imposible)',
+    texto:
+      'El motor de toda adivinanza. Tomas las pistas, tachas lo que no puede ser y te quedas con la única opción que sobrevive. Si solo queda una, esa es —con certeza, no por suerte—.',
+  },
+];
+
+const emparejarPistas: DataEmparejar = {
+  titulo: 'Empareja cada pista con lo que te deja descartar',
+  instrucciones:
+    'Tres amigas —Sara, Tania y Vera— tienen cada una un color de mochila distinto: roja, verde o azul. Conecta cada pista con la conclusión que permite sacar.',
+  etiquetaIzq: 'Pista',
+  etiquetaDer: 'Lo que deduces de esa pista',
+  pares: [
+    { izquierda: 'La mochila de Sara NO es roja ni azul', derecha: 'Sara tiene la verde' },
+    { izquierda: 'Tania no se sienta junto a la mochila azul', derecha: 'Tania no tiene la azul' },
+    { izquierda: 'Solo queda azul para la última amiga', derecha: 'Vera tiene la azul' },
+    { izquierda: 'SI una mochila es roja, ENTONCES es de Tania', derecha: 'La roja es de Tania' },
+  ],
+};
+
+const quiz: LabQuizData = {
+  tipo: 'quiz',
+  titulo: 'Comprueba lo que entendiste',
+  instrucciones: 'Cuatro preguntas sobre condicional, negación y deducción. Cada una te deja una explicación.',
+  preguntas: [
+    {
+      enunciado: 'Una regla del tipo "SI… ENTONCES…" que ata dos hechos se llama…',
+      opciones: ['Negación', 'Condicional', 'Patron', 'Algoritmo'],
+      respuestaIndex: 1,
+      feedbackCorrecto: 'Correcto. El condicional dice que cada vez que pasa lo primero, pasa lo segundo. Es la pieza con la que se deduce.',
+      feedbackIncorrecto: 'Es el condicional: "SI… ENTONCES…" ata un hecho con otro. La negación solo voltea verdadero por falso.',
+    },
+    {
+      enunciado: 'Es VERDAD que "SI Lola monta bici, ENTONCES usa casco". Sabes que Lola NO usa casco. ¿Qué deduces con seguridad?',
+      opciones: [
+        'Que Lola monta bici',
+        'Que Lola NO monta bici',
+        'Que Lola tiene una bici nueva',
+        'No se puede deducir nada',
+      ],
+      respuestaIndex: 1,
+      feedbackCorrecto: 'Exacto. Si montara, usaría casco; pero no usa casco, así que no monta. Eso es la contrapositiva: das vuelta a la regla negando ambas partes.',
+      feedbackIncorrecto: 'Razonalo: si Lola montara, la regla la obliga a usar casco. Como NO usa casco, no puede estar montando. Por eso: NO monta bici.',
+    },
+    {
+      enunciado: 'En una adivinanza o un acertijo Bebras, deducir significa sobre todo…',
+      opciones: [
+        'Adivinar rápido al azar',
+        'Descartar lo imposible hasta que queda una sola opción',
+        'Memorizar la respuesta de antes',
+        'Probar todas las respuestas a la suerte',
+      ],
+      respuestaIndex: 1,
+      feedbackCorrecto: 'Así es. Deducir es tachar lo que no puede ser con las pistas, hasta que sobrevive una única opción: esa es la respuesta, con certeza.',
+      feedbackIncorrecto: 'Deducir no es adivinar: es usar las pistas para descartar lo imposible hasta que solo queda una opción posible.',
+    },
+    {
+      enunciado: 'Sabes que "SI hace sol, ENTONCES Juan sale a jugar". Te enteras de que SI hace sol. ¿Qué puedes afirmar?',
+      opciones: [
+        'Que Juan NO sale a jugar',
+        'Que Juan sale a jugar',
+        'Que no hace sol',
+        'No se puede saber',
+      ],
+      respuestaIndex: 1,
+      feedbackCorrecto: 'Correcto. La regla dice que cada vez que hace sol, Juan sale. Si hace sol, entonces Juan sale: aplicaste el condicional hacia adelante.',
+      feedbackIncorrecto: 'La regla se dispara cuando hace sol: "SI hace sol ENTONCES Juan sale". Como si hace sol, Juan sale a jugar.',
+    },
+  ],
+};
+
+const actividadAcertijo: Actividad = {
+  numero: 1,
+  verbo: 'ANALIZA',
+  titulo: 'Resuelve un acertijo de tres pistas y muestra cómo descartaste',
+  tiempoMin: 12,
+  modalidad: 'individual',
+  pasos: [
+    'Lee el caso: Andres, Bruno y Camila viven cada uno en un barrio distinto de Cartago: El Prado, Santa Ana o Zaragoza. Pista 1: Andres no vive en Zaragoza. Pista 2: Camila vive en El Prado. Pista 3: el que vive en Zaragoza no es Camila.',
+    'Dibuja una grilla de 3x3 (personas en las filas, barrios en las columnas). Marca con una X lo que cada pista te deja descartar.',
+    'Llena la grilla hasta que cada persona tenga un solo barrio posible, y escribe la respuesta final.',
+  ],
+  cuaderno: {
+    titulo: 'Acertijo de los tres barrios',
+    formato: 'grilla 3x3 (persona x barrio) + explicación en parrafo',
+    extensión: 'la grilla resuelta + 4 a 6 renglones',
+  },
+  criterios: [
+    'Tu grilla muestra una X por cada descarte que hiciste, pista por pista.',
+    'Llegaste a una única asignación: Camila-El Prado, Andres-Santa Ana, Bruno-Zaragoza.',
+    'Tu parrafo explica, en orden, por qué cada persona NO podia ir en los otros barrios.',
+  ],
+};
+
+const actividadVeredicto: Actividad = {
+  numero: 2,
+  verbo: 'EVALÚA',
+  titulo: 'Juzga si la conclusión está bien deducida o no',
+  tiempoMin: 10,
+  modalidad: 'individual',
+  pasos: [
+    'Lee este razonamiento: Regla: "SI un puesto del mercado vende lulo, ENTONCES también vende mora". Dato: el puesto de doña Rosa vende mora. Conclusión que alguien saca: "entonces doña Rosa vende lulo".',
+    'Decide si esa conclusión es valida (se deduce con certeza) o invalida (no se puede afirmar), y explica por qué.',
+    'Inventa tu un dato distinto sobre el mismo puesto con el que SI se pueda deducir algo con certeza, y di qué se deduce.',
+  ],
+  cuaderno: {
+    titulo: 'Veredicto sobre una deducción',
+    formato: 'veredicto (valida / invalida) + justificación + tu ejemplo corregido',
+    extensión: '6 a 8 renglones',
+  },
+  criterios: [
+    'Tu veredicto es "invalida": vender mora no obliga a vender lulo (la regla solo va de lulo hacia mora).',
+    'Tu justificación explica que la regla no se puede leer al reves sin caer en error.',
+    'Tu ejemplo corregido SI permite deducir (p. ej.: "no vende mora" obliga a que tampoco venda lulo).',
+  ],
+};
+
+// Simulación: 3 retos estilo Bebras (originales), de fácil a difícil (A·B·C).
+const simulacro: LabQuizData = {
+  tipo: 'quiz',
+  titulo: 'Simulacro · tres retos de deducción',
+  instrucciones:
+    'Tres retos cortos, de fácil (A) a difícil (C), como en el concurso real. Lee con calma y razona por partes: cada tarea se resuelve con lo que acabas de leer. La explicación te muestra el descarte.',
+  preguntas: [
+    {
+      enunciado:
+        'Nivel A · Regla: "SI un animal es un perro, ENTONCES tiene cuatro patas". Firulais es un perro. ¿Qué deduces con seguridad?',
+      opciones: [
+        'Firulais tiene cuatro patas.',
+        'Firulais no tiene cuatro patas.',
+        'Firulais es un gato.',
+        'No se puede saber nada de Firulais.',
+      ],
+      respuestaIndex: 0,
+      feedbackCorrecto:
+        'Correcto. La regla se dispara apenas algo es perro. Firulais es perro, así que tiene cuatro patas: aplicaste el condicional hacia adelante (SI perro ENTONCES cuatro patas).',
+      feedbackIncorrecto:
+        'Aplica el condicional hacia adelante: la regla dice que todo perro tiene cuatro patas. Firulais es perro, luego Firulais tiene cuatro patas.',
+    },
+    {
+      enunciado:
+        'Nivel B · Lina, Memo y Nora tienen cada uno una fruta distinta: mango, lulo o guama. Memo tiene guama. Lina no tiene mango. ¿Qué fruta tiene Lina?',
+      opciones: ['Mango', 'Lulo', 'Guama', 'No se puede saber'],
+      respuestaIndex: 1,
+      feedbackCorrecto:
+        'Exacto. Descarta: Memo tiene la guama, así que a Lina le quedan mango o lulo; pero Lina no tiene mango, luego Lina tiene lulo. Y a Nora le queda el mango.',
+      feedbackIncorrecto:
+        'Descarta paso a paso: Memo=guama (fuera la guama). Lina solo puede tener mango o lulo, y NO tiene mango, así que Lina=lulo. (Nora se queda con el mango.)',
+    },
+    {
+      enunciado:
+        'Nivel C · En una fiesta es VERDAD que "todos los que bailan, cantan". Sabes que Pedro NO canta. ¿Qué puedes afirmar con seguridad sobre Pedro?',
+      opciones: [
+        'Pedro baila.',
+        'Pedro no baila.',
+        'Pedro canta.',
+        'No se puede afirmar nada.',
+      ],
+      respuestaIndex: 1,
+      feedbackCorrecto:
+        'Correcto. Si Pedro bailara, la regla lo obligaria a cantar; pero NO canta, así que no puede estar bailando: Pedro no baila. Es la contrapositiva. (Ojo: si supieras que "no baila", de ahí NO se concluiria si canta o no.)',
+      feedbackIncorrecto:
+        'Usa la contrapositiva: todo el que baila, canta. Pedro NO canta, así que no puede estar bailando. Por eso: Pedro no baila. (Y de "no baila" no se deduciria nada sobre cantar.)',
+    },
+  ],
+};
+
+const metodologia: MetodologiaMILCData = {
+  resumen:
+    'Este momento desarrolla la lógica y la deducción, el corazón de muchas tareas Bebras de tipo acertijo y grilla. La meta es que el grupo lea correctamente un condicional "SI… ENTONCES…", entienda que solo se aplica hacia adelante (y su contrapositiva), y resuelva acertijos descartando con una grilla. Apoyate en las adivinanzas para activar saberes previos: casi todos ya deducen con pistas, sin saber que eso es lógica formal.',
+  objetivos: [
+    'Activar el saber previo del grupo conectando la deducción lógica con las adivinanzas y acertijos de la tradición oral.',
+    'Instalar el vocabulario de la lógica: condicional (SI… ENTONCES…), negación (NO), y/o, y la contrapositiva.',
+    'Lograr que el estudiante resuelva un acertijo de grilla descartando lo imposible y justifique por escrito cada descarte.',
+  ],
+  secuencia: [
+    { paso: 'Apertura con una adivinanza: pide que la resuelvan y pregunta CÓMO la dedujeron, no solo la respuesta.', tiempo: '5 min' },
+    { paso: 'Presenta las herramientas de la lógica con los ejemplos del barrio; insiste en que el condicional solo va hacia adelante.', tiempo: '16 min' },
+    { paso: 'Resuelvan juntos el ejercicio de emparejar y el quiz; comenta cada deducción y cada error tipico (leer la regla al reves).', tiempo: '12 min' },
+    { paso: 'Actividad de cuaderno (acertijo de tres barrios con grilla): trabajo individual y puesta en comun de la grilla.', tiempo: '12 min' },
+    { paso: 'Simulacro A·B·C: que lo resuelvan solos; recoge en qué nivel se traban (suelen fallar la contrapositiva del C).', tiempo: '12 min' },
+    { paso: 'Cierre filosofico (tres voces) y las cinco dimensiones, en conversación.', tiempo: '6 min' },
+  ],
+  evaluación:
+    'Formativa: el ejercicio de emparejar y el quiz dan señal inmediata de si leen bien el condicional. El simulacro NO se califica con nota. La evidencia evaluable es la actividad de cuaderno (acertijo de grilla), con sus tres criterios observables, más el veredicto de la actividad 2 que mide si distinguen una deducción valida de una invalida.',
+  diferenciación:
+    'En 6.º y 7.º quedate en el condicional hacia adelante (Nivel A y B) y acepta el razonamiento oral con la grilla a la vista. En 8.º y 9.º exige también la contrapositiva (Nivel C). En 10.º y 11.º pide que escriban por qué una conclusión al reves es invalida. El simulacro A·B·C permite atender a todo el salon con un mismo reto.',
+};
+
+const triangulo: Triangulo = {
+  dussel: {
+    autor: 'Enrique Dussel',
+    lente: 'lente del nosotros',
+    cita: 'La adivinanza del pueblo ya ensenaba a deducir con rigor: descartar lo falso y quedarse con lo verdadero es lógica, aunque nadie la llamara así.',
+    preguntaEspejo:
+      'Nos dicen que la lógica es cosa de libros y de otros paises. ¿Qué adivinanzas, acertijos o juegos de mi familia ya me ensenaron a deducir, mucho antes de que me lo explicaran en clase?',
+  },
+  estoico: {
+    autor: 'Marco Aurelio',
+    lente: 'lente del cuidado interior',
+    cita: 'Todo lo que oimos es una opinion, no un hecho. Todo lo que vemos es una perspectiva, no la verdad.',
+    preguntaEspejo:
+      'Antes de creer una conclusión mia o ajena, ¿me detengo a revisar si de verdad se deduce de los hechos, o la acepto solo porque suena convincente?',
+  },
+  floridi: {
+    autor: 'Luciano Floridi',
+    lente: 'lente de la infoesfera',
+    cita: 'La lógica es la gramatica de la información: separa lo que se sigue de lo que solo lo parece.',
+    preguntaEspejo:
+      'En internet me llegan mil afirmaciones cada día. ¿Con qué pistas y con qué lógica distingo una afirmación verdadera de una falsa, en vez de creer la que más me gusta?',
+  },
+};
+
+const cincoDimensiones: CincoDimensiones = {
+  personal:
+    'Antes adivinabas; ahora deduces. Sabes tomar unas pistas, descartar lo imposible y llegar a la única respuesta con certeza, no por suerte.',
+  emocional:
+    'Frente a un problema confuso, detenerse a separar lo verdadero de lo falso baja la ansiedad: en vez de "no entiendo", piensas "veamos qué descarto primero".',
+  ciudadana:
+    'La lógica te defiende. Saber cuando una conclusión NO se sigue de los hechos es tu escudo contra mentiras, cadenas y noticias falsas.',
+  local:
+    'De la adivinanza del patio al acertijo Bebras hay un solo paso: la misma deducción que usaban tus abuelos te abre la puerta a un reto mundial desde Cartago.',
+  intergeneracional:
+    'El ingenio de los acertijos viajo de boca en boca por generaciones. Tú heredas ese arte de pensar con pistas y lo llevas a un lenguaje nuevo.',
+};
+---
+
+<BaseLayout
+  title="Momento 6 · Verdadero o falso — Bebras · ConectaTE"
+  description="Lógica y deducción para Bebras: el condicional SI… ENTONCES…, la negación, la contrapositiva y como resolver acertijos de grilla descartando lo imposible. Momento del curso «Pensar como una maquina», con las adivinanzas de la tradición oral como saber ancestral y un simulacro estilo Bebras."
+  ogType="article"
+>
+  <article class="pt-12 pb-20">
+    <div class="bento-container max-w-5xl">
+      <div class="max-w-3xl mx-auto">
+        <!-- Breadcrumb -->
+        <nav class="flex items-center gap-2 text-sm font-semibold mb-8 flex-wrap" style="color: var(--fg-muted);">
+          <a href={base || '/'} class="hover:opacity-60 transition-opacity">Inicio</a>
+          <span>/</span>
+          <a href={`${base}/explora`} class="hover:opacity-60 transition-opacity">Explora</a>
+          <span>/</span>
+          <a href={`${base}/explora/bebras`} class="hover:opacity-60 transition-opacity">Bebras</a>
+          <span>/</span>
+          <span style="color: var(--fg);">Momento 6</span>
+        </nav>
+
+        <!-- ① PRESENTACIÓN -->
+        <div class="flex items-center gap-3 mb-6">
+          <span class="w-8 h-8 rounded-full bg-bento-lime text-neutral-950 flex items-center justify-center text-sm font-black shrink-0" aria-hidden="true">1</span>
+          <span class="font-black text-lg">Presentación</span>
+          <span class="flex-1 h-0.5 rounded-full" style="background: var(--border);"></span>
+        </div>
+
+        <!-- Hero -->
+        <div class="bento-card-color bg-bento-blue text-white mb-10">
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">Momento {momento.numero} · {momento.dominio}</span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">🧠 {momento.verbo}</span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">~{momento.tiempo}</span>
+          </div>
+          <h1 class="heading-giant text-balance mb-3">{momento.nombre}</h1>
+          <p class="text-base md:text-lg font-semibold opacity-95 leading-relaxed">
+            Una buena adivinanza no se adivina: se deduce. Te da pistas y, con
+            lógica, descartas lo imposible hasta que queda una sola respuesta.
+            Hoy aprendes a pensar así — verdadero, falso, y la certeza en medio.
+          </p>
+        </div>
+
+        <!-- 🌱 Saber ancestral -->
+        <SaberAncestralBlock data={saberAncestral} etiqueta="Saber ancestral" />
+
+        <!-- 🗺 Ruta -->
+        <MapaRutaBlock estaciones={mapaRuta} />
+
+        <!-- Propósito -->
+        <div class="bento-card mb-6">
+          <span class="chip-bento mb-4">🎯 Lo que vas a poder hacer</span>
+          <ul class="space-y-3 mt-3">
+            {[
+              'IDENTIFICAR las herramientas de la lógica: condicional, negación, y/o, y la deducción.',
+              'EXPLICAR con tus palabras qué se puede deducir de una regla "SI… ENTONCES…" y qué no.',
+              'ANALIZAR un acertijo de grilla descartando lo imposible hasta dejar una única respuesta.',
+              'EVALUAR si una conclusión está bien deducida o si lee la regla al reves.',
+            ].map((d) => (
+              <li class="flex items-start gap-3">
+                <span class="w-6 h-6 rounded-md bg-bento-lime/30 text-black flex items-center justify-center text-xs font-black shrink-0 mt-0.5">✓</span>
+                <span class="text-sm md:text-base leading-relaxed">{d}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <!-- Pregunta detonante -->
+        <div class="bento-card-color bg-bento-cyan mb-10">
+          <span class="chip-bento mb-3 bg-black/10">💡 La pregunta que abre todo</span>
+          <p class="text-lg md:text-xl font-black leading-snug">
+            ¿Qué tienen en común una adivinanza que resuelves con pistas, un
+            Sudoku que se completa por descarte y un computador que decide si una
+            condición es verdadera o falsa?
+          </p>
+          <p class="text-sm leading-relaxed mt-3 opacity-90">
+            Los tres deducen: descartan lo falso hasta que solo queda lo
+            verdadero. Al terminar vas a hacerlo a proposito — y a resolver con
+            ello tus retos Bebras.
+          </p>
+        </div>
+
+        <!-- ② GUÍA -->
+        <div class="flex items-center gap-3 mb-6">
+          <span class="w-8 h-8 rounded-full bg-bento-lime text-neutral-950 flex items-center justify-center text-sm font-black shrink-0" aria-hidden="true">2</span>
+          <span class="font-black text-lg">Guía</span>
+          <span class="flex-1 h-0.5 rounded-full" style="background: var(--border);"></span>
+        </div>
+
+        <!-- 📖 LEE 1 · Qué es la lógica -->
+        <section class="bento-card mb-6">
+          <span class="chip-bento mb-4">📖 Lee · ¿Qué es la lógica?</span>
+          <div class="space-y-4 text-sm md:text-base leading-relaxed">
+            <p>
+              <strong>Lógica</strong> es razonar con dos valores —verdadero y falso— para
+              deducir con certeza. No es opinion ni intuición: si las pistas son
+              ciertas y razonas bien, la conclusión <strong>tiene que</strong> ser cierta. Es
+              la misma maquinaria con la que un computador decide cada paso: si una
+              condición es verdadera, hace una cosa; si es falsa, hace otra.
+            </p>
+            <p>
+              La pieza central es el <strong>condicional</strong>: "SI llueve ENTONCES llevo
+              paraguas". Ojo con un error muy comun: esa regla solo se lee hacia
+              adelante. Si sabes que <strong>NO</strong> llevas paraguas, puedes deducir que NO
+              llovio (eso se llama <strong>contrapositiva</strong>). Pero si solo te dicen
+              "llovio", no podrias concluir nada nuevo sin más datos, y de "no
+              llueve" tampoco se deduce si llevas paraguas o no.
+            </p>
+          </div>
+        </section>
+
+        <!-- Puente -->
+        <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+          ¿Y con qué herramientas se deduce? Con cuatro. Lealas con calma: con
+          ellas vas a resolver todos los acertijos que siguen.
+        </p>
+
+        <!-- 📖 LEE 2 · Las herramientas de la lógica -->
+        <section class="bento-card mb-6">
+          <span class="chip-bento mb-4">📖 Lee · Las herramientas para deducir</span>
+          <p class="text-sm md:text-base leading-relaxed mb-4">
+            Deducir como en una adivinanza —o como en una tarea Bebras— se hace
+            con estas cuatro herramientas:
+          </p>
+          <ul class="space-y-3">
+            {herramientas.map((h) => (
+              <li class="flex items-start gap-3 p-3 rounded-bento-sm" style="background: var(--bg);">
+                <span class="text-2xl shrink-0" aria-hidden="true">{h.emoji}</span>
+                <span class="text-sm md:text-base leading-relaxed"><strong>{h.nombre}:</strong> {h.texto}</span>
+              </li>
+            ))}
+          </ul>
+          <p class="text-sm md:text-base leading-relaxed mt-4">
+            Muchas tareas Bebras son justo esto: un acertijo de "quién tiene qué"
+            o una grilla que se llena descartando. Con estas cuatro herramientas
+            ya tienes con qué atacarlas.
+          </p>
+        </section>
+
+        <!-- 🔎 Relaciona (después de leer las herramientas) -->
+        <div class="mb-6">
+          <LabEmparejar data={emparejarPistas} id="bebras-m6-empareja-pistas" />
+        </div>
+
+        <!-- Puente -->
+        <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+          Ya sabes leer una pista y descartar con ella. Comprueba que de verdad
+          manejas el condicional antes de usarlo en un acertijo completo.
+        </p>
+
+        <!-- ✅ Quiz -->
+        <div class="mb-6">
+          <LabQuiz data={quiz} id="bebras-m6-quiz" />
+        </div>
+
+        <!-- Puente -->
+        <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+          La lógica no se mira: se usa. Resuelve un acertijo con grilla y luego
+          ponte de juez: decide si una conclusión ajena está bien deducida.
+        </p>
+
+        <!-- ✏️ Actividades -->
+        <ActividadBlock data={actividadAcertijo} />
+        <ActividadBlock data={actividadVeredicto} />
+
+        <!-- ③ METODOLOGÍA MILC (docente) -->
+        <div class="flex items-center gap-3 mt-10 mb-6">
+          <span class="w-8 h-8 rounded-full bg-bento-lime text-neutral-950 flex items-center justify-center text-sm font-black shrink-0" aria-hidden="true">3</span>
+          <span class="font-black text-lg">Metodología MILC</span>
+          <span class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">para el docente</span>
+          <span class="flex-1 h-0.5 rounded-full" style="background: var(--border);"></span>
+        </div>
+
+        <MetodologiaMILC data={metodologia} />
+
+        <!-- ④ SIMULACIÓN -->
+        <div class="flex items-center gap-3 mt-10 mb-6">
+          <span class="w-8 h-8 rounded-full bg-bento-lime text-neutral-950 flex items-center justify-center text-sm font-black shrink-0" aria-hidden="true">4</span>
+          <span class="font-black text-lg">Simulación</span>
+          <span class="flex-1 h-0.5 rounded-full" style="background: var(--border);"></span>
+        </div>
+
+        <!-- Puente -->
+        <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+          Ya tienes las herramientas. Pruébate como en el concurso real: tres
+          retos de deducción, de fácil a difícil. Sin afan — lo que importa es
+          cómo descartas.
+        </p>
+
+        <!-- 🔎 Simulacro -->
+        <div class="mb-4">
+          <LabQuiz data={simulacro} id="bebras-m6-simulacro" />
+        </div>
+
+        <!-- Nota de atribución de tareas -->
+        <p class="text-xs leading-relaxed mb-10 px-1" style="color: var(--fg-muted);">
+          Estos tres retos son <strong style="color: var(--fg);">originales, al estilo Bebras</strong>, para
+          practicar la deducción. Las tareas reales de años anteriores —de todos
+          los países— están en el archivo oficial:
+          <a href={archivoOficial} target="_blank" rel="noopener" class="font-bold text-bento-blue hover:opacity-70 transition-opacity">bebras.org</a>.
+        </p>
+
+        <!-- Puente al cierre -->
+        <p class="text-base md:text-lg font-bold leading-relaxed mb-6 px-1">
+          Dedujiste con pistas, leiste bien el condicional y resolviste por
+          descarte. Cerremos pensando qué significa, para ti, aprender a separar
+          lo verdadero de lo falso.
+        </p>
+      </div>
+
+      <!-- 💭 Triángulo (ancho completo) -->
+      <TrianguloBlock data={triangulo} />
+
+      <!-- 🌱 Cinco dimensiones (ancho completo) -->
+      <CincoDimensionesBlock data={cincoDimensiones} />
+
+      <div class="max-w-3xl mx-auto">
+        <!-- Créditos -->
+        <div class="bento-card mb-10 border-l-4 border-bento-lime">
+          <span class="chip-bento mb-3">🦫 Créditos</span>
+          <p class="text-sm leading-relaxed mt-2" style="color: var(--fg-muted);">
+            Este momento adapta al modelo MILC la preparación para el reto
+            <strong style="color: var(--fg);">Bebras</strong>, iniciativa internacional creada por Valentina
+            Dagienė (Universidad de Vilnius, Lituania, 2004). Las tareas originales
+            son de Bebras International y sus organizadores nacionales.
+          </p>
+          <a href={archivoOficial} target="_blank" rel="noopener" class="inline-flex items-center gap-2 mt-4 font-black text-sm text-bento-blue hover:opacity-70 transition-opacity">
+            Ver el sitio oficial y el archivo de tareas
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+          </a>
+        </div>
+
+        <!-- Volver -->
+        <a href={`${base}/explora/bebras`} class="bento-card-hover flex items-center gap-4">
+          <svg class="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5"></path>
+            <path d="m12 19-7-7 7-7"></path>
+          </svg>
+          <div>
+            <div class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">Volver al programa</div>
+            <div class="font-black text-lg">Bebras</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </article>
+</BaseLayout>

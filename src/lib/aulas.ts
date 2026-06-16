@@ -173,3 +173,69 @@ export async function contarEstudiantes(aulaId: string): Promise<number> {
 export function periodoLabel(periodo: PeriodoValido): string {
   return ['Primer', 'Segundo', 'Tercer'][periodo - 1] + ' periodo';
 }
+
+export type EstudianteConProgreso = {
+  id: string;
+  display_name: string;
+  fecha_nacimiento: string | null;
+  inscrito_en: string;
+  guias_iniciadas: number;
+  guias_completadas: number;
+  progreso_promedio: number;
+};
+
+/**
+ * Lista los estudiantes de un aula con su progreso agregado.
+ * Requiere que el caller sea el docente del aula (RLS garantiza esto).
+ */
+export async function listarEstudiantesConProgreso(
+  aulaId: string
+): Promise<EstudianteConProgreso[]> {
+  if (!authEnabled) return [];
+
+  const { data: enrolls, error: errE } = await supabase
+    .from('enrollments')
+    .select('creado_en, usuario_id, usuarios(id, display_name, fecha_nacimiento)')
+    .eq('aula_id', aulaId)
+    .eq('rol', 'student')
+    .order('creado_en', { ascending: true });
+
+  if (errE) throw errE;
+  if (!enrolls || enrolls.length === 0) return [];
+
+  const ids = enrolls.map((e) => e.usuario_id);
+
+  const { data: progresos } = await supabase
+    .from('progreso_guia')
+    .select('estudiante_id, porcentaje, completada_en')
+    .in('estudiante_id', ids);
+
+  const progresoMap = new Map<string, { iniciadas: number; completadas: number; pct: number[] }>();
+  for (const p of progresos ?? []) {
+    if (!progresoMap.has(p.estudiante_id)) {
+      progresoMap.set(p.estudiante_id, { iniciadas: 0, completadas: 0, pct: [] });
+    }
+    const entry = progresoMap.get(p.estudiante_id)!;
+    entry.iniciadas++;
+    entry.pct.push(p.porcentaje ?? 0);
+    if (p.completada_en) entry.completadas++;
+  }
+
+  return enrolls.map((e) => {
+    const u = e.usuarios as { id: string; display_name: string; fecha_nacimiento: string | null };
+    const prog = progresoMap.get(e.usuario_id) ?? { iniciadas: 0, completadas: 0, pct: [] };
+    const promedio =
+      prog.pct.length > 0
+        ? Math.round(prog.pct.reduce((a, b) => a + b, 0) / prog.pct.length)
+        : 0;
+    return {
+      id: u.id,
+      display_name: u.display_name,
+      fecha_nacimiento: u.fecha_nacimiento ?? null,
+      inscrito_en: e.creado_en,
+      guias_iniciadas: prog.iniciadas,
+      guias_completadas: prog.completadas,
+      progreso_promedio: promedio,
+    };
+  });
+}

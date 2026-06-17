@@ -315,6 +315,37 @@ export interface Database {
         Args: { _docente_id: string; _estudiante_id: string };
         Returns: boolean;
       };
+      anos_disponibles: {
+        Args: Record<PropertyKey, never>;
+        Returns: { ano: number; aulas: number }[];
+      };
+      resumen_docente: {
+        Args: { _ano?: number };
+        Returns: Json;
+      };
+      embudo_registro: {
+        Args: { _ano?: number };
+        Returns: Json;
+      };
+      serie_actividad: {
+        Args: { _desde: string; _hasta: string; _bucket?: string; _grado?: number };
+        Returns: {
+          periodo_inicio: string;
+          guias_actividad: number;
+          quiz_intentos: number;
+          estudiantes_activos: number;
+        }[];
+      };
+      estudiantes_en_riesgo: {
+        Args: { _ano?: number; _grado?: number };
+        Returns: {
+          estudiante_id: string;
+          display_name: string;
+          progreso_promedio: number;
+          ultima_actividad: string | null;
+          dias_inactivo: number | null;
+        }[];
+      };
     };
     Enums: {
       rol_enrollment: RolEnrollment;

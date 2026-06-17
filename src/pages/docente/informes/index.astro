@@ -1,0 +1,237 @@
+---
+/**
+ * /docente/informes · Panel general de analítica del docente.
+ *
+ * Agrega TODA la actividad del docente (todas sus aulas) con cortes por año
+ * lectivo. Carga client-side vía RPCs de agregación (src/lib/informes.ts).
+ * Punto de entrada a los cortes por grado/periodo/año (próximas fases).
+ */
+import CuentaLayout from '../../../layouts/CuentaLayout.astro';
+import DocenteTabs from '../../../components/DocenteTabs.astro';
+import KpiCard from '../../../components/charts/KpiCard.astro';
+---
+
+<CuentaLayout title="Informes y analítica · Panel del docente">
+  <DocenteTabs />
+
+  <!-- Loading -->
+  <div data-loading class="text-center py-12">
+    <span class="inline-block w-10 h-10 rounded-full border-4 border-bento-blue/30 border-t-bento-blue animate-spin motion-reduce:animate-none mb-3"></span>
+    <p class="text-sm text-neutral-500">Cargando informes…</p>
+  </div>
+
+  <!-- Error -->
+  <div data-error class="hidden bg-bento-pink/10 border border-bento-pink/30 rounded-bento-sm p-4">
+    <p class="text-sm text-bento-pink font-semibold" data-error-msg>No se pudieron cargar los informes.</p>
+  </div>
+
+  <!-- Sin aulas -->
+  <div data-vacio class="hidden bg-neutral-50 dark:bg-neutral-800/50 rounded-bento-sm p-8 text-center border border-dashed border-neutral-300 dark:border-neutral-700">
+    <div class="text-5xl mb-3" aria-hidden="true">📊</div>
+    <h1 class="text-xl font-black mb-2">Aún no hay datos para informes</h1>
+    <p class="text-sm text-neutral-600 dark:text-neutral-400 max-w-md mx-auto leading-relaxed">
+      Crea un aula y comparte su código con tus estudiantes. A medida que avancen
+      en las guías y resuelvan exámenes, aquí verás toda la analítica.
+    </p>
+    <a data-link-aulas href="#" class="inline-block mt-5 px-5 py-3 rounded-bento-sm bg-bento-blue text-white font-bold">Ir a mis aulas</a>
+  </div>
+
+  <!-- Contenido -->
+  <article data-contenido class="hidden space-y-6">
+    <!-- Cabecera + selector de año -->
+    <header class="bg-bento-blue text-white rounded-bento shadow-bento p-6 md:p-8">
+      <div class="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <p class="text-xs uppercase tracking-widest font-bold opacity-80 mb-1">Analítica</p>
+          <h1 class="text-huge font-black tracking-tight">Panel general</h1>
+          <p class="text-base text-white/85 leading-relaxed mt-1" data-resumen-sub>Toda tu actividad</p>
+        </div>
+        <label class="text-sm font-semibold">
+          <span class="block text-xs uppercase tracking-widest opacity-80 mb-1">Año lectivo</span>
+          <select data-select-ano class="bg-white/15 border border-white/30 rounded-bento-sm px-3 py-2 font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"></select>
+        </label>
+      </div>
+    </header>
+
+    <!-- KPIs -->
+    <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <KpiCard etiqueta="Aulas" clave="aulas" color="#0066FF" icono="🏫" sub="grupos activos" />
+      <KpiCard etiqueta="Estudiantes" clave="estudiantes" color="#0066FF" icono="👥" sub="inscritos" />
+      <KpiCard etiqueta="Con consentimiento" clave="consentimiento" color="#7C3AED" icono="✓" sub="habeas data vigente" />
+      <KpiCard etiqueta="Progreso promedio" clave="progreso" color="#00D4FF" icono="📈" sub="guías del grupo" />
+      <KpiCard etiqueta="Guías completadas" clave="guias" color="#A3FF12" icono="✅" sub="en total" />
+      <KpiCard etiqueta="Promedio exámenes" clave="examenes" color="#7C3AED" icono="📝" sub="puntaje 0–100" />
+      <KpiCard etiqueta="Activos 30 días" clave="activos" color="#A3FF12" icono="🔥" sub="con actividad reciente" />
+      <KpiCard etiqueta="En riesgo" clave="riesgo" color="#FF2D87" icono="⚠️" sub="progreso < 25%" />
+    </section>
+
+    <!-- Serie de actividad -->
+    <section class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-5 md:p-6 evitar-corte">
+      <h2 class="text-base font-black mb-1">Actividad (últimas 12 semanas)</h2>
+      <p class="text-xs text-neutral-500 mb-4">Guías trabajadas e intentos de examen por semana.</p>
+      <div data-serie></div>
+      <p data-serie-vacio class="hidden text-sm text-neutral-500 text-center py-8">Sin actividad registrada en el periodo.</p>
+    </section>
+
+    <div class="grid lg:grid-cols-2 gap-6">
+      <!-- Embudo de registro -->
+      <section class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-5 md:p-6 evitar-corte">
+        <h2 class="text-base font-black mb-1">Embudo de registro</h2>
+        <p class="text-xs text-neutral-500 mb-4" data-embudo-sub>Conversión de solicitudes a cuentas firmadas.</p>
+        <div data-embudo></div>
+      </section>
+
+      <!-- Estudiantes que necesitan atención -->
+      <section class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-5 md:p-6 evitar-corte">
+        <h2 class="text-base font-black mb-1">Necesitan atención</h2>
+        <p class="text-xs text-neutral-500 mb-4">En riesgo (&lt; 25%) o inactivos (&gt; 14 días).</p>
+        <div data-riesgo></div>
+        <p data-riesgo-vacio class="hidden text-sm text-neutral-500 text-center py-6">Ningún estudiante en riesgo. 🎉</p>
+      </section>
+    </div>
+
+    <!-- Accesos a cortes (próximas fases) -->
+    <section class="bg-neutral-50 dark:bg-neutral-800/50 rounded-bento-sm p-4">
+      <p class="text-xs text-neutral-500">Cortes detallados por grado, periodo y año lectivo llegan en las próximas entregas.</p>
+    </section>
+  </article>
+</CuentaLayout>
+
+<script>
+  import { requireDocente } from '../../../lib/auth';
+  import {
+    getAnosDisponibles, getResumenDocente, getEmbudoRegistro,
+    getSerieActividad, getEstudiantesEnRiesgo,
+  } from '../../../lib/informes';
+  import { lineChartSVG, funnelHTML, escapeHtml, BENTO } from '../../../lib/charts';
+
+  const base = (import.meta.env?.BASE_URL ?? '/').replace(/\/$/, '');
+  document.querySelectorAll<HTMLAnchorElement>('[data-link-aulas]').forEach((a) => {
+    a.href = base + '/docente';
+  });
+
+  const $ = <T extends HTMLElement>(s: string) => document.querySelector<T>(s);
+  function mostrar(estado: 'loading' | 'error' | 'vacio' | 'contenido') {
+    (['loading', 'error', 'vacio', 'contenido'] as const).forEach((e) => {
+      const sel = e === 'contenido' ? '[data-contenido]' : `[data-${e}]`;
+      $(sel)?.classList.toggle('hidden', e !== estado);
+    });
+  }
+  function setKpi(clave: string, valor: string) {
+    const el = document.querySelector(`[data-kpi="${clave}"]`);
+    if (el) el.textContent = valor;
+  }
+  function fechaISO(d: Date) { return d.toISOString().slice(0, 10); }
+
+  async function cargarAnio(ano: number) {
+    const [resumen, embudo, serie, riesgo] = await Promise.all([
+      getResumenDocente(ano),
+      getEmbudoRegistro(ano),
+      (() => {
+        const hasta = new Date();
+        const desde = new Date(); desde.setDate(desde.getDate() - 7 * 12);
+        return getSerieActividad(fechaISO(desde), fechaISO(hasta), 'week');
+      })(),
+      getEstudiantesEnRiesgo(ano),
+    ]);
+
+    // KPIs
+    if (resumen) {
+      setKpi('aulas', String(resumen.aulas));
+      setKpi('estudiantes', String(resumen.estudiantes));
+      setKpi('consentimiento', String(resumen.conConsentimiento));
+      setKpi('progreso', `${resumen.progresoPromedio}%`);
+      setKpi('guias', String(resumen.guiasCompletadas));
+      setKpi('examenes', resumen.quizPromedio != null ? `${resumen.quizPromedio}%` : '—');
+      setKpi('activos', String(resumen.activos30d));
+      setKpi('riesgo', String(resumen.enRiesgo));
+      const sub = $('[data-resumen-sub]');
+      if (sub) sub.textContent = `${resumen.estudiantes} estudiantes · ${resumen.aulas} aulas · ${resumen.inactivos} inactivos`;
+    }
+
+    // Serie de actividad
+    const serieWrap = $('[data-serie]');
+    const serieVacio = $('[data-serie-vacio]');
+    if (serie.length === 0) {
+      if (serieWrap) serieWrap.innerHTML = '';
+      serieVacio?.classList.remove('hidden');
+    } else {
+      serieVacio?.classList.add('hidden');
+      const fmt = (iso: string) => {
+        const d = new Date(iso + 'T00:00:00');
+        return `${d.getDate()}/${d.getMonth() + 1}`;
+      };
+      if (serieWrap) serieWrap.innerHTML = lineChartSVG(
+        serie.map((p) => fmt(p.periodoInicio)),
+        [
+          { nombre: 'Guías', color: BENTO.blue, valores: serie.map((p) => p.guiasActividad) },
+          { nombre: 'Exámenes', color: BENTO.purple, valores: serie.map((p) => p.quizIntentos) },
+        ],
+      );
+    }
+
+    // Embudo
+    const embudoWrap = $('[data-embudo]');
+    const embudoSub = $('[data-embudo-sub]');
+    if (embudo && embudoWrap) {
+      embudoWrap.innerHTML = funnelHTML([
+        { label: 'Solicitudes', valor: embudo.total, color: BENTO.cyan },
+        { label: 'Pendientes', valor: embudo.pendiente, color: BENTO.orange },
+        { label: 'Firmadas', valor: embudo.firmado, color: BENTO.lime },
+      ], embudo.total);
+      if (embudoSub) embudoSub.textContent = `${embudo.tasaConversion}% de conversión · ${embudo.firmado} de ${embudo.total} firmadas`;
+    }
+
+    // Necesitan atención
+    const riesgoWrap = $('[data-riesgo]');
+    const riesgoVacio = $('[data-riesgo-vacio]');
+    if (riesgo.length === 0) {
+      if (riesgoWrap) riesgoWrap.innerHTML = '';
+      riesgoVacio?.classList.remove('hidden');
+    } else {
+      riesgoVacio?.classList.add('hidden');
+      if (riesgoWrap) riesgoWrap.innerHTML =
+        `<div class="space-y-2">` +
+        riesgo.map((r) => {
+          const ini = escapeHtml(r.displayName.trim().slice(0, 2).toUpperCase());
+          const dias = r.diasInactivo == null ? 'sin actividad' : `${r.diasInactivo} días inactivo`;
+          const col = r.progresoPromedio >= 25 ? '#FF6B35' : '#FF2D87';
+          return `<div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-bento-pink/10 flex items-center justify-center font-black text-bento-pink text-xs flex-shrink-0">${ini}</div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-semibold truncate">${escapeHtml(r.displayName)}</p>
+              <p class="text-xs text-neutral-500">${dias}</p>
+            </div>
+            <span class="text-sm font-black tabular-nums" style="color:${col}">${r.progresoPromedio}%</span>
+          </div>`;
+        }).join('') +
+        `</div>`;
+    }
+  }
+
+  async function init() {
+    const anos = await getAnosDisponibles();
+    if (anos.length === 0) {
+      mostrar('vacio');
+      return;
+    }
+    const sel = $<HTMLSelectElement>('[data-select-ano]');
+    if (sel) {
+      sel.innerHTML = anos.map((a) => `<option value="${a.ano}">${a.ano} · ${a.aulas} aula${a.aulas === 1 ? '' : 's'}</option>`).join('');
+      sel.value = String(anos[0].ano);
+      sel.addEventListener('change', () => { void cargarAnio(parseInt(sel.value, 10)); });
+    }
+    await cargarAnio(anos[0].ano);
+    mostrar('contenido');
+  }
+
+  requireDocente().then((sesion) => {
+    if (!sesion) return;
+    init().catch((err) => {
+      console.error('[informes] init:', err);
+      const m = $('[data-error-msg]');
+      if (m) m.textContent = 'No se pudieron cargar los informes: ' + (err?.message ?? err);
+      mostrar('error');
+    });
+  });
+</script>

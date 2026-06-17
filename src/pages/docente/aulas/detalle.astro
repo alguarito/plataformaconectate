@@ -81,11 +81,16 @@ import CodigoAcceso from '../../../components/CodigoAcceso.astro';
       <section data-analitica class="hidden space-y-4">
         <h2 class="text-base font-black">Analítica del grupo</h2>
 
-        <div class="grid sm:grid-cols-3 gap-4">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <div class="bg-white dark:bg-neutral-900 rounded-bento-sm shadow-bento p-4">
             <p class="text-xs uppercase tracking-widest font-bold text-neutral-500 mb-1">Promedio</p>
             <p class="text-3xl font-black tracking-tight text-bento-blue" data-analitica-promedio>—</p>
-            <p class="text-xs text-neutral-500 mt-1">del grupo</p>
+            <p class="text-xs text-neutral-500 mt-1">progreso del grupo</p>
+          </div>
+          <div class="bg-white dark:bg-neutral-900 rounded-bento-sm shadow-bento p-4">
+            <p class="text-xs uppercase tracking-widest font-bold text-neutral-500 mb-1">Exámenes</p>
+            <p class="text-3xl font-black tracking-tight" style="color: var(--color-bento-purple, #a855f7)" data-analitica-examenes>—</p>
+            <p class="text-xs text-neutral-500 mt-1">promedio del grupo</p>
           </div>
           <div class="bg-white dark:bg-neutral-900 rounded-bento-sm shadow-bento p-4">
             <p class="text-xs uppercase tracking-widest font-bold text-neutral-500 mb-1">En riesgo</p>
@@ -247,7 +252,7 @@ import CodigoAcceso from '../../../components/CodigoAcceso.astro';
       const listaEst = contenido.querySelector<HTMLElement>('[data-lista-estudiantes]');
 
       try {
-        const lista = await listarEstudiantesConProgreso(aula.id);
+        const lista = await listarEstudiantesConProgreso(aula.id, aula.grado);
         loadingEst?.classList.add('hidden');
         if (lista.length === 0) {
           vacioEst?.classList.remove('hidden');
@@ -258,6 +263,10 @@ import CodigoAcceso from '../../../components/CodigoAcceso.astro';
               const iniciales = escape(est.display_name.trim().slice(0, 2).toUpperCase());
               const pct = est.progreso_promedio;
               const barraColor = pct >= 80 ? 'bg-bento-lime' : pct >= 40 ? 'bg-bento-blue' : 'bg-neutral-300 dark:bg-neutral-600';
+              const xpFmt = est.xp_total.toLocaleString('es-CO');
+              const examen = est.quiz_promedio != null
+                ? `📝 ${est.quiz_promedio}% (${est.quizzes_intentos})`
+                : '📝 —';
               return `
                 <div class="bg-white dark:bg-neutral-900 rounded-bento-sm shadow-bento p-4 flex items-center gap-4">
                   <div class="w-10 h-10 rounded-full bg-bento-blue/10 flex items-center justify-center font-black text-bento-blue text-sm flex-shrink-0" aria-hidden="true">
@@ -267,6 +276,14 @@ import CodigoAcceso from '../../../components/CodigoAcceso.astro';
                     <p class="font-bold text-sm truncate">${escape(est.display_name)}</p>
                     <p class="text-xs text-neutral-500 mt-0.5">
                       ${est.guias_completadas} completadas · ${est.guias_iniciadas} iniciadas
+                    </p>
+                    <p class="text-[11px] text-neutral-500 mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
+                      <span class="font-semibold text-neutral-700 dark:text-neutral-300">${est.nivel_emoji} ${escape(est.nivel_nombre)}</span>
+                      <span aria-hidden="true">·</span>
+                      <span class="tabular-nums">${xpFmt} XP</span>
+                      ${est.insignias_ganadas > 0 ? `<span aria-hidden="true">·</span><span class="tabular-nums">🏅 ${est.insignias_ganadas}</span>` : ''}
+                      <span aria-hidden="true">·</span>
+                      <span class="tabular-nums">${examen}</span>
                     </p>
                     ${est.guias_iniciadas > 0 ? `
                     <div class="mt-1.5 h-1.5 bg-neutral-100 dark:bg-neutral-700 rounded-full overflow-hidden" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100">
@@ -317,12 +334,19 @@ import CodigoAcceso from '../../../components/CodigoAcceso.astro';
     const promedio = Math.round(lista.reduce((s, e) => s + e.progreso_promedio, 0) / total);
     const enRiesgo = lista.filter((e) => e.progreso_promedio < 25).length;
     const activos = lista.filter((e) => e.guias_completadas > 0).length;
+    const conExamen = lista.filter((e) => e.quiz_promedio != null);
+    const promedioExamen =
+      conExamen.length > 0
+        ? Math.round(conExamen.reduce((s, e) => s + (e.quiz_promedio ?? 0), 0) / conExamen.length)
+        : null;
 
     const sec = root.querySelector<HTMLElement>('[data-analitica]');
     if (!sec) return;
     sec.querySelector<HTMLElement>('[data-analitica-promedio]')!.textContent = `${promedio}%`;
     sec.querySelector<HTMLElement>('[data-analitica-riesgo]')!.textContent = String(enRiesgo);
     sec.querySelector<HTMLElement>('[data-analitica-activos]')!.textContent = String(activos);
+    sec.querySelector<HTMLElement>('[data-analitica-examenes]')!.textContent =
+      promedioExamen != null ? `${promedioExamen}%` : '—';
 
     const buckets = [
       { label: '0–25%',   from: 0,   to: 25,  color: 'bg-neutral-300 dark:bg-neutral-600' },
@@ -347,12 +371,28 @@ import CodigoAcceso from '../../../components/CodigoAcceso.astro';
 
     sec.querySelector('[data-exportar-csv]')?.addEventListener('click', () => {
       const filas = [
-        ['Nombre', 'Guías iniciadas', 'Guías completadas', 'Progreso promedio (%)', 'Fecha inscripción'],
+        [
+          'Nombre',
+          'Guías iniciadas',
+          'Guías completadas',
+          'Progreso promedio (%)',
+          'Intentos examen',
+          'Promedio examen (%)',
+          'XP total',
+          'Nivel',
+          'Insignias',
+          'Fecha inscripción',
+        ],
         ...lista.map((e) => [
           e.display_name,
           e.guias_iniciadas,
           e.guias_completadas,
           e.progreso_promedio,
+          e.quizzes_intentos,
+          e.quiz_promedio ?? '',
+          e.xp_total,
+          e.nivel_nombre,
+          e.insignias_ganadas,
           new Date(e.inscrito_en).toLocaleDateString('es-CO'),
         ]),
       ];

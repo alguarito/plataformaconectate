@@ -155,8 +155,11 @@ export async function iniciarRegistroAuto(input: {
     throw new Error(errIns.message ?? 'No se pudo iniciar el registro');
   }
 
+  const base = (import.meta.env?.BASE_URL ?? '/').replace(/\/$/, '');
+  const redirectUrl = `${window.location.origin}${base}/cuenta/verificar-otp?id=${registroId}`;
+
   const { data, error: errFn } = await supabase.functions.invoke('enviar-otp-estudiante', {
-    body: { registro_id: registroId },
+    body: { registro_id: registroId, redirect_url: redirectUrl },
   });
   if (errFn || data?.ok === false) {
     console.error('[registro] enviar-otp-estudiante:', errFn ?? data);

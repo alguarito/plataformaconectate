@@ -203,6 +203,11 @@ const VERSION_POLITICA = '2026.06';
   const params = new URLSearchParams(window.location.search);
   const registroId = params.get('id');
 
+  // Detectar si el estudiante llegó desde un magic link de Supabase Auth.
+  // El SDK recoge el #access_token del fragmento de URL automáticamente.
+  const { data: { session: sessionInicial } } = await supabase.auth.getSession();
+  const llegoPorMagicLink = !!sessionInicial?.user;
+
   document.querySelectorAll<HTMLAnchorElement>('[data-link-volver]').forEach((a) => {
     a.href = base + '/cuenta/unirme';
   });
@@ -247,6 +252,10 @@ const VERSION_POLITICA = '2026.06';
       mostrarErrorCarga(`Tu solicitud está en estado ${estado} y no se puede continuar.`);
       return;
     }
+    // Si llegó por magic link, ocultar la sección de código — no la necesita
+    if (llegoPorMagicLink) {
+      document.querySelector('[data-form-otp]')?.closest('section')?.classList.add('hidden');
+    }
     mostrar('formulario');
   }
 
@@ -276,8 +285,14 @@ const VERSION_POLITICA = '2026.06';
   // Firmar
   document.querySelector('[data-btn-firmar]')?.addEventListener('click', async () => {
     if (!registroId) return;
-    const otp = (document.querySelector<HTMLInputElement>('#otp-input')?.value ?? '').trim();
-    if (!/^[0-9]{6}$/.test(otp)) {
+
+    // En flujo de magic link la sesión ya está activa; la edge function detecta el JWT.
+    // En flujo OTP el estudiante ingresa el código manualmente.
+    const otp = llegoPorMagicLink
+      ? '000000'
+      : (document.querySelector<HTMLInputElement>('#otp-input')?.value ?? '').trim();
+
+    if (!llegoPorMagicLink && !/^[0-9]{6}$/.test(otp)) {
       const m = document.querySelector<HTMLElement>('[data-error-firma-msg]');
       if (m) m.textContent = 'El código debe ser de 6 dígitos.';
       document.querySelector('[data-error-firma]')?.classList.remove('hidden');

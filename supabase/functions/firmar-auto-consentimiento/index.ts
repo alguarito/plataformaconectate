@@ -3,10 +3,9 @@
  *
  * El estudiante ≥14 años verifica su OTP y firma su propio consentimiento.
  *
- * Validaciones:
- *   - OTP existe, no expiró, coincide con el hash guardado
- *   - Edad calculada ≥ 14 al momento de firmar
- *   - 3 declaraciones marcadas (mayor de 14, email propio, autoriza)
+ * Verificación vía Supabase Auth nativo:
+ *   - Magic link: el cliente ya tiene sesión activa (Authorization: Bearer).
+ *   - Código de 6 dígitos: se valida con verifyOtp.
  *
  * Body:
  *   {
@@ -42,6 +41,7 @@ serve(async (req) => {
   try {
     const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
     const SERVICE_ROLE = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY')!;
     const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
     const RESEND_FROM = Deno.env.get('RESEND_FROM_EMAIL')!;
     const RESEND_REPLY_TO = Deno.env.get('RESEND_REPLY_TO') ?? '';
@@ -80,19 +80,21 @@ serve(async (req) => {
       return json({ ok: false, error: 'Este registro requiere firma del acudiente' }, 400);
     }
 
-    // Validar OTP
-    if (!reg.otp_hash || !reg.otp_expira_en) {
-      return json({ ok: false, error: 'OTP no generado. Solicita uno nuevo.' }, 400);
-    }
-    if (new Date(reg.otp_expira_en) < new Date()) {
-      return json({ ok: false, error: 'OTP expirado. Solicita uno nuevo.' }, 400);
-    }
-    const otpHashRecibido = await sha256(String(otp));
-    if (otpHashRecibido !== reg.otp_hash) {
-      return json({ ok: false, error: 'OTP incorrecto' }, 400);
+    // Solo se admite verificación nativa (Supabase Auth). Los registros antiguos
+    // basados en SHA-256/Resend ya no se pueden completar: su OTP nunca se
+    // entregó, así que el estudiante debe reiniciar el registro para recibir
+    // un código nuevo por el flujo nativo.
+    if (reg.otp_hash !== '__supabase_native') {
+      return json(
+        {
+          ok: false,
+          error: 'Tu solicitud expiró. Vuelve a iniciar el registro para recibir un código nuevo.',
+        },
+        409
+      );
     }
 
-    // Validar edad ≥ 14 desde fecha_nacimiento
+    // Validar edad ≥ 14 antes de tocar Auth
     const edad = calcularEdad(new Date(reg.estudiante_fecha_nacimiento));
     if (edad < 14) {
       return json(
@@ -109,29 +111,63 @@ serve(async (req) => {
       .maybeSingle();
     if (!aula) return json({ ok: false, error: 'Aula no encontrada' }, 404);
 
-    // Crear cuenta auth.users con email REAL del estudiante
+    // PIN que se mostrará al estudiante
     const codigoPin = String(Math.floor(1000 + Math.random() * 9000));
-    const credencialEfimera = `Pin-${codigoPin}-${crypto.randomUUID().slice(0, 12)}`;
+    let estudianteId: string;
 
-    const { data: nuevoUsuario, error: errCrear } = await sb.auth.admin.createUser({
-      email: reg.estudiante_email,
-      password: credencialEfimera,
-      email_confirm: true,
+    // ── Verificación nativa ──────────────────────────────────────────────────
+    // Sub-ruta A: magic link — el cliente ya tiene sesión activa.
+    // supabase.functions.invoke envía "Authorization: Bearer <access_token>"
+    // cuando hay sesión, a diferencia del anon key que no identifica usuario.
+    const authHeader = req.headers.get('authorization') ?? '';
+    const bearer = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : '';
+
+    let sessionUser = null;
+    if (bearer) {
+      const tempSb = createClient(SUPABASE_URL, ANON_KEY, {
+        auth: { persistSession: false, autoRefreshToken: false },
+        global: { headers: { Authorization: `Bearer ${bearer}` } },
+      });
+      const { data: { user } } = await tempSb.auth.getUser();
+      // Validar que el email del JWT coincide con el del registro
+      if (user?.email === reg.estudiante_email) sessionUser = user;
+    }
+
+    if (sessionUser) {
+      estudianteId = sessionUser.id;
+    } else {
+      // Sub-ruta B: OTP de 6 dígitos — el cliente lo ingresó manualmente.
+      const anonSb = createClient(SUPABASE_URL, ANON_KEY, {
+        auth: { persistSession: false, autoRefreshToken: false },
+      });
+
+      const { data: verified, error: errOtp } = await anonSb.auth.verifyOtp({
+        email: reg.estudiante_email,
+        token: String(otp),
+        type: 'email',
+      });
+
+      if (errOtp || !verified?.user) {
+        console.error('[firmar-auto] verifyOtp nativo:', errOtp);
+        return json({ ok: false, error: 'OTP incorrecto o expirado' }, 400);
+      }
+
+      estudianteId = verified.user.id;
+    }
+
+    // Completar metadatos del usuario creado por signInWithOtp (mínimos por defecto)
+    await sb.auth.admin.updateUserById(estudianteId, {
       user_metadata: {
         display_name: reg.estudiante_display_name,
         rol_principal: 'student',
         auto_consentido: true,
+        codigo_pin: codigoPin,
       },
     });
 
-    if (errCrear || !nuevoUsuario.user) {
-      console.error('[firmar-auto] createUser:', errCrear);
-      return json({ ok: false, error: 'No se pudo crear cuenta del estudiante' }, 500);
-    }
+    // ── Ruta común ─────────────────────────────────────────────────────────────
 
-    const estudianteId = nuevoUsuario.user.id;
-
-    // Actualizar usuarios con datos reales
+    // Actualizar usuarios con datos reales (trigger de auth crea la fila base)
     await sb
       .from('usuarios')
       .update({
@@ -148,7 +184,7 @@ serve(async (req) => {
 
     const { error: errCons } = await sb.from('consentimientos_plataforma').insert({
       estudiante_id: estudianteId,
-      acudiente_nombre: reg.estudiante_display_name, // mismo que estudiante
+      acudiente_nombre: reg.estudiante_display_name,
       acudiente_cc: 'N/A',
       acudiente_email: reg.estudiante_email,
       acudiente_parentesco: 'auto',
@@ -179,7 +215,7 @@ serve(async (req) => {
       .update({ estado: 'firmado', otp_hash: null, otp_expira_en: null })
       .eq('id', registro_id);
 
-    // Email de confirmación al estudiante
+    // Correo de confirmación (solo si Resend está configurado; no bloquea el flujo)
     if (RESEND_API_KEY) {
       try {
         const resend = new Resend(RESEND_API_KEY);
@@ -210,13 +246,6 @@ function json(body: unknown, status = 200) {
     status,
     headers: { ...CORS, 'Content-Type': 'application/json' },
   });
-}
-
-async function sha256(input: string): Promise<string> {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(input));
-  return Array.from(new Uint8Array(buf))
-    .map((b) => b.toString(16).padStart(2, '0'))
-    .join('');
 }
 
 function calcularEdad(fechaNac: Date, hoy: Date = new Date()): number {

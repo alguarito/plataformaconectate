@@ -174,6 +174,29 @@ export interface Database {
           realizado_en?: string;
         };
       };
+      progreso_proyecto: {
+        Row: {
+          id: number;
+          estudiante_id: string;
+          grado: number;
+          periodo: number;
+          completada_en: string | null;
+        };
+        Insert: {
+          id?: number;
+          estudiante_id: string;
+          grado: number;
+          periodo: number;
+          completada_en?: string | null;
+        };
+        Update: {
+          id?: number;
+          estudiante_id?: string;
+          grado?: number;
+          periodo?: number;
+          completada_en?: string | null;
+        };
+      };
       registros_pendientes: {
         Row: {
           id: string;

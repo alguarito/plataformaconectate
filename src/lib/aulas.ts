@@ -8,6 +8,7 @@
 
 import { supabase, authEnabled } from './supabase';
 import type { Database } from './database.types';
+import { calcularGamificacion } from './gamificacion';
 
 export type Aula = Database['public']['Tables']['aulas']['Row'];
 export type AulaInsert = Database['public']['Tables']['aulas']['Insert'];
@@ -182,14 +183,35 @@ export type EstudianteConProgreso = {
   guias_iniciadas: number;
   guias_completadas: number;
   progreso_promedio: number;
+  // Exámenes (intentos_quiz)
+  quizzes_intentos: number;
+  /** Promedio de puntaje (0-100) de los intentos calificados; null si no hay. */
+  quiz_promedio: number | null;
+  // Gamificación derivada con la MISMA fórmula que ve el estudiante.
+  xp_total: number;
+  nivel_nombre: string;
+  nivel_emoji: string;
+  insignias_ganadas: number;
 };
 
+/** Extrae el grado de una guia_clave con formato '{grado}-{periodo}-{sesion}'. */
+function gradoDeGuiaClave(clave: string): number | null {
+  const m = clave.match(/^(\d+)-/);
+  return m ? parseInt(m[1], 10) : null;
+}
+
 /**
- * Lista los estudiantes de un aula con su progreso agregado.
- * Requiere que el caller sea el docente del aula (RLS garantiza esto).
+ * Lista los estudiantes de un aula con su progreso, desempeño en exámenes y
+ * gamificación agregada. Requiere que el caller sea el docente del aula
+ * (RLS garantiza esto).
+ *
+ * `gradoAula` se usa como referencia de «mi grado» para la gamificación:
+ * lo completado de ese grado suma al nivel; lo de otros grados, a las
+ * insignias de exploración (igual criterio que el progreso del estudiante).
  */
 export async function listarEstudiantesConProgreso(
-  aulaId: string
+  aulaId: string,
+  gradoAula: number
 ): Promise<EstudianteConProgreso[]> {
   if (!authEnabled) return [];
 
@@ -205,37 +227,111 @@ export async function listarEstudiantesConProgreso(
 
   const ids = enrolls.map((e) => e.usuario_id);
 
-  const { data: progresos } = await supabase
-    .from('progreso_guia')
-    .select('estudiante_id, porcentaje, completada_en')
-    .in('estudiante_id', ids);
+  // Guías, intentos de quiz y proyectos de todos los estudiantes en paralelo.
+  const [progRes, quizRes, proyRes] = await Promise.all([
+    supabase
+      .from('progreso_guia')
+      .select('estudiante_id, guia_clave, porcentaje, completada_en')
+      .in('estudiante_id', ids),
+    supabase
+      .from('intentos_quiz')
+      .select('estudiante_id, puntaje')
+      .in('estudiante_id', ids),
+    supabase
+      .from('progreso_proyecto')
+      .select('estudiante_id, grado')
+      .in('estudiante_id', ids),
+  ]);
 
-  const progresoMap = new Map<string, { iniciadas: number; completadas: number; pct: number[] }>();
-  for (const p of progresos ?? []) {
-    if (!progresoMap.has(p.estudiante_id)) {
-      progresoMap.set(p.estudiante_id, { iniciadas: 0, completadas: 0, pct: [] });
+  type Acumulado = {
+    iniciadas: number;
+    completadas: number;
+    pct: number[];
+    guiasGrado: number;
+    guiasOtro: number;
+    proyectosGrado: number;
+    proyectosOtro: number;
+    quizPuntajes: number[];
+    quizIntentos: number;
+  };
+  const nuevo = (): Acumulado => ({
+    iniciadas: 0,
+    completadas: 0,
+    pct: [],
+    guiasGrado: 0,
+    guiasOtro: 0,
+    proyectosGrado: 0,
+    proyectosOtro: 0,
+    quizPuntajes: [],
+    quizIntentos: 0,
+  });
+  const acc = new Map<string, Acumulado>();
+  const obtener = (id: string): Acumulado => {
+    let a = acc.get(id);
+    if (!a) {
+      a = nuevo();
+      acc.set(id, a);
     }
-    const entry = progresoMap.get(p.estudiante_id)!;
-    entry.iniciadas++;
-    entry.pct.push(p.porcentaje ?? 0);
-    if (p.completada_en) entry.completadas++;
+    return a;
+  };
+
+  for (const p of progRes.data ?? []) {
+    const a = obtener(p.estudiante_id);
+    a.iniciadas++;
+    a.pct.push(p.porcentaje ?? 0);
+    if (p.completada_en) {
+      a.completadas++;
+      const g = gradoDeGuiaClave(p.guia_clave);
+      if (g === gradoAula) a.guiasGrado++;
+      else a.guiasOtro++;
+    }
+  }
+  for (const q of quizRes.data ?? []) {
+    const a = obtener(q.estudiante_id);
+    a.quizIntentos++;
+    if (q.puntaje != null) a.quizPuntajes.push(q.puntaje);
+  }
+  for (const pr of proyRes.data ?? []) {
+    const a = obtener(pr.estudiante_id);
+    if (pr.grado === gradoAula) a.proyectosGrado++;
+    else a.proyectosOtro++;
   }
 
   return enrolls.map((e) => {
-    const u = e.usuarios as { id: string; display_name: string; fecha_nacimiento: string | null };
-    const prog = progresoMap.get(e.usuario_id) ?? { iniciadas: 0, completadas: 0, pct: [] };
+    const u = e.usuarios as {
+      id: string;
+      display_name: string;
+      fecha_nacimiento: string | null;
+    };
+    const a = acc.get(e.usuario_id) ?? nuevo();
     const promedio =
-      prog.pct.length > 0
-        ? Math.round(prog.pct.reduce((a, b) => a + b, 0) / prog.pct.length)
+      a.pct.length > 0
+        ? Math.round(a.pct.reduce((x, y) => x + y, 0) / a.pct.length)
         : 0;
+    const quizPromedio =
+      a.quizPuntajes.length > 0
+        ? Math.round(a.quizPuntajes.reduce((x, y) => x + y, 0) / a.quizPuntajes.length)
+        : null;
+    const gam = calcularGamificacion({
+      guiasGrado: a.guiasGrado,
+      guiasOtro: a.guiasOtro,
+      proyectosGrado: a.proyectosGrado,
+      proyectosOtro: a.proyectosOtro,
+    });
     return {
       id: u.id,
       display_name: u.display_name,
       fecha_nacimiento: u.fecha_nacimiento ?? null,
       inscrito_en: e.creado_en,
-      guias_iniciadas: prog.iniciadas,
-      guias_completadas: prog.completadas,
+      guias_iniciadas: a.iniciadas,
+      guias_completadas: a.completadas,
       progreso_promedio: promedio,
+      quizzes_intentos: a.quizIntentos,
+      quiz_promedio: quizPromedio,
+      xp_total: gam.xpGrado + gam.xpExploracion,
+      nivel_nombre: gam.nivel.nombre,
+      nivel_emoji: gam.nivel.emoji,
+      insignias_ganadas: gam.insigniasGanadas.length,
     };
   });
 }

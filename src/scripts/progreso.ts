@@ -11,45 +11,20 @@
  * Comunicación entre componentes: CustomEvent('progreso:cambio') en document.
  */
 
+import {
+  calcularGamificacion,
+  NIVELES_GRADO,
+  INSIGNIAS_EXPLORACION,
+  TOTAL_ITEMS_GRADO,
+} from '../lib/gamificacion';
+import type { NivelGrado, Insignia } from '../lib/gamificacion';
+
+// Re-export: varios componentes importaban estos símbolos desde aquí.
+// La fuente única ahora es ../lib/gamificacion (compartida con el panel docente).
+export { NIVELES_GRADO, INSIGNIAS_EXPLORACION, TOTAL_ITEMS_GRADO };
+export type { NivelGrado, Insignia };
+
 const STORAGE_KEY = 'conectate.progreso.v1';
-
-const TOTAL_GUIAS_GRADO = 30;
-const TOTAL_PROYECTOS_GRADO = 3;
-export const TOTAL_ITEMS_GRADO = TOTAL_GUIAS_GRADO + TOTAL_PROYECTOS_GRADO; // 33
-
-const XP_GUIA_GRADO = 100;
-const XP_GUIA_OTRO = 50;
-const XP_PROYECTO_GRADO = 500;
-const XP_PROYECTO_OTRO = 200;
-
-export interface NivelGrado {
-  min: number;
-  max: number;
-  nombre: string;
-  emoji: string;
-  color: string;
-}
-
-export const NIVELES_GRADO: NivelGrado[] = [
-  { min: 0, max: 7, nombre: 'Novato', emoji: '🌱', color: 'bg-bento-blue' },
-  { min: 8, max: 16, nombre: 'Aprendiz', emoji: '🌿', color: 'bg-bento-cyan' },
-  { min: 17, max: 25, nombre: 'Experto', emoji: '🌳', color: 'bg-bento-lime' },
-  { min: 26, max: 32, nombre: 'Casi Maestro', emoji: '🎯', color: 'bg-bento-orange' },
-  { min: 33, max: 33, nombre: 'Maestro', emoji: '🏆', color: 'bg-bento-pink' },
-];
-
-export interface Insignia {
-  min: number;
-  nombre: string;
-  emoji: string;
-}
-
-export const INSIGNIAS_EXPLORACION: Insignia[] = [
-  { min: 1, nombre: 'Explorador', emoji: '🗺️' },
-  { min: 5, nombre: 'Pionero', emoji: '🧭' },
-  { min: 15, nombre: 'Aventurero', emoji: '🚀' },
-  { min: 30, nombre: 'Polímata', emoji: '🌟' },
-];
 
 export interface EstadoProgreso {
   version: 1;
@@ -195,57 +170,43 @@ export function calcStats(): Stats {
   const e = leerEstado();
   const ga = e.gradoActual;
 
-  let itemsGrado = 0;
-  let itemsOtros = 0;
-  let xpGrado = 0;
-  let xpExploracion = 0;
+  // Separar lo completado en «mi grado» vs «otros grados». Cuando no hay grado
+  // elegido (ga == null) todo cae en «otros», igual que antes.
+  let guiasGrado = 0;
+  let guiasOtro = 0;
+  let proyectosGrado = 0;
+  let proyectosOtro = 0;
 
   for (const k of Object.keys(e.guias)) {
     const g = gradoDeKey(k);
     if (g == null) continue;
-    if (ga != null && g === ga) {
-      itemsGrado++;
-      xpGrado += XP_GUIA_GRADO;
-    } else {
-      itemsOtros++;
-      xpExploracion += XP_GUIA_OTRO;
-    }
+    if (ga != null && g === ga) guiasGrado++;
+    else guiasOtro++;
   }
   for (const k of Object.keys(e.proyectos)) {
     const g = gradoDeKey(k);
     if (g == null) continue;
-    if (ga != null && g === ga) {
-      itemsGrado++;
-      xpGrado += XP_PROYECTO_GRADO;
-    } else {
-      itemsOtros++;
-      xpExploracion += XP_PROYECTO_OTRO;
-    }
+    if (ga != null && g === ga) proyectosGrado++;
+    else proyectosOtro++;
   }
 
-  const porcentaje =
-    ga != null
-      ? Math.min(100, Math.round((itemsGrado / TOTAL_ITEMS_GRADO) * 100))
-      : 0;
-  const nivel =
-    NIVELES_GRADO.find((n) => itemsGrado >= n.min && itemsGrado <= n.max) ??
-    NIVELES_GRADO[0];
-  const insigniasGanadas = INSIGNIAS_EXPLORACION.filter(
-    (i) => itemsOtros >= i.min,
-  );
-  const proximaInsignia =
-    INSIGNIAS_EXPLORACION.find((i) => itemsOtros < i.min) ?? null;
+  const r = calcularGamificacion({
+    guiasGrado,
+    guiasOtro,
+    proyectosGrado,
+    proyectosOtro,
+  });
 
   return {
     gradoActual: ga,
-    itemsGrado,
-    itemsOtros,
-    porcentajeGrado: porcentaje,
-    nivel,
-    insigniasGanadas,
-    proximaInsignia,
-    xpGrado,
-    xpExploracion,
+    itemsGrado: r.itemsGrado,
+    itemsOtros: r.itemsOtros,
+    porcentajeGrado: r.porcentajeGrado,
+    nivel: r.nivel,
+    insigniasGanadas: r.insigniasGanadas,
+    proximaInsignia: r.proximaInsignia,
+    xpGrado: r.xpGrado,
+    xpExploracion: r.xpExploracion,
   };
 }
 

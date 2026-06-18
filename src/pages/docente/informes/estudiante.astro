@@ -1,0 +1,441 @@
+---
+/**
+ * /docente/informes/estudiante · Informe individual de un estudiante.
+ * Query param: ?id=<uuid>
+ * Carga client-side: toda la actividad del estudiante visible por el docente.
+ * Gamificación calculada aquí con la misma fórmula que el panel de aula.
+ */
+import CuentaLayout from '../../../layouts/CuentaLayout.astro';
+import DocenteTabs from '../../../components/DocenteTabs.astro';
+---
+
+<CuentaLayout title="Informe de estudiante · Plataforma Conéctate">
+  <DocenteTabs />
+
+  <div data-loading class="text-center py-12">
+    <span class="inline-block w-10 h-10 rounded-full border-4 border-bento-blue/30 border-t-bento-blue animate-spin motion-reduce:animate-none mb-3"></span>
+    <p class="text-sm text-neutral-500">Cargando informe del estudiante…</p>
+  </div>
+
+  <div data-error class="hidden bg-bento-pink/10 border border-bento-pink/30 rounded-bento-sm p-4">
+    <p class="text-sm text-bento-pink font-semibold" data-error-msg>No se pudo cargar el informe.</p>
+  </div>
+
+  <div data-no-autorizado class="hidden bg-neutral-50 dark:bg-neutral-800/50 rounded-bento-sm p-8 text-center border border-dashed border-neutral-300 dark:border-neutral-700">
+    <div class="text-5xl mb-3" aria-hidden="true">🔒</div>
+    <h1 class="text-xl font-black mb-2">Sin acceso</h1>
+    <p class="text-sm text-neutral-600 dark:text-neutral-400 max-w-md mx-auto">
+      Este estudiante no está inscrito en ninguna de tus aulas, o el ID no es válido.
+    </p>
+    <a data-link-volver href="#" class="inline-block mt-5 px-5 py-3 rounded-bento-sm bg-bento-blue text-white font-bold text-sm">
+      Volver al panel
+    </a>
+  </div>
+
+  <div data-sin-id class="hidden bg-neutral-50 dark:bg-neutral-800/50 rounded-bento-sm p-8 text-center border border-dashed border-neutral-300 dark:border-neutral-700">
+    <div class="text-5xl mb-3" aria-hidden="true">🔍</div>
+    <h1 class="text-xl font-black mb-2">Falta el ID del estudiante</h1>
+    <p class="text-sm text-neutral-600 dark:text-neutral-400 max-w-md mx-auto">
+      Accede a este informe desde la tabla "Necesitan atención" o desde un informe por grado.
+    </p>
+    <a data-link-volver href="#" class="inline-block mt-5 px-5 py-3 rounded-bento-sm bg-bento-blue text-white font-bold text-sm">
+      Volver al panel
+    </a>
+  </div>
+
+  <article data-contenido class="hidden space-y-6">
+    <!-- Cabecera del estudiante -->
+    <header class="bg-bento-blue text-white rounded-bento shadow-bento p-6 md:p-8">
+      <a data-link-volver href="#" class="inline-flex items-center gap-1.5 text-xs font-bold text-white/70 hover:text-white mb-4 transition-colors">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+        Panel general
+      </a>
+      <div class="flex items-start gap-4 flex-wrap">
+        <div class="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center text-2xl font-black flex-shrink-0" data-avatar>—</div>
+        <div class="flex-1 min-w-0">
+          <h1 class="text-huge font-black tracking-tight truncate" data-nombre>—</h1>
+          <p class="text-sm text-white/80 mt-0.5" data-sub-aula>—</p>
+          <p class="text-xs text-white/60 mt-1" data-ultima-actividad>—</p>
+        </div>
+        <!-- Alertas -->
+        <div data-alertas class="flex flex-wrap gap-2"></div>
+      </div>
+      <!-- Nivel de gamificación -->
+      <div class="mt-5 flex items-center gap-4 flex-wrap">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl" data-nivel-emoji>🌱</span>
+          <div>
+            <p class="text-xs text-white/70">Nivel de gamificación</p>
+            <p class="text-sm font-black" data-nivel-nombre>—</p>
+          </div>
+        </div>
+        <div class="flex-1 min-w-[120px]">
+          <div class="h-2 rounded-full bg-white/20 overflow-hidden">
+            <div class="h-full rounded-full bg-white transition-all" data-nivel-barra style="width:0%"></div>
+          </div>
+          <p class="text-xs text-white/60 mt-1" data-nivel-items>—</p>
+        </div>
+        <p class="text-lg font-black tabular-nums" data-xp>— XP</p>
+      </div>
+    </header>
+
+    <!-- KPIs -->
+    <section class="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div class="bg-white dark:bg-neutral-900 rounded-bento-sm shadow-bento p-4">
+        <p class="text-xs text-neutral-500 mb-1">Guías iniciadas</p>
+        <p class="text-2xl font-black tabular-nums text-bento-blue" data-guias-iniciadas>—</p>
+      </div>
+      <div class="bg-white dark:bg-neutral-900 rounded-bento-sm shadow-bento p-4">
+        <p class="text-xs text-neutral-500 mb-1">Guías completadas</p>
+        <p class="text-2xl font-black tabular-nums text-bento-lime" data-guias-completadas>—</p>
+      </div>
+      <div class="bg-white dark:bg-neutral-900 rounded-bento-sm shadow-bento p-4">
+        <p class="text-xs text-neutral-500 mb-1">Progreso promedio</p>
+        <p class="text-2xl font-black tabular-nums text-bento-cyan" data-progreso-prom>—</p>
+      </div>
+      <div class="bg-white dark:bg-neutral-900 rounded-bento-sm shadow-bento p-4">
+        <p class="text-xs text-neutral-500 mb-1">Intentos de examen</p>
+        <p class="text-2xl font-black tabular-nums" data-quiz-intentos>—</p>
+        <p class="text-xs text-neutral-400 mt-0.5">prom. <span data-quiz-prom>—</span></p>
+      </div>
+    </section>
+
+    <!-- Actividad en guías -->
+    <section class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-5 md:p-6 evitar-corte">
+      <h2 class="text-base font-black mb-1">Guías</h2>
+      <p class="text-xs text-neutral-500 mb-4">Guías con actividad registrada, ordenadas por última actualización.</p>
+      <div data-guias-lista></div>
+      <p data-guias-vacio class="hidden text-sm text-neutral-500 text-center py-6">Sin guías iniciadas aún.</p>
+    </section>
+
+    <!-- Exámenes -->
+    <section class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-5 md:p-6 evitar-corte">
+      <h2 class="text-base font-black mb-1">Exámenes</h2>
+      <p class="text-xs text-neutral-500 mb-4">Historial de intentos, del más reciente al más antiguo.</p>
+      <div data-examenes-tabla></div>
+      <p data-examenes-vacio class="hidden text-sm text-neutral-500 text-center py-6">Sin intentos de examen.</p>
+    </section>
+
+    <!-- Proyectos integradores -->
+    <section class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-5 md:p-6 evitar-corte">
+      <h2 class="text-base font-black mb-1">Proyectos integradores</h2>
+      <div data-proyectos-lista></div>
+      <p data-proyectos-vacio class="hidden text-sm text-neutral-500 text-center py-6">Sin proyectos completados.</p>
+    </section>
+
+    <!-- Consentimiento + aulas -->
+    <div class="grid sm:grid-cols-2 gap-4">
+      <section class="bg-white dark:bg-neutral-900 rounded-bento-sm shadow-bento p-5 evitar-corte">
+        <h2 class="text-sm font-black mb-3">Consentimiento de datos</h2>
+        <div data-consentimiento></div>
+      </section>
+      <section class="bg-white dark:bg-neutral-900 rounded-bento-sm shadow-bento p-5 evitar-corte">
+        <h2 class="text-sm font-black mb-3">Aulas inscritas</h2>
+        <div data-aulas-lista></div>
+      </section>
+    </div>
+  </article>
+</CuentaLayout>
+
+<script>
+  import { requireDocente } from '../../../lib/auth';
+  import { getInformeEstudiante } from '../../../lib/informes';
+  import { calcularGamificacion, NIVELES_GRADO } from '../../../lib/gamificacion';
+  import { escapeHtml, BENTO } from '../../../lib/charts';
+
+  const base = (import.meta.env?.BASE_URL ?? '/').replace(/\/$/, '');
+  const PANEL = base + '/docente/informes';
+
+  document.querySelectorAll<HTMLAnchorElement>('[data-link-volver]').forEach((a) => {
+    a.href = PANEL;
+  });
+
+  const $ = <T extends HTMLElement>(s: string) => document.querySelector<T>(s);
+
+  function mostrar(estado: 'loading' | 'error' | 'no-autorizado' | 'sin-id' | 'contenido') {
+    (['loading', 'error', 'no-autorizado', 'sin-id', 'contenido'] as const).forEach((e) => {
+      const sel = e === 'contenido' ? '[data-contenido]' : `[data-${e}]`;
+      $(sel)?.classList.toggle('hidden', e !== estado);
+    });
+  }
+
+  function fmtFecha(iso: string | null): string {
+    if (!iso) return '—';
+    const d = new Date(iso);
+    return d.toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' });
+  }
+
+  function diasDesde(iso: string | null): number | null {
+    if (!iso) return null;
+    return Math.floor((Date.now() - new Date(iso).getTime()) / 86_400_000);
+  }
+
+  const COLORES_GRADO: Record<number, string> = {
+    6: BENTO.blue, 7: BENTO.lime, 8: BENTO.orange,
+    9: BENTO.purple, 10: BENTO.pink, 11: BENTO.cyan,
+  };
+
+  async function cargar(estudianteId: string) {
+    const informe = await getInformeEstudiante(estudianteId);
+
+    if (!informe) { mostrar('error'); return; }
+    if (!informe.autorizado) { mostrar('no-autorizado'); return; }
+
+    // Nombre + avatar
+    const nombre = informe.displayName;
+    const ini = nombre.trim().slice(0, 2).toUpperCase();
+    const avatarEl = $('[data-avatar]');
+    if (avatarEl) avatarEl.textContent = ini;
+    const nombreEl = $('[data-nombre]');
+    if (nombreEl) nombreEl.textContent = nombre;
+
+    // Sub-aula: aula más reciente
+    const aulaPrincipal = informe.aulas[0];
+    const subAulaEl = $('[data-sub-aula]');
+    if (subAulaEl && aulaPrincipal) {
+      const lbl = aulaPrincipal.nombre
+        ? escapeHtml(aulaPrincipal.nombre)
+        : `Grado ${aulaPrincipal.grado}° · P${aulaPrincipal.periodo} · ${aulaPrincipal.ano}`;
+      subAulaEl.innerHTML = lbl;
+    }
+
+    // Última actividad
+    const dias = diasDesde(informe.ultimaActividad);
+    const ultActEl = $('[data-ultima-actividad]');
+    if (ultActEl) {
+      if (dias == null) {
+        ultActEl.textContent = 'Sin actividad registrada';
+      } else if (dias === 0) {
+        ultActEl.textContent = 'Activo hoy';
+      } else {
+        ultActEl.textContent = `Última actividad hace ${dias} día${dias === 1 ? '' : 's'} — ${fmtFecha(informe.ultimaActividad)}`;
+      }
+    }
+
+    // Alertas
+    const alertasEl = $('[data-alertas]');
+    if (alertasEl) {
+      const chips: string[] = [];
+      if (dias != null && dias > 14) {
+        chips.push(`<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-bento-orange/20 text-bento-orange">⚠️ ${dias} días inactivo</span>`);
+      }
+      const pcts = informe.guias.map((g) => g.porcentaje);
+      const promPct = pcts.length > 0 ? Math.round(pcts.reduce((a, b) => a + b, 0) / pcts.length) : 0;
+      if (promPct < 25 && informe.guias.length > 0) {
+        chips.push(`<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-bento-pink/20 text-bento-pink">🔴 En riesgo</span>`);
+      }
+      alertasEl.innerHTML = chips.join('');
+    }
+
+    // Gamificación
+    const gradoRef = informe.grado;
+    const guiasGrado = informe.guias.filter(
+      (g) => g.completadaEn && parseInt(g.guiaClave.split('-')[0], 10) === gradoRef
+    ).length;
+    const guiasOtro = informe.guias.filter(
+      (g) => g.completadaEn && parseInt(g.guiaClave.split('-')[0], 10) !== gradoRef
+    ).length;
+    const proyectosGrado = informe.proyectos.filter(
+      (p) => p.completado && p.grado === gradoRef
+    ).length;
+    const proyectosOtro = informe.proyectos.filter(
+      (p) => p.completado && p.grado !== gradoRef
+    ).length;
+    const gam = calcularGamificacion({ guiasGrado, guiasOtro, proyectosGrado, proyectosOtro });
+    const nivelActual = NIVELES_GRADO.find(
+      (n) => gam.itemsCompletados >= n.min && gam.itemsCompletados <= n.max
+    ) ?? NIVELES_GRADO[0];
+    const nivelSig = NIVELES_GRADO[NIVELES_GRADO.indexOf(nivelActual) + 1];
+    const pctNivel = nivelSig
+      ? Math.round(((gam.itemsCompletados - nivelActual.min) / (nivelSig.min - nivelActual.min)) * 100)
+      : 100;
+
+    const emojiEl = $('[data-nivel-emoji]');
+    const nombreNivelEl = $('[data-nivel-nombre]');
+    const barraEl = $<HTMLElement>('[data-nivel-barra]');
+    const itemsEl = $('[data-nivel-items]');
+    const xpEl = $('[data-xp]');
+    if (emojiEl) emojiEl.textContent = nivelActual.emoji;
+    if (nombreNivelEl) nombreNivelEl.textContent = nivelActual.nombre;
+    if (barraEl) barraEl.style.width = `${pctNivel}%`;
+    if (itemsEl) itemsEl.textContent = nivelSig
+      ? `${gam.itemsCompletados} / ${nivelSig.min} items para ${nivelSig.nombre}`
+      : `${gam.itemsCompletados} items · Nivel máximo`;
+    if (xpEl) xpEl.textContent = `${gam.xp} XP`;
+
+    // KPIs
+    const pcts2 = informe.guias.map((g) => g.porcentaje);
+    const promedio2 = pcts2.length > 0
+      ? Math.round(pcts2.reduce((a, b) => a + b, 0) / pcts2.length)
+      : 0;
+    const completadas = informe.guias.filter((g) => g.completadaEn).length;
+    const puntajes = informe.examenes.map((e) => e.puntaje).filter((p) => p != null) as number[];
+    const promedioQuiz = puntajes.length > 0
+      ? Math.round(puntajes.reduce((a, b) => a + b, 0) / puntajes.length)
+      : null;
+
+    const setEl = (sel: string, val: string) => {
+      const el = $(sel); if (el) el.textContent = val;
+    };
+    setEl('[data-guias-iniciadas]', String(informe.guias.length));
+    setEl('[data-guias-completadas]', String(completadas));
+    setEl('[data-progreso-prom]', `${promedio2}%`);
+    setEl('[data-quiz-intentos]', String(informe.examenes.length));
+    setEl('[data-quiz-prom]', promedioQuiz != null ? `${promedioQuiz}%` : '—');
+
+    // Lista de guías
+    const guiasLista = $('[data-guias-lista]');
+    const guiasVacio = $('[data-guias-vacio]');
+    if (informe.guias.length === 0) {
+      guiasVacio?.classList.remove('hidden');
+    } else {
+      guiasVacio?.classList.add('hidden');
+      const periodos = new Map<number, typeof informe.guias>();
+      for (const g of informe.guias) {
+        const p = parseInt(g.guiaClave.split('-')[1] ?? '0', 10);
+        if (!periodos.has(p)) periodos.set(p, []);
+        periodos.get(p)!.push(g);
+      }
+      const sortedPeriodos = [...periodos.keys()].sort((a, b) => a - b);
+      if (guiasLista) guiasLista.innerHTML = sortedPeriodos.map((p) => {
+        const guias = periodos.get(p)!;
+        const filas = guias.map((g) => {
+          const completada = g.completadaEn != null;
+          const pctColor = g.porcentaje >= 75 ? BENTO.lime : g.porcentaje >= 40 ? BENTO.orange : BENTO.pink;
+          const grado = parseInt(g.guiaClave.split('-')[0] ?? '0', 10);
+          const sesion = g.guiaClave.split('-')[2] ?? '?';
+          const colGrado = COLORES_GRADO[grado] ?? BENTO.blue;
+          return `<tr class="border-b border-neutral-100 dark:border-neutral-800 last:border-0">
+            <td class="py-2 pr-2">
+              <span class="inline-block w-2 h-2 rounded-full mr-1.5 flex-shrink-0" style="background:${colGrado}"></span>
+              <span class="text-sm font-semibold">${escapeHtml(g.guiaClave)}</span>
+              ${completada ? '<span class="ml-1 text-xs text-bento-lime font-bold">✓</span>' : ''}
+            </td>
+            <td class="py-2 text-right tabular-nums">
+              <span class="text-sm font-black" style="color:${pctColor}">${g.porcentaje}%</span>
+            </td>
+            <td class="py-2 pl-3 text-right text-xs text-neutral-400">${fmtFecha(g.actualizadoEn)}</td>
+          </tr>`;
+        }).join('');
+        return `<div class="mb-4 last:mb-0">
+          <p class="text-xs font-bold text-neutral-400 uppercase tracking-widest mb-2">Periodo ${p}</p>
+          <table class="w-full text-sm"><tbody>${filas}</tbody></table>
+        </div>`;
+      }).join('');
+    }
+
+    // Tabla de exámenes
+    const examenesTabla = $('[data-examenes-tabla]');
+    const examenesVacio = $('[data-examenes-vacio]');
+    if (informe.examenes.length === 0) {
+      examenesVacio?.classList.remove('hidden');
+    } else {
+      examenesVacio?.classList.add('hidden');
+      const filas = informe.examenes.map((e) => {
+        const aprobado = e.puntaje != null && e.puntaje >= 60;
+        const colP = e.puntaje == null ? BENTO.orange
+          : aprobado ? BENTO.lime : BENTO.pink;
+        const dur = e.duracionSeg != null
+          ? `${Math.floor(e.duracionSeg / 60)}m ${e.duracionSeg % 60}s`
+          : '—';
+        return `<tr class="border-b border-neutral-100 dark:border-neutral-800 last:border-0">
+          <td class="py-2.5 pr-3 text-sm font-semibold">${escapeHtml(e.guiaClave)}</td>
+          <td class="py-2.5 tabular-nums font-black text-right" style="color:${colP}">${e.puntaje != null ? e.puntaje + '%' : '—'}</td>
+          <td class="py-2.5 pl-3 text-right text-xs text-neutral-400">${dur}</td>
+          <td class="py-2.5 pl-3 text-right text-xs text-neutral-400">${fmtFecha(e.realizadoEn)}</td>
+        </tr>`;
+      }).join('');
+      if (examenesTabla) examenesTabla.innerHTML =
+        `<table class="w-full text-sm">` +
+        `<thead><tr class="border-b border-neutral-200 dark:border-neutral-700">` +
+        `<th class="pb-2 text-left text-xs font-bold text-neutral-400 uppercase tracking-widest">Guía</th>` +
+        `<th class="pb-2 text-right text-xs font-bold text-neutral-400 uppercase tracking-widest">Puntaje</th>` +
+        `<th class="pb-2 pl-3 text-right text-xs font-bold text-neutral-400 uppercase tracking-widest">Duración</th>` +
+        `<th class="pb-2 pl-3 text-right text-xs font-bold text-neutral-400 uppercase tracking-widest">Fecha</th>` +
+        `</tr></thead><tbody>${filas}</tbody></table>`;
+    }
+
+    // Proyectos
+    const proyectosLista = $('[data-proyectos-lista]');
+    const proyectosVacio = $('[data-proyectos-vacio]');
+    if (informe.proyectos.length === 0) {
+      proyectosVacio?.classList.remove('hidden');
+    } else {
+      proyectosVacio?.classList.add('hidden');
+      if (proyectosLista) proyectosLista.innerHTML =
+        `<div class="space-y-2">` +
+        informe.proyectos.map((p) => {
+          const col = COLORES_GRADO[p.grado] ?? BENTO.blue;
+          return `<div class="flex items-center gap-3 py-2.5 border-b border-neutral-100 dark:border-neutral-800 last:border-0">
+            <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background:${col}"></span>
+            <span class="flex-1 text-sm font-semibold">Grado ${p.grado}° · Proyecto P${p.periodo}</span>
+            ${p.completado
+              ? `<span class="text-xs font-bold text-bento-lime">✓ completado</span>`
+              : `<span class="text-xs text-neutral-400">en progreso</span>`
+            }
+            <span class="text-xs text-neutral-400">${fmtFecha(p.completadoEn)}</span>
+          </div>`;
+        }).join('') +
+        `</div>`;
+    }
+
+    // Consentimiento
+    const consentimientoEl = $('[data-consentimiento]');
+    if (consentimientoEl) {
+      const c = informe.consentimiento;
+      if (!c) {
+        consentimientoEl.innerHTML =
+          `<div class="flex items-center gap-2">
+            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-bento-orange/15 text-bento-orange">Sin consentimiento</span>
+          </div>`;
+      } else if (c.vigente) {
+        consentimientoEl.innerHTML =
+          `<div class="space-y-1.5">
+            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-bento-lime/20 text-green-700 dark:text-bento-lime">✓ Vigente</span>
+            <p class="text-xs text-neutral-500">Firmado el ${fmtFecha(c.firmadoEn)}</p>
+            ${c.anoLectivo ? `<p class="text-xs text-neutral-400">Año lectivo ${c.anoLectivo}</p>` : ''}
+          </div>`;
+      } else {
+        consentimientoEl.innerHTML =
+          `<div class="space-y-1.5">
+            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-bento-pink/15 text-bento-pink">Revocado</span>
+            <p class="text-xs text-neutral-500">Revocado el ${fmtFecha(c.revocadoEn)}</p>
+            <p class="text-xs text-neutral-400">Firmado originalmente el ${fmtFecha(c.firmadoEn)}</p>
+          </div>`;
+      }
+    }
+
+    // Aulas inscritas
+    const aulasLista = $('[data-aulas-lista]');
+    if (aulasLista) {
+      aulasLista.innerHTML =
+        `<div class="space-y-2">` +
+        informe.aulas.map((a) => {
+          const col = COLORES_GRADO[a.grado] ?? BENTO.blue;
+          const href = `${base}/docente/informes/grado?ano=${a.ano}&grado=${a.grado}`;
+          return `<a href="${href}" class="flex items-center gap-2.5 py-2 border-b border-neutral-100 dark:border-neutral-800 last:border-0 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 rounded-sm transition-colors group">
+            <span class="w-2 h-2 rounded-full flex-shrink-0" style="background:${col}"></span>
+            <span class="flex-1 text-sm font-semibold">${a.grado}° · P${a.periodo} · ${a.ano}</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" class="opacity-40 group-hover:opacity-80 transition-opacity" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+          </a>`;
+        }).join('') +
+        `</div>`;
+    }
+
+    mostrar('contenido');
+  }
+
+  requireDocente().then((sesion) => {
+    if (!sesion) return;
+    const sp = new URLSearchParams(window.location.search);
+    const id = sp.get('id');
+    if (!id) { mostrar('sin-id'); return; }
+
+    cargar(id).catch((err) => {
+      console.error('[informes/estudiante] cargar:', err);
+      const m = $('[data-error-msg]');
+      if (m) m.textContent = 'Error al cargar el informe: ' + (err?.message ?? err);
+      mostrar('error');
+    });
+  });
+</script>

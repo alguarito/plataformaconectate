@@ -337,6 +337,123 @@ export async function getCumplimientoResumen(ano?: number): Promise<Cumplimiento
   };
 }
 
+// ─── PR-4: Informe individual del estudiante ─────────────────────────────────
+
+export interface AulaResumen {
+  id: string;
+  grado: number;
+  periodo: number;
+  ano: number;
+  nombre: string | null;
+  codigo: string;
+}
+
+export interface ProgresoGuiaItem {
+  guiaClave: string;
+  porcentaje: number;
+  ultimaEstacion: string | null;
+  completadaEn: string | null;
+  actualizadoEn: string;
+}
+
+export interface IntentoQuizItem {
+  quizId: string;
+  guiaClave: string;
+  puntaje: number | null;
+  duracionSeg: number | null;
+  realizadoEn: string;
+}
+
+export interface ProgresoProyectoItem {
+  grado: number;
+  periodo: number;
+  completado: boolean;
+  completadoEn: string | null;
+}
+
+export interface ConsentimientoResumen {
+  vigente: boolean;
+  firmadoEn: string | null;
+  revocadoEn: string | null;
+  anoLectivo: number | null;
+}
+
+export interface InformeEstudiante {
+  autorizado: boolean;
+  displayName: string;
+  grado: number;
+  aulas: AulaResumen[];
+  guias: ProgresoGuiaItem[];
+  examenes: IntentoQuizItem[];
+  proyectos: ProgresoProyectoItem[];
+  consentimiento: ConsentimientoResumen | null;
+  ultimaActividad: string | null;
+}
+
+/**
+ * Informe completo de un estudiante (solo accesible si es alumno del docente).
+ * Devuelve null si no autorizado o error; chequear `.autorizado` para distinguir.
+ */
+export async function getInformeEstudiante(
+  estudianteId: string
+): Promise<InformeEstudiante | null> {
+  if (!authEnabled) return null;
+  const { data, error } = await supabase.rpc('informe_estudiante', {
+    _estudiante_id: estudianteId,
+  });
+  if (error) {
+    console.error('[informes] informe_estudiante:', error);
+    return null;
+  }
+  const r = (data ?? {}) as Record<string, unknown>;
+  if (!r.autorizado) return { autorizado: false } as InformeEstudiante;
+
+  return {
+    autorizado: true,
+    displayName: String(r.display_name ?? ''),
+    grado: num(r.grado),
+    aulas: (Array.isArray(r.aulas) ? r.aulas : []).map((a) => ({
+      id: a.id,
+      grado: a.grado,
+      periodo: a.periodo,
+      ano: a.ano,
+      nombre: a.nombre ?? null,
+      codigo: a.codigo,
+    })),
+    guias: (Array.isArray(r.guias) ? r.guias : []).map((g) => ({
+      guiaClave: g.guia_clave,
+      porcentaje: num(g.porcentaje),
+      ultimaEstacion: g.ultima_estacion ?? null,
+      completadaEn: g.completada_en ?? null,
+      actualizadoEn: g.actualizado_en,
+    })),
+    examenes: (Array.isArray(r.examenes) ? r.examenes : []).map((e) => ({
+      quizId: e.quiz_id,
+      guiaClave: e.guia_clave,
+      puntaje: e.puntaje == null ? null : num(e.puntaje),
+      duracionSeg: e.duracion_seg == null ? null : num(e.duracion_seg),
+      realizadoEn: e.realizado_en,
+    })),
+    proyectos: (Array.isArray(r.proyectos) ? r.proyectos : []).map((p) => ({
+      grado: p.grado,
+      periodo: p.periodo,
+      completado: Boolean(p.completado),
+      completadoEn: p.completado_en ?? null,
+    })),
+    consentimiento: r.consentimiento
+      ? {
+          vigente: Boolean((r.consentimiento as Record<string, unknown>).vigente),
+          firmadoEn: ((r.consentimiento as Record<string, unknown>).firmado_en as string | null) ?? null,
+          revocadoEn: ((r.consentimiento as Record<string, unknown>).revocado_en as string | null) ?? null,
+          anoLectivo: (r.consentimiento as Record<string, unknown>).ano_lectivo == null
+            ? null
+            : num((r.consentimiento as Record<string, unknown>).ano_lectivo),
+        }
+      : null,
+    ultimaActividad: (r.ultima_actividad as string | null) ?? null,
+  };
+}
+
 /** Estudiantes que necesitan atención (en riesgo o inactivos), con nombre. */
 export async function getEstudiantesEnRiesgo(
   ano?: number,

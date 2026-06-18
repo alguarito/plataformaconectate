@@ -295,6 +295,48 @@ export async function getDesempenoExamenes(
   }));
 }
 
+// ─── PR-3: Cumplimiento y resumen anual ──────────────────────────────────────
+
+export interface ArcoTipo {
+  tipo: string;
+  conteo: number;
+}
+
+export interface CumplimientoResumen {
+  firmados: number;
+  revocados: number;
+  auto: number;
+  acudiente: number;
+  tasaConsentimiento: number;
+  arcoTotal: number;
+  arcoPorTipo: ArcoTipo[];
+}
+
+/** Consentimientos y eventos ARCO del docente (acotado a un año si se pasa). */
+export async function getCumplimientoResumen(ano?: number): Promise<CumplimientoResumen | null> {
+  if (!authEnabled) return null;
+  const { data, error } = await supabase.rpc(
+    'cumplimiento_resumen',
+    ano != null ? { _ano: ano } : {}
+  );
+  if (error) {
+    console.error('[informes] cumplimiento_resumen:', error);
+    return null;
+  }
+  const r = (data ?? {}) as Record<string, unknown>;
+  return {
+    firmados: num(r.firmados),
+    revocados: num(r.revocados),
+    auto: num(r.auto),
+    acudiente: num(r.acudiente),
+    tasaConsentimiento: num(r.tasa_consentimiento),
+    arcoTotal: num(r.arco_total),
+    arcoPorTipo: Array.isArray(r.arco_por_tipo)
+      ? (r.arco_por_tipo as ArcoTipo[])
+      : [],
+  };
+}
+
 /** Estudiantes que necesitan atención (en riesgo o inactivos), con nombre. */
 export async function getEstudiantesEnRiesgo(
   ano?: number,

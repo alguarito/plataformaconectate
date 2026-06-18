@@ -346,6 +346,56 @@ export interface Database {
           dias_inactivo: number | null;
         }[];
       };
+      resumen_por_grado: {
+        Args: { _ano?: number };
+        Returns: {
+          grado: number;
+          aulas: number;
+          estudiantes: number;
+          guias_completadas: number;
+          progreso_promedio: number;
+          quiz_intentos: number;
+          quiz_promedio: number | null;
+          activos_30d: number;
+        }[];
+      };
+      resumen_por_periodo: {
+        Args: { _ano?: number; _grado?: number };
+        Returns: {
+          periodo: number;
+          aulas: number;
+          estudiantes: number;
+          guias_completadas: number;
+          progreso_promedio: number;
+          quiz_intentos: number;
+          quiz_promedio: number | null;
+        }[];
+      };
+      cobertura_guias: {
+        Args: { _ano?: number; _grado?: number };
+        Returns: {
+          guia_clave: string;
+          grado: number;
+          periodo: number;
+          sesion: number;
+          con_progreso: number;
+          completadas: number;
+          progreso_promedio: number;
+        }[];
+      };
+      desempeno_examenes: {
+        Args: { _ano?: number; _grado?: number };
+        Returns: {
+          quiz_id: string;
+          guia_clave: string;
+          total_intentos: number;
+          promedio: number | null;
+          aprobados: number;
+          p25: number | null;
+          p50: number | null;
+          p75: number | null;
+        }[];
+      };
     };
     Enums: {
       rol_enrollment: RolEnrollment;

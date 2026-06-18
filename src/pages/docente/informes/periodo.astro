@@ -1,0 +1,263 @@
+---
+/**
+ * /docente/informes/periodo · Corte por periodo.
+ * Query params: ?ano=2026&periodo=2
+ * Carga client-side: KPIs del periodo, comparativa entre grados,
+ * heatmap de guías del periodo, serie temporal.
+ */
+import CuentaLayout from '../../../layouts/CuentaLayout.astro';
+import DocenteTabs from '../../../components/DocenteTabs.astro';
+import KpiCard from '../../../components/charts/KpiCard.astro';
+---
+
+<CuentaLayout title="Informe por periodo · Plataforma Conéctate">
+  <DocenteTabs />
+
+  <div data-loading class="text-center py-12">
+    <span class="inline-block w-10 h-10 rounded-full border-4 border-bento-blue/30 border-t-bento-blue animate-spin motion-reduce:animate-none mb-3"></span>
+    <p class="text-sm text-neutral-500">Cargando informe de periodo…</p>
+  </div>
+
+  <div data-error class="hidden bg-bento-pink/10 border border-bento-pink/30 rounded-bento-sm p-4">
+    <p class="text-sm text-bento-pink font-semibold" data-error-msg>No se pudieron cargar los datos.</p>
+  </div>
+
+  <div data-vacio class="hidden bg-neutral-50 dark:bg-neutral-800/50 rounded-bento-sm p-8 text-center border border-dashed border-neutral-300 dark:border-neutral-700">
+    <div class="text-5xl mb-3" aria-hidden="true">📅</div>
+    <h1 class="text-xl font-black mb-2">Sin datos para este periodo</h1>
+    <p class="text-sm text-neutral-600 dark:text-neutral-400 max-w-md mx-auto leading-relaxed">
+      No hay aulas ni actividad registrada para el periodo y año seleccionados.
+    </p>
+    <a data-link-volver href="#" class="inline-block mt-5 px-5 py-3 rounded-bento-sm bg-bento-blue text-white font-bold text-sm">
+      Volver al panel general
+    </a>
+  </div>
+
+  <article data-contenido class="hidden space-y-6">
+    <!-- Cabecera con selectores -->
+    <header class="bg-bento-purple text-white rounded-bento shadow-bento p-6 md:p-8">
+      <div class="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <a data-link-volver href="#" class="inline-flex items-center gap-1.5 text-xs font-bold text-white/70 hover:text-white mb-3 transition-colors">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+            Panel general
+          </a>
+          <p class="text-xs uppercase tracking-widest font-bold opacity-80 mb-1">Informe por periodo</p>
+          <h1 class="text-huge font-black tracking-tight" data-titulo-periodo>Periodo —</h1>
+          <p class="text-base text-white/85 mt-1" data-sub-periodo>Selecciona un periodo</p>
+        </div>
+        <div class="flex flex-wrap gap-4">
+          <label class="text-sm font-semibold">
+            <span class="block text-xs uppercase tracking-widest opacity-80 mb-1">Año lectivo</span>
+            <select data-select-ano class="bg-white/15 border border-white/30 rounded-bento-sm px-3 py-2 font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"></select>
+          </label>
+          <label class="text-sm font-semibold">
+            <span class="block text-xs uppercase tracking-widest opacity-80 mb-1">Periodo</span>
+            <select data-select-periodo class="bg-white/15 border border-white/30 rounded-bento-sm px-3 py-2 font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"></select>
+          </label>
+        </div>
+      </div>
+    </header>
+
+    <!-- KPIs del periodo -->
+    <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <KpiCard etiqueta="Aulas del periodo"   clave="p-aulas"      color="#7C3AED" icono="🏫" />
+      <KpiCard etiqueta="Estudiantes"          clave="p-estudiantes" color="#7C3AED" icono="👥" />
+      <KpiCard etiqueta="Progreso promedio"    clave="p-progreso"   color="#00D4FF" icono="📈" sub="guías del periodo" />
+      <KpiCard etiqueta="Guías completadas"    clave="p-guias"      color="#A3FF12" icono="✅" />
+      <KpiCard etiqueta="Intentos de examen"   clave="p-quiz-int"   color="#7C3AED" icono="📝" />
+      <KpiCard etiqueta="Promedio exámenes"    clave="p-quiz-prom"  color="#7C3AED" icono="🎯" sub="puntaje 0–100" />
+    </section>
+
+    <!-- Comparativa entre grados -->
+    <section class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-5 md:p-6 evitar-corte">
+      <h2 class="text-base font-black mb-1">Comparativa entre grados</h2>
+      <p class="text-xs text-neutral-500 mb-4">Progreso promedio de cada grado en las guías de este periodo.</p>
+      <div data-grados-chart></div>
+      <p data-grados-vacio class="hidden text-sm text-neutral-500 text-center py-6">Sin datos de grados para este periodo.</p>
+    </section>
+
+    <!-- Heatmap de guías del periodo -->
+    <section class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-5 md:p-6 evitar-corte">
+      <h2 class="text-base font-black mb-1">Cobertura de guías del periodo</h2>
+      <p class="text-xs text-neutral-500 mb-4">
+        Estudiantes que han completado cada guía del periodo seleccionado.
+      </p>
+      <div data-heatmap></div>
+      <p data-heatmap-vacio class="hidden text-sm text-neutral-500 text-center py-6">Sin actividad de guías registrada en este periodo.</p>
+    </section>
+
+    <!-- Acceso rápido a grados -->
+    <section class="bg-neutral-50 dark:bg-neutral-800/50 rounded-bento-sm p-4">
+      <p class="text-xs font-bold text-neutral-500 mb-3 uppercase tracking-widest">Ver por grado</p>
+      <div data-grados-links class="flex flex-wrap gap-2"></div>
+    </section>
+  </article>
+</CuentaLayout>
+
+<script>
+  import { requireDocente } from '../../../lib/auth';
+  import { getAnosDisponibles, getResumenPorPeriodo, getResumenPorGrado, getCoberturaGuias } from '../../../lib/informes';
+  import { heatmapSVG, barComparativoSVG, escapeHtml, BENTO } from '../../../lib/charts';
+
+  const base = (import.meta.env?.BASE_URL ?? '/').replace(/\/$/, '');
+
+  document.querySelectorAll<HTMLAnchorElement>('[data-link-volver]').forEach((a) => {
+    a.href = base + '/docente/informes';
+  });
+
+  const $ = <T extends HTMLElement>(s: string) => document.querySelector<T>(s);
+
+  function mostrar(estado: 'loading' | 'error' | 'vacio' | 'contenido') {
+    (['loading', 'error', 'vacio', 'contenido'] as const).forEach((e) => {
+      const sel = e === 'contenido' ? '[data-contenido]' : `[data-${e}]`;
+      $(sel)?.classList.toggle('hidden', e !== estado);
+    });
+  }
+
+  function setKpi(clave: string, valor: string) {
+    const el = document.querySelector(`[data-kpi="${clave}"]`);
+    if (el) el.textContent = valor;
+  }
+
+  const PERIODO_LABELS: Record<number, string> = {
+    1: 'Periodo 1', 2: 'Periodo 2', 3: 'Periodo 3',
+  };
+
+  const COLORES_GRADO: Record<number, string> = {
+    6: BENTO.blue, 7: BENTO.lime, 8: BENTO.orange,
+    9: BENTO.purple, 10: BENTO.pink, 11: BENTO.cyan,
+  };
+
+  async function cargarPeriodo(ano: number, periodo: number) {
+    const label = PERIODO_LABELS[periodo] ?? `Periodo ${periodo}`;
+    const titulo = $('[data-titulo-periodo]');
+    if (titulo) titulo.textContent = label;
+
+    const [periodos, gradosData, coberturaTodo] = await Promise.all([
+      getResumenPorPeriodo(ano),
+      getResumenPorGrado(ano),
+      getCoberturaGuias(ano),
+    ]);
+
+    const periodoData = periodos.find((p) => p.periodo === periodo);
+    const sub = $('[data-sub-periodo]');
+    if (sub && periodoData)
+      sub.textContent = `${periodoData.estudiantes} estudiantes · ${periodoData.aulas} aula${periodoData.aulas === 1 ? '' : 's'}`;
+
+    if (periodoData) {
+      setKpi('p-aulas',      String(periodoData.aulas));
+      setKpi('p-estudiantes', String(periodoData.estudiantes));
+      setKpi('p-progreso',   `${periodoData.progresoPromedio}%`);
+      setKpi('p-guias',      String(periodoData.guiasCompletadas));
+      setKpi('p-quiz-int',   String(periodoData.quizIntentos));
+      setKpi('p-quiz-prom',  periodoData.quizPromedio != null ? `${periodoData.quizPromedio}%` : '—');
+    }
+
+    // Comparativa entre grados (sus métricas globales del año)
+    const gradosChart = $('[data-grados-chart]');
+    const gradosVacio = $('[data-grados-vacio]');
+    if (gradosData.length === 0) {
+      gradosVacio?.classList.remove('hidden');
+      if (gradosChart) gradosChart.innerHTML = '';
+    } else {
+      gradosVacio?.classList.add('hidden');
+      if (gradosChart) gradosChart.innerHTML = barComparativoSVG(
+        gradosData.map((g) => ({
+          label: `${g.grado}°`,
+          valor: g.progresoPromedio,
+          color: COLORES_GRADO[g.grado] ?? BENTO.blue,
+          sub: `${g.estudiantes} est.`,
+        })),
+        { max: 100, unidad: '%' }
+      );
+    }
+
+    // Heatmap solo del periodo seleccionado
+    const cobertura = coberturaTodo.filter((c) => c.periodo === periodo);
+    const heatmapWrap = $('[data-heatmap]');
+    const heatmapVacio = $('[data-heatmap-vacio]');
+    if (cobertura.length === 0) {
+      heatmapVacio?.classList.remove('hidden');
+      if (heatmapWrap) heatmapWrap.innerHTML = '';
+    } else {
+      heatmapVacio?.classList.add('hidden');
+      if (heatmapWrap) heatmapWrap.innerHTML = heatmapSVG(
+        cobertura.map((c) => ({ periodo: 1, sesion: c.sesion, valor: c.completadas })),
+        { color: BENTO.purple, titulo: `Cobertura ${label}` }
+      );
+    }
+
+    // Links rápidos a cada grado
+    const gradosLinks = $('[data-grados-links]');
+    if (gradosLinks && gradosData.length > 0) {
+      gradosLinks.innerHTML = gradosData.map((g) => {
+        const href = `${base}/docente/informes/grado?ano=${ano}&grado=${g.grado}`;
+        const col = COLORES_GRADO[g.grado] ?? BENTO.blue;
+        return `<a href="${href}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-bento-sm text-sm font-bold text-white hover:opacity-90 transition-opacity" style="background:${col}">${g.grado}°</a>`;
+      }).join('');
+    }
+  }
+
+  async function init() {
+    const sp = new URLSearchParams(window.location.search);
+    const anos = await getAnosDisponibles();
+    if (anos.length === 0) { mostrar('vacio'); return; }
+
+    const selAno = $<HTMLSelectElement>('[data-select-ano]');
+    if (selAno) {
+      selAno.innerHTML = anos.map((a) => `<option value="${a.ano}">${a.ano}</option>`).join('');
+      const paramAno = parseInt(sp.get('ano') ?? '', 10);
+      selAno.value = String(anos.find((a) => a.ano === paramAno)?.ano ?? anos[0].ano);
+    }
+
+    const periodosIniciales = await getResumenPorPeriodo(parseInt(selAno?.value ?? '', 10));
+    if (periodosIniciales.length === 0) { mostrar('vacio'); return; }
+
+    const selPeriodo = $<HTMLSelectElement>('[data-select-periodo]');
+    if (selPeriodo) {
+      selPeriodo.innerHTML = periodosIniciales.map((p) =>
+        `<option value="${p.periodo}">${PERIODO_LABELS[p.periodo] ?? `Periodo ${p.periodo}`}</option>`
+      ).join('');
+      const paramPeriodo = parseInt(sp.get('periodo') ?? '', 10);
+      selPeriodo.value = String(
+        periodosIniciales.find((p) => p.periodo === paramPeriodo)?.periodo ?? periodosIniciales[0].periodo
+      );
+    }
+
+    const cargar = async () => {
+      const ano = parseInt(selAno?.value ?? '', 10);
+      const periodo = parseInt(selPeriodo?.value ?? '', 10);
+      const url = new URL(window.location.href);
+      url.searchParams.set('ano', String(ano));
+      url.searchParams.set('periodo', String(periodo));
+      window.history.replaceState(null, '', url.toString());
+      await cargarPeriodo(ano, periodo);
+    };
+
+    selAno?.addEventListener('change', async () => {
+      const ano = parseInt(selAno.value, 10);
+      const periodosNuevos = await getResumenPorPeriodo(ano);
+      if (selPeriodo) {
+        selPeriodo.innerHTML = periodosNuevos.map((p) =>
+          `<option value="${p.periodo}">${PERIODO_LABELS[p.periodo] ?? `Periodo ${p.periodo}`}</option>`
+        ).join('');
+      }
+      await cargar();
+    });
+    selPeriodo?.addEventListener('change', cargar);
+
+    await cargar();
+    mostrar('contenido');
+  }
+
+  requireDocente().then((sesion) => {
+    if (!sesion) return;
+    init().catch((err) => {
+      console.error('[informes/periodo] init:', err);
+      const m = $('[data-error-msg]');
+      if (m) m.textContent = 'No se pudo cargar el informe: ' + (err?.message ?? err);
+      mostrar('error');
+    });
+  });
+</script>

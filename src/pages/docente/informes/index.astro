@@ -90,9 +90,23 @@ import KpiCard from '../../../components/charts/KpiCard.astro';
       </section>
     </div>
 
-    <!-- Accesos a cortes (próximas fases) -->
+    <!-- Comparativa por grado -->
+    <section class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-5 md:p-6 evitar-corte">
+      <div class="flex items-center justify-between gap-3 flex-wrap mb-1">
+        <h2 class="text-base font-black">Comparativa por grado</h2>
+        <a data-link-grado href="#" class="text-xs font-bold text-bento-blue hover:underline">Ver detalle de grado →</a>
+      </div>
+      <p class="text-xs text-neutral-500 mb-4">Progreso promedio por grado. Selecciona uno para ver su informe completo.</p>
+      <div data-grados-barras></div>
+      <p data-grados-barras-vacio class="hidden text-sm text-neutral-500 text-center py-4">Sin datos de grados.</p>
+      <div data-grados-chips class="flex flex-wrap gap-2 mt-4"></div>
+    </section>
+
+    <!-- Accesos directos a cortes por periodo -->
     <section class="bg-neutral-50 dark:bg-neutral-800/50 rounded-bento-sm p-4">
-      <p class="text-xs text-neutral-500">Cortes detallados por grado, periodo y año lectivo llegan en las próximas entregas.</p>
+      <p class="text-xs font-bold text-neutral-500 mb-3 uppercase tracking-widest">Cortes por periodo</p>
+      <div data-periodo-links class="flex flex-wrap gap-2"></div>
+      <p data-periodo-links-vacio class="hidden text-xs text-neutral-400 mt-1">Sin periodos disponibles.</p>
     </section>
   </article>
 </CuentaLayout>
@@ -102,8 +116,9 @@ import KpiCard from '../../../components/charts/KpiCard.astro';
   import {
     getAnosDisponibles, getResumenDocente, getEmbudoRegistro,
     getSerieActividad, getEstudiantesEnRiesgo,
+    getResumenPorGrado, getResumenPorPeriodo,
   } from '../../../lib/informes';
-  import { lineChartSVG, funnelHTML, escapeHtml, BENTO } from '../../../lib/charts';
+  import { lineChartSVG, funnelHTML, barComparativoSVG, escapeHtml, BENTO } from '../../../lib/charts';
 
   const base = (import.meta.env?.BASE_URL ?? '/').replace(/\/$/, '');
   document.querySelectorAll<HTMLAnchorElement>('[data-link-aulas]').forEach((a) => {
@@ -206,6 +221,58 @@ import KpiCard from '../../../components/charts/KpiCard.astro';
           </div>`;
         }).join('') +
         `</div>`;
+    }
+
+    // Comparativa por grado
+    const [gradosData, periodosData] = await Promise.all([
+      getResumenPorGrado(ano),
+      getResumenPorPeriodo(ano),
+    ]);
+
+    const COLORES_GRADO: Record<number, string> = {
+      6: BENTO.blue, 7: BENTO.lime, 8: BENTO.orange,
+      9: BENTO.purple, 10: BENTO.pink, 11: BENTO.cyan,
+    };
+
+    const gradosBarras = $('[data-grados-barras]');
+    const gradosBarrasVacio = $('[data-grados-barras-vacio]');
+    const gradosChips = $('[data-grados-chips]');
+    const linkGrado = $<HTMLAnchorElement>('[data-link-grado]');
+
+    if (gradosData.length === 0) {
+      gradosBarrasVacio?.classList.remove('hidden');
+    } else {
+      gradosBarrasVacio?.classList.add('hidden');
+      if (gradosBarras) gradosBarras.innerHTML = barComparativoSVG(
+        gradosData.map((g) => ({
+          label: `${g.grado}°`,
+          valor: g.progresoPromedio,
+          color: COLORES_GRADO[g.grado] ?? BENTO.blue,
+          sub: `${g.estudiantes} est.`,
+        })),
+        { max: 100, unidad: '%' }
+      );
+      if (gradosChips) gradosChips.innerHTML = gradosData.map((g) => {
+        const col = COLORES_GRADO[g.grado] ?? BENTO.blue;
+        const href = `${base}/docente/informes/grado?ano=${ano}&grado=${g.grado}`;
+        return `<a href="${href}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-bento-sm text-sm font-bold text-white hover:opacity-90 transition-opacity" style="background:${col}">${g.grado}° <span class="opacity-75 text-xs">${g.progresoPromedio}%</span></a>`;
+      }).join('');
+      if (linkGrado && gradosData[0])
+        linkGrado.href = `${base}/docente/informes/grado?ano=${ano}&grado=${gradosData[0].grado}`;
+    }
+
+    // Links de periodos
+    const PERIODO_LABELS: Record<number, string> = { 1: 'Periodo 1', 2: 'Periodo 2', 3: 'Periodo 3' };
+    const periodoLinks = $('[data-periodo-links]');
+    const periodoLinksVacio = $('[data-periodo-links-vacio]');
+    if (periodosData.length === 0) {
+      periodoLinksVacio?.classList.remove('hidden');
+    } else {
+      periodoLinksVacio?.classList.add('hidden');
+      if (periodoLinks) periodoLinks.innerHTML = periodosData.map((p) => {
+        const href = `${base}/docente/informes/periodo?ano=${ano}&periodo=${p.periodo}`;
+        return `<a href="${href}" class="inline-flex items-center gap-2 px-4 py-2 rounded-bento-sm bg-bento-purple text-white text-sm font-bold hover:opacity-90 transition-opacity">${PERIODO_LABELS[p.periodo] ?? `Periodo ${p.periodo}`} <span class="opacity-75">${p.progresoPromedio}%</span></a>`;
+      }).join('');
     }
   }
 

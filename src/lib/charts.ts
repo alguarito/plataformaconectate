@@ -56,6 +56,149 @@ export function funnelHTML(etapas: EtapaEmbudo[], base?: number): string {
   );
 }
 
+// ─── PR-2: Heatmap de cobertura + Barras comparativas ────────────────────────
+
+export interface CeldaHeatmap {
+  periodo: number;
+  sesion: number;
+  valor: number;
+}
+
+/**
+ * Heatmap de cobertura de guías en SVG (filas = periodos, cols = sesiones).
+ * Cada celda se colorea con opacidad según valor/refMax.
+ */
+export function heatmapSVG(
+  celdas: CeldaHeatmap[],
+  opciones?: { color?: string; refMax?: number; titulo?: string }
+): string {
+  const color = opciones?.color ?? BENTO.blue;
+  const maxP = Math.max(1, ...celdas.map((c) => c.periodo));
+  const maxS = Math.max(1, ...celdas.map((c) => c.sesion));
+  const refMax = opciones?.refMax ?? Math.max(1, ...celdas.map((c) => c.valor));
+
+  const CELL_W = 32;
+  const CELL_H = 28;
+  const PAD_L = 28;
+  const PAD_T = 20;
+  const GAP = 3;
+  const W = PAD_L + maxS * (CELL_W + GAP);
+  const H = PAD_T + maxP * (CELL_H + GAP) + 4;
+
+  const lookup = new Map(celdas.map((c) => [`${c.periodo}-${c.sesion}`, c]));
+
+  let cells = '';
+  for (let p = 1; p <= maxP; p++) {
+    const yy = PAD_T + (p - 1) * (CELL_H + GAP);
+    cells +=
+      `<text x="${PAD_L - 6}" y="${(yy + CELL_H / 2 + 4).toFixed(1)}" ` +
+      `text-anchor="end" class="fill-neutral-400" style="font-size:10px">P${p}</text>`;
+    for (let s = 1; s <= maxS; s++) {
+      const xx = PAD_L + (s - 1) * (CELL_W + GAP);
+      const c = lookup.get(`${p}-${s}`);
+      const v = c?.valor ?? 0;
+      const opacity = v === 0 ? 0.06 : 0.15 + 0.85 * (v / refMax);
+      const textCol = opacity > 0.55 ? '#fff' : '#374151';
+      cells +=
+        `<rect x="${xx}" y="${yy}" width="${CELL_W}" height="${CELL_H}" rx="4" fill="${color}" opacity="${opacity.toFixed(2)}"/>` +
+        (v > 0
+          ? `<text x="${(xx + CELL_W / 2).toFixed(1)}" y="${(yy + CELL_H / 2 + 4).toFixed(1)}" ` +
+            `text-anchor="middle" fill="${textCol}" style="font-size:9px;font-weight:700">${v}</text>`
+          : '');
+    }
+  }
+
+  const colHeaders = Array.from({ length: maxS }, (_, i) => {
+    const xx = PAD_L + i * (CELL_W + GAP) + CELL_W / 2;
+    return `<text x="${xx.toFixed(1)}" y="13" text-anchor="middle" class="fill-neutral-400" style="font-size:9px">${i + 1}</text>`;
+  }).join('');
+
+  return (
+    `<figure class="w-full overflow-x-auto">` +
+    `<svg viewBox="0 0 ${W} ${H}" class="w-full h-auto" role="img" ` +
+    `aria-label="${escapeHtml(opciones?.titulo ?? 'Heatmap de cobertura')}">` +
+    colHeaders + cells +
+    `</svg>` +
+    `<figcaption class="text-xs text-neutral-400 mt-1 text-center">` +
+    `Número dentro de la celda = estudiantes con actividad en esa guía` +
+    `</figcaption>` +
+    `</figure>`
+  );
+}
+
+export interface BaraComparativa {
+  label: string;
+  valor: number;
+  color: string;
+  sub?: string;
+}
+
+/**
+ * Barras verticales comparativas (grados vs grados, o periodos vs periodos).
+ * `max` fija el tope del eje Y (default = mayor valor de la serie).
+ */
+export function barComparativoSVG(
+  barras: BaraComparativa[],
+  opciones?: { max?: number; unidad?: string; alto?: number }
+): string {
+  const maxVal = opciones?.max ?? Math.max(1, ...barras.map((b) => b.valor));
+  const unidad = opciones?.unidad ?? '';
+  const H = opciones?.alto ?? 180;
+  const W = 640;
+  const PAD_L = 28;
+  const PAD_B = 36;
+  const PAD_T = 10;
+  const innerH = H - PAD_T - PAD_B;
+  const n = barras.length;
+  const barW = Math.min(48, Math.floor((W - PAD_L - 12) / Math.max(n, 1)) - 6);
+  const totalW = n * (barW + 6) - 6;
+  const startX = PAD_L + (W - PAD_L - 12 - totalW) / 2;
+  const y0 = PAD_T + innerH;
+
+  const refs = [0, 0.5, 1].map((f) => {
+    const v = Math.round(maxVal * f);
+    const yy = PAD_T + innerH - (v / maxVal) * innerH;
+    return { v, yy };
+  });
+
+  const refsSvg = refs
+    .map(
+      (r) =>
+        `<line x1="${PAD_L}" y1="${r.yy.toFixed(1)}" x2="${W - 8}" y2="${r.yy.toFixed(1)}" ` +
+        `stroke="currentColor" stroke-width="1" class="text-neutral-200 dark:text-neutral-700"/>` +
+        `<text x="${PAD_L - 4}" y="${(r.yy + 3).toFixed(1)}" text-anchor="end" ` +
+        `class="fill-neutral-400" style="font-size:9px">${r.v}${unidad}</text>`
+    )
+    .join('');
+
+  const barsSvg = barras
+    .map((b, i) => {
+      const xx = startX + i * (barW + 6);
+      const h = Math.max(2, (b.valor / maxVal) * innerH);
+      const yy = y0 - h;
+      return (
+        `<rect x="${xx.toFixed(1)}" y="${yy.toFixed(1)}" width="${barW}" height="${h.toFixed(1)}" rx="4" fill="${b.color}"/>` +
+        `<text x="${(xx + barW / 2).toFixed(1)}" y="${(yy - 4).toFixed(1)}" text-anchor="middle" ` +
+        `fill="${b.color}" style="font-size:10px;font-weight:800">${b.valor}${unidad}</text>` +
+        `<text x="${(xx + barW / 2).toFixed(1)}" y="${(y0 + 14).toFixed(1)}" text-anchor="middle" ` +
+        `class="fill-neutral-600 dark:fill-neutral-400" style="font-size:10px;font-weight:700">${escapeHtml(b.label)}</text>` +
+        (b.sub
+          ? `<text x="${(xx + barW / 2).toFixed(1)}" y="${(y0 + 26).toFixed(1)}" text-anchor="middle" ` +
+            `class="fill-neutral-400" style="font-size:9px">${escapeHtml(b.sub)}</text>`
+          : '')
+      );
+    })
+    .join('');
+
+  return (
+    `<figure class="w-full">` +
+    `<svg viewBox="0 0 ${W} ${H}" class="w-full h-auto" role="img" aria-label="Gráfico comparativo">` +
+    refsSvg + barsSvg +
+    `</svg>` +
+    `</figure>`
+  );
+}
+
 export interface SerieLinea {
   nombre: string;
   color: string;

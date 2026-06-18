@@ -152,6 +152,149 @@ export async function getSerieActividad(
   }));
 }
 
+// ─── PR-2: Cortes por grado y periodo ────────────────────────────────────────
+
+export interface ResumenGrado {
+  grado: number;
+  aulas: number;
+  estudiantes: number;
+  guiasCompletadas: number;
+  progresoPromedio: number;
+  quizIntentos: number;
+  quizPromedio: number | null;
+  activos30d: number;
+}
+
+export interface ResumenPeriodo {
+  periodo: number;
+  aulas: number;
+  estudiantes: number;
+  guiasCompletadas: number;
+  progresoPromedio: number;
+  quizIntentos: number;
+  quizPromedio: number | null;
+}
+
+export interface CoberturaGuia {
+  guiaClave: string;
+  grado: number;
+  periodo: number;
+  sesion: number;
+  conProgreso: number;
+  completadas: number;
+  progresoPromedio: number;
+}
+
+export interface DesempenoExamen {
+  quizId: string;
+  guiaClave: string;
+  totalIntentos: number;
+  promedio: number | null;
+  aprobados: number;
+  p25: number | null;
+  p50: number | null;
+  p75: number | null;
+}
+
+/** KPIs agrupados por grado (comparativa entre grados del docente). */
+export async function getResumenPorGrado(ano?: number): Promise<ResumenGrado[]> {
+  if (!authEnabled) return [];
+  const { data, error } = await supabase.rpc(
+    'resumen_por_grado',
+    ano != null ? { _ano: ano } : {}
+  );
+  if (error) {
+    console.error('[informes] resumen_por_grado:', error);
+    return [];
+  }
+  return (data ?? []).map((r) => ({
+    grado: r.grado,
+    aulas: r.aulas,
+    estudiantes: r.estudiantes,
+    guiasCompletadas: r.guias_completadas,
+    progresoPromedio: num(r.progreso_promedio),
+    quizIntentos: r.quiz_intentos,
+    quizPromedio: r.quiz_promedio == null ? null : num(r.quiz_promedio),
+    activos30d: r.activos_30d,
+  }));
+}
+
+/** KPIs agrupados por periodo (comparativa entre periodos; filtra por grado opcional). */
+export async function getResumenPorPeriodo(
+  ano?: number,
+  grado?: number
+): Promise<ResumenPeriodo[]> {
+  if (!authEnabled) return [];
+  const args: Record<string, unknown> = {};
+  if (ano != null) args._ano = ano;
+  if (grado != null) args._grado = grado;
+  const { data, error } = await supabase.rpc('resumen_por_periodo', args);
+  if (error) {
+    console.error('[informes] resumen_por_periodo:', error);
+    return [];
+  }
+  return (data ?? []).map((r) => ({
+    periodo: r.periodo,
+    aulas: r.aulas,
+    estudiantes: r.estudiantes,
+    guiasCompletadas: r.guias_completadas,
+    progresoPromedio: num(r.progreso_promedio),
+    quizIntentos: r.quiz_intentos,
+    quizPromedio: r.quiz_promedio == null ? null : num(r.quiz_promedio),
+  }));
+}
+
+/** Cobertura de guías (heatmap: qué guías trabajaron los estudiantes del docente). */
+export async function getCoberturaGuias(
+  ano?: number,
+  grado?: number
+): Promise<CoberturaGuia[]> {
+  if (!authEnabled) return [];
+  const args: Record<string, unknown> = {};
+  if (ano != null) args._ano = ano;
+  if (grado != null) args._grado = grado;
+  const { data, error } = await supabase.rpc('cobertura_guias', args);
+  if (error) {
+    console.error('[informes] cobertura_guias:', error);
+    return [];
+  }
+  return (data ?? []).map((r) => ({
+    guiaClave: r.guia_clave,
+    grado: r.grado,
+    periodo: r.periodo,
+    sesion: r.sesion,
+    conProgreso: r.con_progreso,
+    completadas: r.completadas,
+    progresoPromedio: num(r.progreso_promedio),
+  }));
+}
+
+/** Estadísticas por quiz_id (promedio, percentiles, aprobados ≥ 60). */
+export async function getDesempenoExamenes(
+  ano?: number,
+  grado?: number
+): Promise<DesempenoExamen[]> {
+  if (!authEnabled) return [];
+  const args: Record<string, unknown> = {};
+  if (ano != null) args._ano = ano;
+  if (grado != null) args._grado = grado;
+  const { data, error } = await supabase.rpc('desempeno_examenes', args);
+  if (error) {
+    console.error('[informes] desempeno_examenes:', error);
+    return [];
+  }
+  return (data ?? []).map((r) => ({
+    quizId: r.quiz_id,
+    guiaClave: r.guia_clave,
+    totalIntentos: r.total_intentos,
+    promedio: r.promedio == null ? null : num(r.promedio),
+    aprobados: r.aprobados,
+    p25: r.p25 == null ? null : num(r.p25),
+    p50: r.p50 == null ? null : num(r.p50),
+    p75: r.p75 == null ? null : num(r.p75),
+  }));
+}
+
 /** Estudiantes que necesitan atención (en riesgo o inactivos), con nombre. */
 export async function getEstudiantesEnRiesgo(
   ano?: number,

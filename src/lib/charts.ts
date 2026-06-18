@@ -199,6 +199,116 @@ export function barComparativoSVG(
   );
 }
 
+// ─── PR-3: Donut + BadgeDelta ─────────────────────────────────────────────────
+
+export interface SegmentoDonut {
+  label: string;
+  valor: number;
+  color: string;
+}
+
+/**
+ * Dona SVG para distribución de consentimientos o eventos ARCO.
+ * Usa stroke-dasharray en un <circle> rotado -90° para cada segmento.
+ */
+export function donutSVG(
+  segmentos: SegmentoDonut[],
+  opciones?: { titulo?: string }
+): string {
+  const CX = 72;
+  const CY = 72;
+  const R = 52;
+  const SW = 22;
+  const W = 280;
+  const H = 158;
+  const circ = 2 * Math.PI * R;
+  const total = Math.max(1, segmentos.reduce((s, c) => s + c.valor, 0));
+
+  let offset = 0;
+  const arcos = segmentos.map((seg) => {
+    const arc = (seg.valor / total) * circ;
+    const dashOffset = circ - offset;
+    offset += seg.valor / total;
+    return { seg, arc, dashOffset: circ - (offset - seg.valor / total) * circ };
+  });
+
+  let prevOffset = 0;
+  const arcsSvg = segmentos
+    .map((seg, i) => {
+      const arc = (seg.valor / total) * circ;
+      const dashOffset = circ * (1 - prevOffset);
+      prevOffset += seg.valor / total;
+      return (
+        `<circle cx="${CX}" cy="${CY}" r="${R}" fill="none" stroke="${seg.color}" ` +
+        `stroke-width="${SW}" stroke-dasharray="${arc.toFixed(2)} ${(circ - arc).toFixed(2)}" ` +
+        `stroke-dashoffset="${dashOffset.toFixed(2)}" transform="rotate(-90 ${CX} ${CY})"/>`
+      );
+    })
+    .join('');
+
+  const centerSvg =
+    `<text x="${CX}" y="${CY + 5}" text-anchor="middle" class="fill-neutral-800 dark:fill-neutral-200" style="font-size:18px;font-weight:800">${total}</text>` +
+    `<text x="${CX}" y="${CY + 18}" text-anchor="middle" class="fill-neutral-400" style="font-size:8px;font-weight:600">TOTAL</text>`;
+
+  const LX = CX * 2 + 14;
+  const legendSvg = segmentos
+    .map((seg, i) => {
+      const y = 28 + i * 22;
+      const pct = total > 0 ? Math.round((seg.valor / total) * 100) : 0;
+      return (
+        `<rect x="${LX}" y="${y - 8}" width="10" height="10" rx="2" fill="${seg.color}"/>` +
+        `<text x="${LX + 14}" y="${y}" class="fill-neutral-700 dark:fill-neutral-300" style="font-size:11px">${escapeHtml(seg.label)} ` +
+        `<tspan font-weight="700">${seg.valor}</tspan></text>` +
+        `<text x="${W - 8}" y="${y}" text-anchor="end" class="fill-neutral-400" style="font-size:10px">${pct}%</text>`
+      );
+    })
+    .join('');
+
+  return (
+    `<figure class="w-full">` +
+    `<svg viewBox="0 0 ${W} ${H}" class="w-full h-auto" role="img" ` +
+    `aria-label="${escapeHtml(opciones?.titulo ?? 'Distribución')}">` +
+    arcsSvg + centerSvg + legendSvg +
+    `</svg></figure>`
+  );
+}
+
+export interface ItemDelta {
+  etiqueta: string;
+  valorActual: number;
+  valorAnterior: number;
+  unidad?: string;
+}
+
+/**
+ * Tarjetas de variación interanual (▲ verde / ▼ rosa).
+ * Devuelve HTML con flex-wrap de badges para insertar via innerHTML.
+ */
+export function badgeDeltaHTML(items: ItemDelta[]): string {
+  return (
+    `<div class="flex flex-wrap gap-3">` +
+    items
+      .map((item) => {
+        const delta = item.valorActual - item.valorAnterior;
+        const pct = item.valorAnterior !== 0 ? (delta / item.valorAnterior) * 100 : 0;
+        const isUp = delta >= 0;
+        const col = isUp ? BENTO.lime : BENTO.pink;
+        const bg = isUp ? '#A3FF1218' : '#FF2D8718';
+        const arrow = isUp ? '▲' : '▼';
+        return (
+          `<div class="rounded-bento-sm p-3 border border-neutral-200 dark:border-neutral-700 min-w-[130px] flex-1">` +
+          `<p class="text-xs text-neutral-500 dark:text-neutral-400 mb-0.5">${escapeHtml(item.etiqueta)}</p>` +
+          `<p class="text-2xl font-black tabular-nums">${item.valorActual}${escapeHtml(item.unidad ?? '')}</p>` +
+          `<span class="inline-flex items-center gap-0.5 text-xs font-bold px-2 py-0.5 rounded-full mt-1.5" ` +
+          `style="color:${col};background:${bg}">${arrow} ${Math.abs(pct).toFixed(1)}%</span>` +
+          `</div>`
+        );
+      })
+      .join('') +
+    `</div>`
+  );
+}
+
 export interface SerieLinea {
   nombre: string;
   color: string;

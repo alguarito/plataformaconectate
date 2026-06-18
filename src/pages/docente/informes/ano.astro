@@ -1,0 +1,364 @@
+---
+/**
+ * /docente/informes/ano · Resumen anual (rol institucional).
+ * Query params: ?ano=2026
+ * Carga client-side: KPIs del año, comparativa interanual (BadgeDelta),
+ * matrícula por grado, y cumplimiento de consentimientos + ARCO.
+ */
+import CuentaLayout from '../../../layouts/CuentaLayout.astro';
+import DocenteTabs from '../../../components/DocenteTabs.astro';
+import KpiCard from '../../../components/charts/KpiCard.astro';
+---
+
+<CuentaLayout title="Informe anual · Plataforma Conéctate">
+  <DocenteTabs />
+
+  <div data-loading class="text-center py-12">
+    <span class="inline-block w-10 h-10 rounded-full border-4 border-bento-blue/30 border-t-bento-blue animate-spin motion-reduce:animate-none mb-3"></span>
+    <p class="text-sm text-neutral-500">Cargando informe anual…</p>
+  </div>
+
+  <div data-error class="hidden bg-bento-pink/10 border border-bento-pink/30 rounded-bento-sm p-4">
+    <p class="text-sm text-bento-pink font-semibold" data-error-msg>No se pudieron cargar los datos.</p>
+  </div>
+
+  <div data-vacio class="hidden bg-neutral-50 dark:bg-neutral-800/50 rounded-bento-sm p-8 text-center border border-dashed border-neutral-300 dark:border-neutral-700">
+    <div class="text-5xl mb-3" aria-hidden="true">📅</div>
+    <h1 class="text-xl font-black mb-2">Sin datos para este año</h1>
+    <p class="text-sm text-neutral-600 dark:text-neutral-400 max-w-md mx-auto leading-relaxed">
+      No hay aulas ni actividad registrada para el año lectivo seleccionado.
+    </p>
+    <a data-link-volver href="#" class="inline-block mt-5 px-5 py-3 rounded-bento-sm bg-bento-blue text-white font-bold text-sm">
+      Volver al panel general
+    </a>
+  </div>
+
+  <article data-contenido class="hidden space-y-6">
+    <!-- Cabecera con selector de año -->
+    <header class="bg-neutral-900 dark:bg-neutral-950 text-white rounded-bento shadow-bento p-6 md:p-8">
+      <div class="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <a data-link-volver href="#" class="inline-flex items-center gap-1.5 text-xs font-bold text-white/70 hover:text-white mb-3 transition-colors">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+            Panel general
+          </a>
+          <p class="text-xs uppercase tracking-widest font-bold opacity-60 mb-1">Informe anual · Institucional</p>
+          <h1 class="text-huge font-black tracking-tight" data-titulo-ano>Año —</h1>
+          <p class="text-base text-white/75 mt-1" data-sub-ano>I.E. Sor María Juliana · Cartago</p>
+        </div>
+        <label class="text-sm font-semibold">
+          <span class="block text-xs uppercase tracking-widest opacity-60 mb-1">Año lectivo</span>
+          <select data-select-ano class="bg-white/10 border border-white/25 rounded-bento-sm px-3 py-2 font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"></select>
+        </label>
+      </div>
+    </header>
+
+    <!-- KPIs del año -->
+    <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <KpiCard etiqueta="Aulas activas"      clave="a-aulas"      color="#0066FF" icono="🏫" />
+      <KpiCard etiqueta="Estudiantes"         clave="a-estudiantes" color="#0066FF" icono="👥" />
+      <KpiCard etiqueta="Progreso promedio"   clave="a-progreso"   color="#00D4FF" icono="📈" sub="todas las guías" />
+      <KpiCard etiqueta="Guías completadas"   clave="a-guias"      color="#A3FF12" icono="✅" />
+      <KpiCard etiqueta="Intentos de examen"  clave="a-quiz-int"   color="#0066FF" icono="📝" />
+      <KpiCard etiqueta="Promedio exámenes"   clave="a-quiz-prom"  color="#0066FF" icono="🎯" sub="puntaje 0–100" />
+      <KpiCard etiqueta="Activos (30 d)"      clave="a-activos"    color="#A3FF12" icono="⚡" />
+      <KpiCard etiqueta="En riesgo"           clave="a-riesgo"     color="#FF2D87" icono="⚠️" sub="sin actividad reciente" />
+    </section>
+
+    <!-- Comparativa interanual -->
+    <section class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-5 md:p-6 evitar-corte">
+      <h2 class="text-base font-black mb-1">Comparativa interanual</h2>
+      <p class="text-xs text-neutral-500 mb-4" data-label-interanual>vs. año anterior</p>
+      <div data-interanual></div>
+      <p data-interanual-vacio class="hidden text-sm text-neutral-500 text-center py-4">Sin datos del año anterior para comparar.</p>
+    </section>
+
+    <!-- Matrícula por grado -->
+    <section class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-5 md:p-6 evitar-corte">
+      <h2 class="text-base font-black mb-1">Matrícula por grado</h2>
+      <p class="text-xs text-neutral-500 mb-4">Estudiantes y progreso promedio por grado en el año seleccionado.</p>
+      <div data-grados-chart></div>
+      <p data-grados-vacio class="hidden text-sm text-neutral-500 text-center py-6">Sin datos de grados para este año.</p>
+      <!-- Chips de acceso rápido por grado -->
+      <div data-grados-links class="flex flex-wrap gap-2 mt-4"></div>
+    </section>
+
+    <!-- Cumplimiento de consentimientos -->
+    <section class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-5 md:p-6 evitar-corte">
+      <h2 class="text-base font-black mb-1">Cumplimiento — Consentimientos</h2>
+      <p class="text-xs text-neutral-500 mb-4">Estado de los consentimientos de tratamiento de datos de los estudiantes.</p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Tasa + desgloses -->
+        <div class="space-y-4">
+          <div class="text-center py-4">
+            <p class="text-5xl font-black tabular-nums" data-tasa-valor>—</p>
+            <p class="text-xs text-neutral-500 mt-1">tasa de consentimiento</p>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="bg-neutral-50 dark:bg-neutral-800 rounded-bento-sm p-3 text-center">
+              <p class="text-2xl font-black text-bento-blue tabular-nums" data-c-firmados>—</p>
+              <p class="text-xs text-neutral-500 mt-0.5">firmados vigentes</p>
+            </div>
+            <div class="bg-neutral-50 dark:bg-neutral-800 rounded-bento-sm p-3 text-center">
+              <p class="text-2xl font-black text-bento-pink tabular-nums" data-c-revocados>—</p>
+              <p class="text-xs text-neutral-500 mt-0.5">revocados</p>
+            </div>
+            <div class="bg-neutral-50 dark:bg-neutral-800 rounded-bento-sm p-3 text-center">
+              <p class="text-2xl font-black tabular-nums" data-c-auto>—</p>
+              <p class="text-xs text-neutral-500 mt-0.5">auto (≥14 años)</p>
+            </div>
+            <div class="bg-neutral-50 dark:bg-neutral-800 rounded-bento-sm p-3 text-center">
+              <p class="text-2xl font-black tabular-nums" data-c-acudiente>—</p>
+              <p class="text-xs text-neutral-500 mt-0.5">por acudiente</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Donut -->
+        <div>
+          <div data-donut-wrap></div>
+          <p data-donut-vacio class="hidden text-sm text-neutral-500 text-center py-6">Sin consentimientos registrados.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Eventos ARCO -->
+    <section class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-5 md:p-6 evitar-corte">
+      <h2 class="text-base font-black mb-1">Eventos ARCO</h2>
+      <p class="text-xs text-neutral-500 mb-4">
+        Solicitudes de Acceso, Rectificación, Cancelación y Oposición registradas en el año.
+      </p>
+      <div data-arco-tabla>
+        <p class="text-sm text-neutral-500 text-center py-6">Cargando…</p>
+      </div>
+    </section>
+  </article>
+</CuentaLayout>
+
+<script>
+  import { requireDocente } from '../../../lib/auth';
+  import {
+    getAnosDisponibles,
+    getResumenDocente,
+    getResumenPorGrado,
+    getCumplimientoResumen,
+  } from '../../../lib/informes';
+  import {
+    barComparativoSVG,
+    donutSVG,
+    badgeDeltaHTML,
+    escapeHtml,
+    BENTO,
+  } from '../../../lib/charts';
+
+  const base = (import.meta.env?.BASE_URL ?? '/').replace(/\/$/, '');
+
+  document.querySelectorAll<HTMLAnchorElement>('[data-link-volver]').forEach((a) => {
+    a.href = base + '/docente/informes';
+  });
+
+  const $ = <T extends HTMLElement>(s: string) => document.querySelector<T>(s);
+
+  function mostrar(estado: 'loading' | 'error' | 'vacio' | 'contenido') {
+    (['loading', 'error', 'vacio', 'contenido'] as const).forEach((e) => {
+      const sel = e === 'contenido' ? '[data-contenido]' : `[data-${e}]`;
+      $(sel)?.classList.toggle('hidden', e !== estado);
+    });
+  }
+
+  function setKpi(clave: string, valor: string) {
+    const el = document.querySelector(`[data-kpi="${clave}"]`);
+    if (el) el.textContent = valor;
+  }
+
+  const COLORES_GRADO: Record<number, string> = {
+    6: BENTO.blue, 7: BENTO.lime, 8: BENTO.orange,
+    9: BENTO.purple, 10: BENTO.pink, 11: BENTO.cyan,
+  };
+
+  const ARCO_LABELS: Record<string, string> = {
+    acceso: 'Acceso',
+    rectificacion: 'Rectificación',
+    cancelacion: 'Cancelación',
+    oposicion: 'Oposición',
+    revocacion: 'Revocación',
+  };
+
+  const ARCO_COLORES = [BENTO.blue, BENTO.cyan, BENTO.purple, BENTO.orange, BENTO.pink];
+
+  async function cargarAno(ano: number) {
+    const titulo = $('[data-titulo-ano]');
+    if (titulo) titulo.textContent = String(ano);
+
+    const [actual, gradosData, cumplimiento, anterior] = await Promise.all([
+      getResumenDocente(ano),
+      getResumenPorGrado(ano),
+      getCumplimientoResumen(ano),
+      getResumenDocente(ano - 1),
+    ]);
+
+    if (!actual) { mostrar('vacio'); return; }
+
+    const sub = $('[data-sub-ano]');
+    if (sub) sub.textContent = `${actual.aulas} aula${actual.aulas === 1 ? '' : 's'} · ${actual.estudiantes} estudiantes`;
+
+    // KPIs
+    setKpi('a-aulas',      String(actual.aulas));
+    setKpi('a-estudiantes', String(actual.estudiantes));
+    setKpi('a-progreso',   `${actual.progresoPromedio}%`);
+    setKpi('a-guias',      String(actual.guiasCompletadas));
+    setKpi('a-quiz-int',   String(actual.quizIntentos));
+    setKpi('a-quiz-prom',  actual.quizPromedio != null ? `${actual.quizPromedio}%` : '—');
+    setKpi('a-activos',    String(actual.activos30d));
+    setKpi('a-riesgo',     String(actual.enRiesgo));
+
+    // Comparativa interanual
+    const interanualWrap = $('[data-interanual]');
+    const interanualVacio = $('[data-interanual-vacio]');
+    const labelInteranual = $('[data-label-interanual]');
+    if (anterior && interanualWrap) {
+      if (labelInteranual) labelInteranual.textContent = `vs. ${ano - 1}`;
+      interanualVacio?.classList.add('hidden');
+      interanualWrap.innerHTML = badgeDeltaHTML([
+        { etiqueta: 'Estudiantes',    valorActual: actual.estudiantes,      valorAnterior: anterior.estudiantes      },
+        { etiqueta: 'Progreso',       valorActual: actual.progresoPromedio, valorAnterior: anterior.progresoPromedio, unidad: '%' },
+        { etiqueta: 'Guías compl.',   valorActual: actual.guiasCompletadas, valorAnterior: anterior.guiasCompletadas  },
+        { etiqueta: 'Intentos quiz',  valorActual: actual.quizIntentos,     valorAnterior: anterior.quizIntentos      },
+      ]);
+    } else {
+      interanualVacio?.classList.remove('hidden');
+      if (interanualWrap) interanualWrap.innerHTML = '';
+    }
+
+    // Matrícula por grado
+    const gradosChart = $('[data-grados-chart]');
+    const gradosVacio = $('[data-grados-vacio]');
+    const gradosLinks = $('[data-grados-links]');
+    if (gradosData.length === 0) {
+      gradosVacio?.classList.remove('hidden');
+      if (gradosChart) gradosChart.innerHTML = '';
+    } else {
+      gradosVacio?.classList.add('hidden');
+      if (gradosChart) gradosChart.innerHTML = barComparativoSVG(
+        gradosData.map((g) => ({
+          label: `${g.grado}°`,
+          valor: g.estudiantes,
+          color: COLORES_GRADO[g.grado] ?? BENTO.blue,
+          sub: `${g.progresoPromedio}% prog.`,
+        })),
+        { unidad: ' est.' }
+      );
+      if (gradosLinks) {
+        gradosLinks.innerHTML = gradosData.map((g) => {
+          const col = COLORES_GRADO[g.grado] ?? BENTO.blue;
+          const href = `${base}/docente/informes/grado?ano=${ano}&grado=${g.grado}`;
+          return `<a href="${href}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-bento-sm text-sm font-bold text-white hover:opacity-90 transition-opacity" style="background:${col}">${g.grado}°</a>`;
+        }).join('');
+      }
+    }
+
+    // Cumplimiento
+    if (cumplimiento) {
+      const tasaEl = $('[data-tasa-valor]');
+      if (tasaEl) tasaEl.textContent = `${cumplimiento.tasaConsentimiento}%`;
+
+      const elF = $('[data-c-firmados]');
+      const elR = $('[data-c-revocados]');
+      const elA = $('[data-c-auto]');
+      const elAc = $('[data-c-acudiente]');
+      if (elF) elF.textContent = String(cumplimiento.firmados);
+      if (elR) elR.textContent = String(cumplimiento.revocados);
+      if (elA) elA.textContent = String(cumplimiento.auto);
+      if (elAc) elAc.textContent = String(cumplimiento.acudiente);
+
+      // Donut con firmados vs revocados
+      const donutWrap = $('[data-donut-wrap]');
+      const donutVacio = $('[data-donut-vacio]');
+      const totalConsent = cumplimiento.firmados + cumplimiento.revocados;
+      if (totalConsent === 0) {
+        donutVacio?.classList.remove('hidden');
+        if (donutWrap) donutWrap.innerHTML = '';
+      } else {
+        donutVacio?.classList.add('hidden');
+        if (donutWrap) donutWrap.innerHTML = donutSVG([
+          { label: 'Firmados', valor: cumplimiento.firmados, color: BENTO.blue },
+          { label: 'Revocados', valor: cumplimiento.revocados, color: BENTO.pink },
+        ], { titulo: 'Estado de consentimientos' });
+      }
+
+      // Tabla ARCO
+      const arcoTabla = $('[data-arco-tabla]');
+      if (arcoTabla) {
+        if (cumplimiento.arcoTotal === 0) {
+          arcoTabla.innerHTML =
+            `<p class="text-sm text-neutral-500 text-center py-6">Sin eventos ARCO registrados para este año.</p>`;
+        } else {
+          const filas = cumplimiento.arcoPorTipo.map((a, i) => {
+            const col = ARCO_COLORES[i % ARCO_COLORES.length];
+            const label = ARCO_LABELS[a.tipo] ?? a.tipo;
+            const pct = Math.round((a.conteo / Math.max(1, cumplimiento.arcoTotal)) * 100);
+            return `<tr class="border-b border-neutral-100 dark:border-neutral-800 last:border-0">
+              <td class="py-2.5 pr-4">
+                <span class="inline-flex items-center gap-1.5 text-sm font-semibold">
+                  <span class="inline-block w-2.5 h-2.5 rounded-full flex-shrink-0" style="background:${col}"></span>
+                  ${escapeHtml(label)}
+                </span>
+              </td>
+              <td class="py-2.5 tabular-nums font-bold text-right">${a.conteo}</td>
+              <td class="py-2.5 pl-4 text-right text-sm text-neutral-400">${pct}%</td>
+            </tr>`;
+          }).join('');
+          arcoTabla.innerHTML =
+            `<div class="flex items-center justify-between mb-3">` +
+            `<span class="text-xs text-neutral-500">Total: <strong>${cumplimiento.arcoTotal}</strong> solicitudes</span>` +
+            `</div>` +
+            `<table class="w-full text-sm">` +
+            `<thead><tr class="border-b border-neutral-200 dark:border-neutral-700">` +
+            `<th class="pb-2 text-left text-xs font-bold text-neutral-400 uppercase tracking-widest">Tipo</th>` +
+            `<th class="pb-2 text-right text-xs font-bold text-neutral-400 uppercase tracking-widest">Solicitudes</th>` +
+            `<th class="pb-2 pl-4 text-right text-xs font-bold text-neutral-400 uppercase tracking-widest">%</th>` +
+            `</tr></thead>` +
+            `<tbody>${filas}</tbody>` +
+            `</table>`;
+        }
+      }
+    }
+  }
+
+  async function init() {
+    const sp = new URLSearchParams(window.location.search);
+    const anos = await getAnosDisponibles();
+    if (anos.length === 0) { mostrar('vacio'); return; }
+
+    const selAno = $<HTMLSelectElement>('[data-select-ano]');
+    if (selAno) {
+      selAno.innerHTML = anos.map((a) => `<option value="${a.ano}">${a.ano}</option>`).join('');
+      const paramAno = parseInt(sp.get('ano') ?? '', 10);
+      selAno.value = String(anos.find((a) => a.ano === paramAno)?.ano ?? anos[0].ano);
+    }
+
+    const cargar = async () => {
+      const ano = parseInt(selAno?.value ?? '', 10);
+      const url = new URL(window.location.href);
+      url.searchParams.set('ano', String(ano));
+      window.history.replaceState(null, '', url.toString());
+      await cargarAno(ano);
+    };
+
+    selAno?.addEventListener('change', cargar);
+
+    await cargar();
+    mostrar('contenido');
+  }
+
+  requireDocente().then((sesion) => {
+    if (!sesion) return;
+    init().catch((err) => {
+      console.error('[informes/ano] init:', err);
+      const m = $('[data-error-msg]');
+      if (m) m.textContent = 'No se pudo cargar el informe: ' + (err?.message ?? err);
+      mostrar('error');
+    });
+  });
+</script>

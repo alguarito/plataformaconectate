@@ -396,6 +396,18 @@ export interface Database {
           p75: number | null;
         }[];
       };
+      cumplimiento_resumen: {
+        Args: { _ano?: number };
+        Returns: {
+          firmados: number;
+          revocados: number;
+          auto: number;
+          acudiente: number;
+          tasa_consentimiento: number;
+          arco_total: number;
+          arco_por_tipo: { tipo: string; conteo: number }[] | null;
+        };
+      };
     };
     Enums: {
       rol_enrollment: RolEnrollment;

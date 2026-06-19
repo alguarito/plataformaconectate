@@ -1,0 +1,198 @@
+---
+/**
+ * Boletín de notas del periodo para un estudiante.
+ * Muestra los 5 componentes de valoración con sus pesos y la nota final.
+ * Diseñado para pantalla y para impresión (@media print).
+ *
+ * Uso: incluir en estudiante.astro e hidratar vía JS llamando a
+ * `getNotaPeriodo(estudianteId, grado, periodo, ano)`.
+ */
+interface Props {
+  /** UUID del estudiante — se graba en data-* para que el script lo lea. */
+  estudianteId: string;
+  grado: number;
+  periodo: number;
+  ano: number;
+}
+
+const { estudianteId, grado, periodo, ano } = Astro.props;
+---
+
+<section
+  data-boletin
+  data-estudiante-id={estudianteId}
+  data-grado={grado}
+  data-periodo={periodo}
+  data-ano={ano}
+  class="bento-card print:shadow-none print:border print:border-gray-200 print:rounded-none"
+>
+  <div class="flex items-center justify-between flex-wrap gap-2 mb-6">
+    <h2 class="text-xl font-black tracking-tight">
+      Valoración académica — Periodo {periodo}
+    </h2>
+    <span
+      data-boletin-badge
+      class="hidden px-3 py-1 rounded-full text-sm font-bold"
+    ></span>
+  </div>
+
+  {/* Estado de carga */}
+  <div data-boletin-loading class="flex items-center gap-3 text-sm" style="color: var(--fg-muted);">
+    <span class="inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
+    Calculando nota…
+  </div>
+
+  {/* Tabla de componentes — oculta hasta cargar */}
+  <div data-boletin-tabla class="hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm border-collapse">
+        <thead>
+          <tr class="text-left" style="color: var(--fg-muted);">
+            <th class="py-2 pr-4 font-semibold w-1/2">Componente</th>
+            <th class="py-2 pr-4 font-semibold text-center">Peso</th>
+            <th class="py-2 pr-4 font-semibold text-center">Evidencias</th>
+            <th class="py-2 font-semibold text-center">Nota</th>
+          </tr>
+        </thead>
+        <tbody data-boletin-filas class="divide-y" style="border-color: var(--border);">
+        </tbody>
+        <tfoot>
+          <tr class="font-black text-base border-t-2" style="border-color: var(--border);">
+            <td class="pt-3 pr-4">Nota definitiva</td>
+            <td class="pt-3 pr-4 text-center text-sm font-normal" style="color: var(--fg-muted);">100%</td>
+            <td class="pt-3 pr-4"></td>
+            <td class="pt-3 text-center text-xl" data-boletin-nota-final>—</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <p data-boletin-parcial class="hidden mt-4 text-xs px-3 py-2 rounded-lg" style="background: var(--bg-subtle); color: var(--fg-muted);">
+      Nota parcial: algunos componentes aún no tienen datos. La nota definitiva se calcula proporcionalmente sobre los componentes disponibles.
+    </p>
+  </div>
+
+  {/* Error */}
+  <p data-boletin-error class="hidden text-sm" style="color: var(--fg-muted);">
+    No se pudo cargar la nota del periodo.
+  </p>
+</section>
+
+<script>
+  import { getNotaPeriodo } from '../../lib/informes';
+
+  const COMPONENTES = [
+    { key: 'guias',      label: 'Progreso en guías',         peso: 20, automatico: true  },
+    { key: 'formativos', label: 'Quizzes formativos',        peso: 20, automatico: true  },
+    { key: 'banco',      label: 'Banco de práctica',         peso: 20, automatico: true  },
+    { key: 'proyecto',   label: 'Proyecto integrador',       peso: 15, automatico: false },
+    { key: 'examenPdf',  label: 'Examen formal (PDF)',       peso: 25, automatico: false },
+  ] as const;
+
+  const COLOR_NOTA = (n: number | null): string => {
+    if (n === null) return 'color: var(--fg-muted)';
+    if (n >= 4.0) return 'color: #16a34a; font-weight: 700';
+    if (n >= 3.0) return 'color: #2563eb; font-weight: 700';
+    return 'color: #dc2626; font-weight: 700';
+  };
+
+  async function cargarBoletin(el: HTMLElement): Promise<void> {
+    const estudianteId = el.dataset.estudianteId ?? '';
+    const grado  = parseInt(el.dataset.grado  ?? '0', 10);
+    const periodo = parseInt(el.dataset.periodo ?? '0', 10);
+    const ano    = parseInt(el.dataset.ano     ?? '0', 10);
+
+    const loading = el.querySelector('[data-boletin-loading]') as HTMLElement;
+    const tabla   = el.querySelector('[data-boletin-tabla]')   as HTMLElement;
+    const error   = el.querySelector('[data-boletin-error]')   as HTMLElement;
+    const filas   = el.querySelector('[data-boletin-filas]')   as HTMLElement;
+    const badge   = el.querySelector('[data-boletin-badge]')   as HTMLElement;
+    const notaFinalEl = el.querySelector('[data-boletin-nota-final]') as HTMLElement;
+    const parcialEl   = el.querySelector('[data-boletin-parcial]')    as HTMLElement;
+
+    const nota = await getNotaPeriodo(estudianteId, grado, periodo, ano);
+
+    loading.classList.add('hidden');
+
+    if (!nota || !nota.autorizado) {
+      error.classList.remove('hidden');
+      return;
+    }
+
+    // Filas de componentes
+    filas.innerHTML = '';
+    for (const comp of COMPONENTES) {
+      const c = nota.componentes[comp.key];
+      const n = c.nota;
+      const evidencias = comp.key === 'guias' || comp.key === 'formativos' || comp.key === 'banco'
+        ? (c.n != null && c.n > 0 ? `${c.n} registros` : '—')
+        : (n !== null ? 'Ingresada' : 'Pendiente');
+
+      const fila = document.createElement('tr');
+      fila.innerHTML = `
+        <td class="py-3 pr-4">
+          <div class="font-semibold">${comp.label}</div>
+          <div class="text-xs mt-0.5" style="color: var(--fg-muted);">
+            ${comp.automatico ? 'Automático' : 'Manual (docente)'}
+          </div>
+        </td>
+        <td class="py-3 pr-4 text-center text-xs font-bold" style="color: var(--fg-muted);">${comp.peso}%</td>
+        <td class="py-3 pr-4 text-center text-xs" style="color: var(--fg-muted);">${evidencias}</td>
+        <td class="py-3 text-center text-base" style="${COLOR_NOTA(n)}">${n !== null ? n.toFixed(1) : '—'}</td>
+      `;
+      filas.appendChild(fila);
+    }
+
+    // Nota final
+    const nf = nota.notaFinal;
+    notaFinalEl.textContent = nf !== null ? nf.toFixed(1) : '—';
+    notaFinalEl.setAttribute('style', COLOR_NOTA(nf));
+
+    // Badge
+    if (nf !== null) {
+      badge.classList.remove('hidden');
+      if (nota.aprobado) {
+        badge.textContent = 'Aprobado';
+        badge.className = 'px-3 py-1 rounded-full text-sm font-bold bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300';
+      } else {
+        badge.textContent = 'En proceso';
+        badge.className = 'px-3 py-1 rounded-full text-sm font-bold bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300';
+      }
+    }
+
+    // Aviso nota parcial
+    if (nota.esParcial) {
+      parcialEl.classList.remove('hidden');
+    }
+
+    tabla.classList.remove('hidden');
+  }
+
+  function resetBoletin(el: HTMLElement): void {
+    const loading = el.querySelector('[data-boletin-loading]') as HTMLElement;
+    const tabla   = el.querySelector('[data-boletin-tabla]')   as HTMLElement;
+    const error   = el.querySelector('[data-boletin-error]')   as HTMLElement;
+    const badge   = el.querySelector('[data-boletin-badge]')   as HTMLElement;
+    const parcial = el.querySelector('[data-boletin-parcial]') as HTMLElement;
+    loading.classList.remove('hidden');
+    tabla.classList.add('hidden');
+    error.classList.add('hidden');
+    badge.classList.add('hidden');
+    parcial.classList.add('hidden');
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-boletin]').forEach((el) => {
+    // Inicialización inmediata solo si hay datos válidos
+    const g = parseInt(el.dataset.grado ?? '0', 10);
+    const p = parseInt(el.dataset.periodo ?? '0', 10);
+    const a = parseInt(el.dataset.ano ?? '0', 10);
+    const id = el.dataset.estudianteId ?? '';
+    if (id && g > 0 && p > 0 && a > 0) cargarBoletin(el);
+
+    // La página padre puede actualizar data-* y disparar este evento para re-cargar
+    el.addEventListener('boletin:reinit', () => {
+      resetBoletin(el);
+      cargarBoletin(el);
+    });
+  });
+</script>

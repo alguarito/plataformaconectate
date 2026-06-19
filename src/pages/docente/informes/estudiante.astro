@@ -13,6 +13,7 @@ import BotonImprimir from '../../../components/informe/BotonImprimir.astro';
 import PortadaInforme from '../../../components/informe/PortadaInforme.astro';
 import TextoContextual from '../../../components/informe/TextoContextual.astro';
 import ObservacionesDocente from '../../../components/informe/ObservacionesDocente.astro';
+import BoletinEstudiante from '../../../components/informe/BoletinEstudiante.astro';
 ---
 
 <CuentaLayout title="Informe de estudiante · Plataforma Conéctate">
@@ -145,6 +146,20 @@ import ObservacionesDocente from '../../../components/informe/ObservacionesDocen
       <div data-proyectos-lista></div>
       <p data-proyectos-vacio class="hidden text-sm text-neutral-500 text-center py-6">Sin proyectos completados.</p>
     </section>
+
+    <!-- Boletín de valoración por periodo -->
+    <div class="flex items-center justify-between flex-wrap gap-3">
+      <h2 class="text-base font-black">Valoración académica</h2>
+      <label class="flex items-center gap-2 text-sm font-semibold">
+        <span style="color: var(--fg-muted);">Periodo</span>
+        <select data-select-periodo-boletin class="border rounded-bento-sm px-3 py-1.5 font-bold text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bento-blue" style="border-color: var(--border); background: var(--bg-card); color: var(--fg);">
+          <option value="1">Periodo 1</option>
+          <option value="2">Periodo 2</option>
+          <option value="3">Periodo 3</option>
+        </select>
+      </label>
+    </div>
+    <BoletinEstudiante estudianteId="" grado={0} periodo={0} ano={0} />
 
     <!-- Consentimiento + aulas -->
     <div class="grid sm:grid-cols-2 gap-4">
@@ -452,6 +467,26 @@ import ObservacionesDocente from '../../../components/informe/ObservacionesDocen
     document.querySelectorAll<HTMLElement>('[data-portada-filtros]').forEach((el) => {
       el.textContent = `${nombre}${informe.grado ? ` · Grado ${informe.grado}°` : ''}`;
     });
+
+    // Boletín de valoración: alimentar con datos del aula más reciente
+    const anoRef     = aulaPrincipal?.ano     ?? 0;
+    const gradoRef2  = aulaPrincipal?.grado   ?? informe.grado ?? 0;
+    const selPeriodo = document.querySelector<HTMLSelectElement>('[data-select-periodo-boletin]');
+    if (selPeriodo && aulaPrincipal) selPeriodo.value = String(aulaPrincipal.periodo);
+
+    function actualizarBoletin() {
+      const periodo = parseInt(selPeriodo?.value ?? '1', 10);
+      const boletinEl = document.querySelector<HTMLElement>('[data-boletin]');
+      if (!boletinEl) return;
+      boletinEl.dataset.estudianteId = estudianteId;
+      boletinEl.dataset.grado        = String(gradoRef2);
+      boletinEl.dataset.periodo      = String(periodo);
+      boletinEl.dataset.ano          = String(anoRef);
+      boletinEl.dispatchEvent(new CustomEvent('boletin:reinit'));
+    }
+
+    selPeriodo?.addEventListener('change', actualizarBoletin);
+    actualizarBoletin();
 
     mostrar('contenido');
   }

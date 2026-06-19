@@ -1,0 +1,250 @@
+---
+/**
+ * Tabla editable de notas manuales del docente para un grado/periodo/año.
+ * Muestra los 5 componentes de cada estudiante; las columnas "Examen PDF" y
+ * "Proyecto" son editables in-place (inputs numéricos).
+ *
+ * Uso: incluir en grado.astro e inicializar con el año/grado/periodo activos.
+ * El componente se auto-hidrata via JS al montar.
+ */
+interface Props {
+  grado: number;
+  periodo: number;
+  ano: number;
+}
+
+const { grado, periodo, ano } = Astro.props;
+---
+
+<section
+  data-notas-editor
+  data-grado={grado}
+  data-periodo={periodo}
+  data-ano={ano}
+  class="bento-card print:hidden"
+>
+  <div class="flex items-center justify-between flex-wrap gap-3 mb-5">
+    <div>
+      <h2 class="text-xl font-black tracking-tight">
+        Valoración — Grado {grado}° · Periodo {periodo}
+      </h2>
+      <p class="text-sm mt-0.5" style="color: var(--fg-muted);">
+        Los componentes automáticos se calculan en tiempo real. Ingresa el examen PDF y el proyecto.
+      </p>
+    </div>
+    <button
+      data-notas-guardar
+      type="button"
+      disabled
+      class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-sm bg-bento-blue text-white disabled:opacity-40 disabled:cursor-not-allowed hover:opacity-90 transition-opacity"
+    >
+      Guardar cambios
+    </button>
+  </div>
+
+  {/* Loading */}
+  <div data-notas-loading class="flex items-center gap-3 text-sm py-6" style="color: var(--fg-muted);">
+    <span class="inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
+    Cargando notas…
+  </div>
+
+  {/* Tabla */}
+  <div data-notas-tabla class="hidden overflow-x-auto">
+    <table class="w-full text-sm border-collapse">
+      <thead>
+        <tr class="text-left text-xs font-semibold uppercase tracking-wide" style="color: var(--fg-muted);">
+          <th class="py-2 pr-3 min-w-[160px]">Estudiante</th>
+          <th class="py-2 pr-3 text-center">Guías<br/><span class="font-normal normal-case tracking-normal">20%</span></th>
+          <th class="py-2 pr-3 text-center">Formativos<br/><span class="font-normal normal-case tracking-normal">20%</span></th>
+          <th class="py-2 pr-3 text-center">Banco<br/><span class="font-normal normal-case tracking-normal">20%</span></th>
+          <th class="py-2 pr-3 text-center">Proyecto<br/><span class="font-normal normal-case tracking-normal">15% ✏️</span></th>
+          <th class="py-2 pr-3 text-center">Examen PDF<br/><span class="font-normal normal-case tracking-normal">25% ✏️</span></th>
+          <th class="py-2 text-center font-black">Nota final</th>
+        </tr>
+      </thead>
+      <tbody data-notas-filas class="divide-y" style="border-color: var(--border);"></tbody>
+    </table>
+  </div>
+
+  {/* Vacío */}
+  <p data-notas-vacio class="hidden text-sm py-6 text-center" style="color: var(--fg-muted);">
+    No hay estudiantes matriculados en este grado/periodo/año.
+  </p>
+
+  {/* Error */}
+  <p data-notas-error class="hidden text-sm py-4" style="color: var(--fg-muted);">
+    No se pudieron cargar las notas. Verifica tu conexión.
+  </p>
+
+  {/* Toast de guardado */}
+  <div data-notas-toast class="hidden fixed bottom-6 right-6 z-50 px-5 py-3 rounded-bento-sm shadow-bento font-semibold text-sm bg-bento-blue text-white">
+    Guardado
+  </div>
+</section>
+
+<script>
+  import { getNotasGrado, upsertNotaManual } from '../../lib/informes';
+  import type { NotaGrado } from '../../lib/informes';
+
+  const COLOR_NOTA = (n: number | null): string => {
+    if (n === null) return '';
+    if (n >= 4.0) return 'color: #16a34a; font-weight: 700';
+    if (n >= 3.0) return 'color: #2563eb; font-weight: 700';
+    return 'color: #dc2626; font-weight: 700';
+  };
+
+  function fmt(n: number | null): string {
+    return n !== null ? n.toFixed(1) : '—';
+  }
+
+  // Cambios pendientes: estudianteId → { notaExamenPdf?, notaProyecto? }
+  const pendientes = new Map<string, { notaExamenPdf?: number; notaProyecto?: number }>();
+
+  async function inicializar(el: HTMLElement): Promise<void> {
+    const grado   = parseInt(el.dataset.grado   ?? '0', 10);
+    const periodo = parseInt(el.dataset.periodo ?? '0', 10);
+    const ano     = parseInt(el.dataset.ano     ?? '0', 10);
+
+    const loading  = el.querySelector('[data-notas-loading]')  as HTMLElement;
+    const tabla    = el.querySelector('[data-notas-tabla]')    as HTMLElement;
+    const filas    = el.querySelector('[data-notas-filas]')    as HTMLElement;
+    const vacio    = el.querySelector('[data-notas-vacio]')    as HTMLElement;
+    const errorEl  = el.querySelector('[data-notas-error]')    as HTMLElement;
+    const guardar  = el.querySelector('[data-notas-guardar]')  as HTMLButtonElement;
+    const toast    = el.querySelector('[data-notas-toast]')    as HTMLElement;
+
+    const notas = await getNotasGrado(ano, grado, periodo);
+
+    loading.classList.add('hidden');
+
+    if (notas === null) {
+      errorEl.classList.remove('hidden');
+      return;
+    }
+    if (notas.length === 0) {
+      vacio.classList.remove('hidden');
+      return;
+    }
+
+    renderFilas(filas, notas);
+    tabla.classList.remove('hidden');
+
+    // Inputs de notas manuales: habilitan el botón guardar al cambiar
+    el.querySelectorAll<HTMLInputElement>('[data-nota-input]').forEach((input) => {
+      input.addEventListener('input', () => {
+        const estudianteId = input.dataset.notaEstudiante ?? '';
+        const campo = input.dataset.notaInput as 'examen' | 'proyecto';
+        const valor = parseFloat(input.value);
+        if (!pendientes.has(estudianteId)) pendientes.set(estudianteId, {});
+        const entry = pendientes.get(estudianteId)!;
+        if (!isNaN(valor) && valor >= 1.0 && valor <= 5.0) {
+          if (campo === 'examen') entry.notaExamenPdf = parseFloat(valor.toFixed(1));
+          else entry.notaProyecto = parseFloat(valor.toFixed(1));
+        } else {
+          if (campo === 'examen') delete entry.notaExamenPdf;
+          else delete entry.notaProyecto;
+        }
+        guardar.disabled = pendientes.size === 0 || [...pendientes.values()].every(
+          (v) => v.notaExamenPdf === undefined && v.notaProyecto === undefined
+        );
+      });
+    });
+
+    // Botón guardar
+    guardar.addEventListener('click', async () => {
+      guardar.disabled = true;
+      guardar.textContent = 'Guardando…';
+
+      const ops = [...pendientes.entries()].map(([estudianteId, cambios]) =>
+        upsertNotaManual({ estudianteId, grado, periodo, ano, ...cambios })
+      );
+      const resultados = await Promise.all(ops);
+      const todosOk = resultados.every(Boolean);
+
+      if (todosOk) {
+        pendientes.clear();
+        toast.textContent = 'Guardado';
+        toast.style.background = '';
+      } else {
+        toast.textContent = 'Error al guardar — reintentar';
+        toast.style.background = '#dc2626';
+        guardar.disabled = false;
+      }
+
+      toast.classList.remove('hidden');
+      setTimeout(() => toast.classList.add('hidden'), 3000);
+      guardar.textContent = 'Guardar cambios';
+    });
+  }
+
+  function renderFilas(filas: HTMLElement, notas: NotaGrado[]): void {
+    filas.innerHTML = '';
+    for (const n of notas) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="py-3 pr-3 font-semibold truncate max-w-[180px]" title="${n.displayName}">${n.displayName}</td>
+        <td class="py-3 pr-3 text-center text-sm" style="${COLOR_NOTA(n.notaGuias)}">${fmt(n.notaGuias)}</td>
+        <td class="py-3 pr-3 text-center text-sm" style="${COLOR_NOTA(n.notaFormativos)}">${fmt(n.notaFormativos)}</td>
+        <td class="py-3 pr-3 text-center text-sm" style="${COLOR_NOTA(n.notaBanco)}">${fmt(n.notaBanco)}</td>
+        <td class="py-3 pr-3 text-center">
+          <input
+            type="number"
+            min="1.0" max="5.0" step="0.1"
+            data-nota-input="proyecto"
+            data-nota-estudiante="${n.estudianteId}"
+            value="${n.notaProyecto !== null ? n.notaProyecto : ''}"
+            placeholder="—"
+            class="w-16 text-center rounded-lg border text-sm py-1 px-1.5 focus:outline-none focus:ring-2 focus:ring-bento-blue"
+            style="border-color: var(--border); background: var(--bg-card); color: var(--fg);"
+          />
+        </td>
+        <td class="py-3 pr-3 text-center">
+          <input
+            type="number"
+            min="1.0" max="5.0" step="0.1"
+            data-nota-input="examen"
+            data-nota-estudiante="${n.estudianteId}"
+            value="${n.notaExamenPdf !== null ? n.notaExamenPdf : ''}"
+            placeholder="—"
+            class="w-16 text-center rounded-lg border text-sm py-1 px-1.5 focus:outline-none focus:ring-2 focus:ring-bento-blue"
+            style="border-color: var(--border); background: var(--bg-card); color: var(--fg);"
+          />
+        </td>
+        <td class="py-3 text-center font-black text-base ${n.esParcial ? 'opacity-60' : ''}" style="${COLOR_NOTA(n.notaFinal)}">
+          ${fmt(n.notaFinal)}${n.esParcial ? '<sup title="Nota parcial">*</sup>' : ''}
+        </td>
+      `;
+      filas.appendChild(tr);
+    }
+  }
+
+  function resetEditor(el: HTMLElement): void {
+    const loading  = el.querySelector('[data-notas-loading]')  as HTMLElement;
+    const tabla    = el.querySelector('[data-notas-tabla]')    as HTMLElement;
+    const vacio    = el.querySelector('[data-notas-vacio]')    as HTMLElement;
+    const errorEl  = el.querySelector('[data-notas-error]')    as HTMLElement;
+    const filas    = el.querySelector('[data-notas-filas]')    as HTMLElement;
+    const guardar  = el.querySelector('[data-notas-guardar]')  as HTMLButtonElement;
+    loading.classList.remove('hidden');
+    tabla.classList.add('hidden');
+    vacio.classList.add('hidden');
+    errorEl.classList.add('hidden');
+    if (filas) filas.innerHTML = '';
+    if (guardar) { guardar.disabled = true; guardar.textContent = 'Guardar cambios'; }
+    pendientes.clear();
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-notas-editor]').forEach((el) => {
+    // Inicialización inmediata (si grado/periodo/ano son > 0)
+    const g = parseInt(el.dataset.grado ?? '0', 10);
+    const p = parseInt(el.dataset.periodo ?? '0', 10);
+    const a = parseInt(el.dataset.ano ?? '0', 10);
+    if (g > 0 && p > 0 && a > 0) inicializar(el);
+
+    // Re-inicialización dinámica: la página actualiza data-* y dispara este evento
+    el.addEventListener('notas:reinit', () => {
+      resetEditor(el);
+      inicializar(el);
+    });
+  });
+</script>

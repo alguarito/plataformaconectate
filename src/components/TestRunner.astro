@@ -30,14 +30,17 @@ interface Props {
   preguntas: Pregunta[];
   opciones: Opcion[];
   duracionEstimadaMin: number;
+  /** Clave de la guía que contiene este test, p.ej. "6-1-3". Se persiste junto al resultado. */
+  guiaClave?: string;
 }
 
-const { testId, titulo, emoji, bgClass, preguntas, opciones, duracionEstimadaMin } = Astro.props;
+const { testId, titulo, emoji, bgClass, preguntas, opciones, duracionEstimadaMin, guiaClave } = Astro.props;
 ---
 
 <section
   data-test-runner
   data-test-id={testId}
+  data-guia-clave={guiaClave}
   class="hidden"
 >
   {/* Pantalla 1: introducción */}
@@ -167,6 +170,19 @@ const { testId, titulo, emoji, bgClass, preguntas, opciones, duracionEstimadaMin
     </p>
   </div>
 </section>
+
+<script>
+  // Persistencia DB: escucha el evento emitido por el script de abajo y persiste en BD.
+  import { syncResultadoTest } from '../lib/progreso-sync';
+
+  document.addEventListener('test:completado', async (e: Event) => {
+    const ev = e as CustomEvent<{ testId: string; respuestas: number[] }>;
+    const { testId, respuestas } = ev.detail;
+    const root = document.querySelector<HTMLElement>(`[data-test-id="${testId}"]`);
+    const guiaClave = root?.dataset.guiaClave || undefined;
+    await syncResultadoTest({ testId, guiaClave, respuestas });
+  });
+</script>
 
 <script define:vars={{ preguntas, testId }}>
   const root = document.querySelector(`[data-test-id="${testId}"]`);

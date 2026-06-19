@@ -14,6 +14,7 @@ import BotonImprimir from '../../../components/informe/BotonImprimir.astro';
 import PortadaInforme from '../../../components/informe/PortadaInforme.astro';
 import TextoContextual from '../../../components/informe/TextoContextual.astro';
 import ObservacionesDocente from '../../../components/informe/ObservacionesDocente.astro';
+import NotasPeriodoEditor from '../../../components/informe/NotasPeriodoEditor.astro';
 ---
 
 <CuentaLayout title="Informe por grado · Plataforma Conéctate">
@@ -125,6 +126,22 @@ import ObservacionesDocente from '../../../components/informe/ObservacionesDocen
       <p class="text-xs text-neutral-500 mb-4">Progreso menor al 25% o sin actividad en los últimos 14 días.</p>
       <div data-riesgo></div>
       <p data-riesgo-vacio class="hidden text-sm text-neutral-500 text-center py-6">Ningún estudiante del grado en riesgo. 🎉</p>
+    </section>
+
+    <!-- Valoración del periodo -->
+    <section class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-5 md:p-6 print:hidden">
+      <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
+        <h2 class="text-base font-black">Valoración del periodo</h2>
+        <label class="flex items-center gap-2 text-sm font-semibold">
+          <span style="color: var(--fg-muted);">Periodo</span>
+          <select data-select-periodo-notas class="border rounded-bento-sm px-3 py-1.5 font-bold text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bento-blue" style="border-color: var(--border); background: var(--bg-card); color: var(--fg);">
+            <option value="1">Periodo 1</option>
+            <option value="2">Periodo 2</option>
+            <option value="3">Periodo 3</option>
+          </select>
+        </label>
+      </div>
+      <NotasPeriodoEditor grado={0} periodo={0} ano={0} />
     </section>
 
     <ObservacionesDocente />
@@ -293,6 +310,20 @@ import ObservacionesDocente from '../../../components/informe/ObservacionesDocen
     document.querySelectorAll<HTMLElement>('[data-portada-filtros]').forEach((el) => {
       if (gradoData) el.textContent = `Grado ${grado}° · Año lectivo ${ano} · ${gradoData.estudiantes} estudiantes`;
     });
+
+    // Editor de valoración: sincronizar con grado/año actuales
+    actualizarEditorNotas(grado, ano);
+  }
+
+  function actualizarEditorNotas(grado: number, ano: number) {
+    const sel = document.querySelector<HTMLSelectElement>('[data-select-periodo-notas]');
+    const periodo = parseInt(sel?.value ?? '1', 10);
+    const editor = document.querySelector<HTMLElement>('[data-notas-editor]');
+    if (!editor) return;
+    editor.dataset.grado   = String(grado);
+    editor.dataset.periodo = String(periodo);
+    editor.dataset.ano     = String(ano);
+    editor.dispatchEvent(new CustomEvent('notas:reinit'));
   }
 
   async function init() {
@@ -336,6 +367,13 @@ import ObservacionesDocente from '../../../components/informe/ObservacionesDocen
       await cargar();
     });
     selGrado?.addEventListener('change', cargar);
+
+    // Selector de periodo para el editor de valoración
+    document.querySelector('[data-select-periodo-notas]')?.addEventListener('change', () => {
+      const ano   = parseInt(selAno?.value ?? '0', 10);
+      const grado = parseInt(selGrado?.value ?? '0', 10);
+      if (ano > 0 && grado > 0) actualizarEditorNotas(grado, ano);
+    });
 
     await cargar();
     mostrar('contenido');

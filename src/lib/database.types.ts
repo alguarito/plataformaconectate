@@ -282,6 +282,73 @@ export interface Database {
           motivo_revocacion?: string | null;
         };
       };
+      notas_manuales: {
+        Row: {
+          id: number;
+          docente_id: string;
+          estudiante_id: string;
+          grado: number;
+          periodo: number;
+          ano: number;
+          nota_examen_pdf: number | null;
+          nota_proyecto: number | null;
+          observaciones: string | null;
+          creado_en: string;
+          actualizado_en: string;
+        };
+        Insert: {
+          id?: number;
+          docente_id: string;
+          estudiante_id: string;
+          grado: number;
+          periodo: number;
+          ano: number;
+          nota_examen_pdf?: number | null;
+          nota_proyecto?: number | null;
+          observaciones?: string | null;
+          creado_en?: string;
+          actualizado_en?: string;
+        };
+        Update: {
+          id?: number;
+          docente_id?: string;
+          estudiante_id?: string;
+          grado?: number;
+          periodo?: number;
+          ano?: number;
+          nota_examen_pdf?: number | null;
+          nota_proyecto?: number | null;
+          observaciones?: string | null;
+          creado_en?: string;
+          actualizado_en?: string;
+        };
+      };
+      resultados_test: {
+        Row: {
+          id: number;
+          estudiante_id: string;
+          test_id: string;
+          guia_clave: string | null;
+          respuestas: Json;
+          realizado_en: string;
+        };
+        Insert: {
+          id?: number;
+          estudiante_id: string;
+          test_id: string;
+          guia_clave?: string | null;
+          respuestas: Json;
+          realizado_en?: string;
+        };
+        Update: {
+          id?: number;
+          estudiante_id?: string;
+          test_id?: string;
+          guia_clave?: string | null;
+          respuestas?: Json;
+          realizado_en?: string;
+        };
+      };
       eventos_arco: {
         Row: {
           id: number;
@@ -407,6 +474,37 @@ export interface Database {
           arco_total: number;
           arco_por_tipo: { tipo: string; conteo: number }[] | null;
         };
+      };
+      nota_periodo: {
+        Args: { _estudiante_id: string; _grado: number; _periodo: number; _ano: number };
+        Returns: Json;
+      };
+      notas_grado: {
+        Args: { _ano: number; _grado: number; _periodo: number };
+        Returns: {
+          estudiante_id: string;
+          display_name: string;
+          nota_guias: number | null;
+          nota_formativos: number | null;
+          nota_banco: number | null;
+          nota_proyecto: number | null;
+          nota_examen_pdf: number | null;
+          nota_final: number | null;
+          aprobado: boolean | null;
+          es_parcial: boolean;
+        }[];
+      };
+      upsert_nota_manual: {
+        Args: {
+          _estudiante_id: string;
+          _grado: number;
+          _periodo: number;
+          _ano: number;
+          _nota_examen_pdf?: number | null;
+          _nota_proyecto?: number | null;
+          _observaciones?: string | null;
+        };
+        Returns: Json;
       };
       informe_estudiante: {
         Args: { _estudiante_id: string };

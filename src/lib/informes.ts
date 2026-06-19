@@ -454,6 +454,137 @@ export async function getInformeEstudiante(
   };
 }
 
+// ─── Sistema de Valoración Académica ─────────────────────────────────────────
+
+export interface ComponenteNota {
+  nota: number | null;
+  pct?: number | null;
+  n?: number;
+  peso: number;
+}
+
+export interface NotaPeriodo {
+  autorizado: boolean;
+  notaFinal: number | null;
+  esParcial: boolean;
+  aprobado: boolean | null;
+  componentes: {
+    guias: ComponenteNota;
+    formativos: ComponenteNota;
+    banco: ComponenteNota;
+    proyecto: ComponenteNota;
+    examenPdf: ComponenteNota;
+  };
+}
+
+export interface NotaGrado {
+  estudianteId: string;
+  displayName: string;
+  notaGuias: number | null;
+  notaFormativos: number | null;
+  notaBanco: number | null;
+  notaProyecto: number | null;
+  notaExamenPdf: number | null;
+  notaFinal: number | null;
+  aprobado: boolean | null;
+  esParcial: boolean;
+}
+
+/** Nota del periodo de un estudiante (accesible por el propio estudiante o su docente). */
+export async function getNotaPeriodo(
+  estudianteId: string,
+  grado: number,
+  periodo: number,
+  ano: number
+): Promise<NotaPeriodo | null> {
+  if (!authEnabled) return null;
+  const { data, error } = await supabase.rpc('nota_periodo', {
+    _estudiante_id: estudianteId,
+    _grado: grado,
+    _periodo: periodo,
+    _ano: ano,
+  });
+  if (error) {
+    console.error('[informes] nota_periodo:', error);
+    return null;
+  }
+  const r = (data ?? {}) as Record<string, unknown>;
+  if (!r.autorizado) return { autorizado: false } as NotaPeriodo;
+
+  const comp = (r.componentes ?? {}) as Record<string, Record<string, unknown>>;
+  return {
+    autorizado: true,
+    notaFinal: r.nota_final == null ? null : num(r.nota_final),
+    esParcial: Boolean(r.es_parcial),
+    aprobado: r.aprobado == null ? null : Boolean(r.aprobado),
+    componentes: {
+      guias:      { nota: comp.guias?.nota      == null ? null : num(comp.guias.nota),      pct: comp.guias?.pct      == null ? null : num(comp.guias.pct),      n: num(comp.guias?.n),      peso: 20 },
+      formativos: { nota: comp.formativos?.nota == null ? null : num(comp.formativos.nota), pct: comp.formativos?.pct == null ? null : num(comp.formativos.pct), n: num(comp.formativos?.n), peso: 20 },
+      banco:      { nota: comp.banco?.nota      == null ? null : num(comp.banco.nota),      pct: comp.banco?.pct      == null ? null : num(comp.banco.pct),      n: num(comp.banco?.n),      peso: 20 },
+      proyecto:   { nota: comp.proyecto?.nota   == null ? null : num(comp.proyecto.nota),                                                                                                     peso: 15 },
+      examenPdf:  { nota: comp.examen_pdf?.nota == null ? null : num(comp.examen_pdf.nota),                                                                                                   peso: 25 },
+    },
+  };
+}
+
+/** Notas de TODOS los estudiantes de un grado/periodo/año (tabla del docente). */
+export async function getNotasGrado(
+  ano: number,
+  grado: number,
+  periodo: number
+): Promise<NotaGrado[]> {
+  if (!authEnabled) return [];
+  const { data, error } = await supabase.rpc('notas_grado', {
+    _ano: ano,
+    _grado: grado,
+    _periodo: periodo,
+  });
+  if (error) {
+    console.error('[informes] notas_grado:', error);
+    return [];
+  }
+  return (data ?? []).map((r) => ({
+    estudianteId: r.estudiante_id,
+    displayName: r.display_name,
+    notaGuias:      r.nota_guias      == null ? null : num(r.nota_guias),
+    notaFormativos: r.nota_formativos == null ? null : num(r.nota_formativos),
+    notaBanco:      r.nota_banco      == null ? null : num(r.nota_banco),
+    notaProyecto:   r.nota_proyecto   == null ? null : num(r.nota_proyecto),
+    notaExamenPdf:  r.nota_examen_pdf == null ? null : num(r.nota_examen_pdf),
+    notaFinal:      r.nota_final      == null ? null : num(r.nota_final),
+    aprobado:       r.aprobado        == null ? null : Boolean(r.aprobado),
+    esParcial:      Boolean(r.es_parcial),
+  }));
+}
+
+/** Ingresar o actualizar nota manual del docente (examen PDF y/o proyecto). */
+export async function upsertNotaManual(input: {
+  estudianteId: string;
+  grado: number;
+  periodo: number;
+  ano: number;
+  notaExamenPdf?: number;
+  notaProyecto?: number;
+  observaciones?: string;
+}): Promise<boolean> {
+  if (!authEnabled) return false;
+  const { data, error } = await supabase.rpc('upsert_nota_manual', {
+    _estudiante_id: input.estudianteId,
+    _grado: input.grado,
+    _periodo: input.periodo,
+    _ano: input.ano,
+    _nota_examen_pdf: input.notaExamenPdf ?? null,
+    _nota_proyecto: input.notaProyecto ?? null,
+    _observaciones: input.observaciones ?? null,
+  });
+  if (error) {
+    console.error('[informes] upsert_nota_manual:', error);
+    return false;
+  }
+  const r = (data ?? {}) as Record<string, unknown>;
+  return Boolean(r.ok);
+}
+
 /** Estudiantes que necesitan atención (en riesgo o inactivos), con nombre. */
 export async function getEstudiantesEnRiesgo(
   ano?: number,

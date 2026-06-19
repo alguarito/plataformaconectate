@@ -395,6 +395,33 @@ export async function procesarCola(): Promise<void> {
   escribirCola(nuevaCola);
 }
 
+/* ─────────── Sync resultado TestRunner ─────────── */
+
+/**
+ * Persiste las respuestas de un TestRunner en BD. No hay localStorage de respaldo
+ * (no cuenta en nota, es solo diagnóstico). Fire-and-forget.
+ */
+export async function syncResultadoTest(input: {
+  testId: string;
+  guiaClave?: string;
+  respuestas: unknown;
+}): Promise<void> {
+  const usuarioId = await hayUsuario();
+  if (!usuarioId) return;
+
+  try {
+    const { error } = await supabase.from('resultados_test').insert({
+      estudiante_id: usuarioId,
+      test_id: input.testId,
+      guia_clave: input.guiaClave ?? null,
+      respuestas: input.respuestas as never,
+    });
+    if (error) throw error;
+  } catch (err) {
+    console.warn('[progreso-sync] resultado test falló:', err);
+  }
+}
+
 /* ─────────── Limpieza local (al logout) ─────────── */
 
 const STORAGE_KEY_PROGRESO = 'conectate.progreso.v1';

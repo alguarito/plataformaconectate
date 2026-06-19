@@ -132,15 +132,41 @@ import NotasPeriodoEditor from '../../../components/informe/NotasPeriodoEditor.a
     <section class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-5 md:p-6 print:hidden">
       <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
         <h2 class="text-base font-black">Valoración del periodo</h2>
-        <label class="flex items-center gap-2 text-sm font-semibold">
-          <span style="color: var(--fg-muted);">Periodo</span>
-          <select data-select-periodo-notas class="border rounded-bento-sm px-3 py-1.5 font-bold text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bento-blue" style="border-color: var(--border); background: var(--bg-card); color: var(--fg);">
-            <option value="1">Periodo 1</option>
-            <option value="2">Periodo 2</option>
-            <option value="3">Periodo 3</option>
-          </select>
-        </label>
+        <div class="flex items-center gap-3 flex-wrap">
+          <button
+            data-notas-csv
+            type="button"
+            disabled
+            class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-bold border transition-colors disabled:opacity-40 disabled:cursor-not-allowed hover:bg-neutral-50 dark:hover:bg-neutral-800"
+            style="border-color: var(--border); color: var(--fg);"
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Exportar CSV
+          </button>
+          <label class="flex items-center gap-2 text-sm font-semibold">
+            <span style="color: var(--fg-muted);">Periodo</span>
+            <select data-select-periodo-notas class="border rounded-bento-sm px-3 py-1.5 font-bold text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bento-blue" style="border-color: var(--border); background: var(--bg-card); color: var(--fg);">
+              <option value="1">Periodo 1</option>
+              <option value="2">Periodo 2</option>
+              <option value="3">Periodo 3</option>
+            </select>
+          </label>
+        </div>
       </div>
+
+      <!-- KPIs y distribución de notas del periodo -->
+      <div data-val-resumen class="hidden mb-6 space-y-4">
+        <div class="grid grid-cols-3 gap-3">
+          <KpiCard etiqueta="Nota promedio" clave="v-nota-prom"  color="#0066FF" icono="📊" />
+          <KpiCard etiqueta="Aprobados"     clave="v-aprobados"  color="#16a34a" icono="✅" sub="nota ≥ 3.0" />
+          <KpiCard etiqueta="En riesgo"     clave="v-riesgo-acad" color="#FF2D87" icono="⚠️" sub="nota < 3.0" />
+        </div>
+        <div>
+          <p class="text-xs font-bold uppercase tracking-widest text-neutral-500 mb-2">Distribución de notas</p>
+          <div data-notas-histo></div>
+        </div>
+      </div>
+
       <NotasPeriodoEditor grado={0} periodo={0} ano={0} />
     </section>
 
@@ -151,7 +177,8 @@ import NotasPeriodoEditor from '../../../components/informe/NotasPeriodoEditor.a
 
 <script>
   import { requireDocente } from '../../../lib/auth';
-  import { getAnosDisponibles, getResumenPorGrado, getResumenPorPeriodo, getCoberturaGuias, getDesempenoExamenes, getEstudiantesEnRiesgo } from '../../../lib/informes';
+  import { getAnosDisponibles, getResumenPorGrado, getResumenPorPeriodo, getCoberturaGuias, getDesempenoExamenes, getEstudiantesEnRiesgo, getNotasGrado } from '../../../lib/informes';
+  import type { NotaGrado } from '../../../lib/informes';
   import { heatmapSVG, barComparativoSVG, escapeHtml, BENTO } from '../../../lib/charts';
 
   const base = (import.meta.env?.BASE_URL ?? '/').replace(/\/$/, '');
@@ -315,6 +342,81 @@ import NotasPeriodoEditor from '../../../components/informe/NotasPeriodoEditor.a
     actualizarEditorNotas(grado, ano);
   }
 
+  async function cargarValoracion(grado: number, periodo: number, ano: number): Promise<void> {
+    const resumen = $('[data-val-resumen]');
+    const csvBtn  = $<HTMLButtonElement>('[data-notas-csv]');
+    if (resumen) resumen.classList.add('hidden');
+    if (csvBtn) csvBtn.disabled = true;
+    if (grado <= 0 || periodo <= 0 || ano <= 0) return;
+
+    const notas = await getNotasGrado(ano, grado, periodo);
+    if (!notas || notas.length === 0) return;
+
+    // KPIs
+    const conNota   = notas.filter((n) => n.notaFinal !== null);
+    const aprobados = conNota.filter((n) => n.aprobado === true).length;
+    const enRiesgo  = conNota.filter((n) => n.aprobado === false).length;
+    const promedio  = conNota.length > 0
+      ? conNota.reduce((s, n) => s + (n.notaFinal ?? 0), 0) / conNota.length
+      : null;
+
+    setKpi('v-nota-prom',   promedio !== null ? promedio.toFixed(1) : '—');
+    setKpi('v-aprobados',   conNota.length > 0 ? `${aprobados}/${conNota.length}` : '—');
+    setKpi('v-riesgo-acad', String(enRiesgo));
+
+    // Histograma de distribución
+    const BUCKETS = [
+      { label: '1.0–2.9', min: 1.0, max: 2.999, color: '#FF2D87' },
+      { label: '3.0–3.4', min: 3.0, max: 3.499, color: '#FF6B35' },
+      { label: '3.5–4.4', min: 3.5, max: 4.499, color: '#0066FF' },
+      { label: '4.5–5.0', min: 4.5, max: 5.0,   color: '#A3FF12' },
+    ];
+    const conteos = BUCKETS.map((b) => ({
+      ...b,
+      count: conNota.filter((n) => (n.notaFinal ?? 0) >= b.min && (n.notaFinal ?? 0) <= b.max).length,
+    }));
+
+    const histoEl = $('[data-notas-histo]');
+    if (histoEl) {
+      histoEl.innerHTML = barComparativoSVG(
+        conteos.map((b) => ({ label: b.label, valor: b.count, color: b.color })),
+        { max: Math.max(1, conNota.length), alto: 140 }
+      );
+    }
+
+    if (resumen) resumen.classList.remove('hidden');
+    if (csvBtn) {
+      csvBtn.disabled = false;
+      csvBtn.onclick  = () => exportarCSV(notas, grado, periodo, ano);
+    }
+  }
+
+  function exportarCSV(notas: NotaGrado[], grado: number, periodo: number, ano: number): void {
+    const enc = (s: string) => `"${s.replace(/"/g, '""')}"`;
+    const fmt = (n: number | null) => (n !== null ? n.toFixed(1) : '');
+    const lines = [
+      ['Estudiante', 'Guías (20%)', 'Formativos (20%)', 'Banco (20%)', 'Proyecto (15%)', 'Examen PDF (25%)', 'Nota final', 'Aprobado', 'Parcial'].join(','),
+      ...notas.map((n) => [
+        enc(n.displayName),
+        fmt(n.notaGuias),
+        fmt(n.notaFormativos),
+        fmt(n.notaBanco),
+        fmt(n.notaProyecto),
+        fmt(n.notaExamenPdf),
+        fmt(n.notaFinal),
+        n.aprobado === true ? 'Sí' : n.aprobado === false ? 'No' : '',
+        n.esParcial ? 'Sí' : 'No',
+      ].join(',')),
+    ];
+    const blob = new Blob(['﻿' + lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = `notas-g${grado}-p${periodo}-${ano}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   function actualizarEditorNotas(grado: number, ano: number) {
     const sel = document.querySelector<HTMLSelectElement>('[data-select-periodo-notas]');
     const periodo = parseInt(sel?.value ?? '1', 10);
@@ -324,6 +426,7 @@ import NotasPeriodoEditor from '../../../components/informe/NotasPeriodoEditor.a
     editor.dataset.periodo = String(periodo);
     editor.dataset.ano     = String(ano);
     editor.dispatchEvent(new CustomEvent('notas:reinit'));
+    cargarValoracion(grado, periodo, ano);
   }
 
   async function init() {

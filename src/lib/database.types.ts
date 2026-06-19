@@ -408,6 +408,36 @@ export interface Database {
           arco_por_tipo: { tipo: string; conteo: number }[] | null;
         };
       };
+      informe_estudiante: {
+        Args: { _estudiante_id: string };
+        Returns: {
+          autorizado: boolean;
+          display_name: string | null;
+          grado: number | null;
+          aulas: {
+            id: string; grado: number; periodo: number; ano: number;
+            nombre: string | null; codigo: string;
+          }[] | null;
+          guias: {
+            guia_clave: string; porcentaje: number;
+            ultima_estacion: string | null; completada_en: string | null;
+            actualizado_en: string;
+          }[] | null;
+          examenes: {
+            quiz_id: string; guia_clave: string; puntaje: number | null;
+            duracion_seg: number | null; realizado_en: string;
+          }[] | null;
+          proyectos: {
+            grado: number; periodo: number;
+            completado: boolean; completado_en: string | null;
+          }[] | null;
+          consentimiento: {
+            vigente: boolean; firmado_en: string | null;
+            revocado_en: string | null; ano_lectivo: number | null;
+          } | null;
+          ultima_actividad: string | null;
+        };
+      };
     };
     Enums: {
       rol_enrollment: RolEnrollment;

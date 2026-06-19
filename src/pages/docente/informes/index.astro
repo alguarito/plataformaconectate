@@ -84,6 +84,30 @@ import ObservacionesDocente from '../../../components/informe/ObservacionesDocen
       <KpiCard etiqueta="En riesgo" clave="riesgo" color="#FF2D87" icono="⚠️" sub="progreso < 25%" />
     </section>
 
+    <TextoContextual titulo="Valoración académica">
+      <p>Los indicadores de valoración consolidan las notas finales de <strong>todos los grados y periodos</strong> del año lectivo. La nota se calcula a partir de 5 componentes ponderados: guías (20%), formativos (20%), banco de práctica (20%), proyecto (15%) y examen PDF (25%). Un estudiante <strong>aprueba</strong> con nota ≥ 3,0. Los registros parciales (sin todos los componentes ingresados) se incluyen con redistribución de pesos.</p>
+    </TextoContextual>
+
+    <!-- KPIs de valoración global -->
+    <section class="grid grid-cols-3 gap-4">
+      <KpiCard etiqueta="Nota promedio"       clave="val-prom"       color="#0066FF" icono="📊" sub="todos los grados" />
+      <KpiCard etiqueta="Aprobados"           clave="val-aprobados"  color="#16a34a" icono="✅" sub="nota ≥ 3.0" />
+      <KpiCard etiqueta="En riesgo académico" clave="val-riesgo-acad" color="#FF2D87" icono="⚠️" sub="nota < 3.0" />
+    </section>
+
+    <!-- Nota promedio por grado -->
+    <section class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-5 md:p-6 evitar-corte">
+      <div class="flex items-center justify-between gap-3 flex-wrap mb-1">
+        <h2 class="text-base font-black">Nota promedio por grado</h2>
+        <a data-link-grado-val href="#" class="text-xs font-bold text-bento-blue hover:underline">Ver valoración de grado →</a>
+      </div>
+      <p class="text-xs text-neutral-500 mb-4">Promedio de nota final (escala 1–5) por grado, todos los periodos con datos.</p>
+      <div data-val-grados-barras class="flex items-center justify-center min-h-[80px]">
+        <span class="inline-block w-5 h-5 rounded-full border-2 border-bento-blue/30 border-t-bento-blue animate-spin motion-reduce:animate-none"></span>
+      </div>
+      <p data-val-grados-vacio class="hidden text-sm text-neutral-500 text-center py-4">Sin datos de valoración para este año.</p>
+    </section>
+
     <TextoContextual titulo="Actividad semanal · Últimas 12 semanas">
       <p>La serie temporal permite identificar patrones de uso a lo largo del año lectivo. Los picos de actividad suelen coincidir con semanas de clase activa; las caídas prolongadas pueden señalar períodos vacacionales o dificultades de conectividad. La diferencia entre las curvas de <strong>guías</strong> y <strong>exámenes</strong> refleja la relación entre exploración de contenido y evaluación formativa.</p>
     </TextoContextual>
@@ -157,8 +181,9 @@ import ObservacionesDocente from '../../../components/informe/ObservacionesDocen
   import {
     getAnosDisponibles, getResumenDocente, getEmbudoRegistro,
     getSerieActividad, getEstudiantesEnRiesgo,
-    getResumenPorGrado, getResumenPorPeriodo,
+    getResumenPorGrado, getResumenPorPeriodo, getNotasGrado,
   } from '../../../lib/informes';
+  import type { ResumenGrado, NotaGrado } from '../../../lib/informes';
   import { lineChartSVG, funnelHTML, barComparativoSVG, escapeHtml, BENTO } from '../../../lib/charts';
 
   const base = (import.meta.env?.BASE_URL ?? '/').replace(/\/$/, '');
@@ -321,10 +346,80 @@ import ObservacionesDocente from '../../../components/informe/ObservacionesDocen
     const linkAno = $<HTMLAnchorElement>('[data-link-ano]');
     if (linkAno) linkAno.href = `${base}/docente/informes/ano?ano=${ano}`;
 
+    // Enlace «Ver valoración de grado» apunta al primer grado disponible
+    const linkGradoVal = $<HTMLAnchorElement>('[data-link-grado-val]');
+    if (linkGradoVal && gradosData[0])
+      linkGradoVal.href = `${base}/docente/informes/grado?ano=${ano}&grado=${gradosData[0].grado}`;
+
+    // Valoración por grado — carga diferida para no bloquear la UI principal
+    void cargarValoracion(ano, gradosData);
+
     // Portada: información dinámica del año seleccionado
     document.querySelectorAll<HTMLElement>('[data-portada-filtros]').forEach((el) => {
       if (resumen) el.textContent = `Año lectivo ${ano} · ${resumen.aulas} aulas · ${resumen.estudiantes} estudiantes`;
     });
+  }
+
+  async function cargarValoracion(ano: number, gradosData: ResumenGrado[]): Promise<void> {
+    if (gradosData.length === 0) return;
+
+    const todasNotas: Array<NotaGrado & { grado: number }> = [];
+    await Promise.all(
+      gradosData.flatMap((g) =>
+        [1, 2, 3].map((p) =>
+          getNotasGrado(ano, g.grado, p).then((rows) => {
+            if (rows) rows.forEach((n) => todasNotas.push({ ...n, grado: g.grado }));
+          })
+        )
+      )
+    );
+
+    const conNota       = todasNotas.filter((n) => n.notaFinal !== null);
+    const globalAprobados = conNota.filter((n) => n.aprobado === true).length;
+    const globalRiesgo  = conNota.filter((n) => n.aprobado === false).length;
+    const globalProm    = conNota.length > 0
+      ? conNota.reduce((s, n) => s + (n.notaFinal ?? 0), 0) / conNota.length
+      : null;
+
+    setKpi('val-prom',        globalProm != null ? globalProm.toFixed(1) : '—');
+    setKpi('val-aprobados',   conNota.length > 0 ? `${globalAprobados}/${conNota.length}` : '—');
+    setKpi('val-riesgo-acad', String(globalRiesgo));
+
+    // Nota promedio por grado (agrupado)
+    const notasPorGrado = new Map<number, number[]>();
+    for (const n of conNota) {
+      if (!notasPorGrado.has(n.grado)) notasPorGrado.set(n.grado, []);
+      notasPorGrado.get(n.grado)!.push(n.notaFinal!);
+    }
+
+    const COLORES_GRADO_VAL: Record<number, string> = {
+      6: BENTO.blue, 7: BENTO.lime, 8: BENTO.orange,
+      9: BENTO.purple, 10: BENTO.pink, 11: BENTO.cyan,
+    };
+
+    const valBarras = $('[data-val-grados-barras]');
+    const valVacio  = $('[data-val-grados-vacio]');
+
+    if (notasPorGrado.size === 0) {
+      if (valBarras) valBarras.innerHTML = '';
+      valVacio?.classList.remove('hidden');
+    } else {
+      valVacio?.classList.add('hidden');
+      if (valBarras) valBarras.innerHTML = barComparativoSVG(
+        [...notasPorGrado.entries()]
+          .sort((a, b) => a[0] - b[0])
+          .map(([grado, notas]) => {
+            const prom = notas.reduce((s, n) => s + n, 0) / notas.length;
+            return {
+              label: `${grado}°`,
+              valor: parseFloat(prom.toFixed(1)),
+              color: COLORES_GRADO_VAL[grado] ?? BENTO.blue,
+              sub: `${notas.length} reg.`,
+            };
+          }),
+        { max: 5.0 }
+      );
+    }
   }
 
   async function init() {

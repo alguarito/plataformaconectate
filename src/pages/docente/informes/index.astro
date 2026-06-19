@@ -12,6 +12,9 @@ import KpiCard from '../../../components/charts/KpiCard.astro';
 import EncabezadoInforme from '../../../components/informe/EncabezadoInforme.astro';
 import PieInforme from '../../../components/informe/PieInforme.astro';
 import BotonImprimir from '../../../components/informe/BotonImprimir.astro';
+import PortadaInforme from '../../../components/informe/PortadaInforme.astro';
+import TextoContextual from '../../../components/informe/TextoContextual.astro';
+import ObservacionesDocente from '../../../components/informe/ObservacionesDocente.astro';
 ---
 
 <CuentaLayout title="Informes y analítica · Panel del docente">
@@ -41,6 +44,10 @@ import BotonImprimir from '../../../components/informe/BotonImprimir.astro';
 
   <!-- Contenido -->
   <article data-contenido class="hidden space-y-6">
+    <PortadaInforme
+      titulo="Panel general de analítica"
+      descripcion="Este informe consolida los indicadores de actividad académica registrada en la Plataforma Conéctate. Incluye seguimiento del progreso en guías, resultados de evaluaciones formativas y estado del proceso de consentimiento informado de acudientes, conforme a la Ley 1581 de 2012."
+    />
     <EncabezadoInforme filtros="Panel general de analítica" />
 
     <!-- Cabecera + selector de año -->
@@ -61,6 +68,10 @@ import BotonImprimir from '../../../components/informe/BotonImprimir.astro';
       </div>
     </header>
 
+    <TextoContextual titulo="Indicadores consolidados del año">
+      <p>Los indicadores reflejan el estado global de todas las aulas del docente. El <strong>progreso promedio</strong> mide el avance típico en las guías disponibles. Los indicadores <strong>activos</strong> (interacción en los últimos 30 días) y <strong>en riesgo</strong> (progreso menor al 25%) orientan las intervenciones pedagógicas prioritarias. El indicador <strong>con consentimiento</strong> muestra el cumplimiento del Habeas Data (Ley 1581 de 2012).</p>
+    </TextoContextual>
+
     <!-- KPIs -->
     <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
       <KpiCard etiqueta="Aulas" clave="aulas" color="#0066FF" icono="🏫" sub="grupos activos" />
@@ -72,6 +83,10 @@ import BotonImprimir from '../../../components/informe/BotonImprimir.astro';
       <KpiCard etiqueta="Activos 30 días" clave="activos" color="#A3FF12" icono="🔥" sub="con actividad reciente" />
       <KpiCard etiqueta="En riesgo" clave="riesgo" color="#FF2D87" icono="⚠️" sub="progreso < 25%" />
     </section>
+
+    <TextoContextual titulo="Actividad semanal · Últimas 12 semanas">
+      <p>La serie temporal permite identificar patrones de uso a lo largo del año lectivo. Los picos de actividad suelen coincidir con semanas de clase activa; las caídas prolongadas pueden señalar períodos vacacionales o dificultades de conectividad. La diferencia entre las curvas de <strong>guías</strong> y <strong>exámenes</strong> refleja la relación entre exploración de contenido y evaluación formativa.</p>
+    </TextoContextual>
 
     <!-- Serie de actividad -->
     <section class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-5 md:p-6 evitar-corte">
@@ -132,6 +147,7 @@ import BotonImprimir from '../../../components/informe/BotonImprimir.astro';
       </section>
     </div>
 
+    <ObservacionesDocente />
     <PieInforme />
   </article>
 </CuentaLayout>
@@ -304,6 +320,11 @@ import BotonImprimir from '../../../components/informe/BotonImprimir.astro';
     // Enlace al informe anual (se construye con el año seleccionado)
     const linkAno = $<HTMLAnchorElement>('[data-link-ano]');
     if (linkAno) linkAno.href = `${base}/docente/informes/ano?ano=${ano}`;
+
+    // Portada: información dinámica del año seleccionado
+    document.querySelectorAll<HTMLElement>('[data-portada-filtros]').forEach((el) => {
+      if (resumen) el.textContent = `Año lectivo ${ano} · ${resumen.aulas} aulas · ${resumen.estudiantes} estudiantes`;
+    });
   }
 
   async function init() {

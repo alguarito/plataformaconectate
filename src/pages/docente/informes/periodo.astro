@@ -11,6 +11,9 @@ import KpiCard from '../../../components/charts/KpiCard.astro';
 import EncabezadoInforme from '../../../components/informe/EncabezadoInforme.astro';
 import PieInforme from '../../../components/informe/PieInforme.astro';
 import BotonImprimir from '../../../components/informe/BotonImprimir.astro';
+import PortadaInforme from '../../../components/informe/PortadaInforme.astro';
+import TextoContextual from '../../../components/informe/TextoContextual.astro';
+import ObservacionesDocente from '../../../components/informe/ObservacionesDocente.astro';
 ---
 
 <CuentaLayout title="Informe por periodo · Plataforma Conéctate">
@@ -37,6 +40,10 @@ import BotonImprimir from '../../../components/informe/BotonImprimir.astro';
   </div>
 
   <article data-contenido class="hidden space-y-6">
+    <PortadaInforme
+      titulo="Informe por periodo"
+      descripcion="Informe de corte por periodo académico. Muestra el progreso comparado entre los distintos grados, la cobertura de guías y el desempeño en evaluaciones correspondientes al periodo seleccionado."
+    />
     <EncabezadoInforme />
 
     <!-- Cabecera con selectores -->
@@ -65,6 +72,10 @@ import BotonImprimir from '../../../components/informe/BotonImprimir.astro';
       </div>
     </header>
 
+    <TextoContextual titulo="Indicadores del periodo">
+      <p>Los indicadores presentan el estado académico correspondiente al periodo seleccionado. El <strong>progreso promedio</strong> y las <strong>guías completadas</strong> están acotados a las sesiones del periodo; los indicadores de exámenes corresponden a todos los intentos de evaluación registrados en las aulas del periodo.</p>
+    </TextoContextual>
+
     <!-- KPIs del periodo -->
     <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
       <KpiCard etiqueta="Aulas del periodo"   clave="p-aulas"      color="#7C3AED" icono="🏫" />
@@ -74,6 +85,10 @@ import BotonImprimir from '../../../components/informe/BotonImprimir.astro';
       <KpiCard etiqueta="Intentos de examen"   clave="p-quiz-int"   color="#7C3AED" icono="📝" />
       <KpiCard etiqueta="Promedio exámenes"    clave="p-quiz-prom"  color="#7C3AED" icono="🎯" sub="puntaje 0–100" />
     </section>
+
+    <TextoContextual titulo="Comparativa entre grados del periodo">
+      <p>La comparativa muestra cómo se distribuye el progreso entre los distintos grados que cursaron el periodo seleccionado. Diferencias marcadas entre grados pueden indicar necesidad de ajustar la dificultad del contenido, el tiempo de dedicación o la estrategia de mediación pedagógica por grupo. Haga clic en el grado para ver su informe completo.</p>
+    </TextoContextual>
 
     <!-- Comparativa entre grados -->
     <section class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-5 md:p-6 evitar-corte">
@@ -99,6 +114,7 @@ import BotonImprimir from '../../../components/informe/BotonImprimir.astro';
       <div data-grados-links class="flex flex-wrap gap-2"></div>
     </section>
 
+    <ObservacionesDocente />
     <PieInforme />
   </article>
 </CuentaLayout>
@@ -205,6 +221,11 @@ import BotonImprimir from '../../../components/informe/BotonImprimir.astro';
         return `<a href="${href}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-bento-sm text-sm font-bold text-white hover:opacity-90 transition-opacity" style="background:${col}">${g.grado}°</a>`;
       }).join('');
     }
+
+    // Portada: información dinámica del periodo
+    document.querySelectorAll<HTMLElement>('[data-portada-filtros]').forEach((el) => {
+      el.textContent = `Año lectivo ${ano} · ${label}`;
+    });
   }
 
   async function init() {

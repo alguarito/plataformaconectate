@@ -3,14 +3,31 @@
  * Solo activa en @media print (no afecta la pantalla).
  *
  * Objetivo: imprimir cualquier página /docente/informes/* en A4 con
- * buena legibilidad, conservando los colores de los charts SVG.
+ * portada institucional completa, texto de contexto pedagógico/legal
+ * y KPIs en 2 columnas (mejor aprovechamiento del papel).
  */
 
 @media print {
-  /* ── Configuración de página ──────────────────────────────────────── */
+  /* ── Configuración de página con numeración automática ─────────────── */
   @page {
     size: A4 portrait;
     margin: 14mm 15mm 18mm 15mm;
+    @top-right {
+      content: "Plataforma Conéctate · I.E. Sor María Juliana";
+      font-size: 7pt;
+      color: #D1D5DB;
+    }
+    @bottom-right {
+      content: counter(page) " / " counter(pages);
+      font-size: 8pt;
+      color: #9CA3AF;
+    }
+  }
+
+  /* La portada (pág. 1) no lleva encabezado ni número de página */
+  @page :first {
+    @top-right { content: none; }
+    @bottom-right { content: none; }
   }
 
   /* ── Ocultar chrome y controles ──────────────────────────────────── */
@@ -83,8 +100,24 @@
     display: block !important;
   }
 
-  /* ── Layout: una sola columna en el contenido ────────────────────── */
-  .grid {
+  /* ── Portada: página completa con salto al terminar (pág. 1) ─────── */
+  [data-portada] {
+    display: flex !important;
+    flex-direction: column;
+    min-height: 250mm;
+    break-after: page;
+    page-break-after: always;
+  }
+
+  /* ── KPIs: 2 columnas en impresión (mejor aprovechamiento del A4) ── */
+  section.grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 4mm !important;
+  }
+
+  /* ── Otros grids (layouts de sección): colapsar a una columna ───── */
+  .grid:not(section) {
     display: block !important;
   }
 

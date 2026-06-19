@@ -11,6 +11,9 @@ import KpiCard from '../../../components/charts/KpiCard.astro';
 import EncabezadoInforme from '../../../components/informe/EncabezadoInforme.astro';
 import PieInforme from '../../../components/informe/PieInforme.astro';
 import BotonImprimir from '../../../components/informe/BotonImprimir.astro';
+import PortadaInforme from '../../../components/informe/PortadaInforme.astro';
+import TextoContextual from '../../../components/informe/TextoContextual.astro';
+import ObservacionesDocente from '../../../components/informe/ObservacionesDocente.astro';
 ---
 
 <CuentaLayout title="Informe por grado · Plataforma Conéctate">
@@ -37,6 +40,10 @@ import BotonImprimir from '../../../components/informe/BotonImprimir.astro';
   </div>
 
   <article data-contenido class="hidden space-y-6">
+    <PortadaInforme
+      titulo="Informe por grado"
+      descripcion="Informe de corte por grado. Presenta indicadores de progreso, cobertura de guías por sesión y periodo, desempeño en evaluaciones formativas e identificación de estudiantes que requieren atención pedagógica prioritaria."
+    />
     <EncabezadoInforme />
 
     <!-- Cabecera con selectores -->
@@ -65,6 +72,10 @@ import BotonImprimir from '../../../components/informe/BotonImprimir.astro';
       </div>
     </header>
 
+    <TextoContextual titulo="Indicadores del grado">
+      <p>Los indicadores presentan el estado académico de los estudiantes del grado seleccionado. El <strong>progreso promedio</strong> corresponde al avance en guías disponibles del área; los <strong>activos</strong> muestran participación reciente. Los estudiantes <strong>en riesgo</strong> tienen menos del 25% de avance y requieren seguimiento pedagógico prioritario.</p>
+    </TextoContextual>
+
     <!-- KPIs del grado -->
     <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
       <KpiCard etiqueta="Aulas del grado"    clave="g-aulas"      color="#0066FF" icono="🏫" />
@@ -84,6 +95,10 @@ import BotonImprimir from '../../../components/informe/BotonImprimir.astro';
       <div data-periodos-chart></div>
       <p data-periodos-vacio class="hidden text-sm text-neutral-500 text-center py-6">Sin datos de periodos para este grado.</p>
     </section>
+
+    <TextoContextual titulo="Cobertura de guías por sesión">
+      <p>El mapa de cobertura muestra cuántos estudiantes han completado cada guía del grado, organizado por sesión y periodo. Las celdas de mayor intensidad indican guías ampliamente completadas; las celdas vacías o de baja intensidad señalan oportunidades de intervención docente o contenidos que requieren refuerzo.</p>
+    </TextoContextual>
 
     <!-- Heatmap de cobertura de guías -->
     <section class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-5 md:p-6 evitar-corte">
@@ -112,6 +127,7 @@ import BotonImprimir from '../../../components/informe/BotonImprimir.astro';
       <p data-riesgo-vacio class="hidden text-sm text-neutral-500 text-center py-6">Ningún estudiante del grado en riesgo. 🎉</p>
     </section>
 
+    <ObservacionesDocente />
     <PieInforme />
   </article>
 </CuentaLayout>
@@ -272,6 +288,11 @@ import BotonImprimir from '../../../components/informe/BotonImprimir.astro';
         }).join('') +
         `</div>`;
     }
+
+    // Portada: información dinámica del grado
+    document.querySelectorAll<HTMLElement>('[data-portada-filtros]').forEach((el) => {
+      if (gradoData) el.textContent = `Grado ${grado}° · Año lectivo ${ano} · ${gradoData.estudiantes} estudiantes`;
+    });
   }
 
   async function init() {

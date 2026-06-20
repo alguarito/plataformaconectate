@@ -97,9 +97,13 @@ const base = (import.meta.env.BASE_URL ?? '/').replace(/\/$/, '');
     root.querySelector<HTMLElement>('[data-avatar-inicial]')!.textContent = inicial;
 
     const avatarUrl = await getAvatarUrl();
-    if (avatarUrl) {
+    if (avatarUrl && /^https?:\/\/./.test(avatarUrl)) {
       const wrap = root.querySelector<HTMLElement>('[data-avatar-wrap]')!;
-      wrap.innerHTML = `<img src="${avatarUrl}" alt="" class="w-full h-full object-cover" />`;
+      const img = document.createElement('img');
+      img.src = avatarUrl;
+      img.alt = '';
+      img.className = 'w-full h-full object-cover';
+      wrap.replaceChildren(img);
     }
 
     // Badge XP (se actualiza también en cada cambio de progreso)

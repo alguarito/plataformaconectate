@@ -180,31 +180,12 @@ import NotasPeriodoEditor from '../../../components/informe/NotasPeriodoEditor.a
   import { getAnosDisponibles, getResumenPorGrado, getResumenPorPeriodo, getCoberturaGuias, getDesempenoExamenes, getEstudiantesEnRiesgo, getNotasGrado } from '../../../lib/informes';
   import type { NotaGrado } from '../../../lib/informes';
   import { heatmapSVG, barComparativoSVG, escapeHtml, BENTO } from '../../../lib/charts';
-
-  const base = (import.meta.env?.BASE_URL ?? '/').replace(/\/$/, '');
+  import { base, $, mostrar, setKpi, COLORES_GRADO } from '../../../lib/informes-ui';
 
   document.querySelectorAll<HTMLAnchorElement>('[data-link-volver]').forEach((a) => {
     a.href = base + '/docente/informes';
   });
 
-  const $ = <T extends HTMLElement>(s: string) => document.querySelector<T>(s);
-
-  function mostrar(estado: 'loading' | 'error' | 'vacio' | 'contenido') {
-    (['loading', 'error', 'vacio', 'contenido'] as const).forEach((e) => {
-      const sel = e === 'contenido' ? '[data-contenido]' : `[data-${e}]`;
-      $(sel)?.classList.toggle('hidden', e !== estado);
-    });
-  }
-
-  function setKpi(clave: string, valor: string) {
-    const el = document.querySelector(`[data-kpi="${clave}"]`);
-    if (el) el.textContent = valor;
-  }
-
-  const COLORES_GRADO: Record<number, string> = {
-    6: BENTO.blue, 7: BENTO.lime, 8: BENTO.orange,
-    9: BENTO.purple, 10: BENTO.pink, 11: BENTO.cyan,
-  };
   const PERIODO_LABEL: Record<number, string> = { 1: 'Periodo 1', 2: 'Periodo 2', 3: 'Periodo 3' };
 
   async function cargarGrado(ano: number, grado: number) {

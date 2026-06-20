@@ -150,6 +150,14 @@ import BoletinEstudiante from '../../../components/informe/BoletinEstudiante.ast
       <p data-proyectos-vacio class="hidden text-sm text-neutral-500 text-center py-6">Sin proyectos completados.</p>
     </section>
 
+    <!-- Comentarios por guía -->
+    <section data-comentarios-seccion class="bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-5 md:p-6 evitar-corte print:hidden">
+      <h2 class="text-base font-black mb-1">Comentarios por guía</h2>
+      <p class="text-xs text-neutral-500 mb-4">Retroalimentación escrita visible solo para el estudiante. Máx. 1000 caracteres por guía.</p>
+      <div data-comentarios-lista></div>
+      <p data-comentarios-vacio class="hidden text-sm text-neutral-500 text-center py-6">Sin guías iniciadas.</p>
+    </section>
+
     <!-- Boletín de valoración por periodo -->
     <div class="flex items-center justify-between flex-wrap gap-3">
       <h2 class="text-base font-black">Valoración académica</h2>
@@ -187,6 +195,7 @@ import BoletinEstudiante from '../../../components/informe/BoletinEstudiante.ast
   import { calcularGamificacion, NIVELES_GRADO } from '../../../lib/gamificacion';
   import { escapeHtml, BENTO } from '../../../lib/charts';
   import { base, $, COLORES_GRADO } from '../../../lib/informes-ui';
+  import { supabase } from '../../../lib/supabase';
 
   const PANEL = base + '/docente/informes';
 
@@ -213,7 +222,7 @@ import BoletinEstudiante from '../../../components/informe/BoletinEstudiante.ast
     return Math.floor((Date.now() - new Date(iso).getTime()) / 86_400_000);
   }
 
-  async function cargar(estudianteId: string) {
+  async function cargar(estudianteId: string, docenteId: string) {
     const informe = await getInformeEstudiante(estudianteId);
 
     if (!informe) { mostrar('error'); return; }
@@ -506,6 +515,98 @@ import BoletinEstudiante from '../../../components/informe/BoletinEstudiante.ast
         `</div>`;
     }
 
+    // Comentarios por guía
+    const { data: comentariosRaw } = await supabase
+      .from('comentarios_docente')
+      .select('guia_clave, texto, actualizado_en')
+      .eq('docente_id', docenteId)
+      .eq('estudiante_id', estudianteId);
+
+    const comentariosMap = new Map<string, { texto: string; actualizado_en: string }>();
+    for (const c of (comentariosRaw ?? [])) {
+      comentariosMap.set(c.guia_clave, { texto: c.texto, actualizado_en: c.actualizado_en });
+    }
+
+    const comentariosLista = $('[data-comentarios-lista]');
+    const comentariosVacio = $('[data-comentarios-vacio]');
+    if (informe.guias.length === 0) {
+      comentariosVacio?.classList.remove('hidden');
+    } else {
+      comentariosVacio?.classList.add('hidden');
+      if (comentariosLista) {
+        comentariosLista.innerHTML = informe.guias.map((g) => {
+          const existente = comentariosMap.get(g.guiaClave);
+          const textoActual = existente?.texto ?? '';
+          const fechaActual = existente?.actualizado_en
+            ? `Editado el ${fmtFecha(existente.actualizado_en)}`
+            : '';
+          const key = escapeHtml(g.guiaClave);
+          return `<div class="py-3 border-b border-neutral-100 dark:border-neutral-800 last:border-0">
+            <div class="flex items-center justify-between gap-2 mb-1.5">
+              <span class="text-sm font-semibold">${key}</span>
+              <span class="text-xs text-neutral-400" data-cmt-fecha="${key}">${escapeHtml(fechaActual)}</span>
+            </div>
+            <textarea rows="2" maxlength="1000" placeholder="Escribe una retroalimentación…"
+              class="w-full text-sm border border-neutral-200 dark:border-neutral-700 rounded-bento-sm px-3 py-2 resize-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bento-blue bg-white dark:bg-neutral-800"
+              data-cmt-ta="${key}">${escapeHtml(textoActual)}</textarea>
+            <div class="flex items-center justify-between mt-1">
+              <span class="text-xs text-neutral-400" data-cmt-chars="${key}">${textoActual.length}/1000</span>
+              <button type="button" data-cmt-guardar="${key}"
+                class="px-3 py-1 rounded-bento-sm text-xs font-black bg-bento-blue text-white hover:opacity-80 transition-opacity disabled:opacity-40">
+                Guardar
+              </button>
+            </div>
+          </div>`;
+        }).join('');
+
+        comentariosLista.addEventListener('input', (e) => {
+          const ta = (e.target as HTMLElement).closest<HTMLTextAreaElement>('[data-cmt-ta]');
+          if (!ta) return;
+          const key = ta.dataset.cmtTa!;
+          const charsEl = comentariosLista.querySelector(`[data-cmt-chars="${key}"]`);
+          if (charsEl) charsEl.textContent = `${ta.value.length}/1000`;
+        });
+
+        comentariosLista.addEventListener('click', async (e) => {
+          const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-cmt-guardar]');
+          if (!btn || btn.disabled) return;
+          const key = btn.dataset.cmtGuardar!;
+          const ta = comentariosLista.querySelector<HTMLTextAreaElement>(`[data-cmt-ta="${key}"]`);
+          if (!ta) return;
+          const texto = ta.value.trim();
+          btn.disabled = true;
+          const original = btn.textContent;
+          btn.textContent = 'Guardando…';
+          try {
+            if (texto.length === 0) {
+              await supabase.from('comentarios_docente')
+                .delete()
+                .eq('docente_id', docenteId)
+                .eq('estudiante_id', estudianteId)
+                .eq('guia_clave', key);
+              comentariosMap.delete(key);
+              const fechaEl = comentariosLista.querySelector(`[data-cmt-fecha="${key}"]`);
+              if (fechaEl) fechaEl.textContent = '';
+            } else {
+              const now = new Date().toISOString();
+              await supabase.from('comentarios_docente').upsert(
+                { docente_id: docenteId, estudiante_id: estudianteId, guia_clave: key, texto },
+                { onConflict: 'docente_id,estudiante_id,guia_clave' }
+              );
+              comentariosMap.set(key, { texto, actualizado_en: now });
+              const fechaEl = comentariosLista.querySelector(`[data-cmt-fecha="${key}"]`);
+              if (fechaEl) fechaEl.textContent = `Editado el ${fmtFecha(now)}`;
+            }
+            btn.textContent = '✓ Guardado';
+            setTimeout(() => { if (btn) { btn.textContent = original ?? 'Guardar'; btn.disabled = false; } }, 2000);
+          } catch {
+            btn.textContent = 'Error — reintentar';
+            btn.disabled = false;
+          }
+        });
+      }
+    }
+
     // Consentimiento
     const consentimientoEl = $('[data-consentimiento]');
     if (consentimientoEl) {
@@ -583,7 +684,7 @@ import BoletinEstudiante from '../../../components/informe/BoletinEstudiante.ast
     const id = sp.get('id');
     if (!id) { mostrar('sin-id'); return; }
 
-    cargar(id).catch((err) => {
+    cargar(id, sesion.user.id).catch((err) => {
       console.error('[informes/estudiante] cargar:', err);
       const m = $('[data-error-msg]');
       if (m) m.textContent = 'Error al cargar el informe: ' + (err?.message ?? err);

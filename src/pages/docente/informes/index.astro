@@ -192,23 +192,12 @@ import ObservacionesDocente from '../../../components/informe/ObservacionesDocen
   } from '../../../lib/informes';
   import type { ResumenGrado, NotaGrado } from '../../../lib/informes';
   import { lineChartSVG, funnelHTML, barComparativoSVG, escapeHtml, BENTO } from '../../../lib/charts';
+  import { base, $, mostrar, setKpi, COLORES_GRADO } from '../../../lib/informes-ui';
 
-  const base = (import.meta.env?.BASE_URL ?? '/').replace(/\/$/, '');
   document.querySelectorAll<HTMLAnchorElement>('[data-link-aulas]').forEach((a) => {
     a.href = base + '/docente';
   });
 
-  const $ = <T extends HTMLElement>(s: string) => document.querySelector<T>(s);
-  function mostrar(estado: 'loading' | 'error' | 'vacio' | 'contenido') {
-    (['loading', 'error', 'vacio', 'contenido'] as const).forEach((e) => {
-      const sel = e === 'contenido' ? '[data-contenido]' : `[data-${e}]`;
-      $(sel)?.classList.toggle('hidden', e !== estado);
-    });
-  }
-  function setKpi(clave: string, valor: string) {
-    const el = document.querySelector(`[data-kpi="${clave}"]`);
-    if (el) el.textContent = valor;
-  }
   function fechaISO(d: Date) { return d.toISOString().slice(0, 10); }
 
   async function cargarAnio(ano: number) {
@@ -303,11 +292,6 @@ import ObservacionesDocente from '../../../components/informe/ObservacionesDocen
       getResumenPorPeriodo(ano),
     ]);
 
-    const COLORES_GRADO: Record<number, string> = {
-      6: BENTO.blue, 7: BENTO.lime, 8: BENTO.orange,
-      9: BENTO.purple, 10: BENTO.pink, 11: BENTO.cyan,
-    };
-
     const gradosBarras = $('[data-grados-barras]');
     const gradosBarrasVacio = $('[data-grados-barras-vacio]');
     const gradosChips = $('[data-grados-chips]');
@@ -399,11 +383,6 @@ import ObservacionesDocente from '../../../components/informe/ObservacionesDocen
       notasPorGrado.get(n.grado)!.push(n.notaFinal!);
     }
 
-    const COLORES_GRADO_VAL: Record<number, string> = {
-      6: BENTO.blue, 7: BENTO.lime, 8: BENTO.orange,
-      9: BENTO.purple, 10: BENTO.pink, 11: BENTO.cyan,
-    };
-
     const valBarras = $('[data-val-grados-barras]');
     const valVacio  = $('[data-val-grados-vacio]');
 
@@ -420,7 +399,7 @@ import ObservacionesDocente from '../../../components/informe/ObservacionesDocen
             return {
               label: `${grado}°`,
               valor: parseFloat(prom.toFixed(1)),
-              color: COLORES_GRADO_VAL[grado] ?? BENTO.blue,
+              color: COLORES_GRADO[grado] ?? BENTO.blue,
               sub: `${notas.length} reg.`,
             };
           }),

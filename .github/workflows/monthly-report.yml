@@ -1,0 +1,48 @@
+name: Informe mensual a acudientes
+
+# Corre el día 1 de cada mes a las 13:00 UTC (8:00 am Colombia, UTC-5).
+# También puede dispararse manualmente desde GitHub → Actions → "Run workflow".
+on:
+  schedule:
+    - cron: '0 13 1 * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'dry_run (true = no envía correos, solo reporta)'
+        required: false
+        default: 'false'
+
+jobs:
+  enviar-informes:
+    name: Enviar informes mensuales
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Invocar Edge Function monthly-report
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          DRY_RUN="${{ github.event.inputs.dry_run || 'false' }}"
+          echo "dry_run=$DRY_RUN"
+
+          RESPONSE=$(curl -s -w "\n%{http_code}" \
+            --max-time 120 \
+            -X POST "${SUPABASE_URL}/functions/v1/monthly-report" \
+            -H "Authorization: Bearer ${SUPABASE_SERVICE_ROLE_KEY}" \
+            -H "Content-Type: application/json" \
+            -d "{\"dry_run\": ${DRY_RUN}}")
+
+          HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+          BODY=$(echo "$RESPONSE" | head -n -1)
+
+          echo "HTTP Status: $HTTP_CODE"
+          echo "Respuesta: $BODY"
+
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "::error::Edge Function devolvió HTTP $HTTP_CODE"
+            exit 1
+          fi
+
+          SENT=$(echo "$BODY" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('sent',0))")
+          echo "::notice::Informes enviados: $SENT"

@@ -2,31 +2,87 @@
 /**
  * DocenteTabs · navegación de la zona docente (Aulas / Informes).
  * Marca la pestaña activa según la ruta actual. Mobile-first (chips).
+ * Muestra un badge en Informes cuando hay estudiantes inactivos >14 días.
  */
 const base = (import.meta.env?.BASE_URL ?? '/').replace(/\/$/, '');
 const path = Astro.url.pathname;
 const enInformes = path.includes('/docente/informes');
-const tabs = [
-  { href: `${base}/docente`, label: 'Aulas', activa: !enInformes },
-  { href: `${base}/docente/informes`, label: 'Informes', activa: enInformes },
-];
 ---
 
 <nav class="flex gap-2 mb-6" aria-label="Secciones del panel docente">
-  {
-    tabs.map((t) => (
-      <a
-        href={t.href}
-        aria-current={t.activa ? 'page' : undefined}
-        class:list={[
-          'px-4 py-2 rounded-bento-sm text-sm font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bento-blue',
-          t.activa
-            ? 'bg-bento-blue text-white'
-            : 'bg-white dark:bg-neutral-900 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 shadow-bento',
-        ]}
-      >
-        {t.label}
-      </a>
-    ))
-  }
+  <a
+    href={`${base}/docente`}
+    aria-current={!enInformes ? 'page' : undefined}
+    class:list={[
+      'px-4 py-2 rounded-bento-sm text-sm font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bento-blue',
+      !enInformes
+        ? 'bg-bento-blue text-white'
+        : 'bg-white dark:bg-neutral-900 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 shadow-bento',
+    ]}
+  >
+    Aulas
+  </a>
+
+  <a
+    href={`${base}/docente/informes`}
+    aria-current={enInformes ? 'page' : undefined}
+    class:list={[
+      'relative inline-flex items-center gap-2 px-4 py-2 rounded-bento-sm text-sm font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bento-blue',
+      enInformes
+        ? 'bg-bento-blue text-white'
+        : 'bg-white dark:bg-neutral-900 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 shadow-bento',
+    ]}
+  >
+    Informes
+    <span
+      data-badge-inactivos
+      class="hidden items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full text-[10px] font-black leading-none bg-bento-pink text-white"
+      title="Estudiantes sin actividad por más de 14 días"
+      aria-label="estudiantes inactivos"
+    ></span>
+  </a>
 </nav>
+
+<script>
+  import { getContarInactivos } from '../lib/informes';
+
+  const CACHE_KEY = 'conectate_inactivos_badge';
+  const CACHE_TTL = 30 * 60 * 1000; // 30 minutos
+
+  async function actualizarBadge() {
+    const badge = document.querySelector('[data-badge-inactivos]');
+    if (!badge) return;
+
+    // Leer caché
+    try {
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (cached) {
+        const { count, ts } = JSON.parse(cached);
+        if (Date.now() - ts < CACHE_TTL) {
+          mostrarBadge(badge, count);
+          return;
+        }
+      }
+    } catch { /* localStorage no disponible */ }
+
+    // Llamar RPC y cachear
+    try {
+      const count = await getContarInactivos();
+      localStorage.setItem(CACHE_KEY, JSON.stringify({ count, ts: Date.now() }));
+      mostrarBadge(badge, count);
+    } catch { /* silencioso: el badge es informativo, no crítico */ }
+  }
+
+  function mostrarBadge(badge, count) {
+    if (count > 0) {
+      badge.textContent = count > 99 ? '99+' : String(count);
+      badge.classList.remove('hidden');
+      badge.classList.add('inline-flex');
+    } else {
+      badge.classList.add('hidden');
+      badge.classList.remove('inline-flex');
+    }
+  }
+
+  actualizarBadge();
+</script>

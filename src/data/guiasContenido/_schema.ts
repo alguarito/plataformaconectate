@@ -66,6 +66,12 @@ export interface LabQuiz {
   titulo: string;
   instrucciones: string;
   preguntas: QuizPregunta[];
+  /**
+   * Si se define, el quiz selecciona `mostrarN` preguntas aleatorias del array
+   * en cada intento (y al reintentar). Requiere `preguntas.length >= mostrarN`.
+   * Con esto, el puntaje mide comprensión, no memoria de respuestas.
+   */
+  mostrarN?: number;
 }
 
 export interface VisualizacionPaso {

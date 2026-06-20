@@ -607,3 +607,14 @@ export async function getEstudiantesEnRiesgo(
     diasInactivo: r.dias_inactivo,
   }));
 }
+
+/**
+ * Cuenta estudiantes inactivos >14 días del año lectivo actual.
+ * Se usa para el badge proactivo en DocenteTabs (con caché de 30 min en localStorage).
+ */
+export async function getContarInactivos(): Promise<number> {
+  if (!authEnabled) return 0;
+  const ano = new Date().getFullYear();
+  const resumen = await getResumenDocente(ano);
+  return resumen?.inactivos ?? 0;
+}

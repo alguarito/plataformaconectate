@@ -108,6 +108,13 @@ import ObservacionesDocente from '../../../components/informe/ObservacionesDocen
       <p data-val-grados-vacio class="hidden text-sm text-neutral-500 text-center py-4">Sin datos de valoración para este año.</p>
     </section>
 
+    <!-- Alertas: estudiantes en riesgo académico -->
+    <section data-val-riesgo-wrap class="hidden bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-5 md:p-6 evitar-corte">
+      <h2 class="text-base font-black mb-1">Estudiantes en riesgo académico</h2>
+      <p class="text-xs text-neutral-500 mb-4">Nota final &lt; 3,0 en al menos un periodo del año. Ordenados por nota ascendente.</p>
+      <div data-val-riesgo-tabla class="overflow-x-auto"></div>
+    </section>
+
     <TextoContextual titulo="Actividad semanal · Últimas 12 semanas">
       <p>La serie temporal permite identificar patrones de uso a lo largo del año lectivo. Los picos de actividad suelen coincidir con semanas de clase activa; las caídas prolongadas pueden señalar períodos vacacionales o dificultades de conectividad. La diferencia entre las curvas de <strong>guías</strong> y <strong>exámenes</strong> refleja la relación entre exploración de contenido y evaluación formativa.</p>
     </TextoContextual>
@@ -363,12 +370,12 @@ import ObservacionesDocente from '../../../components/informe/ObservacionesDocen
   async function cargarValoracion(ano: number, gradosData: ResumenGrado[]): Promise<void> {
     if (gradosData.length === 0) return;
 
-    const todasNotas: Array<NotaGrado & { grado: number }> = [];
+    const todasNotas: Array<NotaGrado & { grado: number; periodo: number }> = [];
     await Promise.all(
       gradosData.flatMap((g) =>
         [1, 2, 3].map((p) =>
           getNotasGrado(ano, g.grado, p).then((rows) => {
-            if (rows) rows.forEach((n) => todasNotas.push({ ...n, grado: g.grado }));
+            if (rows) rows.forEach((n) => todasNotas.push({ ...n, grado: g.grado, periodo: p }));
           })
         )
       )
@@ -419,6 +426,39 @@ import ObservacionesDocente from '../../../components/informe/ObservacionesDocen
           }),
         { max: 5.0 }
       );
+    }
+
+    // Tabla de estudiantes en riesgo académico (nota < 3.0)
+    const enRiesgoDetalle = todasNotas
+      .filter((n) => n.aprobado === false && n.notaFinal !== null)
+      .sort((a, b) => (a.notaFinal ?? 0) - (b.notaFinal ?? 0));
+
+    const riesgoWrap  = $('[data-val-riesgo-wrap]');
+    const riesgoTabla = $('[data-val-riesgo-tabla]');
+    if (enRiesgoDetalle.length === 0) {
+      riesgoWrap?.classList.add('hidden');
+    } else {
+      riesgoWrap?.classList.remove('hidden');
+      if (riesgoTabla) riesgoTabla.innerHTML = `
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="border-b border-neutral-200 dark:border-neutral-700 text-xs text-neutral-500 uppercase tracking-widest">
+              <th class="text-left py-2 pr-4 font-bold">Estudiante</th>
+              <th class="text-center py-2 px-2 font-bold">Grado</th>
+              <th class="text-center py-2 px-2 font-bold">Periodo</th>
+              <th class="text-right py-2 pl-4 font-bold">Nota</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${enRiesgoDetalle.map((n) => `
+              <tr class="border-b border-neutral-100 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors">
+                <td class="py-2 pr-4 font-medium">${escapeHtml(n.displayName)}</td>
+                <td class="py-2 px-2 text-center text-neutral-500">${n.grado}°</td>
+                <td class="py-2 px-2 text-center text-neutral-500">P${n.periodo}</td>
+                <td class="py-2 pl-4 text-right font-black" style="color:#FF2D87">${(n.notaFinal ?? 0).toFixed(1)}</td>
+              </tr>`).join('')}
+          </tbody>
+        </table>`;
     }
   }
 

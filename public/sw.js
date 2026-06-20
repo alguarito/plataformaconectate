@@ -14,7 +14,7 @@
  * ─── Cuándo bumpear VERSION ─────────────────────────────────────────────
  *
  * SÍ bumpear (assets cacheados cambiaron):
- *   ✓ Cambia LOGO.png u otra imagen del SHELL_URLS
+ *   ✓ Cambia LOGO.png (está en cache-first on-demand, no en SHELL_URLS)
  *   ✓ Se regeneran PDFs de guías (public/guias-mejoras/*.pdf)
  *   ✓ Cambia algún PDF en public/ (plan-de-area, libro-milc, etc.)
  *   ✓ Cambia la estrategia/lógica del propio SW
@@ -31,7 +31,7 @@
  * ─────────────────────────────────────────────────────────────────────────
  */
 
-const VERSION = 'v46';
+const VERSION = 'v47';
 const BASE_PATH = '/plataformaconectate';
 
 const CACHE_SHELL = `conectate-shell-${VERSION}`;
@@ -42,8 +42,8 @@ const CACHE_ASSETS = `conectate-assets-${VERSION}`;
 const SHELL_URLS = [
   `${BASE_PATH}/`,
   `${BASE_PATH}/manifest.webmanifest`,
-  `${BASE_PATH}/LOGO.png`,
   `${BASE_PATH}/offline`,
+  // LOGO.png omitido del precache (1.1 MB); se cachea on-demand via cache-first al primer uso
 ];
 
 /* ─── Install: precarga el shell y activa inmediatamente ─── */

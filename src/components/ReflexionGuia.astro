@@ -1,0 +1,167 @@
+---
+/**
+ * ReflexionGuia — captura digital del bloque 💭 (reflexión/cierre filosófico).
+ *
+ * Muestra un textarea con autosave debounced (800 ms).
+ * Si no hay sesión activa, muestra un CTA de registro.
+ * Persiste en la tabla `reflexiones_estudiante` (guia_clave = 'grado-periodo-sesion').
+ */
+interface Props {
+  grado: number;
+  periodo: number;
+  sesion: number;
+}
+
+const { grado, periodo, sesion } = Astro.props;
+const guiaClave = `${grado}-${periodo}-${sesion}`;
+const MAX = 800;
+---
+
+<div class="bento-card mb-6" data-reflexion-wrap>
+  <span class="chip-bento mb-3">💭 Tu reflexión personal</span>
+  <h3 class="text-lg font-black mb-1 leading-tight">¿Qué te llevás de esta guía?</h3>
+  <p class="text-sm leading-relaxed mb-4" style="color:var(--fg-muted);">
+    Escribe en tus propias palabras: qué aprendiste, qué te sorprendió, o cómo conecta con tu vida.
+    Máximo {MAX} caracteres. No se califica — es para ti.
+  </p>
+
+  <!-- Estado: sin sesión -->
+  <div data-reflexion-sin-sesion class="hidden text-center py-4">
+    <p class="text-sm mb-3" style="color:var(--fg-muted);">
+      Inicia sesión para guardar tu reflexión y que quede en tu historial.
+    </p>
+    <button
+      type="button"
+      onclick="document.dispatchEvent(new CustomEvent('conectate:abrir-login'))"
+      class="px-4 py-2 rounded-bento-sm bg-bento-blue text-white text-sm font-bold"
+    >
+      Iniciar sesión
+    </button>
+  </div>
+
+  <!-- Estado: editor -->
+  <div data-reflexion-editor class="hidden">
+    <div class="relative">
+      <textarea
+        data-reflexion-textarea
+        maxlength={MAX}
+        rows="4"
+        placeholder="Escribe aquí tu reflexión…"
+        class="w-full resize-none p-3 rounded-bento-sm border-2 text-sm leading-relaxed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bento-blue transition-colors"
+        style="border-color:var(--border);background:var(--bg);color:var(--fg);"
+      ></textarea>
+      <span
+        data-reflexion-contador
+        class="absolute bottom-2 right-3 text-xs font-semibold select-none"
+        style="color:var(--fg-muted);"
+      >0 / {MAX}</span>
+    </div>
+
+    <div class="flex items-center justify-between mt-2 min-h-[20px]">
+      <span data-reflexion-estado class="text-xs font-semibold" style="color:var(--fg-muted);"></span>
+    </div>
+  </div>
+</div>
+
+<script define:vars={{ guiaClave, MAX }}>
+  const wrap = document.querySelector('[data-reflexion-wrap]');
+  if (!wrap) return;
+
+  const sinSesion = wrap.querySelector('[data-reflexion-sin-sesion]');
+  const editor    = wrap.querySelector('[data-reflexion-editor]');
+  const textarea  = wrap.querySelector('[data-reflexion-textarea]');
+  const contador  = wrap.querySelector('[data-reflexion-contador]');
+  const estado    = wrap.querySelector('[data-reflexion-estado]');
+
+  let debounceTimer = null;
+  let ultimoTexto   = '';
+
+  function setEstado(msg, color = 'var(--fg-muted)') {
+    if (estado) { estado.textContent = msg; estado.style.color = color; }
+  }
+
+  async function cargarReflexion(supabase, userId) {
+    const { data } = await supabase
+      .from('reflexiones_estudiante')
+      .select('texto')
+      .eq('estudiante_id', userId)
+      .eq('guia_clave', guiaClave)
+      .maybeSingle();
+    if (data?.texto) {
+      textarea.value = data.texto;
+      ultimoTexto = data.texto;
+      actualizarContador();
+      setEstado('Reflexión guardada anteriormente.');
+    }
+  }
+
+  async function guardarReflexion(supabase, userId, texto) {
+    setEstado('Guardando…');
+    const { error } = await supabase
+      .from('reflexiones_estudiante')
+      .upsert(
+        { estudiante_id: userId, guia_clave: guiaClave, texto },
+        { onConflict: 'estudiante_id,guia_clave' }
+      );
+    if (error) {
+      setEstado('No se pudo guardar.', '#FF2D87');
+    } else {
+      ultimoTexto = texto;
+      setEstado('Guardado ✓', '#58A923');
+      setTimeout(() => { if (estado) estado.textContent = ''; }, 3000);
+    }
+  }
+
+  function actualizarContador() {
+    const len = textarea?.value?.length ?? 0;
+    if (contador) {
+      contador.textContent = `${len} / ${MAX}`;
+      contador.style.color = len > MAX * 0.9 ? '#FF6B35' : 'var(--fg-muted)';
+    }
+  }
+
+  // Usa el cliente Supabase ya inicializado en la app
+  import('../lib/supabase').then(({ supabase, authEnabled }) => {
+    if (!authEnabled) return;
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) {
+        sinSesion?.classList.remove('hidden');
+        return;
+      }
+
+      editor?.classList.remove('hidden');
+      const userId = session.user.id;
+      cargarReflexion(supabase, userId);
+
+      textarea?.addEventListener('input', () => {
+        actualizarContador();
+        const texto = textarea.value.trim();
+        if (texto === ultimoTexto) return;
+        clearTimeout(debounceTimer);
+        setEstado('');
+        if (!texto) return;
+        debounceTimer = setTimeout(() => guardarReflexion(supabase, userId, texto), 800);
+      });
+    });
+
+    // Si el usuario inicia sesión en esta misma pestaña, mostrar el editor
+    supabase.auth.onAuthStateChange((_event, session) => {
+      if (session && sinSesion && !sinSesion.classList.contains('hidden')) {
+        sinSesion.classList.add('hidden');
+        editor?.classList.remove('hidden');
+        const userId = session.user.id;
+        cargarReflexion(supabase, userId);
+        textarea?.addEventListener('input', () => {
+          actualizarContador();
+          const texto = textarea.value.trim();
+          if (texto === ultimoTexto) return;
+          clearTimeout(debounceTimer);
+          setEstado('');
+          if (!texto) return;
+          debounceTimer = setTimeout(() => guardarReflexion(supabase, userId, texto), 800);
+        });
+      }
+    });
+  });
+</script>

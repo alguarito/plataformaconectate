@@ -15,6 +15,7 @@ interface Props {
 }
 
 const { data, id } = Astro.props;
+const mostrarN = data.mostrarN ?? 0;
 ---
 
 <div class="bento-card" data-lab-quiz={id}>
@@ -36,10 +37,16 @@ const { data, id } = Astro.props;
     {data.instrucciones}
   </p>
 
+  {mostrarN > 0 && mostrarN < data.preguntas.length && (
+    <p class="text-xs font-semibold mb-4 px-3 py-2 rounded-bento-sm" style="background:var(--bg);color:var(--fg-muted);">
+      🎲 Banco rotatorio — {mostrarN} preguntas de {data.preguntas.length}. Cada intento es diferente.
+    </p>
+  )}
+
   <!-- Barra de progreso interna -->
   <div class="mb-4 hidden" data-quiz-progreso-wrap>
     <div class="flex items-center justify-between mb-1.5 text-xs font-bold" style="color: var(--fg-muted);">
-      <span><span data-quiz-acierto-count>0</span> de <span data-quiz-total>{data.preguntas.length}</span></span>
+      <span><span data-quiz-acierto-count>0</span> de <span data-quiz-total>{mostrarN > 0 && mostrarN < data.preguntas.length ? mostrarN : data.preguntas.length}</span></span>
       <span data-quiz-pct>0%</span>
     </div>
     <div class="w-full h-2 rounded-full overflow-hidden" style="background: var(--border);">
@@ -90,23 +97,26 @@ const { data, id } = Astro.props;
       <h4 class="font-black text-lg mb-1" data-quiz-resumen-titulo>¡Completaste el quiz!</h4>
       <p class="text-sm" style="color: var(--fg-muted);">
         Aciertos: <strong data-quiz-resumen-aciertos>0</strong> de
-        <strong data-quiz-resumen-total>{data.preguntas.length}</strong>
+        <strong data-quiz-resumen-total>{mostrarN > 0 && mostrarN < data.preguntas.length ? mostrarN : data.preguntas.length}</strong>
       </p>
     </div>
   </div>
 </div>
 
-<script define:vars={{ id, preguntas: data.preguntas }}>
+<script define:vars={{ id, preguntas: data.preguntas, mostrarN }}>
   const esc = (/** @type {string} */ s) =>
     String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
   const root = document.querySelector(`[data-lab-quiz="${id}"]`);
   if (root) {
-    const total = preguntas.length;
+    const totalOriginal = preguntas.length;
+    const totalMostrar = (mostrarN > 0 && mostrarN < totalOriginal) ? mostrarN : totalOriginal;
+    const total = totalMostrar;
+
     let aciertos = 0;
-    /** ya respondidas (por idx pregunta) — evita double-tap */
+    /** ya respondidas (por idx ORIGINAL de pregunta) — evita double-tap */
     const respondidas = new Set();
-    /** respuestas elegidas (preguntaIdx → opcionIdx) para persistir en BD al final */
+    /** respuestas elegidas (preguntaIdxOriginal → opcionIdx) para persistir en BD */
     const respuestasUsuario = new Map();
     /** timestamp al primer click para calcular duración del intento */
     let inicioMs = null;
@@ -118,6 +128,41 @@ const { data, id } = Astro.props;
     const pct = $('[data-quiz-pct]');
     const barra = $('[data-quiz-progreso]');
     const aciertosCount = $('[data-quiz-acierto-count]');
+
+    /* ─── Banco rotatorio: shuffle + selección de N preguntas ─── */
+    /** Índices originales de preguntas visibles en este intento */
+    let visibles = Array.from({ length: totalOriginal }, (_, i) => i);
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function aplicarBanco() {
+      if (totalMostrar >= totalOriginal) return; // sin banco: nada que cambiar
+      const lista = $('[data-quiz-preguntas]');
+      if (!lista) return;
+      const allLi = $$('[data-quiz-pregunta-idx]');
+      // Ocultar todas
+      allLi.forEach((li) => li.classList.add('hidden'));
+      // Mostrar y reordenar las visibles
+      visibles.forEach((origIdx) => {
+        const li = root.querySelector(`[data-quiz-pregunta-idx="${origIdx}"]`);
+        if (li) {
+          li.classList.remove('hidden');
+          lista.appendChild(li);
+        }
+      });
+    }
+
+    if (totalMostrar < totalOriginal) {
+      visibles = shuffle(visibles).slice(0, totalMostrar);
+      aplicarBanco();
+    }
 
     function actualizarProgreso() {
       const respondidasN = respondidas.size;
@@ -154,16 +199,16 @@ const { data, id } = Astro.props;
         if (titulo) titulo.textContent = 'Repasa y vuelve a intentar';
       }
 
-      // Persistir intento en BD si hay sesión. Fire-and-forget.
+      // Persistir intento en BD (índices ORIGINALES). Fire-and-forget.
       const m = window.location.pathname.match(/grado-(\d+)\/periodo-(\d+)\/guia-(\d+)/);
       if (m) {
         const guiaClave = `${m[1]}-${m[2]}-${m[3]}`;
         const respuestasArray = [];
-        for (const [preguntaIdx, opcionIdx] of respuestasUsuario.entries()) {
+        for (const [preguntaIdxOrig, opcionIdx] of respuestasUsuario.entries()) {
           respuestasArray.push({
-            pregunta_idx: preguntaIdx,
+            pregunta_idx: preguntaIdxOrig,
             opcion_idx: opcionIdx,
-            correcta: preguntas[preguntaIdx]?.respuestaIndex === opcionIdx,
+            correcta: preguntas[preguntaIdxOrig]?.respuestaIndex === opcionIdx,
           });
         }
         const duracionSeg = inicioMs ? Math.max(0, Math.round((Date.now() - inicioMs) / 1000)) : null;
@@ -185,6 +230,8 @@ const { data, id } = Astro.props;
       respondidas.clear();
       respuestasUsuario.clear();
       inicioMs = null;
+
+      // Limpiar estado visual de TODAS las preguntas (visibles o no)
       $$('[data-quiz-pregunta-idx]').forEach((li) => {
         $$('[data-quiz-opcion-idx]', li).forEach((b) => {
           b.disabled = false;
@@ -200,60 +247,68 @@ const { data, id } = Astro.props;
           fb.textContent = '';
         }
       });
+
       $('[data-quiz-resumen]')?.classList.add('hidden');
       $('[data-quiz-reset]')?.classList.add('hidden');
       if (wrap) wrap.classList.add('hidden');
       if (pct) pct.textContent = '0%';
       if (barra) barra.style.width = '0%';
+
+      // Re-shuffle para el nuevo intento
+      if (totalMostrar < totalOriginal) {
+        visibles = shuffle(Array.from({ length: totalOriginal }, (_, i) => i)).slice(0, totalMostrar);
+        aplicarBanco();
+      }
     }
 
     /* ─── Click handler ─── */
-    $$('[data-quiz-opcion-idx]').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const preguntaIdx = parseInt(btn.dataset.pregunta || '0', 10);
-        const opcionIdx = parseInt(btn.dataset.quizOpcionIdx || '0', 10);
-        if (respondidas.has(preguntaIdx)) return;
-        respondidas.add(preguntaIdx);
-        respuestasUsuario.set(preguntaIdx, opcionIdx);
-        if (inicioMs === null) inicioMs = Date.now();
+    // Usa delegación en el root para capturar también preguntas reordenadas
+    root.addEventListener('click', (e) => {
+      const btn = e.target?.closest('[data-quiz-opcion-idx]');
+      if (!btn) return;
+      const preguntaIdxOrig = parseInt(btn.dataset.pregunta || '0', 10);
+      const opcionIdx = parseInt(btn.dataset.quizOpcionIdx || '0', 10);
+      if (respondidas.has(preguntaIdxOrig)) return;
+      respondidas.add(preguntaIdxOrig);
+      respuestasUsuario.set(preguntaIdxOrig, opcionIdx);
+      if (inicioMs === null) inicioMs = Date.now();
 
-        const p = preguntas[preguntaIdx];
-        const correcta = p.respuestaIndex === opcionIdx;
-        if (correcta) aciertos++;
+      const p = preguntas[preguntaIdxOrig];
+      const correcta = p.respuestaIndex === opcionIdx;
+      if (correcta) aciertos++;
 
-        const li = btn.closest('[data-quiz-pregunta-idx]');
-        if (!li) return;
+      const li = btn.closest('[data-quiz-pregunta-idx]');
+      if (!li) return;
 
-        // Marcar todas las opciones (correcta verde, elegida-incorrecta rosa)
-        $$('[data-quiz-opcion-idx]', li).forEach((b) => {
-          const oi = parseInt(b.dataset.quizOpcionIdx || '0', 10);
-          b.disabled = true;
-          if (oi === p.respuestaIndex) {
-            b.classList.add('bg-bento-lime', 'text-black');
-            b.style.borderColor = '#A3FF12';
-          } else if (oi === opcionIdx) {
-            b.classList.add('bg-bento-pink', 'text-white');
-            b.style.borderColor = '#FF2D87';
-          } else {
-            b.classList.add('opacity-50');
-          }
-        });
-
-        // Mostrar feedback
-        const fb = $('[data-quiz-feedback]', li);
-        if (fb) {
-          fb.classList.remove('hidden');
-          if (correcta) {
-            fb.classList.add('bg-bento-lime', 'text-black');
-            fb.innerHTML = `<strong>✓ Correcto.</strong> ${esc(p.feedbackCorrecto)}`;
-          } else {
-            fb.classList.add('bg-bento-pink', 'text-white');
-            fb.innerHTML = `<strong>✗ Hmm.</strong> ${esc(p.feedbackIncorrecto)}`;
-          }
+      // Marcar todas las opciones (correcta verde, elegida-incorrecta rosa)
+      $$('[data-quiz-opcion-idx]', li).forEach((b) => {
+        const oi = parseInt(b.dataset.quizOpcionIdx || '0', 10);
+        b.disabled = true;
+        if (oi === p.respuestaIndex) {
+          b.classList.add('bg-bento-lime', 'text-black');
+          b.style.borderColor = '#A3FF12';
+        } else if (oi === opcionIdx) {
+          b.classList.add('bg-bento-pink', 'text-white');
+          b.style.borderColor = '#FF2D87';
+        } else {
+          b.classList.add('opacity-50');
         }
-
-        actualizarProgreso();
       });
+
+      // Mostrar feedback
+      const fb = $('[data-quiz-feedback]', li);
+      if (fb) {
+        fb.classList.remove('hidden');
+        if (correcta) {
+          fb.classList.add('bg-bento-lime', 'text-black');
+          fb.innerHTML = `<strong>✓ Correcto.</strong> ${esc(p.feedbackCorrecto)}`;
+        } else {
+          fb.classList.add('bg-bento-pink', 'text-white');
+          fb.innerHTML = `<strong>✗ Hmm.</strong> ${esc(p.feedbackIncorrecto)}`;
+        }
+      }
+
+      actualizarProgreso();
     });
 
     /* ─── Reset ─── */

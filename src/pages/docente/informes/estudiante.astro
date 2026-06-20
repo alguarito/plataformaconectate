@@ -120,6 +120,9 @@ import BoletinEstudiante from '../../../components/informe/BoletinEstudiante.ast
       </div>
     </section>
 
+    <!-- Tendencia por periodo -->
+    <div data-tendencia class="hidden bg-white dark:bg-neutral-900 rounded-bento shadow-bento p-5 md:p-6 evitar-corte"></div>
+
     <TextoContextual titulo="Progreso en guías de aprendizaje">
       <p>La tabla muestra el avance del estudiante en cada guía, ordenado por periodo y fecha de última actualización. Un porcentaje del <strong>100% con marca de completado</strong> indica que el estudiante finalizó todas las actividades de la guía. Los porcentajes parciales señalan avance sin completar. Las guías sin iniciar no aparecen en este registro.</p>
     </TextoContextual>
@@ -323,6 +326,95 @@ import BoletinEstudiante from '../../../components/informe/BoletinEstudiante.ast
     setEl('[data-progreso-prom]', `${promedio2}%`);
     setEl('[data-quiz-intentos]', String(informe.examenes.length));
     setEl('[data-quiz-prom]', promedioQuiz != null ? `${promedioQuiz}%` : '—');
+
+    // Tendencia por periodo
+    const tendenciaEl = $('[data-tendencia]');
+    if (tendenciaEl && informe.guias.length > 0) {
+      const guiasP = new Map<number, number[]>();
+      for (const g of informe.guias) {
+        const p = parseInt(g.guiaClave.split('-')[1] ?? '0', 10);
+        if (!guiasP.has(p)) guiasP.set(p, []);
+        guiasP.get(p)!.push(g.porcentaje);
+      }
+      const examsP = new Map<number, number[]>();
+      for (const e of informe.examenes) {
+        if (e.puntaje == null) continue;
+        const p = parseInt(e.guiaClave.split('-')[1] ?? '0', 10);
+        if (!examsP.has(p)) examsP.set(p, []);
+        examsP.get(p)!.push(e.puntaje);
+      }
+      const periodosList = [...new Set([...guiasP.keys(), ...examsP.keys()])].sort();
+      const tdatos = periodosList.map((p) => {
+        const gs = guiasP.get(p) ?? [];
+        const es = examsP.get(p) ?? [];
+        const avgG = gs.length > 0 ? Math.round(gs.reduce((a, b) => a + b, 0) / gs.length) : 0;
+        const avgE = es.length > 0 ? Math.round(es.reduce((a, b) => a + b, 0) / es.length) : null;
+        return { p, avgG, avgE };
+      });
+
+      if (periodosList.length >= 1) {
+        const BW = 26;         // bar width px
+        const BH = 72;         // max bar height px
+        const GAP = 6;         // gap between twin bars
+        const GW = 80;         // group width per period
+        const ML = 28;         // left margin
+        const MT = 20;         // top margin (labels above bars)
+        const MB = 28;         // bottom margin (period labels)
+        const SVG_W = ML + periodosList.length * GW + ML;
+        const SVG_H = MT + BH + MB;
+        const hasExams = tdatos.some((d) => d.avgE != null);
+
+        const bars = tdatos.map((d, i) => {
+          const gx = ML + i * GW;
+          const hG = Math.max(2, Math.round((d.avgG / 100) * BH));
+          const yG = MT + BH - hG;
+          const cx = hasExams ? gx : gx + (GW - BW) / 2;
+
+          let examSvg = '';
+          if (hasExams) {
+            if (d.avgE != null) {
+              const hE = Math.max(2, Math.round((d.avgE / 100) * BH));
+              const yE = MT + BH - hE;
+              const ex = gx + BW + GAP;
+              examSvg = [
+                `<rect x="${ex}" y="${yE}" width="${BW}" height="${hE}" rx="3" fill="${BENTO.orange}" opacity="0.85"/>`,
+                `<text x="${ex + BW / 2}" y="${yE - 3}" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" font-weight="700" fill="${BENTO.orange}">${d.avgE}%</text>`,
+              ].join('');
+            } else {
+              const ex = gx + BW + GAP;
+              examSvg = `<text x="${ex + BW / 2}" y="${MT + BH / 2 + 4}" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="currentColor" opacity="0.3">—</text>`;
+            }
+          }
+
+          const midX = hasExams ? gx + BW + GAP / 2 : cx + BW / 2;
+          return [
+            `<rect x="${cx}" y="${yG}" width="${BW}" height="${hG}" rx="3" fill="${BENTO.blue}"/>`,
+            `<text x="${cx + BW / 2}" y="${yG - 3}" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" font-weight="700" fill="${BENTO.blue}">${d.avgG}%</text>`,
+            examSvg,
+            `<text x="${midX}" y="${MT + BH + 14}" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" font-weight="600" fill="currentColor" opacity="0.45">P${d.p}</text>`,
+          ].join('');
+        }).join('');
+
+        const legendY = 10;
+        const legendX = SVG_W - ML - (hasExams ? 130 : 60);
+        const legend = [
+          `<rect x="${legendX}" y="${legendY - 7}" width="8" height="8" rx="2" fill="${BENTO.blue}"/>`,
+          `<text x="${legendX + 11}" y="${legendY + 1}" font-family="Inter,sans-serif" font-size="9" fill="currentColor" opacity="0.55">Guías</text>`,
+          hasExams ? [
+            `<rect x="${legendX + 52}" y="${legendY - 7}" width="8" height="8" rx="2" fill="${BENTO.orange}"/>`,
+            `<text x="${legendX + 63}" y="${legendY + 1}" font-family="Inter,sans-serif" font-size="9" fill="currentColor" opacity="0.55">Exámenes</text>`,
+          ].join('') : '',
+        ].join('');
+
+        tendenciaEl.innerHTML = `
+          <h2 class="text-base font-black mb-1">Tendencia por periodo</h2>
+          <p class="text-xs text-neutral-500 mb-4">Promedio de progreso en guías${hasExams ? ' y puntaje en exámenes' : ''} por periodo académico.</p>
+          <svg viewBox="0 0 ${SVG_W} ${SVG_H}" width="100%" aria-label="Tendencia de progreso por periodo">
+            ${bars}${legend}
+          </svg>`;
+        tendenciaEl.classList.remove('hidden');
+      }
+    }
 
     // Lista de guías
     const guiasLista = $('[data-guias-lista]');

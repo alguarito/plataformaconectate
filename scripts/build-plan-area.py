@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
 """
-Generador del PDF rector del Plan de Área 2026 (formato institucional).
+[OBSOLETO desde 2026-06] Generador del PDF rector (formato MILC, ~41 págs).
 
-Lee content/plan-area/2026.yaml (single source of truth) y produce
+El PDF rector que publica la plataforma ahora se compila desde el documento
+LaTeX institucional en content/plan-area/latex/ (112 págs) con `make plan-area-build`.
+Este script queda como referencia y sigue disponible vía `make plan-area-build-legacy`;
+content/plan-area/2026.yaml conserva el contenido estructurado del área.
+
+Lee content/plan-area/2026.yaml y produce
 public/plan-de-area/plan-de-area-2026.pdf vía xelatex en 2 pasadas.
 
 Estructura institucional siguiendo el formato I.E. Sor María Juliana:

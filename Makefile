@@ -224,7 +224,15 @@ endif
 # ─── Plan de Área 2026 (documento rector) ────────────────────────────────────
 
 .PHONY: plan-area-build
-plan-area-build:  ## Genera el PDF rector del Plan de Área 2026 desde planArea.ts
+plan-area-build:  ## Compila el Plan de Área 2026 (LaTeX, 112 págs) → public/plan-de-area/
+	@echo "▸ Compilando el Plan de Área 2026 (XeLaTeX · 2 pasadas)…"
+	@cd content/plan-area/latex && xelatex -interaction=nonstopmode plan-area-2026.tex >/dev/null 2>&1 && xelatex -interaction=nonstopmode plan-area-2026.tex >/dev/null 2>&1
+	@cp content/plan-area/latex/plan-area-2026.pdf public/plan-de-area/plan-de-area-2026.pdf
+	@cd content/plan-area/latex && rm -f *.aux *.log *.out *.toc *.pdf
+	@echo "  ✓ public/plan-de-area/plan-de-area-2026.pdf"
+
+.PHONY: plan-area-build-legacy
+plan-area-build-legacy:  ## (Obsoleto) Generaba el PDF de 41 págs desde content/plan-area/2026.yaml
 	@$(PYTHON) scripts/build-plan-area.py
 
 .PHONY: plan-area-show

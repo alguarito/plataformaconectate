@@ -647,20 +647,21 @@ def render_plataforma_conectate(pc: dict) -> str:
 
 
 def render_intensidad(ih: dict) -> str:
+    resumen = " \\textbullet{} ".join(
+        rf"{tex(n['nivel'])}: {n['horas_semana']} h/semana ({n['horas_ano']} h/año)"
+        for n in ih['niveles']
+    )
     return rf"""
 \section{{Intensidad horaria por el área}}
 {tex_block(ih['detalle'])}
 
 \begin{{infoband}}{{milcOcre}}
-\textbf{{Resumen:}} {ih['intensidad_semanal_horas']} horas semanales \textbullet{{}}
-{ih['semanas_por_periodo']} semanas por periodo \textbullet{{}}
-{ih['total_horas_periodo']} horas por periodo \textbullet{{}}
-{ih['total_horas_ano']} horas anuales por grado.
+\textbf{{Resumen:}} {resumen}. Cada periodo desarrolla {ih['sesiones_por_periodo']} sesiones en formato MILC.
 \end{{infoband}}
 """
 
 
-def render_evaluacion(intro: str, criterios: list[dict], pond: list[dict], tipos: list[str], val: dict) -> str:
+def render_evaluacion(intro: str, criterios: list[dict], pond: list[dict], tipos: list[str], val: dict, rubricas: dict) -> str:
     parts = [r"\section{Evaluación}", tex_block(intro)]
     parts.append(r"\subsection{Tipos de evaluación}")
     parts.append(r"\begin{itemize}")
@@ -697,6 +698,44 @@ def render_evaluacion(intro: str, criterios: list[dict], pond: list[dict], tipos
     for d in val["color"]:
         parts.append(rf"{tex(d['nivel'])} ({tex(d['color'])}) & {tex(d['umbral'])} & {tex(d['detalle'])} \\")
     parts.append(r"\end{tabularx}")
+
+    # ── Rúbricas operativas (alineadas con el documento rector) ──
+    r5 = rubricas["liberadora_5d"]
+    parts.append(r"\subsection{Evaluación liberadora · las 5 dimensiones}")
+    parts.append(tex_block(r5["intro"]))
+    parts.append(r"\renewcommand{\arraystretch}{1.3}")
+    parts.append(r"\rowcolors{2}{milcGris}{white}")
+    parts.append(r"\begin{tabularx}{\textwidth}{>{\bfseries}p{3.5cm}|Y}")
+    parts.append(r"\arrayrulecolor{milcLinea}")
+    parts.append(r"\rowcolor{milcMostaza}{\color{white}\textbf{Dimensión}} & {\color{white}\textbf{Pregunta-guía de cierre}} \\")
+    for d in r5["dimensiones"]:
+        parts.append(rf"{tex(d['dimension'])} & {tex(d['pregunta'])} \\")
+    parts.append(r"\end{tabularx}")
+
+    rp = rubricas["proyecto_integrador"]
+    parts.append(r"\subsection{Rúbrica del proyecto integrador}")
+    parts.append(tex_block(rp["intro"]))
+    parts.append(r"\renewcommand{\arraystretch}{1.3}")
+    parts.append(r"\rowcolors{2}{milcGris}{white}")
+    parts.append(r"\begin{tabularx}{\textwidth}{>{\bfseries}p{4cm}|>{\centering\arraybackslash}p{1.4cm}|Y}")
+    parts.append(r"\arrayrulecolor{milcLinea}")
+    parts.append(r"\rowcolor{milcMostaza}{\color{white}\textbf{Criterio}} & {\color{white}\textbf{Peso}} & {\color{white}\textbf{Logro pleno (Superior)}} \\")
+    for c in rp["criterios"]:
+        parts.append(rf"{tex(c['criterio'])} & {tex(c['peso'])} & {tex(c['logro'])} \\")
+    parts.append(r"\end{tabularx}")
+
+    rs = rubricas["sel"]
+    parts.append(r"\subsection{Rúbrica de habilidades socioemocionales (SEL)}")
+    parts.append(tex_block(rs["intro"]))
+    parts.append(r"\renewcommand{\arraystretch}{1.3}")
+    parts.append(r"\rowcolors{2}{milcGris}{white}")
+    parts.append(r"\begin{tabularx}{\textwidth}{>{\bfseries}p{4.5cm}|Y}")
+    parts.append(r"\arrayrulecolor{milcLinea}")
+    parts.append(r"\rowcolor{milcMostaza}{\color{white}\textbf{Competencia}} & {\color{white}\textbf{Nivel \emph{Consolidado}}} \\")
+    for c in rs["competencias"]:
+        parts.append(rf"{tex(c['competencia'])} & {tex(c['consolidado'])} \\")
+    parts.append(r"\end{tabularx}")
+
     return "\n".join(parts)
 
 
@@ -764,7 +803,7 @@ def build_tex() -> str:
     parts.append(render_intensidad(data["intensidad_horaria"]))
     parts.append(render_evaluacion(
         data["evaluacion_intro"], data["criterios_evaluacion"], data["ponderacion"],
-        data["tipos_evaluacion"], data["valoracion_web"]
+        data["tipos_evaluacion"], data["valoracion_web"], data["rubricas"]
     ))
     parts.append(render_seccion_texto("Plan de acción hacia la Meta de la Excelencia (HME)", data["plan_hme"]))
     parts.append(render_seccion_texto("Comisión de evaluación y promoción", data["comision_evaluacion"]))

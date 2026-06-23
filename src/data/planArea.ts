@@ -346,6 +346,47 @@ export const ponderacion = [
 ];
 
 /**
+ * Rúbricas operativas del área (alineadas con el documento rector 2026).
+ * La evaluación liberadora 5D, la rúbrica del proyecto integrador y la de
+ * habilidades socioemocionales hacen evaluables las metas del plan.
+ */
+export const rubricaLiberadora5D = {
+  intro:
+    'La evaluación liberadora cierra cada guía con cinco preguntas en el cuaderno. No buscan una respuesta correcta, sino que el estudiante se reconozca como sujeto del aprendizaje.',
+  dimensiones: [
+    { dimension: 'Personal',          pregunta: '¿Qué aprendí hoy que no sabía y para qué me sirve a mí?' },
+    { dimension: 'Emocional',         pregunta: '¿Cómo me sentí durante la actividad? ¿Qué me costó y cómo lo enfrenté?' },
+    { dimension: 'Ciudadana',         pregunta: '¿Cómo puede esto que aprendí ayudar —o dañar— a otras personas?' },
+    { dimension: 'Local',             pregunta: '¿Dónde veo esto en mi barrio, mi familia o mi comunidad de Cartago?' },
+    { dimension: 'Intergeneracional', pregunta: '¿Qué le explicaría a alguien mayor? ¿Y qué me podría enseñar a cambio?' },
+  ],
+};
+
+export const rubricaProyecto = {
+  intro:
+    'El proyecto integrador de cada periodo se evalúa con esta rúbrica única, reutilizable en los 18 proyectos. Se describe el logro pleno (nivel Superior).',
+  criterios: [
+    { criterio: 'Producto',                  peso: 40, logro: 'Resuelve el problema real y supera lo pedido.' },
+    { criterio: 'Pensamiento computacional', peso: 20, logro: 'Descompone, abstrae y depura con autonomía.' },
+    { criterio: 'Anclaje y pertinencia',     peso: 15, logro: 'Conecta la solución con el saber local de forma original.' },
+    { criterio: 'Uso ético de IA',           peso: 10, logro: 'Declara y justifica el uso de IA con criterio.' },
+    { criterio: 'Sustentación',              peso: 15, logro: 'Explica con claridad y responde las preguntas de sus pares.' },
+  ],
+};
+
+export const rubricaSEL = {
+  intro:
+    'Las competencias socioemocionales se observan a lo largo del periodo en tres niveles: Inicial, En proceso y Consolidado. Sostienen la meta de que el 85% alcance nivel En proceso o superior en al menos tres competencias.',
+  competencias: [
+    { competencia: 'Autoconciencia',           consolidado: 'Regula su identidad digital con criterio propio.' },
+    { competencia: 'Autogestión',              consolidado: 'Planifica y persevera de forma autónoma.' },
+    { competencia: 'Conciencia social',        consolidado: 'Anticipa el impacto de su tecnología en otros.' },
+    { competencia: 'Habilidades relacionales', consolidado: 'Lidera y resuelve conflictos en el equipo.' },
+    { competencia: 'Decisiones responsables',  consolidado: 'Fundamenta éticamente sus decisiones (IA, autoría).' },
+  ],
+};
+
+/**
  * Política institucional de IA responsable.
  *
  * Distribución por grados: G6 sin IA, G7 con declaración honesta, G8-G11

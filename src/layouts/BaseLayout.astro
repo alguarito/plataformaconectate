@@ -16,6 +16,26 @@ interface Props {
   ogType?: 'website' | 'article';
   /** JSON-LD adicional para Schema.org (Course, Book, Article, etc.). Se mezcla con el global. */
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  /**
+   * Meta-etiquetas de citación Highwire Press (`citation_*`). Solo para páginas de
+   * obra académica citable (libros). Google Scholar NO lee el JSON-LD `Book`: necesita
+   * estas etiquetas para indexar el libro y ligarlo a su PDF y DOI.
+   */
+  citation?: {
+    title: string;
+    /** Un `citation_author` por autor. */
+    authors: string[];
+    /** Fecha "AAAA/MM/DD" o "AAAA". */
+    date: string;
+    /** URL absoluta al PDF descargable. */
+    pdfUrl?: string;
+    /** DOI sin prefijo de URL, ej. "10.5281/zenodo.21176768". */
+    doi?: string;
+    publisher?: string;
+    /** Código ISO, por defecto "es". */
+    language?: string;
+    isbn?: string;
+  };
 }
 
 const {
@@ -24,6 +44,7 @@ const {
   imagen,
   ogType = 'website',
   jsonLd,
+  citation,
 } = Astro.props;
 
 const base = import.meta.env.BASE_URL;
@@ -81,7 +102,7 @@ const schemaWebsite = {
   alternateName: 'ConectaTE',
   url: inicio,
   description:
-    '190 guías MILC v3 · 234 recursos PDF · 5 programas Explora · Colección MILC (2 libros con DOI) · Tecnología e Informática para grados 6° a 11° · I.E. Sor María Juliana, Cartago.',
+    '190 guías MILC v3 · 234 recursos PDF · 5 programas Explora · Colección MILC (3 libros con DOI) · Tecnología e Informática para grados 6° a 11° · I.E. Sor María Juliana, Cartago.',
   inLanguage: 'es-CO',
   publisher: { '@id': `${inicio}#organization` },
   author: { '@id': `${inicio}/acerca#person` },
@@ -161,6 +182,21 @@ const ogImageHeight = isFullsizeOg ? 630 : 1024;
 
     <!-- Datos del autor -->
     <meta name="author" content="Dr. Álvaro Cárdenas Orozco" />
+
+    <!-- Meta-etiquetas de citación (Google Scholar / Highwire Press) · solo en páginas de libro -->
+    {citation && (
+      <>
+        <meta name="citation_title" content={citation.title} />
+        {citation.authors.map((autor) => <meta name="citation_author" content={autor} />)}
+        <meta name="citation_publication_date" content={citation.date} />
+        {citation.publisher && <meta name="citation_publisher" content={citation.publisher} />}
+        {citation.doi && <meta name="citation_doi" content={citation.doi} />}
+        {citation.pdfUrl && <meta name="citation_pdf_url" content={citation.pdfUrl} />}
+        {citation.isbn && <meta name="citation_isbn" content={citation.isbn} />}
+        <meta name="citation_language" content={citation.language ?? 'es'} />
+        <meta name="citation_abstract_html_url" content={canonical} />
+      </>
+    )}
 
     <!-- Inter variable font — carga no bloqueante para mejorar FCP -->
     <link rel="dns-prefetch" href="https://rsms.me/" />

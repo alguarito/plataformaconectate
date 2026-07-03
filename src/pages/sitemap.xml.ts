@@ -25,6 +25,15 @@ export const GET: APIRoute = async ({ site }) => {
   // Página "Modelo MILC" · pedagogía propia · página de autoridad (alto valor SEO)
   urls.push({ loc: `${fullBase}/modelo-milc`, priority: 0.9, changefreq: 'monthly' });
 
+  // Colección MILC · páginas dedicadas de cada libro (obra citable con DOI · alto valor SEO)
+  urls.push({ loc: `${fullBase}/modelo-milc/mercado-atencion`, priority: 0.85, changefreq: 'monthly' });
+  urls.push({ loc: `${fullBase}/modelo-milc/querencia`, priority: 0.85, changefreq: 'monthly' });
+
+  // PDFs de los libros · indexables directamente por Google (rankean como documento)
+  urls.push({ loc: `${fullBase}/libro-milc/libro-milc-2026.pdf`, priority: 0.7, changefreq: 'yearly' });
+  urls.push({ loc: `${fullBase}/libro-milc/tomo-1-mercado-de-la-atencion.pdf`, priority: 0.7, changefreq: 'yearly' });
+  urls.push({ loc: `${fullBase}/libro-milc/tomo-2-pedagogia-de-la-querencia.pdf`, priority: 0.7, changefreq: 'yearly' });
+
   // Página "Acerca de"
   urls.push({ loc: `${fullBase}/acerca`, priority: 0.8, changefreq: 'monthly' });
 

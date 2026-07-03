@@ -1,8 +1,9 @@
 /**
  * Generador de imágenes Open Graph para ConectaTE.
  *
- * Produce 27 PNGs en /public/og/ con la identidad visual Bento:
- * - 1 home + 6 grados + 18 períodos + 1 acerca + 1 plan-de-area
+ * Produce 31 PNGs en /public/og/ con la identidad visual Bento:
+ * - 1 home + 6 grados + 18 períodos + 1 acerca + 1 comenzar + 1 modelo-milc
+ *   + 1 plan-de-area + 3 portadas de la Colección MILC
  *
  * Cada página de la plataforma referencia el archivo correspondiente.
  * Guías, proyectos y exámenes heredan la imagen de su período (contexto
@@ -292,7 +293,7 @@ function tplModeloMilc(): string {
       ${esc('4 fases · Triángulo Dussel-Estoico-Floridi · 18 anclajes ancestrales')}
     </text>
     <text x="80" y="510" fill="#FFFFFF" opacity="0.75" font-family="Helvetica, sans-serif" font-weight="500" font-size="20">
-      ${esc('Libro · 64 páginas · Dr. Álvaro Cárdenas Orozco')}
+      ${esc('Colección MILC · 3 libros con DOI · Dr. Álvaro Cárdenas Orozco')}
     </text>
     <!-- Wordmark esquina -->
     ${wordmark(W - 240, H - 60, '#FFFFFF', '#FFD60A')}
@@ -328,6 +329,106 @@ function tplPlanArea(): string {
   </svg>`;
 }
 
+/* ────────────── Portadas OG de la Colección MILC ────────────── */
+
+type LibroOg = {
+  slug: string;
+  etiqueta: string;
+  titulo: string;
+  subtitulo: string;
+  paginas: number;
+  licencia: string;
+  doi: string;
+  bg: string;
+  fg: string;
+  accent: string;
+  emoji: string;
+};
+
+// Cada libro con el color de su card en la home (matriz=negro, Tomo I=morado, Tomo II=azul).
+const LIBROS: LibroOg[] = [
+  {
+    slug: 'libro-onlife',
+    etiqueta: 'COLECCIÓN MILC · OBRA MATRIZ',
+    titulo: 'Educación en la Era Onlife',
+    subtitulo: 'Modelo de Investigación Liberadora y Científica',
+    paginas: 226,
+    licencia: 'CC BY-NC-SA 4.0',
+    doi: '10.5281/zenodo.20518085',
+    bg: '#000000', fg: '#FFFFFF', accent: '#A3FF12',
+    emoji: '📖',
+  },
+  {
+    slug: 'libro-mercado-atencion',
+    etiqueta: 'COLECCIÓN MILC · TOMO I',
+    titulo: 'El Mercado de la Atención',
+    subtitulo: 'Educar el criterio de los jóvenes en la era onlife',
+    paginas: 118,
+    licencia: 'CC BY-SA 4.0',
+    doi: '10.5281/zenodo.20644820',
+    bg: '#7C3AED', fg: '#FFFFFF', accent: '#FFD60A',
+    emoji: '📕',
+  },
+  {
+    slug: 'libro-querencia',
+    etiqueta: 'COLECCIÓN MILC · TOMO II',
+    titulo: 'Pedagogía de la Querencia',
+    subtitulo: 'Arraigar al estudiante en su territorio y saberes ancestrales',
+    paginas: 144,
+    licencia: 'CC BY-SA 4.0',
+    doi: '10.5281/zenodo.21176768',
+    bg: '#0066FF', fg: '#FFFFFF', accent: '#A3FF12',
+    emoji: '🌱',
+  },
+];
+
+function tplLibro(libro: LibroOg): string {
+  const lineasTit = textoEnLineas(libro.titulo, 17, 2);
+  const lineasSub = textoEnLineas(libro.subtitulo, 44, 2);
+  const titulo = lineasTit
+    .map(
+      (l, i) => `
+      <text x="80" y="${250 + i * 82}" fill="${libro.fg}" font-family="Helvetica, sans-serif" font-weight="900" font-size="82" letter-spacing="-3">
+        ${esc(l)}
+      </text>`,
+    )
+    .join('');
+  // Posición fija del subtítulo (bajo un título de hasta 2 líneas) para no chocar con los metadatos.
+  const subtitulo = lineasSub
+    .map(
+      (l, i) => `
+      <text x="80" y="${432 + i * 38}" fill="${libro.fg}" opacity="0.88" font-family="Helvetica, sans-serif" font-weight="600" font-size="28" letter-spacing="-0.5">
+        ${esc(l)}
+      </text>`,
+    )
+    .join('');
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+    <rect width="${W}" height="${H}" fill="${libro.bg}"/>
+    ${patternDots(0.07)}
+    <!-- Etiqueta superior -->
+    <text x="80" y="120" fill="${libro.accent}" font-family="Helvetica, sans-serif" font-weight="700" font-size="22" letter-spacing="3">
+      ${esc(libro.etiqueta)}
+    </text>
+    <!-- Emoji decorativo -->
+    <text x="${W - 80}" y="210" fill="${libro.fg}" opacity="0.18" font-family="Helvetica, sans-serif" font-size="170" text-anchor="end">
+      ${libro.emoji}
+    </text>
+    <!-- Título del libro -->
+    ${titulo}
+    <!-- Subtítulo -->
+    ${subtitulo}
+    <!-- Metadatos de obra citable -->
+    <text x="80" y="${H - 92}" fill="${libro.accent}" font-family="Helvetica, sans-serif" font-weight="800" font-size="24" letter-spacing="-0.5">
+      ${esc(`${libro.paginas} páginas · ${libro.licencia} · Acceso abierto`)}
+    </text>
+    <text x="80" y="${H - 56}" fill="${libro.fg}" opacity="0.72" font-family="Helvetica, sans-serif" font-weight="500" font-size="20">
+      ${esc(`DOI ${libro.doi} · Dr. Álvaro Cárdenas Orozco`)}
+    </text>
+    <!-- Wordmark esquina -->
+    ${wordmark(W - 240, H - 60, libro.fg, libro.accent)}
+  </svg>`;
+}
+
 /* ────────────── Render + escritura ────────────── */
 
 async function svg2png(svg: string, outPath: string): Promise<void> {
@@ -360,6 +461,12 @@ async function main(): Promise<void> {
   // Plan de Área
   await svg2png(tplPlanArea(), `${OUT_DIR}/plan-de-area.png`);
   count++;
+
+  // Colección MILC · una portada dedicada por libro (obra citable)
+  for (const libro of LIBROS) {
+    await svg2png(tplLibro(libro), `${OUT_DIR}/${libro.slug}.png`);
+    count++;
+  }
 
   // 6 grados
   for (const g of grados) {

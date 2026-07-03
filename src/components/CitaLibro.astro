@@ -1,0 +1,156 @@
+---
+/**
+ * Bloque "Cómo citar" para un libro de la Colección MILC.
+ *
+ * Muestra la cita en APA y ofrece copiar la referencia en tres formatos
+ * (APA, BibTeX y RIS) al portapapeles. BibTeX/RIS permiten importar el libro
+ * a gestores bibliográficos (Zotero, Mendeley, EndNote), lo que facilita que
+ * otros docentes e investigadores lo citen — señal de autoridad para SEO
+ * académico y Google Scholar.
+ */
+interface Props {
+  /** Título del libro. */
+  titulo: string;
+  /** Etiqueta de tomo, ej. "Tomo I" / "Tomo II". Omitir para la obra matriz. */
+  tomo?: string;
+  /** Número de volumen para BibTeX/RIS (1, 2…). Omitir para la obra matriz. */
+  volumen?: number;
+  /** Año de publicación. */
+  ano: number;
+  /** Editorial. */
+  editorial: string;
+  /** DOI sin prefijo de URL, ej. "10.5281/zenodo.21176768". */
+  doi: string;
+  /** Clave BibTeX, ej. "cardenas2026querencia". */
+  citeKey: string;
+  /** Licencia legible, ej. "CC BY-SA 4.0". */
+  licencia: string;
+  /** Muestra la nota de obra matriz al pie. */
+  notaObraMatriz?: boolean;
+}
+
+const {
+  titulo,
+  tomo,
+  volumen,
+  ano,
+  editorial,
+  doi,
+  citeKey,
+  licencia,
+  notaObraMatriz = true,
+} = Astro.props;
+
+const autorBib = 'Cárdenas Orozco, Álvaro';
+const doiUrl = `https://doi.org/${doi}`;
+const serieApa = tomo ? `(Colección MILC, ${tomo})` : '(Colección MILC)';
+
+// APA 7ª
+const apa = `Cárdenas Orozco, Á. (${ano}). ${titulo} ${serieApa}. ${editorial}. ${doiUrl}`;
+
+// BibTeX
+const bibtex = `@book{${citeKey},
+  author    = {${autorBib}},
+  title     = {${titulo}},
+  series    = {Colección MILC},${volumen ? `\n  volume    = {${volumen}},` : ''}
+  year      = {${ano}},
+  publisher = {${editorial}},
+  address   = {Cartago, Valle del Cauca, Colombia},
+  doi       = {${doi}},
+  url       = {${doiUrl}}
+}`;
+
+// RIS
+const ris = `TY  - BOOK
+AU  - ${autorBib}
+TI  - ${titulo}
+T2  - Colección MILC${volumen ? `\nVL  - ${volumen}` : ''}
+PY  - ${ano}
+PB  - ${editorial}
+CY  - Cartago, Valle del Cauca, Colombia
+DO  - ${doi}
+UR  - ${doiUrl}
+ER  - `;
+
+const formatos = [
+  { clave: 'apa', etiqueta: 'Copiar APA', cita: apa },
+  { clave: 'bibtex', etiqueta: 'Copiar BibTeX', cita: bibtex },
+  { clave: 'ris', etiqueta: 'Copiar RIS', cita: ris },
+];
+---
+
+<div class="bento-card mb-10 border-l-4 border-bento-blue cita-libro">
+  <span class="chip-bento mb-3">📚 Cómo citar {tomo ? `este tomo` : `este libro`}</span>
+  <p class="text-sm leading-relaxed mt-2 p-4 rounded-bento-sm font-mono" style="background: var(--bg); color: var(--fg);" set:html={
+    `Cárdenas Orozco, Á. (${ano}). <em>${titulo}</em> ${serieApa}. Cartago, Valle del Cauca: ${editorial}. ${doiUrl}`
+  } />
+
+  <div class="flex flex-wrap gap-2 mt-4">
+    {formatos.map((f) => (
+      <button
+        type="button"
+        data-copiar-cita
+        data-cita={f.cita}
+        data-etiqueta={f.etiqueta}
+        class="inline-flex items-center gap-2 px-4 py-2 rounded-full font-bold text-xs border-2 hover:opacity-80 transition-opacity"
+        style="border-color: var(--border); color: var(--fg);"
+      >
+        <span data-copiar-icono>
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+        </span>
+        <span data-copiar-texto>{f.etiqueta}</span>
+      </button>
+    ))}
+  </div>
+
+  {notaObraMatriz && (
+    <p class="text-xs leading-relaxed mt-4" style="color: var(--fg-muted);">
+      Obra académica de acceso abierto bajo licencia <strong style="color: var(--fg);">{licencia}</strong>:
+      puedes compartirla y adaptarla citando al autor y conservando la misma licencia.
+      Obra matriz: <em>Educación en la Era Onlife</em> (MILC, 2026).
+    </p>
+  )}
+</div>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-copiar-cita]').forEach((btn) => {
+    const cita = btn.dataset.cita ?? '';
+    const texto = btn.querySelector<HTMLElement>('[data-copiar-texto]');
+    const icono = btn.querySelector<HTMLElement>('[data-copiar-icono]');
+    const textoOriginal = texto?.textContent ?? btn.dataset.etiqueta ?? 'Copiar';
+    const iconoOriginal = icono?.innerHTML ?? '';
+    let revertir: number | null = null;
+
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(cita);
+      } catch {
+        const ta = document.createElement('textarea');
+        ta.value = cita;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          document.execCommand('copy');
+        } finally {
+          document.body.removeChild(ta);
+        }
+      }
+      if (texto) texto.textContent = '¡Copiado!';
+      if (icono)
+        icono.innerHTML =
+          '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+      btn.classList.add('bg-bento-lime', 'text-black', 'border-bento-lime');
+      if (revertir) window.clearTimeout(revertir);
+      revertir = window.setTimeout(() => {
+        if (texto) texto.textContent = textoOriginal;
+        if (icono) icono.innerHTML = iconoOriginal;
+        btn.classList.remove('bg-bento-lime', 'text-black', 'border-bento-lime');
+      }, 1800);
+    });
+  });
+</script>

@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import IndiceDocumento from '../../components/IndiceDocumento.astro';
 import CitaLibro from '../../components/CitaLibro.astro';
+import CitaArticulo from '../../components/CitaArticulo.astro';
 import DiagramaCicloMILC from '../../components/DiagramaCicloMILC.astro';
 import DiagramaPipeline from '../../components/DiagramaPipeline.astro';
 import SlidesViewer from '../../components/SlidesViewer.astro';
@@ -45,6 +46,13 @@ const presentacionDir = `${base}/presentaciones/milc-onlife`;
 const presentacionPdfHref = `${presentacionDir}/${presentacionMilc.archivoPdf}`;
 const presentacionPptxHref = `${presentacionDir}/${presentacionMilc.archivoPptx}`;
 
+// Artículo arbitrado del modelo MILC · Revista Hambatu Science (Ecuador).
+// Referencia académica canónica del modelo (revisión por pares + DOI de revista).
+const articuloDoi = '10.63862/rhs-v1n3-56-77-2026';
+const articuloDoiUrl = `https://doi.org/${articuloDoi}`;
+const articuloUrl = 'https://revistahambatuscience.org/index.php/ojs/es/article/view/34';
+const articuloTitulo = 'Modelo de investigación liberadora y científica (MILC): una propuesta para la educación en la era onlife';
+
 // ─── Schema.org · Book + Article ─────────────────────────────────────────
 const origen = (Astro.site ?? new URL('https://alguarito.github.io')).toString().replace(/\/$/, '');
 const inicio = `${origen}${base.replace(/\/$/, '')}`;
@@ -64,6 +72,55 @@ const jsonLdExtra = [
       { '@id': `${inicio}/modelo-milc#tomo1` },
       { '@id': `${inicio}/modelo-milc#tomo2` },
     ],
+  },
+  {
+    // Artículo arbitrado: referencia académica canónica del modelo MILC.
+    '@type': 'ScholarlyArticle',
+    '@id': `${inicio}/modelo-milc#articulo`,
+    name: articuloTitulo,
+    headline: articuloTitulo,
+    inLanguage: 'es',
+    datePublished: '2026-07-03',
+    license: 'https://creativecommons.org/licenses/by/4.0/',
+    identifier: { '@type': 'PropertyValue', propertyID: 'DOI', value: articuloDoi },
+    sameAs: articuloDoiUrl,
+    url: articuloUrl,
+    pagination: '56-77',
+    author: [
+      { '@id': `${inicio}/acerca#person` },
+      {
+        '@type': 'Person',
+        name: 'Jheison Alexander Restrepo Ortiz',
+        identifier: {
+          '@type': 'PropertyValue',
+          propertyID: 'ORCID',
+          value: 'https://orcid.org/0009-0003-1252-6405',
+        },
+        affiliation: { '@type': 'Organization', name: 'Universidad Tecnológica de Pereira' },
+      },
+    ],
+    isPartOf: {
+      '@type': 'PublicationIssue',
+      issueNumber: '3',
+      datePublished: '2026',
+      isPartOf: {
+        '@type': ['PublicationVolume', 'Periodical'],
+        volumeNumber: '1',
+        name: 'Revista Hambatu Science',
+        issn: '3151-815X',
+      },
+    },
+    citation: { '@id': `${inicio}/modelo-milc#libro` },
+    about: [
+      'Modelo MILC',
+      'Investigación liberadora',
+      'Educación en la era onlife',
+      'Pedagogía crítica',
+      'Formación científica',
+      'Ciudadanía digital',
+    ],
+    keywords:
+      'Investigación liberadora, educación onlife, pedagogía crítica, formación científica, autonomía intelectual, ciudadanía digital, aprendizaje híbrido',
   },
   {
     '@type': 'Book',
@@ -312,6 +369,55 @@ const seccionesMilc = [
           </div>
         </a>
       </div>
+
+      <!-- PUBLICACIÓN ARBITRADA · ancla de autoridad del modelo -->
+      <section id="articulo" class="mb-10 scroll-mt-24">
+        <div class="bento-card-color bg-bento-blue text-white py-8 md:py-10 px-6 md:px-9">
+          <div class="flex flex-wrap items-center gap-2 mb-4">
+            <span class="px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest bg-white/20">Publicación arbitrada · peer-reviewed</span>
+            <span class="px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest bg-white/15">CC BY 4.0</span>
+          </div>
+          <h2 class="text-2xl md:text-3xl font-black tracking-tight leading-tight mb-2 max-w-3xl">
+            El modelo MILC, ahora con revisión por pares.
+          </h2>
+          <p class="text-sm md:text-base opacity-90 leading-relaxed max-w-2xl mb-2">
+            «{articuloTitulo}».
+          </p>
+          <p class="text-xs opacity-75 mb-6">
+            Cárdenas Orozco, Á. &amp; Restrepo Ortiz, J. A. (2026) · <em>Revista Hambatu Science</em> (Ecuador) · Vol. 1, Núm. 3 · pp. 56-77 · DOI {articuloDoi}
+          </p>
+          <div class="flex items-center gap-2.5 flex-wrap">
+            <a href={articuloUrl} target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white text-black text-sm font-black hover:bg-bento-lime transition-colors" aria-label="Artículo en Revista Hambatu Science (se abre en una pestaña nueva)">
+              Leer el artículo
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+            </a>
+            <a href={articuloDoiUrl} target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full border-2 border-white/40 text-sm font-black hover:border-white transition-colors" aria-label="DOI del artículo (se abre en una pestaña nueva)">
+              DOI · Crossref
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- CÓMO CITAR EL MODELO · cita canónica del artículo arbitrado -->
+      <CitaArticulo
+        titulo={articuloTitulo}
+        autores={[
+          { apa: 'Cárdenas Orozco, Á.', full: 'Cárdenas Orozco, Álvaro' },
+          { apa: 'Restrepo Ortiz, J. A.', full: 'Restrepo Ortiz, Jheison Alexander' },
+        ]}
+        revista="Revista Hambatu Science"
+        volumen={1}
+        numero={3}
+        paginas="56-77"
+        ano={2026}
+        doi={articuloDoi}
+        issn="3151-815X"
+        citeKey="cardenas2026milc"
+      />
 
       <!-- ÍNDICE DEL DOCUMENTO -->
       <IndiceDocumento

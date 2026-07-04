@@ -1,0 +1,165 @@
+---
+/**
+ * Bloque "Cómo citar" para un artículo de revista arbitrada.
+ *
+ * Igual que CitaLibro, pero para publicaciones periódicas: ofrece copiar la
+ * referencia en APA, BibTeX (@article) y RIS (TY - JOUR). Es la cita canónica
+ * del modelo MILC, ya que el artículo está revisado por pares y tiene DOI de
+ * revista (señal de autoridad más fuerte que el libro autoeditado).
+ */
+interface Autor {
+  /** Forma APA: "Cárdenas Orozco, Á." */
+  apa: string;
+  /** Forma completa para BibTeX/RIS: "Cárdenas Orozco, Álvaro" */
+  full: string;
+}
+
+interface Props {
+  titulo: string;
+  autores: Autor[];
+  revista: string;
+  volumen: string | number;
+  numero: string | number;
+  /** Rango de páginas, ej. "56-77". */
+  paginas: string;
+  ano: number;
+  /** DOI sin prefijo, ej. "10.63862/rhs-v1n3-56-77-2026". */
+  doi: string;
+  issn?: string;
+  /** Clave BibTeX, ej. "cardenas2026milc". */
+  citeKey: string;
+  licencia?: string;
+}
+
+const {
+  titulo,
+  autores,
+  revista,
+  volumen,
+  numero,
+  paginas,
+  ano,
+  doi,
+  issn,
+  citeKey,
+  licencia = 'CC BY 4.0',
+} = Astro.props;
+
+const doiUrl = `https://doi.org/${doi}`;
+const paginasEnDash = paginas.replace('-', '–');
+const paginasBib = paginas.replace('-', '--');
+
+// Autores en APA: "A, B, & C" (coma serial antes del &)
+const autoresApa =
+  autores.length === 1
+    ? autores[0].apa
+    : `${autores.slice(0, -1).map((a) => a.apa).join(', ')}, & ${autores[autores.length - 1].apa}`;
+
+// APA 7ª
+const apa = `${autoresApa} (${ano}). ${titulo}. ${revista}, ${volumen}(${numero}), ${paginasEnDash}. ${doiUrl}`;
+const apaHtml = `${autoresApa} (${ano}). ${titulo}. <em>${revista}</em>, ${volumen}(${numero}), ${paginasEnDash}. ${doiUrl}`;
+
+// BibTeX
+const bibtex = `@article{${citeKey},
+  author  = {${autores.map((a) => a.full).join(' and ')}},
+  title   = {${titulo}},
+  journal = {${revista}},
+  volume  = {${volumen}},
+  number  = {${numero}},
+  pages   = {${paginasBib}},
+  year    = {${ano}},${issn ? `\n  issn    = {${issn}},` : ''}
+  doi     = {${doi}},
+  url     = {${doiUrl}}
+}`;
+
+// RIS
+const ris = `TY  - JOUR
+${autores.map((a) => `AU  - ${a.full}`).join('\n')}
+TI  - ${titulo}
+JO  - ${revista}
+VL  - ${volumen}
+IS  - ${numero}
+SP  - ${paginas.split('-')[0]}
+EP  - ${paginas.split('-')[1] ?? ''}
+PY  - ${ano}${issn ? `\nSN  - ${issn}` : ''}
+DO  - ${doi}
+UR  - ${doiUrl}
+ER  - `;
+
+const formatos = [
+  { clave: 'apa', etiqueta: 'Copiar APA', cita: apa },
+  { clave: 'bibtex', etiqueta: 'Copiar BibTeX', cita: bibtex },
+  { clave: 'ris', etiqueta: 'Copiar RIS', cita: ris },
+];
+---
+
+<div class="bento-card mb-10 border-l-4 border-bento-blue cita-libro">
+  <span class="chip-bento mb-3">📑 Cómo citar el modelo MILC</span>
+  <p class="text-sm leading-relaxed mt-2 p-4 rounded-bento-sm font-mono" style="background: var(--bg); color: var(--fg);" set:html={apaHtml} />
+
+  <div class="flex flex-wrap gap-2 mt-4">
+    {formatos.map((f) => (
+      <button
+        type="button"
+        data-copiar-cita
+        data-cita={f.cita}
+        data-etiqueta={f.etiqueta}
+        class="inline-flex items-center gap-2 px-4 py-2 rounded-full font-bold text-xs border-2 hover:opacity-80 transition-opacity"
+        style="border-color: var(--border); color: var(--fg);"
+      >
+        <span data-copiar-icono>
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+        </span>
+        <span data-copiar-texto>{f.etiqueta}</span>
+      </button>
+    ))}
+  </div>
+
+  <p class="text-xs leading-relaxed mt-4" style="color: var(--fg-muted);">
+    Artículo <strong style="color: var(--fg);">revisado por pares</strong> y de acceso abierto ({licencia}).
+    Es la referencia académica preferente para citar el modelo MILC.
+  </p>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-copiar-cita]').forEach((btn) => {
+    const cita = btn.dataset.cita ?? '';
+    const texto = btn.querySelector<HTMLElement>('[data-copiar-texto]');
+    const icono = btn.querySelector<HTMLElement>('[data-copiar-icono]');
+    const textoOriginal = texto?.textContent ?? btn.dataset.etiqueta ?? 'Copiar';
+    const iconoOriginal = icono?.innerHTML ?? '';
+    let revertir: number | null = null;
+
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(cita);
+      } catch {
+        const ta = document.createElement('textarea');
+        ta.value = cita;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          document.execCommand('copy');
+        } finally {
+          document.body.removeChild(ta);
+        }
+      }
+      if (texto) texto.textContent = '¡Copiado!';
+      if (icono)
+        icono.innerHTML =
+          '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+      btn.classList.add('bg-bento-lime', 'text-black', 'border-bento-lime');
+      if (revertir) window.clearTimeout(revertir);
+      revertir = window.setTimeout(() => {
+        if (texto) texto.textContent = textoOriginal;
+        if (icono) icono.innerHTML = iconoOriginal;
+        btn.classList.remove('bg-bento-lime', 'text-black', 'border-bento-lime');
+      }, 1800);
+    });
+  });
+</script>

@@ -31,90 +31,90 @@ export const slidesQuerencia: readonly SlideMilc[] = [
     numero: 1,
     titulo: 'Pedagogía de la Querencia',
     descripcion:
-      'Portada. Reconstruir el aula para arraigar al estudiante en su territorio. Basado en la obra del Dr. Álvaro Cárdenas Orozco · Modelo MILC.',
+      'Portada. Ensayo pedagógico situado: reconstruir el aula desde la filosofía de la liberación para arraigar al estudiante en su territorio, su historia y sus saberes ancestrales. Dr. Álvaro Cárdenas Orozco · I.E. Sor María Juliana. «Porque ningún niño debería avergonzarse de su lugar».',
   },
   {
     numero: 2,
-    titulo: 'La paradoja silenciosa: educamos para la partida',
+    titulo: 'La pregunta incómoda',
     descripcion:
-      'El éxito escolar tiene una geografía implícita: felicitamos al que «llegó lejos» y graduamos a los estudiantes como extranjeros en su propia tierra. Dar alas sin dar raíces no es libertad: el progreso no debería exigir el desarraigo.',
+      'El aula moderna promete dar alas… pero en la práctica corta raíces. ¿Por qué formamos estudiantes que aprenden a irse? No a viajar (que es hermoso), sino a irse en el sentido más triste: despreciar lo propio, avergonzarse del acento y creer que para valer hay que dejar de ser de aquí.',
   },
   {
     numero: 3,
-    titulo: 'La Totalidad: el aula que se cree el mundo entero',
+    titulo: 'La Totalidad que educa',
     descripcion:
-      'Siguiendo a Enrique Dussel, la escuela tradicional opera como una Totalidad (un sistema cerrado que da por completo el conocimiento). El territorio, el Otro y el saber de casa quedan fuera: enseña el mundo entero, menos el pedazo de mundo que el estudiante pisa.',
+      'El encubrimiento del Otro y del lugar. Lo Mismo (el currículo como una Totalidad: conocimiento «universal», completo y cerrado) frente a lo Exterior (el saber local, que no se refuta: simplemente se declara inexistente). «La Totalidad se cierra sobre sí misma… y expulsa hacia un afuera invisible todo lo que no cabe en sus categorías» (Enrique Dussel).',
   },
   {
     numero: 4,
-    titulo: 'El «Punto Cero» y la colonialidad del saber',
+    titulo: 'La Hybris del Punto Cero',
     descripcion:
-      'La ciencia escolar se presenta como una verdad sin domicilio («universal»), mientras el saber de la casa o del campo queda rebajado a «creencia» o «folclor». La Hybris del Punto Cero frente al Saber Situado (Cartago, Valle del Cauca).',
+      'La arquitectura invisible de la colonialidad del saber (Santiago Castro-Gómez). El centro produce teoría «universal» y sin domicilio; la periferia consume o provee datos, y el saber local se degrada a «creencia», «folclor» o «cultura popular» (epistemicidio). Quien oculta su lugar de enunciación parece hablar por todos.',
   },
   {
     numero: 5,
-    titulo: 'El aula como «No-Lugar»',
+    titulo: 'La escuela como un «No-Lugar»',
     descripcion:
-      'Marc Augé llamó no-lugares a los sitios de puro tránsito (aeropuertos, autopistas). Cuando el currículo no nombra el territorio, la escuela se vuelve un no-lugar cuyo único horizonte es salir. Un niño educado en tránsito nunca desarrolla querencia.',
+      'Aprender en tránsito permanente. El Espacio Abstracto (un sitio de paso cuyo éxito se mide por la velocidad con que se sale: universidad, capital, futuro) frente al Lugar Invisible (el territorio sin historia ni significado, un telón de fondo por el que se transita sin mirar, Yi-Fu Tuan). «Una escuela que solo enseña a partir gradúa a sus hijos de extranjeros en su propia tierra».',
   },
   {
     numero: 6,
-    titulo: 'Las tres heridas del currículo invisible',
+    titulo: 'Las tres caras del desarraigo',
     descripcion:
-      'Enseñar a mirar lo propio con ojos prestados deja tres fracturas: 1) Desarraigo epistémico (pérdida de confianza en el saber propio), 2) Desarraigo territorial (ceguera ante el entorno) y 3) Desarraigo identitario (vergüenza del origen).',
+      'Las heridas que deja una escuela cuando enseña a mirar lo propio con ojos prestados: 1) epistémica (pérdida de la confianza en el propio saber), 2) territorial (desconexión afectiva con el paisaje y la comunidad) y 3) identitaria (la vergüenza del origen y el deseo de ser otro).',
   },
   {
     numero: 7,
-    titulo: 'La doble conciencia: el estudiante escindido',
+    titulo: 'Herida 1 · Desarraigo epistémico',
     descripcion:
-      'El lenguaje de la casa frente al lenguaje de la escuela. Epistemicidio (Boaventura de Sousa Santos): cuando el estudiante aprende que su vocabulario es «vulgar» y el oficio de sus padres «atraso», pierde el respeto por la mente de su propia gente.',
+      'El estudiante partido en dos mundos que no se hablan: el lenguaje de la casa (afectivo, concreto, situado, que la escuela trata como «incorrecto») y el lenguaje de la escuela (abstracto, prestigioso, el único que abre puertas oficiales). La doble conciencia: no pierde el saber de su tierra, pierde la confianza en él, y aprende a medirse con la cinta de un mundo que lo mira con condescendencia.',
   },
   {
     numero: 8,
-    titulo: 'Espacio vs. Lugar: la ceguera territorial',
+    titulo: 'Herida 2 · Desarraigo territorial',
     descripcion:
-      'El Espacio (coordenadas, kilómetros, mapas abstractos, sin rostro) frente al Lugar (espacio cargado de significado: memoria, afecto, nombres). Un territorio que la escuela nunca nombra se apaga hasta volverse paisaje, y a un paisaje nadie lo defiende.',
+      'Conocer el mapa del mundo, pero ignorar la propia cuadra. El Espacio Abstracto (pensar el mundo «desde arriba»: distancias, coordenadas, ecosistemas lejanos) frente al Lugar Concreto (ignorar el nombre del árbol del colegio, el río del barrio o la historia de la calle). «No se puede amar lo que no se ha tocado, y no se cuida lo que no se ama».',
   },
   {
     numero: 9,
-    titulo: 'El espejo roto: la vergüenza del origen',
+    titulo: 'Herida 3 · Desarraigo identitario',
     descripcion:
-      'La identidad se forma en el espejo de cómo nos miran los demás. Si el currículo, por omisión, le dice a un joven que su origen no es digno de conocimiento, la conclusión es trágica: él tampoco lo es. La vergüenza asoma en el acento corregido y el apellido silenciado.',
+      'La vergüenza del origen y la pérdida del «nosotros». La identidad se forma dialógicamente (nos volvemos quienes los otros nos dicen que somos); la máscara blanca (Frantz Fanon): si el espejo escolar te devuelve durante once años la imagen de que tu mundo es «atraso», terminas editando quién eres. El despojo final: cambiar el acento, ocultar el oficio de los padres o inventar otro origen.',
   },
   {
     numero: 10,
-    titulo: 'El giro analéctico: abrir la puerta a la Exterioridad',
+    titulo: 'El punto de inflexión: la grieta',
     descripcion:
-      'Ninguna Totalidad es perfecta. El antídoto es la Exterioridad (la pregunta del barrio, la técnica de la partera, el dato de la abuela) con poder de transformar el centro. De la jerarquía colonial a una ecología de saberes que dialogan de igual a igual.',
+      'Ninguna Totalidad es perfecta. La Exterioridad irrumpe (la pregunta que no estaba en la guía, el saber de la casa que contradice el libro, el problema del barrio que ningún estándar contempla). La analéctica (Dussel): partir desde afuera y dejarse transformar por la palabra del Otro. No cerrar la puerta: tratar esa interrupción no como un estorbo, sino como el comienzo mismo de la clase.',
   },
   {
     numero: 11,
-    titulo: 'Dos paradigmas frente a frente',
+    titulo: 'El cambio de paradigma',
     descripcion:
-      'El Aula Abstracta (Totalidad) frente al Aula Situada (Querencia), comparadas en cuatro dimensiones: punto de partida, visión del estudiante, rol del territorio y objetivo final (preparar para irse frente a dar raíces para transformar y elegir).',
+      'De la educación bancaria al arraigo territorial. Escuela de la Totalidad frente a Pedagogía de la Querencia en cuatro dimensiones: origen del saber (el Punto Cero vs. la pregunta del territorio), visión del estudiante (receptáculo vacío vs. sujeto con saberes legítimos), relación con el entorno (telón de fondo vs. laboratorio y archivo) y objetivo final («salir adelante» vs. habitar y transformar con alas y raíces).',
   },
   {
     numero: 12,
-    titulo: 'Praxis I: de receptáculo a autor (Reparación Epistémica)',
+    titulo: 'La ecología de saberes',
     descripcion:
-      'Firmar la paz entre el conocimiento de la casa y la ciencia de la escuela: el estudiante deja de ser consumidor para volverse productor. Ventana al Aula (El cielo propio): CosmoTEC y Betelgeuse (2023-2024), estudiantes de Cartago descubrieron asteroides y publicaron su libro.',
+      'El tratado de paz epistémico (Boaventura de Sousa Santos). Ciencia escolar (medición, sensores, rigor, datos) + saber situado (memoria de las inundaciones, calendario agrícola, observación del abuelo). No es rechazar la ciencia ni romantizar la pobreza: es diálogo exigente. El sensor mide lo que la abuela intuye; la abuela orienta lo que el sensor mide. Ningún saber aniquila al otro.',
   },
   {
     numero: 13,
-    titulo: 'Praxis II: del espacio al lugar (Reterritorialización)',
+    titulo: 'Praxis: el aula situada',
     descripcion:
-      'No se puede amar lo que no se ha tocado: la escuela sale del edificio y usa el territorio como laboratorio. Ventana al Aula (El agua que faltaba): con EcoTIC y CIR, los estudiantes mapearon con SIG el riesgo de inundación de sus propias calles y ejercieron su derecho a la ciudad.',
+      'Casos reales de Cartago (Investigación MILC). Proyecto Betelgeuse (astronomía): 16 estudiantes certificados en búsqueda de asteroides que no consumen ciencia extranjera, la producen. Proyecto EcoTIC (agua): sensores para medir el agua del propio territorio. Revista CosmoTEC (autoría): los estudiantes publican sus artículos científicos y pasan de receptáculos pasivos a autores de su propio saber.',
   },
   {
     numero: 14,
-    titulo: 'La Pedagogía de la Querencia: alas y raíces',
+    titulo: 'El ciclo de reterritorialización',
     descripcion:
-      'La querencia no es nostalgia ni encierro: es una competencia educable que repara las tres heridas (epistémica → reparación, territorial → reterritorialización, identitaria → pertenencia). El estudiante con querencia no es el que se queda porque no pudo irse, sino el que, pudiendo irse, sabe que tiene un lugar al cual volver.',
+      'Cómo volver a anclar el aprendizaje en el lugar, en flujo constante: 1) cartografiar el lugar (salir del aula: el territorio se vuelve texto y laboratorio, mapear aguas, riesgos, oficios y memoria), 2) el aula como ágora (dejar entrar a los sabedores de la comunidad: el agricultor, la partera, el líder comunal) y 3) investigación situada (proyectos que resuelven problemas reales, como el sistema de riego autónomo Sormatronik).',
   },
   {
     numero: 15,
-    titulo: 'El derecho a quedarse',
+    titulo: 'Alas y raíces',
     descripcion:
-      'Para muchos, salir del territorio no ha sido una elección sino un desplazamiento. Formar querencia es defender un derecho que la escuela rara vez nombra: el derecho a quedarse. Si mañana todos pudieran irse, asegurémonos de haberles dado una razón para querer volver.',
+      'Formar querencia no es atar a nadie a la fuerza: es dar a cada estudiante un suelo firme. Quien se vaya lo hará llevándose su lugar consigo; quien se quede lo hará por elección y no por derrota. «Si mañana todos tus estudiantes tuvieran la oportunidad de irse lejos… ¿les ha dado tu escuela alguna razón para querer volver?».',
   },
 ];

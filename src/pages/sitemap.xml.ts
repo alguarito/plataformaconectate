@@ -3,7 +3,7 @@ import { grados } from '../data/grados';
 
 /**
  * Sitemap dinámico para SEO.
- * Lista las 223 URLs estáticas con prioridad y changefreq adecuadas para
+ * Lista las 225 URLs estáticas con prioridad y changefreq adecuadas para
  * Google, Bing y otros buscadores.
  */
 export const GET: APIRoute = async ({ site }) => {
@@ -28,11 +28,13 @@ export const GET: APIRoute = async ({ site }) => {
   // Colección MILC · páginas dedicadas de cada libro (obra citable con DOI · alto valor SEO)
   urls.push({ loc: `${fullBase}/modelo-milc/mercado-atencion`, priority: 0.85, changefreq: 'monthly' });
   urls.push({ loc: `${fullBase}/modelo-milc/querencia`, priority: 0.85, changefreq: 'monthly' });
+  urls.push({ loc: `${fullBase}/modelo-milc/el-nino-que-suena-ciencia`, priority: 0.85, changefreq: 'monthly' });
 
   // PDFs de los libros · indexables directamente por Google (rankean como documento)
   urls.push({ loc: `${fullBase}/libro-milc/libro-milc-2026.pdf`, priority: 0.7, changefreq: 'yearly' });
   urls.push({ loc: `${fullBase}/libro-milc/tomo-1-mercado-de-la-atencion.pdf`, priority: 0.7, changefreq: 'yearly' });
   urls.push({ loc: `${fullBase}/libro-milc/tomo-2-pedagogia-de-la-querencia.pdf`, priority: 0.7, changefreq: 'yearly' });
+  urls.push({ loc: `${fullBase}/libro-milc/tomo-3-el-nino-que-suena-ciencia.pdf`, priority: 0.7, changefreq: 'yearly' });
 
   // Página "Acerca de"
   urls.push({ loc: `${fullBase}/acerca`, priority: 0.8, changefreq: 'monthly' });

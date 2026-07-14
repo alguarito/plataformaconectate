@@ -1,9 +1,9 @@
 /**
  * Generador de imágenes Open Graph para ConectaTE.
  *
- * Produce 31 PNGs en /public/og/ con la identidad visual Bento:
+ * Produce 33 PNGs en /public/og/ con la identidad visual Bento:
  * - 1 home + 6 grados + 18 períodos + 1 acerca + 1 comenzar + 1 modelo-milc
- *   + 1 plan-de-area + 3 portadas de la Colección MILC
+ *   + 1 plan-de-area + 4 portadas de la Colección MILC
  *
  * Cada página de la plataforma referencia el archivo correspondiente.
  * Guías, proyectos y exámenes heredan la imagen de su período (contexto
@@ -293,7 +293,7 @@ function tplModeloMilc(): string {
       ${esc('4 fases · Triángulo Dussel-Estoico-Floridi · 18 anclajes ancestrales')}
     </text>
     <text x="80" y="510" fill="#FFFFFF" opacity="0.75" font-family="Helvetica, sans-serif" font-weight="500" font-size="20">
-      ${esc('Colección MILC · 3 libros con DOI · Dr. Álvaro Cárdenas Orozco')}
+      ${esc('Colección MILC · 4 libros con DOI · Dr. Álvaro Cárdenas Orozco')}
     </text>
     <!-- Wordmark esquina -->
     ${wordmark(W - 240, H - 60, '#FFFFFF', '#FFD60A')}
@@ -345,7 +345,7 @@ type LibroOg = {
   emoji: string;
 };
 
-// Cada libro con el color de su card en la home (matriz=negro, Tomo I=morado, Tomo II=azul).
+// Cada libro con el color de su card en la home (matriz=negro, Tomo I=morado, Tomo II=azul, Tomo III=naranja).
 const LIBROS: LibroOg[] = [
   {
     slug: 'libro-onlife',
@@ -379,6 +379,17 @@ const LIBROS: LibroOg[] = [
     doi: '10.5281/zenodo.21176768',
     bg: '#0066FF', fg: '#FFFFFF', accent: '#A3FF12',
     emoji: '🌱',
+  },
+  {
+    slug: 'libro-el-nino-que-suena-ciencia',
+    etiqueta: 'COLECCIÓN MILC · TOMO III',
+    titulo: 'El niño que sueña ciencia',
+    subtitulo: 'Darle método al sueño de investigar, sin apagar el asombro',
+    paginas: 138,
+    licencia: 'CC BY-SA 4.0',
+    doi: '10.5281/zenodo.21360911',
+    bg: '#FF6B35', fg: '#FFFFFF', accent: '#FFD60A',
+    emoji: '📙',
   },
 ];
 

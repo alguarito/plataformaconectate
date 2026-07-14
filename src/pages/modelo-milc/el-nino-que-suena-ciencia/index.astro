@@ -1,6 +1,8 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import CitaLibro from '../../../components/CitaLibro.astro';
+import SlidesViewer from '../../../components/SlidesViewer.astro';
+import { presentacionElNino, slidesElNino } from '../../../data/presentacionElNino';
 
 const base = import.meta.env.BASE_URL;
 
@@ -19,6 +21,9 @@ const doi = `https://doi.org/${doiConcepto}`;
 const origen = (Astro.site ?? new URL('https://alguarito.github.io')).toString().replace(/\/$/, '');
 const inicio = `${origen}${base.replace(/\/$/, '')}`;
 const pdfUrl = `${origen}${libroHref}`;
+
+const presentacionDir = `${base}/presentaciones/el-nino-que-suena-ciencia`;
+const presentacionPdfHref = `${presentacionDir}/${presentacionElNino.archivoPdf}`;
 
 const jsonLdExtra = [
   {
@@ -55,6 +60,25 @@ const jsonLdExtra = [
       'Ciencia ciudadana',
       'Ferias de ciencia',
     ],
+  },
+  {
+    '@type': 'PresentationDigitalDocument',
+    '@id': `${inicio}/modelo-milc/el-nino-que-suena-ciencia#presentacion`,
+    name: presentacionElNino.titulo,
+    alternateName: presentacionElNino.subtitulo,
+    description:
+      'Presentación de 15 slides del Tomo III: el asombro que no pide permiso, las tres herramientas del oficio (preguntar, explorar, desarmar), el giro de la curiosidad ingenua a la epistemológica, el ciclo del asombro (Escucha, Sistematización, Proyección y Liberación), las arenas de la ciencia real y el relevo del asombro como herencia.',
+    inLanguage: 'es-CO',
+    datePublished: '2026-07-14',
+    license: 'https://creativecommons.org/licenses/by-sa/4.0/',
+    url: `${inicio}/modelo-milc/el-nino-que-suena-ciencia#presentacion`,
+    associatedMedia: {
+      '@type': 'MediaObject',
+      contentUrl: `${origen}${presentacionPdfHref}`,
+      encodingFormat: 'application/pdf',
+    },
+    author: { '@id': `${inicio}/acerca#person` },
+    publisher: { '@id': `${inicio}#organization` },
   },
 ];
 
@@ -225,6 +249,9 @@ const ideas = [
                 <line x1="10" y1="14" x2="21" y2="3"></line>
               </svg>
             </a>
+            <a href="#presentacion" class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-sm font-black opacity-80 hover:opacity-100 transition-opacity">
+              Ver la presentación ↓
+            </a>
           </div>
         </div>
       </div>
@@ -310,6 +337,15 @@ const ideas = [
           ))}
         </div>
       </section>
+
+      <!-- PRESENTACIÓN · 15 slides -->
+      <div id="presentacion" class="mb-10 scroll-mt-24">
+        <SlidesViewer
+          presentacion={presentacionElNino}
+          slides={slidesElNino}
+          dirNombre="el-nino-que-suena-ciencia"
+        />
+      </div>
 
       <!-- LAS IDEAS MÁS RELEVANTES -->
       <section class="mb-10">

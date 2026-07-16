@@ -313,6 +313,8 @@ export const planEstudios: PlanLinea[] = [
         rae: 'Organiza y analiza datos astronómicos reales (curvas de luz, catálogos, imágenes) reconociendo patrones.',
         productos: ['Gráfica de una curva de luz o tránsito', 'Ficha de fuentes citadas en APA 7ª'],
         indicador: 'Interpreta correctamente un patrón (por ejemplo, un tránsito planetario) a partir de los datos.',
+        guia: 'astronomia-2',
+        duracionMin: 180,
       },
       {
         fase: 'Praxis',

@@ -1,0 +1,484 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra UNICA de las guias MILC v3.
+%
+% La usan las tres familias de guias, cada una con su driver:
+%   · Grados 6-11  -> scripts/build-guias-g11.py
+%   · Bebras       -> scripts/build-guias-bebras.py
+%   · Semillero    -> scripts/build-guias-semillero.py
+%
+% Antes habia tres copias casi identicas (~400 lineas iguales, 6 distintas):
+% cada mejora habia que aplicarla tres veces, y en la practica no se hacia
+% (el motor de recursos vivia solo en dos de ellas). Lo que varia entre
+% familias esta parametrizado en 6 placeholders que cada driver llena
+% (se nombran aqui SIN su sintaxis real: el builder reemplaza por texto plano,
+% tambien dentro de los comentarios, y un valor multilinea rompe el preambulo):
+%
+%   HEADER_IZQ        encabezado izquierdo de pagina
+%   HEADER_DER        encabezado derecho de pagina
+%   PORTADA_ETIQUETA  rotulo sobre el numero grande (GRADO/MOMENTO/MODULO)
+%   PORTADA_SERIE     linea de serie de la portada
+%   PORTADA_ID        identificador de la guia en la portada
+%   PORTADA_CIRCULO   el circulito de grado (°), o vacio si no aplica
+%
+% El resto de claves las documenta content/guias/_SCHEMA.md. El script valida
+% que no queden placeholders sin reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1.75cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+% Librerías TikZ para los diagramas de las guías (bloque `recursos:`):
+%  · babel  → babel en español vuelve activos caracteres como «>», y TikZ los usa
+%             en sus opciones (>=stealth, ->). Sin esta librería, cualquier
+%             diagrama con flechas revienta con «\language@active@arg> has an
+%             extra }». Debe ir ANTES de que se dibuje nada.
+%  · positioning        → sintaxis «below left=2pt and 3pt».
+%  · decorations.pathreplacing → llaves ({brace}) para señalar rangos.
+\usetikzlibrary{babel,positioning,decorations.pathreplacing}
+\usepackage{graphicx}
+% Circuitos: el trabajo de electrónica se hace hoy con micro:bit y sus sensores
+% integrados (MakeCode, sin cableado), así que no se necesitan esquemáticos.
+% Si algún día entran montajes con protoboard, basta descomentar esta línea:
+% los diagramas .tex/.tikz declarados en `recursos:` ya se incrustan solos.
+% \usepackage{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+% Helvetica Neue no trae la flecha U+2192, asi que cada «→» escrito literalmente
+% en el YAML se compilaba a NADA, en silencio (462 flechas en 61 guias: rutas del
+% tipo «paleta → tipografia → lockup» salian rotas). Mapeamos el caracter a su
+% version matematica, que si tiene glifo. Asi el autor puede seguir escribiendo
+% «→» comodamente en el YAML.
+\usepackage{newunicodechar}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\hyphenpenalty=200
+\exhyphenpenalty=200
+\pretolerance=400
+\tolerance=2000
+\setlength{\emergencystretch}{1em}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{7C3AED}
+\definecolor{milcGradeDark}{HTML}{5B21B6}
+\definecolor{milcGradeSoft}{HTML}{EDE9FE}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Semillero de Investigación · Astronomía y ciencia ciudadana}
+\rhead{\small Módulo 2 · Sistematización · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+% La flecha va en modo matematico a proposito: Helvetica Neue NO tiene el glifo
+% U+2192, asi que \textrightarrow se compilaba a NADA («Missing character: There
+% is no → in font Helvetica Neue») y el puente salia sin flecha. En modo
+% matematico la flecha viene de la fuente matematica y si se dibuja.
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{$\rightarrow$}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+% ── Recursos visuales de la guía ──────────────────────────────────────
+% Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
+% \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
+% \guiaDiagrama → fuente TikZ/circuitikz (.tex) incrustada como vector:
+%                 es la vía para circuitos y esquemáticos editables.
+% #1 = ruta relativa al .tex · #2 = pie (puede ir vacío)
+\newcommand{\guiaFigura}[2]{%
+\begin{center}
+\includegraphics[width=0.88\linewidth,height=0.38\textheight,keepaspectratio]{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\newcommand{\guiaDiagrama}[2]{%
+\begin{center}
+\input{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\begin{document}
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[white] (current page.south west) rectangle (current page.north east);
+  \path[fill=milcGradePrimary,rounded corners=16mm]
+    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
+    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{14}{16}\selectfont MÓDULO};
+  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
+    {\sffamily\bfseries\fontsize{9}{11}\selectfont SEMILLERO DE INVESTIGACIÓN · CONECTATE};
+
+  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
+    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
+    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
+    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
+    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
+    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
+  \end{scope}
+
+  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{124}{124}\selectfont 2};
+  % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
+  % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  
+
+  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+    {
+     {\sffamily\bfseries\fontsize{19}{22}\selectfont Datos que hablan\\del cielo ---\\de las cabañuelas del abuelo\\a la curva de luz}\\[4mm]
+     {\sffamily\bfseries\fontsize{23}{26}\selectfont Astronomía y ciencia ciudadana}\\[2mm]
+     {\sffamily\fontsize{13}{16}\selectfont Módulo 2 · Fase MILC: Sistematización · 3 h de clase}\\[5mm]
+     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
+     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+    };
+
+  \path[fill=milcGradeSoft,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
+    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
+    \textcolor{milcGradeDark}{\bfseries Producto:} Tu \textbf{curva de luz graficada e interpretada}: a partir de una tabla de datos reales (que entrega el profe), dibujas la gráfica de brillo contra tiempo, marcas el \textbf{patrón} (un tránsito, una variación periódica) y escribes en 3 frases qué está pasando. Más tu \textbf{ficha de fuentes} con la tabla de datos citada en \textbf{APA 7ª} (de dónde salió, quién la tomó, cuándo). Y una relectura de \textbf{tu propia bitácora} del módulo 1 buscando si algún dato se repite.};
+\end{tikzpicture}
+\mbox{}
+\newpage
+
+\section*{Apertura: Datos que hablan del cielo --- de las cabañuelas del abuelo a la curva de luz}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+\textbf{En el campo del Valle, enero se lee como un almanaque del año entero.} Es el saber de \textbf{las cabañuelas}: el abuelo campesino observa \emph{con método} los primeros días de enero ---el 1 es como enero, el 2 como febrero, el 3 como marzo\ldots--- y anota cómo amanece cada uno: nublado, ventoso, con rocío, despejado. De ese \textbf{registro día por día} saca un pronóstico para los doce meses. No es una corazonada suelta: es \textbf{observación ordenada}, repetida cada año, guardada en la memoria y en la libreta, comparada con lo que de verdad pasó. Ahí está lo valioso: \textbf{registrar sin saltarse días, buscar un patrón, y usarlo para predecir}. Ahora bien, hay que decirlo con honestidad: a diferencia de las Cabrillas del módulo pasado ---que la ciencia sí confirmó---, \textbf{el pronóstico de las cabañuelas no ha resistido la comprobación rigurosa}. Y eso no le quita el mérito al método: le \textbf{añade} el paso que faltaba. El abuelo hizo lo más difícil (registrar y buscar patrones); la ciencia agrega lo decisivo: \textbf{verificar si el patrón de verdad se cumple}.
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+Observar produce \textbf{datos}; sistematizar es \textbf{ordenarlos hasta que revelen un patrón}. La astronomía moderna vive de eso, y tiene tres herramientas. \textbf{(1) La curva de luz:} en vez de mirar una estrella una vez, mides su \textbf{brillo muchas veces} y lo graficas contra el \textbf{tiempo}. Esa curva habla: si sube y baja con ritmo, es una \textbf{estrella variable}; si cae un poquito y vuelve, algo cruzó por delante. \textbf{(2) El tránsito:} cuando un \textbf{planeta} pasa frente a su estrella, le tapa una pizca de luz ---el brillo baja $\sim 1\%$ y regresa. Ese \textbf{bajón simétrico} es la firma de un exoplaneta; así halló miles la misión Kepler y hoy los busca TESS (NASA). \emph{No se ve el planeta: se ve su sombra en los datos.} \textbf{(3) El catálogo:} cada astro tiene ficha ---nombre, coordenadas (altura y azimut del módulo 1), magnitud, fecha--- en tablas que cualquiera puede revisar. Y un dato sin \textbf{fuente} (de dónde salió, quién lo tomó, cuándo) no vale: por eso se cita en \textbf{APA 7ª}. La diferencia entre una opinión y un dato es que el dato \textbf{se puede rastrear}.
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{El abuelo registró enero día por día y buscó un patrón para todo el año; un satélite registra el brillo de una estrella minuto a minuto y busca un bajón de $1\%$. \textbf{¿Qué le faltó al método del abuelo que la ciencia sí hace}\ldots y podrías tú hacerle a los datos de tu propia bitácora?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar la sesión: (1) podrás \textbf{identificar} un patrón (una repetición, un bajón) dentro de una tabla de datos del cielo; (2) sabrás \textbf{explicar} qué es una curva de luz y cómo un tránsito delata un planeta; (3) podrás \textbf{analizar} una curva de luz real: graficarla, marcar el patrón e interpretarlo; (4) habrás \textbf{citado} tu tabla de datos en APA 7ª, dejando rastreable de dónde salió.
+\end{softbox}
+
+
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Formula preguntas investigables, produce evidencia con método y comunica hallazgos reconociendo sus límites (investigación estudiantil STEM, transversal 6°--11°)\\
+Referentes & Orlove, Chiang \& Cane (2000, Nature) · RECA · NASA-IASC · Saberes campesinos y Quimbaya del Norte del Valle\\
+Producto final & Tu \textbf{curva de luz graficada e interpretada}: a partir de una tabla de datos reales (que entrega el profe), dibujas la gráfica de brillo contra tiempo, marcas el \textbf{patrón} (un tránsito, una variación periódica) y escribes en 3 frases qué está pasando. Más tu \textbf{ficha de fuentes} con la tabla de datos citada en \textbf{APA 7ª} (de dónde salió, quién la tomó, cuándo). Y una relectura de \textbf{tu propia bitácora} del módulo 1 buscando si algún dato se repite.\\
+\end{tabularx}
+\normalsize
+
+\puente{En el módulo 1 saliste a mirar y llenaste tu bitácora. Hoy esa bitácora deja de ser un cuaderno de impresiones y se vuelve \textbf{datos que hablan}: vas a ordenarlos, graficarlos y hacerles decir un patrón.}
+
+\begin{titlebox}{milcGradeDark}
+Ruta MILC: así vamos a aprender
+\end{titlebox}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Antes de aprender a graficar, mira lo que ya tienes. Tu bitácora del módulo 1 es tu primer conjunto de datos: empecemos por escucharla.}
+
+\begin{titlebox}{milcVerde}
+Fase 1 · Escucha
+\end{titlebox}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- Lo que tu bitácora ya sabe} (40 min · individual + grupo). \textbf{Momento A (15 min) --- Releer los propios datos.} Saca tu bitácora del módulo 1. En silencio, búscale \textbf{patrones}: ¿hay algo que anotaste \emph{más de una vez}? ¿La misma estrella a distinta hora cambió de altura? ¿La magnitud límite fue distinta según la noche? Subraya \textbf{todo lo que se repita o cambie}. \textbf{Momento B (10 min) --- El caso de las cabañuelas.} El profe presenta el método del abuelo (registrar enero día por día para pronosticar el año) y lanza la pregunta: \emph{¿por qué las Cabrillas sí funcionaron y las cabañuelas no, si ambas son observación ordenada?}. \textbf{Momento C (15 min) --- Dato vs impresión.} En grupo, clasifiquen frases en dos columnas: \emph{``se veían hartas estrellas''} (impresión) frente a \emph{``conté 7 estrellas a las 8:15''} (dato). \textbf{En el cuaderno:} tus patrones subrayados + la lista de qué convierte una impresión en dato (tiene número, hora, unidad, fuente).
+\end{softbox}
+
+\checkbox Releí mi bitácora y subrayé al menos un dato que se repite o cambia.\\
+\checkbox Puedo decir por qué las Cabrillas se pudieron verificar y las cabañuelas no.\\
+\checkbox Clasifiqué frases en «impresión» y «dato» con un criterio claro.
+
+\begin{infoband}{milcVerde}
+
+
+\textbf{Lo que va al cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1 --- Lo que mi bitácora ya sabe». \textbf{Formato:} patrones subrayados de mi bitácora + tabla de 2 columnas (impresión / dato) + 1 frase mía sobre qué le faltó al método de las cabañuelas. \textbf{Extensión:} 10 líneas. \textbf{Sabes que terminaste cuando} puedes señalar en tu propia bitácora \textbf{un dato} (con número, hora y unidad), no una impresión.
+\end{infoband}
+
+\puente{Ya viste que en tus datos hay algo. Ahora vamos a darle nombre de oficio: curva de luz, tránsito, catálogo, y por qué un dato sin fuente no vale.}
+
+\begin{titlebox}{milcTurquesa}
+Fase 2 · Sistematización con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\textbf{Actividad 2 · EXPLICA --- Cómo hablan los datos del cielo} (70 min · grupo + individual). Ya distingues un dato de una impresión. Ahora aprende \textbf{las tres herramientas} con que la astronomía hace hablar a los datos: la curva de luz, el tránsito y el catálogo. Y por qué sin fuente, nada de eso vale.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
+1. Descomposición & \textbf{Pilar 1 --- La curva de luz: el brillo contra el tiempo.} Una sola mirada a una estrella es una foto; \textbf{muchas medidas de su brillo, ordenadas por hora, son una película}. Esa película se dibuja como una gráfica: en el eje horizontal el \textbf{tiempo}, en el vertical el \textbf{brillo}. Y entonces la estrella \emph{habla}: si el brillo \textbf{sube y baja con un ritmo fijo}, es una \textbf{estrella variable} (late como un corazón); si permanece \textbf{plano}, es estable; si \textbf{cae y vuelve una sola vez}, algo cruzó por delante. \textbf{El patrón no está en un dato: está en la forma que hacen todos juntos.} Por eso un dato solo no dice casi nada, y mil datos ordenados dicen una historia.\\
+2. Reconocimiento de patrones & \textbf{Pilar 2 --- El tránsito: cómo se caza un planeta sin verlo.} Aquí está la joya. Cuando un \textbf{planeta} pasa por delante de su estrella (visto desde la Tierra), le \textbf{tapa una pizca de luz}: el brillo baja apenas $\sim 1\%$ y, cuando el planeta termina de cruzar, \textbf{vuelve a subir}. En la curva de luz eso se ve como un \textbf{bajón simétrico}, con forma de bañera. \emph{Nadie fotografía el planeta:} se detecta \textbf{su sombra en los datos}. Y como la órbita se repite, el bajón \textbf{vuelve cada cierto tiempo} ---esa repetición confirma que es un planeta y no una nube o un error. Así la misión \textbf{Kepler} (NASA) halló miles de exoplanetas, y hoy \textbf{TESS} sigue buscando. Es, exactamente, ciencia ciudadana al alcance de una gráfica.\\
+3. Abstracción & \textbf{Pilar 3 --- El catálogo: cada astro tiene ficha.} El cielo está \textbf{inventariado}. Cada estrella conocida tiene una entrada en tablas con su \textbf{nombre o número}, sus \textbf{coordenadas} (la altura y el azimut que aprendiste en el módulo 1, o su equivalente fijo), su \textbf{magnitud} y la \textbf{fecha} de cada medida. Un catálogo es \textbf{una base de datos}: se puede ordenar, filtrar, comparar y ---clave--- \textbf{cualquiera puede revisarlo}. Cuando tú anotas en tu bitácora \emph{objeto · altura · azimut · hora · brillo}, estás construyendo \textbf{tu propio catálogo}. La diferencia con el del profesional es solo el instrumento; la \textbf{estructura} es la misma.\\
+4. Algoritmo conceptual & \textbf{Pilar 4 --- Sin fuente, no hay dato.} Un número sin origen es un rumor. Todo dato serio dice \textbf{de dónde salió}: quién lo tomó, con qué, cuándo y dónde. Por eso la ciencia \textbf{cita} ---y en estos materiales usamos \textbf{APA 7ª}. Citar no es adorno ni desconfianza: es lo que hace que tu dato sea \textbf{rastreable y verificable}, que otro pueda ir a la misma fuente y comprobarlo. \emph{A las cabañuelas les faltó justamente esto:} nadie guardó los registros de forma que se pudieran revisar y contrastar año tras año. \textbf{Tu bitácora, fechada y con lugar, ya es citable}: por eso vale.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcTurquesa}{Curva de luz + tránsito + catálogo + fuente}
+\textbf{Curva de luz:} brillo (eje vertical) contra tiempo (eje horizontal). Plana = estable · con ritmo = variable · bajón único = algo cruzó. \\[1mm]
+\textbf{Tránsito:} un planeta tapa $\sim 1\%$ del brillo; bajón simétrico que \emph{se repite}. Así caza planetas Kepler/TESS. \\[1mm]
+\textbf{Catálogo:} cada astro con nombre · coordenadas · magnitud · fecha. Tu bitácora es tu catálogo. \\[1mm]
+\textbf{Fuente (APA 7ª):} quién · qué · cuándo · dónde. Sin fuente, no hay dato.
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{Errores que arruinan una curva de luz (y cómo evitarlos).} (1) \emph{Ejes sin nombre ni unidad} --- una gráfica sin decir qué es cada eje no comunica nada; siempre rotula \textbf{tiempo} y \textbf{brillo} con su unidad. (2) \emph{Unir los puntos como si supieras lo que hay en medio} --- entre dos medidas no mediste; la línea es una \textbf{ayuda}, no un dato. (3) \emph{Ver un tránsito en cualquier bajón} --- un solo bajón puede ser una nube o un error; \textbf{solo la repetición} confirma un planeta. (4) \emph{Confundir escala} --- un bajón del $1\%$ es \emph{pequeñísimo}; si tu eje va de 0 a 100, no lo verás: hay que \textbf{acercar la escala}. (5) \emph{No citar la fuente} --- sin decir de dónde salió la tabla, tu gráfica es un dibujo, no evidencia. (6) \emph{Confundir estrella variable con tránsito} --- la variable sube \emph{y} baja con ritmo propio; el tránsito solo \textbf{baja y vuelve}.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+\guiaDiagrama{assets/astronomia-2/curva-de-luz.tex}{Una curva de luz con el bajón simétrico de un tránsito: así se descubre un exoplaneta sin verlo, leyendo su sombra en los datos.}
+
+\textbf{Lo que va al cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2 --- Cómo hablan los datos del cielo». \textbf{Formato:} 3 bloques. Bloque A: un dibujo de curva de luz \emph{plana}, otra \emph{con ritmo} y otra \emph{con un bajón}, rotuladas. Bloque B: el esquema del tránsito (estrella + planeta cruzando + el bajón en la gráfica). Bloque C: la anatomía de una fuente APA (quién · qué · cuándo · dónde) con un ejemplo. \textbf{Extensión:} 1 hoja. \textbf{Sabes que terminaste cuando} podrías explicarle a alguien \textbf{por qué un solo bajón no basta} para gritar «¡planeta!».
+\end{infoband}
+
+\puente{Ya sabes leer una curva de luz por dentro. Es hora de construir una tú mismo con datos reales y hacerle decir qué está pasando allá arriba.}
+
+\begin{titlebox}{milcMagenta}
+Fase 3 · Praxis con pensamiento computacional
+\end{titlebox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\textbf{Actividad 3 · ANALIZA --- Grafica una curva de luz real y hazla hablar} (60 min · individual + parejas). El profe te entrega una \textbf{tabla de datos reales} (brillo y hora de una estrella, de un archivo público como el de Kepler/TESS o del ejercicio del semillero). Tu trabajo: convertir esa tabla en una \textbf{gráfica que diga algo}, y decir qué dice.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
+Descomposición & \textbf{Paso 1 --- Prepara los ejes (10 min).} En papel milimetrado (o cuadriculado) traza dos ejes. \textbf{Horizontal: tiempo} (usa la unidad de la tabla: horas, días); rotúlalo. \textbf{Vertical: brillo} (o magnitud); rotúlalo con su unidad. \textbf{Clave de la escala:} mira el rango de tus datos y \textbf{acércate}. Si el brillo va de 0,98 a 1,00, tu eje vertical debe ir \emph{de 0,97 a 1,01}, no de 0 a 1 ---si no, el bajón del tránsito será invisible. Elegir bien la escala es la mitad del análisis.\\
+Patrones & \textbf{Paso 2 --- Ubica cada dato (15 min).} Fila por fila de la tabla, marca un \textbf{punto} en el cruce de su tiempo y su brillo. \textbf{No unas los puntos todavía.} Solo puntos. Cuando termines, \textbf{aléjate un paso} y mira la nube de puntos: ¿ya se insinúa una forma? ¿plana, con olas, con un hueco? \emph{Anota tu primera impresión antes de dibujar la línea}, para no engañarte después.\\
+Abstracción & \textbf{Paso 3 --- Dibuja la curva y marca el patrón (15 min).} Ahora sí, une los puntos con una \textbf{línea suave} (recuerda: la línea es ayuda, no dato). Identifica el \textbf{patrón}: ¿es \textbf{plana} (estrella estable)?, ¿tiene \textbf{ritmo} (variable)?, ¿tiene un \textbf{bajón simétrico} (posible tránsito)? Enciérralo en un círculo y \textbf{ponle nombre}. Si es un bajón, mide \emph{cuánto} baja (¿$1\%$? ¿más?) y \emph{cuánto dura}.\\
+Algoritmo de armado & \textbf{Paso 4 --- Interpreta en 3 frases (10 min).} Debajo de la gráfica escribe \textbf{qué está pasando allá arriba}, en 3 frases: (1) qué tipo de patrón ves; (2) qué podría causarlo (planeta que cruza, estrella que late, o dato que no alcanza a decidir); (3) qué te \textbf{faltaría} para estar seguro (¿ver si el bajón se repite?, ¿más medidas?). \emph{Esa tercera frase ---reconocer lo que aún no sabes--- es la más científica de las tres.}\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcMagenta}{Antes de dar por buena tu curva}
+\checkbox Los dos ejes están rotulados (tiempo y brillo) con su unidad. \\[1mm]
+\checkbox La escala vertical está acercada al rango real de los datos. \\[1mm]
+\checkbox Marqué primero los puntos y solo después uní la línea. \\[1mm]
+\checkbox Encerré el patrón y le puse nombre (plana, variable o tránsito). \\[1mm]
+\checkbox Escribí las 3 frases, incluida la de «qué me falta para estar seguro». \\[1mm]
+\checkbox Cité la tabla de datos en APA 7ª.
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Plantilla del análisis.} \textit{Gráfica:} eje X = tiempo (unidad: \_\_) · eje Y = brillo (unidad: \_\_) · escala Y de \_\_ a \_\_. \\[1mm]
+\textit{Patrón hallado:} \checkbox plana \quad \checkbox variable (ritmo) \quad \checkbox bajón (¿tránsito?). Si es bajón: baja \_\_\% y dura \_\_. \\[1mm]
+\textit{Interpretación (3 frases):} (1) veo\ldots (2) podría ser\ldots (3) para estar seguro me falta\ldots \\[1mm]
+\textit{Fuente (APA 7ª):} \_\_\_\_\_\_.
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+
+
+\textbf{Lo que va al cuaderno (Actividad 3 · ANALIZA).} Título: «Actividad 3 --- Mi curva de luz». \textbf{Formato:} la gráfica en milimetrado (ejes rotulados + escala acercada + puntos + línea + patrón encerrado) + las 3 frases de interpretación + la fuente en APA + la observación nueva de mi bitácora. \textbf{Extensión:} 1-2 hojas. \textbf{Sabes que terminaste cuando} tu gráfica, sola, le contaría a otra persona qué está pasando con esa estrella.
+\end{infoband}
+
+\puente{El producto no es un dibujo bonito: es una \textbf{curva de luz interpretada} y una \textbf{fuente citada}. Con eso, un dato tuyo ya puede entrar en una conversación científica.}
+
+\begin{titlebox}{milcMostaza}
+Producto de la sesión
+\end{titlebox}
+\textbf{Curva de luz graficada e interpretada + fuente en APA 7ª}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) Los dos ejes están rotulados con su magnitud y unidad. (2) La escala vertical está acercada al rango de los datos (el patrón es visible). (3) El patrón está identificado y nombrado (plana, variable o posible tránsito). (4) La interpretación tiene 3 frases, incluida la de «qué falta para estar seguro». (5) La tabla de datos está citada en APA 7ª y es rastreable.
+\end{softbox}
+
+\puente{Antes de cerrar, pon a prueba tu interpretación: ¿alguien podría llegar a otra conclusión mirando la misma gráfica? Si sí, ¿qué te falta para decidir?}
+
+\begin{titlebox}{milcVino}
+Fase 4 · Evaluación liberadora — cinco dimensiones
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con 3 voces que te ayudan a entender por qué ordenar los datos ---y citarlos--- no es burocracia, sino la forma de que tu voz cuente.}
+
+\begin{titlebox}{milcGradeDark}
+Triángulo de pensamiento · cierre filosófico
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{``Analéctico quiere indicar el hecho real humano por el que todo hombre, todo grupo o pueblo se sitúa siempre más allá (aná-) del horizonte de la totalidad.''}
+
+Dussel llama analéctica al saber que irrumpe desde \emph{más allá} del sistema que ya teníamos. Un patrón inesperado en tus datos (un bajón que no encaja en lo que esperabas) es justamente eso: algo nuevo que el sistema no había registrado. Sistematizar no es forzar los datos a confirmar tu idea; es ordenarlos y citarlos para que también el dato del sur (el de un estudiante de Cartago) pueda decir algo que nadie había escuchado. \textbf{Dar forma al dato propio es abrirle la puerta a una voz nueva.}
+
+\textbf{¿Ordeno los datos para confirmar lo que ya creía, o para dejar que digan algo que yo no esperaba?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Epicteto · Enquiridión, 1 (c. 125 d.C.; trad. desde E. Carter) · cuidado interior}
+\textit{``Algunas cosas están en nuestro poder y otras no. Están en nuestro poder la opinión, el impulso, el deseo, el rechazo; en una palabra, todo aquello que es obra nuestra.''}
+
+Epicteto empieza separando lo que depende de mí de lo que no. El cielo hace lo suyo: eso no lo controlas. Lo que sí depende de ti es \textbf{tu método}: medir con cuidado, ordenar sin trampas, elegir bien la escala, citar la fuente. Un dato confiable nace de esa distinción: no puedo mandar sobre la estrella, pero sí sobre el rigor con que la registro. \textbf{Ahí, y solo ahí, está tu poder como investigador.}
+
+\textbf{¿Gasto mi energía en lo que no controlo (que el cielo coopere) o en lo que sí (la calidad de mi registro)?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{``Los pequeños patrones solo pueden ser significativos si se agregan correctamente, se comparan y se procesan a tiempo.''}
+
+Floridi dice que el valor no está en \emph{tener} muchos datos, sino en \textbf{ordenarlos}. Un tránsito es un patrón pequeñísimo (un bajón del $1\%$) que solo significa algo si agregas muchas medidas, las comparas y las procesas bien. Un dato suelto no dice nada; mil datos ordenados delatan un planeta. Eso hiciste hoy: convertiste una tabla de marcas sueltas en una curva que habla. \textbf{El poder no estuvo en los datos, sino en cómo los sistematizaste.}
+
+\textbf{¿Mi curva de luz es un montón de puntos sueltos, o un patrón que ya se puede comparar y discutir?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{titlebox}{milcVino}
+Compromiso final
+\end{titlebox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
+Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
+Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
+Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
+Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
+Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
+\end{tabularx}
+\normalsize
+
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Dos tareas cortas. \textbf{(1) Termina y pule tu curva de luz:} ejes rotulados, escala acercada, patrón nombrado, 3 frases de interpretación y la fuente en APA 7ª. Si el patrón fue un posible tránsito, escribe en una línea \textbf{cómo comprobarías si se repite}. \textbf{(2) Convierte tu bitácora en tabla:} pasa los datos de tus 3 noches de observación a una \textbf{tabla ordenada} (una fila por objeto: fecha · hora · objeto · altura · azimut · brillo). Esa tabla es tu \textbf{primer conjunto de datos propio}, y la vas a necesitar en el módulo 3, cuando construyas un \textbf{fotómetro con micro:bit} para medir el brillo del cielo \emph{con un instrumento} y compararlo con lo que mediste a ojo. \emph{Trae la tabla lista: el módulo 3 empieza midiendo.}
+\end{infoband}
+
+\end{document}

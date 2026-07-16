@@ -5,7 +5,7 @@ Motor de generación de guías PDF para el espacio **Bebras** (Explora).
 Bebras es un programa TRANSVERSAL (6°–11°), no atado a grado/periodo, así que
 no encaja en el motor de grados (build-guias-g11.py). Este driver paralelo
 reúsa el MISMO esquema YAML (MILC v3) y un template variante de portada
-(template-milc-v3-bebras.tex), sin tocar el motor de grados.
+unica (template-milc-v3.tex), que parametriza portada y encabezado.
 
 Cada momento del curso «Pensar como una máquina» vive en un YAML:
     content/guias/bebras/momento-{N}.yaml      (N = 0..9)
@@ -31,7 +31,7 @@ from pathlib import Path
 import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
-TEMPLATE = ROOT / "scripts/generadores/template-milc-v3-bebras.tex"
+TEMPLATE = ROOT / "scripts/generadores/template-milc-v3.tex"
 CONTENT_DIR = ROOT / "content" / "guias" / "bebras"
 OUT_DIR = ROOT / "public" / "guias-mejoras" / "bebras"
 XELATEX = "/Library/TeX/texbin/xelatex"
@@ -52,6 +52,54 @@ META = {
     "DBA": "Desarrolla el pensamiento computacional --- descomposición, patrones, abstracción y algoritmos --- para resolver problemas (transversal 6°--11°, alineado a los lineamientos MEN de Tecnología e Informática)",
     "REFERENTES": "Valentina Dagienė (Bebras) · Pensamiento computacional (Wing) · Dussel · Estoicismo · Floridi · Saberes del Valle y el Pacífico",
 }
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Recursos visuales (bloque `recursos:` del YAML)
+# ─────────────────────────────────────────────────────────────────────────────
+#
+# Assets en public/guias-mejoras/bebras/assets/momento-{N}/ ; el .tex se escribe
+# en public/guias-mejoras/bebras/, así que la ruta relativa es assets/momento-N/.
+#   · .png/.jpg/.jpeg/.pdf → \guiaFigura
+#   · .tex/.tikz           → \guiaDiagrama (TikZ vectorial y editable)
+# Un asset ausente avisa y se omite; nunca rompe el build.
+
+EXT_IMAGEN = {".png", ".jpg", ".jpeg", ".pdf"}
+EXT_DIAGRAMA_TEX = {".tex", ".tikz"}
+SECCIONES_RECURSOS = ("apertura", "escuta", "sistematizacion", "praxis")
+AVISOS_RECURSOS: list[str] = []
+
+
+def recursos_a_tex(guia: dict) -> dict[str, str]:
+    """Agrupa los assets declarados por `donde` y emite el LaTeX de cada sección."""
+    recursos = guia.get("recursos") or {}
+    ruta_rel = f"assets/momento-{guia['momento']}"
+    assets_dir = OUT_DIR / "assets" / f"momento-{guia['momento']}"
+    por_seccion: dict[str, list[str]] = {s: [] for s in SECCIONES_RECURSOS}
+
+    for asset in [*(recursos.get("imagenes") or []), *(recursos.get("diagramas") or [])]:
+        archivo = (asset.get("archivo") or "").strip()
+        if not archivo:
+            AVISOS_RECURSOS.append("asset sin campo 'archivo': omitido")
+            continue
+        donde = (asset.get("donde") or "apertura").strip().lower()
+        if donde not in por_seccion:
+            AVISOS_RECURSOS.append(f"{archivo}: 'donde: {donde}' inválido: omitido")
+            continue
+        if not (assets_dir / archivo).exists():
+            AVISOS_RECURSOS.append(f"{archivo}: ausente en {ruta_rel}/: omitido")
+            continue
+        pie = (asset.get("caption") or asset.get("alt") or "").strip()
+        ext = Path(archivo).suffix.lower()
+        destino = f"{ruta_rel}/{archivo}"
+        if ext in EXT_DIAGRAMA_TEX:
+            por_seccion[donde].append(f"\\guiaDiagrama{{{destino}}}{{{pie}}}")
+        elif ext in EXT_IMAGEN:
+            por_seccion[donde].append(f"\\guiaFigura{{{destino}}}{{{pie}}}")
+        else:
+            AVISOS_RECURSOS.append(f"{archivo}: extensión '{ext}' no soportada: omitido")
+
+    return {f"RECURSOS_{s.upper()}": "\n".join(b) for s, b in por_seccion.items()}
 
 
 def cargar_guia(momento: str) -> dict | None:
@@ -90,6 +138,16 @@ def yaml_a_placeholders(guia: dict) -> dict[str, str]:
     return {
         **COLORES,
         **META,
+        # Identidad de esta familia en el template unificado.
+        "HEADER_IZQ": "Tecnología e Informática · Bebras",
+        "HEADER_DER": f"Momento {momento} · MILC v3",
+        "PORTADA_ETIQUETA": "MOMENTO",
+        "PORTADA_SERIE": "BEBRAS · PENSAR COMO UNA MÁQUINA",
+        "PORTADA_ID": f"Bebras · Momento {momento}",
+        # Bebras numera MOMENTOS, no grados: sin circulito de «°».
+        "PORTADA_CIRCULO": "",
+        # Recursos visuales (vacíos si la guía no declara `recursos:`).
+        **recursos_a_tex(guia),
         # En Bebras, el número grande de portada y el del header = nº de momento.
         "GRADO": str(momento),
         "GUIA_NUMERO": str(momento),

@@ -7,7 +7,7 @@ organiza por LÍNEA de investigación y MÓDULO, y cada módulo recorre una fase
 modelo MILC (Escucha → Sistematización → Praxis → Evaluación liberadora).
 Por eso no encaja en el motor de grados (build-guias-g11.py) y usa —igual que
 Bebras— un driver paralelo con el MISMO esquema YAML (MILC v3) y un template
-variante de portada (template-milc-v3-semillero.tex).
+plantilla unica (template-milc-v3.tex), que parametriza portada y encabezado.
 
 El plan de estudios (la fuente de verdad de líneas y módulos) vive en
 src/data/semillero.ts → planEstudios.
@@ -39,7 +39,7 @@ from pathlib import Path
 import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
-TEMPLATE = ROOT / "scripts/generadores/template-milc-v3-semillero.tex"
+TEMPLATE = ROOT / "scripts/generadores/template-milc-v3.tex"
 CONTENT_DIR = ROOT / "content" / "guias" / "semillero"
 OUT_DIR = ROOT / "public" / "guias-mejoras" / "semillero"
 XELATEX = "/Library/TeX/texbin/xelatex"
@@ -250,8 +250,14 @@ def yaml_a_placeholders(guia: dict, slug: str, avisos: list[str]) -> dict[str, s
         **META_COMUN,
         **recursos_a_tex(guia, slug, avisos),
         "REFERENTES": linea_meta["referentes"],
-        "LINEA_NOMBRE": linea_meta["nombre"],
-        "FASE_MILC": guia["fase"],
+        # Identidad de esta familia en el template unificado.
+        "HEADER_IZQ": f"Semillero de Investigación · {linea_meta['nombre']}",
+        "HEADER_DER": f"Módulo {modulo} · {guia['fase']} · MILC v3",
+        "PORTADA_ETIQUETA": "MÓDULO",
+        "PORTADA_SERIE": "SEMILLERO DE INVESTIGACIÓN · CONECTATE",
+        "PORTADA_ID": linea_meta["nombre"],
+        # El Semillero numera MÓDULOS, no grados: sin circulito de «°».
+        "PORTADA_CIRCULO": "",
         # En el Semillero, el número grande de portada y el del header = nº de módulo.
         "GRADO": str(modulo),
         "GUIA_NUMERO": str(modulo),

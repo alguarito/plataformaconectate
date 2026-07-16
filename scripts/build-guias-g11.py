@@ -3,7 +3,8 @@
 Motor de generación de guías PDF de Grado 11° (Plataforma Conéctate).
 
 Lee los archivos YAML en `content/guias/11/{clave}.yaml` y, para cada uno
-con `completo: true`, llena los placeholders de `template-milc-v3-conectate.tex`
+con `completo: true`, llena los placeholders de `template-milc-v3.tex` (la
+plantilla unica que comparten las tres familias de guias)
 y compila el PDF en `public/guias-mejoras/{sesionGlobal}-11-TIC.pdf`.
 
 Cada YAML es la **single source of truth** de una guía. Para editar el
@@ -31,7 +32,7 @@ from pathlib import Path
 import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
-TEMPLATE = ROOT / "scripts/generadores/template-milc-v3-conectate.tex"
+TEMPLATE = ROOT / "scripts/generadores/template-milc-v3.tex"
 OUT_DIR = ROOT / "public/guias-mejoras"
 XELATEX = "/Library/TeX/texbin/xelatex"
 
@@ -228,6 +229,12 @@ def cargar_guia(clave: str) -> dict | None:
 # Un asset declarado pero ausente en disco NO rompe el build: se omite y se
 # avisa (usa `python3 scripts/guias-assets.py` para auditar los rotos).
 
+# El circulito de grado (°) que acompaña al número grande de la portada.
+CIRCULO_GRADO = (
+    "\\draw[milcGradeText,line width=1.7pt]\n"
+    "    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);"
+)
+
 EXT_IMAGEN = {".png", ".jpg", ".jpeg", ".pdf"}
 EXT_DIAGRAMA_TEX = {".tex", ".tikz"}
 
@@ -321,6 +328,14 @@ def yaml_a_placeholders(guia: dict) -> dict[str, str]:
     return {
         **COLORES,
         **PERIODOS[periodo],
+        # Identidad de esta familia en el template unificado.
+        "HEADER_IZQ": f"Tecnología e Informática · Grado {GRADO}",
+        "HEADER_DER": f"Guía {sesion_global} · MILC v3",
+        "PORTADA_ETIQUETA": "GRADO",
+        "PORTADA_SERIE": "SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA",
+        "PORTADA_ID": f"Guía {sesion_global}-{GRADO}-TIC",
+        # Las guías de grado sí llevan el circulito: «11°».
+        "PORTADA_CIRCULO": CIRCULO_GRADO,
         # Recursos visuales declarados en `recursos:` (vacíos si no hay).
         **recursos_a_tex(guia, sesion_global, GRADO),
         "GRADO": str(GRADO),

@@ -1,7 +1,26 @@
-% TEMPLATE-MILC-v3.tex - plantilla maestra para todas las guias MILC v3
-% Ver scripts/generadores/build-guia-milc.py para la lista completa de
-% claves esperadas. El script valida que no queden placeholders sin
-% reemplazar antes de escribir el archivo final.
+% TEMPLATE-MILC-v3.tex - plantilla maestra UNICA de las guias MILC v3.
+%
+% La usan las tres familias de guias, cada una con su driver:
+%   · Grados 6-11  -> scripts/build-guias-g11.py
+%   · Bebras       -> scripts/build-guias-bebras.py
+%   · Semillero    -> scripts/build-guias-semillero.py
+%
+% Antes habia tres copias casi identicas (~400 lineas iguales, 6 distintas):
+% cada mejora habia que aplicarla tres veces, y en la practica no se hacia
+% (el motor de recursos vivia solo en dos de ellas). Lo que varia entre
+% familias esta parametrizado en 6 placeholders que cada driver llena
+% (se nombran aqui SIN su sintaxis real: el builder reemplaza por texto plano,
+% tambien dentro de los comentarios, y un valor multilinea rompe el preambulo):
+%
+%   HEADER_IZQ        encabezado izquierdo de pagina
+%   HEADER_DER        encabezado derecho de pagina
+%   PORTADA_ETIQUETA  rotulo sobre el numero grande (GRADO/MOMENTO/MODULO)
+%   PORTADA_SERIE     linea de serie de la portada
+%   PORTADA_ID        identificador de la guia en la portada
+%   PORTADA_CIRCULO   el circulito de grado (°), o vacio si no aplica
+%
+% El resto de claves las documenta content/guias/_SCHEMA.md. El script valida
+% que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
 \usepackage[margin=1.75cm]{geometry}
@@ -9,6 +28,20 @@
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
 \usepackage{tikz}
+% Librerías TikZ para los diagramas de las guías (bloque `recursos:`):
+%  · babel  → babel en español vuelve activos caracteres como «>», y TikZ los usa
+%             en sus opciones (>=stealth, ->). Sin esta librería, cualquier
+%             diagrama con flechas revienta con «\language@active@arg> has an
+%             extra }». Debe ir ANTES de que se dibuje nada.
+%  · positioning        → sintaxis «below left=2pt and 3pt».
+%  · decorations.pathreplacing → llaves ({brace}) para señalar rangos.
+\usetikzlibrary{babel,positioning,decorations.pathreplacing}
+\usepackage{graphicx}
+% Circuitos: el trabajo de electrónica se hace hoy con micro:bit y sus sensores
+% integrados (MakeCode, sin cableado), así que no se necesitan esquemáticos.
+% Si algún día entran montajes con protoboard, basta descomentar esta línea:
+% los diagramas .tex/.tikz declarados en `recursos:` ya se incrustan solos.
+% \usepackage{circuitikz}
 \usepackage[most]{tcolorbox}
 \usepackage{tabularx}
 \usepackage{array}
@@ -17,6 +50,14 @@
 \usepackage{ragged2e}
 \usepackage{enumitem}
 \usepackage{microtype}
+
+% Helvetica Neue no trae la flecha U+2192, asi que cada «→» escrito literalmente
+% en el YAML se compilaba a NADA, en silencio (462 flechas en 61 guias: rutas del
+% tipo «paleta → tipografia → lockup» salian rotas). Mapeamos el caracter a su
+% version matematica, que si tiene glifo. Asi el autor puede seguir escribiendo
+% «→» comodamente en el YAML.
+\usepackage{newunicodechar}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
@@ -95,9 +136,13 @@
   before skip=4pt,after skip=8pt,
   fontupper=\itshape\small\color{milcNegro}\RaggedRight
 }
+% La flecha va en modo matematico a proposito: Helvetica Neue NO tiene el glifo
+% U+2192, asi que \textrightarrow se compilaba a NADA («Missing character: There
+% is no → in font Helvetica Neue») y el puente salia sin flecha. En modo
+% matematico la flecha viene de la fuente matematica y si se dibuja.
 \newcommand{\puente}[1]{%
   \begin{puentebox}%
-    \textcolor{milcGradeDark}{\textbf{\textrightarrow}}\hspace{2mm}#1%
+    \textcolor{milcGradeDark}{$\rightarrow$}\hspace{2mm}#1%
   \end{puentebox}%
 }
 
@@ -110,6 +155,26 @@
 {\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
 {\sffamily\bfseries\small #4}
 \end{tcolorbox}
+}
+
+% ── Recursos visuales de la guía ──────────────────────────────────────
+% Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
+% \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
+% \guiaDiagrama → fuente TikZ/circuitikz (.tex) incrustada como vector:
+%                 es la vía para circuitos y esquemáticos editables.
+% #1 = ruta relativa al .tex · #2 = pie (puede ir vacío)
+\newcommand{\guiaFigura}[2]{%
+\begin{center}
+\includegraphics[width=0.88\linewidth,height=0.38\textheight,keepaspectratio]{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\newcommand{\guiaDiagrama}[2]{%
+\begin{center}
+\input{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
 }
 
 \begin{document}
@@ -135,6 +200,8 @@
 
   \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
     {\sffamily\bfseries\fontsize{124}{124}\selectfont 11};
+  % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
+  % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
   \draw[milcGradeText,line width=1.7pt]
     ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
 
@@ -178,6 +245,8 @@ Hoy ese \emph{handshake} sucede en \textbf{LinkedIn} y en tu \textbf{portafolio 
 Al terminar podrás: (1) \textbf{analizar} 3 perfiles profesionales que admiras y extraer su patrón; (2) \textbf{explicar} qué hace coherentes (o no) los elementos de un perfil; (3) \textbf{crear} tu perfil LinkedIn + portafolio mínimo; (4) \textbf{evaluar} el perfil de un compañero con criterios.
 \end{softbox}
 
+
+
 \small
 \begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
 \rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
@@ -193,7 +262,7 @@ Producto final & Perfil de LinkedIn completo + portafolio mínimo (3 piezas) enl
 Ruta MILC: así vamos a aprender
 \end{titlebox}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
-\phasecard{1}{milcVerde}{milcGris}{Escuta\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
 \phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
 \phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
 \phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
@@ -203,7 +272,7 @@ Ruta MILC: así vamos a aprender
 \puente{Antes de armar tu propio LinkedIn, vas a leer otros. Detrás de cada perfil que transmite seriedad hay decisiones coherentes; detrás de los confusos, improvisación.}
 
 \begin{titlebox}{milcVerde}
-Fase 1 · Escuta
+Fase 1 · Escucha
 \end{titlebox}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
@@ -215,6 +284,8 @@ Fase 1 · Escuta
 \checkbox Anoté qué tienen en común y qué los diferencia.
 
 \begin{infoband}{milcVerde}
+
+
 \textbf{Lo que va al cuaderno (Actividad 1 · ANALIZA).} Título: «Actividad 1 --- 3 perfiles profesionales que admiro». \textbf{Formato:} 3 fichas, una por perfil, con los 6 elementos clave + una columna ``qué transmite''. Al final 1 párrafo de 4 renglones con el patrón común. \textbf{Sabes que terminaste cuando} los 6 elementos están analizados en cada perfil con observaciones específicas (no ``buena foto'').
 \end{infoband}
 
@@ -247,6 +318,8 @@ Todo perfil profesional sólido se compone de 6 elementos coherentes entre sí. 
 \end{softbox}
 
 \begin{infoband}{milcTurquesa}
+
+
 \textbf{Lo que va al cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2 --- Los 6 elementos de mi perfil». \textbf{Formato:} 6 fichas, una por elemento, cada una con: definición (1 frase tuya), error común a evitar, ejemplo de cómo lo aplicarás a tu propio LinkedIn. \textbf{Sabes que terminaste cuando} cada ficha tiene tu propio ejemplo específico, no plantilla genérica.
 \end{infoband}
 
@@ -279,6 +352,8 @@ Algoritmo de armado & \textbf{Algoritmo.} (1) Entra a LinkedIn o crea cuenta con
 \end{softbox}
 
 \begin{infoband}{milcMagenta}
+
+
 \textbf{Lo que va al cuaderno (Actividad 3 · CREA).} Título: «Actividad 3 --- Mi perfil LinkedIn · v1». \textbf{Formato:} 6 secciones con el contenido final de cada elemento + URL pública de tu perfil. \textbf{Extensión:} una página de cuaderno. \textbf{Sabes que terminaste cuando} alguien que abre tu URL entiende en 30 segundos qué haces y siente coherencia entre los 6 elementos.
 \end{infoband}
 

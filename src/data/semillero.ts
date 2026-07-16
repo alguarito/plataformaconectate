@@ -130,13 +130,14 @@ export const lineas: LineaInvestigacion[] = [
     slug: 'robotica',
     nombre: 'Robótica y sistemas embebidos',
     descripcion:
-      'Diseñar, construir y programar dispositivos que perciben y actúan: sensores, microcontroladores y automatización de bajo costo.',
+      'Diseñar, construir y programar con micro:bit dispositivos que perciben y actúan: sensores, umbrales calibrados y automatización de bajo costo.',
     icono: '⚙️',
     bgClass: 'bg-bento-orange',
+    articulaCon: 'micro:bit · MakeCode',
     ejemplos: [
       '¿Cómo hago que un dispositivo reaccione a su entorno?',
-      'Prototipos con sensores y microcontroladores.',
-      'Automatizar una tarea real de la escuela o la casa.',
+      'Del pseudocódigo a los bloques: la lógica antes que el código.',
+      'Monitorear una variable real de la escuela durante días.',
     ],
   },
   {
@@ -258,6 +259,15 @@ export interface ModuloPlan {
   productos: string[];
   /** Indicador de logro: cómo se verifica el resultado. */
   indicador: string;
+  /**
+   * Slug de la guía publicada de este módulo, si ya existe: corresponde a
+   * content/guias/semillero/{slug}.yaml y al PDF que produce
+   * scripts/build-guias-semillero.py. Su ausencia significa «guía pendiente»:
+   * el módulo se muestra igual, pero sin enlace.
+   */
+  guia?: string;
+  /** Duración de la sesión en minutos (si la guía la declara). */
+  duracionMin?: number;
 }
 
 export interface PlanLinea {
@@ -294,6 +304,8 @@ export const planEstudios: PlanLinea[] = [
         rae: 'Observa el cielo local e identifica preguntas investigables sobre estrellas, planetas y objetos del cielo profundo.',
         productos: ['Bitácora de observación', 'Lista de preguntas de investigación priorizadas'],
         indicador: 'Formula al menos una pregunta investigable, delimitada y verificable.',
+        guia: 'astronomia-1',
+        duracionMin: 180,
       },
       {
         fase: 'Sistematización',
@@ -304,10 +316,14 @@ export const planEstudios: PlanLinea[] = [
       },
       {
         fase: 'Praxis',
-        titulo: 'Investigar como la ciencia ciudadana',
-        rae: 'Participa en una campaña de ciencia ciudadana (RECA, NASA-IASC) aplicando su protocolo de análisis.',
-        productos: ['Reporte de detección o medición (candidato a exoplaneta o asteroide)', 'Registro de participación en la campaña'],
-        indicador: 'Entrega un análisis conforme al protocolo de la campaña.',
+        titulo: 'Del ojo al instrumento: fotómetro micro:bit',
+        rae: 'Construye y calibra un fotómetro con micro:bit para medir el brillo del cielo, y aporta sus datos a una campaña de ciencia ciudadana (RECA, NASA-IASC).',
+        productos: [
+          'Fotómetro micro:bit calibrado con umbrales (usa el sensor de luz integrado, sin cablear nada), con su pseudocódigo y 5 escenarios de prueba',
+          'Serie de medidas del brillo del cielo en 3 noches, contrastada con la magnitud límite que estimó a ojo en el módulo 1',
+          'Reporte de detección o medición para la campaña (candidato a exoplaneta o asteroide)',
+        ],
+        indicador: 'Su fotómetro distingue cielos de distinto brillo con umbrales calibrados, y sus datos se entregan conforme al protocolo de la campaña.',
       },
       {
         fase: 'Evaluación liberadora',
@@ -390,30 +406,46 @@ export const planEstudios: PlanLinea[] = [
       {
         fase: 'Escucha',
         titulo: 'Cosas que podrían reaccionar',
-        rae: 'Detecta necesidades de su entorno que un sistema capaz de percibir y actuar podría atender.',
-        productos: ['Lista de necesidades y funciones deseadas', 'Boceto del sistema'],
-        indicador: 'Define qué debe percibir y qué debe hacer el dispositivo.',
+        rae: 'Detecta necesidades de su entorno que un sistema capaz de percibir y actuar podría atender, y reconoce qué sensor del micro:bit las alcanza.',
+        productos: [
+          'Lista de necesidades y funciones deseadas',
+          'Mapa de sensores del micro:bit (luz, temperatura, acelerómetro, botones) frente a cada necesidad',
+        ],
+        indicador: 'Define qué debe percibir y qué debe hacer el dispositivo, y con cuál sensor.',
       },
       {
         fase: 'Sistematización',
-        titulo: 'De la idea al diseño',
-        rae: 'Diseña la arquitectura de un sistema embebido (sensores, lógica, actuadores) y su plan de construcción.',
-        productos: ['Esquema de conexiones', 'Diagrama de lógica de control', 'Lista de materiales'],
-        indicador: 'Presenta un diseño coherente entre lo que percibe y lo que ejecuta.',
+        titulo: 'De la idea al pseudocódigo',
+        rae: 'Diseña la lógica de su sistema (sensor → umbral → acción) en pseudocódigo y diagrama de flujo antes de tocar un solo bloque.',
+        productos: [
+          'Pseudocódigo y diagrama de flujo de la lógica',
+          'Tabla de umbrales con su método de calibración',
+          'Lista de materiales',
+        ],
+        indicador: 'Su lógica es coherente entre lo que percibe y lo que ejecuta, y sus umbrales se justifican con medidas, no con supuestos.',
       },
       {
         fase: 'Praxis',
-        titulo: 'Construir y programar',
-        rae: 'Construye y programa un prototipo funcional que responde a su entorno.',
-        productos: ['Prototipo funcional', 'Código comentado', 'Video de funcionamiento'],
-        indicador: 'El prototipo cumple la función definida ante una prueba real.',
+        titulo: 'Construir y programar en MakeCode',
+        rae: 'Construye y programa en MakeCode un prototipo funcional que responde a su entorno, y lo somete a escenarios de prueba.',
+        productos: [
+          'Prototipo funcional con micro:bit',
+          'Programa MakeCode comentado',
+          '5 escenarios de prueba con resultado esperado / real',
+          'Video de funcionamiento',
+        ],
+        indicador: 'El prototipo cumple la función definida en una prueba real y supera los 5 escenarios documentados.',
       },
       {
         fase: 'Evaluación liberadora',
         titulo: 'Probar, medir, mejorar',
-        rae: 'Evalúa el desempeño, las fallas y el impacto de su prototipo e itera una mejora.',
-        productos: ['Registro de pruebas y fallas', 'Versión mejorada y documentada'],
-        indicador: 'Documenta una iteración de mejora basada en evidencia.',
+        rae: 'Depura, evalúa el desempeño y las fallas de su prototipo, e itera una mejora sostenida en evidencia.',
+        productos: [
+          'Registro de pruebas, fallas y depuración',
+          'Versión mejorada y documentada',
+          'Nota de límites: a quién sirve el dispositivo y a quién no',
+        ],
+        indicador: 'Documenta una iteración de mejora basada en evidencia y nombra un límite real de su solución.',
       },
     ],
   },

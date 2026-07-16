@@ -208,6 +208,90 @@ def cargar_guia(clave: str) -> dict | None:
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# Recursos visuales (bloque `recursos:` del YAML)
+# ─────────────────────────────────────────────────────────────────────────────
+#
+# Los assets viven en public/guias-mejoras/assets/{sesionGlobal}-{grado}/ y el
+# .tex se escribe en public/guias-mejoras/, así que la ruta relativa desde el
+# .tex es assets/{sesionGlobal}-{grado}/{archivo}.
+#
+# Por extensión se decide cómo incrustarlos:
+#   · .png/.jpg/.jpeg/.pdf → \guiaFigura   (imagen: foto, carta celeste, captura
+#                            de MakeCode, montaje)
+#   · .tex/.tikz           → \guiaDiagrama (fuente TikZ incrustada como vector y
+#                            editable: esfera celeste, altura/azimut, diagramas
+#                            de flujo. Para esquemáticos de circuito hay que
+#                            habilitar circuitikz en el template.)
+#   · .svg                 → no soportado por xelatex; se omite con aviso
+#                            (la versión web sí puede usarlo)
+#
+# Un asset declarado pero ausente en disco NO rompe el build: se omite y se
+# avisa (usa `python3 scripts/guias-assets.py` para auditar los rotos).
+
+EXT_IMAGEN = {".png", ".jpg", ".jpeg", ".pdf"}
+EXT_DIAGRAMA_TEX = {".tex", ".tikz"}
+
+# Secciones del template que aceptan recursos (placeholder <<<RECURSOS_X>>>).
+SECCIONES_RECURSOS = ("apertura", "escuta", "sistematizacion", "praxis")
+
+# Avisos acumulados durante el build (se imprimen al final de cada guía).
+AVISOS_RECURSOS: list[str] = []
+
+
+def recursos_a_tex(guia: dict, sesion_global: int, grado: int) -> dict[str, str]:
+    """Agrupa los assets declarados por `donde` y emite el LaTeX de cada sección.
+
+    Devuelve siempre las 4 claves RECURSOS_* (vacías si no hay assets), para que
+    ninguna guía deje placeholders sin reemplazar.
+    """
+    recursos = guia.get("recursos") or {}
+    imagenes = recursos.get("imagenes") or []
+    diagramas = recursos.get("diagramas") or []
+
+    ruta_rel = f"assets/{sesion_global}-{grado}"
+    assets_dir = OUT_DIR / "assets" / f"{sesion_global}-{grado}"
+
+    por_seccion: dict[str, list[str]] = {s: [] for s in SECCIONES_RECURSOS}
+
+    for asset in [*imagenes, *diagramas]:
+        archivo = (asset.get("archivo") or "").strip()
+        if not archivo:
+            AVISOS_RECURSOS.append("asset sin campo 'archivo': omitido")
+            continue
+
+        donde = (asset.get("donde") or "apertura").strip().lower()
+        if donde not in por_seccion:
+            AVISOS_RECURSOS.append(
+                f"{archivo}: 'donde: {donde}' no es una sección válida "
+                f"({', '.join(SECCIONES_RECURSOS)}): omitido"
+            )
+            continue
+
+        if not (assets_dir / archivo).exists():
+            AVISOS_RECURSOS.append(f"{archivo}: declarado pero ausente en {ruta_rel}/: omitido")
+            continue
+
+        pie = (asset.get("caption") or asset.get("alt") or "").strip()
+        ext = Path(archivo).suffix.lower()
+        destino = f"{ruta_rel}/{archivo}"
+
+        if ext in EXT_DIAGRAMA_TEX:
+            por_seccion[donde].append(f"\\guiaDiagrama{{{destino}}}{{{pie}}}")
+        elif ext in EXT_IMAGEN:
+            por_seccion[donde].append(f"\\guiaFigura{{{destino}}}{{{pie}}}")
+        else:
+            AVISOS_RECURSOS.append(
+                f"{archivo}: extensión '{ext}' no soportada en PDF "
+                f"(usa .png/.jpg/.pdf o .tex/.tikz): omitido"
+            )
+
+    return {
+        f"RECURSOS_{seccion.upper()}": "\n".join(bloques)
+        for seccion, bloques in por_seccion.items()
+    }
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Mapeo YAML → placeholders del template LaTeX
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -237,6 +321,8 @@ def yaml_a_placeholders(guia: dict) -> dict[str, str]:
     return {
         **COLORES,
         **PERIODOS[periodo],
+        # Recursos visuales declarados en `recursos:` (vacíos si no hay).
+        **recursos_a_tex(guia, sesion_global, GRADO),
         "GRADO": str(GRADO),
         "GUIA_NUMERO": str(sesion_global),
         "TITULO_GUIA": guia["titulo"],

@@ -1,0 +1,140 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import VisorPdf from '../../../../components/VisorPdf.astro';
+import { lineas, planEstudios } from '../../../../data/semillero';
+import { fasesMILC } from '../../../../data/planArea';
+import { fgSobreBento } from '../../../../data/explora';
+
+/**
+ * Página de una guía del Semillero.
+ *
+ * Se generan solo las rutas de los módulos que declaran `guia` en el plan de
+ * estudios (src/data/semillero.ts → planEstudios); los módulos sin guía
+ * publicada no producen página. El PDF lo compila
+ * scripts/build-guias-semillero.py a public/guias-mejoras/semillero/.
+ */
+export function getStaticPaths() {
+  return planEstudios.flatMap((plan) => {
+    const linea = lineas.find((l) => l.slug === plan.lineaSlug);
+    if (!linea) return [];
+    return plan.modulos
+      .map((modulo, i) => ({ modulo, numero: i + 1 }))
+      .filter(({ modulo }) => Boolean(modulo.guia))
+      .map(({ modulo, numero }) => ({
+        params: { slug: modulo.guia! },
+        props: { modulo, numero, linea },
+      }));
+  });
+}
+
+const { modulo, numero, linea } = Astro.props;
+const base = import.meta.env.BASE_URL;
+
+const pdfSrc = `${base}/guias-mejoras/semillero/${modulo.guia}-TIC.pdf`;
+const faseMeta = fasesMILC.find((f) => f.nombre === modulo.fase);
+const faseBg = faseMeta?.bgClass ?? 'bg-bento-blue';
+const faseFg = fgSobreBento(faseBg);
+const lineaFg = fgSobreBento(linea.bgClass);
+const horas = modulo.duracionMin ? modulo.duracionMin / 60 : null;
+---
+
+<BaseLayout
+  title={`${modulo.titulo} — Semillero de Investigación ConectaTE`}
+  description={`Guía del Semillero de Investigación ConectaTE · ${linea.nombre} · Módulo ${numero} (fase MILC: ${modulo.fase}). ${modulo.rae}`}
+  ogType="article"
+  imagen="/og/home.png"
+>
+  <article class="pt-12 pb-20">
+    <div class="bento-container max-w-5xl">
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-sm font-semibold mb-8 flex-wrap" style="color: var(--fg-muted);">
+        <a href={base || '/'} class="hover:opacity-60 transition-opacity">Inicio</a>
+        <span>/</span>
+        <a href={`${base}/semillero`} class="hover:opacity-60 transition-opacity">Semillero</a>
+        <span>/</span>
+        <a href={`${base}/semillero/plan-de-estudios`} class="hover:opacity-60 transition-opacity">Plan de estudios</a>
+        <span>/</span>
+        <span style="color: var(--fg);">Módulo {numero}</span>
+      </nav>
+
+      <!-- HERO -->
+      <div class:list={['bento-card-color', linea.bgClass, lineaFg, 'mb-8 flex flex-col justify-between min-h-[260px]']}>
+        <div class="flex items-start justify-between gap-3 flex-wrap">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-widest bg-black/15">
+              {linea.icono} {linea.nombre}
+            </span>
+            <span class="px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-widest bg-black/15">
+              {faseMeta?.emoji} Fase MILC · {modulo.fase}
+            </span>
+            {horas && (
+              <span class="px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-widest bg-black/15">
+                ⏱ {horas} h de clase
+              </span>
+            )}
+          </div>
+          <span class="text-6xl md:text-7xl font-black tracking-tighter leading-none opacity-90">
+            {numero}
+          </span>
+        </div>
+        <div class="mt-6">
+          <span class="text-xs font-bold uppercase tracking-widest opacity-80">Módulo {numero} del itinerario</span>
+          <h1 class="text-3xl md:text-5xl font-black tracking-tight leading-tight mt-1">
+            {modulo.titulo}
+          </h1>
+        </div>
+      </div>
+
+      <!-- RESULTADOS DEL MÓDULO -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 mb-8">
+        <div class="bento-card md:col-span-2">
+          <span class="text-[11px] font-black uppercase tracking-widest" style="color: var(--fg-muted);">
+            Resultado de aprendizaje
+          </span>
+          <p class="text-base leading-relaxed mt-1.5">{modulo.rae}</p>
+
+          <span class="text-[11px] font-black uppercase tracking-widest mt-5 block" style="color: var(--fg-muted);">
+            Productos de investigación
+          </span>
+          <ul class="mt-1.5 space-y-1.5">
+            {modulo.productos.map((p) => (
+              <li class="flex items-start gap-2 text-sm leading-snug">
+                <span class="w-4 h-4 rounded bg-bento-blue/15 flex items-center justify-center shrink-0 mt-0.5">
+                  <span class="text-[9px] font-black text-bento-blue">◆</span>
+                </span>
+                <span>{p}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div class:list={['bento-card-color', faseBg, faseFg, 'flex flex-col justify-between']}>
+          <span class="text-[11px] font-black uppercase tracking-widest opacity-80">
+            Indicador de logro
+          </span>
+          <p class="text-sm font-bold leading-relaxed mt-2">{modulo.indicador}</p>
+        </div>
+      </div>
+
+      <!-- LA GUÍA (PDF) -->
+      <VisorPdf
+        src={pdfSrc}
+        titulo={modulo.titulo}
+        etiqueta="📘 Guía del Semillero"
+        altura="82vh"
+      />
+
+      <!-- VOLVER -->
+      <a href={`${base}/semillero/plan-de-estudios`} class="bento-card-hover flex items-center gap-4 mt-8">
+        <svg class="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 12H5"></path>
+          <path d="m12 19-7-7 7-7"></path>
+        </svg>
+        <div>
+          <div class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">Volver al</div>
+          <div class="font-black text-lg">Plan de estudios</div>
+        </div>
+      </a>
+    </div>
+  </article>
+</BaseLayout>

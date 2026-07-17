@@ -458,6 +458,8 @@ export const planEstudios: PlanLinea[] = [
           'Nota de límites: a quién sirve el dispositivo y a quién no',
         ],
         indicador: 'Documenta una iteración de mejora basada en evidencia y nombra un límite real de su solución.',
+        guia: 'robotica-4',
+        duracionMin: 180,
       },
     ],
   },

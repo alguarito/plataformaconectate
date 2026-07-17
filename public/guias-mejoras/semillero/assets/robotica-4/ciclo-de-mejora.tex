@@ -1,0 +1,45 @@
+% El ciclo de mejora — probar, hallar la falla, cambiar UNA cosa, volver a probar.
+%
+% Diagrama propio en TikZ (sin librerías extra: el círculo y las flechas curvas
+% se dibujan a mano). Se tiñe con el color de la línea (milcGradeDark = naranja
+% de Robótica). Muestra el ciclo de depuración/iteración como un lazo cerrado,
+% con el principio de oro en el centro: cambiar una sola cosa por vuelta, para
+% saber qué fue lo que la arregló.
+%
+% Se incrusta vía \guiaDiagrama desde el bloque `recursos:` del YAML.
+\begin{tikzpicture}[scale=1,font=\sffamily,>=stealth]
+
+  % Radio y centro del ciclo
+  \def\R{2.4}
+  \coordinate (C) at (0,0);
+
+  % ── Cuatro estaciones del ciclo (explícitas para fijar el color de texto) ──
+  \newcommand{\estacion}[5]{% ángulo · relleno · color-texto · título · detalle
+    \node[fill=#2,rounded corners=3pt,inner sep=3pt,align=center,text=#3,
+          font=\scriptsize\bfseries,text width=2.5cm]
+      (S#1) at ({#1}:\R) {#4\\[0.4mm]\mdseries\itshape\footnotesize #5};
+  }
+  \estacion{90}{milcGradeDark}{white}{1. probar}{correr los 5 escenarios}
+  \estacion{0}{milcMostaza}{milcNegro}{2. observar}{¿dónde falló? esperado vs real}
+  \estacion{270}{milcGradeDark}{white}{3. cambiar UNA cosa}{un umbral o una regla}
+  \estacion{180}{milcMostaza}{milcNegro}{4. volver a probar}{¿mejoró? anota el cambio}
+
+  % ── Flechas curvas en el sentido del ciclo (horario) ────────────────
+  \draw[->,milcGradeDark,line width=1pt] (S90) to[bend left=28] (S0);
+  \draw[->,milcGradeDark,line width=1pt] (S0) to[bend left=28] (S270);
+  \draw[->,milcGradeDark,line width=1pt] (S270) to[bend left=28] (S180);
+  \draw[->,milcGradeDark,line width=1pt] (S180) to[bend left=28] (S90);
+
+  % ── Centro: el principio de oro ──────────────────────────────────────
+  \node[align=center,font=\scriptsize\bfseries,milcNegro,text width=2.7cm] at (C)
+    {una sola cosa\\por vuelta\\[0.6mm]\mdseries\itshape\footnotesize (si cambias dos, no sabrás cuál la arregló)};
+
+  % ── Moraleja ─────────────────────────────────────────────────────────
+  \node[font=\scriptsize\itshape,milcNegro!75,align=center,text width=11cm]
+    at (0,-3.55)
+    {Mejorar no es rehacer todo: es girar este ciclo. Cada vuelta cambia
+     \textbf{una} cosa y la comprueba, para saber con evidencia qué la mejoró
+     ---no con suerte. Un aparato que nunca falló en la prueba probablemente no
+     se probó bien.};
+
+\end{tikzpicture}

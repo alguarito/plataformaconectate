@@ -234,8 +234,16 @@ def yaml_a_placeholders(guia: dict, slug: str, avisos: list[str]) -> dict[str, s
     prax = guia["praxis"]
     triangulo = guia["triangulo"]
 
+    # Un criterio/check que contenga «: » (colon-espacio) hace que YAML lo
+    # parsee como {clave: valor} en vez de string. En vez de reventar, lo
+    # reconstruimos como texto plano. Así el autor puede escribir dos puntos.
+    def _texto(item) -> str:
+        if isinstance(item, dict):
+            return "; ".join(f"{k}: {v}" for k, v in item.items())
+        return str(item)
+
     criterios_str = " ".join(
-        f"({i}) {c}{'' if c.endswith('.') else '.'}"
+        f"({i}) {_texto(c).rstrip('.')}."
         for i, c in enumerate(prax["criterios"], start=1)
     )
 
@@ -283,9 +291,9 @@ def yaml_a_placeholders(guia: dict, slug: str, avisos: list[str]) -> dict[str, s
 
         # Fase 1 · Escucha
         "ESCUTA_ESCENA": escuta["escena"],
-        "ESCUTA_CHECK_1": escuta["checks"][0],
-        "ESCUTA_CHECK_2": escuta["checks"][1],
-        "ESCUTA_CHECK_3": escuta["checks"][2],
+        "ESCUTA_CHECK_1": _texto(escuta["checks"][0]),
+        "ESCUTA_CHECK_2": _texto(escuta["checks"][1]),
+        "ESCUTA_CHECK_3": _texto(escuta["checks"][2]),
         "ESCUTA_INFOBAND": escuta["cuaderno"],
 
         # Fase 2 · Sistematización (4 pilares)

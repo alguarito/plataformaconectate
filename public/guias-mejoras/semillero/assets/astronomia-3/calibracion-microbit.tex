@@ -1,0 +1,53 @@
+% Calibración del fotómetro micro:bit — del número crudo al significado.
+%
+% Diagrama propio en TikZ (sin licencias de terceros, vectorial, editable). Se
+% tiñe solo con el color de la línea (milcGradeDark). Mismo lenguaje visual que
+% la escala de magnitud del módulo 1: una barra donde el sensor entrega un
+% número de 0 a 255 y los UMBRALES lo traducen a «oscuro / intermedio / con luz».
+% Calibrar = decidir dónde van esas dos líneas.
+%
+% Se incrusta vía \guiaDiagrama desde el bloque `recursos:` del YAML.
+\begin{tikzpicture}[scale=1,font=\sffamily]
+
+  % x = valor/255 * 10.5  →  la barra mide 10.5 cm de ancho
+  \def\bx#1{#1/255*10.5}
+
+  % ── Zonas de la barra (calibradas: umbrales en 30 y 90) ──────────────
+  \fill[milcGradeDark]      (0,0) rectangle ({\bx{30}},0.75);
+  \fill[milcGradeDark!45]   ({\bx{30}},0) rectangle ({\bx{90}},0.75);
+  \fill[milcMostaza]        ({\bx{90}},0) rectangle ({\bx{255}},0.75);
+  \draw[milcNegro!55,line width=.5pt] (0,0) rectangle ({\bx{255}},0.75);
+
+  % ── Etiquetas de las zonas ───────────────────────────────────────────
+  \node[font=\scriptsize\bfseries,white] at ({\bx{15}},0.375) {oscuro};
+  \node[font=\scriptsize\bfseries,milcNegro] at ({\bx{60}},0.375) {intermedio};
+  \node[font=\scriptsize\bfseries,milcNegro] at ({\bx{172}},0.375) {con luz};
+
+  % ── Escala 0..255 ────────────────────────────────────────────────────
+  \foreach \v in {0,30,90,150,210,255} {
+    \draw[milcNegro!60] ({\bx{\v}},0) -- ({\bx{\v}},-0.12);
+    \node[font=\scriptsize,milcNegro!70,below] at ({\bx{\v}},-0.12) {\v};
+  }
+  \node[font=\scriptsize\bfseries,milcNegro!70,right] at (10.7,-0.32) {input.lightLevel()};
+
+  % ── Las dos líneas de umbral (lo que el estudiante calibra) ──────────
+  \draw[dashed,milcTurquesa,line width=.9pt] ({\bx{30}},-0.35) -- ({\bx{30}},1.55);
+  \draw[dashed,milcTurquesa,line width=.9pt] ({\bx{90}},-0.35) -- ({\bx{90}},1.55);
+  \node[font=\scriptsize\bfseries,milcTurquesa,align=center] at ({\bx{30}},1.8) {umbral 1\\(30)};
+  \node[font=\scriptsize\bfseries,milcTurquesa,align=center] at ({\bx{90}},1.8) {umbral 2\\(90)};
+
+  % ── Una medida real: el ojo dijo «oscuro», el instrumento dice 42 ────
+  \draw[->,milcNegro,line width=1pt] ({\bx{42}},2.5) -- ({\bx{42}},0.85);
+  \fill[milcNegro] ({\bx{42}},0.85) circle (2pt);
+  \node[font=\scriptsize\bfseries,milcNegro,align=center] at ({\bx{42}},2.85)
+    {tu medida: \textbf{42}\\(el ojo dijo «oscuro»)};
+
+  % ── Moraleja ─────────────────────────────────────────────────────────
+  \node[font=\scriptsize\itshape,milcNegro!75,align=center,text width=10.6cm]
+    at (5.25,-1.15)
+    {El sensor solo entrega un número de 0 a 255; \textbf{el umbral lo traduce a
+     significado}. Calibrar es decidir dónde van esas dos líneas ---y ahí una
+     medida de 42 deja de ser «me pareció oscuro» y pasa a ser un dato que otro
+     puede comprobar.};
+
+\end{tikzpicture}

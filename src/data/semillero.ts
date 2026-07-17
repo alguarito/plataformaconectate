@@ -326,6 +326,8 @@ export const planEstudios: PlanLinea[] = [
           'Reporte de detección o medición para la campaña (candidato a exoplaneta o asteroide)',
         ],
         indicador: 'Su fotómetro distingue cielos de distinto brillo con umbrales calibrados, y sus datos se entregan conforme al protocolo de la campaña.',
+        guia: 'astronomia-3',
+        duracionMin: 180,
       },
       {
         fase: 'Evaluación liberadora',

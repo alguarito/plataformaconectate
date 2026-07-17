@@ -335,6 +335,8 @@ export const planEstudios: PlanLinea[] = [
         rae: 'Comunica hallazgos y valora el alcance, los límites y la ética de su investigación.',
         productos: ['Póster o ponencia', 'Conclusión con límites y nuevas preguntas'],
         indicador: 'Sustenta hallazgos ante un público y reconoce los límites de su evidencia.',
+        guia: 'astronomia-4',
+        duracionMin: 180,
       },
     ],
   },

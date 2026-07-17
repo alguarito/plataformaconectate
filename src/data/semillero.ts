@@ -445,6 +445,8 @@ export const planEstudios: PlanLinea[] = [
           'Video de funcionamiento',
         ],
         indicador: 'El prototipo cumple la función definida en una prueba real y supera los 5 escenarios documentados.',
+        guia: 'robotica-3',
+        duracionMin: 180,
       },
       {
         fase: 'Evaluación liberadora',

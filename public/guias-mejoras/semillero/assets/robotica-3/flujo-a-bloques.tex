@@ -1,54 +1,59 @@
 % Del diagrama de flujo a los bloques de MakeCode — programar es traducir.
 %
-% Diagrama propio en TikZ (sin librerías extra). Se tiñe con el color de la línea
-% (milcGradeDark = naranja de Robótica). Muestra, lado a lado, cómo cada figura
-% del diagrama de flujo del módulo 2 se convierte en un bloque de MakeCode: el
-% óvalo → «por siempre», el rectángulo → una acción, el rombo → «si … si no».
-% Deja ver que el módulo 3 no inventa: traduce el plano del módulo 2.
+% Protagonista: una imagen FIEL del programa del fotómetro tal como se arma en
+% MakeCode (colores y etiquetas exactos del entorno micro:bit en español). La
+% imagen se genera con scripts/generadores/makecode-blocks-gen.js → SVG →
+% qlmanage → PNG (assets/robotica-3/bloques-makecode.png).
+%
+% Debajo, una franja-leyenda compacta «figura → bloque» que conserva la
+% pedagogía del módulo (óvalo → «para siempre», rombo → «si … si no», etc.),
+% con los colores reales de las gavetas de MakeCode.
 %
 % Se incrusta vía \guiaDiagrama desde el bloque `recursos:` del YAML.
-\begin{tikzpicture}[scale=1,font=\sffamily,>=stealth]
 
-  % ── Encabezados de las dos columnas ─────────────────────────────────
-  \node[font=\scriptsize\bfseries,milcNegro] at (1.6,6.2) {diagrama de flujo (módulo 2)};
-  \node[font=\scriptsize\bfseries,milcNegro] at (8.4,6.2) {bloques de MakeCode (módulo 3)};
-  \draw[milcNegro!30,line width=.4pt] (5,6.5) -- (5,-0.3);
+% Colores exactos de las categorías de MakeCode micro:bit.
+\definecolor{mkBasico}{HTML}{1E90FF}
+\definecolor{mkEntrada}{HTML}{D400D4}
+\definecolor{mkLogica}{HTML}{00A4A6}
+\definecolor{mkVariables}{HTML}{DC143C}
 
-  % ── Fila 1: óvalo → «por siempre» ────────────────────────────────────
-  % óvalo
-  \fill[milcGradeDark] (0.5,5.2) rectangle (2.7,5.7);
-  \fill[milcGradeDark] (0.5,5.45) circle (0.25);
-  \fill[milcGradeDark] (2.7,5.45) circle (0.25);
-  \node[white,font=\scriptsize\bfseries] at (1.6,5.45) {inicio (repetir)};
-  % bloque «por siempre»
-  \fill[milcTurquesa!85] (6.4,5.05) rectangle (10.4,5.85);
-  \node[white,font=\scriptsize\bfseries,anchor=west] at (6.6,5.45) {por siempre \{ \ldots \}};
-  \draw[->,milcNegro!60,line width=.7pt] (3.3,5.45) -- (6.3,5.45);
+% ── El programa, tal como se arma en MakeCode ────────────────────────────
+\includegraphics[width=0.86\linewidth]{assets/robotica-3/bloques-makecode.png}\\[2.5mm]
 
-  % ── Fila 2: rectángulo → variable = lectura ─────────────────────────
-  \fill[milcGradeDark!85] (0.5,3.9) rectangle (2.7,4.6);
-  \node[white,font=\scriptsize\bfseries,align=center] at (1.6,4.25) {leer luz\\(sensor)};
-  \fill[milcTurquesa!85] (6.4,3.85) rectangle (10.6,4.65);
-  \node[white,font=\scriptsize,anchor=west] at (6.6,4.25) {\ttfamily luz = nivel de luz};
-  \draw[->,milcNegro!60,line width=.7pt] (3.3,4.25) -- (6.3,4.25);
+% ── Franja-leyenda: cada figura del diagrama de flujo → su bloque ─────────
+\begin{tikzpicture}[font=\sffamily,>=stealth,x=1cm,y=1cm]
+  \def\rowY{0}
+  % encabezado
+  \node[font=\scriptsize\bfseries,milcNegro,anchor=west] at (0,1.15)
+    {Cada figura de tu diagrama de flujo (módulo 2) tiene su bloque:};
 
-  % ── Fila 3: rombo → «si … si no» ─────────────────────────────────────
-  \fill[milcMostaza] (1.6,3.5) -- (2.9,2.6) -- (1.6,1.7) -- (0.3,2.6) -- cycle;
-  \draw[milcNegro!55,line width=.4pt] (1.6,3.5) -- (2.9,2.6) -- (1.6,1.7) -- (0.3,2.6) -- cycle;
-  \node[milcNegro,font=\scriptsize\bfseries,align=center] at (1.6,2.6) {¿luz $<$\\umbral?};
-  \fill[milcTurquesa!85] (6.4,1.55) rectangle (10.8,3.65);
-  \node[white,font=\scriptsize,anchor=west,align=left] at (6.6,2.6)
-    {\ttfamily si (luz < umbral) \{\\ \ \ mostrar luna\\ \} si no \{\\ \ \ mostrar sol\\ \}};
-  \draw[->,milcNegro!60,line width=.7pt] (3.3,2.6) -- (6.3,2.6);
+  % helper: figura (izq) → chip de bloque (der)
+  % Fila 1: óvalo → «para siempre»
+  \fill[milcGradeDark,rounded corners=6pt] (0.0,0.55) rectangle (2.2,0.95);
+  \node[white,font=\tiny\bfseries] at (1.1,0.75) {óvalo};
+  \draw[->,milcNegro!55,line width=.7pt] (2.35,0.75) -- (3.05,0.75);
+  \fill[mkBasico,rounded corners=3pt] (3.2,0.55) rectangle (5.7,0.95);
+  \node[white,font=\tiny\bfseries] at (4.45,0.75) {para siempre};
 
-  % ── Fila 4: actuadores ───────────────────────────────────────────────
-  \fill[milcGradeDark!85] (0.2,0.7) rectangle (1.5,1.4);
-  \node[white,font=\scriptsize\bfseries,align=center] at (0.85,1.05) {mostrar\\luna};
-  \fill[milcGradeDark!85] (1.8,0.7) rectangle (3.1,1.4);
-  \node[white,font=\scriptsize\bfseries,align=center] at (2.45,1.05) {mostrar\\sol};
-  \node[font=\scriptsize\itshape,milcNegro!70,anchor=west,text width=4.1cm] at (6.4,1.0)
-    {cada acción del diagrama es un bloque «mostrar»; el actuador es la matriz de LED};
+  % Fila 2: rectángulo → «establecer / mostrar»
+  \fill[milcGradeDark,rounded corners=1pt] (0.0,0.05) rectangle (2.2,0.45);
+  \node[white,font=\tiny\bfseries] at (1.1,0.25) {rectángulo};
+  \draw[->,milcNegro!55,line width=.7pt] (2.35,0.25) -- (3.05,0.25);
+  \fill[mkVariables,rounded corners=3pt] (3.2,0.05) rectangle (5.05,0.45);
+  \node[white,font=\tiny\bfseries] at (4.125,0.25) {establecer};
+  \fill[mkBasico,rounded corners=3pt] (5.2,0.05) rectangle (6.7,0.45);
+  \node[white,font=\tiny\bfseries] at (5.95,0.25) {mostrar};
 
-  % (El mensaje «traducir, no inventar» va en el pie de figura, para no repetirlo.)
+  % Fila 3: rombo → «si … si no»
+  \fill[milcMostaza] (1.1,0.0) -- (2.2,-0.25) -- (1.1,-0.5) -- (0.0,-0.25) -- cycle;
+  \node[milcNegro,font=\tiny\bfseries] at (1.1,-0.25) {rombo};
+  \draw[->,milcNegro!55,line width=.7pt] (2.35,-0.25) -- (3.05,-0.25);
+  \fill[mkLogica,rounded corners=3pt] (3.2,-0.45) rectangle (5.7,-0.05);
+  \node[white,font=\tiny\bfseries] at (4.45,-0.25) {si \ldots\ si no};
 
+  % nota derecha
+  \node[font=\tiny\itshape,milcNegro!70,anchor=west,text width=4.4cm] at (7.1,0.25)
+    {La lectura del sensor entra como \textbf{nivel de luz}
+     (\tikz[baseline=-2pt]\fill[mkEntrada,rounded corners=2pt] (0,0) rectangle (0.28,0.16);),
+     y la variable \textbf{luz} guarda ese valor.};
 \end{tikzpicture}

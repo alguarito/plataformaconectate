@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Generador de bloques MakeCode (micro:bit) — ConectaTE</title>
+<style>
+  body{font-family:-apple-system,"Helvetica Neue",Arial,sans-serif;margin:24px;background:#f4f6f8;color:#222}
+  h1{font-size:18px} .hint{color:#666;font-size:13px;max-width:720px;line-height:1.5}
+  #stage{background:#fff;border:1px solid #ddd;border-radius:8px;padding:20px;display:inline-block;margin-top:16px}
+  button{font-size:14px;padding:8px 14px;border-radius:6px;border:1px solid #ccc;background:#1E90FF;color:#fff;cursor:pointer;margin-top:12px}
+  code{background:#eef;padding:1px 4px;border-radius:3px}
+</style>
+</head>
+<body>
+<h1>Generador de bloques MakeCode (micro:bit)</h1>
+<p class="hint">
+  Herramienta reproducible del Semillero ConectaTE. Dibuja un programa de MakeCode como
+  bloques <b>fieles</b> (colores y etiquetas exactos del entorno micro:bit en español) en SVG,
+  y lo rasteriza a PNG de alta resolución. Los colores provienen de la paleta real de MakeCode
+  (extraída del editor: Básico <code>#1E90FF</code>, Entrada <code>#D400D4</code>,
+  Lógica <code>#00A4A6</code>, Variables <code>#DC143C</code>, Matemática <code>#9400D3</code>).
+  Uso headless: <code>window.renderSpecToPNG(spec, scale)</code> devuelve un dataURL PNG.
+</p>
+<div id="stage"></div>
+<br>
+<button onclick="download()">Descargar PNG</button>
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────
+//  Paleta exacta de MakeCode micro:bit (extraída del editor en vivo)
+// ─────────────────────────────────────────────────────────────────────────
+const CAT = {
+  basico:   {fill:'#1E90FF', edge:'#1462b3'},
+  entrada:  {fill:'#D400D4', edge:'#960096'},
+  logica:   {fill:'#00A4A6', edge:'#00777a'},
+  variables:{fill:'#DC143C', edge:'#a10e2b'},
+  mate:     {fill:'#9400D3', edge:'#690099'},
+};
+const FONT = '600 15px -apple-system,"Helvetica Neue",Arial,sans-serif';
+const TXT = '#ffffff';
+const NOTCH_W = 14, NOTCH_H = 4, NOTCH_X = 12; // muesca superior/inferior
+const PAD = 10, ROWH = 30, RADIUS = 5, ARM = 14; // arm = grosor del brazo C
+
+// medir texto
+let _ctx = document.createElement('canvas').getContext('2d');
+function textW(t, font){ _ctx.font = font || FONT; return _ctx.measureText(t).width; }
+
+let _svgParts = [];
+function push(s){ _svgParts.push(s); }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// muesca de bloque (tab) — trapecio suave estilo MakeCode
+function notchDown(x){ // hacia abajo desde el borde superior
+  return `l ${NOTCH_X} 0 l 3 ${NOTCH_H} l ${NOTCH_W-6} 0 l 3 ${-NOTCH_H}`;
+}
+
+// Rectángulo de bloque de sentencia con muesca arriba y abajo
+function statementPath(x,y,w,h){
+  const r=RADIUS;
+  return `M ${x} ${y+r}
+    q 0 ${-r} ${r} ${-r}
+    l ${NOTCH_X-r} 0 l 3 ${NOTCH_H} l ${NOTCH_W-6} 0 l 3 ${-NOTCH_H}
+    l ${w-NOTCH_X-NOTCH_W-r} 0 q ${r} 0 ${r} ${r}
+    l 0 ${h-2*r} q 0 ${r} ${-r} ${r}
+    l ${-(w-NOTCH_X-NOTCH_W-r)} 0 l -3 ${NOTCH_H} l ${-(NOTCH_W-6)} 0 l -3 ${-NOTCH_H}
+    l ${-(NOTCH_X-r)} 0 q ${-r} 0 ${-r} ${-r} z`;
+}
+
+function block(x,y,w,h,cat){
+  const c=CAT[cat];
+  push(`<path d="${statementPath(x,y,w,h)}" fill="${c.fill}" stroke="${c.edge}" stroke-width="1"/>`);
+}
+function label(x,y,t,color,font){
+  push(`<text x="${x}" y="${y}" font="${font||FONT}" style="font:${font||FONT}" fill="${color||TXT}" dominant-baseline="middle">${esc(t)}</text>`);
+}
+// reporter "pill" (bordes muy redondeados) — sensores/variables como valor
+function pill(x,y,w,h,cat){
+  const c=CAT[cat], r=h/2;
+  push(`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" ry="${r}" fill="${c.fill}" stroke="${c.edge}" stroke-width="1"/>`);
+}
+// hexágono booleano (condición)
+function hexo(x,y,w,h,cat){
+  const c=CAT[cat], k=h/2;
+  push(`<path d="M ${x+k} ${y} l ${w-2*k} 0 l ${k} ${k} l ${-k} ${k} l ${-(w-2*k)} 0 l ${-k} ${-k} z" fill="${c.fill}" stroke="${c.edge}" stroke-width="1"/>`);
+}
+// campo de entrada blanco (número/cadena)
+function field(x,y,w,h,text,round){
+  const r = round? h/2 : 4;
+  push(`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" ry="${r}" fill="#ffffff" stroke="#c8c8c8" stroke-width="1"/>`);
+  label(x+w/2 - textW(text,'600 14px -apple-system,Arial,sans-serif')/2, y+h/2+1, text, '#2b2b2b','600 14px -apple-system,Arial,sans-serif');
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+//  Layout del programa fotómetro (fiel: para siempre / establecer / si-si no)
+// ─────────────────────────────────────────────────────────────────────────
+function buildFotometro(){
+  _svgParts = [];
+  const X0 = 8, Y0 = 8;
+  const innerX = X0 + ARM;         // sangría del cuerpo dentro de "para siempre"
+  const FH = 22;                    // alto campos/pills
+  let W = 470, H = 0;
+
+  // ── Filas internas (dentro de para siempre) ──
+  // Fila A: establecer [luz] a (nivel de luz)
+  // Fila B..: si <luz < 50> entonces / mostrar cadena "noche" / si no / mostrar cadena "dia"
+  let y = Y0;
+
+  // Header de "para siempre" (bloque C)
+  const headH = ROWH;
+  // calcularemos altura total luego; primero dibujamos el interior a coordenadas y
+  // 1) header
+  const foreverTop = y;
+  y += headH; // debajo del header empieza el cuerpo
+
+  const bodyX = innerX;
+
+  // (1) establecer luz a nivel de luz  [Variables]
+  const setY = y;
+  const setH = ROWH;
+  // (2) si ... entonces  [Lógica, bloque C con else]
+  // interior del if: mostrar cadena "noche"  ;  else interior: mostrar cadena "dia"
+  const ifTop = setY + setH;
+  const ifHeadH = ROWH;
+  const thenX = bodyX + ARM;
+  // then row
+  const showNocheY = ifTop + ifHeadH;
+  const showH = ROWH;
+  // si no (divider)
+  const elseDivY = showNocheY + showH;
+  const elseDivH = ROWH;
+  const showDiaY = elseDivY + elseDivH;
+  const ifBottomY = showDiaY + showH;
+  const ifH = ifBottomY - ifTop; // alto total del if (incluye header, then, else div, else, cierre inferior)
+
+  const bodyBottom = ifBottomY;
+  const foreverH = bodyBottom - foreverTop + 6; // cierre inferior de para siempre
+
+  // ── Dibujar "para siempre" como bloque C (Básico) ──
+  drawCBlock(X0, foreverTop, W, foreverH, headH, 'basico', 'para siempre');
+
+  // ── (1) establecer luz a (nivel de luz) ──
+  {
+    const c='variables';
+    const bw = W - ARM - 12;
+    block(bodyX, setY, bw, setH, c);
+    let tx = bodyX + PAD + 4;
+    const cy = setY + setH/2 + 1;
+    label(tx, cy, 'establecer', TXT); tx += textW('establecer') + 8;
+    // dropdown "luz"
+    const dw = textW('luz')+18;
+    field(tx, setY+(setH-FH)/2, dw, FH, 'luz ▾', false); tx += dw + 8;
+    label(tx, cy, 'a', TXT); tx += textW('a') + 8;
+    // reporter (nivel de luz) [Entrada]
+    const rw = textW('nivel de luz')+20;
+    pill(tx, setY+(setH-FH)/2, rw, FH, 'entrada');
+    label(tx+10, cy, 'nivel de luz', TXT);
+  }
+
+  // ── (2) si <luz < 50> entonces ──  header [Lógica]
+  {
+    const c='logica';
+    const bw = W - ARM - 12;
+    // header (fila "si ... entonces")
+    block(bodyX, ifTop, bw, ifHeadH, c);
+    let tx = bodyX + PAD + 4;
+    const cy = ifTop + ifHeadH/2 + 1;
+    label(tx, cy, 'si', TXT); tx += textW('si') + 8;
+    // hexágono condición: luz  <  50
+    const vGetW = textW('luz')+18;
+    const opW = 20, numW = 30, gap=6;
+    const condW = 12 + vGetW + gap + opW + gap + numW + 12;
+    hexo(tx, ifTop+(ifHeadH-FH)/2, condW, FH, 'logica');
+    let hx = tx + 12;
+    // variable get luz [Variables pill]
+    pill(hx, ifTop+(ifHeadH-FH)/2+1, vGetW, FH-2, 'variables');
+    label(hx+9, cy, 'luz', TXT); hx += vGetW + gap;
+    // operador < (campo dropdown blanco)
+    field(hx, ifTop+(ifHeadH-FH)/2+1, opW, FH-2, '‹ ▾', false); hx += opW + gap;
+    // número 50
+    field(hx, ifTop+(ifHeadH-FH)/2+1, numW, FH-2, '50', false);
+    tx += condW + 8;
+    label(tx, cy, 'entonces', TXT);
+  }
+
+  // ── then: mostrar cadena "noche" [Básico] ──
+  drawShowString(thenX, showNocheY, W - 2*ARM - 12, showH, 'noche');
+
+  // ── "si no" divider [Lógica] ──
+  {
+    const c='logica';
+    const bw = W - ARM - 12;
+    block(bodyX, elseDivY, bw, elseDivH, c);
+    label(bodyX+PAD+4, elseDivY+elseDivH/2+1, 'si no', TXT);
+  }
+
+  // ── else: mostrar cadena "dia" [Básico] ──
+  drawShowString(thenX, showDiaY, W - 2*ARM - 12, showH, 'día');
+
+  H = foreverTop + foreverH + 8;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W+16}" height="${H+8}" viewBox="0 0 ${W+16} ${H+8}">`
+    + `<rect width="100%" height="100%" fill="#ffffff"/>`
+    + _svgParts.join('\n') + `</svg>`;
+  return {svg, w:W+16, h:H+8};
+}
+
+// bloque C genérico (para siempre / si): header coloreado + brazo izquierdo + cierre inferior
+function drawCBlock(x,y,w,h,headH,cat,title){
+  const c=CAT[cat];
+  // header
+  block(x, y, w, headH, cat);
+  label(x+PAD+4, y+headH/2+1, title, TXT);
+  // brazo izquierdo (barra vertical) + cierre inferior
+  push(`<rect x="${x}" y="${y+headH}" width="${ARM}" height="${h-headH-8}" fill="${c.fill}" stroke="${c.edge}" stroke-width="1"/>`);
+  // cierre inferior (barra horizontal con muesca)
+  const by = y+h-8;
+  push(`<path d="${statementPath(x, by, w, 8+RADIUS)}" fill="${c.fill}" stroke="${c.edge}" stroke-width="1"/>`);
+}
+
+function drawShowString(x,y,w,h,val){
+  block(x,y,w,h,'basico');
+  let tx = x+PAD+4; const cy=y+h/2+1;
+  label(tx, cy, 'mostrar cadena', TXT); tx += textW('mostrar cadena')+8;
+  const fw = textW('"'+val+'"')+18;
+  field(tx, y+(h-22)/2, fw, 22, '"'+val+'"', false);
+}
+
+function render(){
+  const {svg,w,h} = buildFotometro();
+  document.getElementById('stage').innerHTML = svg;
+  window.__lastSVG = svg;
+}
+window.renderSpecToPNG = function(scale){
+  scale = scale||3;
+  const {svg,w,h} = buildFotometro();
+  return new Promise((res,rej)=>{
+    const img = new Image();
+    const blobUrl = 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+    img.onload = ()=>{
+      const cv = document.createElement('canvas');
+      cv.width = Math.round(w*scale); cv.height = Math.round(h*scale);
+      const cx = cv.getContext('2d');
+      cx.fillStyle='#fff'; cx.fillRect(0,0,cv.width,cv.height);
+      cx.setTransform(scale,0,0,scale,0,0);
+      cx.drawImage(img,0,0);
+      res(cv.toDataURL('image/png'));
+    };
+    img.onerror = (e)=>rej('img load error');
+    img.src = blobUrl;
+  });
+};
+function download(){
+  window.renderSpecToPNG(3).then(url=>{
+    const a=document.createElement('a'); a.href=url; a.download='bloques-makecode.png'; a.click();
+  });
+}
+render();
+</script>
+</body>
+</html>

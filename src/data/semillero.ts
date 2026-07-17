@@ -431,6 +431,8 @@ export const planEstudios: PlanLinea[] = [
           'Lista de materiales',
         ],
         indicador: 'Su lógica es coherente entre lo que percibe y lo que ejecuta, y sus umbrales se justifican con medidas, no con supuestos.',
+        guia: 'robotica-2',
+        duracionMin: 180,
       },
       {
         fase: 'Praxis',

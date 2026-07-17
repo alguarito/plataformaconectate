@@ -418,6 +418,8 @@ export const planEstudios: PlanLinea[] = [
           'Mapa de sensores del micro:bit (luz, temperatura, acelerómetro, botones) frente a cada necesidad',
         ],
         indicador: 'Define qué debe percibir y qué debe hacer el dispositivo, y con cuál sensor.',
+        guia: 'robotica-1',
+        duracionMin: 180,
       },
       {
         fase: 'Sistematización',

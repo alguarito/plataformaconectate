@@ -391,6 +391,17 @@ const LIBROS: LibroOg[] = [
     bg: '#FF6B35', fg: '#FFFFFF', accent: '#FFD60A',
     emoji: '📙',
   },
+  {
+    slug: 'libro-no-rendir-la-mirada',
+    etiqueta: 'COLECCIÓN MILC · TOMO IV',
+    titulo: 'No rendir la mirada',
+    subtitulo: 'IA, datos y soberanía tecnológica: usar la herramienta con criterio',
+    paginas: 142,
+    licencia: 'CC BY-SA 4.0',
+    doi: '10.5281/zenodo.21517630',
+    bg: '#1A1A2E', fg: '#FFFFFF', accent: '#C9A227',
+    emoji: '📕',
+  },
 ];
 
 function tplLibro(libro: LibroOg): string {

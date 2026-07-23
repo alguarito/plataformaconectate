@@ -387,7 +387,7 @@ const LIBROS: LibroOg[] = [
     subtitulo: 'Darle método al sueño de investigar, sin apagar el asombro',
     paginas: 138,
     licencia: 'CC BY-SA 4.0',
-    doi: '10.5281/zenodo.21360911',
+    doi: '10.5281/zenodo.21360910',
     bg: '#FF6B35', fg: '#FFFFFF', accent: '#FFD60A',
     emoji: '📙',
   },

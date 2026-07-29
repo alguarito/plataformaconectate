@@ -1,0 +1,401 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import CitaLibro from '../../../components/CitaLibro.astro';
+
+const base = import.meta.env.BASE_URL;
+
+const libroHref = `${base}/libro-milc/tomo-5-el-lugar-de-llegar-a-ser.pdf`;
+const libroPaginas = 143;
+const subtitulo =
+  'El espacio pedagógico como agente de la formación: fundar, abrir y sostener los lugares donde el estudiante llega a ser';
+// DOI del Tomo V. Verificado contra la API de Zenodo (2026-07-28):
+//   concept DOI = 21654100  ·  version record = 21654101
+// Se cita SIEMPRE por concept DOI (resuelve a la última versión).
+const doiConcepto = '10.5281/zenodo.21654100';
+const doi = `https://doi.org/${doiConcepto}`;
+
+// ─── Schema.org · Book (mismo @id que en /modelo-milc) ───────────────────
+const origen = (Astro.site ?? new URL('https://alguarito.github.io')).toString().replace(/\/$/, '');
+const inicio = `${origen}${base.replace(/\/$/, '')}`;
+const pdfUrl = `${origen}${libroHref}`;
+
+const jsonLdExtra = [
+  {
+    '@type': 'Book',
+    '@id': `${inicio}/modelo-milc#tomo5`,
+    name: 'El Lugar de Llegar a Ser',
+    alternateName: subtitulo,
+    bookEdition: 'Primera edición 2026',
+    bookFormat: 'EBook',
+    inLanguage: 'es-CO',
+    numberOfPages: libroPaginas,
+    datePublished: '2026-07-28',
+    license: 'https://creativecommons.org/licenses/by-sa/4.0/',
+    identifier: doi,
+    sameAs: [
+      'https://doi.org/10.5281/zenodo.21654100',
+      'https://zenodo.org/records/21654101',
+    ],
+    url: `${inicio}/modelo-milc/el-lugar-de-llegar-a-ser`,
+    mainEntityOfPage: `${inicio}/modelo-milc/el-lugar-de-llegar-a-ser`,
+    encodingFormat: 'application/pdf',
+    position: 5,
+    isPartOf: { '@type': 'BookSeries', '@id': `${inicio}/modelo-milc#coleccion`, name: 'Colección MILC' },
+    associatedMedia: {
+      '@type': 'MediaObject',
+      contentUrl: pdfUrl,
+      encodingFormat: 'application/pdf',
+    },
+    author: { '@id': `${inicio}/acerca#person` },
+    publisher: { '@id': `${inicio}#organization` },
+    about: [
+      'Espacio pedagógico',
+      'Ambiente de aprendizaje',
+      'Currículo oculto',
+      'Semilleros de investigación',
+      'Comunidad de práctica',
+      'Arquitectura escolar',
+    ],
+  },
+];
+
+// Estructura real del tomo: 15 capítulos en 4 partes (+ preliminares y cierre).
+const partes = [
+  {
+    parte: 'Parte I',
+    movimiento: 'Nombrar',
+    titulo: 'El espacio no es neutro',
+    desc: 'Nombrar la fuerza: el mismo estudiante se apaga o florece según el lugar.',
+    caps: [
+      '1. El aula que apaga',
+      '2. El espacio es un artefacto',
+      '3. La escuela-isla',
+    ],
+  },
+  {
+    parte: 'Parte II',
+    movimiento: 'Fundar',
+    titulo: 'Fundar',
+    desc: 'Crear el lugar donde no había nada: fundar no cuesta, decide.',
+    caps: [
+      '4. Fundar donde no había nada',
+      '5. De taller a laboratorio',
+      '6. Nacer en la adversidad',
+      '7. El ágora',
+    ],
+  },
+  {
+    parte: 'Parte III',
+    movimiento: 'Abrir',
+    titulo: 'Abrir',
+    desc: 'Dejar de ser isla: la escuela como nodo de una red que la extiende.',
+    caps: [
+      '8. La escuela-nodo',
+      '9. La infraestructura prestada',
+      '10. Los aliados como extensión del aula',
+      '11. El escenario externo y la escuela que va hacia otras',
+    ],
+  },
+  {
+    parte: 'Parte IV',
+    movimiento: 'Sostener',
+    titulo: 'Manual metodológico',
+    desc: 'Sostener el lugar en el tiempo, con instrumentos para empezar mañana sin comprar nada.',
+    caps: [
+      '12. Cómo funda un maestro un semillero (sin presupuesto)',
+      '13. Cómo se sostiene un espacio sin depender del maestro',
+      '14. Cómo se teje una red de aliados',
+      '15. Cómo se evalúa lo que ocurre en estos espacios',
+    ],
+  },
+];
+
+// Las ideas más relevantes del tomo (fieles a la obra).
+const ideas = [
+  {
+    emoji: '🗺️',
+    titulo: 'Espacio no es lugar',
+    texto: 'Con Yi-Fu Tuan: el espacio es la extensión abierta, anónima e indiferente; el lugar es ese mismo espacio una vez cargado de experiencia y de valor, hasta volverlo nuestro. Un aula, al principio, es solo espacio; se hace lugar cuando alguien la funda.',
+  },
+  {
+    emoji: '🕯️',
+    titulo: 'El aula que apaga',
+    texto: 'La misma persona se apaga en un aula y florece en un semillero. El lugar educa por su sola disposición, aun cuando nadie enseña: es lo que la pedagogía llama currículo oculto, aquello que un espacio transmite no por lo que dice, sino por cómo está dispuesto.',
+  },
+  {
+    emoji: '🏗️',
+    titulo: 'El espacio es un artefacto',
+    texto: 'Alguien diseñó el aula y alguien puede rediseñarla. Por eso la arquitectura del encuentro no es una condición dada, es una decisión pedagógica. Reconocerlo no descarga la responsabilidad en el mobiliario: se la devuelve al maestro como una variable que creía fija.',
+  },
+  {
+    emoji: '🌿',
+    titulo: 'Fundar no cuesta, decide',
+    texto: 'Fundar un lugar donde florecer no exige presupuesto ni permiso extraordinario: exige la decisión de un maestro que se atreve. El lugar donde alguien llega a ser no lo decreta el sistema; lo funda alguien que apuesta por el futuro de otro.',
+  },
+  {
+    emoji: '🔗',
+    titulo: 'De isla a nodo',
+    texto: 'La misma escuela es una isla o un nodo según decida abrirse. Abrir es dejar de encerrarse: usar la infraestructura prestada, tejer aliados como extensión del aula y salir al escenario externo para ir hacia otras escuelas.',
+  },
+  {
+    emoji: '🤝',
+    titulo: 'Aprender es participar',
+    texto: 'Con Vygotsky y con Lave y Wenger: las capacidades superiores aparecen primero entre las personas y luego se vuelven interiores; aprender es participar de forma creciente en una comunidad que practica algo real. Si el lugar co-produce la capacidad, disponer bien el lugar es enseñar.',
+  },
+];
+---
+
+<BaseLayout
+  title="El Lugar de Llegar a Ser · Tomo V — Colección MILC · ConectaTE"
+  description="Tomo V y cierre de la Colección MILC: el espacio no es el escenario neutro del aprendizaje, sino uno de sus agentes. Ensayo pedagógico situado sobre fundar, abrir y sostener los lugares donde el estudiante llega a ser, con manual para crear un semillero sin presupuesto. Libro en acceso abierto (CC BY-SA 4.0, DOI en Zenodo)."
+  ogType="article"
+  imagen="/og/libro-el-lugar-de-llegar-a-ser.png"
+  jsonLd={jsonLdExtra}
+  citation={{
+    title: 'El Lugar de Llegar a Ser',
+    authors: ['Álvaro Cárdenas Orozco'],
+    date: '2026/07/28',
+    pdfUrl,
+    doi: doiConcepto,
+    publisher: 'Sor María Juliana Ediciones',
+    language: 'es',
+  }}
+>
+  <article class="pt-12 pb-20">
+    <div class="bento-container max-w-5xl">
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-sm font-semibold mb-8 flex-wrap" style="color: var(--fg-muted);">
+        <a href={base || '/'} class="hover:opacity-60 transition-opacity">Inicio</a>
+        <span>/</span>
+        <a href={`${base}/modelo-milc`} class="hover:opacity-60 transition-opacity">Modelo MILC</a>
+        <span>/</span>
+        <span style="color: var(--fg);">Tomo V · El Lugar de Llegar a Ser</span>
+      </nav>
+
+      <!-- HERO editorial -->
+      <div class="bento-card-color bg-bento-black grid-pattern text-white mb-10 py-12 md:py-16 px-6 md:px-10">
+        <div class="max-w-3xl">
+          <div class="flex flex-wrap gap-2 mb-6">
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">Colección MILC · Tomo V</span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">Cierre de la colección</span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">{libroPaginas} páginas</span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">CC BY-SA 4.0</span>
+          </div>
+          <p class="text-base md:text-lg italic opacity-80 mb-2">
+            Porque nadie llega a ser <strong>en un lugar cualquiera</strong>.
+          </p>
+          <h1 class="heading-giant text-balance leading-[0.95] mb-4">
+            El Lugar de Llegar a Ser
+          </h1>
+          <p class="text-base md:text-lg font-semibold opacity-90 leading-relaxed mb-3">
+            {subtitulo}.
+          </p>
+          <p class="text-sm opacity-70 mb-8">
+            Dr. Álvaro Cárdenas Orozco · Sor María Juliana Ediciones · 2026 ·
+            DOI {doiConcepto}
+          </p>
+
+          <div class="flex items-center gap-2.5 flex-wrap">
+            <a href={libroHref} download class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-bento-lime text-neutral-950 text-sm font-black hover:opacity-85 transition-opacity">
+              Descargar el libro
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+            </a>
+            <a href={doi} target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full border-2 border-white/30 text-sm font-black hover:border-white transition-colors" aria-label="Registro citable en Zenodo (se abre en una pestaña nueva)">
+              DOI · Zenodo
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- La tesis -->
+      <div class="bento-card-color bg-bento-lime mb-10">
+        <span class="chip-bento mb-3 bg-black/10">💡 La tesis, en una línea</span>
+        <p class="text-lg md:text-2xl font-black leading-snug">
+          «El espacio no es el escenario neutro donde ocurre el aprendizaje: es uno de sus agentes. La misma persona se apaga en un aula y florece en un semillero.»
+        </p>
+        <p class="text-sm leading-relaxed mt-3 opacity-90">
+          Y hay un segundo filo: como el espacio es un <strong>artefacto</strong> (alguien lo diseñó,
+          alguien puede rediseñarlo), la arquitectura del encuentro no es una condición dada, es una
+          <strong>decisión pedagógica</strong>. El lugar donde alguien llega a ser no lo decreta el
+          sistema: lo <strong>funda un maestro que se atreve</strong>.
+        </p>
+      </div>
+
+      <!-- DE QUÉ TRATA -->
+      <section class="mb-10">
+        <span class="chip-bento mb-4">De qué trata</span>
+        <div class="bento-card">
+          <p class="text-base md:text-lg leading-relaxed mb-4">
+            <em>El Lugar de Llegar a Ser</em> parte de una distinción antigua y olvidada. Con el geógrafo
+            Yi-Fu Tuan, el <strong>espacio</strong> es la extensión abierta, indiferente y anónima; el
+            <strong>lugar</strong> es ese mismo espacio una vez que lo hemos cargado de experiencia y de
+            valor, hasta volverlo nuestro. Un aula, al principio, es solo espacio; se hace lugar el día
+            en que alguien la funda como el sitio donde un estudiante puede <strong>llegar a ser</strong>.
+          </p>
+          <p class="text-base md:text-lg leading-relaxed mb-4">
+            El tomo mira de frente lo que un lugar le hace al que aprende, aun cuando nadie enseña: el
+            <strong>currículo oculto</strong> (Jackson), el <strong>ambiente como tercer maestro</strong>
+            (Reggio Emilia), el desarrollo que va <strong>de afuera hacia adentro</strong> (Vygotsky) y el
+            aprender como <strong>participación en una comunidad de práctica</strong> (Lave y Wenger). De
+            ahí una conclusión liberadora para el maestro: si el lugar co-produce la capacidad, entonces
+            disponer bien el lugar ya es enseñar.
+          </p>
+          <p class="text-base md:text-lg leading-relaxed">
+            Sobre esa base, el libro es un recorrido en cuatro movimientos: <strong>nombrar</strong> la
+            fuerza del espacio (el aula que apaga, la escuela-isla), <strong>fundar</strong> un lugar donde
+            no había nada (el semillero, su ágora, su nacimiento en la adversidad), <strong>abrir</strong>
+            la escuela para dejar de ser isla y volverse nodo de una red, y <strong>sostener</strong> todo
+            eso con un manual metodológico para empezar mañana <strong>sin comprar nada</strong>.
+          </p>
+          <p class="text-base md:text-lg leading-relaxed mt-4">
+            Es el <strong>Tomo V y el cierre de la Colección MILC</strong>. Cierra el arco que empezó
+            hace cuatro libros: el <em>yo</em> (la atención), el <em>nosotros</em> (el arraigo), el
+            <em>cómo</em> (el método) y el <em>con qué</em> (la herramienta). Faltaba el <em>dónde</em>:
+            de nada le sirve todo eso a un estudiante si no tiene un lugar donde ponerlo a florecer. Este
+            tomo responde la última pregunta: <strong>¿dónde puedo llegar a ser?</strong>
+          </p>
+        </div>
+      </section>
+
+      <!-- LA ESTRUCTURA DEL TOMO -->
+      <section class="mb-10">
+        <div class="flex items-center justify-between flex-wrap gap-3 mb-2">
+          <h2 class="heading-huge">Cómo está armado el tomo.</h2>
+          <span class="chip-bento">15 capítulos · 4 partes</span>
+        </div>
+        <p class="text-sm leading-relaxed mb-6 max-w-2xl" style="color: var(--fg-muted);">
+          Cuatro movimientos en orden: <strong style="color: var(--fg);">nombrar</strong> la fuerza del
+          espacio, <strong style="color: var(--fg);">fundar</strong> el lugar,
+          <strong style="color: var(--fg);">abrir</strong> la escuela y
+          <strong style="color: var(--fg);">sostener</strong> lo fundado. Abre con Prólogo, Introducción
+          y «Cómo leer»; cierra con la Conclusión, las Referencias y una Coda: «Donde termina la colección».
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {partes.map((p, i) => (
+            <div class="bento-card">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="w-8 h-8 rounded-full bg-bento-lime text-black flex items-center justify-center text-sm font-black shrink-0">{i + 1}</span>
+                <div>
+                  <span class="text-[11px] font-black uppercase tracking-widest block" style="color: var(--fg-muted);">{p.parte} · {p.movimiento}</span>
+                  <h3 class="font-black text-lg leading-tight">{p.titulo}</h3>
+                </div>
+              </div>
+              <p class="text-sm font-semibold mb-3" style="color: var(--fg-muted);">{p.desc}</p>
+              <ul class="space-y-1.5">
+                {p.caps.map((c) => (
+                  <li class="text-sm leading-snug flex gap-2">
+                    <span class="text-bento-blue font-black shrink-0">›</span>
+                    <span>{c}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- LAS IDEAS MÁS RELEVANTES -->
+      <section class="mb-10">
+        <div class="flex items-center justify-between flex-wrap gap-3 mb-6">
+          <h2 class="heading-huge">Las ideas más relevantes.</h2>
+          <span class="chip-bento">6 claves</span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {ideas.map((r, i) => (
+            <div class="bento-card">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="text-3xl" aria-hidden="true">{r.emoji}</span>
+                <span class="w-7 h-7 rounded-full bg-bento-blue text-white flex items-center justify-center text-xs font-black shrink-0">{i + 1}</span>
+              </div>
+              <h3 class="font-black text-base leading-tight mb-2">{r.titulo}</h3>
+              <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">{r.texto}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- INVITACIÓN A LEERLO -->
+      <section class="mb-10">
+        <div class="bento-card-color bg-bento-black grid-pattern text-white py-10 md:py-14 px-6 md:px-10 text-center">
+          <span class="text-5xl block mb-4">📗</span>
+          <h2 class="text-2xl md:text-4xl font-black tracking-tight leading-tight mb-4 max-w-2xl mx-auto">
+            Léelo completo. {libroPaginas} páginas para fundar el lugar.
+          </h2>
+          <p class="text-base md:text-lg opacity-85 leading-relaxed max-w-2xl mx-auto mb-8">
+            Un ensayo para maestros que no quieren esperar el aula ideal, sino fundarla con lo que hay.
+            Con un manual listo para el lunes: cómo crear un semillero sin presupuesto, cómo sostenerlo
+            sin depender de una sola persona, cómo tejer una red de aliados y cómo evaluar lo que ocurre
+            en estos lugares. Acceso abierto, gratuito y con licencia para compartir y adaptar en tu escuela.
+          </p>
+          <div class="flex items-center justify-center gap-2.5 flex-wrap">
+            <a href={libroHref} download class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-bento-lime text-neutral-950 text-sm font-black hover:opacity-85 transition-opacity">
+              Descargar el libro (PDF)
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+            </a>
+            <a href={doi} target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-6 py-3 rounded-full border-2 border-white/30 text-sm font-black hover:border-white transition-colors" aria-label="Registro citable en Zenodo (se abre en una pestaña nueva)">
+              Ver en Zenodo
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Cómo citar -->
+      <CitaLibro
+        titulo="El Lugar de Llegar a Ser"
+        tomo="Tomo V"
+        volumen={5}
+        ano={2026}
+        editorial="Sor María Juliana Ediciones"
+        doi={doiConcepto}
+        citeKey="cardenas2026lugar"
+        licencia="CC BY-SA 4.0"
+      />
+
+      <!-- Sigue en la colección · enlaces internos -->
+      <section class="mb-10">
+        <span class="chip-bento mb-4">La Colección MILC, completa</span>
+        <p class="text-sm leading-relaxed mb-4 max-w-2xl" style="color: var(--fg-muted);">
+          Con este tomo se cierra la colección: la obra matriz y sus <strong style="color: var(--fg);">cinco tomos</strong>,
+          del <em>yo</em> al <em>dónde</em>. Vuelve al tomo anterior o al modelo completo.
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <a href={`${base}/modelo-milc/no-rendir-la-mirada`} class="bento-card-hover">
+            <span class="text-xs font-black uppercase tracking-widest" style="color: var(--fg-muted);">Tomo IV</span>
+            <h3 class="font-black text-lg leading-tight mt-1">No rendir la mirada</h3>
+            <p class="text-sm mt-1" style="color: var(--fg-muted);">El con qué: usar la herramienta con criterio.</p>
+          </a>
+          <a href={`${base}/modelo-milc`} class="bento-card-hover">
+            <span class="text-xs font-black uppercase tracking-widest" style="color: var(--fg-muted);">Obra matriz</span>
+            <h3 class="font-black text-lg leading-tight mt-1">Educación en la Era Onlife</h3>
+            <p class="text-sm mt-1" style="color: var(--fg-muted);">El modelo MILC completo, del que nace esta colección.</p>
+          </a>
+        </div>
+      </section>
+
+      <!-- Volver -->
+      <a href={`${base}/modelo-milc`} class="bento-card-hover flex items-center gap-4">
+        <svg class="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 12H5"></path>
+          <path d="m12 19-7-7 7-7"></path>
+        </svg>
+        <div>
+          <div class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">Volver al</div>
+          <div class="font-black text-lg">Modelo MILC</div>
+        </div>
+      </a>
+    </div>
+  </article>
+</BaseLayout>

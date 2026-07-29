@@ -293,7 +293,7 @@ function tplModeloMilc(): string {
       ${esc('4 fases · Triángulo Dussel-Estoico-Floridi · 18 anclajes ancestrales')}
     </text>
     <text x="80" y="510" fill="#FFFFFF" opacity="0.75" font-family="Helvetica, sans-serif" font-weight="500" font-size="20">
-      ${esc('Colección MILC · 4 libros con DOI · Dr. Álvaro Cárdenas Orozco')}
+      ${esc('Colección MILC · 6 libros (del Tomo 0 al V) · Dr. Álvaro Cárdenas Orozco')}
     </text>
     <!-- Wordmark esquina -->
     ${wordmark(W - 240, H - 60, '#FFFFFF', '#FFD60A')}

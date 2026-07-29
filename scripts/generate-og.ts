@@ -1,9 +1,9 @@
 /**
  * Generador de imágenes Open Graph para ConectaTE.
  *
- * Produce 33 PNGs en /public/og/ con la identidad visual Bento:
+ * Produce 34 PNGs en /public/og/ con la identidad visual Bento:
  * - 1 home + 6 grados + 18 períodos + 1 acerca + 1 comenzar + 1 modelo-milc
- *   + 1 plan-de-area + 4 portadas de la Colección MILC
+ *   + 1 plan-de-area + 5 portadas de la Colección MILC
  *
  * Cada página de la plataforma referencia el archivo correspondiente.
  * Guías, proyectos y exámenes heredan la imagen de su período (contexto
@@ -293,7 +293,7 @@ function tplModeloMilc(): string {
       ${esc('4 fases · Triángulo Dussel-Estoico-Floridi · 18 anclajes ancestrales')}
     </text>
     <text x="80" y="510" fill="#FFFFFF" opacity="0.75" font-family="Helvetica, sans-serif" font-weight="500" font-size="20">
-      ${esc('Colección MILC · 4 libros con DOI · Dr. Álvaro Cárdenas Orozco')}
+      ${esc('Colección MILC · 6 libros (del Tomo 0 al V) · Dr. Álvaro Cárdenas Orozco')}
     </text>
     <!-- Wordmark esquina -->
     ${wordmark(W - 240, H - 60, '#FFFFFF', '#FFD60A')}
@@ -401,6 +401,18 @@ const LIBROS: LibroOg[] = [
     doi: '10.5281/zenodo.21517630',
     bg: '#1A1A2E', fg: '#FFFFFF', accent: '#C9A227',
     emoji: '📕',
+  },
+  {
+    slug: 'libro-el-lugar-de-llegar-a-ser',
+    etiqueta: 'COLECCIÓN MILC · TOMO V',
+    titulo: 'El Lugar de Llegar a Ser',
+    subtitulo: 'El espacio pedagógico como agente: fundar, abrir y sostener los lugares donde se llega a ser',
+    paginas: 143,
+    licencia: 'CC BY-SA 4.0',
+    doi: '10.5281/zenodo.21654100',
+    // Eje EL ESPACIO · verde-teal profundo (el lugar, el territorio donde se florece).
+    bg: '#0B4A3F', fg: '#FFFFFF', accent: '#5EEAD4',
+    emoji: '📗',
   },
 ];
 

@@ -329,6 +329,39 @@ function tplPlanArea(): string {
   </svg>`;
 }
 
+/* ────────────── Portada OG de la página de colección ────────────── */
+
+// La colección entera (no un libro suelto): por eso no lleva páginas ni un DOI
+// único, sino el arco de los seis tomos.
+function tplColeccion(): string {
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+    <rect width="${W}" height="${H}" fill="#000000"/>
+    ${patternDots(0.07)}
+    <text x="80" y="120" fill="#A3FF12" font-family="Helvetica, sans-serif" font-weight="700" font-size="22" letter-spacing="3">
+      ${esc('COLECCIÓN MILC · OBRA COMPLETA')}
+    </text>
+    <text x="${W - 80}" y="210" fill="#FFFFFF" opacity="0.18" font-family="Helvetica, sans-serif" font-size="170" text-anchor="end">
+      📚
+    </text>
+    <text x="80" y="250" fill="#FFFFFF" font-family="Helvetica, sans-serif" font-weight="900" font-size="82" letter-spacing="-3">
+      ${esc('Seis libros,')}
+    </text>
+    <text x="80" y="332" fill="#FFFFFF" font-family="Helvetica, sans-serif" font-weight="900" font-size="82" letter-spacing="-3">
+      ${esc('una sola pregunta')}
+    </text>
+    <text x="80" y="432" fill="#FFFFFF" opacity="0.88" font-family="Helvetica, sans-serif" font-weight="600" font-size="28" letter-spacing="-0.5">
+      ${esc('Del Tomo 0 al Tomo V · el arco completo y cómo leerlo')}
+    </text>
+    <text x="80" y="${H - 92}" fill="#A3FF12" font-family="Helvetica, sans-serif" font-weight="800" font-size="24" letter-spacing="-0.5">
+      ${esc('el yo · el nosotros · el cómo · la herramienta · el lugar')}
+    </text>
+    <text x="80" y="${H - 56}" fill="#FFFFFF" opacity="0.72" font-family="Helvetica, sans-serif" font-weight="500" font-size="20">
+      ${esc('Acceso abierto · DOI en Zenodo · Dr. Álvaro Cárdenas Orozco')}
+    </text>
+    ${wordmark(W - 240, H - 60, '#FFFFFF', '#A3FF12')}
+  </svg>`;
+}
+
 /* ────────────── Portadas OG de la Colección MILC ────────────── */
 
 type LibroOg = {
@@ -490,6 +523,10 @@ async function main(): Promise<void> {
 
   // Modelo MILC (página de autoridad pedagógica)
   await svg2png(tplModeloMilc(), `${OUT_DIR}/modelo-milc.png`);
+  count++;
+
+  // Colección MILC (puerta de entrada a los seis libros)
+  await svg2png(tplColeccion(), `${OUT_DIR}/coleccion-milc.png`);
   count++;
 
   // Plan de Área

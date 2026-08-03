@@ -1,0 +1,413 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const base = import.meta.env.BASE_URL;
+
+const origen = (Astro.site ?? new URL('https://alguarito.github.io')).toString().replace(/\/$/, '');
+const inicio = `${origen}${base.replace(/\/$/, '')}`;
+
+// ─── Los seis libros de la colección ──────────────────────────────────────
+// Tomo 0 = obra matriz (vive en /modelo-milc) · Tomos I–V con ficha propia.
+// Se cita SIEMPRE por concept DOI (resuelve a la última versión).
+const libros = [
+  {
+    romano: '0',
+    id: 'libro',
+    titulo: 'Educación en la Era Onlife',
+    dimension: 'el marco',
+    pregunta: '¿qué es investigar en la escuela hoy?',
+    sintesis:
+      'Obra fundacional del modelo MILC: las fases, el triángulo de pensamiento y el Inforg Resiliente. Es el mapa; los cinco tomos son los territorios.',
+    doi: '10.5281/zenodo.20517707',
+    licencia: 'CC BY-NC-SA 4.0',
+    href: `${base}/modelo-milc`,
+    pdf: `${base}/libro-milc/libro-milc-2026.pdf`,
+    color: 'bg-bento-purple',
+    emoji: '📕',
+  },
+  {
+    romano: 'I',
+    id: 'tomo1',
+    titulo: 'El Mercado de la Atención',
+    dimension: 'el yo',
+    pregunta: '¿quién aprende?',
+    sintesis:
+      'La atención como mercancía disputada y la soberanía atencional como primera condición: quien no gobierna su atención no gobierna su formación.',
+    doi: '10.5281/zenodo.20644819',
+    licencia: 'CC BY-SA 4.0',
+    href: `${base}/modelo-milc/mercado-atencion`,
+    pdf: `${base}/libro-milc/tomo-1-mercado-de-la-atencion.pdf`,
+    color: 'bg-bento-lime',
+    emoji: '📗',
+  },
+  {
+    romano: 'II',
+    id: 'tomo2',
+    titulo: 'Pedagogía de la Querencia',
+    dimension: 'el nosotros',
+    pregunta: '¿desde dónde?',
+    sintesis:
+      'El arraigo como competencia que se educa: el territorio, la lengua y la memoria, y el diálogo con los saberes ancestrales del propio lugar.',
+    doi: '10.5281/zenodo.21176768',
+    licencia: 'CC BY-SA 4.0',
+    href: `${base}/modelo-milc/querencia`,
+    pdf: `${base}/libro-milc/tomo-2-pedagogia-de-la-querencia.pdf`,
+    color: 'bg-bento-orange',
+    emoji: '📘',
+  },
+  {
+    romano: 'III',
+    id: 'tomo3',
+    titulo: 'El Niño que Sueña Ciencia',
+    dimension: 'el cómo',
+    pregunta: '¿cómo se investiga?',
+    sintesis:
+      'Del asombro espontáneo al oficio de investigar: darle método al sueño de un niño sin apagarlo.',
+    doi: '10.5281/zenodo.21360910',
+    licencia: 'CC BY-SA 4.0',
+    href: `${base}/modelo-milc/el-nino-que-suena-ciencia`,
+    pdf: `${base}/libro-milc/tomo-3-el-nino-que-suena-ciencia.pdf`,
+    color: 'bg-bento-blue',
+    emoji: '📙',
+  },
+  {
+    romano: 'IV',
+    id: 'tomo4',
+    titulo: 'No Rendir la Mirada',
+    dimension: 'la herramienta',
+    pregunta: '¿con qué?',
+    sintesis:
+      'Inteligencia artificial, datos y soberanía tecnológica: la herramienta no piensa por el estudiante, le presta capacidad. Declaración, verificación y autoría.',
+    doi: '10.5281/zenodo.21517630',
+    licencia: 'CC BY-SA 4.0',
+    href: `${base}/modelo-milc/no-rendir-la-mirada`,
+    pdf: `${base}/libro-milc/tomo-4-no-rendir-la-mirada.pdf`,
+    color: 'bg-bento-yellow',
+    emoji: '📒',
+  },
+  {
+    romano: 'V',
+    id: 'tomo5',
+    titulo: 'El Lugar de Llegar a Ser',
+    dimension: 'el espacio',
+    pregunta: '¿dónde?',
+    sintesis:
+      'El espacio no es el escenario neutro del aprendizaje, es uno de sus agentes: fundar, abrir y sostener los lugares donde el estudiante llega a ser.',
+    doi: '10.5281/zenodo.21654100',
+    licencia: 'CC BY-SA 4.0',
+    href: `${base}/modelo-milc/el-lugar-de-llegar-a-ser`,
+    pdf: `${base}/libro-milc/tomo-5-el-lugar-de-llegar-a-ser.pdf`,
+    color: 'bg-bento-black',
+    emoji: '📗',
+  },
+];
+
+// ─── «Por dónde empezar según…» ───────────────────────────────────────────
+const rutas = [
+  { necesidad: 'Mis estudiantes viven distraídos y no logro su atención', tomo: 'Tomo I', titulo: 'El Mercado de la Atención', href: `${base}/modelo-milc/mercado-atencion` },
+  { necesidad: 'Quiero que lo que enseño dialogue con su territorio y su historia', tomo: 'Tomo II', titulo: 'Pedagogía de la Querencia', href: `${base}/modelo-milc/querencia` },
+  { necesidad: 'Quiero llevar a mis estudiantes a investigar de verdad', tomo: 'Tomo III', titulo: 'El Niño que Sueña Ciencia', href: `${base}/modelo-milc/el-nino-que-suena-ciencia` },
+  { necesidad: 'La IA entró a mi aula y no sé con qué criterio usarla', tomo: 'Tomo IV', titulo: 'No Rendir la Mirada', href: `${base}/modelo-milc/no-rendir-la-mirada` },
+  { necesidad: 'Quiero fundar un semillero o cambiar el ambiente de mi aula', tomo: 'Tomo V', titulo: 'El Lugar de Llegar a Ser', href: `${base}/modelo-milc/el-lugar-de-llegar-a-ser` },
+  { necesidad: 'Quiero entender el modelo completo antes de empezar', tomo: 'Tomo 0', titulo: 'Educación en la Era Onlife', href: `${base}/modelo-milc` },
+];
+
+// ─── Cita de la colección completa ────────────────────────────────────────
+const citaApa =
+  'Cárdenas Orozco, Á. (2026). Colección MILC: Modelo de Investigación Liberadora y Científica (Tomos 0–V). Sor María Juliana Ediciones. https://doi.org/10.5281/zenodo.20517707';
+
+const citaBibtex = `@collection{cardenas2026milc,
+  author    = {Cárdenas Orozco, Álvaro},
+  title     = {Colección MILC: Modelo de Investigación Liberadora y Científica (Tomos 0--V)},
+  publisher = {Sor María Juliana Ediciones},
+  address   = {Cartago, Valle del Cauca, Colombia},
+  year      = {2026},
+  doi       = {10.5281/zenodo.20517707},
+  note      = {Obra completa en acceso abierto. Tomo 0: 10.5281/zenodo.20517707;
+               Tomo I: 10.5281/zenodo.20644819; Tomo II: 10.5281/zenodo.21176768;
+               Tomo III: 10.5281/zenodo.21360910; Tomo IV: 10.5281/zenodo.21517630;
+               Tomo V: 10.5281/zenodo.21654100}
+}`;
+
+// ─── Schema.org · CollectionPage (referencia los nodos ya definidos) ──────
+const jsonLdExtra = [
+  {
+    '@type': 'CollectionPage',
+    '@id': `${inicio}/modelo-milc/coleccion`,
+    name: 'La Colección MILC',
+    headline: 'Seis libros, una sola pregunta',
+    description:
+      'Guía de lectura de la Colección MILC: seis libros en acceso abierto, del Tomo 0 al Tomo V, que recorren el arco del acto de aprender (el yo, el nosotros, el cómo, la herramienta y el lugar). Cada tomo con su DOI en Zenodo.',
+    inLanguage: 'es-CO',
+    url: `${inicio}/modelo-milc/coleccion`,
+    isPartOf: { '@id': `${inicio}#website` },
+    about: { '@id': `${inicio}/modelo-milc#coleccion` },
+    author: { '@id': `${inicio}/acerca#person` },
+    publisher: { '@id': `${inicio}#organization` },
+    mainEntity: {
+      '@type': 'ItemList',
+      name: 'Los seis libros de la Colección MILC',
+      numberOfItems: 6,
+      itemListOrder: 'https://schema.org/ItemListOrderAscending',
+      itemListElement: libros.map((l, i) => ({
+        '@type': 'ListItem',
+        position: i,
+        item: { '@id': `${inicio}/modelo-milc#${l.id}` },
+      })),
+    },
+  },
+];
+---
+
+<BaseLayout
+  title="La Colección MILC · seis libros y cómo leerlos — ConectaTE"
+  description="Guía de lectura de la Colección MILC: seis libros en acceso abierto, del Tomo 0 al Tomo V. El arco completo (el yo, el nosotros, el cómo, la herramienta y el lugar), la síntesis de cada tomo, por dónde empezar según lo que necesitas, y la descarga y cita de la obra entera. Dr. Álvaro Cárdenas Orozco."
+  ogType="website"
+  imagen="/og/coleccion-milc.png"
+  jsonLd={jsonLdExtra}
+>
+  <article class="pt-12 pb-20">
+    <div class="bento-container max-w-5xl">
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-sm font-semibold mb-8 flex-wrap" style="color: var(--fg-muted);">
+        <a href={base || '/'} class="hover:opacity-60 transition-opacity">Inicio</a>
+        <span>/</span>
+        <a href={`${base}/modelo-milc`} class="hover:opacity-60 transition-opacity">Modelo MILC</a>
+        <span>/</span>
+        <span style="color: var(--fg);">La Colección</span>
+      </nav>
+
+      <!-- HERO · invitación a leer la obra -->
+      <div class="bento-card-color bg-bento-black grid-pattern text-white mb-10 py-12 md:py-16 px-6 md:px-10">
+        <div class="max-w-3xl">
+          <div class="flex flex-wrap gap-2 mb-6">
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">Colección MILC</span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">6 libros · del Tomo 0 al V</span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">Acceso abierto</span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">Obra completa 2026</span>
+          </div>
+          <h1 class="heading-giant text-balance leading-[0.95] mb-4">
+            Seis libros,<br />una sola pregunta
+          </h1>
+          <p class="text-base md:text-lg font-semibold opacity-90 leading-relaxed mb-3">
+            La Colección MILC no son seis textos sueltos: es un solo recorrido. Cada tomo toma
+            una dimensión del acto de aprender y le hace una pregunta distinta, hasta completar
+            las condiciones de un mismo estudiante que aprende.
+          </p>
+          <p class="text-sm opacity-70 mb-8">
+            Dr. Álvaro Cárdenas Orozco · Sor María Juliana Ediciones · I.E. Sor María Juliana,
+            Cartago (Valle del Cauca) · Todos los tomos con DOI en Zenodo
+          </p>
+          <div class="flex items-center gap-2.5 flex-wrap">
+            <a href="#libros" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-bento-lime text-neutral-950 text-sm font-black hover:opacity-85 transition-opacity">
+              Ver los seis libros ↓
+            </a>
+            <a href="#empezar" class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full border-2 border-white/30 text-sm font-black hover:border-white transition-colors">
+              ¿Por dónde empiezo?
+            </a>
+            <a href="#descargas" class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-sm font-black opacity-80 hover:opacity-100 transition-opacity">
+              Descargar y citar ↓
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- EL ARCO · línea visual -->
+      <section class="mb-12">
+        <span class="chip-bento mb-3">🧭 El arco de la colección</span>
+        <h2 class="heading-huge mb-3 leading-tight">De quién aprende, hasta dónde llega a ser.</h2>
+        <p class="text-sm md:text-base leading-relaxed mb-6 max-w-3xl" style="color: var(--fg-muted);">
+          El orden no es cronológico ni caprichoso: es un arco. El Tomo 0 traza el mapa; los cinco
+          siguientes recorren, uno a uno, las condiciones de un mismo sujeto que aprende. El último
+          responde la pregunta que las otras cuatro dejaron abierta.
+        </p>
+
+        <div class="bento-card overflow-x-auto">
+          <svg viewBox="0 0 900 260" class="w-full min-w-[680px]" role="img"
+               aria-label="Arco de la Colección MILC: Tomo 0 el marco, Tomo I el yo, Tomo II el nosotros, Tomo III el cómo, Tomo IV la herramienta y Tomo V el lugar.">
+            <!-- trayectoria -->
+            <path d="M 60 190 C 240 180, 420 150, 600 105 S 800 60, 850 52"
+                  fill="none" stroke="var(--fg-muted)" stroke-width="2" stroke-linecap="round" opacity="0.35" />
+            {libros.map((l, i) => {
+              const x = 60 + i * 158;
+              const y = 190 - i * 27;
+              const destacado = i === 5;
+              return (
+                <g>
+                  <circle cx={x} cy={y} r={destacado ? 15 : 11}
+                          fill={destacado ? 'var(--fg)' : 'var(--bg-card)'}
+                          stroke="var(--fg)" stroke-width="2" />
+                  <text x={x} y={y + 4} text-anchor="middle"
+                        font-size="11" font-weight="800"
+                        fill={destacado ? 'var(--bg-card)' : 'var(--fg)'}>{l.romano}</text>
+                  <text x={x} y={y - 26} text-anchor="middle"
+                        font-size="12.5" font-weight="800" fill="var(--fg)">{l.dimension}</text>
+                  <text x={x} y={y + 30} text-anchor="middle"
+                        font-size="11" fill="var(--fg-muted)">{l.pregunta}</text>
+                </g>
+              );
+            })}
+          </svg>
+        </div>
+        <p class="text-xs mt-3 text-center" style="color: var(--fg-muted);">
+          el marco → el yo → el nosotros → el cómo → la herramienta → <strong style="color: var(--fg);">el lugar</strong>
+        </p>
+      </section>
+
+      <!-- LOS SEIS LIBROS -->
+      <section id="libros" class="mb-12 scroll-mt-24">
+        <span class="chip-bento mb-3">📚 La obra completa</span>
+        <h2 class="heading-huge mb-3 leading-tight">Los seis libros.</h2>
+        <p class="text-sm md:text-base leading-relaxed mb-6 max-w-3xl" style="color: var(--fg-muted);">
+          Todos en acceso abierto, con DOI propio en Zenodo. Se citan siempre por su
+          <em>DOI de concepto</em>, que resuelve a la última versión.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {libros.map((l) => (
+            <a href={l.href} class={`bento-card-color ${l.color} ${l.color === 'bg-bento-black' ? 'text-white' : ''} flex flex-col justify-between min-h-[240px] hover:scale-[1.01] transition-transform group`}>
+              <div>
+                <div class="flex items-start justify-between gap-3 mb-3">
+                  <span class="text-xs font-black uppercase tracking-widest opacity-75">
+                    Tomo {l.romano} · {l.dimension}
+                  </span>
+                  <span class="text-3xl leading-none">{l.emoji}</span>
+                </div>
+                <h3 class="text-xl md:text-2xl font-black leading-tight mb-1">{l.titulo}</h3>
+                <p class="text-xs font-bold italic opacity-70 mb-3">{l.pregunta}</p>
+                <p class="text-sm leading-relaxed opacity-85">{l.sintesis}</p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-current/15 flex items-center justify-between gap-2 flex-wrap">
+                <span class="text-[11px] font-semibold opacity-70">DOI {l.doi}</span>
+                <span class="text-xs font-black group-hover:translate-x-0.5 transition-transform">Ver la ficha →</span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <!-- CÓMO LEERLA -->
+      <section class="mb-12">
+        <span class="chip-bento mb-3">🗺️ Cómo leerla</span>
+        <h2 class="heading-huge mb-3 leading-tight">Dos maneras de recorrerla.</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bento-card">
+            <span class="text-xs font-black uppercase tracking-widest" style="color: var(--fg-muted);">Ruta 1</span>
+            <h3 class="text-lg font-black mt-1 mb-2">De corrido</h3>
+            <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">
+              Del Tomo 0 al V, en orden. Es como fue pensada: se ve el arco completo, cómo cada
+              pieza prepara la siguiente y por qué el lugar tenía que ir al final. La lectura más
+              exigente y la que más devuelve.
+            </p>
+          </div>
+          <div class="bento-card">
+            <span class="text-xs font-black uppercase tracking-widest" style="color: var(--fg-muted);">Ruta 2</span>
+            <h3 class="text-lg font-black mt-1 mb-2">Por necesidad</h3>
+            <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">
+              Entrar por el tomo que responde la pregunta que usted tiene hoy. Cada libro se
+              sostiene solo: tiene su tesis, su método y sus Ventanas al Aula, y no exige haber
+              leído los anteriores.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- POR DÓNDE EMPEZAR -->
+      <section id="empezar" class="mb-12 scroll-mt-24">
+        <span class="chip-bento mb-3">🎯 Por dónde empezar</span>
+        <h2 class="heading-huge mb-3 leading-tight">Según lo que le preocupa hoy.</h2>
+        <p class="text-sm md:text-base leading-relaxed mb-6 max-w-3xl" style="color: var(--fg-muted);">
+          Si llega sin saber por dónde entrar, busque abajo la frase que más se parezca a lo que
+          está viviendo en su aula.
+        </p>
+        <div class="bento-card divide-y" style="border-color: var(--border);">
+          {rutas.map((r) => (
+            <a href={r.href} class="flex items-start md:items-center justify-between gap-4 py-4 first:pt-0 last:pb-0 group flex-col md:flex-row">
+              <p class="text-sm md:text-base font-semibold leading-snug">«{r.necesidad}»</p>
+              <span class="shrink-0 text-xs md:text-sm font-black whitespace-nowrap group-hover:translate-x-0.5 transition-transform" style="color: var(--fg-muted);">
+                → {r.tomo} · {r.titulo}
+              </span>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <!-- DESCARGA Y CITA -->
+      <section id="descargas" class="mb-10 scroll-mt-24">
+        <span class="chip-bento mb-3">⬇️ Descargar y citar</span>
+        <h2 class="heading-huge mb-3 leading-tight">La obra entera, gratis.</h2>
+        <p class="text-sm md:text-base leading-relaxed mb-6 max-w-3xl" style="color: var(--fg-muted);">
+          Los seis libros son de acceso abierto y se pueden descargar, compartir y usar en el aula.
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-8">
+          {libros.map((l) => (
+            <a href={l.pdf} download class="bento-card-hover flex items-center gap-3">
+              <span class="text-2xl shrink-0">{l.emoji}</span>
+              <span class="min-w-0">
+                <span class="block text-[11px] font-black uppercase tracking-widest" style="color: var(--fg-muted);">Tomo {l.romano} · PDF</span>
+                <span class="block text-sm font-bold leading-tight truncate">{l.titulo}</span>
+              </span>
+            </a>
+          ))}
+        </div>
+
+        <div class="bento-card">
+          <h3 class="text-lg font-black mb-1">Citar la colección completa</h3>
+          <p class="text-xs mb-4" style="color: var(--fg-muted);">
+            Para citar un tomo en particular, use el bloque «Cómo citar» de su ficha.
+          </p>
+
+          <div class="mb-4">
+            <div class="flex items-center justify-between gap-2 mb-2">
+              <span class="text-xs font-black uppercase tracking-widest" style="color: var(--fg-muted);">APA 7.ª</span>
+              <button type="button" data-copiar={citaApa} class="text-xs font-black px-3 py-1 rounded-full border transition-colors hover:opacity-70" style="border-color: var(--border);">Copiar</button>
+            </div>
+            <p class="text-sm leading-relaxed p-3 rounded-xl" style="background: var(--bg); color: var(--fg-muted);">{citaApa}</p>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-2">
+              <span class="text-xs font-black uppercase tracking-widest" style="color: var(--fg-muted);">BibTeX</span>
+              <button type="button" data-copiar={citaBibtex} class="text-xs font-black px-3 py-1 rounded-full border transition-colors hover:opacity-70" style="border-color: var(--border);">Copiar</button>
+            </div>
+            <pre class="text-[11px] leading-relaxed p-3 rounded-xl overflow-x-auto" style="background: var(--bg); color: var(--fg-muted);"><code>{citaBibtex}</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- CIERRE -->
+      <section>
+        <div class="bento-card-color bg-bento-lime">
+          <span class="chip-bento mb-3 bg-black/10">🏁 Obra completa</span>
+          <p class="text-lg md:text-2xl font-black leading-snug mb-3">
+            «El lugar donde alguien llega a ser no lo decreta el sistema: lo funda un maestro que se atreve.»
+          </p>
+          <p class="text-sm leading-relaxed opacity-80">
+            Los seis libros se escribieron desde un colegio público de Cartago, y se publican en
+            acceso abierto para que otros maestros los usen, los discutan y los superen.
+          </p>
+        </div>
+      </section>
+    </div>
+  </article>
+</BaseLayout>
+
+<script>
+  // Copiar al portapapeles las citas de la colección.
+  document.querySelectorAll<HTMLButtonElement>('[data-copiar]').forEach((boton) => {
+    boton.addEventListener('click', async () => {
+      const texto = boton.dataset.copiar ?? '';
+      try {
+        await navigator.clipboard.writeText(texto);
+        const original = boton.textContent;
+        boton.textContent = '¡Copiado!';
+        window.setTimeout(() => {
+          boton.textContent = original;
+        }, 1600);
+      } catch {
+        /* Si el navegador bloquea el portapapeles, el texto sigue visible para copiar a mano. */
+      }
+    });
+  });
+</script>

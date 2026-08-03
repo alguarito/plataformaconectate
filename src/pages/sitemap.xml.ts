@@ -24,6 +24,7 @@ export const GET: APIRoute = async ({ site }) => {
 
   // Página "Modelo MILC" · pedagogía propia · página de autoridad (alto valor SEO)
   urls.push({ loc: `${fullBase}/modelo-milc`, priority: 0.9, changefreq: 'monthly' });
+  urls.push({ loc: `${fullBase}/modelo-milc/coleccion`, priority: 0.9, changefreq: 'monthly' });
 
   // Colección MILC · páginas dedicadas de cada libro (obra citable con DOI · alto valor SEO)
   urls.push({ loc: `${fullBase}/modelo-milc/mercado-atencion`, priority: 0.85, changefreq: 'monthly' });

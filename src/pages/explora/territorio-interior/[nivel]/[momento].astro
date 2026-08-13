@@ -1,0 +1,158 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import { niveles, getCategoriaDeNivel } from '../../../../data/territorioInterior';
+
+export function getStaticPaths() {
+  return niveles.flatMap((nivel) =>
+    nivel.momentos.map((momento) => ({
+      params: { nivel: nivel.slug, momento: momento.slug },
+      props: { nivel, momento },
+    })),
+  );
+}
+
+const { nivel, momento } = Astro.props;
+const categoria = getCategoriaDeNivel(nivel.slug);
+const base = import.meta.env.BASE_URL;
+
+const disponible = momento.estado === 'activo';
+const pdf = momento.claveGuia
+  ? `${base}/guias-mejoras/territorio-interior/${momento.claveGuia}-TIC.pdf`
+  : null;
+
+const anterior = nivel.momentos.find((m) => m.numero === momento.numero - 1);
+const siguiente = nivel.momentos.find((m) => m.numero === momento.numero + 1);
+---
+
+<BaseLayout
+  title={`${momento.nombre} · Grado ${nivel.grado}.º — Territorio interior · ConectaTE`}
+  description={momento.foco}
+  ogType="article"
+>
+  <article class="pt-12 pb-20">
+    <div class="bento-container max-w-4xl">
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-sm font-semibold mb-8 flex-wrap" style="color: var(--fg-muted);">
+        <a href={base || '/'} class="hover:opacity-60 transition-opacity">Inicio</a>
+        <span>/</span>
+        <a href={`${base}/explora`} class="hover:opacity-60 transition-opacity">Explora</a>
+        <span>/</span>
+        <a href={`${base}/explora/territorio-interior`} class="hover:opacity-60 transition-opacity">Territorio interior</a>
+        <span>/</span>
+        <a href={`${base}/explora/territorio-interior/${nivel.slug}`} class="hover:opacity-60 transition-opacity">
+          Grado {nivel.grado}.º
+        </a>
+        <span>/</span>
+        <span style="color: var(--fg);">Momento {momento.numero}</span>
+      </nav>
+
+      <!-- Hero de la guía -->
+      <div class="bento-card-color bg-bento-teal text-white mb-8 min-h-[240px] flex flex-col justify-between">
+        <div class="flex items-start justify-between flex-wrap gap-3">
+          <div class="flex flex-wrap gap-2">
+            {categoria && (
+              <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">
+                {categoria.nombre}
+              </span>
+            )}
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">
+              {nivel.nombre}
+            </span>
+          </div>
+          <span class="text-7xl md:text-8xl leading-none font-black" aria-hidden="true">{momento.numero}</span>
+        </div>
+        <div>
+          <span class="text-xs font-bold uppercase tracking-widest opacity-80">
+            Grado {nivel.grado}.º · Momento {momento.numero} de 10
+          </span>
+          <h1 class="text-4xl md:text-5xl font-black tracking-tight text-balance mt-2 mb-4">{momento.nombre}</h1>
+          <p class="text-base md:text-lg font-semibold opacity-95 max-w-2xl leading-relaxed">{momento.foco}</p>
+        </div>
+      </div>
+
+      <!-- Saber ancestral -->
+      <div class="bento-card mb-6">
+        <span class="chip-bento mb-3">🌱 Saber ancestral</span>
+        <p class="text-lg font-bold leading-snug mt-2">{momento.ancla.semilla}</p>
+        <p class="text-xs leading-relaxed mt-3" style="color: var(--fg-muted);">
+          {momento.ancla.verificada
+            ? 'Ancla documentada en fuentes verificadas durante la investigación del programa.'
+            : 'Semilla en revisión: esta ancla se documentará en fuente primaria antes de escribir la guía.'}
+        </p>
+      </div>
+
+      <!-- Descarga o aviso -->
+      {disponible && pdf ? (
+        <a
+          href={pdf}
+          class="bento-card-color bg-bento-blue text-white flex items-center gap-4 mb-8 hover:scale-[1.01] transition-transform group"
+          download
+        >
+          <div class="text-5xl shrink-0" aria-hidden="true">📄</div>
+          <div class="flex-1">
+            <span class="text-xs font-bold uppercase tracking-widest opacity-80">Guía completa · PDF</span>
+            <div class="font-black text-xl leading-tight mt-1">Descargar la guía</div>
+            <div class="text-sm opacity-80 mt-1">
+              Apertura MILC, las cuatro fases, el triángulo de pensamiento y la rúbrica.
+            </div>
+          </div>
+          <svg class="w-7 h-7 shrink-0 group-hover:translate-y-1 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 5v14"></path>
+            <path d="m19 12-7 7-7-7"></path>
+          </svg>
+        </a>
+      ) : (
+        <div class="bento-card mb-8">
+          <span class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">
+            En construcción
+          </span>
+          <p class="text-sm leading-relaxed mt-2" style="color: var(--fg-muted);">
+            Esta guía todavía no está escrita. El temario ya está definido y su ancla
+            ancestral entra a la ronda de documentación antes de redactarse: en este
+            programa no se publica un saber que no se haya verificado en fuente.
+          </p>
+        </div>
+      )}
+
+      <!-- Recordatorio de las tres reglas -->
+      <div class="bento-card mb-8">
+        <h2 class="text-lg font-black tracking-tight mb-2">Antes de trabajar esta guía</h2>
+        <ul class="space-y-2 text-sm leading-relaxed" style="color: var(--fg-muted);">
+          <li>· Nadie tiene que narrar lo que vivió. Se escucha; no se interroga.</li>
+          <li>· Nadie tiene que encontrarle el lado bueno a lo que le dolió.</li>
+          <li>· Si aparece una señal de alarma, se avisa a un adulto el mismo día: orientación escolar, un docente o la familia.</li>
+        </ul>
+      </div>
+
+      <!-- Navegación -->
+      <nav class="flex items-stretch justify-between gap-3 flex-wrap" aria-label="Momentos vecinos">
+        {anterior ? (
+          <a href={`${base}/explora/territorio-interior/${nivel.slug}/${anterior.slug}`} class="bento-card flex-1 min-w-[220px] hover:scale-[1.01] transition-transform">
+            <span class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">← Momento {anterior.numero}</span>
+            <div class="font-black leading-tight mt-1">{anterior.nombre}</div>
+          </a>
+        ) : (
+          <span class="flex-1 min-w-[220px]"></span>
+        )}
+        {siguiente && (
+          <a href={`${base}/explora/territorio-interior/${nivel.slug}/${siguiente.slug}`} class="bento-card flex-1 min-w-[220px] text-right hover:scale-[1.01] transition-transform">
+            <span class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">Momento {siguiente.numero} →</span>
+            <div class="font-black leading-tight mt-1">{siguiente.nombre}</div>
+          </a>
+        )}
+      </nav>
+
+      <!-- Volver -->
+      <a href={`${base}/explora/territorio-interior/${nivel.slug}`} class="bento-card-hover flex items-center gap-4 mt-3">
+        <svg class="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 12H5"></path>
+          <path d="m12 19-7-7 7-7"></path>
+        </svg>
+        <div>
+          <div class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">Volver a</div>
+          <div class="font-black text-lg">Grado {nivel.grado}.º · {nivel.nombre}</div>
+        </div>
+      </a>
+    </div>
+  </article>
+</BaseLayout>

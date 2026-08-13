@@ -1,0 +1,501 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra UNICA de las guias MILC v3.
+%
+% La usan las tres familias de guias, cada una con su driver:
+%   · Grados 6-11  -> scripts/build-guias-g11.py
+%   · Bebras       -> scripts/build-guias-bebras.py
+%   · Semillero    -> scripts/build-guias-semillero.py
+%
+% Antes habia tres copias casi identicas (~400 lineas iguales, 6 distintas):
+% cada mejora habia que aplicarla tres veces, y en la practica no se hacia
+% (el motor de recursos vivia solo en dos de ellas). Lo que varia entre
+% familias esta parametrizado en 6 placeholders que cada driver llena
+% (se nombran aqui SIN su sintaxis real: el builder reemplaza por texto plano,
+% tambien dentro de los comentarios, y un valor multilinea rompe el preambulo):
+%
+%   HEADER_IZQ        encabezado izquierdo de pagina
+%   HEADER_DER        encabezado derecho de pagina
+%   PORTADA_ETIQUETA  rotulo sobre el numero grande (GRADO/MOMENTO/MODULO)
+%   PORTADA_SERIE     linea de serie de la portada
+%   PORTADA_ID        identificador de la guia en la portada
+%   PORTADA_CIRCULO   el circulito de grado (°), o vacio si no aplica
+%
+% El resto de claves las documenta content/guias/_SCHEMA.md. El script valida
+% que no queden placeholders sin reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1.75cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+% Librerías TikZ para los diagramas de las guías (bloque `recursos:`):
+%  · babel  → babel en español vuelve activos caracteres como «>», y TikZ los usa
+%             en sus opciones (>=stealth, ->). Sin esta librería, cualquier
+%             diagrama con flechas revienta con «\language@active@arg> has an
+%             extra }». Debe ir ANTES de que se dibuje nada.
+%  · positioning        → sintaxis «below left=2pt and 3pt».
+%  · decorations.pathreplacing → llaves ({brace}) para señalar rangos.
+\usetikzlibrary{babel,positioning,decorations.pathreplacing}
+\usepackage{graphicx}
+% Circuitos: el trabajo de electrónica se hace hoy con micro:bit y sus sensores
+% integrados (MakeCode, sin cableado), así que no se necesitan esquemáticos.
+% Si algún día entran montajes con protoboard, basta descomentar esta línea:
+% los diagramas .tex/.tikz declarados en `recursos:` ya se incrustan solos.
+% \usepackage{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+% Helvetica Neue no trae la flecha U+2192, asi que cada «→» escrito literalmente
+% en el YAML se compilaba a NADA, en silencio (462 flechas en 61 guias: rutas del
+% tipo «paleta → tipografia → lockup» salian rotas). Mapeamos el caracter a su
+% version matematica, que si tiene glifo. Asi el autor puede seguir escribiendo
+% «→» comodamente en el YAML.
+\usepackage{newunicodechar}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\hyphenpenalty=200
+\exhyphenpenalty=200
+\pretolerance=400
+\tolerance=2000
+\setlength{\emergencystretch}{1em}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0D9488}
+\definecolor{milcGradeDark}{HTML}{115E59}
+\definecolor{milcGradeSoft}{HTML}{CCFBF1}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Territorio interior · Educación socioemocional}
+\rhead{\small Grado 7° · Momento 10 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+% La flecha va en modo matematico a proposito: Helvetica Neue NO tiene el glifo
+% U+2192, asi que \textrightarrow se compilaba a NADA («Missing character: There
+% is no → in font Helvetica Neue») y el puente salia sin flecha. En modo
+% matematico la flecha viene de la fuente matematica y si se dibuja.
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{$\rightarrow$}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+% ── Listas con sangría francesa (serie socioemocional) ────────────────
+% El template base compone las verificaciones como «\checkbox texto\\», de
+% modo que el texto que salta de línea queda debajo del cuadrito y el bloque
+% se ve apelmazado. Estos entornos alinean la continuación y airean los ítems.
+\newlist{checklista}{itemize}{1}
+\setlist[checklista]{
+  label=\textcolor{milcGradeDark}{\fbox{\phantom{x}}},
+  leftmargin=9mm, labelsep=3.2mm, itemsep=2.4mm,
+  topsep=2.5mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+\newlist{pasoslista}{enumerate}{1}
+\setlist[pasoslista]{
+  label=\textcolor{milcGradeDark}{\sffamily\bfseries\arabic*.},
+  leftmargin=8mm, labelsep=3mm, itemsep=2.8mm,
+  topsep=1mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+% ── Recursos visuales de la guía ──────────────────────────────────────
+% Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
+% \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
+% \guiaDiagrama → fuente TikZ/circuitikz (.tex) incrustada como vector:
+%                 es la vía para circuitos y esquemáticos editables.
+% #1 = ruta relativa al .tex · #2 = pie (puede ir vacío)
+\newcommand{\guiaFigura}[2]{%
+\begin{center}
+\includegraphics[width=0.88\linewidth,height=0.38\textheight,keepaspectratio]{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\newcommand{\guiaDiagrama}[2]{%
+\begin{center}
+\input{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\begin{document}
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[white] (current page.south west) rectangle (current page.north east);
+  \path[fill=milcGradePrimary,rounded corners=16mm]
+    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
+    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{14}{16}\selectfont MOMENTO};
+  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
+    {\sffamily\bfseries\fontsize{9}{11}\selectfont TERRITORIO INTERIOR · SOCIOEMOCIONAL};
+
+  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
+    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
+    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
+    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
+    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
+    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
+  \end{scope}
+
+  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{124}{124}\selectfont 10};
+  % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
+  % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  
+
+  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+    {
+     {\sffamily\bfseries\fontsize{19}{22}\selectfont Cuando la tierra se movió\\comprender, sostenerse\\y sostener a otro}\\[4mm]
+     {\sffamily\bfseries\fontsize{23}{26}\selectfont Grado 7° · Momento 10}\\[2mm]
+     {\sffamily\fontsize{13}{16}\selectfont Territorio interior · Educación socioemocional}\\[5mm]
+     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
+     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+    };
+
+  \path[fill=milcGradeSoft,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
+    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Comprensión del fenómeno · Triángulo Dussel-Estoicismo-Floridi\\
+    \textcolor{milcGradeDark}{\bfseries Producto:} Tu mapa de sostén: el sismo explicado con tus propias palabras, la separación entre lo que controlas y lo que no, y tu red de tres personas a las que puedes acudir y tres a las que puedes acompañar.};
+\end{tikzpicture}
+\mbox{}
+\newpage
+
+\section*{Apertura: Cuando la tierra se movió: comprender el sismo, sostener el miedo y sostener a otro}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+El 6 de junio de 1994, a las 3:47 de la tarde, un sismo de magnitud 6,8 sacudió Tierradentro (Cauca) y desencadenó más de 3.000 deslizamientos; los flujos de lodo y piedra bajaron por el río Páez con hasta 40 metros de altura. Murieron 1.120 personas y el 80 por ciento de los afectados fueron indígenas \textbf{nasa}. Ellos no lo nombraron «desastre natural»: lo leyeron como una \textbf{desarmonía} del territorio, un llamado de atención de la Madre Tierra por la forma en que se estaban relacionando con ella. Y no esperaron soluciones de afuera: reorganizaron sus cabildos y condujeron su propia reconstrucción, buena parte de ella en \textbf{minga} (la práctica ancestral de encuentro y trabajo colectivo que el Consejo Regional Indígena del Cauca define como espacio de unidad). La minga no cura la pérdida ni devuelve lo perdido: impide que alguien la cargue en soledad. Ese es el saber que llega hasta hoy: \textbf{lo que se rompe se rehace entre varios}.
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+Hoy ese saber tiene nombre técnico. La Organización Mundial de la Salud (con War Trauma Foundation y Visión Mundial) publicó la guía de \textbf{primera ayuda psicológica} en 2011, y en español en 2012: lo que cualquier persona (no solo un profesional) puede hacer por alguien que acaba de pasar por una emergencia. Son tres acciones: \textbf{observar} (mirar quién está mal, sin invadir), \textbf{escuchar} (acercarse, ofrecer tiempo y callarse mientras el otro habla) y \textbf{conectar} (resolver algo concreto y ponerlo en contacto con quien sí puede ayudar). La propia guía dice qué \textbf{no} es: «no es pedir a alguien que analice lo que le ha sucedido o que ordene los acontecimientos». Y en 2009 un grupo de trabajo de la OMS concluyó que a quien está muy angustiado por un hecho reciente hay que ofrecerle primera ayuda psicológica y \textbf{no} el llamado \emph{debriefing} psicológico. Escuchar, sí. Interrogar, no.
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{La minga nasa no le pidió a nadie que contara su tragedia para poder ayudarlo: llegó, preguntó qué hacía falta y se puso a trabajar al lado. ¿Y si eso que la Organización Mundial de la Salud llama hoy \textbf{primera ayuda psicológica} fuera, en el fondo, lo mismo que tu comunidad ya sabe hacer cuando alguien queda en el suelo?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar podrás: (1) \textbf{identificar} y nombrar lo que sentiste y lo que tu cuerpo hizo, distinguiendo la emoción de la reacción física; (2) \textbf{explicar} con tus palabras por qué un sismo profundo se siente en medio país, qué es una réplica y por qué nadie puede predecir un temblor; (3) \textbf{analizar} por qué el mismo sismo dañó de forma tan desigual a unos municipios y a otros; (4) \textbf{crear} tu mapa de sostén y usar las tres acciones (observar, escuchar, conectar) con un compañero.
+\end{softbox}
+
+
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Comprende los fenómenos que afectan a su territorio, regula sus emociones ante ellos y acompaña a otros con empatía (transversal 6°--11°, articulado con la política «Escuela, territorio de vida» del MEN, Resolución 006519 de 2025, y la Ley 1620 de 2013)\\
+Referentes & Primera ayuda psicológica (OMS, 2011/2012) · Directrices IASC (2007) · USGS y Servicio Geológico Colombiano · Pueblo nasa y la minga (CRIC) · Dussel · Estoicismo · Floridi\\
+Producto final & Tu mapa de sostén: el sismo explicado con tus propias palabras, la separación entre lo que controlas y lo que no, y tu red de tres personas a las que puedes acudir y tres a las que puedes acompañar.\\
+\end{tabularx}
+\normalsize
+
+\puente{Ya sabes que el pueblo nasa rehizo su territorio en minga y que hoy sostener a otro tiene nombre técnico. Mira ahora el mapa de la sesión: vas a nombrar lo que sentiste, a entender qué ocurrió bajo tus pies y a aprender a acompañar a alguien sin hacerle daño.}
+
+\begin{titlebox}{milcGradeDark}
+Ruta MILC: así vamos a aprender
+\end{titlebox}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Comprendo y verifico.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Antes de entender el fenómeno conviene entenderte a ti. No vas a contar tu historia delante de nadie: vas a ponerle nombre, en privado, a lo que tu cuerpo hizo para protegerte.}
+
+\begin{titlebox}{milcVerde}
+Fase 1 · Escucha
+\end{titlebox}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+El lunes 10 de agosto de 2026, a las 7:34 de la mañana, la tierra se movió durante casi un minuto en buena parte del país. \textbf{No vas a narrar lo que viviste} (ni por escrito para otros, ni en voz alta): vas a hacer algo distinto y más útil. En tu cuaderno, en privado, escribe qué hizo \textbf{tu cuerpo} (el corazón se aceleró, las piernas temblaron, se te secó la boca, te quedaste inmóvil, saliste corriendo, te reíste sin querer) y qué hizo tu cabeza en los días siguientes (dormir mal, revisar el celular todo el tiempo, sobresaltarte cuando pasa un camión, no querer hablar del tema, sentir rabia por cualquier cosa). Nada de eso está mal ni es exagerado: es un cuerpo haciendo su trabajo de protegerte. Nombrarlo es el primer paso para que deje de mandar.
+\end{softbox}
+
+\begin{checklista}
+\item Escribiste al menos tres reacciones físicas y les pusiste nombre, sin juzgarlas ni justificarlas.
+\item Distinguiste con claridad una \textbf{emoción} (miedo, rabia, tristeza, alivio, culpa) de una \textbf{reacción física} (temblor, corazón acelerado, insomnio).
+\item Marcaste cuáles de esas reacciones fueron bajando con los días y cuáles siguen igual o empeoraron.
+\end{checklista}
+
+\begin{infoband}{milcVerde}
+
+
+\textbf{En tu cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1. Lo que hizo mi cuerpo». \textbf{Formato:} dos columnas (reacción física · emoción que la acompañó). \textbf{Extensión:} de tres a cinco filas, más un renglón final que marque lo que sigue igual o empeoró. \textbf{Sabes que terminaste cuando} cada fila tiene una palabra tuya y no una copiada del tablero. Esta página es tuya: \textbf{nadie más tiene que leerla si tú no quieres}.
+\end{infoband}
+
+\puente{Ya le pusiste nombre a lo que sentiste. Ahora vamos a los hechos, porque buena parte del miedo que queda no viene del sismo sino de lo que no entendemos de él y de lo que nos cuentan mal.}
+
+\begin{titlebox}{milcTurquesa}
+Fase 2 · Sistematización: comprender el fenómeno
+\end{titlebox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro claves para explicar el sismo}
+El miedo que queda después de un temblor se alimenta de dos cosas: lo que no entendemos y lo que nos cuentan mal. Aquí atacamos las dos. Los hechos del sismo del 10 de agosto de 2026, a las 7:34 de la mañana: magnitud \textbf{7,4} y epicentro a 5 kilómetros al sur de \textbf{San José del Palmar} (Chocó), a unos \textbf{110 kilómetros de profundidad} según el catálogo revisado del Servicio Geológico de Estados Unidos (en las primeras horas se hablaba de 82, 88 y 96 kilómetros). Que la cifra se haya ido corrigiendo no significa que alguien mintiera: significa que llegaron más datos. Así funciona la ciencia, y saberlo es tu primera defensa contra el rumor.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
+1. La profundidad & \textbf{La profundidad explica el alcance.} No fue un sismo superficial: se rompió dentro de la placa de Nazca que se hunde bajo Suramérica, a unos 110 kilómetros bajo tierra. El Servicio Geológico de Estados Unidos lo explica así: los sismos profundos «típicamente causan sacudidas menos intensas que sismos más someros de la misma magnitud; sin embargo, la sacudida aún puede ser fuerte, y típicamente se siente en una región más amplia». Unos 10,5 millones de personas lo sintieron fuerte o muy fuerte, en Bogotá, Medellín, Cali, Pereira y Manizales a la vez.\\
+2. Magnitud e intensidad & \textbf{Magnitud no es lo mismo que daño.} La magnitud (7,4) es \textbf{una sola} para todo el sismo: mide la energía liberada en el origen. La \textbf{intensidad} es distinta en cada lugar y mide cuánto se sintió y cuánto dañó allí. Por eso un mismo sismo tiene una magnitud y muchas intensidades, y por eso la pregunta «¿de cuánto fue aquí?» está mal hecha: aquí lo que cambia es la intensidad, no la magnitud.\\
+3. Daño desigual & \textbf{El daño no cayó parejo, y eso no es azar.} El Cairo (Valle del Cauca) quedó, en palabras de la gobernadora, «en un 80 por ciento destrozado», y su alcalde explicó por qué: buena parte de las viviendas supera el siglo de antigüedad y está levantada en \textbf{bahareque}, muy vulnerable a una sacudida fuerte. La norma sismorresistente colombiana rige la construcción nueva y formal; una casa centenaria o autoconstruida nunca se diseñó bajo ninguna norma. El sismo es natural; el desastre se venía construyendo antes, con desigualdad acumulada.\\
+4. Réplicas y predicción & \textbf{Las réplicas se esperan; los sismos no se predicen.} Después de un sismo grande la corteza se reacomoda con muchos sismos menores: al 12 de agosto se contaban más de 130 réplicas, con magnitudes entre 0,6 y 4,8. No paran de golpe: se van espaciando (eso lo describe la ley de Omori desde 1894). El Servicio Geológico Colombiano lo dijo sin rodeos cuando le preguntaron si pueden predecirse: «la ciencia no tiene ninguna herramienta o tecnología que permita hacer esto». Quien anuncie fecha y hora está equivocado o está mintiendo.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcTurquesa}{Los tres filtros antes de reenviar}
+\begin{pasoslista}
+\item \textbf{¿Quién lo dice?} Un dato de emergencia solo vale si tiene una fuente con nombre (Servicio Geológico Colombiano, Unidad de Gestión del Riesgo, la alcaldía). «Dicen que», «me llegó» y «un primo que trabaja allá» no son fuentes.
+\item \textbf{¿De cuándo es?} Las cifras de una emergencia cambian cada hora. Al 12 de agosto de 2026, a las 7:00 de la noche, el reporte hablaba de 265 personas fallecidas, 3.494 heridas y 496 desaparecidas. Un dato sin \textbf{fecha de corte} no sirve, y una cifra que cambia no es una mentira: es un conteo que avanza.
+\item \textbf{¿Se puede verificar?} Si nadie más lo reporta y no aparece en ninguna fuente oficial, no lo reenvíes. En una emergencia un rumor reenviado con buena intención hace daño real: satura las líneas, mueve gente hacia el peligro y multiplica el pánico.
+\end{pasoslista}
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{«Ahora viene uno más grande»:} nadie puede saberlo, y las réplicas son menores que el sismo principal y van disminuyendo. \textbf{«Lo habían predicho»:} ninguna institución del mundo predice sismos con día y hora; lo que sí se hace es estimar dónde son probables a largo plazo. \textbf{«Fue un castigo»:} es una placa que se rompe a más de 100 kilómetros de profundidad, no un juicio sobre nadie ni sobre ningún pueblo. \textbf{Confundir magnitud con intensidad:} decir «aquí fue de 5» no tiene sentido, porque la magnitud del sismo es una sola.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+
+
+\textbf{En tu cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2. El sismo explicado con mis palabras». \textbf{Formato:} un párrafo corto más una lista de tres rumores. \textbf{Extensión:} de seis a ocho renglones dirigidos a alguien de tu casa, y tres rumores que hayas oído con la razón por la que no se sostienen. \textbf{Sabes que terminaste cuando} tu explicación usa bien las palabras profundidad, magnitud, intensidad y réplica, y cada rumor queda desarmado con un hecho.
+\end{infoband}
+
+\puente{Ya entiendes qué pasó y qué no puede pasar. Es hora de lo más difícil y lo más útil: aprender a estar al lado de alguien que la está pasando mal, sin interrogarlo y sin apurarle el dolor.}
+
+\begin{titlebox}{milcMagenta}
+Fase 3 · Praxis: acompañar sin hacer daño
+\end{titlebox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Construyendo el mapa de sostén con las acciones de la primera ayuda psicológica}
+Entender no basta. Alguien cerca de ti la está pasando mal y no sabe cómo decirlo. Aquí aprendes a estar al lado sin hacer daño, con las tres acciones de la primera ayuda psicológica (observar, escuchar, conectar), y construyes tu \textbf{mapa de sostén}. La guía de la OMS dice, sobre los adolescentes, algo que vale como brújula de toda esta fase: hay que \emph{«animarles a ser útiles dándoles ocasiones de serlo»}. Eso es esto. Ojo con algo: acompañar no es interrogar, ni consolar con frases hechas, ni resolverle la vida a nadie.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
+Observar & \textbf{Observar:} fíjate en quién cambió (el que dejó de venir, el que ya no habla, el que se ríe de todo, el que estalla por nada, el que llega siempre tarde desde agosto). No arranques con «¿qué te pasó?»; arranca con «te vi raro estos días».\\
+Escuchar & \textbf{Escuchar:} acércate, ofrece tu tiempo y \textbf{cállate}. No hay que llenar el silencio. No le pidas detalles de lo que vivió: si quiere contarlo lo contará, y si no, tu compañía sirve igual. Escuchar no es esperar tu turno para hablar.\\
+Conectar & \textbf{Conectar:} resuelve algo concreto (acompañarlo a la cafetería, prestarle los apuntes que perdió, sentarte al lado en el descanso) y, si algo te preocupa de verdad, llévalo con un adulto: orientación escolar, un docente de confianza, su familia.\\
+Cuidarte & \textbf{Cuidarte:} acompañar no es cargar. Tú no eres su psicólogo ni eres responsable de curarlo, y no tienes que guardar solo un secreto que te asusta. Tu tarea es estar y avisar a quien sí puede ayudar.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcMagenta}{Qué decir, qué no decir y cuándo avisar}
+\begin{checklista}
+\item \textbf{Sí:} «estoy contigo», «no tienes que contarme nada», «¿quieres que te acompañe?», «lo que sientes tiene sentido».
+\item \textbf{No:} «ya pasó, supéralo», «hay gente que está peor», «todo pasa por algo», «al menos no perdiste la casa». Comparar el dolor y apurarlo lo agravan. Tampoco le pidas que «vea el lado bueno»: no lo hay, y exigirlo es una carga más.
+\item \textbf{Cuándo dejas de acompañar solo y avisas hoy mismo.} No estás diagnosticando a nadie ni tienes que decidir qué le pasa: solo pasas la voz. Avisa si se aísla por completo, si dejó de venir, si se hace daño o dice que no quiere vivir, o si algo te asusta y no sabrías explicarlo. Ruta: orientación escolar, un docente de confianza o su familia; y si hace falta, su EPS.
+\item \textbf{Practica en parejas, cinco minutos.} Uno cuenta algo cotidiano que lo tiene preocupado (\textbf{no} el sismo) y el otro solo observa, escucha y conecta. Luego cambian los papeles.
+\end{checklista}
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Guion de acompañamiento (úsalo tal cual la primera vez).} \emph{Observar:} «Te vi callado esta semana, no como siempre». \emph{Escuchar:} «No tienes que contarme nada. Si quieres hablar, aquí estoy; y si no, también me quedo». (Aquí te callas y esperas: el silencio es parte del acompañamiento, no una falla de la conversación.) \emph{Conectar:} «¿Qué te serviría ahora mismo?, ¿te acompaño?». \emph{Cerrar:} «Mañana te busco». Y lo cumples, porque una promesa rota en este momento pesa el doble.
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+
+
+\textbf{En tu cuaderno (Actividad 3 · CREA).} Título: «Actividad 3. Mi mapa de sostén». \textbf{Formato:} tres bloques (a quién acudo · a quién acompaño · lo que controlo y lo que no). \textbf{Extensión:} tres personas con nombre y forma de contacto en cada uno de los dos primeros bloques, y dos columnas en el tercero. \textbf{Sabes que terminaste cuando} en «a quién acudo» aparece al menos \textbf{un adulto} de tu institución o de tu familia, y no solo compañeros de tu edad.
+\end{infoband}
+
+\puente{Practicaste el acompañamiento. Ahora deja tu evidencia: el mapa de sostén, que es tu plan concreto para los días en que la tierra (o la vida) vuelva a moverse.}
+
+\begin{titlebox}{milcMostaza}
+Producto de la sesión
+\end{titlebox}
+\textbf{Mapa de sostén: red de apoyo, guion de acompañamiento y dicotomía del control}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) Tu explicación del sismo usa correctamente profundidad, magnitud, intensidad y réplica, y la entendería alguien de tu casa que nunca estudió el tema. (2) Desarmaste tres rumores con un hecho verificable, nombrando la fuente y la fecha de corte del dato que usaste. (3) Tu mapa de sostén nombra tres personas a las que puedes acudir (al menos una adulta) y tres a las que puedes acompañar. (4) Separaste en dos columnas lo que no controlas (que haya réplicas, lo que ya ocurrió, cuándo será el próximo sismo) de lo que sí controlas (a quién avisas, cómo respiras, a quién acompañas, qué reenvías). (5) Practicaste el guion en parejas y anotaste una cosa que te costó (callarte, sostener el silencio, no dar consejos, no comparar con lo tuyo).
+\end{softbox}
+
+\puente{Terminaste el producto. Detente a mirar qué cambió en ti (no la nota, sino tu manera de estar con el miedo propio y con el ajeno).}
+
+\begin{titlebox}{milcVino}
+Fase 4 · Evaluación liberadora — cinco dimensiones
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos pensando en grande: tres voces para entender qué significa escuchar de verdad al otro, distinguir lo que controlas de lo que no, y cuidar la información en medio de una emergencia.}
+
+\begin{titlebox}{milcGradeDark}
+Triángulo de pensamiento · cierre filosófico
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{``Aquel que es capaz de escuchar silenciosamente al Otro como otro es el que puede constituir una comunidad y no una mera sociedad totalizada.''}
+
+Después del sismo, mucha ayuda llegó como discurso: cifras, promesas, cámaras. Dussel señala otra cosa. La comunidad no nace de quien habla más fuerte, sino de quien es capaz de callar para que el otro exista. Cuando te sientas al lado de un compañero sin interrogarlo, haces exactamente lo que las comunidades nasa hicieron en Tierradentro: constituir comunidad en vez de administrar una tragedia.
+
+\textbf{¿A quién de mi curso llevo semanas sin escuchar de verdad, porque doy por hecho que ya sé lo que le pasa?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Epicteto · cuidado interior}
+\textit{``De todas las cosas, unas dependen de nosotros y otras no dependen de nosotros.''}
+
+No controlas que la tierra se mueva, ni cuándo vendrá la próxima réplica, ni lo que ya ocurrió. Sí controlas a quién avisas, cómo respiras cuando el pecho se acelera, qué mensaje reenvías y a quién acompañas mañana. Todo el miedo que gastas en la primera columna es energía que le quitas a la segunda, que es la única donde puedes hacer algo.
+
+\textbf{De lo que me quita el sueño desde el 10 de agosto, ¿qué parte está realmente en mis manos y qué parte solo estoy cargando?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{``Somos organismos informacionales (inforgs) conectados entre sí e inmersos en un entorno informacional: la infoesfera.''}
+
+En las horas siguientes al sismo, el celular tembló más que el suelo: audios de alerta falsa, listas sin fuente, predicciones inventadas. En una emergencia la infoesfera también se sacude, y lo que tú reenvías modifica lo que otros sienten, temen y hacen. Cuidar la información no es un tecnicismo: es una forma concreta de cuidar personas.
+
+\textbf{¿Cuántos de los mensajes que reenvié esos días verifiqué antes de darle enviar, y a quién pudo haberle hecho daño el que no verifiqué?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{titlebox}{milcVino}
+Compromiso final
+\end{titlebox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
+Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
+Explicación del sismo & Explico el sismo con las cuatro claves y desarmo rumores con hechos. & Explico algunas claves, pero confundo magnitud con intensidad. & Necesito releer la fase 2.\\
+Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
+Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
+Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
+\end{tabularx}
+\normalsize
+
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Haz dos cosas. Primero, siéntate con alguien de tu casa y explícale el sismo con tus palabras (profundidad, magnitud, intensidad, réplica); pregúntale después qué rumor oyó esos días y desármenlo entre los dos. Segundo, usa el guion con una persona real de tu curso: obsérvala, acércate, escúchala sin pedirle detalles y ofrécele algo concreto. \textbf{No traigas lo que te contó} (eso no se comparte con nadie). Trae solo una frase tuya: qué te costó a ti y qué aprendiste de estar al lado sin arreglar nada.
+\end{infoband}
+
+\end{document}

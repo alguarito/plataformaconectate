@@ -15,6 +15,7 @@ export default {
           pink:    '#FF2D87',
           purple:  '#7C3AED',
           cyan:    '#00D4FF',
+          teal:    '#0D9488',
           yellow:  '#FFD60A',
         },
         // Grises neutros

@@ -1,0 +1,160 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import { niveles, getCategoriaDeNivel } from '../../../../data/territorioInterior';
+
+export function getStaticPaths() {
+  return niveles.map((nivel) => ({ params: { nivel: nivel.slug }, props: { nivel } }));
+}
+
+const { nivel } = Astro.props;
+const categoria = getCategoriaDeNivel(nivel.slug);
+const base = import.meta.env.BASE_URL;
+
+const listas = nivel.momentos.filter((m) => m.estado === 'activo').length;
+const hermanos = categoria?.niveles ?? [];
+---
+
+<BaseLayout
+  title={`${nivel.nombre} · Grado ${nivel.grado}.º — Territorio interior · ConectaTE`}
+  description={`Nivel de grado ${nivel.grado}.º del programa Territorio interior: ${nivel.resumen}`}
+  ogType="article"
+>
+  <article class="pt-12 pb-20">
+    <div class="bento-container max-w-5xl">
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-sm font-semibold mb-8 flex-wrap" style="color: var(--fg-muted);">
+        <a href={base || '/'} class="hover:opacity-60 transition-opacity">Inicio</a>
+        <span>/</span>
+        <a href={`${base}/explora`} class="hover:opacity-60 transition-opacity">Explora</a>
+        <span>/</span>
+        <a href={`${base}/explora/territorio-interior`} class="hover:opacity-60 transition-opacity">Territorio interior</a>
+        <span>/</span>
+        <span style="color: var(--fg);">Grado {nivel.grado}.º</span>
+      </nav>
+
+      <!-- Hero del nivel -->
+      <div class="bento-card-color bg-bento-teal text-white mb-10 min-h-[280px] flex flex-col justify-between">
+        <div class="flex items-start justify-between flex-wrap gap-3">
+          <div class="flex flex-wrap gap-2">
+            {categoria && (
+              <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">
+                {categoria.nombre} · {categoria.verbo}
+              </span>
+            )}
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">{nivel.edad}</span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">10 guías</span>
+          </div>
+          <span class="text-8xl md:text-9xl leading-none font-black" aria-hidden="true">{nivel.grado}</span>
+        </div>
+        <div>
+          <span class="text-xs font-bold uppercase tracking-widest opacity-80">Grado {nivel.grado}.º · {nivel.enunciado}</span>
+          <h1 class="heading-giant text-balance mt-2 mb-4">{nivel.nombre}</h1>
+          <p class="text-base md:text-lg font-semibold opacity-95 max-w-3xl leading-relaxed">{nivel.resumen}</p>
+        </div>
+      </div>
+
+      <!-- Contenidos del nivel -->
+      <section class="mb-10">
+        <div class="flex items-center justify-between flex-wrap gap-3 mb-6">
+          <h2 class="heading-huge">Contenidos del nivel</h2>
+          <span class="chip-bento">
+            {listas > 0 ? `${listas} de 10 disponible${listas === 1 ? '' : 's'}` : 'En construcción'}
+          </span>
+        </div>
+
+        <ol class="space-y-2">
+          {nivel.momentos.map((m) => {
+            const activo = m.estado === 'activo';
+            const fila = (
+              <div
+                class="flex items-center gap-3 p-3 rounded-bento-sm border-2"
+                style={`border-color: ${activo ? '#0D9488' : 'var(--border)'}; background: var(--bg);`}
+              >
+                <span
+                  class:list={[
+                    'w-8 h-8 rounded-full flex items-center justify-center text-xs font-black shrink-0',
+                    activo ? 'bg-bento-teal text-white' : '',
+                  ]}
+                  style={activo ? '' : 'background: var(--bg); color: var(--fg-muted); border: 1px solid var(--border);'}
+                >
+                  {m.numero}
+                </span>
+                <div class="flex-1 min-w-0">
+                  <div class="font-bold text-sm leading-tight">{m.nombre}</div>
+                  <div class="text-xs mt-0.5" style="color: var(--fg-muted);">{m.foco}</div>
+                  <div class="text-xs mt-1" style="color: var(--fg-muted);">
+                    🌱 {m.ancla.semilla}
+                    {!m.ancla.verificada && <span class="opacity-70"> · ancla por documentar</span>}
+                  </div>
+                </div>
+                {activo ? (
+                  <span class="text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-full bg-bento-teal text-white shrink-0">
+                    Abrir
+                  </span>
+                ) : (
+                  <span class="text-[10px] font-black uppercase tracking-widest shrink-0" style="color: var(--fg-muted);">
+                    Pronto
+                  </span>
+                )}
+              </div>
+            );
+            return (
+              <li>
+                {activo ? (
+                  <a
+                    href={`${base}/explora/territorio-interior/${nivel.slug}/${m.slug}`}
+                    class="block hover:opacity-80 transition-opacity"
+                    aria-label={`Abrir la guía ${m.nombre}`}
+                  >
+                    {fila}
+                  </a>
+                ) : (
+                  fila
+                )}
+              </li>
+            );
+          })}
+        </ol>
+      </section>
+
+      <!-- Otros niveles del mismo bloque -->
+      {categoria && (
+        <section class="mb-10">
+          <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
+            <h2 class="heading-huge">Otros niveles de {categoria.nombre}</h2>
+            <span class="chip-bento">{categoria.rango}</span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            {hermanos.map((n) => (
+              <a
+                href={`${base}/explora/territorio-interior/${n.slug}`}
+                class:list={['bento-card-hover flex items-center gap-3', n.slug === nivel.slug ? 'opacity-60' : '']}
+                aria-current={n.slug === nivel.slug ? 'page' : undefined}
+              >
+                <span class="w-9 h-9 rounded-full flex items-center justify-center text-xs font-black shrink-0 bg-bento-teal text-white">
+                  {n.grado}
+                </span>
+                <div class="min-w-0">
+                  <div class="font-black text-sm leading-tight">{n.nombre}</div>
+                  <div class="text-xs mt-0.5" style="color: var(--fg-muted);">{n.enunciado}</div>
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- Volver -->
+      <a href={`${base}/explora/territorio-interior`} class="bento-card-hover flex items-center gap-4">
+        <svg class="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 12H5"></path>
+          <path d="m12 19-7-7 7-7"></path>
+        </svg>
+        <div>
+          <div class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">Volver a</div>
+          <div class="font-black text-lg">Territorio interior</div>
+        </div>
+      </a>
+    </div>
+  </article>
+</BaseLayout>

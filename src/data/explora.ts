@@ -87,6 +87,16 @@ export const programas: Programa[] = [
     icono: '💻',
     bgClass: 'bg-bento-cyan',
   },
+  {
+    slug: 'territorio-interior',
+    nombre: 'Territorio interior',
+    categoria: 'Educación socioemocional',
+    descripcion:
+      'Comprender lo que sentimos, sostener el miedo y acompañar a otro. Seis niveles de 6.º a 11.º, con la minga y los saberes del suroccidente como raíz.',
+    estado: 'activo',
+    icono: '🫂',
+    bgClass: 'bg-bento-teal',
+  },
 ];
 
 export function getPrograma(slug: string): Programa | undefined {
@@ -103,6 +113,7 @@ const COLORES_OSCUROS = new Set([
   'bg-bento-purple',
   'bg-bento-orange',
   'bg-bento-pink',
+  'bg-bento-teal',
 ]);
 
 /** Devuelve la clase de color de texto legible sobre un fondo Bento dado. */

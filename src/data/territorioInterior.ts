@@ -205,7 +205,15 @@ const grado10: Nivel = {
     { numero: 6, slug: 'momento-6', nombre: 'Anestesias', foco: 'Sustancias, apuestas y pantallas como forma de no sentir.', ancla:a('La amapola en Tierradentro y el tejido roto', 'verificada'), estado: 'proximamente' },
     { numero: 7, slug: 'momento-7', nombre: 'La infoesfera emocional', foco: 'Rumor, pánico e indignación: la información produce emociones y hace daño real.', ancla:a('La red de radios comunitarias del Norte del Valle', 'verificada'), estado: 'proximamente' },
     { numero: 8, slug: 'momento-8', nombre: 'El desastre no es natural', foco: 'Vulnerabilidad global: los once ángulos de Wilches-Chaux sobre el propio barrio.', ancla:a('Nasa Kiwe, que Wilches-Chaux dirigió', 'verificada'), estado: 'proximamente' },
-    { numero: 9, slug: 'momento-9', nombre: 'Prepararse sin vivir con miedo', foco: 'Plan familiar y riesgo, sin simulacros sorpresa ni pedagogía del susto.', ancla:a('El brillo de las Pléyades: una predicción andina que la ciencia confirmó', 'verificada'), estado: 'proximamente' },
+    {
+      numero: 9,
+      slug: 'momento-9',
+      nombre: 'Prepararse sin vivir con miedo',
+      foco: 'El fenómeno físico, el histograma de las réplicas y la diferencia entre probabilidad y predicción, para preparar la casa sin vivir asustado. Sin simulacros sorpresa.',
+      ancla: a('El brillo de las Pléyades: una predicción andina que la ciencia confirmó', 'verificada'),
+      estado: 'activo',
+      claveGuia: '10-9',
+    },
     { numero: 10, slug: 'momento-10', nombre: 'Cuidar al que cuida', foco: 'El desgaste de sostener a otros: acompañar no es cargar.', ancla:a('Quién sostiene a las cantadoras de alabao', 'verificada'), estado: 'proximamente' },
   ],
 };

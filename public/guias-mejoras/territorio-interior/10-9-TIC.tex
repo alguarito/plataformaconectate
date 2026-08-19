@@ -1,0 +1,502 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra UNICA de las guias MILC v3.
+%
+% La usan las tres familias de guias, cada una con su driver:
+%   · Grados 6-11  -> scripts/build-guias-g11.py
+%   · Bebras       -> scripts/build-guias-bebras.py
+%   · Semillero    -> scripts/build-guias-semillero.py
+%
+% Antes habia tres copias casi identicas (~400 lineas iguales, 6 distintas):
+% cada mejora habia que aplicarla tres veces, y en la practica no se hacia
+% (el motor de recursos vivia solo en dos de ellas). Lo que varia entre
+% familias esta parametrizado en 6 placeholders que cada driver llena
+% (se nombran aqui SIN su sintaxis real: el builder reemplaza por texto plano,
+% tambien dentro de los comentarios, y un valor multilinea rompe el preambulo):
+%
+%   HEADER_IZQ        encabezado izquierdo de pagina
+%   HEADER_DER        encabezado derecho de pagina
+%   PORTADA_ETIQUETA  rotulo sobre el numero grande (GRADO/MOMENTO/MODULO)
+%   PORTADA_SERIE     linea de serie de la portada
+%   PORTADA_ID        identificador de la guia en la portada
+%   PORTADA_CIRCULO   el circulito de grado (°), o vacio si no aplica
+%
+% El resto de claves las documenta content/guias/_SCHEMA.md. El script valida
+% que no queden placeholders sin reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1.75cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+% Librerías TikZ para los diagramas de las guías (bloque `recursos:`):
+%  · babel  → babel en español vuelve activos caracteres como «>», y TikZ los usa
+%             en sus opciones (>=stealth, ->). Sin esta librería, cualquier
+%             diagrama con flechas revienta con «\language@active@arg> has an
+%             extra }». Debe ir ANTES de que se dibuje nada.
+%  · positioning        → sintaxis «below left=2pt and 3pt».
+%  · decorations.pathreplacing → llaves ({brace}) para señalar rangos.
+\usetikzlibrary{babel,positioning,decorations.pathreplacing}
+\usepackage{graphicx}
+% Circuitos: el trabajo de electrónica se hace hoy con micro:bit y sus sensores
+% integrados (MakeCode, sin cableado), así que no se necesitan esquemáticos.
+% Si algún día entran montajes con protoboard, basta descomentar esta línea:
+% los diagramas .tex/.tikz declarados en `recursos:` ya se incrustan solos.
+% \usepackage{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+% Helvetica Neue no trae la flecha U+2192, asi que cada «→» escrito literalmente
+% en el YAML se compilaba a NADA, en silencio (462 flechas en 61 guias: rutas del
+% tipo «paleta → tipografia → lockup» salian rotas). Mapeamos el caracter a su
+% version matematica, que si tiene glifo. Asi el autor puede seguir escribiendo
+% «→» comodamente en el YAML.
+\usepackage{newunicodechar}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\hyphenpenalty=200
+\exhyphenpenalty=200
+\pretolerance=400
+\tolerance=2000
+\setlength{\emergencystretch}{1em}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0D9488}
+\definecolor{milcGradeDark}{HTML}{115E59}
+\definecolor{milcGradeSoft}{HTML}{CCFBF1}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Territorio interior · Educación socioemocional}
+\rhead{\small Grado 10° · Momento 9 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+% La flecha va en modo matematico a proposito: Helvetica Neue NO tiene el glifo
+% U+2192, asi que \textrightarrow se compilaba a NADA («Missing character: There
+% is no → in font Helvetica Neue») y el puente salia sin flecha. En modo
+% matematico la flecha viene de la fuente matematica y si se dibuja.
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{$\rightarrow$}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+% ── Listas con sangría francesa (serie socioemocional) ────────────────
+% El template base compone las verificaciones como «\checkbox texto\\», de
+% modo que el texto que salta de línea queda debajo del cuadrito y el bloque
+% se ve apelmazado. Estos entornos alinean la continuación y airean los ítems.
+\newlist{checklista}{itemize}{1}
+\setlist[checklista]{
+  label=\textcolor{milcGradeDark}{\fbox{\phantom{x}}},
+  leftmargin=9mm, labelsep=3.2mm, itemsep=2.4mm,
+  topsep=2.5mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+\newlist{pasoslista}{enumerate}{1}
+\setlist[pasoslista]{
+  label=\textcolor{milcGradeDark}{\sffamily\bfseries\arabic*.},
+  leftmargin=8mm, labelsep=3mm, itemsep=2.8mm,
+  topsep=1mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+% ── Recursos visuales de la guía ──────────────────────────────────────
+% Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
+% \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
+% \guiaDiagrama → fuente TikZ/circuitikz (.tex) incrustada como vector:
+%                 es la vía para circuitos y esquemáticos editables.
+% #1 = ruta relativa al .tex · #2 = pie (puede ir vacío)
+\newcommand{\guiaFigura}[2]{%
+\begin{center}
+\includegraphics[width=0.88\linewidth,height=0.38\textheight,keepaspectratio]{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\newcommand{\guiaDiagrama}[2]{%
+\begin{center}
+\input{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\begin{document}
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[white] (current page.south west) rectangle (current page.north east);
+  \path[fill=milcGradePrimary,rounded corners=16mm]
+    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
+    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{14}{16}\selectfont MOMENTO};
+  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
+    {\sffamily\bfseries\fontsize{9}{11}\selectfont TERRITORIO INTERIOR · SOCIOEMOCIONAL};
+
+  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
+    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
+    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
+    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
+    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
+    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
+  \end{scope}
+
+  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{124}{124}\selectfont 9};
+  % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
+  % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  
+
+  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+    {
+     {\sffamily\bfseries\fontsize{19}{22}\selectfont Prepararse sin\\vivir con miedo}\\[4mm]
+     {\sffamily\bfseries\fontsize{23}{26}\selectfont Grado 10° · Momento 9}\\[2mm]
+     {\sffamily\fontsize{13}{16}\selectfont Territorio interior · Socioemocional}\\[5mm]
+     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
+     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+    };
+
+  \path[fill=milcGradeSoft,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
+    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Fenómeno, probabilidad y lectura crítica · Triángulo Dussel-Estoicismo-Floridi\\
+    \textcolor{milcGradeDark}{\bfseries Producto:} Tu tablero de riesgo: el histograma de las réplicas leído con datos reales, la diferencia entre probabilidad y predicción escrita con tus palabras, y el recorrido de tu casa con las tres decisiones que sí controlas.};
+\end{tikzpicture}
+\mbox{}
+\newpage
+
+\section*{Apertura: Prepararse sin vivir con miedo: la onda, el histograma y lo que sí depende de ti}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+En los Andes, campesinos de Perú y Bolivia observan a finales de junio el brillo de las \textbf{Pléyades} (un cúmulo de estrellas que aquí llaman \emph{las cabrillas} o \emph{los siete cabritos}) para decidir cuándo sembrar la papa. Si el cúmulo se ve grande y brillante, esperan lluvias buenas y siembran en la fecha de siempre; si se ve tenue y pequeño, esperan lluvias tardías y escasas, y atrasan la siembra varias semanas. En el año 2000, tres investigadores publicaron en la revista \emph{Nature} una prueba de esa señal: cruzaron el brillo aparente del cúmulo con imágenes satelitales y con los registros de El Niño. El saber resistió. Cuando El Niño calienta el Pacífico, se forma nubosidad alta que apaga el brillo de las Pléyades \textbf{y} anticipa una temporada de lluvias pobre. El campesino no adivinaba: \textbf{leía una señal real y ajustaba una decisión}. Le faltaba el mecanismo, no el acierto.
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+Eso mismo hace hoy un pronóstico sísmico, y conviene decir con precisión qué es y qué no es. Tras el sismo del 10 de agosto de 2026, el Servicio Geológico de Estados Unidos publicó un \textbf{pronóstico de réplicas} calculado con la ley de Omori, que describe cómo van disminuyendo con el tiempo. Para el año siguiente estimó una probabilidad del \textbf{98,8 \%} de al menos una réplica de magnitud 4 o mayor, del \textbf{58,5 \%} de al menos una de magnitud 5 o mayor y del \textbf{10,6 \%} de al menos una de magnitud 6 o mayor. Nada de eso dice cuándo, ni dónde exactamente, ni a qué hora. Es lo mismo que respondió el Servicio Geológico Colombiano cuando le preguntaron si se pueden predecir: «la ciencia no tiene ninguna herramienta o tecnología que permita hacer esto». \textbf{Probabilidad no es predicción}: una dice qué tan seguido pasa algo, la otra pretende decir cuándo.
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{El campesino andino no predecía el día de la lluvia: leía una señal, estimaba qué tan probable era una buena temporada y \textbf{movía la fecha de la siembra}, que era lo único que estaba en sus manos. ¿Y si prepararse ante un sismo fuera exactamente eso, y no adivinar la fecha del próximo?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar podrás: (1) \textbf{identificar} en tu casa y tu salón lo que protege y lo que amenaza, con criterios observables; (2) \textbf{explicar} por qué existen dos ondas sísmicas y qué hace posible una alerta temprana; (3) \textbf{analizar} un histograma de réplicas sin confundir frecuencia con magnitud, y leer una probabilidad sin exagerarla ni despreciarla; (4) \textbf{crear} tu tablero de riesgo con las decisiones que sí dependen de ti.
+\end{softbox}
+
+
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Comprende los fenómenos que afectan a su territorio, regula sus emociones ante ellos y acompaña a otros con empatía (transversal 6°--11°, articulado con la política «Escuela, territorio de vida» del MEN, Resolución 006519 de 2025, y la Ley 1620 de 2013)\\
+Referentes & Orlove, Chiang y Cane (2000, Nature) · USGS y Servicio Geológico Colombiano · Ley de Omori · UNGRD · Dussel · Séneca · Floridi\\
+Producto final & Tu tablero de riesgo: el histograma de las réplicas leído con datos reales, la diferencia entre probabilidad y predicción escrita con tus palabras, y el recorrido de tu casa con las tres decisiones que sí controlas.\\
+\end{tabularx}
+\normalsize
+
+\puente{Ya sabes que un saber campesino de siglos resistió la prueba de un satélite. Mira ahora el mapa de la sesión: vas a mirar tu entorno, a entender la física y los números del riesgo, y a construir un plan que no dependa de adivinar nada.}
+
+\begin{titlebox}{milcGradeDark}
+Ruta MILC: así vamos a aprender
+\end{titlebox}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Analizo y leo datos.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Antes de los números conviene mirar. La preparación no empieza en un manual: empieza en el techo de tu salón, en el estante de tu cuarto y en la ruta que hay entre tú y la puerta.}
+
+\begin{titlebox}{milcVerde}
+Fase 1 · Escucha
+\end{titlebox}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Haz el recorrido de la mirada}, primero en el salón y luego en tu casa. No estás buscando culpables ni imaginando catástrofes: estás inventariando hechos observables. Anota tres cosas. \textbf{Lo que cae}: estantes sin anclar, televisores en el borde, materas en repisas altas, cuadros y lámparas sobre las camas, vidrios grandes. \textbf{Lo que estorba}: cajas en pasillos, puertas que abren hacia adentro, muebles que bloquean la salida. \textbf{Lo que protege}: mesas resistentes, muros firmes, espacios despejados lejos de ventanas. Mide con los ojos, no con el susto: ¿cuántos pasos hay de tu puesto a la salida?, ¿esa ruta está libre? Vas a descubrir que la mayoría de los riesgos de tu casa \textbf{no son el sismo}: son objetos que alguien puso donde no debía.
+\end{softbox}
+
+\begin{checklista}
+\item Listaste al menos cinco objetos que podrían caer, con el lugar exacto donde están.
+\item Identificaste la ruta de salida de tu salón y contaste los pasos, señalando qué la obstruye.
+\item Señalaste al menos dos lugares que sí protegen, y explicaste por qué protegen.
+\end{checklista}
+
+\begin{infoband}{milcVerde}
+
+
+\textbf{En tu cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1. El recorrido de la mirada». \textbf{Formato:} tres columnas (lo que cae · lo que estorba · lo que protege). \textbf{Extensión:} mínimo cinco entradas en la primera columna y dos en cada una de las otras, cada una con su ubicación. \textbf{Sabes que terminaste cuando} cualquiera de tu casa podría tomar tu lista y arreglar hoy mismo tres cosas concretas.
+\end{infoband}
+
+\puente{Ya sabes qué hay a tu alrededor. Ahora vienen la física y las matemáticas, porque el miedo se alimenta de cifras mal leídas y esta fase es, sobre todo, un entrenamiento en leer bien.}
+
+\begin{titlebox}{milcTurquesa}
+Fase 2 · Sistematización: la onda, la energía, el histograma y la probabilidad
+\end{titlebox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro claves para entender el riesgo con números}
+Un sismo no es un castigo ni un misterio: es una liberación de energía que viaja en forma de ondas y deja datos que se pueden contar. Esta fase te da cuatro herramientas para leer esos datos, y la última es la más importante para vivir tranquilo: distinguir \textbf{qué tan probable} es algo de \textbf{cuándo} va a ocurrir. Todos los números que siguen son reales y llevan su fecha de corte, porque un dato de emergencia sin fecha no sirve.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
+1. Dos ondas & \textbf{No viaja una onda, viajan dos.} La onda \textbf{P} es de compresión y corre por la corteza a unos 6 kilómetros por segundo; la onda \textbf{S} es transversal, más lenta (unos 3,5) y es la que de verdad sacude. Como la P llega antes, la diferencia entre ambas permite calcular a qué distancia ocurrió el sismo, y es lo que hace posible una \textbf{alerta temprana}: no se adivina el sismo, se detecta la primera onda y se avisa antes de que llegue la segunda. El aviso no es magia; es que la información viaja más rápido que el daño.\\
+2. La energía & \textbf{La energía no crece de a poquitos.} Cada unidad entera de magnitud equivale a unas \textbf{32 veces} más energía liberada. Entre la mayor réplica registrada (4,8) y el sismo principal (7,4) hay 2,6 unidades de diferencia, lo que significa cerca de \textbf{8.000 veces} más energía. Por eso una réplica de 4,8 asusta pero no derriba lo que resistió el 10 de agosto, y por eso la escala engaña: parece que 7,4 y 4,8 están cerca, y no lo están en absoluto.\\
+3. El histograma & \textbf{El histograma cuenta cuántas, no qué tan fuertes.} Réplicas reportadas por el Servicio Geológico Colombiano: \textbf{47} al final del 10 de agosto, \textbf{96} acumuladas al 11 y \textbf{más de 130} al 12, todas entre magnitud 0,6 y 4,8. Si las pones por día y no acumuladas, quedan barras de 47, 49 y unas 34: el histograma \textbf{baja}. Eso es la ley de Omori dibujada. Y el mensaje que da un gráfico es distinto del que da el miedo: no es que «siga temblando cada vez más», es que va disminuyendo.\\
+4. La probabilidad & \textbf{Probabilidad no es predicción, y tampoco es certeza.} El pronóstico del 12 de agosto daba 98,8 \% de al menos una réplica de magnitud 4 o más en un año. Suena aterrador y no lo es: una magnitud 4 a profundidad intermedia casi no se siente, y el 98,8 \% no dice ni cuándo ni dónde. En la otra punta, el 10,6 \% de una magnitud 6 o más no significa «no va a pasar»: significa poco probable, que es distinto de imposible. Y un dato para dimensionar: en Colombia se registran unos \textbf{2.500 sismos al mes}, y casi ninguno se siente.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcTurquesa}{Cómo se lee un histograma sin dejarse engañar}
+\begin{pasoslista}
+\item \textbf{¿Qué mide la altura?} En un histograma de réplicas, el eje vertical cuenta \textbf{cuántas}, no qué tan fuertes. Confundir frecuencia con magnitud es el error más común: una barra alta puede ser un montón de sismos diminutos.
+\item \textbf{¿Los intervalos son iguales?} Si una barra abarca un rango más ancho que las otras, parece decir más de lo que dice. Y ojo con lo acumulado: 47, 96 y 130 \textbf{no} son tres días, son un total que crece; por día son 47, 49 y unas 34.
+\item \textbf{¿El eje empieza en cero, y hay denominador?} Un eje cortado convierte una diferencia pequeña en un abismo. Y una cifra sin su total no dice nada: 9.393 personas víctimas de desplazamiento en Cartago suena distinto cuando sabes que el municipio tiene unos 143.522 habitantes, es decir, cerca del 6,5 \%.
+\end{pasoslista}
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{«Ya tembló, ya no toca»:} la corteza no lleva la cuenta ni reparte turnos. Es la misma falacia de creer que un dado ya «debe» sacar seis. \textbf{«98,8 \% quiere decir que viene un terremoto»:} dice que habrá al menos un sismo pequeño, no uno grande. \textbf{«4,8 es casi 7,4»:} son unas 8.000 veces menos energía. \textbf{Buscar el marco de la puerta:} es una recomendación vieja; la vigente es agacharse, cubrirse y agarrarse. \textbf{Leer el acumulado como si fuera diario:} el gráfico deja de bajar y el miedo sube sin razón.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+
+
+\textbf{En tu cuaderno (Actividad 2 · ANALIZA).} Título: «Actividad 2. El histograma de las réplicas». \textbf{Formato:} un histograma dibujado a mano con los datos diarios (47, 49 y unas 34) más cinco renglones de lectura. \textbf{Extensión:} el gráfico rotulado con sus dos ejes, y debajo la explicación de qué tendencia muestra y por qué el dato acumulado da otra impresión. \textbf{Sabes que terminaste cuando} tu texto usa bien las palabras frecuencia, magnitud, probabilidad y tendencia.
+\end{infoband}
+
+\puente{Ya sabes leer el dato. Es hora de convertirlo en decisiones concretas: qué haces antes, qué haces durante los segundos de sacudida y qué haces después.}
+
+\begin{titlebox}{milcMagenta}
+Fase 3 · Praxis: protegerse antes, durante y después
+\end{titlebox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Construyendo el tablero de riesgo con las acciones de autoprotección}
+Aquí se acaba la teoría. Un plan de protección no es una lista de miedos: es un conjunto de decisiones tomadas con calma \textbf{hoy}, para no tener que tomarlas en diez segundos de sacudida. Y hay algo que este programa sostiene desde el primer momento: aquí no habrá simulacros sorpresa. Todo lo que se practique se avisa antes, se explica y se puede observar sin participar.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
+Antes & \textbf{Antes:} acuerda con tu familia un \textbf{punto de encuentro} fuera de la casa y un \textbf{contacto en otra ciudad} (en una emergencia las líneas locales se saturan y las de larga distancia a veces no). Ancla estantes y televisores, baja lo pesado de las repisas altas, despeja pasillos y ten a mano linterna, agua, copia de documentos y los medicamentos de quien los necesite.\\
+Durante & \textbf{Durante:} \textbf{agáchate, cúbrete y agárrate}. Protege cabeza y cuello, métete bajo una mesa resistente si la hay y sostente hasta que pare. No corras ni uses ascensores mientras sacude: la mayoría de las lesiones vienen de moverse entre cosas que caen. Lejos de ventanas, vidrios y objetos colgantes. En la calle, busca un lugar abierto lejos de postes, cables y fachadas. En un carro, reduce y detente lejos de postes y puentes.\\
+Después & \textbf{Después:} revisa si hay heridos y si la estructura tiene grietas nuevas, y sal si hay riesgo de colapso. No enciendas llamas ni interruptores hasta descartar fuga de gas. No satures el teléfono: un mensaje de texto pasa donde una llamada no. Espera réplicas y confía solo en fuentes oficiales con nombre y fecha de corte.\\
+Lo que sí controlas & \textbf{Lo que sí controlas:} no controlas la placa de Nazca ni la fecha del próximo sismo. Sí controlas el estante que anclas, la ruta que despejas, el punto de encuentro que acuerdas, el mensaje que verificas antes de reenviar y a quién avisas. La amenaza no se negocia; la vulnerabilidad y la exposición, sí.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcMagenta}{El recorrido de tu casa, con la familia}
+\begin{checklista}
+\item \textbf{Punto de encuentro y contacto externo} acordados en voz alta con quien vive contigo, y anotados donde todos los vean.
+\item \textbf{Tres arreglos hechos esta semana}, no prometidos: anclar un mueble, bajar algo pesado, despejar un pasillo.
+\item \textbf{Ruta de salida} recorrida caminando, contando pasos, con la luz apagada al menos una vez.
+\item \textbf{Lo esencial reunido} en un solo lugar conocido por todos: linterna, agua, documentos, medicamentos.
+\item \textbf{Una conversación con alguien mayor} de tu casa sobre qué haría si el sismo lo agarra solo. Escuchar, no dar clase.
+\end{checklista}
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Tablero de riesgo (plantilla).} Divide una hoja en cuatro. \emph{Arriba a la izquierda:} el histograma de las réplicas con sus ejes rotulados. \emph{Arriba a la derecha:} tres cifras con su fecha de corte y una frase que explique qué NO dicen. \emph{Abajo a la izquierda:} dos columnas, «no depende de mí» y «sí depende de mí», con mínimo cuatro entradas cada una. \emph{Abajo a la derecha:} el plan de la casa (punto de encuentro, contacto externo, tres arreglos con fecha). Fírmalo con la fecha del día: un plan sin fecha es un deseo.
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+
+
+\textbf{En tu cuaderno (Actividad 3 · CREA).} Título: «Actividad 3. Mi tablero de riesgo». \textbf{Formato:} una hoja dividida en cuatro, según la plantilla. \textbf{Extensión:} el gráfico, las tres cifras leídas, las dos columnas del control y el plan de la casa. \textbf{Sabes que terminaste cuando} los tres arreglos ya están hechos y puedes decir en qué día los hiciste.
+\end{infoband}
+
+\puente{Practicaste el recorrido. Ahora deja tu evidencia: el tablero de riesgo, que es tu plan escrito y verificable, no una buena intención.}
+
+\begin{titlebox}{milcMostaza}
+Producto de la sesión
+\end{titlebox}
+\textbf{Tablero de riesgo: histograma, lectura de cifras, dicotomía del control y plan de la casa}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) Tu histograma tiene los dos ejes rotulados, usa los datos diarios y no los acumulados, y su lectura escrita nombra la tendencia correcta. (2) Explicaste con tus palabras la diferencia entre probabilidad y predicción, usando una de las cifras reales del pronóstico. (3) Desmontaste al menos un titular o mensaje que hayas visto, señalando qué dato le falta (la fuente, la fecha de corte o el denominador). (4) Tu plan de casa tiene punto de encuentro, contacto externo y tres arreglos concretos \textbf{ya realizados}, con la fecha en que los hiciste. (5) Separaste en dos columnas lo que no depende de ti y lo que sí, con al menos cuatro entradas en cada una.
+\end{softbox}
+
+\puente{Terminaste el producto. Detente a mirar qué cambió en ti (no la nota, sino tu manera de estar frente a algo que no controlas del todo).}
+
+\begin{titlebox}{milcVino}
+Fase 4 · Evaluación liberadora — cinco dimensiones
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos pensando en grande: tres voces para entender de quién es el saber que sirve, qué parte del miedo la pone la imaginación y cómo un gráfico también puede mentir.}
+
+\begin{titlebox}{milcGradeDark}
+Triángulo de pensamiento · cierre filosófico
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{``El filósofo, en América latina, debe comenzar por ser discípulo del pueblo oprimido latinoamericano.''}
+
+El campesino que leía las Pléyades no esperó permiso de nadie para saber. Cuando la ciencia fue a verificar su señal, no la corrigió: le encontró el mecanismo. Dussel invierte quién enseña a quién, y en gestión del riesgo eso es literal: quien vive junto al río sabe dónde crece, y quien vive en la ladera sabe qué se mueve cuando llueve.
+
+\textbf{¿Qué sabe mi familia o mi barrio sobre este territorio que ningún mapa oficial registra todavía?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Séneca · cuidado interior}
+\textit{``Son más las cosas que nos asustan que las que nos aplastan, y sufrimos más en la imaginación que en la realidad.''}
+
+Después del 10 de agosto, muchas noches se fueron en imaginar el sismo que venía. Séneca no dice que el peligro sea falso: dice que el sufrimiento anticipado supera casi siempre al daño real. Prepararse es justamente lo que corta ese exceso, porque convierte una amenaza imaginada sin forma en una lista de cosas hechas.
+
+\textbf{¿Cuánto de lo que me quita el sueño es peligro real y cuánto es una escena que yo mismo repito?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{``Somos organismos informacionales (inforgs) conectados entre sí e inmersos en un entorno informacional: la infoesfera.''}
+
+Un gráfico también es un mensaje, y puede mentir sin decir una sola cifra falsa: basta con cortar un eje, cambiar el ancho de una barra o publicar un número sin su total. En una emergencia esas decisiones de diseño mueven a gente real. Leer un histograma con criterio es, hoy, una forma de defensa personal.
+
+\textbf{La última gráfica que compartí, ¿la leí completa o solo miré cuál barra era más alta?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{titlebox}{milcVino}
+Compromiso final
+\end{titlebox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
+Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
+Lectura de datos & Leo un histograma sin confundir frecuencia con magnitud y distingo probabilidad de predicción. & Leo el gráfico, pero aún confundo el dato acumulado con el diario. & Necesito releer la fase 2.\\
+Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
+Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
+Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
+\end{tabularx}
+\normalsize
+
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Tres cosas, y las tres se verifican. Primero, haz los \textbf{tres arreglos} de tu casa y anota la fecha: no sirve haberlos pensado. Segundo, busca en una fuente oficial el conteo de sismos del último mes en Colombia y compáralo con lo que tú creías: casi seguro son muchos más de los que sentiste, y entender eso baja el sobresalto. Tercero, siéntate con alguien mayor de tu casa y acuerden el punto de encuentro y el contacto de otra ciudad. Trae una sola frase escrita: qué cambió en tu casa esta semana por algo que tú propusiste.
+\end{infoband}
+
+\end{document}

@@ -50,7 +50,7 @@ COLORES = {
 # de grados, pero Territorio interior es transversal: un solo bloque para
 # todas las guías).
 META = {
-    "PERIODO_NOMBRE": "Territorio interior · Educación socioemocional",
+    "PERIODO_NOMBRE": "Territorio interior · Socioemocional",
     "DBA": "Comprende los fenómenos que afectan a su territorio, regula sus emociones ante ellos y acompaña a otros con empatía (transversal 6°--11°, articulado con la política «Escuela, territorio de vida» del MEN, Resolución 006519 de 2025, y la Ley 1620 de 2013)",
     "REFERENTES": "Primera ayuda psicológica (OMS, 2011/2012) · Directrices IASC (2007) · USGS y Servicio Geológico Colombiano · Pueblo nasa y la minga (CRIC) · Dussel · Estoicismo · Floridi",
 }
@@ -156,6 +156,7 @@ def yaml_a_placeholders(guia: dict) -> dict[str, str]:
             "franja_portada",
             "Metodología MILC · Apertura ancestral · Triángulo Dussel-Estoicismo-Floridi",
         ),
+        "REFERENTES": et.get("referentes", META["REFERENTES"]),
         "FASE2_TITULO": et.get("fase2_titulo", "Fase 2 · Sistematización"),
         "FASE2_SUBTITULO": et.get("fase2_subtitulo", "Comprendo y verifico."),
         "SIST_PILARES_TITULO": et.get("sist_pilares_titulo", "Cuatro claves aplicadas al tema"),

@@ -212,7 +212,15 @@ const grado10: Nivel = {
       estado: 'activo',
       claveGuia: '10-7',
     },
-    { numero: 8, slug: 'momento-8', nombre: 'El desastre no es natural', foco: 'Vulnerabilidad global: los once ángulos de Wilches-Chaux sobre el propio barrio.', ancla:a('Nasa Kiwe, que Wilches-Chaux dirigió', 'verificada'), estado: 'proximamente' },
+    {
+      numero: 8,
+      slug: 'momento-8',
+      nombre: 'El desastre no es natural',
+      foco: 'La amenaza es natural, el desastre no. Los once ángulos de la vulnerabilidad global aplicados a una cuadra concreta, hasta llegar a una propuesta viable.',
+      ancla: a('La lectura nasa de 1994 y la Corporación Nasa Kiwe, que Wilches-Chaux dirigió', 'verificada'),
+      estado: 'activo',
+      claveGuia: '10-8',
+    },
     {
       numero: 9,
       slug: 'momento-9',

@@ -1,0 +1,503 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra UNICA de las guias MILC v3.
+%
+% La usan las tres familias de guias, cada una con su driver:
+%   · Grados 6-11  -> scripts/build-guias-g11.py
+%   · Bebras       -> scripts/build-guias-bebras.py
+%   · Semillero    -> scripts/build-guias-semillero.py
+%
+% Antes habia tres copias casi identicas (~400 lineas iguales, 6 distintas):
+% cada mejora habia que aplicarla tres veces, y en la practica no se hacia
+% (el motor de recursos vivia solo en dos de ellas). Lo que varia entre
+% familias esta parametrizado en 6 placeholders que cada driver llena
+% (se nombran aqui SIN su sintaxis real: el builder reemplaza por texto plano,
+% tambien dentro de los comentarios, y un valor multilinea rompe el preambulo):
+%
+%   HEADER_IZQ        encabezado izquierdo de pagina
+%   HEADER_DER        encabezado derecho de pagina
+%   PORTADA_ETIQUETA  rotulo sobre el numero grande (GRADO/MOMENTO/MODULO)
+%   PORTADA_SERIE     linea de serie de la portada
+%   PORTADA_ID        identificador de la guia en la portada
+%   PORTADA_CIRCULO   el circulito de grado (°), o vacio si no aplica
+%
+% El resto de claves las documenta content/guias/_SCHEMA.md. El script valida
+% que no queden placeholders sin reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1.75cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+% Librerías TikZ para los diagramas de las guías (bloque `recursos:`):
+%  · babel  → babel en español vuelve activos caracteres como «>», y TikZ los usa
+%             en sus opciones (>=stealth, ->). Sin esta librería, cualquier
+%             diagrama con flechas revienta con «\language@active@arg> has an
+%             extra }». Debe ir ANTES de que se dibuje nada.
+%  · positioning        → sintaxis «below left=2pt and 3pt».
+%  · decorations.pathreplacing → llaves ({brace}) para señalar rangos.
+\usetikzlibrary{babel,positioning,decorations.pathreplacing}
+\usepackage{graphicx}
+% Circuitos: el trabajo de electrónica se hace hoy con micro:bit y sus sensores
+% integrados (MakeCode, sin cableado), así que no se necesitan esquemáticos.
+% Si algún día entran montajes con protoboard, basta descomentar esta línea:
+% los diagramas .tex/.tikz declarados en `recursos:` ya se incrustan solos.
+% \usepackage{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+% Helvetica Neue no trae la flecha U+2192, asi que cada «→» escrito literalmente
+% en el YAML se compilaba a NADA, en silencio (462 flechas en 61 guias: rutas del
+% tipo «paleta → tipografia → lockup» salian rotas). Mapeamos el caracter a su
+% version matematica, que si tiene glifo. Asi el autor puede seguir escribiendo
+% «→» comodamente en el YAML.
+\usepackage{newunicodechar}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\hyphenpenalty=200
+\exhyphenpenalty=200
+\pretolerance=400
+\tolerance=2000
+\setlength{\emergencystretch}{1em}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0D9488}
+\definecolor{milcGradeDark}{HTML}{115E59}
+\definecolor{milcGradeSoft}{HTML}{CCFBF1}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Territorio interior · Educación socioemocional}
+\rhead{\small Grado 10° · Momento 7 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+% La flecha va en modo matematico a proposito: Helvetica Neue NO tiene el glifo
+% U+2192, asi que \textrightarrow se compilaba a NADA («Missing character: There
+% is no → in font Helvetica Neue») y el puente salia sin flecha. En modo
+% matematico la flecha viene de la fuente matematica y si se dibuja.
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{$\rightarrow$}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+% ── Listas con sangría francesa (serie socioemocional) ────────────────
+% El template base compone las verificaciones como «\checkbox texto\\», de
+% modo que el texto que salta de línea queda debajo del cuadrito y el bloque
+% se ve apelmazado. Estos entornos alinean la continuación y airean los ítems.
+\newlist{checklista}{itemize}{1}
+\setlist[checklista]{
+  label=\textcolor{milcGradeDark}{\fbox{\phantom{x}}},
+  leftmargin=9mm, labelsep=3.2mm, itemsep=2.4mm,
+  topsep=2.5mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+\newlist{pasoslista}{enumerate}{1}
+\setlist[pasoslista]{
+  label=\textcolor{milcGradeDark}{\sffamily\bfseries\arabic*.},
+  leftmargin=8mm, labelsep=3mm, itemsep=2.8mm,
+  topsep=1mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+% ── Recursos visuales de la guía ──────────────────────────────────────
+% Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
+% \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
+% \guiaDiagrama → fuente TikZ/circuitikz (.tex) incrustada como vector:
+%                 es la vía para circuitos y esquemáticos editables.
+% #1 = ruta relativa al .tex · #2 = pie (puede ir vacío)
+\newcommand{\guiaFigura}[2]{%
+\begin{center}
+\includegraphics[width=0.88\linewidth,height=0.38\textheight,keepaspectratio]{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\newcommand{\guiaDiagrama}[2]{%
+\begin{center}
+\input{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\begin{document}
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[white] (current page.south west) rectangle (current page.north east);
+  \path[fill=milcGradePrimary,rounded corners=16mm]
+    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
+    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{14}{16}\selectfont MOMENTO};
+  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
+    {\sffamily\bfseries\fontsize{9}{11}\selectfont TERRITORIO INTERIOR · SOCIOEMOCIONAL};
+
+  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
+    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
+    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
+    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
+    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
+    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
+  \end{scope}
+
+  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{124}{124}\selectfont 7};
+  % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
+  % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  
+
+  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+    {
+     {\sffamily\bfseries\fontsize{19}{22}\selectfont Volver a la normalidad\\sin tragar entero}\\[4mm]
+     {\sffamily\bfseries\fontsize{23}{26}\selectfont Grado 10° · Momento 7}\\[2mm]
+     {\sffamily\fontsize{13}{16}\selectfont Territorio interior · Socioemocional}\\[5mm]
+     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
+     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+    };
+
+  \path[fill=milcGradeSoft,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
+    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Discurso, química y ética de la información · Triángulo Dussel-Estoicismo-Floridi\\
+    \textcolor{milcGradeDark}{\bfseries Producto:} El boletín verificado: tres rumores del regreso a la normalidad desmontados con las tres capas del mensaje, la cuenta que desarma el rumor químico, y la línea que separa lo que se comprueba de lo que se respeta.};
+\end{tikzpicture}
+\mbox{}
+\newpage
+
+\section*{Apertura: Volver a la normalidad sin tragar entero: el rumor, la fórmula y el sentido}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+En el Norte del Valle funciona una red de \textbf{emisoras comunitarias}, con licencia, dirección y personería: gente del municipio hablándole al municipio. Eso trae consigo una regla vieja, anterior a cualquier tecnología: \textbf{quien dice algo, responde por lo que dijo}. En un pueblo, el que soltaba una noticia falsa cargaba después con haberla soltado; su nombre quedaba pegado a sus palabras. Una emisora comunitaria hereda esa condición y la vuelve formal: tiene un locutor con nombre, una franja, una junta y una licencia que se puede perder. Por eso una emisora rara vez inventa: le cuesta caro. La cadena que te llegó al celular funciona al revés: no tiene autor, no tiene dirección, no responde ante nadie y no pierde nada si miente. Ese es el punto de partida de esta guía: \textbf{la diferencia entre una palabra con dueño y una palabra huérfana}.
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+Hoy eso tiene nombre técnico. El lingüista Teun van Dijk distingue la \textbf{macroestructura} de un texto (su contenido global, «el tema o asunto del discurso») de su \textbf{microestructura} (la estructura local, las oraciones y las relaciones de conexión y coherencia entre ellas). Para llegar del texto al tema aplicamos \textbf{macrorreglas}: suprimimos, generalizamos y construimos. Y aquí está la clave que explica el rumor: van Dijk advierte que esa información eliminada es \textbf{irrecuperable}, porque «es imposible aplicar las macrorreglas al revés». Un rumor es exactamente eso, una macroestructura que circula \textbf{sin} su microestructura: llega el titular sin los datos que lo sostenían, y ya nadie puede reconstruirlos desde el mensaje. Por eso la única salida es volver a la fuente. Van Dijk añade un detalle que explica el chat: en textos muy cortos, micro y macro son idénticas. Un mensaje de una línea no tiene nada que resumir, y por eso circula tan bien.
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{La emisora tiene locutor, licencia y dirección; la cadena que reenviaste anoche no tiene ninguna de las tres, y sin embargo le creíste más a la segunda. ¿Y si «volver a la normalidad» dependiera menos de que todo vuelva a su sitio y más de que \textbf{las palabras vuelvan a tener dueño}?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar podrás: (1) \textbf{identificar} y clasificar los mensajes que circularon según lo que reclaman: un hecho, una instrucción o un sentido; (2) \textbf{explicar} cómo un mensaje fabrica creencia con su macroestructura, su microestructura y sus modalizadores; (3) \textbf{analizar} un rumor químico haciendo la cuenta que lo desarma, y rastrear el origen real de una cifra falsa; (4) \textbf{crear} el boletín verificado del curso, con su nota de cuidado.
+\end{softbox}
+
+
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Comprende los fenómenos que afectan a su territorio, regula sus emociones ante ellos y acompaña a otros con empatía (transversal 6°--11°, articulado con la política «Escuela, territorio de vida» del MEN, Resolución 006519 de 2025, y la Ley 1620 de 2013)\\
+Referentes & Van Dijk (1980) · Cestero Mancera y Kotwica (2021) · OPS/OMS y Resolución 2115 de 2007 · Fichas IPCS · Epicteto (Manual, trad. Ortiz García) · Dussel · Floridi\\
+Producto final & El boletín verificado: tres rumores del regreso a la normalidad desmontados con las tres capas del mensaje, la cuenta que desarma el rumor químico, y la línea que separa lo que se comprueba de lo que se respeta.\\
+\end{tabularx}
+\normalsize
+
+\puente{Ya sabes la diferencia entre una palabra con dueño y una huérfana. Mira ahora el mapa de la sesión: vas a ordenar lo que circuló, a aprender a abrir un mensaje en capas y a devolverle a tu comunidad información que sí se sostiene.}
+
+\begin{titlebox}{milcGradeDark}
+Ruta MILC: así vamos a aprender
+\end{titlebox}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Analizo y verifico.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Antes de analizar hay que juntar. No vas a contar lo que viviste: vas a sacar del celular lo que te llegó, que es una cosa distinta y mucho más útil.}
+
+\begin{titlebox}{milcVerde}
+Fase 1 · Escucha
+\end{titlebox}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Abre el celular y busca en el archivo}, no en la memoria. Recupera cinco mensajes que te hayan llegado en las semanas siguientes al 10 de agosto: audios, cadenas, capturas, publicaciones. No vas a contar lo que viviste ni a preguntarle a nadie qué sintió: estás recogiendo \textbf{mensajes}, que son objetos que se pueden analizar sin tocar a nadie. Anonimiza al reenviarlos al grupo de clase: borra nombres, números y fotos de personas. Después clasifícalos en tres montones, que son los tres tipos de cosa que un mensaje puede estar reclamando. Los que dicen \textbf{qué pasó} («el puente se cayó»). Los que dicen \textbf{qué hacer} («échale cloro al tanque»). Y los que dicen \textbf{qué significa} («esto fue un llamado de atención»). Los tres se tratan distinto, y confundirlos es la mitad del problema.
+\end{softbox}
+
+\begin{checklista}
+\item Recogiste cinco mensajes reales del archivo de tu celular, ya anonimizados, y no versiones que recuerdas de memoria.
+\item Clasificaste cada uno en reclamo de hecho, de instrucción o de sentido, y justificaste en una línea por qué.
+\item Marcaste cuáles reenviaste tú en su momento, sin juzgarte por ello: es el dato más valioso de la actividad.
+\end{checklista}
+
+\begin{infoband}{milcVerde}
+
+
+\textbf{En tu cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1. Lo que me llegó». \textbf{Formato:} tabla de cuatro columnas (mensaje anonimizado · tipo de reclamo · lo reenvié, sí o no · qué sentí al leerlo). \textbf{Extensión:} cinco filas. \textbf{Sabes que terminaste cuando} ningún mensaje de tu tabla permite identificar a la persona que lo mandó, y cuando puedes decir en voz alta por qué uno es de hecho y otro de sentido.
+\end{infoband}
+
+\puente{Ya tienes el material sobre la mesa. Ahora las herramientas: cómo está hecho por dentro un mensaje que convence sin probar nada, y qué cuenta hay que hacer para desarmarlo.}
+
+\begin{titlebox}{milcTurquesa}
+Fase 2 · Sistematización: las capas, la cuenta, la fuente y el sentido
+\end{titlebox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro claves para desarmar un rumor}
+Un rumor no convence porque la gente sea tonta: convence porque está \textbf{bien construido}. Tiene una forma reconocible, se apoya en cifras que nadie comprueba y se blinda para que nadie tenga que responder por él. Estas cuatro claves lo abren por dentro. Las dos primeras son herramientas de análisis; la tercera es de rastreo; la cuarta traza la única frontera que esta guía te pide respetar sin discutirla.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
+1. Las tres capas & \textbf{Todo mensaje tiene tres capas.} La \textbf{macroestructura} es lo que afirma en el fondo, resumible en una frase: es lo único que la gente recuerda y repite. La \textbf{microestructura} es cómo encadena las frases, y ahí viven los conectores: «y por eso», «entonces», «así que». Un conector causal \textbf{no prueba} una causa, le ordena al lector que la construya. Y los \textbf{modalizadores} («al parecer», «dicen que», «me confirmaron») son el blindaje: afirman sin que nadie quede afirmando. Bórralos y el mensaje se queda sin ninguna fuente.\\
+2. La cuenta & \textbf{La cuenta desarma el rumor mejor que la indignación.} Tomemos el más peligroso del regreso a la normalidad: «échale media taza de cloro al tanque». Media taza son unos 120 mL; un blanqueador comercial al 5 \% aporta 50 mg de cloro por mL. Eso da 6.000 mg, que alcanzarían para tratar unos \textbf{2.400 litros}. Un tanque doméstico corriente tiene 500. Y fíjate en lo decisivo: \textbf{el mensaje nunca dice el volumen del tanque}. Sin volumen no hay concentración, y sin concentración esa instrucción no significa nada. Un dato al que le falta el denominador no es un dato.\\
+3. La fuente & \textbf{Toda cifra tiene un origen, y a veces el origen existe.} El rumor del cloro no salió de la nada: nació de mezclar dos dosis reales del mismo documento oficial, una para \textbf{lavar las paredes del tanque} (que se enjuaga después) y otra, quince veces menor, para el agua que se bebe. Rastrear el origen es más útil que desmentir. Y hay una trampa nueva: hoy un buscador puede atribuirle a un ministerio una recomendación que ese ministerio dio \textbf{para otra cosa}. La única defensa es abrir el documento citado y leer para qué era.\\
+4. Hecho y sentido & \textbf{Hecho y sentido no se tratan igual.} Un \textbf{reclamo de hecho} («el agua está contaminada») se verifica, venga de quien venga. Un \textbf{reclamo de sentido} («esto fue un llamado de atención», «Dios nos cuidó») pertenece a la tradición de cada quien y no se somete a comprobación: aquí no se discute, se respeta. La frontera se cruza solo cuando un reclamo de sentido \textbf{se convierte en instrucción} («no hay que prepararse porque todo está escrito»), porque ahí ya hay una consecuencia que se puede verificar y de la que alguien responde.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcTurquesa}{Los tres tipos de reclamo, y qué se hace con cada uno}
+\begin{pasoslista}
+\item \textbf{De hecho} — dice qué pasó. \emph{Se verifica.} Fuente con nombre, fecha de corte, y contraste con al menos una fuente independiente. Si nadie más lo reporta, no se reenvía.
+\item \textbf{De instrucción} — dice qué hacer. \emph{Se comprueba con números y con la autoridad competente.} Antes de obedecer una instrucción técnica, pregúntate qué dato le falta: casi siempre falta el que la haría verificable.
+\item \textbf{De sentido} — dice qué significa. \emph{No se verifica ni se refuta.} Se escucha y se respeta, porque pertenece a la fe, la cultura o la conciencia de cada quien. La escuela no está para arbitrar ahí. Solo se examina cuando de ese sentido se desprende una instrucción que puede hacerle daño a alguien.
+\end{pasoslista}
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{Confundir desmentir con verificar:} desmentir es decir «eso es falso»; verificar es mostrar la fuente, la fecha y el dato. \textbf{Creerle a un audio porque la voz suena segura:} la seguridad del tono no es evidencia. \textbf{Reenviar «por si acaso»:} en emergencia, el «por si acaso» satura líneas y mueve gente hacia el peligro. \textbf{Discutir la fe de alguien creyendo que se está verificando un hecho:} son planos distintos y mezclarlos rompe la conversación sin corregir nada. \textbf{Creer que una cifra oficial no se revisa:} hasta un documento oficial puede tener un rótulo que no cuadra con su propia tabla.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+\guiaDiagrama{assets/10-7/capas-del-rumor.tikz}{El mensaje del ejemplo está construido para la clase, no es la cadena de ninguna persona: reúne los rasgos típicos sin exponer a nadie. Ábrelo por capas y mira qué le queda cuando le quitas el blindaje.}
+\guiaDiagrama{assets/10-7/cuenta-del-rumor.tikz}{La cuenta completa, con sus bases a la vista. Esta guía no te dice cuánto cloro echar, y esa omisión es deliberada: para eso está tu autoridad sanitaria, no un cuaderno de clase ni una cadena de WhatsApp.}
+
+\textbf{En tu cuaderno (Actividad 2 · ANALIZA).} Título: «Actividad 2. El mensaje abierto en capas». \textbf{Formato:} toma \textbf{uno} de tus cinco mensajes y ábrelo como en la figura: su macroestructura en una sola frase, los conectores que fabrican causa, y la lista de modalizadores. \textbf{Extensión:} el análisis de las tres capas más la cuenta, si tu mensaje trae alguna cifra. \textbf{Sabes que terminaste cuando} puedes decir qué le queda al mensaje si le borras los modalizadores: casi siempre, nada.
+\end{infoband}
+
+\puente{Ya sabes desmontar. Es hora de construir, que es más difícil: producir información que otro pueda creer con razones, y no solo desmentir la ajena.}
+
+\begin{titlebox}{milcMagenta}
+Fase 3 · Praxis: el boletín que sí sirve
+\end{titlebox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Construyendo el boletín verificado del curso}
+Desmontar es la mitad fácil. La otra mitad es producir información que otro pueda creer \textbf{con razones}, y esa es la que devuelve la normalidad. Van a hacer, en grupos, el \textbf{boletín verificado} del curso: una sola página, pensada para leerse en voz alta, como en la emisora. Con una condición que lo cambia todo: va \textbf{firmado}. Palabra con dueño.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
+\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
+Verificar & \textbf{Verificar:} escojan tres mensajes de los que recogieron. De cada uno, la fuente con nombre, la fecha de corte del dato y una segunda fuente independiente. Si no consiguen la segunda, el boletín lo dice: «no pudimos confirmarlo». Esa frase vale más que un desmentido apurado.\\
+Calcular & \textbf{Calcular:} si el mensaje trae una cifra, háganla. Muestren la cuenta completa, con las unidades y con la base que asumieron. Una cuenta a la vista convence a quien no le cree a la autoridad, porque puede repetirla.\\
+Escribir & \textbf{Escribir:} una frase por rumor con la macroestructura corregida, en lenguaje de barrio y sin tecnicismos. Luego el dato con su fuente. Y el cierre que ninguna cadena tiene: quién lo escribió, cuándo y dónde preguntar más.\\
+Cuidar & \textbf{Cuidar:} el boletín no es un regaño. Nadie que haya reenviado algo falso lo hizo por malicia: lo hizo por miedo, que es lo más humano que hay. Incluyan un recuadro que lo diga y que recuerde a quién acudir: orientación escolar, un docente, la familia.\\
+\end{tabularx}
+\normalsize
+
+\begin{drawbox}{milcMagenta}{Lo que el boletín debe tener antes de salir}
+\begin{checklista}
+\item \textbf{Tres rumores}, cada uno con su tipo de reclamo declarado (hecho, instrucción o sentido) y con lo que sí se pudo verificar.
+\item \textbf{Ninguna instrucción técnica de nuestra cosecha.} Si el tema es agua, gas o salud, remitimos a la autoridad competente y damos el dato de contacto. Informar no es recetar.
+\item \textbf{Las fuentes con nombre y fecha de corte}, y la frase «no pudimos confirmarlo» donde corresponda.
+\item \textbf{Ningún dato que permita identificar} a quien mandó el mensaje original.
+\item \textbf{Firma:} quiénes lo escribieron, en qué fecha y dónde se les puede preguntar.
+\end{checklista}
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Plantilla del boletín (una página).} \emph{Encabezado:} «Boletín verificado · grado 10.º · fecha». \emph{Por cada rumor, cuatro renglones:} (1) \textbf{Circuló que…} la macroestructura del mensaje, tal como corría; (2) \textbf{Lo que sí se pudo verificar:} el dato, con fuente y fecha de corte; (3) \textbf{Cómo lo comprobamos:} la cuenta o el documento que abrimos; (4) \textbf{Qué falta saber:} lo que quedó sin confirmar, dicho sin vergüenza. \emph{Cierre:} el recuadro de cuidado y la firma. \textbf{Nada de mayúsculas sostenidas, nada de signos de admiración}: si el texto necesita gritar, es porque no confía en su propio dato.
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+
+
+\textbf{En tu cuaderno (Actividad 3 · CREA).} Título: «Actividad 3. Nuestro boletín verificado». \textbf{Formato:} el borrador de la página completa, según la plantilla. \textbf{Extensión:} tres rumores trabajados con sus cuatro renglones, más recuadro de cuidado y firma. \textbf{Sabes que terminaste cuando} alguien de otro curso puede leerlo y \textbf{rehacer} tu verificación sin preguntarte nada.
+\end{infoband}
+
+\puente{Practicaste el método. Ahora deja tu evidencia: el boletín, que es tu palabra puesta con dueño y con fecha.}
+
+\begin{titlebox}{milcMostaza}
+Producto de la sesión
+\end{titlebox}
+\textbf{Boletín verificado del curso: tres rumores, sus cuentas, sus fuentes y su firma}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) Cada rumor del boletín declara qué tipo de reclamo es, y los de sentido no se tratan como si fueran de hecho. (2) Al menos uno queda desmontado con una cuenta completa, con unidades y con la base del cálculo a la vista. (3) Todas las fuentes tienen nombre y fecha de corte, y lo no confirmado aparece dicho como tal. (4) El boletín no da ninguna instrucción técnica propia sobre agua, gas o salud, y remite a la autoridad competente con su contacto. (5) Va firmado, no señala ni avergüenza a nadie, e incluye el recuadro de cuidado con la ruta de ayuda.
+\end{softbox}
+
+\puente{Terminaste el producto. Detente a mirar qué cambió en ti (no la nota, sino tu manera de decidir qué merece tu dedo antes de darle enviar).}
+
+\begin{titlebox}{milcVino}
+Fase 4 · Evaluación liberadora — cinco dimensiones
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos pensando en grande: tres voces para entender quién tiene derecho a hablar del territorio, dónde termina el dato y empieza tu juicio, y por qué cuidar la información es cuidar personas.}
+
+\begin{titlebox}{milcGradeDark}
+Triángulo de pensamiento · cierre filosófico
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{``Aquel que es capaz de escuchar silenciosamente al Otro como otro es el que puede constituir una comunidad y no una mera sociedad totalizada.''}
+
+Durante la emergencia, el territorio fue narrado desde afuera: titulares, cifras, cámaras que llegaron y se fueron. Los de aquí quedaron como público de noticias sobre sí mismos. Hacer un boletín propio invierte eso, y por eso importa que vaya firmado: no es opinar más fuerte, es volver a ser quien cuenta lo que le pasa a uno.
+
+\textbf{Sobre lo que pasó en mi barrio, ¿quién ha contado la versión que circula, y por qué no la hemos contado nosotros?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Epicteto · cuidado interior}
+\textit{``Se lava uno con prisas: no digas que «mal», sino que «con prisas». Antes de conocer la opinión, ¿cómo sabes si estaba mal?''}
+
+«Con prisas» es el dato; «mal» es el juicio que le añades. Un rumor es exactamente esa operación: reenviar el juicio como si fuera el dato. Epicteto escribió hace veinte siglos el protocolo que esta guía te pide practicar antes de darle enviar, y no exige desconfiar de todo: exige saber en qué punto dejaste de describir y empezaste a opinar.
+
+\textbf{En lo último que reenvié, ¿qué parte era el hecho y qué parte era ya mi manera de verlo?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{``Somos organismos informacionales (inforgs) conectados entre sí e inmersos en un entorno informacional: la infoesfera.''}
+
+Si habitamos la información como se habita un territorio, entonces contaminarla tiene víctimas. Un mensaje falso sobre el agua no se queda en el teléfono: llega al tanque de una casa. Cuidar la infoesfera no es una delicadeza de nerds; es la misma clase de responsabilidad que no botar basura en la quebrada de donde toma agua el vecino.
+
+\textbf{¿Qué le pasó a alguien de verdad por algo que yo reenvié sin verificar?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{titlebox}{milcVino}
+Compromiso final
+\end{titlebox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
+Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
+Verificación & Separo macroestructura, microestructura y modalizadores, y distingo un reclamo de hecho de uno de sentido. & Detecto el rumor, pero aún no sé nombrar qué parte del mensaje falla. & Necesito releer la fase 2.\\
+Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
+Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
+Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
+\end{tabularx}
+\normalsize
+
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Tres cosas. Primero, \textbf{lleva el boletín a donde sirva}: el grupo familiar, la tienda del barrio, la cartelera, la emisora si se dejan. Segundo, elige un mensaje que reenviaste en agosto y escríbele a esa persona una línea sin drama: «oye, esto que te mandé no era cierto, mira». Corregirse a tiempo es más difícil que tener razón, y vale más. Tercero, guarda una cifra oficial con su fecha de corte y vuelve a buscarla en una semana: vas a ver que cambió, y entender por qué cambia es lo que te vuelve difícil de engañar.
+\end{infoband}
+
+\end{document}

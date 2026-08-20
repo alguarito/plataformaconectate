@@ -203,7 +203,15 @@ const grado10: Nivel = {
     { numero: 4, slug: 'momento-4', nombre: 'Si alguien me lo dice', foco: 'Qué hacer ante autolesión o ideación suicida: protocolo de aviso, nunca diagnóstico.', ancla:a('La Guardia Indígena del Cauca: avisar sin armas y sin resolver solo', 'verificada'), estado: 'proximamente' },
     { numero: 5, slug: 'momento-5', nombre: 'Duelo', foco: 'Muerte, ruptura y migración, sin pedirle a nadie que le vea el lado bueno.', ancla:a('El gualí, el levantamiento de tumba y el novenario', 'verificada'), estado: 'proximamente' },
     { numero: 6, slug: 'momento-6', nombre: 'Anestesias', foco: 'Sustancias, apuestas y pantallas como forma de no sentir.', ancla:a('La amapola en Tierradentro y el tejido roto', 'verificada'), estado: 'proximamente' },
-    { numero: 7, slug: 'momento-7', nombre: 'La infoesfera emocional', foco: 'Rumor, pánico e indignación: la información produce emociones y hace daño real.', ancla:a('La red de radios comunitarias del Norte del Valle', 'verificada'), estado: 'proximamente' },
+    {
+      numero: 7,
+      slug: 'momento-7',
+      nombre: 'La infoesfera emocional',
+      foco: 'Volver a la normalidad y manejo de rumores: abrir un mensaje en sus tres capas, desarmar un rumor químico con la cuenta, rastrear el origen de una cifra falsa y distinguir lo que se comprueba de lo que se respeta.',
+      ancla: a('La red de radios comunitarias del Norte del Valle: la palabra con dueño', 'verificada'),
+      estado: 'activo',
+      claveGuia: '10-7',
+    },
     { numero: 8, slug: 'momento-8', nombre: 'El desastre no es natural', foco: 'Vulnerabilidad global: los once ángulos de Wilches-Chaux sobre el propio barrio.', ancla:a('Nasa Kiwe, que Wilches-Chaux dirigió', 'verificada'), estado: 'proximamente' },
     {
       numero: 9,

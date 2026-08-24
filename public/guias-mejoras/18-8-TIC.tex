@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 8};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 8};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Alertas\\con lógica compuesta ---\\validación con escenarios}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 18-8-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 2 · Lógica, algoritmos y computación física}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 2 · Lógica, algoritmos y computación física}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Alertas\\con lógica compuesta ---\\validación con escenarios}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 18-8-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} Sistema de alerta en MakeCode que combine 2-3 sensores con operadores AND/OR/NOT para producir al menos 3 niveles de alerta distintos (alarma máxima, alerta moderada, advertencia leve) + tabla de 8 escenarios de verificación que muestre cada combinación de entrada y la salida esperada vs. la salida real + bitácora corta de los ajustes hechos cuando alguna combinación no funcionaba como esperabas};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Sistema de alerta en MakeCode que combine 2-3 sensores con operadores AND/OR/NOT para producir al menos 3 niveles de alerta distintos (alarma máxima, alerta moderada, advertencia leve) + tabla de 8 escenarios de verificación que muestre cada combinación de entrada y la salida esperada vs. la salida real + bitácora corta de los ajustes hechos cuando alguna combinación no funcionaba como esperabas
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Alertas con lógica compuesta --- validación con escenarios}
@@ -258,30 +322,27 @@ Producto final & Sistema de alerta en MakeCode que combine 2-3 sensores con oper
 
 \puente{Antes de empezar, mira el viaje completo. En las sesiones 1-7 aprendiste todas las piezas por separado. Hoy las \emph{integras} en un sistema completo. La sesión 9 (proyecto) y la 10 (sustentación) tomarán esta integración como base. Es la cima técnica del periodo 2.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Antes de teorizar, vas a hacer un \emph{ejercicio del centinela}: piensa en un problema real del colegio que necesite una alerta combinada (cerrar el aula al final del día, alertar cuando alguien entra a un lugar restringido, avisar si el aula está oscura Y hay alguien adentro) y anota qué sensores combinarías y con qué operadores.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- Ejercicio del centinela} (15 min · individual). Piensa en un problema real del colegio que necesite alerta combinada. Ejemplos: (a) \textbf{Cerrar el aula al final del día}: alerta si \emph{hay personas adentro Y la hora es mayor a las 18:00}. (b) \textbf{Aula oscura ocupada}: alerta si \emph{luz baja Y movimiento detectado} (alguien quedó sin luz). (c) \textbf{Permiso de entrada al laboratorio}: solo si \emph{tarjeta válida AND NO es horario de clase Y NOT está cerrado por mantenimiento}. Elige uno y anota: ¿qué sensores usarías (luz, movimiento, botón)?, ¿qué operadores (AND, OR, NOT)?, ¿qué 3 niveles de alerta tendría (máxima, moderada, leve)?.
 \end{softbox}
 
-\checkbox Elegí un problema real del colegio.\\
-\checkbox Identifiqué qué sensores usaría.\\
-\checkbox Definí 3 niveles de alerta.
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Elegí un problema real del colegio.}
+\milccheckrow{Identifiqué qué sensores usaría.}
+\milccheckrow{Definí 3 niveles de alerta.}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Ya tienes la idea. Ahora vas a entender la \textbf{anatomía del sistema de alerta profesional}: 3 niveles de alerta, combinación con AND/OR/NOT, tabla de escenarios de verificación, los 5 errores típicos del sistema novato (falsa alarma, alarma silenciosa, escenarios no probados, operadores confundidos, salida única para todo).}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Tu ficha del centinela define el problema. Ahora necesitas la \textbf{anatomía técnica}: cómo se programan los operadores compuestos en MakeCode, cómo se construye una tabla de escenarios, los errores típicos del sistema novato.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & Los \textbf{bloques de lógica compuesta} en MakeCode (categoría Lógica) son: (1) \texttt{si A y B entonces}: bloque AND. Verdadero solo si ambas son verdaderas. (2) \texttt{si A o B entonces}: bloque OR. Verdadero si al menos una. (3) \texttt{no A}: bloque NOT. Invierte el valor. Se pueden anidar: \texttt{si (A y B) o (no C) entonces}. Los paréntesis se forman naturalmente con la estructura visual de los bloques.\\
-2. Reconocimiento de patrones & La \textbf{tabla de escenarios} para 3 sensores binarios tiene $2^3 = 8$ filas con todas las combinaciones de Verdadero (V) y Falso (F). Cada fila tiene: (a) los valores de los 3 sensores. (b) la salida esperada según tu lógica. (c) la salida real al probar en el simulador. (d) ¿coinciden o no?. Si una fila no coincide, hay un bug que se depura con el método de la sesión 7.\\
-3. Abstracción & Lo esencial cabe en una pregunta: \emph{¿hay alguna combinación que mi sistema no haya considerado?}. Los sistemas de alerta novatos cubren los casos obvios (\emph{``si pasa esto, alerta''}) y olvidan los casos extremos (\emph{``¿y si pasa solo una de las dos?''}, \emph{``¿y si no pasa ninguna?''}). La phronesis del oficio consiste en \textbf{construir la tabla completa antes de declarar el sistema funcional}.\\
-4. Algoritmo conceptual & Algoritmo: (1) definir entradas (2-3 sensores con sus umbrales). (2) definir salidas (3 niveles de alerta). (3) construir tabla de $2^n$ escenarios con salida esperada. (4) programar en MakeCode con if-else compuestos. (5) probar cada escenario en simulador y llenar tabla con salida real. (6) ajustar lo que no coincida (usando depuración de sesión 7). (7) documentar ajustes en bitácora.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{Los \textbf{bloques de lógica compuesta} en MakeCode (categoría Lógica) son: (1) \texttt{si A y B entonces}: bloque AND. Verdadero solo si ambas son verdaderas. (2) \texttt{si A o B entonces}: bloque OR. Verdadero si al menos una. (3) \texttt{no A}: bloque NOT. Invierte el valor. Se pueden anidar: \texttt{si (A y B) o (no C) entonces}. Los paréntesis se forman naturalmente con la estructura visual de los bloques.}
+\milcpaso{2}{milcTurquesa}{La \textbf{tabla de escenarios} para 3 sensores binarios tiene $2^3 = 8$ filas con todas las combinaciones de Verdadero (V) y Falso (F). Cada fila tiene: (a) los valores de los 3 sensores. (b) la salida esperada según tu lógica. (c) la salida real al probar en el simulador. (d) ¿coinciden o no?. Si una fila no coincide, hay un bug que se depura con el método de la sesión 7.}
+\milcpaso{3}{milcTurquesa}{Lo esencial cabe en una pregunta: \emph{¿hay alguna combinación que mi sistema no haya considerado?}. Los sistemas de alerta novatos cubren los casos obvios (\emph{``si pasa esto, alerta''}) y olvidan los casos extremos (\emph{``¿y si pasa solo una de las dos?''}, \emph{``¿y si no pasa ninguna?''}). La phronesis del oficio consiste en \textbf{construir la tabla completa antes de declarar el sistema funcional}.}
+\milcpaso{4}{milcTurquesa}{Algoritmo: (1) definir entradas (2-3 sensores con sus umbrales). (2) definir salidas (3 niveles de alerta). (3) construir tabla de $2^n$ escenarios con salida esperada. (4) programar en MakeCode con if-else compuestos. (5) probar cada escenario en simulador y llenar tabla con salida real. (6) ajustar lo que no coincida (usando depuración de sesión 7). (7) documentar ajustes en bitácora.}
 
 \begin{drawbox}{milcTurquesa}{Anatomía del sistema de alerta}
 \textbf{Sensores:} 2-3 con umbrales calibrados. \\[1mm] \textbf{Operadores:} AND, OR, NOT. \\[1mm] \textbf{Niveles:} 3 alertas distintas. \\[1mm] \textbf{Tabla:} $2^n$ escenarios con esperado vs real. \\[1mm] \textbf{Verificación:} cada fila probada.
@@ -325,23 +379,16 @@ Tu ficha del centinela define el problema. Ahora necesitas la \textbf{anatomía 
 
 \puente{Tienes el método. Toca aplicarlo: programas un sistema con 2-3 sensores que produzca 3 niveles de alerta combinando AND/OR/NOT, lo verificas con tabla de 8 escenarios, ajustas lo que falle, documentas la bitácora.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · ANALIZA + EVALÚA --- Sistema completo + 8 escenarios verificados} (40 min · individual o parejas). Hora de aplicar. Programar el sistema de alerta de tu elección con 2-3 sensores, construir tabla de 8 escenarios y verificar cada uno en el simulador.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & Tu sistema se construye en 5 pasos: (1) definir entradas (2-3 sensores con umbrales calibrados de la sesión 6). (2) escribir tabla de escenarios con salida esperada (antes de programar). (3) programar en MakeCode con if-else compuestos. (4) probar cada escenario en simulador y llenar salida real. (5) ajustar lo que no coincida.\\
-Patrones & Sigue el patrón \textbf{``tabla antes que código''}: la tabla de escenarios se construye antes de programar. Eso obliga a pensar la lógica antes de implementarla. Si construyes la tabla después, tiendes a confirmar lo que ya programaste, no a verificar la lógica.\\
-Abstracción & Para sistemas con 3 sensores se obtienen 8 escenarios. La regla: cada fila debe tener una salida definida (alerta máxima, moderada, leve, o ninguna). Si alguna fila quedó sin salida en tu tabla original, tu sistema tiene grietas lógicas que hay que cerrar.\\
-Algoritmo de armado & Algoritmo: (1) definir entradas. (2) construir tabla con salida esperada. (3) programar. (4) probar las 8 filas. (5) anotar salida real. (6) si alguna no coincide, depurar (sesión 7). (7) registrar ajustes en bitácora.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{Tu sistema se construye en 5 pasos: (1) definir entradas (2-3 sensores con umbrales calibrados de la sesión 6). (2) escribir tabla de escenarios con salida esperada (antes de programar). (3) programar en MakeCode con if-else compuestos. (4) probar cada escenario en simulador y llenar salida real. (5) ajustar lo que no coincida.}
+\milcpaso{2}{milcMagenta}{Sigue el patrón \textbf{``tabla antes que código''}: la tabla de escenarios se construye antes de programar. Eso obliga a pensar la lógica antes de implementarla. Si construyes la tabla después, tiendes a confirmar lo que ya programaste, no a verificar la lógica.}
+\milcpaso{3}{milcMagenta}{Para sistemas con 3 sensores se obtienen 8 escenarios. La regla: cada fila debe tener una salida definida (alerta máxima, moderada, leve, o ninguna). Si alguna fila quedó sin salida en tu tabla original, tu sistema tiene grietas lógicas que hay que cerrar.}
+\milcpaso{4}{milcMagenta}{Algoritmo: (1) definir entradas. (2) construir tabla con salida esperada. (3) programar. (4) probar las 8 filas. (5) anotar salida real. (6) si alguna no coincide, depurar (sesión 7). (7) registrar ajustes en bitácora.}
 
 \begin{drawbox}{milcMagenta}{Checklist antes de entregar}
 \checkbox 2-3 sensores definidos con umbrales calibrados. \\[1mm] \checkbox Lógica con AND, OR, NOT combinados. \\[1mm] \checkbox 3 niveles de alerta distintos. \\[1mm] \checkbox Tabla de 8 escenarios construida ANTES de programar. \\[1mm] \checkbox Cada escenario probado en simulador. \\[1mm] \checkbox Salida real coincide con esperada (o se documenta lo que falta). \\[1mm] \checkbox Bitácora de ajustes hecha.
@@ -359,9 +406,7 @@ Algoritmo de armado & Algoritmo: (1) definir entradas. (2) construir tabla con s
 
 \puente{Lo que sigue resume \emph{qué} entregas hoy: sistema de alerta + tabla de 8 escenarios + bitácora de ajustes. El criterio principal: que el sistema funcione correctamente en todos los escenarios de la tabla, o que la bitácora explique honestamente cuáles aún fallan y por qué.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Sistema de alerta + tabla de 8 escenarios + bitácora de ajustes}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) Sistema con 2-3 sensores combinados. (2) Lógica con AND, OR, NOT. (3) 3 niveles de alerta distintos. (4) Tabla de 8 escenarios construida antes. (5) Cada escenario verificado en simulador. (6) Bitácora de ajustes documentada.
@@ -369,9 +414,7 @@ Producto de la sesión
 
 \puente{Antes de cerrar, mira el sistema desde las cinco dimensiones humanas. Probar todos los escenarios es respeto por quienes confiarán en la alarma; declarar funcional sin probar es negligencia con personas reales.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -397,12 +440,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Y para terminar, tres voces sobre los sistemas que protegen. Dussel sobre las alarmas que cuidan a las personas vulnerables, Marco Aurelio sobre la disciplina de probar todos los casos, Floridi sobre los sistemas de alerta como infraestructura ética digital.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{``Una alarma que protege a quien depende de ella es liberadora; una que falla en silencio es traición técnica.''}
+\textit{Una alarma que protege a quien depende de ella es liberadora; una que falla en silencio es traición técnica.}
 
 Los sistemas de alerta del mundo real protegen vidas: alarmas de incendio, sistemas de evacuación, detectores de fugas. La filosofía de la liberación pide construir esos sistemas con responsabilidad por las personas que dependerán de ellos. Tu sistema escolar de hoy te entrena en una práctica que mañana puede aplicarse a contextos con vidas reales en juego. La phronesis del oficio consiste en \textbf{construir alarmas como si la vida del usuario dependiera de ellas}, porque a veces literalmente lo hace.
 
@@ -412,7 +453,7 @@ Los sistemas de alerta del mundo real protegen vidas: alarmas de incendio, siste
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
-\textit{``Probar todos los escenarios es disciplina; declarar funcional con pruebas parciales es soberbia.''}
+\textit{Probar todos los escenarios es disciplina; declarar funcional con pruebas parciales es soberbia.}
 
 Es tentador probar 2-3 escenarios obvios y declarar el sistema listo. La sabiduría estoica recomienda lo opuesto: \emph{prueba los 8 escenarios completos}. Los bugs más graves suelen esconderse en escenarios extremos (todas las entradas falsas, una sola entrada verdadera). La disciplina de probar lo completo es virtud profesional.
 
@@ -422,7 +463,7 @@ Es tentador probar 2-3 escenarios obvios y declarar el sistema listo. La sabidur
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{``Los sistemas de alerta confiables son la infraestructura ética del oficio digital en la era de los riesgos automatizados.''}
+\textit{Los sistemas de alerta confiables son la infraestructura ética del oficio digital en la era de los riesgos automatizados.}
 
 En la era de la información, los sistemas de alerta automatizados sostienen muchas funciones críticas (transporte, salud, finanzas). Que esos sistemas sean confiables es responsabilidad ética del oficio digital. Tu hoja de hoy te entrena en esa práctica: construir sistemas de alerta verificados, documentados, transparentes. Esa disciplina escala desde el micro:bit escolar hasta sistemas industriales.
 
@@ -431,21 +472,24 @@ En la era de la información, los sistemas de alerta automatizados sostienen muc
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

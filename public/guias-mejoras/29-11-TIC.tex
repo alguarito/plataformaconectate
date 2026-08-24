@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 11};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 11};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Versión final\\del MVP ---\\la firma del aprendiz}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 29-11-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 3 · Proyecto final emprendedor}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 3 · Proyecto final emprendedor}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Versión final\\del MVP ---\\la firma del aprendiz}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 29-11-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} MVP versión final integrando todo el aprendizaje del periodo (a) correcciones aplicadas a partir de los hallazgos de la sesión 5, los ajustes financieros de la sesión 7 y los compromisos éticos de la sesión 8, (b) bitácora de cambios documentando cada ajuste con su razón y referencia a la sesión que lo originó, (c) recorrido de calidad por checklist de 12 puntos verificado, (d) carta abierta de 1 página firmada con nombre y fecha que el aprendiz pueda defender públicamente ante cualquier audiencia};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+MVP versión final integrando todo el aprendizaje del periodo (a) correcciones aplicadas a partir de los hallazgos de la sesión 5, los ajustes financieros de la sesión 7 y los compromisos éticos de la sesión 8, (b) bitácora de cambios documentando cada ajuste con su razón y referencia a la sesión que lo originó, (c) recorrido de calidad por checklist de 12 puntos verificado, (d) carta abierta de 1 página firmada con nombre y fecha que el aprendiz pueda defender públicamente ante cualquier audiencia
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Versión final del MVP}
@@ -258,30 +322,27 @@ Producto final & MVP versión final integrando todo el aprendizaje del periodo (
 
 \puente{Antes de empezar, mira el viaje completo. Llevas 8 sesiones de construcción incremental. Hoy es el penúltimo paso: \textbf{integrar todo}. La sesión 10 será sustentación pública; sin versión final lista hoy, la sustentación de mañana será improvisación. La firma del aprendiz es siempre antes del ritual público, no durante.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Antes de teorizar, vas a hacer una \emph{lectura cruzada} de tus 3 últimas entregas: el análisis de datos (S5), el presupuesto (S7) y la autoevaluación ética (S8). Cada una declaró ajustes pendientes. Vas a listar todos los ajustes prometidos y a marcar cuáles están aplicados, cuáles a medias, cuáles pendientes.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · ANALIZA --- Inventario de ajustes pendientes por aplicar} (15 min · individual). Revisa tus 3 últimas entregas (S5 análisis de datos, S7 presupuesto, S8 ética) y lista todos los ajustes que declaraste pendientes. Para cada ajuste anota: (1) ¿está aplicado, a medias o pendiente?; (2) ¿qué se necesita para terminarlo?; (3) ¿es bloqueante para la sustentación de la próxima sesión? El objetivo es entrar a la actividad 3 con la lista cerrada de \textbf{qué falta} y \textbf{en qué orden} aplicarlo.
 \end{softbox}
 
-\checkbox Listé todos los ajustes prometidos en S5, S7, S8.\\
-\checkbox Marqué estado (aplicado, a medias, pendiente) de cada uno.\\
-\checkbox Identifiqué cuáles son bloqueantes para la sustentación.
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Listé todos los ajustes prometidos en S5, S7, S8.}
+\milccheckrow{Marqué estado (aplicado, a medias, pendiente) de cada uno.}
+\milccheckrow{Identifiqué cuáles son bloqueantes para la sustentación.}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Ya tienes la lista de ajustes. Ahora vas a entender la \textbf{anatomía de la versión final}: las 3 piezas obligatorias (MVP ajustado, bitácora de cambios, carta abierta firmada), el \textbf{checklist de 12 puntos} de calidad, y los 6 errores que delatan un MVP \emph{``casi final''}.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Una versión final sin método de cierre es un MVP cansado, no terminado. Para que tu firma de hoy tenga peso necesitas la \textbf{anatomía profesional del cierre}: 3 piezas, 12 puntos de calidad, 6 errores típicos del aprendiz que firma sin haber pulido.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & La versión final se descompone en 3 piezas: (1) \textbf{MVP ajustado}: la versión actualizada con los ajustes aplicados (no solo prometidos); cambios visibles en captura, valor o respuesta. (2) \textbf{Bitácora de cambios}: documento corto donde cada ajuste tiene una fila (fecha, qué cambió, por qué, referencia a la sesión que lo originó). (3) \textbf{Carta abierta firmada}: declaración pública de 1 página estructurada en 3 párrafos (qué hace el proyecto, por qué importa, qué se compromete a entregar el aprendiz) cerrada con nombre y fecha.\\
-2. Reconocimiento de patrones & El \textbf{checklist de 12 puntos} de calidad cubre 4 dimensiones, 3 puntos cada una: (a) \textbf{Producto}: (1) el MVP funciona end-to-end sin fricciones graves, (2) el copy de cada pantalla es claro y honesto, (3) los enlaces internos no están rotos. (b) \textbf{Datos}: (4) la captura registra correctamente, (5) la base de datos está organizada y consultable, (6) los datos pueden eliminarse a petición del usuario. (c) \textbf{Finanzas}: (7) los precios están visibles si aplica, (8) los costos del MVP están actualizados, (9) el punto de equilibrio mes 3 es alcanzable según escenario realista. (d) \textbf{Ética}: (10) Política de Privacidad accesible desde el MVP, (11) Términos de Uso accesibles, (12) ajuste ético declarado en S8 está aplicado.\\
-3. Abstracción & Lo esencial cabe en una pregunta: \emph{¿firmaría este MVP con mi nombre y mi fecha hoy mismo?}. Si la respuesta es no, todavía no es versión final. La phronesis del aprendiz consiste en \textbf{no firmar lo que no se puede defender}. Firmar antes de tiempo erosiona el oficio; no firmar nunca por inseguridad también.\\
-4. Algoritmo conceptual & Algoritmo: (1) aplica los ajustes pendientes en orden de bloqueo; (2) recorre el checklist de 12 puntos marcando OK o pendiente; (3) corrige los pendientes hasta tener 12/12; (4) llena la bitácora de cambios con cada ajuste; (5) redacta la carta abierta de 1 página; (6) firma con nombre y fecha; (7) léela en voz alta para verificar que la podrías defender ante cualquier audiencia.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{La versión final se descompone en 3 piezas: (1) \textbf{MVP ajustado}: la versión actualizada con los ajustes aplicados (no solo prometidos); cambios visibles en captura, valor o respuesta. (2) \textbf{Bitácora de cambios}: documento corto donde cada ajuste tiene una fila (fecha, qué cambió, por qué, referencia a la sesión que lo originó). (3) \textbf{Carta abierta firmada}: declaración pública de 1 página estructurada en 3 párrafos (qué hace el proyecto, por qué importa, qué se compromete a entregar el aprendiz) cerrada con nombre y fecha.}
+\milcpaso{2}{milcTurquesa}{El \textbf{checklist de 12 puntos} de calidad cubre 4 dimensiones, 3 puntos cada una: (a) \textbf{Producto}: (1) el MVP funciona end-to-end sin fricciones graves, (2) el copy de cada pantalla es claro y honesto, (3) los enlaces internos no están rotos. (b) \textbf{Datos}: (4) la captura registra correctamente, (5) la base de datos está organizada y consultable, (6) los datos pueden eliminarse a petición del usuario. (c) \textbf{Finanzas}: (7) los precios están visibles si aplica, (8) los costos del MVP están actualizados, (9) el punto de equilibrio mes 3 es alcanzable según escenario realista. (d) \textbf{Ética}: (10) Política de Privacidad accesible desde el MVP, (11) Términos de Uso accesibles, (12) ajuste ético declarado en S8 está aplicado.}
+\milcpaso{3}{milcTurquesa}{Lo esencial cabe en una pregunta: \emph{¿firmaría este MVP con mi nombre y mi fecha hoy mismo?}. Si la respuesta es no, todavía no es versión final. La phronesis del aprendiz consiste en \textbf{no firmar lo que no se puede defender}. Firmar antes de tiempo erosiona el oficio; no firmar nunca por inseguridad también.}
+\milcpaso{4}{milcTurquesa}{Algoritmo: (1) aplica los ajustes pendientes en orden de bloqueo; (2) recorre el checklist de 12 puntos marcando OK o pendiente; (3) corrige los pendientes hasta tener 12/12; (4) llena la bitácora de cambios con cada ajuste; (5) redacta la carta abierta de 1 página; (6) firma con nombre y fecha; (7) léela en voz alta para verificar que la podrías defender ante cualquier audiencia.}
 
 \begin{drawbox}{milcTurquesa}{Anatomía de la versión final}
 \textbf{MVP ajustado:} con cambios aplicados, no solo prometidos. \\[1mm] \textbf{Bitácora de cambios:} fecha + cambio + razón + sesión origen. \\[1mm] \textbf{Checklist de calidad:} 12 puntos en 4 dimensiones. \\[1mm] \textbf{Carta abierta firmada:} 1 página + nombre + fecha. \\[1mm] \textbf{Criterio interno:} ¿firmaría con orgullo hoy?
@@ -325,23 +379,16 @@ Una versión final sin método de cierre es un MVP cansado, no terminado. Para q
 
 \puente{Tienes el método. Toca aplicarlo: aplicar los ajustes pendientes, llenar la bitácora con cada cambio y su razón, recorrer el checklist de 12 puntos, redactar la carta abierta y firmarla con nombre y fecha.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · CREA + EXPLICA --- Versión final firmada} (45 min en sesión, 3-4 horas de trabajo distribuido en la semana · individual). Hora de aplicar y firmar. Aplicas los ajustes pendientes, recorres el checklist hasta 12/12, llenas la bitácora, redactas la carta y firmas.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & Tu versión final se produce en 6 pasos: (1) aplicar los ajustes pendientes en orden de bloqueo (los bloqueantes primero); (2) recorrer el checklist marcando cada punto con OK o pendiente; (3) corregir los pendientes hasta 12/12; (4) escribir la bitácora con 1 fila por cambio aplicado; (5) redactar la carta abierta de 1 página en 3 párrafos (qué, por qué, compromiso); (6) firmar con nombre y fecha.\\
-Patrones & Sigue el patrón \textbf{``aplicación sobre declaración''}: en la versión final, no vale decir \emph{``haré X''}; debe decir \emph{``hice X el día Y''}. La diferencia entre versión final y borrador es esa: la versión final es performativa (lo que dice, ya ocurrió), el borrador es declarativa (lo que dice, todavía no ocurre).\\
-Abstracción & La carta abierta tiene estructura mínima de 3 párrafos: (a) \textbf{Qué}: \emph{``Este proyecto se llama X, atiende el problema de Y, está dirigido al segmento Z, y se sostiene con el modelo W''}. (b) \textbf{Por qué}: \emph{``Lo construí porque [relación personal con el problema]. Aprendí en 10 sesiones que [hallazgo más importante]. Las personas que validaron el proyecto fueron [referencia a las 5 entrevistas]''}. (c) \textbf{Compromiso}: \emph{``Me comprometo a [cumplir lo prometido en Política, Términos, Autoevaluación]. Si el proyecto crece, mantendré [los compromisos éticos]. Si falla, [cómo asumo responsabilidad]''}. Firma con nombre completo + fecha.\\
-Algoritmo de armado & Algoritmo final: (1) aplica ajustes; (2) checklist; (3) corrige; (4) bitácora; (5) carta; (6) firma; (7) lee la carta en voz alta y verifica si la podrías defender ante alguien que no te conoce; (8) si dudas, vuelve a 1.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{Tu versión final se produce en 6 pasos: (1) aplicar los ajustes pendientes en orden de bloqueo (los bloqueantes primero); (2) recorrer el checklist marcando cada punto con OK o pendiente; (3) corregir los pendientes hasta 12/12; (4) escribir la bitácora con 1 fila por cambio aplicado; (5) redactar la carta abierta de 1 página en 3 párrafos (qué, por qué, compromiso); (6) firmar con nombre y fecha.}
+\milcpaso{2}{milcMagenta}{Sigue el patrón \textbf{``aplicación sobre declaración''}: en la versión final, no vale decir \emph{``haré X''}; debe decir \emph{``hice X el día Y''}. La diferencia entre versión final y borrador es esa: la versión final es performativa (lo que dice, ya ocurrió), el borrador es declarativa (lo que dice, todavía no ocurre).}
+\milcpaso{3}{milcMagenta}{La carta abierta tiene estructura mínima de 3 párrafos: (a) \textbf{Qué}: \emph{``Este proyecto se llama X, atiende el problema de Y, está dirigido al segmento Z, y se sostiene con el modelo W''}. (b) \textbf{Por qué}: \emph{``Lo construí porque [relación personal con el problema]. Aprendí en 10 sesiones que [hallazgo más importante]. Las personas que validaron el proyecto fueron [referencia a las 5 entrevistas]''}. (c) \textbf{Compromiso}: \emph{``Me comprometo a [cumplir lo prometido en Política, Términos, Autoevaluación]. Si el proyecto crece, mantendré [los compromisos éticos]. Si falla, [cómo asumo responsabilidad]''}. Firma con nombre completo + fecha.}
+\milcpaso{4}{milcMagenta}{Algoritmo final: (1) aplica ajustes; (2) checklist; (3) corrige; (4) bitácora; (5) carta; (6) firma; (7) lee la carta en voz alta y verifica si la podrías defender ante alguien que no te conoce; (8) si dudas, vuelve a 1.}
 
 \begin{drawbox}{milcMagenta}{Checklist final de los 12 puntos}
 \checkbox MVP end-to-end sin fricciones graves. \\[1mm] \checkbox Copy claro y honesto en cada pantalla. \\[1mm] \checkbox Enlaces internos funcionando. \\[1mm] \checkbox Captura de datos registrando bien. \\[1mm] \checkbox Base de datos organizada y consultable. \\[1mm] \checkbox Datos eliminables a petición del usuario. \\[1mm] \checkbox Precios visibles (si aplica). \\[1mm] \checkbox Costos actualizados. \\[1mm] \checkbox Punto de equilibrio alcanzable según escenario realista. \\[1mm] \checkbox Política de Privacidad accesible desde el MVP. \\[1mm] \checkbox Términos de Uso accesibles. \\[1mm] \checkbox Ajuste ético declarado en S8 aplicado.
@@ -359,9 +406,7 @@ Algoritmo de armado & Algoritmo final: (1) aplica ajustes; (2) checklist; (3) co
 
 \puente{Lo que sigue resume \emph{qué} entregas hoy: MVP versión final + bitácora de cambios + checklist verificado + carta abierta firmada. El criterio principal: que el aprendiz pueda decir con sinceridad \emph{``firmo este proyecto y lo defiendo''} ante cualquier audiencia. Si hay duda al firmar, falta trabajo, no falta valentía.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{MVP versión final + bitácora + checklist 12/12 + carta abierta firmada}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) Ajustes pendientes de S5, S7, S8 aplicados. (2) Bitácora con 1 fila por cambio (fecha, qué, por qué, sesión origen). (3) Checklist de 12 puntos completado en las 4 dimensiones. (4) Carta abierta de 1 página en 3 párrafos. (5) Firma con nombre completo y fecha. (6) Capacidad de defender el MVP ante audiencia desconocida.
@@ -369,9 +414,7 @@ Producto de la sesión
 
 \puente{Antes de cerrar, mira la versión final desde las cinco dimensiones humanas. Firmar el oficio terminado es respeto por el proceso entero; entregar sin aplicar hallazgos es traicionar las 8 sesiones anteriores.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -397,12 +440,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Y para terminar, tres voces sobre la firma y la responsabilidad. Dussel sobre los productos que asumen al usuario, Marco Aurelio sobre la coherencia del oficio bien hecho, Floridi sobre la responsabilidad digital como ética del autor.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{``Firmar un proyecto es asumir al usuario como prójimo, no como cliente abstracto.''}
+\textit{Firmar un proyecto es asumir al usuario como prójimo, no como cliente abstracto.}
 
 Cuando firmas con nombre y fecha, declaras públicamente que tu proyecto tiene una persona responsable detrás, no una entidad anónima. La filosofía de la liberación pide ese acto: nombrarse para asumir responsabilidad por el otro. Las empresas grandes a menudo se esconden detrás de razones sociales y términos legales para diluir responsabilidad; el aprendiz que firma su MVP con su nombre propio hace lo contrario. La phronesis del oficio consiste en \textbf{no esconderse detrás del sistema cuando se firma}.
 
@@ -412,7 +453,7 @@ Cuando firmas con nombre y fecha, declaras públicamente que tu proyecto tiene u
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
-\textit{``El oficio bien hecho es la única firma que dura; los atajos firman con tinta que se borra.''}
+\textit{El oficio bien hecho es la única firma que dura; los atajos firman con tinta que se borra.}
 
 Es tentador firmar la versión final sin haber aplicado los ajustes, esperando que la audiencia no se dé cuenta. La disciplina estoica recomienda lo opuesto: \emph{firma solo lo que se puede sostener bajo examen}. La coherencia entre lo prometido y lo entregado es virtud profesional irrenunciable. Quien firma con descuido pierde la única autoridad que la vida le ofrece: el respeto del oficio bien terminado.
 
@@ -422,7 +463,7 @@ Es tentador firmar la versión final sin haber aplicado los ajustes, esperando q
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{``Firmar digitalmente con responsabilidad es la nueva forma de la autoría ética en la infosfera.''}
+\textit{Firmar digitalmente con responsabilidad es la nueva forma de la autoría ética en la infosfera.}
 
 En la era de la información, los proyectos digitales suelen ser anónimos o colectivos diluidos; identificar al autor es ya un acto de ética. La carta abierta firmada te entrena en una práctica que la cultura digital contemporánea ha erosionado: la autoría asumida. Quien firma su MVP escolar con su nombre y fecha hoy se entrena para firmar sus decisiones profesionales mañana. La autoría es la primera línea de la responsabilidad digital.
 
@@ -431,21 +472,24 @@ En la era de la información, los proyectos digitales suelen ser anónimos o col
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

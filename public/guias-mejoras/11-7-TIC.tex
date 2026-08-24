@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 7};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 7};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Apertura\\periodo 2 ---\\pensar como\\teje la\\abuela}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 11-7-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 2 · Algoritmia y pensamiento computacional}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 2 · Algoritmia y pensamiento computacional}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Apertura\\periodo 2 ---\\pensar como\\teje la\\abuela}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 11-7-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} Tu \textbf{cuaderno listo para el periodo 2 de grado 7}: encabezado fijo + \textbf{índice del P2} con las 10 sesiones + \textbf{compromiso firmado} de 5 acuerdos del pensamiento computacional (paciencia, paso a paso, revisar errores, intentar de nuevo, compartir aprendizajes) + \textbf{5 preguntas-radar} sobre algoritmia y Scratch + \textbf{mini-investigación} sobre el tejido tradicional del Cauca (canastos, mochilas, sombreros) y por qué tejer es \emph{algorítmico}.};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Tu \textbf{cuaderno listo para el periodo 2 de grado 7}: encabezado fijo + \textbf{índice del P2} con las 10 sesiones + \textbf{compromiso firmado} de 5 acuerdos del pensamiento computacional (paciencia, paso a paso, revisar errores, intentar de nuevo, compartir aprendizajes) + \textbf{5 preguntas-radar} sobre algoritmia y Scratch + \textbf{mini-investigación} sobre el tejido tradicional del Cauca (canastos, mochilas, sombreros) y por qué tejer es \emph{algorítmico}.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Apertura periodo 2 --- pensar como teje la abuela}
@@ -258,30 +322,27 @@ Producto final & Tu \textbf{cuaderno listo para el periodo 2 de grado 7}: encabe
 
 \puente{Hoy haces 4 cosas: descubres por qué tejer es programar, conoces la ruta, firmas el compromiso, investigas el tejido tradicional.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Empezamos imaginando a la tejedora paso a paso.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- Imagina a doña Sofía tejiendo} (12 min · individual). Cierra los ojos e imagina la escena. Doña Sofía está sentada en una silla baja, con un canasto a medio tejer entre las manos. Ella sigue \textbf{el algoritmo del tejido}. En el cuaderno, responde con tu intuición: \emph{(1) ¿Cuántos pasos diferentes crees que tiene el algoritmo del tejido? (estima)}. \emph{(2) ¿Cuáles pasos crees que se REPITEN varias veces?}. \emph{(3) ¿Qué pasaría si doña Sofía olvida un paso?}. \emph{(4) ¿Cómo sabe doña Sofía cuándo terminar (cuándo el canasto está completo)?}. \emph{(5) ¿Doña Sofía aprendió este algoritmo en una clase, o de otra manera?}. Tus respuestas no son ``correctas'' o ``incorrectas''; son tu intuición inicial.
 \end{softbox}
 
-\checkbox Cerré los ojos e imaginé la escena.\\
-\checkbox Respondí las 5 preguntas con honestidad.\\
-\checkbox Pensé sin copiar al compañero.
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Cerré los ojos e imaginé la escena.}
+\milccheckrow{Respondí las 5 preguntas con honestidad.}
+\milccheckrow{Pensé sin copiar al compañero.}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Después aprendes los 5 acuerdos del pensamiento computacional + ruta del P2.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Lo que descubriste imaginando a doña Sofía es \textbf{pensamiento computacional}. Ahora aprende la ruta del periodo + los 5 acuerdos para llegar bien.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & \textbf{La ruta del P2 --- 10 sesiones organizadas en 3 bloques.} \textbf{Bloque 1 (S2-S4): Algoritmo y diagramas.} Qué es un algoritmo, las 4 técnicas del pensamiento computacional, cómo dibujar un algoritmo. \textbf{Bloque 2 (S5-S7): Componentes de programación.} Variables, condicionales, bucles --- los 3 ladrillos básicos de cualquier programa. \textbf{Bloque 3 (S8-S10): Scratch.} El lenguaje visual del MIT donde aplicas todo lo anterior con bloques. Al final, tu \emph{primer programa interactivo completo}.\\
-2. Reconocimiento de patrones & \textbf{¿Qué es Scratch?} Lenguaje de programación visual creado en el MIT (Estados Unidos) para que niños y jóvenes aprendan a programar. \textbf{No requiere escribir código:} los \emph{bloques} de instrucciones se arrastran y se encajan como piezas de Lego. \textbf{Funciona en cualquier computador con navegador:} entras a \texttt{scratch.mit.edu}, creas tu cuenta gratis (o usas la cuenta institucional), y empiezas a programar. \textbf{Más de 100 millones de proyectos} subidos por chicos de todo el mundo. Algunos son juegos, otros cuentos, otros simuladores. Tú harás los tuyos al final del periodo.\\
-3. Abstracción & \textbf{Los 5 acuerdos del pensamiento computacional.} (1) \textbf{Paciencia:} programar requiere pensar despacio. La primera vez tarda; con práctica se vuelve rápido. (2) \textbf{Paso a paso:} no querer hacer todo de una. Un paso, después otro, después otro. (3) \textbf{Revisar errores con calma:} cuando algo no funciona, eso no es fracaso --- es información. Te dice qué corregir. \emph{Los programadores experimentados pasan más tiempo revisando errores que escribiendo código nuevo}. (4) \textbf{Intentar de nuevo:} si la primera versión no funciona, modificas y vuelves a intentar. \emph{Ningún programa funciona perfecto en el primer intento}. (5) \textbf{Compartir aprendizajes:} cuando descubres algo, lo compartes con el equipo. Programar es deporte colectivo, no solitario.\\
-4. Algoritmo conceptual & \textbf{4 errores típicos al iniciar pensamiento computacional.} (1) \emph{``No soy bueno para esto''} antes de intentar --- nadie nace programador, todos aprenden. (2) \emph{Querer hacer un programa complicado el primer día} --- la S8 empieza con \emph{``el sprite que se mueve''}, no con un videojuego. (3) \emph{Saltarse pasos del razonamiento} --- en algoritmia, saltar 1 paso a veces invalida todo. (4) \emph{Frustrarse cuando aparece un error} --- los errores son tu maestro principal. Sin error, no aprendes a depurar.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{\textbf{La ruta del P2 --- 10 sesiones organizadas en 3 bloques.} \textbf{Bloque 1 (S2-S4): Algoritmo y diagramas.} Qué es un algoritmo, las 4 técnicas del pensamiento computacional, cómo dibujar un algoritmo. \textbf{Bloque 2 (S5-S7): Componentes de programación.} Variables, condicionales, bucles --- los 3 ladrillos básicos de cualquier programa. \textbf{Bloque 3 (S8-S10): Scratch.} El lenguaje visual del MIT donde aplicas todo lo anterior con bloques. Al final, tu \emph{primer programa interactivo completo}.}
+\milcpaso{2}{milcTurquesa}{\textbf{¿Qué es Scratch?} Lenguaje de programación visual creado en el MIT (Estados Unidos) para que niños y jóvenes aprendan a programar. \textbf{No requiere escribir código:} los \emph{bloques} de instrucciones se arrastran y se encajan como piezas de Lego. \textbf{Funciona en cualquier computador con navegador:} entras a \texttt{scratch.mit.edu}, creas tu cuenta gratis (o usas la cuenta institucional), y empiezas a programar. \textbf{Más de 100 millones de proyectos} subidos por chicos de todo el mundo. Algunos son juegos, otros cuentos, otros simuladores. Tú harás los tuyos al final del periodo.}
+\milcpaso{3}{milcTurquesa}{\textbf{Los 5 acuerdos del pensamiento computacional.} (1) \textbf{Paciencia:} programar requiere pensar despacio. La primera vez tarda; con práctica se vuelve rápido. (2) \textbf{Paso a paso:} no querer hacer todo de una. Un paso, después otro, después otro. (3) \textbf{Revisar errores con calma:} cuando algo no funciona, eso no es fracaso --- es información. Te dice qué corregir. \emph{Los programadores experimentados pasan más tiempo revisando errores que escribiendo código nuevo}. (4) \textbf{Intentar de nuevo:} si la primera versión no funciona, modificas y vuelves a intentar. \emph{Ningún programa funciona perfecto en el primer intento}. (5) \textbf{Compartir aprendizajes:} cuando descubres algo, lo compartes con el equipo. Programar es deporte colectivo, no solitario.}
+\milcpaso{4}{milcTurquesa}{\textbf{4 errores típicos al iniciar pensamiento computacional.} (1) \emph{``No soy bueno para esto''} antes de intentar --- nadie nace programador, todos aprenden. (2) \emph{Querer hacer un programa complicado el primer día} --- la S8 empieza con \emph{``el sprite que se mueve''}, no con un videojuego. (3) \emph{Saltarse pasos del razonamiento} --- en algoritmia, saltar 1 paso a veces invalida todo. (4) \emph{Frustrarse cuando aparece un error} --- los errores son tu maestro principal. Sin error, no aprendes a depurar.}
 
 \begin{drawbox}{milcTurquesa}{Ruta P2 + 5 acuerdos}
 \textbf{Ruta P2:} \\[1mm]
@@ -329,23 +383,18 @@ Bloque 3 (S8-S10): Scratch + narrativa + cosecha. \\[1mm]
 
 \puente{Con todo claro, dejas el cuaderno listo + 5 preguntas + investigación.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · CREA --- Cuaderno P2 + 5 preguntas + investigación del tejido} (28 min · individual + tarea en casa). Vas a dejar el cuaderno listo + plantear las preguntas que llevas al periodo + investigar el tejido tradicional como tarea para casa.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & \textbf{Paso 1 --- Índice del P2 + encabezado fijo.} En tu cuaderno de Tecnología (el mismo de P1), abre una página nueva. Escribe el título: \textbf{``Periodo 2 --- Algoritmia y pensamiento computacional''}. Debajo, índice con las 10 sesiones del P2 (mira la ruta de la sistematización).\\
-Patrones & \textbf{Paso 2 --- Los 5 acuerdos firmados.} Después del índice, lista numerada de los 5 acuerdos (paciencia, paso a paso, revisar errores, intentar de nuevo, compartir). Al lado de cada uno, palomita ✓ si te comprometes. Si dudas con alguno, conversa con el profe.\\
-Abstracción & \textbf{Paso 3 --- 5 preguntas-radar.} Después de los acuerdos, lista numerada de 5 preguntas tuyas que esperas que el P2 responda. Sugerencias para inspirarte: \emph{``¿Por qué dicen que tejer es como programar?''}, \emph{``¿Es difícil programar en Scratch?''}, \emph{``¿Puedo hacer un videojuego al final del periodo?''}, \emph{``¿Cómo se llaman los errores en programación?''}.\\
-Algoritmo de armado & \textbf{Paso 4 --- Mini-investigación del tejido.} En la siguiente hoja del cuaderno, abre el espacio: \textbf{``Mini-investigación: el tejido como algoritmo''}. Esta investigación la haces \emph{en casa} esta semana (no en clase). Tareas: \emph{(a) Encuentra a una persona mayor de tu familia o barrio que sepa tejer (puede ser canasto, manilla, suéter, mochila, sombrero). (b) Pregúntale: ¿cuántos pasos básicos tiene el tejido?, ¿qué pasos se repiten?, ¿cómo aprendió ella a tejer?, ¿qué hace si se equivoca?. (c) Anota mínimo 5 datos concretos en el cuaderno.}. Si no tienes a nadie en casa, busca en internet con criterio (aplicando CRAAP de G6).\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{\textbf{Paso 1 --- Índice del P2 + encabezado fijo.} En tu cuaderno de Tecnología (el mismo de P1), abre una página nueva. Escribe el título: \textbf{``Periodo 2 --- Algoritmia y pensamiento computacional''}. Debajo, índice con las 10 sesiones del P2 (mira la ruta de la sistematización).}
+\milcpaso{2}{milcMagenta}{\textbf{Paso 2 --- Los 5 acuerdos firmados.} Después del índice, lista numerada de los 5 acuerdos (paciencia, paso a paso, revisar errores, intentar de nuevo, compartir). Al lado de cada uno, palomita ✓ si te comprometes. Si dudas con alguno, conversa con el profe.}
+\milcpaso{3}{milcMagenta}{\textbf{Paso 3 --- 5 preguntas-radar.} Después de los acuerdos, lista numerada de 5 preguntas tuyas que esperas que el P2 responda. Sugerencias para inspirarte: \emph{``¿Por qué dicen que tejer es como programar?''}, \emph{``¿Es difícil programar en Scratch?''}, \emph{``¿Puedo hacer un videojuego al final del periodo?''}, \emph{``¿Cómo se llaman los errores en programación?''}.}
+\milcpaso{4}{milcMagenta}{\textbf{Paso 4 --- Mini-investigación del tejido.} En la siguiente hoja del cuaderno, abre el espacio: \textbf{``Mini-investigación: el tejido como algoritmo''}. Esta investigación la haces \emph{en casa} esta semana (no en clase). Tareas: \emph{(a) Encuentra a una persona mayor de tu familia o barrio que sepa tejer (puede ser canasto, manilla, suéter, mochila, sombrero). (b) Pregúntale: ¿cuántos pasos básicos tiene el tejido?, ¿qué pasos se repiten?, ¿cómo aprendió ella a tejer?, ¿qué hace si se equivoca?. (c) Anota mínimo 5 datos concretos en el cuaderno.}. Si no tienes a nadie en casa, busca en internet con criterio (aplicando CRAAP de G6).}
+\milcpaso{5}{milcMagenta}{\textbf{Paso 5 --- Sesión 1 con encabezado fijo.} En el cuaderno principal escribe el encabezado: \emph{``Guía: 7° · Periodo 2 · Guía 1 --- Apertura. Fecha: \_\_/\_\_/2026''}. Debajo, anota lo trabajado en las 3 actividades de hoy.}
+\milcpaso{6}{milcMagenta}{\textbf{Paso 6 --- Firma y cierre.} Al final firma con nombre completo y fecha. La próxima clase entras al primer concepto técnico del periodo: \emph{¿qué es un algoritmo?}.}
 
 \begin{drawbox}{milcMagenta}{Antes de cerrar la S1 del P2}
 \checkbox El índice del P2 está con 10 sesiones. \\[1mm]
@@ -368,9 +417,7 @@ Algoritmo de armado & \textbf{Paso 4 --- Mini-investigación del tejido.} En la 
 
 \puente{El producto es el cuaderno P2 inaugural + mini-investigación + compromiso firmado.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Cuaderno P2 inaugural + investigación del tejido + 5 acuerdos firmados}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) Índice del P2 con 10 sesiones. (2) 5 acuerdos firmados con palomita. (3) 5 preguntas-radar personales y específicas. (4) Plan claro de mini-investigación del tejido (con persona o fuente identificada). (5) S1 con encabezado fijo y registro de actividades.
@@ -378,9 +425,7 @@ Producto de la sesión
 
 \puente{Antes de salir, verifica que tu cuaderno tiene los 5 elementos del periodo.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -406,12 +451,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Cerramos con 3 voces sobre por qué pensar paso a paso es de las habilidades más poderosas que existen.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{````Las abuelas tejedoras eran programadoras antes de que se inventara el computador. El saber popular precede a la academia.''''}
+\textit{``Las abuelas tejedoras eran programadoras antes de que se inventara el computador. El saber popular precede a la academia.''}
 
 La academia muchas veces presenta el pensamiento computacional como algo \emph{moderno e importado}. Pero \textbf{las abuelas tejedoras Wayuu, las cesteras del Cauca, las artesanas del Pacífico} lo dominan desde hace siglos. Cuando tejen un patrón complejo, están ejecutando un algoritmo mental: \emph{secuencia, repetición, condicional, variable}. Reconocer eso le devuelve dignidad al saber popular y te recuerda que \emph{no estás aprendiendo algo ajeno; estás aprendiendo en lenguaje computacional algo que tu cultura ya conoce}.
 
@@ -421,7 +464,7 @@ La academia muchas veces presenta el pensamiento computacional como algo \emph{m
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
-\textit{````Quien aprende a pensar paso a paso domina cualquier oficio. La paciencia con el orden es el secreto del trabajo bien hecho.''''}
+\textit{``Quien aprende a pensar paso a paso domina cualquier oficio. La paciencia con el orden es el secreto del trabajo bien hecho.''}
 
 \textbf{La habilidad central del pensamiento computacional es la paciencia paso a paso}. Ni los más rápidos pueden programar sin desglosar el problema en pasos. Quien se apresura, fracasa. Quien va paso a paso, llega. \emph{Esa disciplina --- la paciencia ordenada --- es útil mucho más allá de la programación}: para resolver problemas de matemáticas, organizar viajes, planear estudios, criar hijos. Aprender pensamiento computacional es aprender una forma adulta de pensar.
 
@@ -431,7 +474,7 @@ La academia muchas veces presenta el pensamiento computacional como algo \emph{m
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{````Programar es la nueva alfabetización. No es para todos hacer carrera de programador, pero todos deben entender cómo se programa el mundo en que viven.''''}
+\textit{``Programar es la nueva alfabetización. No es para todos hacer carrera de programador, pero todos deben entender cómo se programa el mundo en que viven.''}
 
 Vivimos en un mundo \textbf{programado}: TikTok te recomienda videos por algoritmo, el banco aprueba créditos por algoritmo, los semáforos cambian por algoritmo. \emph{Si no entiendes nada de cómo funcionan los algoritmos, te conviertes en sujeto pasivo del mundo digital}. Entenderlos --- aunque no programes profesionalmente --- te hace ciudadano alfabetizado del siglo XXI. Este periodo es ese entrenamiento mínimo.
 
@@ -440,21 +483,24 @@ Vivimos en un mundo \textbf{programado}: TikTok te recomienda videos por algorit
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

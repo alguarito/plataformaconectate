@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 7};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 7};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont IA y\\mis tareas ---\\política\\personal\\responsable}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 29-7-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 3 · Inteligencia Artificial}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 3 · Inteligencia Artificial}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont IA y\\mis tareas ---\\política\\personal\\responsable}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 29-7-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} Tu \textbf{política personal de uso de IA en estudios} (1 hoja del cuaderno): \textbf{(a) los 4 usos LEGÍTIMOS de IA en tareas} con ejemplos concretos; \textbf{(b) los 4 usos NO LEGÍTIMOS (trampa)} con ejemplos; \textbf{(c) cómo atribuir IA correctamente} en un trabajo; \textbf{(d) 5 reglas personales} para tu uso de IA durante el año académico; \textbf{(e) ejemplo aplicado}: un caso real donde usaste IA en tarea (cómo lo manejaste). Firma.};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Tu \textbf{política personal de uso de IA en estudios} (1 hoja del cuaderno): \textbf{(a) los 4 usos LEGÍTIMOS de IA en tareas} con ejemplos concretos; \textbf{(b) los 4 usos NO LEGÍTIMOS (trampa)} con ejemplos; \textbf{(c) cómo atribuir IA correctamente} en un trabajo; \textbf{(d) 5 reglas personales} para tu uso de IA durante el año académico; \textbf{(e) ejemplo aplicado}: un caso real donde usaste IA en tarea (cómo lo manejaste). Firma.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: IA y mis tareas --- política personal de uso responsable en estudios}
@@ -258,30 +322,27 @@ Producto final & Tu \textbf{política personal de uso de IA en estudios} (1 hoja
 
 \puente{Hoy haces 4 cosas: distingues uso legítimo de trampa, aprendes a atribuir, defines tu política personal, aplicas a un caso real.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Empezamos con 8 escenarios para clasificar.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · ANALIZA --- 8 escenarios: ¿legítimo o trampa?} (12 min · individual). Lee estos 8 escenarios y marca en el cuaderno LEG (legítimo) o T (trampa), con 1 línea de justificación. \emph{(1) Le pido a ChatGPT que me explique fotosíntesis, después escribo el resumen con mis palabras.} \emph{(2) Le pido a ChatGPT que escriba un ensayo de 2 páginas sobre Bolívar y lo entrego sin cambios.} \emph{(3) Le pido a ChatGPT que me sugiera 5 ángulos para investigar sobre el cambio climático, escojo 1 y desarrollo solo.} \emph{(4) Le pido a ChatGPT que resuelva un problema de matemáticas y copio la respuesta sin entender los pasos.} \emph{(5) Uso ChatGPT para corregir ortografía y gramática de un texto que YO escribí.} \emph{(6) Le pido a ChatGPT que me dé 10 hechos sobre Newton y los pego sin verificar.} \emph{(7) Le pido a ChatGPT que estructure las ideas de mi ensayo, escribo el ensayo aplicando esa estructura.} \emph{(8) Uso ChatGPT para traducir mi tarea de español al inglés, sin saber inglés, y la entrego como prueba de mi nivel de inglés.}
 \end{softbox}
 
-\checkbox Leí los 8 escenarios con calma.\\
-\checkbox Marqué LEG o T en cada uno.\\
-\checkbox {'Identifiqué la regla común': '¿el estudiante aprendió o no?'}
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Leí los 8 escenarios con calma.}
+\milccheckrow{Marqué LEG o T en cada uno.}
+\milccheckrow{{'Identifiqué la regla común': '¿el estudiante aprendió o no?'}}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Después aprendes los 4 usos legítimos + los 4 no legítimos + cómo atribuir.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Tu intuición se afina ahora. Respuestas correctas: \emph{1, 3, 5, 7 = LEGÍTIMOS. 2, 4, 6, 8 = TRAMPA}. Ahora aprende a fondo los 4 usos legítimos + los 4 no + cómo atribuir.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & \textbf{Los 4 usos LEGÍTIMOS de IA en tareas.} \textbf{(1) Como tutor (explicar):} \emph{``Explícame X''}, después escribo el resumen con mis palabras. La IA ayuda a ENTENDER, no a entregar. \textbf{(2) Como corrector:} \emph{``Revisa este texto que YO escribí y dime qué mejorar''}. La IA detecta errores; tú decides cuáles arreglar. \textbf{(3) Como organizador:} \emph{``Ayúdame a estructurar ideas para un ensayo sobre X''}, después YO escribo el ensayo. La IA ayuda con el ARMAZÓN; el contenido es mío. \textbf{(4) Como generador de ideas (brainstorming):} \emph{``Dame 5 ángulos para investigar X''}, escojo 1 y profundizo solo. La IA abre OPCIONES; yo escojo y desarrollo.\\
-2. Reconocimiento de patrones & \textbf{Los 4 usos NO LEGÍTIMOS (trampa).} \textbf{(5) Escribir el ensayo completo} y entregarlo como tuyo. Quitas el aprendizaje, faltas a la honestidad académica. \textbf{(6) Resolver el problema} y copiar respuesta sin entender pasos. No aprendes la metodología. \textbf{(7) Hacer toda la investigación} y solo entregar lo que la IA dice sin verificar ni añadir tu voz. Te haces dependiente. \textbf{(8) Pasar por tu autoría algo 100\% generado por IA.} Es plagio nuevo.\\
-3. Abstracción & \textbf{Cómo atribuir IA correctamente en un trabajo.} La práctica profesional emergente es \textbf{citar la IA como herramienta usada}, no como autor. Ejemplos: \emph{(a) En la introducción del trabajo:} \emph{``En la preparación de este ensayo usé Claude AI para estructurar mis ideas iniciales. Las ideas y el desarrollo son míos''}. \emph{(b) Al final del trabajo (sección Fuentes):} \emph{``Asistencia de IA: ChatGPT (versión gratuita), consultado el [fecha] para [propósito]''}. \emph{(c) En tareas escolares específicas:} \emph{``Nota al profe: usé ChatGPT para revisar mi ortografía. El contenido es propio''}. \textbf{La atribución NO es signo de debilidad: es signo de honestidad académica}. Los profesores valoran que digas la verdad.\\
-4. Algoritmo conceptual & \textbf{Las 5 preguntas para autoevaluar antes de entregar.} Antes de entregar un trabajo donde usaste IA: \textbf{(1) ¿Aprendí algo de este proceso?} Si no, hay problema. \textbf{(2) ¿Puedo explicar este trabajo si el profe me pregunta verbalmente?} Si no, hay problema. \textbf{(3) ¿Mi voz aparece en el trabajo?} Si solo es voz de IA, hay problema. \textbf{(4) ¿Atribuyé el uso de IA?} Si no, hay problema. \textbf{(5) ¿Mi yo de adulto se sentiría orgulloso de cómo lo hice?} Si no, hay problema. \emph{Si las 5 respuestas son SÍ, el uso fue legítimo}.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{\textbf{Los 4 usos LEGÍTIMOS de IA en tareas.} \textbf{(1) Como tutor (explicar):} \emph{``Explícame X''}, después escribo el resumen con mis palabras. La IA ayuda a ENTENDER, no a entregar. \textbf{(2) Como corrector:} \emph{``Revisa este texto que YO escribí y dime qué mejorar''}. La IA detecta errores; tú decides cuáles arreglar. \textbf{(3) Como organizador:} \emph{``Ayúdame a estructurar ideas para un ensayo sobre X''}, después YO escribo el ensayo. La IA ayuda con el ARMAZÓN; el contenido es mío. \textbf{(4) Como generador de ideas (brainstorming):} \emph{``Dame 5 ángulos para investigar X''}, escojo 1 y profundizo solo. La IA abre OPCIONES; yo escojo y desarrollo.}
+\milcpaso{2}{milcTurquesa}{\textbf{Los 4 usos NO LEGÍTIMOS (trampa).} \textbf{(5) Escribir el ensayo completo} y entregarlo como tuyo. Quitas el aprendizaje, faltas a la honestidad académica. \textbf{(6) Resolver el problema} y copiar respuesta sin entender pasos. No aprendes la metodología. \textbf{(7) Hacer toda la investigación} y solo entregar lo que la IA dice sin verificar ni añadir tu voz. Te haces dependiente. \textbf{(8) Pasar por tu autoría algo 100\% generado por IA.} Es plagio nuevo.}
+\milcpaso{3}{milcTurquesa}{\textbf{Cómo atribuir IA correctamente en un trabajo.} La práctica profesional emergente es \textbf{citar la IA como herramienta usada}, no como autor. Ejemplos: \emph{(a) En la introducción del trabajo:} \emph{``En la preparación de este ensayo usé Claude AI para estructurar mis ideas iniciales. Las ideas y el desarrollo son míos''}. \emph{(b) Al final del trabajo (sección Fuentes):} \emph{``Asistencia de IA: ChatGPT (versión gratuita), consultado el [fecha] para [propósito]''}. \emph{(c) En tareas escolares específicas:} \emph{``Nota al profe: usé ChatGPT para revisar mi ortografía. El contenido es propio''}. \textbf{La atribución NO es signo de debilidad: es signo de honestidad académica}. Los profesores valoran que digas la verdad.}
+\milcpaso{4}{milcTurquesa}{\textbf{Las 5 preguntas para autoevaluar antes de entregar.} Antes de entregar un trabajo donde usaste IA: \textbf{(1) ¿Aprendí algo de este proceso?} Si no, hay problema. \textbf{(2) ¿Puedo explicar este trabajo si el profe me pregunta verbalmente?} Si no, hay problema. \textbf{(3) ¿Mi voz aparece en el trabajo?} Si solo es voz de IA, hay problema. \textbf{(4) ¿Atribuyé el uso de IA?} Si no, hay problema. \textbf{(5) ¿Mi yo de adulto se sentiría orgulloso de cómo lo hice?} Si no, hay problema. \emph{Si las 5 respuestas son SÍ, el uso fue legítimo}.}
 
 \begin{drawbox}{milcTurquesa}{4 legítimos + 4 trampa + atribución + 5 preguntas}
 \textbf{4 LEGÍTIMOS:} tutor · corrector · organizador · generador de ideas. \\[1mm]
@@ -328,23 +382,18 @@ Tu intuición se afina ahora. Respuestas correctas: \emph{1, 3, 5, 7 = LEGÍTIMO
 
 \puente{Con todo claro, escribes tu política personal de IA en estudios.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · CREA --- Mi política personal de uso de IA en estudios} (28 min · individual). Vas a escribir el documento que regirá tu uso de IA en estudios durante el año académico.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & \textbf{Paso 1 --- Título y dedicatoria.} En el cuaderno escribe: \textbf{``Mi política personal de uso de IA en estudios''}. Debajo: \emph{``[Tu nombre], grado 7°, año académico 2026''}.\\
-Patrones & \textbf{Paso 2 --- Los 4 usos LEGÍTIMOS con MI ejemplo concreto.} Lista numerada con: nombre del uso + ejemplo específico de cómo lo aplicaré. Ejemplo: \emph{``1. Como tutor: si no entiendo derivadas, le pido a ChatGPT que me las explique con un ejemplo del fútbol. Después escribo el resumen con mis palabras en el cuaderno. La IA ayuda a entender, no a entregar''}. Adapta los 4 a tu vida.\\
-Abstracción & \textbf{Paso 3 --- Los 4 usos NO LEGÍTIMOS que me COMPROMETO a NO hacer.} Lista numerada con: nombre + por qué no lo haré. Ejemplo: \emph{``1. NO escribiré ensayos completos con IA y los pasaré como míos, porque eso me quita el oficio de aprender a escribir y faltaría a la honestidad académica''}. Adapta los 4 a tu vida.\\
-Algoritmo de armado & \textbf{Paso 4 --- Plantilla de atribución que voy a usar.} Escribe en el cuaderno la plantilla concreta que vas a usar cuando uses IA en un trabajo. Ejemplo: \emph{``Asistencia de IA: en este trabajo usé [nombre del LLM] para [propósito específico]. Las ideas y el desarrollo son míos.''}. Guarda esa plantilla; la copiarás en futuros trabajos.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{\textbf{Paso 1 --- Título y dedicatoria.} En el cuaderno escribe: \textbf{``Mi política personal de uso de IA en estudios''}. Debajo: \emph{``[Tu nombre], grado 7°, año académico 2026''}.}
+\milcpaso{2}{milcMagenta}{\textbf{Paso 2 --- Los 4 usos LEGÍTIMOS con MI ejemplo concreto.} Lista numerada con: nombre del uso + ejemplo específico de cómo lo aplicaré. Ejemplo: \emph{``1. Como tutor: si no entiendo derivadas, le pido a ChatGPT que me las explique con un ejemplo del fútbol. Después escribo el resumen con mis palabras en el cuaderno. La IA ayuda a entender, no a entregar''}. Adapta los 4 a tu vida.}
+\milcpaso{3}{milcMagenta}{\textbf{Paso 3 --- Los 4 usos NO LEGÍTIMOS que me COMPROMETO a NO hacer.} Lista numerada con: nombre + por qué no lo haré. Ejemplo: \emph{``1. NO escribiré ensayos completos con IA y los pasaré como míos, porque eso me quita el oficio de aprender a escribir y faltaría a la honestidad académica''}. Adapta los 4 a tu vida.}
+\milcpaso{4}{milcMagenta}{\textbf{Paso 4 --- Plantilla de atribución que voy a usar.} Escribe en el cuaderno la plantilla concreta que vas a usar cuando uses IA en un trabajo. Ejemplo: \emph{``Asistencia de IA: en este trabajo usé [nombre del LLM] para [propósito específico]. Las ideas y el desarrollo son míos.''}. Guarda esa plantilla; la copiarás en futuros trabajos.}
+\milcpaso{5}{milcMagenta}{\textbf{Paso 5 --- Las 5 preguntas de autoevaluación.} Reproduce las 5 preguntas con tus palabras: \emph{(1) ¿Aprendí algo?}, \emph{(2) ¿Puedo explicar verbalmente?}, \emph{(3) ¿Mi voz está?}, \emph{(4) ¿Atribuí?}, \emph{(5) ¿Mi yo adulto orgulloso?}. Subráyalas: te las harás antes de cada entrega.}
+\milcpaso{6}{milcMagenta}{\textbf{Paso 6 --- Ejemplo aplicado + firma comprometida.} Recuerda 1 vez en que usaste IA en tarea (o imagina). Aplícale tu política: \emph{¿fue legítimo? ¿qué hubiera hecho distinto?}. Escribe en 4-5 líneas. Después firma con: \emph{``Me comprometo a seguir esta política durante mi vida académica. Firmado, [nombre], [fecha]''}. Esta firma vale más que cualquier promesa: te compromete contigo mismo.}
 
 \begin{drawbox}{milcMagenta}{Antes de cerrar la S9}
 \checkbox Mi política tiene los 4 usos legítimos con ejemplos concretos míos. \\[1mm]
@@ -367,9 +416,7 @@ Algoritmo de armado & \textbf{Paso 4 --- Plantilla de atribución que voy a usar
 
 \puente{El producto es esa política firmada + ejemplo aplicado.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Política personal de uso de IA en estudios · 6 secciones · firmada comprometida}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) Los 4 usos legítimos tienen ejemplos concretos del estudiante. (2) Los 4 usos no legítimos tienen compromiso explícito. (3) La plantilla de atribución está lista para usar. (4) Las 5 preguntas de autoevaluación están subrayadas. (5) Hay ejemplo aplicado a un caso real o imaginado.
@@ -377,9 +424,7 @@ Producto de la sesión
 
 \puente{Antes de salir, intercambia tu política con un compañero --- ¿se parecen?.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -405,12 +450,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Cerramos con 3 voces sobre por qué el aprendizaje real no se reemplaza con IA.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{````Lo que aprendes con esfuerzo te pertenece. Lo que obtienes con atajos, no es tuyo. El esfuerzo es lo que convierte el conocimiento en sabiduría propia.''''}
+\textit{``Lo que aprendes con esfuerzo te pertenece. Lo que obtienes con atajos, no es tuyo. El esfuerzo es lo que convierte el conocimiento en sabiduría propia.''}
 
 Pedro y Lucía de la historia de doña Mercedes pasaron de grado igual. Pero \emph{el conocimiento que Pedro tenía era suyo}; el de Lucía no. \textbf{Cuando usas IA para evitar esfuerzo, te haces Lucía}. Cuando la usas como asistente legítimo (tutor, corrector, organizador, generador de ideas), \emph{te haces Pedro con asistente}. La diferencia se acumula año tras año. \emph{Cada decisión sobre IA en tareas es voto por tu yo de 20 años: ¿quiero saber o quiero solo haber pasado de grado?}.
 
@@ -420,7 +463,7 @@ Pedro y Lucía de la historia de doña Mercedes pasaron de grado igual. Pero \em
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
-\textit{````La integridad es la única posesión que no te pueden quitar. Pero tú mismo puedes regalarla con tus decisiones diarias.''''}
+\textit{``La integridad es la única posesión que no te pueden quitar. Pero tú mismo puedes regalarla con tus decisiones diarias.''}
 
 Cada vez que decides usar IA con criterio o sin él, \textbf{estás formando o desformando tu integridad personal}. Los profes no siempre detectan trampas; los compañeros pueden no saber. Pero \emph{tú sí sabes}. Esa conciencia interior es lo que el estoico cultiva. \emph{Tu política personal es promesa contigo mismo, no con el profe}. Cumplirla te hace persona íntegra; romperla te degrada.
 
@@ -430,7 +473,7 @@ Cada vez que decides usar IA con criterio o sin él, \textbf{estás formando o d
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{````Los estudiantes que aprendan a usar IA con criterio en grado 7 serán los profesionales del futuro. Los que solo copien, serán reemplazados por IAs mejores.''''}
+\textit{``Los estudiantes que aprendan a usar IA con criterio en grado 7 serán los profesionales del futuro. Los que solo copien, serán reemplazados por IAs mejores.''}
 
 \textbf{El mercado laboral del futuro no premia a quien copia de IA}: premia a quien usa IA como asistente y agrega valor humano genuino. Si solo entregas lo que la IA dice, \emph{cualquier persona con acceso a IA puede hacer lo mismo}. Tu valor profesional viene de \emph{tu criterio, tu voz, tu capacidad de evaluar y mejorar lo que la IA produce}. Aprender eso en 7° grado es invertir años de carrera profesional.
 
@@ -439,21 +482,24 @@ Cada vez que decides usar IA con criterio o sin él, \textbf{estás formando o d
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

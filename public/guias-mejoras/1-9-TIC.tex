@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 9};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 9};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont ¿Qué es técnica? ---\\del cuerpo\\al instrumento}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 1-9-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 1 · Historia de la técnica}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 1 · Historia de la técnica}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont ¿Qué es técnica? ---\\del cuerpo\\al instrumento}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 1-9-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} Definición personal de técnica (1 párrafo) + 5 ejemplos contextualizados al estudiante};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Definición personal de técnica (1 párrafo) + 5 ejemplos contextualizados al estudiante
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: ¿Qué es técnica? --- del cuerpo al instrumento}
@@ -258,30 +322,27 @@ Producto final & Definición personal de técnica (1 párrafo) + 5 ejemplos cont
 
 \puente{Antes de empezar, mira el viaje completo del año --- diez sesiones para entender la historia de la técnica, desde el primer cuchillo de piedra hasta el chip de tu celular. Hoy es el punto de partida: definir qué entiendes \emph{tú} por técnica.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Antes de hablar de fábricas, computadores o robots, vamos a mirar lo más antiguo: tu propio cuerpo y los objetos cotidianos que lo extienden. Sin esa observación previa, cualquier idea de ``técnica'' que tengas será prestada de televisión o de fotos --- no tuya.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- Técnicas en tu cotidianidad} (15 min · individual). Sin moverte de donde estás, identifica \textbf{5 objetos} en tu entorno que extienden tu cuerpo: pueden ser tan obvios como un lápiz o tan sutiles como una silla. Para cada uno: ¿qué hace ese objeto que tu cuerpo solo no puede hacer (o hace peor)?
 \end{softbox}
 
-\checkbox Identifiqué 5 objetos cotidianos como extensiones del cuerpo.\\
-\checkbox Para cada uno anoté qué función amplía o reemplaza del cuerpo humano.\\
-\checkbox Distinguí entre los que ``casi no noto'' y los que aún siento ``nuevos''.
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Identifiqué 5 objetos cotidianos como extensiones del cuerpo.}
+\milccheckrow{Para cada uno anoté qué función amplía o reemplaza del cuerpo humano.}
+\milccheckrow{Distinguí entre los que ``casi no noto'' y los que aún siento ``nuevos''.}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Ya observaste técnicas en tu cotidianidad. Ahora vamos a entender las \textbf{tres etapas} que toda técnica humana ha recorrido: cuerpo, herramienta y máquina. Distinguirlas con criterio te dará un mapa para entender cualquier tecnología que veas el resto del año.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Toda técnica humana sigue tres etapas que se acumulan, no se reemplazan. Las vamos a descomponer con los pilares del pensamiento computacional para que tengas un mapa claro.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & Una técnica se descompone en tres etapas: (1) \textbf{cuerpo} (el órgano hace el trabajo: la mano corta, la voz cuenta, la memoria guarda), (2) \textbf{herramienta} (el objeto que extiende el cuerpo: cuchillo, ábaco, libro), (3) \textbf{máquina} (sistema que automatiza el trabajo: trapiche, calculadora, computador).\\
-2. Reconocimiento de patrones & Toda técnica fuerte sigue el patrón \emph{``del gesto al sistema''}: primero se hace con el cuerpo, después se inventa la herramienta, después se construye la máquina que repite la herramienta. Pero cuerpo, herramienta y máquina conviven --- ningún paso elimina al anterior.\\
-3. Abstracción & Lo esencial de la técnica cabe en una pregunta: \emph{¿esta técnica amplía el cuerpo o lo reemplaza?}. La diferencia es ética: ampliarlo te da autonomía, reemplazarlo te puede quitar capacidades.\\
-4. Algoritmo conceptual & Pasos para analizar cualquier objeto técnico: (1) ¿qué función corporal extiende?; (2) ¿qué tan automatizado está (cuerpo / herramienta / máquina)?; (3) ¿amplía o reemplaza el cuerpo?; (4) ¿qué pasaría si dejara de existir?\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{Una técnica se descompone en tres etapas: (1) \textbf{cuerpo} (el órgano hace el trabajo: la mano corta, la voz cuenta, la memoria guarda), (2) \textbf{herramienta} (el objeto que extiende el cuerpo: cuchillo, ábaco, libro), (3) \textbf{máquina} (sistema que automatiza el trabajo: trapiche, calculadora, computador).}
+\milcpaso{2}{milcTurquesa}{Toda técnica fuerte sigue el patrón \emph{``del gesto al sistema''}: primero se hace con el cuerpo, después se inventa la herramienta, después se construye la máquina que repite la herramienta. Pero cuerpo, herramienta y máquina conviven --- ningún paso elimina al anterior.}
+\milcpaso{3}{milcTurquesa}{Lo esencial de la técnica cabe en una pregunta: \emph{¿esta técnica amplía el cuerpo o lo reemplaza?}. La diferencia es ética: ampliarlo te da autonomía, reemplazarlo te puede quitar capacidades.}
+\milcpaso{4}{milcTurquesa}{Pasos para analizar cualquier objeto técnico: (1) ¿qué función corporal extiende?; (2) ¿qué tan automatizado está (cuerpo / herramienta / máquina)?; (3) ¿amplía o reemplaza el cuerpo?; (4) ¿qué pasaría si dejara de existir?}
 
 \begin{drawbox}{milcTurquesa}{Anatomía de un análisis técnico}
 \textbf{Función corporal:} ¿qué del cuerpo extiende? (mano, voz, memoria, vista, oído). \\[1mm] \textbf{Etapa:} ¿cuerpo, herramienta o máquina? \\[1mm] \textbf{Relación con el cuerpo:} ¿amplía (le da más fuerza) o reemplaza (lo deja sin función)? \\[1mm] \textbf{Origen:} ¿es un objeto local, importado, ancestral, industrial? \\[1mm] \textbf{Dependencia:} si desapareciera, ¿qué cambiaría en tu vida?
@@ -325,23 +379,16 @@ Toda técnica humana sigue tres etapas que se acumulan, no se reemplazan. Las va
 
 \puente{Tienes el mapa. Toca tomar posición: ¿qué es la técnica para ti, después de mirar tu cotidianidad y entender la historia? La definición que escribas hoy va a ser tu ancla durante todo el periodo --- la vas a comparar con la que tendrás al final.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · CREA --- Tu definición personal de técnica} (25 min · individual). Hora de tomar posición. Vas a escribir 1 párrafo con tu propia definición de técnica + 5 ejemplos concretos de tu vida. Esta definición será tu ancla durante todo el periodo.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & Tu definición se descompone en 3 partes: (1) qué es la técnica (en una frase tuya), (2) qué la diferencia del cuerpo desnudo y de la máquina automática, (3) qué papel cumple en la vida humana.\\
-Patrones & Sigue el patrón ``frase fuerte + ejemplo cotidiano + ancla local'': cada idea abstracta de tu definición debe poder demostrarse con un objeto que ves o usas en tu día.\\
-Abstracción & Cada ejemplo expresa una sola idea. Si tu ejemplo de ``celular'' dice 3 cosas distintas (recordar, comunicar, distraer), pártelo en 3 frases o elige una. Mejor 5 ejemplos claros que 10 confusos.\\
-Algoritmo de armado & Algoritmo de escritura: (1) responde mentalmente: ``si tuviera que explicarle a un niño qué es la técnica, ¿qué diría?''; (2) escribe esa frase; (3) lista 5 objetos de tu vida que la prueban; (4) pule la frase para que ninguna palabra sobre.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{Tu definición se descompone en 3 partes: (1) qué es la técnica (en una frase tuya), (2) qué la diferencia del cuerpo desnudo y de la máquina automática, (3) qué papel cumple en la vida humana.}
+\milcpaso{2}{milcMagenta}{Sigue el patrón ``frase fuerte + ejemplo cotidiano + ancla local'': cada idea abstracta de tu definición debe poder demostrarse con un objeto que ves o usas en tu día.}
+\milcpaso{3}{milcMagenta}{Cada ejemplo expresa una sola idea. Si tu ejemplo de ``celular'' dice 3 cosas distintas (recordar, comunicar, distraer), pártelo en 3 frases o elige una. Mejor 5 ejemplos claros que 10 confusos.}
+\milcpaso{4}{milcMagenta}{Algoritmo de escritura: (1) responde mentalmente: ``si tuviera que explicarle a un niño qué es la técnica, ¿qué diría?''; (2) escribe esa frase; (3) lista 5 objetos de tu vida que la prueban; (4) pule la frase para que ninguna palabra sobre.}
 
 \begin{drawbox}{milcMagenta}{Checklist antes de cerrar el cuaderno}
 \checkbox La definición es UNA frase (no un párrafo confuso). \\[1mm] \checkbox La definición está en tus palabras (no copia del libro). \\[1mm] \checkbox 5 ejemplos concretos de tu cotidianidad (no genéricos). \\[1mm] \checkbox Al menos 1 ejemplo es de la tradición local (oficio, instrumento del Valle, saber ancestral). \\[1mm] \checkbox Puedes leer todo en voz alta sin avergonzarte ni inflarte.
@@ -359,9 +406,7 @@ Algoritmo de armado & Algoritmo de escritura: (1) responde mentalmente: ``si tuv
 
 \puente{Lo que sigue es el resumen de qué entregas hoy: 1 párrafo con tu definición personal de técnica + 5 ejemplos. El criterio es simple: que tu definición no sea una copia del diccionario, y que cada ejemplo sea concreto de tu vida.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Definición personal de técnica + 5 ejemplos contextualizados}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) La definición cabe en UNA frase clara. (2) La definición está en palabras tuyas (no del diccionario). (3) 5 ejemplos numerados, cada uno con un objeto concreto de tu vida. (4) Al menos 1 ejemplo está anclado en una tradición local o ancestral. (5) El conjunto se lee en voz alta sin tropezar.
@@ -369,9 +414,7 @@ Producto de la sesión
 
 \puente{Antes de cerrar, mira tu trabajo desde las cinco dimensiones humanas. Definir qué es la técnica no es solo un ejercicio académico: es un acto personal, emocional, ciudadano, local y generacional --- y vale la pena nombrar por qué.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -397,12 +440,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Y para terminar, tres voces antiguas que te van a acompañar todo el grado 9. Dussel sobre la técnica como acto político, Marco Aurelio sobre la técnica del cuidado de uno mismo, Floridi sobre la técnica como condición de la infoesfera. No los memorices --- escúchalos.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{``Ninguna técnica es neutral; siempre sirve a un proyecto histórico.''}
+\textit{Ninguna técnica es neutral; siempre sirve a un proyecto histórico.}
 
 Toda técnica responde a una pregunta humana --- pero la pregunta no es la misma para todos. La técnica de la conquista buscaba dominar; la técnica del oficio campesino buscaba sostener la vida. Preguntar \emph{a quién sirve} una técnica es el primer acto de pensamiento crítico sobre ella. Heredas técnicas: decide para qué proyecto las vas a usar.
 
@@ -412,7 +453,7 @@ Toda técnica responde a una pregunta humana --- pero la pregunta no es la misma
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
-\textit{``Cada gesto del cuerpo, cuando se hace con atención, es un acto técnico.''}
+\textit{Cada gesto del cuerpo, cuando se hace con atención, es un acto técnico.}
 
 Los estoicos entendían que la técnica más antigua es la del cuidado del propio cuerpo y la propia mente: la respiración, el caminar, el escribir a mano, el dormir bien. Antes de cualquier máquina hubo y hay una \emph{téchne} del vivir. La pregunta no es ``¿qué máquina necesito?'', sino ``¿qué gesto debo aprender bien antes de pedirle a la máquina que me reemplace?''.
 
@@ -422,7 +463,7 @@ Los estoicos entendían que la técnica más antigua es la del cuidado del propi
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{``La técnica re-ontologiza el mundo: cambia lo que el mundo es, no solo lo que hacemos en él.''}
+\textit{La técnica re-ontologiza el mundo: cambia lo que el mundo es, no solo lo que hacemos en él.}
 
 Cuando una técnica entra en tu vida, no solo te ayuda a hacer cosas: cambia lo que ``hacer cosas'' significa para ti. Antes del celular, esperar al bus era un tiempo vacío; ahora es tiempo de pantalla. Antes de la calculadora, hacer cuentas era ejercicio mental; ahora es tarea pendiente. Cada técnica reescribe la infoesfera humana --- y nosotros con ella.
 
@@ -431,21 +472,24 @@ Cuando una técnica entra en tu vida, no solo te ayuda a hacer cosas: cambia lo 
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

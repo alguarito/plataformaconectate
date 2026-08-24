@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 7};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 7};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Modelos de\\lenguaje\\(LLMs) ---\\ChatGPT,\\Claude, Gemini}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 25-7-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 3 · Inteligencia Artificial}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 3 · Inteligencia Artificial}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Modelos de\\lenguaje\\(LLMs) ---\\ChatGPT,\\Claude, Gemini}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 25-7-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} \textbf{3 conversaciones reales con un LLM} gratuito (puedes usar ChatGPT, Claude, Gemini o Copilot), guardadas en capturas o transcritas en el cuaderno. \textbf{Tema sugerido para las 3:} \emph{(1) ``Explícame algo que me cueste entender de matemáticas''}, \emph{(2) ``Recomiéndame 3 libros de un género que me guste''}, \emph{(3) ``Ayúdame a redactar un correo formal al profe''}. Más \textbf{tabla comparativa} (en cuaderno) de 3 LLMs principales (ChatGPT vs Claude vs Gemini) + \textbf{análisis} de las 5 cosas que SÍ pueden y las 5 que NO pueden hacer.};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+\textbf{3 conversaciones reales con un LLM} gratuito (puedes usar ChatGPT, Claude, Gemini o Copilot), guardadas en capturas o transcritas en el cuaderno. \textbf{Tema sugerido para las 3:} \emph{(1) ``Explícame algo que me cueste entender de matemáticas''}, \emph{(2) ``Recomiéndame 3 libros de un género que me guste''}, \emph{(3) ``Ayúdame a redactar un correo formal al profe''}. Más \textbf{tabla comparativa} (en cuaderno) de 3 LLMs principales (ChatGPT vs Claude vs Gemini) + \textbf{análisis} de las 5 cosas que SÍ pueden y las 5 que NO pueden hacer.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Modelos de lenguaje (LLMs) --- ChatGPT, Claude, Gemini}
@@ -258,30 +322,27 @@ Producto final & \textbf{3 conversaciones reales con un LLM} gratuito (puedes us
 
 \puente{Hoy haces 4 cosas: distingues los 3 LLMs principales, abres uno y conversas 3 veces, evalúas sus respuestas, analizas qué pueden y qué no.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Empezamos planeando las 3 conversaciones.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- Planea tus 3 conversaciones} (10 min · individual). En el cuaderno, planea las 3 preguntas que vas a hacerle al LLM. \textbf{Conversación 1: Aprender algo difícil.} Escoge un concepto de matemáticas o ciencias que te cueste. Anota: \emph{``Voy a pedirle que me explique [concepto] de manera fácil''}. \textbf{Conversación 2: Recomendaciones.} Anota un género de libros que te guste (aventura, ciencia ficción, romance) y pide 3 títulos. \textbf{Conversación 3: Redactar algo.} Piensa en un correo formal que tengas que escribir (al profe, al coordinador). Anota qué quieres pedir y a quién.
 \end{softbox}
 
-\checkbox Pensé en un concepto que me cueste para Conv. 1.\\
-\checkbox Identifiqué mi género favorito para Conv. 2.\\
-\checkbox Definí qué correo formal necesito para Conv. 3.
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Pensé en un concepto que me cueste para Conv. 1.}
+\milccheckrow{Identifiqué mi género favorito para Conv. 2.}
+\milccheckrow{Definí qué correo formal necesito para Conv. 3.}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Después aprendes los 3 LLMs principales + sus 5 capacidades y 5 limitaciones.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Antes de abrir el LLM, conoce los 3 principales + sus 5 capacidades + sus 5 limitaciones. Eso te coloca en posición de evaluar las respuestas, no solo aceptarlas.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & \textbf{Los 3 LLMs principales en 2026.} \textbf{(1) ChatGPT (OpenAI).} El primer LLM masivo (nov 2022). Versión gratuita: GPT-4o-mini en \texttt{chat.openai.com}. Conocido por ser muy versátil. Tiene memoria entre conversaciones en cuenta paga. \textbf{(2) Claude (Anthropic).} Conocido por respuestas cuidadosas, largas y bien estructuradas. Versión gratuita en \texttt{claude.ai}. Bueno para análisis profundo, ensayos, código. Anthropic se enfoca en \emph{seguridad} de IA. \textbf{(3) Gemini (Google).} Integrado con servicios Google. Acceso en \texttt{gemini.google.com}. Bueno para tareas que se conectan con Gmail, Drive, Maps. Versión gratuita incluida.\\
-2. Reconocimiento de patrones & \textbf{Las 5 cosas que SÍ pueden hacer los LLMs.} (1) \textbf{Explicar conceptos.} Pídele que te explique \emph{``derivadas''}, \emph{``fotosíntesis''}, \emph{``constitución colombiana''}: te dará explicación clara. (2) \textbf{Ayudar a estructurar texto.} Si tienes un ensayo en borrador, te puede sugerir estructura mejor. (3) \textbf{Traducir.} Inglés-español, español-francés, cualquier par. Mejor que Google Translate para frases complejas. (4) \textbf{Resumir.} Le pegas un texto largo y te lo resume en 5 puntos. (5) \textbf{Generar ideas.} Lluvia de ideas: nombres para un proyecto, temas para investigar, formas de empezar un texto.\\
-3. Abstracción & \textbf{Las 5 cosas que NO pueden hacer.} (1) \textbf{No tienen información en tiempo real.} Si preguntas \emph{``¿qué pasó hoy en las noticias?''}, te dirá ``no tengo acceso a noticias en tiempo real''. Excepción: versiones con búsqueda web. (2) \textbf{Alucinan.} Inventan datos con seguridad. Si pides \emph{``cita una obra de Borges que hable de Cartago''}, puede inventar una cita falsa. (3) \textbf{No recuerdan entre conversaciones} (en versión gratuita). Cada conversación nueva arranca de cero. (4) \textbf{No tienen contexto personal.} No saben tu nombre, tu colegio, tus calificaciones. Cada vez que abres conversación, eres anónimo. (5) \textbf{No pueden hacer cálculos exactos largos sin error.} Si pides \emph{``cuánto es 6738 × 9281''}, puede dar respuesta incorrecta. Para mate exacta, usa calculadora.\\
-4. Algoritmo conceptual & \textbf{Cómo conversar bien con un LLM (preparación para S6).} \emph{(a) Saluda y da contexto:} \emph{``Soy estudiante de 7° grado en Colombia''}. Eso ayuda al LLM a adaptar tono. \emph{(b) Sé específico en lo que pides:} \emph{``Explícame el teorema de Pitágoras con un ejemplo del fútbol''} es mejor que \emph{``explícame Pitágoras''}. \emph{(c) Si no entiendes la respuesta, pide más:} \emph{``No entendí, ¿lo puedes explicar más simple?''}. La IA puede iterar. \emph{(d) Verifica lo que dice} (acuerdo 1 de la S1). Si te da un dato importante, verifica en otra fuente. \emph{(e) Aplica criterio} (acuerdo 4): si la respuesta no convence, pídele que la justifique o cámbiale el enfoque.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{\textbf{Los 3 LLMs principales en 2026.} \textbf{(1) ChatGPT (OpenAI).} El primer LLM masivo (nov 2022). Versión gratuita: GPT-4o-mini en \texttt{chat.openai.com}. Conocido por ser muy versátil. Tiene memoria entre conversaciones en cuenta paga. \textbf{(2) Claude (Anthropic).} Conocido por respuestas cuidadosas, largas y bien estructuradas. Versión gratuita en \texttt{claude.ai}. Bueno para análisis profundo, ensayos, código. Anthropic se enfoca en \emph{seguridad} de IA. \textbf{(3) Gemini (Google).} Integrado con servicios Google. Acceso en \texttt{gemini.google.com}. Bueno para tareas que se conectan con Gmail, Drive, Maps. Versión gratuita incluida.}
+\milcpaso{2}{milcTurquesa}{\textbf{Las 5 cosas que SÍ pueden hacer los LLMs.} (1) \textbf{Explicar conceptos.} Pídele que te explique \emph{``derivadas''}, \emph{``fotosíntesis''}, \emph{``constitución colombiana''}: te dará explicación clara. (2) \textbf{Ayudar a estructurar texto.} Si tienes un ensayo en borrador, te puede sugerir estructura mejor. (3) \textbf{Traducir.} Inglés-español, español-francés, cualquier par. Mejor que Google Translate para frases complejas. (4) \textbf{Resumir.} Le pegas un texto largo y te lo resume en 5 puntos. (5) \textbf{Generar ideas.} Lluvia de ideas: nombres para un proyecto, temas para investigar, formas de empezar un texto.}
+\milcpaso{3}{milcTurquesa}{\textbf{Las 5 cosas que NO pueden hacer.} (1) \textbf{No tienen información en tiempo real.} Si preguntas \emph{``¿qué pasó hoy en las noticias?''}, te dirá ``no tengo acceso a noticias en tiempo real''. Excepción: versiones con búsqueda web. (2) \textbf{Alucinan.} Inventan datos con seguridad. Si pides \emph{``cita una obra de Borges que hable de Cartago''}, puede inventar una cita falsa. (3) \textbf{No recuerdan entre conversaciones} (en versión gratuita). Cada conversación nueva arranca de cero. (4) \textbf{No tienen contexto personal.} No saben tu nombre, tu colegio, tus calificaciones. Cada vez que abres conversación, eres anónimo. (5) \textbf{No pueden hacer cálculos exactos largos sin error.} Si pides \emph{``cuánto es 6738 × 9281''}, puede dar respuesta incorrecta. Para mate exacta, usa calculadora.}
+\milcpaso{4}{milcTurquesa}{\textbf{Cómo conversar bien con un LLM (preparación para S6).} \emph{(a) Saluda y da contexto:} \emph{``Soy estudiante de 7° grado en Colombia''}. Eso ayuda al LLM a adaptar tono. \emph{(b) Sé específico en lo que pides:} \emph{``Explícame el teorema de Pitágoras con un ejemplo del fútbol''} es mejor que \emph{``explícame Pitágoras''}. \emph{(c) Si no entiendes la respuesta, pide más:} \emph{``No entendí, ¿lo puedes explicar más simple?''}. La IA puede iterar. \emph{(d) Verifica lo que dice} (acuerdo 1 de la S1). Si te da un dato importante, verifica en otra fuente. \emph{(e) Aplica criterio} (acuerdo 4): si la respuesta no convence, pídele que la justifique o cámbiale el enfoque.}
 
 \begin{drawbox}{milcTurquesa}{3 LLMs + 5 SÍ pueden + 5 NO pueden}
 \textbf{3 LLMs principales:} \\[1mm]
@@ -330,23 +384,18 @@ Antes de abrir el LLM, conoce los 3 principales + sus 5 capacidades + sus 5 limi
 
 \puente{Con todo claro, abres un LLM gratuito y haces las 3 conversaciones reales.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · APLICA --- 3 conversaciones reales con un LLM} (35 min · individual). Vas a abrir un LLM gratuito y conversar 3 veces con él. Sé honesto sobre tus dudas y aprende a evaluar las respuestas.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & \textbf{Paso 1 --- Abre un LLM gratuito.} Decide cuál usar. Recomendaciones para 7° grado: \emph{Claude} (en \texttt{claude.ai}, no requiere cuenta para 5 mensajes), \emph{ChatGPT} (en \texttt{chat.openai.com}, requiere cuenta gratis), \emph{Gemini} (en \texttt{gemini.google.com}, con cuenta Google). Inicia con el que tengas más fácil acceso.\\
-Patrones & \textbf{Paso 2 --- Conversación 1: Aprender algo difícil.} Toma el concepto que planeaste en Actividad 1. Escribe en el LLM: \emph{``Soy estudiante de 7° grado en Colombia. Necesito que me expliques [concepto] de manera sencilla, con un ejemplo concreto que pueda entender. Si después no entiendo, te pido que lo expliques distinto''}. Lee la respuesta. Si no entiendes, pide otra explicación. Conversa hasta que entiendas. \textbf{Anota en el cuaderno:} la pregunta inicial + 2-3 líneas de la respuesta clave + ¿entendiste mejor? ¿qué te ayudó?.\\
-Abstracción & \textbf{Paso 3 --- Conversación 2: Pedir recomendaciones.} Escribe: \emph{``Soy estudiante de 7° grado. Me gusta [género]. Recomiéndame 3 libros que me podrían gustar, con 1 línea de descripción cada uno''}. Recibe la respuesta. \textbf{Importante:} verifica al menos 1 de los libros recomendados. Búscalo en Google o en biblioteca. ¿Existe? Esto te entrena en \emph{verificación} (acuerdo 1).\\
-Algoritmo de armado & \textbf{Paso 4 --- Conversación 3: Redactar un correo formal.} Escribe: \emph{``Necesito redactar un correo formal al profe de Tecnología pidiéndole [tu pregunta]. ¿Me puedes ayudar con el borrador? Quiero que tenga las 5 partes formales''}. Recibe el borrador. \textbf{Importante:} no lo copies tal cual. Léelo. Adáptalo a tu voz. Cambia cosas que no suenan a ti. Esto practica el acuerdo 5 (voz propia).\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{\textbf{Paso 1 --- Abre un LLM gratuito.} Decide cuál usar. Recomendaciones para 7° grado: \emph{Claude} (en \texttt{claude.ai}, no requiere cuenta para 5 mensajes), \emph{ChatGPT} (en \texttt{chat.openai.com}, requiere cuenta gratis), \emph{Gemini} (en \texttt{gemini.google.com}, con cuenta Google). Inicia con el que tengas más fácil acceso.}
+\milcpaso{2}{milcMagenta}{\textbf{Paso 2 --- Conversación 1: Aprender algo difícil.} Toma el concepto que planeaste en Actividad 1. Escribe en el LLM: \emph{``Soy estudiante de 7° grado en Colombia. Necesito que me expliques [concepto] de manera sencilla, con un ejemplo concreto que pueda entender. Si después no entiendo, te pido que lo expliques distinto''}. Lee la respuesta. Si no entiendes, pide otra explicación. Conversa hasta que entiendas. \textbf{Anota en el cuaderno:} la pregunta inicial + 2-3 líneas de la respuesta clave + ¿entendiste mejor? ¿qué te ayudó?.}
+\milcpaso{3}{milcMagenta}{\textbf{Paso 3 --- Conversación 2: Pedir recomendaciones.} Escribe: \emph{``Soy estudiante de 7° grado. Me gusta [género]. Recomiéndame 3 libros que me podrían gustar, con 1 línea de descripción cada uno''}. Recibe la respuesta. \textbf{Importante:} verifica al menos 1 de los libros recomendados. Búscalo en Google o en biblioteca. ¿Existe? Esto te entrena en \emph{verificación} (acuerdo 1).}
+\milcpaso{4}{milcMagenta}{\textbf{Paso 4 --- Conversación 3: Redactar un correo formal.} Escribe: \emph{``Necesito redactar un correo formal al profe de Tecnología pidiéndole [tu pregunta]. ¿Me puedes ayudar con el borrador? Quiero que tenga las 5 partes formales''}. Recibe el borrador. \textbf{Importante:} no lo copies tal cual. Léelo. Adáptalo a tu voz. Cambia cosas que no suenan a ti. Esto practica el acuerdo 5 (voz propia).}
+\milcpaso{5}{milcMagenta}{\textbf{Paso 5 --- Tabla comparativa + análisis.} Si tu colegio te lo permite, repite las 3 conversaciones con OTRO LLM distinto (Claude vs ChatGPT, por ejemplo). Compara las respuestas: ¿cuál fue más clara? ¿más profunda? ¿más útil? Anota en el cuaderno una tabla 3x2 (LLM x conversación) con tu evaluación. Si no puedes probar 2, evalúa solo el primero.}
+\milcpaso{6}{milcMagenta}{\textbf{Paso 6 --- Reflexión personal + firma.} Al final escribe: \emph{``Mi primera vez con un LLM fue \_\_\_. Lo que más me sorprendió fue \_\_\_. Lo que verifiqué y resultó cierto: \_\_\_. Lo que NO me convenció: \_\_\_. Aplicaría las 5 acuerdos de la S1 así: \_\_\_''}. Firma con nombre y fecha.}
 
 \begin{drawbox}{milcMagenta}{Antes de cerrar la S5}
 \checkbox Tuve 3 conversaciones con un LLM gratuito. \\[1mm]
@@ -369,9 +418,7 @@ Algoritmo de armado & \textbf{Paso 4 --- Conversación 3: Redactar un correo for
 
 \puente{El producto es la tabla comparativa + 3 conversaciones capturadas + análisis.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{3 conversaciones reales con un LLM + verificación + reflexión · firmado}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) Tuve 3 conversaciones reales con un LLM gratuito. (2) Verifiqué al menos 1 dato de las respuestas. (3) Apliqué los 5 acuerdos del uso responsable. (4) El correo redactado fue adaptado a mi voz, no copiado directo. (5) Hay reflexión personal sobre mi primera experiencia.
@@ -379,9 +426,7 @@ Producto de la sesión
 
 \puente{Antes de salir, verifica que TÚ aplicaste los 5 acuerdos de la S1 (verificar, no datos personales, etc.).}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -407,12 +452,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Cerramos con 3 voces sobre por qué dialogar con IA exige nuevas habilidades.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{````Dialogar con la IA no es someterse a ella. Es ejercer pensamiento crítico mientras conversas: preguntar, verificar, decidir tú.''''}
+\textit{``Dialogar con la IA no es someterse a ella. Es ejercer pensamiento crítico mientras conversas: preguntar, verificar, decidir tú.''}
 
 Hay gente que abre ChatGPT y \textbf{copia la primera respuesta} sin pensar. Eso no es dialogar; es someterse. \emph{Dialogar críticamente} es: \textbf{leer con cuidado, hacer preguntas de seguimiento, verificar, contrastar con tu criterio, decidir si la respuesta es buena o no}. Las personas que dominan ese diálogo se vuelven más sabias. Las que copian sin pensar se vuelven dependientes. \emph{Hoy diste el primer paso en esa habilidad de toda la vida}.
 
@@ -422,7 +465,7 @@ Hay gente que abre ChatGPT y \textbf{copia la primera respuesta} sin pensar. Eso
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
-\textit{````Cuando recibas una respuesta, antes de aceptarla, pregúntate: ¿es verdadera? ¿es útil para mí en mi situación? El sabio juzga antes de seguir.''''}
+\textit{``Cuando recibas una respuesta, antes de aceptarla, pregúntate: ¿es verdadera? ¿es útil para mí en mi situación? El sabio juzga antes de seguir.''}
 
 Los LLMs dan respuestas con \emph{seguridad}: suenan correctas aunque a veces no lo sean. El estoico sabe que \textbf{seguridad no es verdad}. Antes de actuar según una respuesta, pasa por 2 filtros: \emph{(1) ¿es verdadera? (verifica con otra fuente)}, \emph{(2) ¿es útil para mí? (mi contexto puede ser distinto)}. Esos 2 filtros mentales en segundos te ahorran horas de errores.
 
@@ -432,7 +475,7 @@ Los LLMs dan respuestas con \emph{seguridad}: suenan correctas aunque a veces no
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{````La calidad de tu conversación con la IA refleja la calidad de tu pensamiento. Quien sabe preguntar, obtiene respuestas valiosas. Quien no, obtiene basura.''''}
+\textit{``La calidad de tu conversación con la IA refleja la calidad de tu pensamiento. Quien sabe preguntar, obtiene respuestas valiosas. Quien no, obtiene basura.''}
 
 \textbf{Los LLMs son espejo de tu pensamiento}. Si haces preguntas vagas, recibes respuestas vagas. Si haces preguntas profundas y específicas, recibes respuestas profundas y específicas. \emph{Las próximas sesiones (S6 y S7) te enseñarán a hacer preguntas mejor (prompting)}. Pero la habilidad de fondo es \emph{tu capacidad de formular bien la pregunta}, que viene de pensar bien sobre lo que necesitas.
 
@@ -441,21 +484,24 @@ Los LLMs dan respuestas con \emph{seguridad}: suenan correctas aunque a veces no
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

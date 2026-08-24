@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 7};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 7};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont ¿Qué es\\la IA? ---\\definición,\\historia y\\casos diarios}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 22-7-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 3 · Inteligencia Artificial}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 3 · Inteligencia Artificial}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont ¿Qué es\\la IA? ---\\definición,\\historia y\\casos diarios}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 22-7-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} En el cuaderno: \textbf{(a) definición de IA con tus palabras}; \textbf{(b) mini-línea de tiempo} con 5 hitos históricos (1950 Turing, 1956 conferencia Dartmouth, 1997 Deep Blue vence a Kasparov, 2012 deep learning revolución, 2022 ChatGPT); \textbf{(c) mapa de la IA en mi día}: lista de 10 momentos donde uso IA sin darme cuenta (TikTok, Google, traductor, etc.); \textbf{(d) reflexión} sobre cómo se siente saber que ya convives con IA hace años.};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+En el cuaderno: \textbf{(a) definición de IA con tus palabras}; \textbf{(b) mini-línea de tiempo} con 5 hitos históricos (1950 Turing, 1956 conferencia Dartmouth, 1997 Deep Blue vence a Kasparov, 2012 deep learning revolución, 2022 ChatGPT); \textbf{(c) mapa de la IA en mi día}: lista de 10 momentos donde uso IA sin darme cuenta (TikTok, Google, traductor, etc.); \textbf{(d) reflexión} sobre cómo se siente saber que ya convives con IA hace años.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: ¿Qué es la IA? --- definición, historia y casos cotidianos}
@@ -258,30 +322,27 @@ Producto final & En el cuaderno: \textbf{(a) definición de IA con tus palabras}
 
 \puente{Hoy haces 4 cosas: defines IA con tus palabras, conoces 5 hitos históricos, mapeas IA en tu día, reflexionas.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Empezamos imaginando un día completamente sin IA.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- Un día sin IA} (10 min · individual). En el cuaderno, imagina este escenario: \emph{``Hoy te despiertas y descubres que toda la IA del mundo desapareció. Las máquinas siguen funcionando pero sin el componente de IA. ¿Qué cambia?''}. Responde estas \textbf{5 preguntas}: \emph{(1) ¿Funciona tu celular?}. \emph{(2) ¿Funciona Google igual?}. \emph{(3) ¿Cómo cambia TikTok sin recomendaciones?}. \emph{(4) ¿El traductor funciona?}. \emph{(5) ¿El GPS te lleva al colegio?}. Imagina con detalle. Las respuestas te van a mostrar cuánta IA hay en tu día sin que lo notes.
 \end{softbox}
 
-\checkbox Imaginé el escenario sin IA.\\
-\checkbox Respondí las 5 preguntas con calma.\\
-\checkbox Reconocí cuánto depende mi día de la IA.
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Imaginé el escenario sin IA.}
+\milccheckrow{Respondí las 5 preguntas con calma.}
+\milccheckrow{Reconocí cuánto depende mi día de la IA.}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Después aprendes la definición + breve historia + 10 ejemplos.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Ya viste cuánto depende tu día de la IA. Ahora aprende la \textbf{definición precisa} y los \textbf{hitos históricos} clave.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & \textbf{Definición técnica de IA.} \emph{Conjunto de técnicas informáticas que permiten a las máquinas realizar tareas que tradicionalmente requerían inteligencia humana}: aprender de ejemplos, reconocer patrones, tomar decisiones, comunicarse en lenguaje natural, ver y entender imágenes, jugar a niveles expertos. \textbf{La IA no es ``magia'' ni ``robots conscientes''}: es matemática + estadística + computación + grandes cantidades de datos. \textbf{Es una herramienta poderosa, pero herramienta al fin}.\\
-2. Reconocimiento de patrones & \textbf{Los 5 hitos históricos clave.} \textbf{(1) 1950 --- Alan Turing.} Publica \emph{``Computing Machinery and Intelligence''} y propone el famoso \emph{Test de Turing}: una máquina es ``inteligente'' si puede engañar a un humano haciéndole creer que también es humano. \textbf{(2) 1956 --- Dartmouth Conference.} John McCarthy y otros se reúnen y acuñan el término \emph{``Artificial Intelligence''}. Nace el campo formal. \textbf{(3) 1997 --- Deep Blue vs Kasparov.} El programa de IBM vence al campeón mundial de ajedrez Garry Kasparov. Primera vez que una máquina derrota al humano más experto en su juego.\\
-3. Abstracción & \textbf{Los hitos 4 y 5.} \textbf{(4) 2012 --- Revolución del deep learning.} Un equipo de la Universidad de Toronto (Geoff Hinton, Ilya Sutskever, Alex Krizhevsky) gana una competencia de visión por computador usando \emph{redes neuronales profundas}. Cambia el campo para siempre: a partir de ahí, las grandes empresas invierten millones. \textbf{(5) 2022 --- ChatGPT al público.} OpenAI lanza ChatGPT, accesible a cualquier persona con internet. En 2 meses tiene 100 millones de usuarios. La IA conversacional se vuelve masiva. \emph{Tú llegas a la historia justo después de este hito}: a los 12-13 años ya estás aprendiendo lo que apenas se inventó hace 4 años.\\
-4. Algoritmo conceptual & \textbf{10 momentos de IA en tu día (lista de muestra).} (1) Cuando Google completa tu búsqueda al escribir. (2) Cuando TikTok elige el siguiente video. (3) Cuando WhatsApp sugiere palabras al escribir. (4) Cuando el banco aprueba un retiro al instante. (5) Cuando Maps recalcula la ruta por tráfico. (6) Cuando Spotify recomienda canciones nuevas. (7) Cuando el traductor convierte idiomas. (8) Cuando Instagram filtra fotos con efectos. (9) Cuando el corrector ortográfico subraya palabras. (10) Cuando Siri o Google Assistant responden a tu voz. \textbf{¿Cuántos de estos usas al día?}.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{\textbf{Definición técnica de IA.} \emph{Conjunto de técnicas informáticas que permiten a las máquinas realizar tareas que tradicionalmente requerían inteligencia humana}: aprender de ejemplos, reconocer patrones, tomar decisiones, comunicarse en lenguaje natural, ver y entender imágenes, jugar a niveles expertos. \textbf{La IA no es ``magia'' ni ``robots conscientes''}: es matemática + estadística + computación + grandes cantidades de datos. \textbf{Es una herramienta poderosa, pero herramienta al fin}.}
+\milcpaso{2}{milcTurquesa}{\textbf{Los 5 hitos históricos clave.} \textbf{(1) 1950 --- Alan Turing.} Publica \emph{``Computing Machinery and Intelligence''} y propone el famoso \emph{Test de Turing}: una máquina es ``inteligente'' si puede engañar a un humano haciéndole creer que también es humano. \textbf{(2) 1956 --- Dartmouth Conference.} John McCarthy y otros se reúnen y acuñan el término \emph{``Artificial Intelligence''}. Nace el campo formal. \textbf{(3) 1997 --- Deep Blue vs Kasparov.} El programa de IBM vence al campeón mundial de ajedrez Garry Kasparov. Primera vez que una máquina derrota al humano más experto en su juego.}
+\milcpaso{3}{milcTurquesa}{\textbf{Los hitos 4 y 5.} \textbf{(4) 2012 --- Revolución del deep learning.} Un equipo de la Universidad de Toronto (Geoff Hinton, Ilya Sutskever, Alex Krizhevsky) gana una competencia de visión por computador usando \emph{redes neuronales profundas}. Cambia el campo para siempre: a partir de ahí, las grandes empresas invierten millones. \textbf{(5) 2022 --- ChatGPT al público.} OpenAI lanza ChatGPT, accesible a cualquier persona con internet. En 2 meses tiene 100 millones de usuarios. La IA conversacional se vuelve masiva. \emph{Tú llegas a la historia justo después de este hito}: a los 12-13 años ya estás aprendiendo lo que apenas se inventó hace 4 años.}
+\milcpaso{4}{milcTurquesa}{\textbf{10 momentos de IA en tu día (lista de muestra).} (1) Cuando Google completa tu búsqueda al escribir. (2) Cuando TikTok elige el siguiente video. (3) Cuando WhatsApp sugiere palabras al escribir. (4) Cuando el banco aprueba un retiro al instante. (5) Cuando Maps recalcula la ruta por tráfico. (6) Cuando Spotify recomienda canciones nuevas. (7) Cuando el traductor convierte idiomas. (8) Cuando Instagram filtra fotos con efectos. (9) Cuando el corrector ortográfico subraya palabras. (10) Cuando Siri o Google Assistant responden a tu voz. \textbf{¿Cuántos de estos usas al día?}.}
 
 \begin{drawbox}{milcTurquesa}{Definición + 5 hitos + 10 ejemplos cotidianos}
 \textbf{Definición:} máquinas que hacen tareas inteligentes (aprender, razonar, decidir, comunicarse). \\[1mm]
@@ -327,23 +381,18 @@ Ya viste cuánto depende tu día de la IA. Ahora aprende la \textbf{definición 
 
 \puente{Con todo claro, mapeas 10 momentos de IA en tu día.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · APLICA --- Mapa de IA en mi día} (28 min · individual). Vas a mapear 10+ momentos donde tú interactúas con IA sin darte cuenta. Es ejercicio de \emph{abrir los ojos} a un mundo que ya está rodeándote.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & \textbf{Paso 1 --- Encabezado y plantilla.} En una hoja del cuaderno, título: \textbf{``Mapa de IA en mi día''}. Debajo, tabla de \textbf{12 filas y 3 columnas}. Encabezados: \emph{(1) Momento del día (hora aproximada)}, \emph{(2) Acción que hago}, \emph{(3) Cómo entra la IA en ese momento}.\\
-Patrones & \textbf{Paso 2 --- Recorre tu día de ayer mentalmente.} Empieza por la mañana. Mira las 24 horas. Para cada momento que uses dispositivo digital, anota: hora aproximada + acción + cómo entra IA. \emph{Ejemplo 1: 6 am, abro WhatsApp para ver mensajes, el corrector ortográfico (IA) corrige mientras escribo respuestas. Ejemplo 2: 7 am, Maps me sugiere ruta al cole, la IA calcula tráfico en tiempo real}.\\
-Abstracción & \textbf{Paso 3 --- Llena las 12 filas.} Apunta al menos 12 momentos. Si pasas más tiempo en el celular, encontrarás 20-30 momentos sin esfuerzo. \emph{Pista}: TikTok solo te da 5 momentos de IA (cada video que aparece es una decisión de la IA).\\
-Algoritmo de armado & \textbf{Paso 4 --- Cuenta los momentos por categoría.} Debajo de la tabla, agrupa los momentos por categoría: \emph{redes sociales}, \emph{buscar información}, \emph{comunicación}, \emph{navegación}, \emph{entretenimiento}. ¿Cuántos por categoría? ¿Dónde más IA hay en tu día?\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{\textbf{Paso 1 --- Encabezado y plantilla.} En una hoja del cuaderno, título: \textbf{``Mapa de IA en mi día''}. Debajo, tabla de \textbf{12 filas y 3 columnas}. Encabezados: \emph{(1) Momento del día (hora aproximada)}, \emph{(2) Acción que hago}, \emph{(3) Cómo entra la IA en ese momento}.}
+\milcpaso{2}{milcMagenta}{\textbf{Paso 2 --- Recorre tu día de ayer mentalmente.} Empieza por la mañana. Mira las 24 horas. Para cada momento que uses dispositivo digital, anota: hora aproximada + acción + cómo entra IA. \emph{Ejemplo 1: 6 am, abro WhatsApp para ver mensajes, el corrector ortográfico (IA) corrige mientras escribo respuestas. Ejemplo 2: 7 am, Maps me sugiere ruta al cole, la IA calcula tráfico en tiempo real}.}
+\milcpaso{3}{milcMagenta}{\textbf{Paso 3 --- Llena las 12 filas.} Apunta al menos 12 momentos. Si pasas más tiempo en el celular, encontrarás 20-30 momentos sin esfuerzo. \emph{Pista}: TikTok solo te da 5 momentos de IA (cada video que aparece es una decisión de la IA).}
+\milcpaso{4}{milcMagenta}{\textbf{Paso 4 --- Cuenta los momentos por categoría.} Debajo de la tabla, agrupa los momentos por categoría: \emph{redes sociales}, \emph{buscar información}, \emph{comunicación}, \emph{navegación}, \emph{entretenimiento}. ¿Cuántos por categoría? ¿Dónde más IA hay en tu día?}
+\milcpaso{5}{milcMagenta}{\textbf{Paso 5 --- Reflexión personal.} Debajo del conteo, escribe en 4-5 líneas: \emph{``Lo que más me sorprendió de mi mapa de IA fue \_\_\_. Antes no me daba cuenta de \_\_\_. A partir de hoy, voy a notar la IA cuando \_\_\_''}.}
+\milcpaso{6}{milcMagenta}{\textbf{Paso 6 --- Mini-línea de tiempo + firma.} Al final de la hoja, dibuja una línea de tiempo horizontal con los 5 hitos (1950, 1956, 1997, 2012, 2022). Pon una flecha al final hacia 2026 y escribe: \emph{``yo aquí''}. Firma con nombre y fecha. Esa hoja queda como mapa permanente.}
 
 \begin{drawbox}{milcMagenta}{Antes de cerrar la S2}
 \checkbox La definición de IA está escrita con MIS palabras. \\[1mm]
@@ -366,9 +415,7 @@ Algoritmo de armado & \textbf{Paso 4 --- Cuenta los momentos por categoría.} De
 
 \puente{El producto es el mapa + definición + línea de tiempo + reflexión.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Mapa de IA en mi día · 12 momentos · 5 hitos históricos · reflexión personal · firmado}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) Tiene definición de IA en palabras propias del estudiante. (2) Línea de tiempo con los 5 hitos correctamente fechados. (3) Mínimo 12 momentos de IA cotidiana identificados. (4) Conteo por categorías está hecho. (5) Reflexión personal firmada.
@@ -376,9 +423,7 @@ Producto de la sesión
 
 \puente{Antes de salir, cuenta cuántos momentos de IA detectaste (suelen ser más de 10).}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -404,12 +449,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Cerramos con 3 voces sobre por qué entender la IA es entender el mundo de hoy.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{````Conocer el nombre de lo que te rodea es el primer paso para dejar de ser usado por ello. Aprender qué es la IA es ya un acto de soberanía.''''}
+\textit{``Conocer el nombre de lo que te rodea es el primer paso para dejar de ser usado por ello. Aprender qué es la IA es ya un acto de soberanía.''}
 
 \textbf{Hasta ayer, la IA era cosa invisible en tu vida}. Estaba ahí, decidiendo qué TikTok te recomendaba, qué Google te sugería, qué traducción aparecía --- pero \emph{no la veías}. Hoy la nombras. \emph{Nombrar lo que te rodea es el primer paso para no ser controlado por ello}. Mucha gente vive sin saber que existe IA en su día; tú ya no. Esa toma de conciencia es soberanía digital.
 
@@ -419,7 +462,7 @@ Triángulo de pensamiento · cierre filosófico
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
-\textit{````Antes de juzgar si algo es bueno o malo, conoce su naturaleza. La IA no es magia ni monstruo: es matemática a gran escala.''''}
+\textit{``Antes de juzgar si algo es bueno o malo, conoce su naturaleza. La IA no es magia ni monstruo: es matemática a gran escala.''}
 
 Hay gente que \textbf{teme a la IA} (la pinta como monstruo que viene a destruirnos) y gente que la \textbf{idolatra} (la trata como dios infalible). Las dos posturas son perezosas: \emph{no se han tomado el tiempo de entender la naturaleza de la IA}. Lo sabio es: ni miedo, ni adoración. \emph{Conocer su naturaleza --- matemática + datos + algoritmos + electricidad --- te permite usarla con criterio}, ni rendido a sus pies ni huyendo de ella.
 
@@ -429,7 +472,7 @@ Hay gente que \textbf{teme a la IA} (la pinta como monstruo que viene a destruir
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{````Vivir con IA sin entenderla es como vivir con electricidad sin saber qué es: sirve, pero te electrocutas a veces. Entenderla te protege.''''}
+\textit{``Vivir con IA sin entenderla es como vivir con electricidad sin saber qué es: sirve, pero te electrocutas a veces. Entenderla te protege.''}
 
 Tus abuelos vivieron la electrificación rural. Al principio, la electricidad parecía mágica. Después aprendieron: hay cables vivos, hay cortos circuitos, hay que tener cuidado. \textbf{Hoy estás en la fase ``mágica''} de la IA. La próxima fase es la \emph{alfabetización}: entender qué es, cuándo conviene, cuándo desconfiar, cómo cuidarse. Aprenderla en grado 7 te ahorra años de tropiezos en tu vida adulta.
 
@@ -438,21 +481,24 @@ Tus abuelos vivieron la electrificación rural. Al principio, la electricidad pa
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

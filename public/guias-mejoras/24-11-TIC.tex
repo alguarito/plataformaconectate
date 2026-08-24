@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 11};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 11};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont MVP digital ---\\una versión imperfecta\\para probar}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 24-11-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 3 · Proyecto final emprendedor}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 3 · Proyecto final emprendedor}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont MVP digital ---\\una versión imperfecta\\para probar}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 24-11-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} MVP funcional (Producto Mínimo Viable) que combine al menos 3 piezas digitales (sitio simple o landing + formulario de captura + flujo de respuesta) y que pueda ser probado por al menos 1 usuario real esta misma semana, con criterios explícitos de qué se considera \emph{``funcionó''} y qué se considera \emph{``falló''} antes de construirlo};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+MVP funcional (Producto Mínimo Viable) que combine al menos 3 piezas digitales (sitio simple o landing + formulario de captura + flujo de respuesta) y que pueda ser probado por al menos 1 usuario real esta misma semana, con criterios explícitos de qué se considera \emph{``funcionó''} y qué se considera \emph{``falló''} antes de construirlo
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: MVP digital --- una versión imperfecta para probar}
@@ -258,30 +322,27 @@ Producto final & MVP funcional (Producto Mínimo Viable) que combine al menos 3 
 
 \puente{Antes de empezar, mira el viaje completo. En la sesión 3 cerraste el Canvas con 3 supuestos críticos. Hoy construyes el \textbf{primer artefacto} que pondrá uno de esos supuestos contra el mundo. La sesión 5 medirá lo que pase con 10 usuarios reales; la sesión 6 contará la historia en pitch. Sin MVP funcional hoy, las dos sesiones siguientes no tienen materia prima.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Antes de teorizar, vas a hacer una \emph{lectura honesta} de tus 3 supuestos críticos: ¿cuál es el más \textbf{caro de equivocarse}?, ¿cuál es el más \textbf{rápido de verificar}?, ¿cuál es el más \textbf{barato de construir como MVP}? Elegirás uno aplicando la regla de \emph{máximo aprendizaje por hora invertida}.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- ¿Cuál de mis 3 supuestos críticos pruebo primero?} (15 min · individual). Toma la tabla de la sesión 3 con tus 3 supuestos críticos formulados como afirmaciones falsables. Para cada supuesto, evalúa 3 dimensiones en escala 1-5: (a) \textbf{Costo de equivocarse}: si este supuesto fuera falso y yo no lo supiera hasta el final, ¿qué tan grave sería? (b) \textbf{Rapidez de verificación}: ¿en cuántos días puedo probarlo con un MVP simple? (c) \textbf{Barato de construir}: ¿qué tan accesible es montar un MVP que lo pruebe? Calcula \textbf{Prioridad = Costo × Rapidez × Accesibilidad} (multiplicación de los 3) y elige el supuesto con mayor prioridad como el que probarás hoy.
 \end{softbox}
 
-\checkbox Evalué los 3 supuestos críticos en las 3 dimensiones.\\
-\checkbox Elegí 1 supuesto para probar con MVP, justificado con números.\\
-\checkbox El supuesto está formulado como afirmación falsable (no como pregunta).
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Evalué los 3 supuestos críticos en las 3 dimensiones.}
+\milccheckrow{Elegí 1 supuesto para probar con MVP, justificado con números.}
+\milccheckrow{El supuesto está formulado como afirmación falsable (no como pregunta).}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Ya tienes el supuesto que vas a probar. Ahora vas a entender la \textbf{anatomía del MVP digital}: las 3 piezas obligatorias (captura, valor, respuesta), los 5 errores que matan al MVP novato (perfeccionismo, alcance gigante, falta de medición, sin canal de captura, sin criterio de éxito), y los \textbf{4 tipos de MVP} reconocibles en el mercado actual.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Un MVP novato es un sitio bonito que no prueba nada. Un MVP profesional es un dispositivo de aprendizaje barato y rápido. Para que el tuyo sea del segundo tipo necesitas la \textbf{anatomía del MVP digital}: las 3 piezas obligatorias, los 4 tipos reconocidos y los errores que matan el aprendizaje antes de empezar.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & Todo MVP digital se descompone en 3 piezas mínimas: (1) \textbf{Captura}: la puerta de entrada donde el usuario \emph{aterriza} (landing en Google Sites, Carrd, Notion público, post de Instagram con link, mensaje pinned de WhatsApp Business). (2) \textbf{Valor}: lo que el usuario \emph{recibe o experimenta} (descarga, formulario para inscripción, video explicativo, demo interactiva, conversación con bot). (3) \textbf{Respuesta}: el flujo que se dispara cuando el usuario actúa (correo automático con Tally, mensaje en WhatsApp, agenda con Calendly, registro en Sheets vía Zapier). Sin los 3, no hay MVP: hay una pieza suelta.\\
-2. Reconocimiento de patrones & Existen \textbf{4 tipos de MVP} en el mercado contemporáneo: (a) \textbf{Landing de validación}: página con propuesta y formulario \emph{``quiero esto''}; mide intención. (b) \textbf{Mago de Oz}: la automatización es manual detrás del telón (tú respondes a mano lo que parece automático); mide demanda sin construir tecnología. (c) \textbf{Conserje}: atiendes 1-3 usuarios uno a uno antes de escalar; mide proceso completo a baja escala. (d) \textbf{Pieza única funcional}: construyes solo la función más importante (no el sistema completo); mide si esa función basta para resolver el dolor. Tu MVP elegirá uno de los 4, no los 4.\\
-3. Abstracción & Lo esencial cabe en una frase: \emph{el MVP no se construye para vender; se construye para aprender}. Si el resultado del MVP no te enseña algo verdadero sobre tu supuesto crítico, está mal hecho aunque se vea bonito. La phronesis del emprendedor consiste en \textbf{soltar el orgullo del acabado a cambio de la información del experimento}.\\
-4. Algoritmo conceptual & Algoritmo: (1) elige el tipo de MVP (de los 4) según tu supuesto; (2) elige 3 herramientas no-code para captura, valor, respuesta; (3) construye end-to-end en una sola sesión de 3-4 horas; (4) prueba tu MVP contigo mismo como primer usuario antes de mostrar a otros; (5) escribe el criterio de éxito \emph{antes} de invitar a un usuario real; (6) prepara la pregunta única que harás al usuario después de usar el MVP: \emph{``¿qué te llevó a hacer X / a no hacer X?''}.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{Todo MVP digital se descompone en 3 piezas mínimas: (1) \textbf{Captura}: la puerta de entrada donde el usuario \emph{aterriza} (landing en Google Sites, Carrd, Notion público, post de Instagram con link, mensaje pinned de WhatsApp Business). (2) \textbf{Valor}: lo que el usuario \emph{recibe o experimenta} (descarga, formulario para inscripción, video explicativo, demo interactiva, conversación con bot). (3) \textbf{Respuesta}: el flujo que se dispara cuando el usuario actúa (correo automático con Tally, mensaje en WhatsApp, agenda con Calendly, registro en Sheets vía Zapier). Sin los 3, no hay MVP: hay una pieza suelta.}
+\milcpaso{2}{milcTurquesa}{Existen \textbf{4 tipos de MVP} en el mercado contemporáneo: (a) \textbf{Landing de validación}: página con propuesta y formulario \emph{``quiero esto''}; mide intención. (b) \textbf{Mago de Oz}: la automatización es manual detrás del telón (tú respondes a mano lo que parece automático); mide demanda sin construir tecnología. (c) \textbf{Conserje}: atiendes 1-3 usuarios uno a uno antes de escalar; mide proceso completo a baja escala. (d) \textbf{Pieza única funcional}: construyes solo la función más importante (no el sistema completo); mide si esa función basta para resolver el dolor. Tu MVP elegirá uno de los 4, no los 4.}
+\milcpaso{3}{milcTurquesa}{Lo esencial cabe en una frase: \emph{el MVP no se construye para vender; se construye para aprender}. Si el resultado del MVP no te enseña algo verdadero sobre tu supuesto crítico, está mal hecho aunque se vea bonito. La phronesis del emprendedor consiste en \textbf{soltar el orgullo del acabado a cambio de la información del experimento}.}
+\milcpaso{4}{milcTurquesa}{Algoritmo: (1) elige el tipo de MVP (de los 4) según tu supuesto; (2) elige 3 herramientas no-code para captura, valor, respuesta; (3) construye end-to-end en una sola sesión de 3-4 horas; (4) prueba tu MVP contigo mismo como primer usuario antes de mostrar a otros; (5) escribe el criterio de éxito \emph{antes} de invitar a un usuario real; (6) prepara la pregunta única que harás al usuario después de usar el MVP: \emph{``¿qué te llevó a hacer X / a no hacer X?''}.}
 
 \begin{drawbox}{milcTurquesa}{Anatomía del MVP digital}
 \textbf{Captura:} dónde aterriza el usuario. \\[1mm] \textbf{Valor:} qué recibe o experimenta. \\[1mm] \textbf{Respuesta:} qué se dispara cuando actúa. \\[1mm] \textbf{Tipo:} landing / Mago de Oz / Conserje / Pieza funcional. \\[1mm] \textbf{Criterio de éxito:} cuántos usuarios hacen qué cosa en cuánto tiempo. \\[1mm] \textbf{Pregunta posterior:} qué le preguntas al usuario después.
@@ -325,23 +379,16 @@ Un MVP novato es un sitio bonito que no prueba nada. Un MVP profesional es un di
 
 \puente{Tienes el método. Toca construir. Vas a ensamblar tu MVP en una sola tarde de trabajo combinando 3 herramientas no-code accesibles desde el colegio. Antes de mostrar el MVP a tu primer usuario, escribirás el criterio de éxito explícito: \emph{``este MVP funciona si X usuarios hacen Y dentro de Z días''}.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · CREA + EVALÚA --- MVP funcional listo para probar} (40 min en sesión, 2-4 horas de construcción durante la semana · individual). Hora de construir. Ensamblas tu MVP combinando 3 herramientas no-code, lo pruebas contigo mismo, escribes el criterio de éxito por adelantado, y agendas al primer usuario real para esta semana.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & Tu MVP se construye en 5 pasos: (1) \textbf{Elige stack no-code}: para captura (Google Sites, Carrd, Notion, Instagram post con link), para valor (Tally, Typeform, video Loom, página con texto, demo con Canva), para respuesta (Zapier, ManyChat, correo automático, WhatsApp Business). (2) \textbf{Conecta las piezas} con 2-3 enlaces simples: captura, valor, respuesta. (3) \textbf{Recorre el MVP tú mismo} simulando ser el usuario; anota cada fricción. (4) \textbf{Arregla las 3 fricciones más graves} (ignora las demás por ahora). (5) \textbf{Genera el link único} que enviarás al primer usuario.\\
-Patrones & Sigue el patrón \textbf{``cinta adhesiva sobre código''}: tu MVP es 80\% pegado con cinta adhesiva digital (Zapier conectando 2 apps, copy-paste manual, automatización con un botón humano detrás) y 20\% automatizado. Está bien. Eric Ries llamó esto \emph{``concierge MVP''}: si la operación detrás del telón es manual mientras el frontal se ve automatizado, sigue siendo un MVP válido. La elegancia técnica viene después de validar.\\
-Abstracción & El criterio de éxito se escribe \emph{antes} de lanzar y tiene formato fijo: \emph{``Este MVP funcionó si [N] usuarios hacen [acción específica] dentro de [tiempo]''}. Ejemplos reales: \emph{``Si 5 tenderos se inscriben en el formulario en 1 semana''}, \emph{``Si 3 padres de familia agendan demo de Calendly en 3 días''}, \emph{``Si 8 de 10 usuarios completan el formulario sin abandonarlo a mitad''}. Sin número específico y plazo concreto, no hay criterio: hay deseo.\\
-Algoritmo de armado & Algoritmo de validación interna del MVP: (1) ¿el usuario entiende la propuesta en menos de 10 segundos al aterrizar? (2) ¿puede hacer la acción principal en menos de 2 minutos? (3) ¿la respuesta llega en menos de 1 hora (automática) o 24 horas (manual)? (4) ¿tienes manera de saber qué hizo el usuario (analytics simple, conteo manual, log en Sheets)? Si las 4 respuestas son sí, tu MVP está listo para el primer usuario real.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{Tu MVP se construye en 5 pasos: (1) \textbf{Elige stack no-code}: para captura (Google Sites, Carrd, Notion, Instagram post con link), para valor (Tally, Typeform, video Loom, página con texto, demo con Canva), para respuesta (Zapier, ManyChat, correo automático, WhatsApp Business). (2) \textbf{Conecta las piezas} con 2-3 enlaces simples: captura, valor, respuesta. (3) \textbf{Recorre el MVP tú mismo} simulando ser el usuario; anota cada fricción. (4) \textbf{Arregla las 3 fricciones más graves} (ignora las demás por ahora). (5) \textbf{Genera el link único} que enviarás al primer usuario.}
+\milcpaso{2}{milcMagenta}{Sigue el patrón \textbf{``cinta adhesiva sobre código''}: tu MVP es 80\% pegado con cinta adhesiva digital (Zapier conectando 2 apps, copy-paste manual, automatización con un botón humano detrás) y 20\% automatizado. Está bien. Eric Ries llamó esto \emph{``concierge MVP''}: si la operación detrás del telón es manual mientras el frontal se ve automatizado, sigue siendo un MVP válido. La elegancia técnica viene después de validar.}
+\milcpaso{3}{milcMagenta}{El criterio de éxito se escribe \emph{antes} de lanzar y tiene formato fijo: \emph{``Este MVP funcionó si [N] usuarios hacen [acción específica] dentro de [tiempo]''}. Ejemplos reales: \emph{``Si 5 tenderos se inscriben en el formulario en 1 semana''}, \emph{``Si 3 padres de familia agendan demo de Calendly en 3 días''}, \emph{``Si 8 de 10 usuarios completan el formulario sin abandonarlo a mitad''}. Sin número específico y plazo concreto, no hay criterio: hay deseo.}
+\milcpaso{4}{milcMagenta}{Algoritmo de validación interna del MVP: (1) ¿el usuario entiende la propuesta en menos de 10 segundos al aterrizar? (2) ¿puede hacer la acción principal en menos de 2 minutos? (3) ¿la respuesta llega en menos de 1 hora (automática) o 24 horas (manual)? (4) ¿tienes manera de saber qué hizo el usuario (analytics simple, conteo manual, log en Sheets)? Si las 4 respuestas son sí, tu MVP está listo para el primer usuario real.}
 
 \begin{drawbox}{milcMagenta}{Checklist antes de invitar al primer usuario}
 \checkbox MVP funciona end-to-end (yo lo recorrí completo). \\[1mm] \checkbox 3 piezas conectadas (captura + valor + respuesta). \\[1mm] \checkbox Link único listo para compartir. \\[1mm] \checkbox Criterio de éxito escrito (N usuarios + acción + tiempo). \\[1mm] \checkbox Criterio de fracaso escrito (qué consideraría hipótesis muerta). \\[1mm] \checkbox Manera de saber qué hizo el usuario (sheet, log, analytics). \\[1mm] \checkbox Primer usuario real agendado para esta semana.
@@ -359,9 +406,7 @@ Algoritmo de armado & Algoritmo de validación interna del MVP: (1) ¿el usuario
 
 \puente{Lo que sigue resume \emph{qué} entregas hoy: MVP funcional + criterio de éxito por escrito + plan para probar con 1 usuario real esta semana. El criterio principal: que un emprendedor experimentado, viendo tu MVP, pueda decir \emph{``entendí qué prueba y cómo se mide''} sin necesidad de explicaciones adicionales.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{MVP funcional + criterio de éxito + primer usuario agendado}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) MVP funciona end-to-end con 3 piezas conectadas. (2) Construido en menos de 4 horas con herramientas no-code. (3) Diseñado para probar 1 supuesto crítico específico. (4) Criterio de éxito y de fracaso escritos antes de lanzar. (5) Sistema de medición simple implementado. (6) Primer usuario real agendado para esta semana.
@@ -369,9 +414,7 @@ Producto de la sesión
 
 \puente{Antes de cerrar, mira el MVP desde las cinco dimensiones humanas. Construir un MVP honesto es respeto por el oficio; construir uno solo para mostrar al docente es desperdicio de la sesión.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -397,12 +440,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Y para terminar, tres voces sobre la imperfección útil. Dussel sobre los MVPs que respetan al usuario o lo usan como conejillo de indias, Epicteto sobre la disciplina de soltar la perfección, Floridi sobre la ética del MVP transparente.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{``Todo MVP decide si respeta al usuario como sujeto o lo usa como objeto de experimento.''}
+\textit{Todo MVP decide si respeta al usuario como sujeto o lo usa como objeto de experimento.}
 
 Tu MVP entra en contacto con personas reales. Hay dos formas de pensarlas: como \emph{conejillos de indias} (objetos de prueba para tu aprendizaje) o como \emph{co-investigadores} (sujetos que aceptan ayudarte porque les explicaste el propósito). La filosofía de la liberación pide lo segundo: declara al usuario que es un MVP, que estás aprendiendo, que su retroalimentación es valiosa, que su tiempo no es gratis. La phronesis del oficio digital consiste en \textbf{nunca ocultar al usuario su rol en el experimento}.
 
@@ -412,7 +453,7 @@ Tu MVP entra en contacto con personas reales. Hay dos formas de pensarlas: como 
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Epicteto · cuidado interior}
-\textit{``Lo que está en tu poder es construir; lo que no está en tu poder es que sea perfecto la primera vez.''}
+\textit{Lo que está en tu poder es construir; lo que no está en tu poder es que sea perfecto la primera vez.}
 
 Es tentador retrasar el lanzamiento del MVP \emph{``hasta que esté mejor''}. La disciplina estoica recomienda lo contrario: \emph{distingue lo que depende de ti (construir y soltar) de lo que no (que sea perfecto)}. El MVP es ejercicio de soltar el control sobre la apariencia para mantener el control sobre el aprendizaje. La perfección es enemiga del oficio cuando ocurre antes que la validación.
 
@@ -422,7 +463,7 @@ Es tentador retrasar el lanzamiento del MVP \emph{``hasta que esté mejor''}. La
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{``El MVP transparente es la nueva ética del experimento digital con humanos.''}
+\textit{El MVP transparente es la nueva ética del experimento digital con humanos.}
 
 Antes de internet, los experimentos con personas requerían comités de ética. Hoy cualquier emprendedor lanza MVPs a miles de usuarios sin declarar su naturaleza experimental. La ética digital contemporánea exige un mínimo: el usuario debe saber que está participando en un experimento, qué datos se recogen, qué se hace con ellos. Tu MVP tiene esa obligación a pequeña escala: declara al usuario que es prueba, no producto.
 
@@ -431,21 +472,24 @@ Antes de internet, los experimentos con personas requerían comités de ética. 
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

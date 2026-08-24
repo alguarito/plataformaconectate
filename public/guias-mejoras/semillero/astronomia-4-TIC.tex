@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,51 +229,65 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont MÓDULO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SEMILLERO DE INVESTIGACIÓN · CONECTATE};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont MÓDULO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SEMILLERO DE INVESTIGACIÓN · CONECTATE};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 4};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 4};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
   
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Comunicar y cuidar\\el conocimiento ---\\de la palabra que\\caminan los Misak\\al póster honesto}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Astronomía y ciencia ciudadana}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Módulo 4 · Fase MILC: Evaluación liberadora · 3 h de clase}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Módulo 4 · Fase MILC: Evaluación liberadora · 3 h de clase}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Comunicar y cuidar\\el conocimiento ---\\de la palabra que\\caminan los Misak\\al póster honesto}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Astronomía y ciencia ciudadana}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} Tu \textbf{póster de investigación} (o guion de ponencia de 2 minutos) que reúne el itinerario completo: la \textbf{pregunta}, lo que hiciste (ojo del módulo 1 · datos del módulo 2 · fotómetro del módulo 3), tu \textbf{hallazgo}, y ---lo más importante--- tus \textbf{límites} y tus \textbf{nuevas preguntas}. Más tu \textbf{lista de fuentes} en APA 7ª y una \textbf{frase-afirmación calibrada}: exactamente lo que tu evidencia aguanta, ni menos ni más.};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Tu \textbf{póster de investigación} (o guion de ponencia de 2 minutos) que reúne el itinerario completo: la \textbf{pregunta}, lo que hiciste (ojo del módulo 1 · datos del módulo 2 · fotómetro del módulo 3), tu \textbf{hallazgo}, y ---lo más importante--- tus \textbf{límites} y tus \textbf{nuevas preguntas}. Más tu \textbf{lista de fuentes} en APA 7ª y una \textbf{frase-afirmación calibrada}: exactamente lo que tu evidencia aguanta, ni menos ni más.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Comunicar y cuidar el conocimiento --- de la palabra que caminan los Misak al póster honesto}
@@ -257,30 +321,27 @@ Producto final & Tu \textbf{póster de investigación} (o guion de ponencia de 2
 
 \puente{Miraste con el ojo (módulo 1), ordenaste los datos (módulo 2), construiste el instrumento (módulo 3). Hoy \textbf{cierras el círculo}: comunicas lo hallado con honestidad, reconoces sus límites y cuidas el conocimiento que produjiste.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Antes de comunicar, sé honesto contigo: ¿qué puede afirmar de verdad tu evidencia, y qué no? Ahí empieza toda comunicación que se respete.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- ¿Qué puede afirmar tu evidencia?} (40 min · individual + grupo). \textbf{Momento A (15 min) --- La escalera de la certeza.} El profe presenta los peldaños ---\emph{creo → observé → mis datos sugieren → hay buena evidencia → está demostrado}--- y el grupo ubica frases sueltas en su peldaño: \emph{``el cielo de mi cuadra tiene más luz que la vereda''}, \emph{``conté 4 estrellas en la ciudad y 9 en el campo''}, \emph{``la contaminación lumínica está acabando con las estrellas del mundo''}. ¿Cuál se puede sostener con lo que hiciste y cuál se pasa de peldaño? \textbf{Momento B (10 min) --- El caso de la palabra caminada.} El profe cuenta la ética Misak-Nasa de caminar la palabra (decir lo que sé / dar crédito / reconocer lo que ignoro) y pregunta: \emph{¿por qué torcer la palabra rompía la confianza de la comunidad\ldots y por qué exagerar arruina a un investigador?}. \textbf{Momento C (15 min) --- Mi afirmación honesta.} Cada quien revisa su itinerario (ojo, datos, fotómetro) y escribe \textbf{en qué peldaño} puede pararse. \textbf{En el cuaderno:} las frases clasificadas + tu afirmación calibrada («con mi evidencia puedo decir\ldots pero no puedo decir\ldots»).
 \end{softbox}
 
-\checkbox Ubiqué frases en su peldaño de la escalera de la certeza.\\
-\checkbox Puedo explicar por qué exagerar un hallazgo es como «perder la palabra».\\
-\checkbox Escribí qué puede y qué NO puede afirmar mi propia evidencia.
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Ubiqué frases en su peldaño de la escalera de la certeza.}
+\milccheckrow{Puedo explicar por qué exagerar un hallazgo es como «perder la palabra».}
+\milccheckrow{Escribí qué puede y qué NO puede afirmar mi propia evidencia.}
 
 \begin{infoband}{milcVerde}
 
@@ -290,23 +351,16 @@ Fase 1 · Escucha
 
 \puente{Ya sabes hasta dónde llega tu evidencia. Ahora aprende el oficio de comunicarla: estructura, afirmación calibrada, crédito, límites y cuidado de lo común.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 \textbf{Actividad 2 · EXPLICA --- El oficio de comunicar con honestidad} (55 min · grupo + individual). Ya sabes hasta dónde llega tu evidencia. Ahora aprende las \textbf{cinco reglas} de comunicar una investigación sin traicionarla: estructura, afirmación calibrada, crédito, límites y cuidado de lo común.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & \textbf{Pilar 1 --- Estructura: una historia honesta.} Un póster o una ponencia no son un montón de datos: son \textbf{un relato con orden}. El orden que no falla: \emph{(1) Pregunta} ---qué querías saber. \emph{(2) Qué hice} ---observé a ojo, tomé datos, medí con el fotómetro. \emph{(3) Qué hallé} ---tu resultado, con su gráfica o su número. \emph{(4) Qué NO puedo afirmar todavía} ---tus límites. \emph{(5) Qué preguntas nuevas quedan.} \textbf{Fíjate que la honestidad (4) va ANTES del cierre, no escondida al final en letra chica.} Un informe que oculta sus límites no es más fuerte: es menos confiable.\\
-2. Reconocimiento de patrones & \textbf{Pilar 2 --- Calibrar la afirmación: la escalera.} Hay peldaños entre \emph{``creo''} y \emph{``está demostrado''}, y cada uno pide más evidencia que el anterior. \textbf{Mis datos sugieren} $\neq$ \textbf{está probado}. Con 3 noches de observación y un micro:bit puedes sostener \emph{``en los 2 puntos que medí, el más cercano al poste dio más luz''}; \textbf{no} puedes sostener \emph{``la contaminación lumínica está acabando con las estrellas''} ---eso es verdad en el mundo, pero tú no lo demostraste. \textbf{Subir un peldaño que no te ganaste es exagerar; quedarte muy abajo es falsa modestia.} La honestidad es pararte exactamente donde tu evidencia te sostiene.\\
-3. Abstracción & \textbf{Pilar 3 --- Dar crédito es justicia.} Nadie investiga desde cero: te apoyas en quien te precedió (el estudio de las Cabrillas, la campaña de RECA, la tabla de datos que usaste). \textbf{Citar en APA 7ª} (módulo 2) hace dos cosas a la vez: es \textbf{justicia} ---reconoces el trabajo ajeno, no te lo apropias, como el mayor que dice «así me lo enseñaron»--- y es \textbf{honestidad} ---queda claro qué es tuyo y qué no. Un póster sin fuentes es como contar por propio un saber que es de otro: \textbf{tuerce la palabra}.\\
-4. Algoritmo conceptual & \textbf{Pilar 4 --- Cuidar la infoesfera: lo que publicas queda.} Cuando comunicas, tu dato entra a un \textbf{bien común}: otros lo leerán, lo citarán, lo usarán. Si está inflado o mal medido, \textbf{contaminas a todos los que vengan después} ---igual que un rumor falso daña a un pueblo entero. Por eso comunicar tiene deberes: no exagerar, no ocultar el error, no inventar lo que falta, corregir si te equivocaste. \emph{Cuidar el conocimiento es cuidar a la comunidad que lo va a usar.} La ética no es un adorno del final: es la condición para que tu investigación sirva y no estorbe.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{\textbf{Pilar 1 --- Estructura: una historia honesta.} Un póster o una ponencia no son un montón de datos: son \textbf{un relato con orden}. El orden que no falla: \emph{(1) Pregunta} ---qué querías saber. \emph{(2) Qué hice} ---observé a ojo, tomé datos, medí con el fotómetro. \emph{(3) Qué hallé} ---tu resultado, con su gráfica o su número. \emph{(4) Qué NO puedo afirmar todavía} ---tus límites. \emph{(5) Qué preguntas nuevas quedan.} \textbf{Fíjate que la honestidad (4) va ANTES del cierre, no escondida al final en letra chica.} Un informe que oculta sus límites no es más fuerte: es menos confiable.}
+\milcpaso{2}{milcTurquesa}{\textbf{Pilar 2 --- Calibrar la afirmación: la escalera.} Hay peldaños entre \emph{``creo''} y \emph{``está demostrado''}, y cada uno pide más evidencia que el anterior. \textbf{Mis datos sugieren} $\neq$ \textbf{está probado}. Con 3 noches de observación y un micro:bit puedes sostener \emph{``en los 2 puntos que medí, el más cercano al poste dio más luz''}; \textbf{no} puedes sostener \emph{``la contaminación lumínica está acabando con las estrellas''} ---eso es verdad en el mundo, pero tú no lo demostraste. \textbf{Subir un peldaño que no te ganaste es exagerar; quedarte muy abajo es falsa modestia.} La honestidad es pararte exactamente donde tu evidencia te sostiene.}
+\milcpaso{3}{milcTurquesa}{\textbf{Pilar 3 --- Dar crédito es justicia.} Nadie investiga desde cero: te apoyas en quien te precedió (el estudio de las Cabrillas, la campaña de RECA, la tabla de datos que usaste). \textbf{Citar en APA 7ª} (módulo 2) hace dos cosas a la vez: es \textbf{justicia} ---reconoces el trabajo ajeno, no te lo apropias, como el mayor que dice «así me lo enseñaron»--- y es \textbf{honestidad} ---queda claro qué es tuyo y qué no. Un póster sin fuentes es como contar por propio un saber que es de otro: \textbf{tuerce la palabra}.}
+\milcpaso{4}{milcTurquesa}{\textbf{Pilar 4 --- Cuidar la infoesfera: lo que publicas queda.} Cuando comunicas, tu dato entra a un \textbf{bien común}: otros lo leerán, lo citarán, lo usarán. Si está inflado o mal medido, \textbf{contaminas a todos los que vengan después} ---igual que un rumor falso daña a un pueblo entero. Por eso comunicar tiene deberes: no exagerar, no ocultar el error, no inventar lo que falta, corregir si te equivocaste. \emph{Cuidar el conocimiento es cuidar a la comunidad que lo va a usar.} La ética no es un adorno del final: es la condición para que tu investigación sirva y no estorbe.}
 
 \begin{drawbox}{milcTurquesa}{Estructura + escalera + crédito + cuidado}
 \textbf{Estructura:} pregunta → qué hice → qué hallé → qué NO puedo afirmar → nuevas preguntas. Los límites van antes del cierre, no escondidos. \\[1mm]
@@ -327,23 +381,18 @@ Fase 2 · Sistematización con pensamiento computacional
 
 \puente{Ya tienes las reglas del buen comunicador. Es hora de armar tu póster o ponencia y \textbf{sustentarlo} ---defender ante otros lo que hallaste, y lo que no.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · CREA + EVALÚA --- Arma tu póster y susténtalo} (75 min · individual o parejas). Hora de cerrar el itinerario. Vas a reunir todo (ojo, datos, fotómetro) en un \textbf{póster honesto} ---o un guion de ponencia de 2 minutos--- y a \textbf{sustentarlo} ante tus compañeros, defendiendo lo que hallaste y reconociendo lo que no.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & \textbf{Paso 1 --- Reúne tu itinerario (10 min).} Junta lo de los tres módulos: tu \textbf{pregunta investigable} (módulo 1), tu \textbf{bitácora y magnitud límite a ojo} (módulo 1), tu \textbf{curva de luz o tabla de datos} (módulo 2), y tus \textbf{lecturas del fotómetro} (módulo 3). Ponlo todo sobre la mesa. \emph{Esto que tienes enfrente ---mirar, ordenar, medir--- es una investigación completa.} Decide en una frase \textbf{cuál es tu hallazgo principal}.\\
-Patrones & \textbf{Paso 2 --- Calibra tu afirmación (10 min).} Vuelve a la escalera. Escribe tu hallazgo en \textbf{tres versiones}: una exagerada (un peldaño de más), una tímida (un peldaño de menos) y la \textbf{honesta} (la que tu evidencia aguanta). Subraya la honesta. \emph{Esa frase calibrada es el centro de tu póster:} todo lo demás la sostiene.\\
-Abstracción & \textbf{Paso 3 --- Arma el póster con las 5 partes (25 min).} En una hoja grande (o cartulina), organiza: \textbf{(1) Pregunta} arriba, grande y clara. \textbf{(2) Qué hice} ---3 íconos o frases: ojo, datos, instrumento. \textbf{(3) Qué hallé} ---tu frase calibrada + \textbf{una gráfica o número} bien visible (tu curva de luz, tu tabla de contraste). \textbf{(4) Límites} ---qué NO puedes afirmar, en su propio recuadro, no escondido. \textbf{(5) Nuevas preguntas} ---1 o 2. Abajo, tus \textbf{fuentes en APA 7ª}. \textbf{Regla de oro:} si alguien no lo entiende en 1 minuto de lejos, tiene demasiado texto.\\
-Algoritmo de armado & \textbf{Paso 4 --- Prepara y da la sustentación (15 min).} Escribe un guion de \textbf{2 minutos}: 20 segundos por parte. Practícalo una vez con tu pareja. \textbf{Reglas de la sustentación honesta:} di tu afirmación calibrada tal cual (sin inflarla al hablar), \textbf{menciona un límite tú mismo} antes de que te pregunten, y si no sabes algo, di \emph{``eso no lo sé / no lo medí''} ---como el mayor que no tuerce la palabra. Luego preséntalo al grupo.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{\textbf{Paso 1 --- Reúne tu itinerario (10 min).} Junta lo de los tres módulos: tu \textbf{pregunta investigable} (módulo 1), tu \textbf{bitácora y magnitud límite a ojo} (módulo 1), tu \textbf{curva de luz o tabla de datos} (módulo 2), y tus \textbf{lecturas del fotómetro} (módulo 3). Ponlo todo sobre la mesa. \emph{Esto que tienes enfrente ---mirar, ordenar, medir--- es una investigación completa.} Decide en una frase \textbf{cuál es tu hallazgo principal}.}
+\milcpaso{2}{milcMagenta}{\textbf{Paso 2 --- Calibra tu afirmación (10 min).} Vuelve a la escalera. Escribe tu hallazgo en \textbf{tres versiones}: una exagerada (un peldaño de más), una tímida (un peldaño de menos) y la \textbf{honesta} (la que tu evidencia aguanta). Subraya la honesta. \emph{Esa frase calibrada es el centro de tu póster:} todo lo demás la sostiene.}
+\milcpaso{3}{milcMagenta}{\textbf{Paso 3 --- Arma el póster con las 5 partes (25 min).} En una hoja grande (o cartulina), organiza: \textbf{(1) Pregunta} arriba, grande y clara. \textbf{(2) Qué hice} ---3 íconos o frases: ojo, datos, instrumento. \textbf{(3) Qué hallé} ---tu frase calibrada + \textbf{una gráfica o número} bien visible (tu curva de luz, tu tabla de contraste). \textbf{(4) Límites} ---qué NO puedes afirmar, en su propio recuadro, no escondido. \textbf{(5) Nuevas preguntas} ---1 o 2. Abajo, tus \textbf{fuentes en APA 7ª}. \textbf{Regla de oro:} si alguien no lo entiende en 1 minuto de lejos, tiene demasiado texto.}
+\milcpaso{4}{milcMagenta}{\textbf{Paso 4 --- Prepara y da la sustentación (15 min).} Escribe un guion de \textbf{2 minutos}: 20 segundos por parte. Practícalo una vez con tu pareja. \textbf{Reglas de la sustentación honesta:} di tu afirmación calibrada tal cual (sin inflarla al hablar), \textbf{menciona un límite tú mismo} antes de que te pregunten, y si no sabes algo, di \emph{``eso no lo sé / no lo medí''} ---como el mayor que no tuerce la palabra. Luego preséntalo al grupo.}
+\milcpaso{5}{milcMagenta}{\textbf{Paso 5 --- Recibe y da crítica que cuida (10 min).} Al escuchar a otro, tu trabajo NO es lucirte encontrando fallas: es \textbf{ayudar a que su investigación sea mejor}. Usa la fórmula: \emph{``lo que más me convenció fue\ldots''}, \emph{``una afirmación que quizás se pasa de peldaño es\ldots''}, \emph{``una pregunta que me quedó es\ldots''}. \textbf{Criticar cuidando es también cuidar el conocimiento:} se corrige la idea, se respeta a la persona.}
+\milcpaso{6}{milcMagenta}{\textbf{Paso 6 --- Evalúate como investigador (5 min).} Cierra tu cuaderno con la \textbf{evaluación liberadora}: \emph{¿Qué aprendí en todo el itinerario? ¿Qué error cometí y corregí? ¿A quién le sirve lo que hallé, y qué cuidado debo tener con ese dato? ¿Qué pregunta nueva me llevo?}. \emph{No es una nota: es una conversación honesta contigo mismo sobre qué clase de investigador quieres ser.}}
 
 \begin{drawbox}{milcMagenta}{Antes de sustentar tu investigación}
 \checkbox Mi póster tiene las 5 partes (pregunta · qué hice · qué hallé · límites · nuevas preguntas). \\[1mm]
@@ -370,9 +419,7 @@ Algoritmo de armado & \textbf{Paso 4 --- Prepara y da la sustentación (15 min).
 
 \puente{El producto no es un cartel bonito: es un \textbf{informe honesto} con su afirmación calibrada, sus fuentes y sus límites. Eso es investigación terminada, no un dibujo.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Póster de investigación honesto + sustentación con límites y ética}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) El póster tiene las 5 partes, con los límites visibles (no escondidos). (2) La afirmación principal está calibrada al peldaño que la evidencia sostiene. (3) Hay una gráfica o dato visible de lejos y las fuentes citadas en APA 7ª. (4) En la sustentación el estudiante reconoce por sí mismo al menos un límite. (5) Cierra con una evaluación liberadora (aprendizaje, error corregido, utilidad, nueva pregunta).
@@ -380,9 +427,7 @@ Producto de la sesión
 
 \puente{Antes de cerrar, mírate como investigador: ¿qué aprendiste?, ¿qué error cometiste y corregiste?, ¿a quién le sirve esto y con qué cuidado?}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -408,12 +453,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Cerramos con 3 voces que te ayudan a entender por qué comunicar con honestidad ---y cuidar lo que se sabe--- es la parte más ética de investigar.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{``Analéctico quiere indicar el hecho real humano por el que todo hombre, todo grupo o pueblo se sitúa siempre más allá (aná-) del horizonte de la totalidad.''}
+\textit{Analéctico quiere indicar el hecho real humano por el que todo hombre, todo grupo o pueblo se sitúa siempre más allá (aná-) del horizonte de la totalidad.}
 
 Dussel dice que siempre hay saber \emph{más allá} de mi propio horizonte. Tu investigación es una «totalidad» pequeña (3 noches, 2 puntos), y afuera de ella hay muchísimo que no viste. Por eso reconocer tus límites no es falsa modestia: es admitir que el otro (quien te lee, la comunidad, el próximo investigador) alcanza a ver lo que a ti se te escapó. \textbf{Comunicar con honestidad es dejar la puerta abierta a ese saber que viene de más allá de lo tuyo.}
 
@@ -423,7 +466,7 @@ Dussel dice que siempre hay saber \emph{más allá} de mi propio horizonte. Tu i
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · Meditaciones VI, 21 (c. 175 d.C.) · cuidado interior}
-\textit{``Si alguien puede refutarme y probar de modo concluyente que pienso o actúo incorrectamente, de buen grado cambiaré de proceder. Pues persigo la verdad, que no dañó nunca a nadie; en cambio, sí se daña el que persiste en su propio engaño e ignorancia.''}
+\textit{Si alguien puede refutarme y probar de modo concluyente que pienso o actúo incorrectamente, de buen grado cambiaré de proceder. Pues persigo la verdad, que no dañó nunca a nadie; en cambio, sí se daña el que persiste en su propio engaño e ignorancia.}
 
 Marco Aurelio pone la verdad por encima de tener razón. Cuando sustentas tu póster y un compañero te muestra que exageraste un peldaño, o que tu dato tiene un error, \textbf{la respuesta honesta no es defenderte: es corregir}. Persistir en un hallazgo inflado «por no quedar mal» es lo que de verdad te daña ---y ensucia el conocimiento de todos. Reconocer un error en público no te rebaja: te pone del lado de la verdad, que es donde vive la ciencia.
 
@@ -433,7 +476,7 @@ Marco Aurelio pone la verdad por encima de tener razón. Cuando sustentas tu pó
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{``El florecimiento de las entidades informacionales y de toda la infoesfera debe promoverse preservando, cultivando y enriqueciendo sus propiedades.''}
+\textit{El florecimiento de las entidades informacionales y de toda la infoesfera debe promoverse preservando, cultivando y enriqueciendo sus propiedades.}
 
 Floridi trata el mundo de la información (la infoesfera) como un ambiente que hay que cuidar, igual que un río o un bosque. Publicar un dato honesto \textbf{enriquece} ese ambiente común; difundir uno inflado o falso lo \textbf{contamina}, y daña a todos los que lo lean después. Tu póster, por pequeño que sea, entra a ese ambiente compartido. \textbf{Cuidar el conocimiento ---no exagerar, citar, corregir--- es cuidar la infoesfera de la que todos vivimos.}
 
@@ -442,21 +485,24 @@ Floridi trata el mundo de la información (la infoesfera) como un ambiente que h
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

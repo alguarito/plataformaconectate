@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 8};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 8};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Referencias\\relativas y absolutas\\en Excel}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 5-8-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 1 · Análisis de datos con phronesis}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 1 · Análisis de datos con phronesis}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Referencias\\relativas y absolutas\\en Excel}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 5-8-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} Hoja Excel con dos ejercicios resueltos (a) cálculo de IVA (19\%) y descuento (10\%) sobre 10 productos usando referencias absolutas para los porcentajes y referencias relativas para los precios, (b) tabla de multiplicar (de 1 a 10 por 1 a 10) construida con UNA sola fórmula que se arrastre desde la celda B2 hasta la K11 usando referencias absolutas y relativas mezcladas + capturas que demuestren que las fórmulas funcionan al arrastrar};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Hoja Excel con dos ejercicios resueltos (a) cálculo de IVA (19\%) y descuento (10\%) sobre 10 productos usando referencias absolutas para los porcentajes y referencias relativas para los precios, (b) tabla de multiplicar (de 1 a 10 por 1 a 10) construida con UNA sola fórmula que se arrastre desde la celda B2 hasta la K11 usando referencias absolutas y relativas mezcladas + capturas que demuestren que las fórmulas funcionan al arrastrar
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Referencias relativas y absolutas en Excel}
@@ -258,30 +322,27 @@ Producto final & Hoja Excel con dos ejercicios resueltos (a) cálculo de IVA (19
 
 \puente{Antes de empezar, mira el viaje completo. En la sesión 4 aprendiste las 4 funciones básicas (SUMA, PROMEDIO, MAX, MIN). Hoy aprendes a hacer fórmulas más complejas que se \emph{arrastran} sin romperse. Las próximas sesiones (fórmulas con PEMDAS, gráficos, mini-estudio) construyen sobre esta habilidad: sin entender absolutas y relativas, las fórmulas grandes son trabajo manual interminable.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Antes de teorizar, vas a hacer un \emph{experimento} en Excel: escribes una fórmula simple en la celda B2, la copias a B3 y B4, y observas qué pasa. Después escribes la misma fórmula con \$ y la copias también. La diferencia visual te enseña antes que la teoría.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- El experimento del \$ (15 min · individual)}. Abre Excel y haz este experimento simple en 4 pasos: (1) escribe \texttt{10} en la celda B2 y \texttt{20} en la celda C2. (2) en la celda D2 escribe \texttt{=B2*C2} (debería mostrar 200). (3) escribe \texttt{30} en B3 y \texttt{40} en C3. Arrastra la fórmula de D2 a D3 (debería mostrar 1200 = 30*40). (4) ahora en E2 escribe \texttt{=B2*\$C\$2} (200). Arrastra a E3 (debería mostrar 600 = 30*20, porque C2 quedó fija). Anota la diferencia entre lo que pasa en D y en E.
 \end{softbox}
 
-\checkbox Hice el experimento de los 4 pasos en Excel.\\
-\checkbox Anoté la diferencia entre la fórmula con \$ y sin \$.\\
-\checkbox Entendí qué hace el \$ al arrastrar.
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Hice el experimento de los 4 pasos en Excel.}
+\milccheckrow{Anoté la diferencia entre la fórmula con \$ y sin \$.}
+\milccheckrow{Entendí qué hace el \$ al arrastrar.}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Ya hiciste el experimento. Ahora vas a entender la \textbf{anatomía de las 3 referencias}: relativa, absoluta, mixta. Cuándo usar cada una, los 4 errores típicos (olvidar \$, fijar lo que no debía, no fijar lo que debía, mezclar mal en referencia mixta), y el atajo F4 que ahorra tiempo.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Hiciste el experimento. Ahora necesitas la \textbf{anatomía profesional} de las 3 referencias: relativa, absoluta, mixta. Cada una tiene su uso, y elegir bien evita errores que romperán todas las fórmulas posteriores.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & Las 3 referencias se descomponen así: (1) \textbf{Relativa} \texttt{B2}: la dirección se ajusta al arrastrar. Si copias \texttt{=B2*2} una fila abajo, queda \texttt{=B3*2}. Útil cuando cada fila tiene su propio dato. (2) \textbf{Absoluta} \texttt{\$B\$2}: la dirección queda fija al arrastrar. \texttt{=\$B\$2*2} sigue siendo \texttt{=\$B\$2*2} en cualquier celda. Útil para constantes (porcentaje de IVA, factor de conversión, valor base). (3) \textbf{Mixta}: fija solo fila o solo columna. \texttt{\$B2} fija columna B, fila libre (al arrastrar verticalmente, fila cambia; al arrastrar horizontalmente, columna se queda en B). \texttt{B\$2} fija fila 2, columna libre.\\
-2. Reconocimiento de patrones & El atajo profesional para alternar entre los 4 tipos (\texttt{B2}, \texttt{\$B\$2}, \texttt{B\$2}, \texttt{\$B2}) es la tecla \textbf{F4}: pones el cursor sobre la referencia en la barra de fórmulas y presionas F4 una, dos o tres veces hasta que aparezca el tipo que necesitas. Aprender F4 ahorra muchísimo tiempo: en lugar de escribir los \$ manualmente, alternas con un toque.\\
-3. Abstracción & Lo esencial cabe en una pregunta: \emph{¿qué debe quedarse fijo y qué debe moverse cuando arrastre esta fórmula?}. Si arrastro la fórmula a otras filas, ¿la dirección debe seguir apuntando a la misma fila o adaptarse? Si arrastro a otras columnas, ¿debe seguir apuntando a la misma columna o adaptarse? Esas dos preguntas determinan dónde poner el \$.\\
-4. Algoritmo conceptual & Algoritmo: (1) escribe la fórmula en una celda. (2) antes de arrastrar, pregúntate qué debe quedarse fijo. (3) pon \$ delante de la columna y/o fila que debe quedarse fija. (4) arrastra la fórmula. (5) verifica que las primeras y últimas celdas tienen referencias correctas (haz clic en una celda al final del rango para confirmar que la fórmula apunta a donde debe). (6) si está mal, vuelve a editar la fórmula original con F4 hasta corregir.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{Las 3 referencias se descomponen así: (1) \textbf{Relativa} \texttt{B2}: la dirección se ajusta al arrastrar. Si copias \texttt{=B2*2} una fila abajo, queda \texttt{=B3*2}. Útil cuando cada fila tiene su propio dato. (2) \textbf{Absoluta} \texttt{\$B\$2}: la dirección queda fija al arrastrar. \texttt{=\$B\$2*2} sigue siendo \texttt{=\$B\$2*2} en cualquier celda. Útil para constantes (porcentaje de IVA, factor de conversión, valor base). (3) \textbf{Mixta}: fija solo fila o solo columna. \texttt{\$B2} fija columna B, fila libre (al arrastrar verticalmente, fila cambia; al arrastrar horizontalmente, columna se queda en B). \texttt{B\$2} fija fila 2, columna libre.}
+\milcpaso{2}{milcTurquesa}{El atajo profesional para alternar entre los 4 tipos (\texttt{B2}, \texttt{\$B\$2}, \texttt{B\$2}, \texttt{\$B2}) es la tecla \textbf{F4}: pones el cursor sobre la referencia en la barra de fórmulas y presionas F4 una, dos o tres veces hasta que aparezca el tipo que necesitas. Aprender F4 ahorra muchísimo tiempo: en lugar de escribir los \$ manualmente, alternas con un toque.}
+\milcpaso{3}{milcTurquesa}{Lo esencial cabe en una pregunta: \emph{¿qué debe quedarse fijo y qué debe moverse cuando arrastre esta fórmula?}. Si arrastro la fórmula a otras filas, ¿la dirección debe seguir apuntando a la misma fila o adaptarse? Si arrastro a otras columnas, ¿debe seguir apuntando a la misma columna o adaptarse? Esas dos preguntas determinan dónde poner el \$.}
+\milcpaso{4}{milcTurquesa}{Algoritmo: (1) escribe la fórmula en una celda. (2) antes de arrastrar, pregúntate qué debe quedarse fijo. (3) pon \$ delante de la columna y/o fila que debe quedarse fija. (4) arrastra la fórmula. (5) verifica que las primeras y últimas celdas tienen referencias correctas (haz clic en una celda al final del rango para confirmar que la fórmula apunta a donde debe). (6) si está mal, vuelve a editar la fórmula original con F4 hasta corregir.}
 
 \begin{drawbox}{milcTurquesa}{Anatomía de las 3 referencias}
 \textbf{Relativa} \texttt{B2}: se ajusta al arrastrar. \\[1mm] \textbf{Absoluta} \texttt{\$B\$2}: queda fija al arrastrar. \\[1mm] \textbf{Mixta columna fija} \texttt{\$B2}: columna fija, fila libre. \\[1mm] \textbf{Mixta fila fija} \texttt{B\$2}: fila fija, columna libre. \\[1mm] \textbf{Atajo F4:} alterna entre los 4 tipos.
@@ -325,23 +379,16 @@ Hiciste el experimento. Ahora necesitas la \textbf{anatomía profesional} de las
 
 \puente{Tienes el método. Toca aplicarlo: 2 ejercicios reales. El primero, cálculo de IVA y descuento sobre 10 productos: el \% va fijo (absoluta), los precios cambian (relativa). El segundo, tabla de multiplicar: UNA sola fórmula que se arrastra a las 100 celdas con referencias mixtas.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · APLICA + EVALÚA --- Dos ejercicios reales} (35 min · individual). Hora de aplicar. Haces dos hojas: una con cálculo de IVA y descuento sobre 10 productos, otra con tabla de multiplicar generada por UNA sola fórmula que se arrastra a 100 celdas.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & El ejercicio 1 (IVA y descuento) se construye así: (1) columna A: nombres de 10 productos. (2) columna B: precios base. (3) celda E1: \texttt{19\%} (IVA). (4) celda E2: \texttt{10\%} (descuento). (5) columna C (IVA calculado): \texttt{=B2*\$E\$1} arrastrado a 10 filas. (6) columna D (precio con descuento): \texttt{=B2*(1-\$E\$2)} arrastrado a 10 filas. La constante de IVA y descuento queda fija con \$; los precios se mueven al arrastrar.\\
-Patrones & El ejercicio 2 (tabla de multiplicar) se construye con UNA sola fórmula que combina referencias mixtas. (1) en B1:K1 escribe los números 1 al 10 (factores de columna). (2) en A2:A11 escribe los números 1 al 10 (factores de fila). (3) en B2 escribe \texttt{=\$A2*B\$1}. Importante: \$A fija columna A, fila libre. B\$1 fija fila 1, columna libre. (4) arrastra B2 hacia la derecha hasta K2 (la fila 1 queda fija como factor de columna). (5) selecciona el rango B2:K2 y arrastra hacia abajo hasta K11 (la columna A queda fija como factor de fila). Resultado: tabla de multiplicar completa con 1 sola fórmula.\\
-Abstracción & Sigue el patrón \textbf{``fórmula única, arrastre múltiple''}: el oficio profesional no escribe 100 fórmulas; escribe 1 fórmula con referencias bien pensadas y la arrastra. Esa disciplina ahorra tiempo y, sobre todo, evita errores: si necesitas cambiar el cálculo, cambias 1 fórmula en lugar de 100.\\
-Algoritmo de armado & Algoritmo: (1) escribe la fórmula con cuidado. (2) presiona F4 para alternar referencias hasta tener las correctas. (3) arrastra. (4) haz clic en una celda al final del rango para verificar que apunta a donde debe. (5) prueba cambiando una constante: si el IVA pasa de 19\% a 21\%, todas las celdas deberían actualizarse al instante.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{El ejercicio 1 (IVA y descuento) se construye así: (1) columna A: nombres de 10 productos. (2) columna B: precios base. (3) celda E1: \texttt{19\%} (IVA). (4) celda E2: \texttt{10\%} (descuento). (5) columna C (IVA calculado): \texttt{=B2*\$E\$1} arrastrado a 10 filas. (6) columna D (precio con descuento): \texttt{=B2*(1-\$E\$2)} arrastrado a 10 filas. La constante de IVA y descuento queda fija con \$; los precios se mueven al arrastrar.}
+\milcpaso{2}{milcMagenta}{El ejercicio 2 (tabla de multiplicar) se construye con UNA sola fórmula que combina referencias mixtas. (1) en B1:K1 escribe los números 1 al 10 (factores de columna). (2) en A2:A11 escribe los números 1 al 10 (factores de fila). (3) en B2 escribe \texttt{=\$A2*B\$1}. Importante: \$A fija columna A, fila libre. B\$1 fija fila 1, columna libre. (4) arrastra B2 hacia la derecha hasta K2 (la fila 1 queda fija como factor de columna). (5) selecciona el rango B2:K2 y arrastra hacia abajo hasta K11 (la columna A queda fija como factor de fila). Resultado: tabla de multiplicar completa con 1 sola fórmula.}
+\milcpaso{3}{milcMagenta}{Sigue el patrón \textbf{``fórmula única, arrastre múltiple''}: el oficio profesional no escribe 100 fórmulas; escribe 1 fórmula con referencias bien pensadas y la arrastra. Esa disciplina ahorra tiempo y, sobre todo, evita errores: si necesitas cambiar el cálculo, cambias 1 fórmula en lugar de 100.}
+\milcpaso{4}{milcMagenta}{Algoritmo: (1) escribe la fórmula con cuidado. (2) presiona F4 para alternar referencias hasta tener las correctas. (3) arrastra. (4) haz clic en una celda al final del rango para verificar que apunta a donde debe. (5) prueba cambiando una constante: si el IVA pasa de 19\% a 21\%, todas las celdas deberían actualizarse al instante.}
 
 \begin{drawbox}{milcMagenta}{Checklist antes de entregar}
 \checkbox Ejercicio 1 (IVA/descuento) construido con 10 productos. \\[1mm] \checkbox Constantes \% fijadas con \$ absoluto. \\[1mm] \checkbox Precios con referencia relativa. \\[1mm] \checkbox Ejercicio 2 (tabla multiplicar) hecho con 1 sola fórmula. \\[1mm] \checkbox Referencias mixtas correctamente aplicadas (\$A2 y B\$1). \\[1mm] \checkbox Captura del antes y del después de arrastrar. \\[1mm] \checkbox Verificación cambiando una constante (el IVA o un factor) y observando que todo se actualiza.
@@ -359,9 +406,7 @@ Algoritmo de armado & Algoritmo: (1) escribe la fórmula con cuidado. (2) presio
 
 \puente{Lo que sigue resume \emph{qué} entregas hoy: 2 hojas resueltas + captura del antes/después de arrastrar + explicación de qué referencia usaste y por qué. El criterio principal: que las fórmulas funcionen al arrastrarse sin que tengas que escribir más de 1 fórmula por columna.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Hoja con IVA/descuento + tabla multiplicar + verificación al arrastrar}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) IVA y descuento aplicados a 10 productos con referencias absolutas para %. (2) Precios con referencia relativa. (3) Tabla de multiplicar construida con 1 sola fórmula. (4) Referencias mixtas correctamente aplicadas. (5) Capturas del antes y después de arrastrar. (6) Verificación cambiando una constante.
@@ -369,9 +414,7 @@ Producto de la sesión
 
 \puente{Antes de cerrar, mira las referencias desde las cinco dimensiones humanas. Fijar bien lo que no se mueve es respeto por el oficio del alfarero; no fijar es repetir 100 veces lo que se podía hacer 1 vez.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -397,12 +440,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Y para terminar, tres voces sobre el patrón y la copia. Dussel sobre los modelos que reproducen el oficio sin perder la dignidad de la copia, Epicteto sobre la disciplina del detalle (un \$ cambia todo), Floridi sobre la información replicable como ética del oficio digital.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{``Reproducir sin perder dignidad es lo opuesto a copiar como esclavo; las referencias bien usadas honran el patrón sin convertir al copista en máquina.''}
+\textit{Reproducir sin perder dignidad es lo opuesto a copiar como esclavo; las referencias bien usadas honran el patrón sin convertir al copista en máquina.}
 
 Cuando arrastras una fórmula correctamente, no estás haciendo trabajo mecánico: estás aplicando una idea bien pensada a muchos casos. Esa es la diferencia entre el aprendiz que copia 100 veces sin entender y el alfarero que entiende el patrón y lo reproduce con criterio. La filosofía de la liberación pide ese tipo de reproducción consciente, no la copia ciega. La phronesis del oficio digital consiste en \textbf{pensar la fórmula 1 vez bien y reproducirla con honestidad}.
 
@@ -412,7 +453,7 @@ Cuando arrastras una fórmula correctamente, no estás haciendo trabajo mecánic
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Epicteto · cuidado interior}
-\textit{``Lo pequeño cambia el resultado: un signo de dólar bien puesto separa el oficio del desastre.''}
+\textit{Lo pequeño cambia el resultado: un signo de dólar bien puesto separa el oficio del desastre.}
 
 Es tentador subestimar el \$: parece detalle ortográfico, no técnico. La disciplina estoica recomienda lo opuesto: \emph{lo pequeño es crucial}. Un \$ que falta convierte tu fórmula en error; un \$ que sobra la fija donde debía moverse. El oficio del análisis con Excel se sostiene en estos detalles invisibles. La sabiduría consiste en \textbf{respetar lo pequeño porque sostiene lo grande}.
 
@@ -422,7 +463,7 @@ Es tentador subestimar el \$: parece detalle ortográfico, no técnico. La disci
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{``La información replicable con honestidad es la nueva ética del oficio digital.''}
+\textit{La información replicable con honestidad es la nueva ética del oficio digital.}
 
 Una fórmula con referencias bien pensadas permite que cualquiera reproduzca tu cálculo sin tu intervención. Esa replicabilidad es la base de la transparencia digital contemporánea: tu trabajo no depende de ti, depende de la lógica que dejaste explícita en la hoja. Quien escribe fórmulas opacas o las arrastra a la suerte impide esa replicabilidad. Tu hoja de hoy te entrena en una práctica ética del oficio digital.
 
@@ -431,21 +472,24 @@ Una fórmula con referencias bien pensadas permite que cualquiera reproduzca tu 
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

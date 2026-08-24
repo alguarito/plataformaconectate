@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,51 +229,65 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont MÓDULO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SEMILLERO DE INVESTIGACIÓN · CONECTATE};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont MÓDULO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SEMILLERO DE INVESTIGACIÓN · CONECTATE};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 2};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 2};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
   
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont De la idea al pseudocódigo ---\\de la cera perdida\\de los Quimbaya\\al diagrama de flujo}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Robótica y sistemas embebidos}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Módulo 2 · Fase MILC: Sistematización · 3 h de clase}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Módulo 2 · Fase MILC: Sistematización · 3 h de clase}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont De la idea al pseudocódigo ---\\de la cera perdida\\de los Quimbaya\\al diagrama de flujo}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Robótica y sistemas embebidos}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} La \textbf{lógica de tu aparato diseñada antes de programar}: el \textbf{pseudocódigo} (la lógica en palabras: percibir → decidir con una regla → actuar) y el \textbf{diagrama de flujo} (la misma lógica dibujada con sus figuras). Más tu \textbf{tabla de umbrales} ---qué valor separa cada decisión y \textbf{cómo lo vas a medir} para justificarlo--- y la \textbf{lista de materiales} de tu prototipo. Todo listo para que en el módulo 3 los bloques de MakeCode solo lo \emph{traduzcan}.};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+La \textbf{lógica de tu aparato diseñada antes de programar}: el \textbf{pseudocódigo} (la lógica en palabras: percibir → decidir con una regla → actuar) y el \textbf{diagrama de flujo} (la misma lógica dibujada con sus figuras). Más tu \textbf{tabla de umbrales} ---qué valor separa cada decisión y \textbf{cómo lo vas a medir} para justificarlo--- y la \textbf{lista de materiales} de tu prototipo. Todo listo para que en el módulo 3 los bloques de MakeCode solo lo \emph{traduzcan}.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: De la idea al pseudocódigo --- de la cera perdida de los Quimbaya al diagrama de flujo}
@@ -257,30 +321,27 @@ Producto final & La \textbf{lógica de tu aparato diseñada antes de programar}:
 
 \puente{En el módulo 1 escuchaste tu entorno y afinaste una necesidad (percibir → regla → hacer). Hoy le das \textbf{forma exacta}: la conviertes en una lógica que otro podría leer y construir, como el plano del orfebre antes de fundir.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Antes de diseñar, vuelve a tu necesidad afinada del módulo 1. Ese es el barro: hoy lo modelas en una lógica precisa.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- Las partes de una lógica} (35 min · individual + grupo). \textbf{Momento A (10 min) --- El caso de la cera perdida.} El profe cuenta la secuencia del orfebre Quimbaya y pregunta: \emph{¿qué pasaba si se saltaba o cambiaba un paso? ¿por qué no podía improvisar?}. \textbf{Momento B (15 min) --- Desarmar una lógica cotidiana.} En grupo, tomen un aparato conocido (una nevera, una puerta automática, una alarma) y sepárenlo en sus piezas lógicas: \emph{¿qué percibe (sensor)? ¿qué número o señal mira? ¿cuál es el umbral (el valor de corte)? ¿qué decide? ¿qué hace (actuador)?}. \textbf{Momento C (10 min) --- Mi necesidad, en piezas.} Cada quien toma su necesidad afinada del módulo 1 y la parte en esas mismas piezas: sensor, umbral, decisión, acción. \textbf{En el cuaderno:} el aparato cotidiano desarmado en piezas lógicas + tu necesidad partida en sensor / umbral / decisión / acción.
 \end{softbox}
 
-\checkbox Puedo explicar por qué el orfebre no podía cambiar el orden de los pasos.\\
-\checkbox Desarmé un aparato cotidiano en sensor, umbral, decisión y actuador.\\
-\checkbox Partí mi propia necesidad en esas cuatro piezas.
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Puedo explicar por qué el orfebre no podía cambiar el orden de los pasos.}
+\milccheckrow{Desarmé un aparato cotidiano en sensor, umbral, decisión y actuador.}
+\milccheckrow{Partí mi propia necesidad en esas cuatro piezas.}
 
 \begin{infoband}{milcVerde}
 
@@ -290,23 +351,16 @@ Fase 1 · Escucha
 
 \puente{Ya tienes tu necesidad. Ahora aprende a darle forma: pseudocódigo, diagrama de flujo y umbrales calibrados ---las herramientas de pensar antes de programar.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 \textbf{Actividad 2 · EXPLICA --- Pensar antes de programar} (70 min · grupo + individual). Ya tienes tu necesidad en piezas. Ahora aprende a \textbf{ensamblarlas en una lógica}: el pseudocódigo, el diagrama de flujo con sus cuatro figuras, y cómo se \textbf{calibra} un umbral en vez de inventarlo.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & \textbf{Pilar 1 --- El pseudocódigo: la lógica en palabras.} Antes de un solo bloque, se escribe \emph{cómo pensará} el aparato, en frases ordenadas que cualquiera entiende. La columna vertebral casi siempre es la misma: \textbf{un bucle} (\emph{``por siempre''}, porque un sistema vigila sin parar) que adentro \textbf{lee} el sensor y \textbf{decide} con una regla. Ejemplo: \emph{``Por siempre: leer la luz. Si la luz es menor que 30, mostrar la luna. Si no, mostrar el sol''}. \textbf{Léelo en voz alta:} si suena coherente de principio a fin, vas bien; si te trabas, ahí hay un hueco. \emph{El pseudocódigo es barato de corregir ---es solo texto--- y por eso es donde deben morir los errores.}\\
-2. Reconocimiento de patrones & \textbf{Pilar 2 --- El diagrama de flujo: la lógica dibujada, cuatro figuras.} Lo que las palabras esconden, el dibujo lo delata. Un diagrama de flujo usa \textbf{cuatro figuras}: el \textbf{óvalo} marca dónde \emph{empieza y termina}; el \textbf{rectángulo} es \emph{una acción} (leer, mostrar); el \textbf{rombo} es \emph{una pregunta} de sí/no (\emph{¿luz $<$ 30?}), y de él salen \textbf{dos} caminos; las \textbf{flechas} muestran por dónde va el proceso. \textbf{La prueba de fuego:} sigue las flechas con el dedo; si llegas a un rectángulo del que no sale flecha, o a un rombo con una sola salida, \textbf{tienes un hueco}. Dibujar obliga a decidir lo que el texto deja vago. Es exactamente lo que aprendiste en 7°, ahora al servicio de tu aparato.\\
-3. Abstracción & \textbf{Pilar 3 --- El umbral: el número que se vuelve decisión.} El sensor no dice «oscuro»: dice \emph{42}. El \textbf{umbral} es el valor de corte que convierte ese número en una decisión (\emph{si es menor que 30, es «oscuro»}). Sin umbral no hay decisión; con un umbral inventado, la decisión es un capricho. Por eso el umbral se \textbf{calibra}: se \textbf{mide} el sensor en condiciones \emph{conocidas} (tapado = oscuro, bajo la luz = claro) y se elige el corte con esos números en la mano. \emph{Ya lo hiciste con el fotómetro en Astronomía, y es lo que hacía la curandera del Pacífico al fijar «fiebre leve» con su propia mano como patrón.} Un umbral calibrado se puede \textbf{justificar}; uno inventado, solo defender.\\
-4. Algoritmo conceptual & \textbf{Pilar 4 --- Coherencia y materiales: que todo encaje.} Una lógica sirve cuando lo que \textbf{percibe} y lo que \textbf{hace} encajan sin huecos: cada pregunta tiene sus dos respuestas, cada camino termina en una acción, ninguna decisión queda colgando. Revísalo como el orfebre revisaba su secuencia: \emph{de principio a fin, sin saltos}. Y ---detalle práctico--- haz tu \textbf{lista de materiales}: para la mayoría de necesidades basta \textbf{un micro:bit} (sus sensores vienen adentro); algunas piden algo más (una pila, un cable, un sensor externo). Saber qué necesitas \emph{antes} de construir es parte de planear como el que funde: no se enciende el horno sin tener todo listo.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{\textbf{Pilar 1 --- El pseudocódigo: la lógica en palabras.} Antes de un solo bloque, se escribe \emph{cómo pensará} el aparato, en frases ordenadas que cualquiera entiende. La columna vertebral casi siempre es la misma: \textbf{un bucle} (\emph{``por siempre''}, porque un sistema vigila sin parar) que adentro \textbf{lee} el sensor y \textbf{decide} con una regla. Ejemplo: \emph{``Por siempre: leer la luz. Si la luz es menor que 30, mostrar la luna. Si no, mostrar el sol''}. \textbf{Léelo en voz alta:} si suena coherente de principio a fin, vas bien; si te trabas, ahí hay un hueco. \emph{El pseudocódigo es barato de corregir ---es solo texto--- y por eso es donde deben morir los errores.}}
+\milcpaso{2}{milcTurquesa}{\textbf{Pilar 2 --- El diagrama de flujo: la lógica dibujada, cuatro figuras.} Lo que las palabras esconden, el dibujo lo delata. Un diagrama de flujo usa \textbf{cuatro figuras}: el \textbf{óvalo} marca dónde \emph{empieza y termina}; el \textbf{rectángulo} es \emph{una acción} (leer, mostrar); el \textbf{rombo} es \emph{una pregunta} de sí/no (\emph{¿luz $<$ 30?}), y de él salen \textbf{dos} caminos; las \textbf{flechas} muestran por dónde va el proceso. \textbf{La prueba de fuego:} sigue las flechas con el dedo; si llegas a un rectángulo del que no sale flecha, o a un rombo con una sola salida, \textbf{tienes un hueco}. Dibujar obliga a decidir lo que el texto deja vago. Es exactamente lo que aprendiste en 7°, ahora al servicio de tu aparato.}
+\milcpaso{3}{milcTurquesa}{\textbf{Pilar 3 --- El umbral: el número que se vuelve decisión.} El sensor no dice «oscuro»: dice \emph{42}. El \textbf{umbral} es el valor de corte que convierte ese número en una decisión (\emph{si es menor que 30, es «oscuro»}). Sin umbral no hay decisión; con un umbral inventado, la decisión es un capricho. Por eso el umbral se \textbf{calibra}: se \textbf{mide} el sensor en condiciones \emph{conocidas} (tapado = oscuro, bajo la luz = claro) y se elige el corte con esos números en la mano. \emph{Ya lo hiciste con el fotómetro en Astronomía, y es lo que hacía la curandera del Pacífico al fijar «fiebre leve» con su propia mano como patrón.} Un umbral calibrado se puede \textbf{justificar}; uno inventado, solo defender.}
+\milcpaso{4}{milcTurquesa}{\textbf{Pilar 4 --- Coherencia y materiales: que todo encaje.} Una lógica sirve cuando lo que \textbf{percibe} y lo que \textbf{hace} encajan sin huecos: cada pregunta tiene sus dos respuestas, cada camino termina en una acción, ninguna decisión queda colgando. Revísalo como el orfebre revisaba su secuencia: \emph{de principio a fin, sin saltos}. Y ---detalle práctico--- haz tu \textbf{lista de materiales}: para la mayoría de necesidades basta \textbf{un micro:bit} (sus sensores vienen adentro); algunas piden algo más (una pila, un cable, un sensor externo). Saber qué necesitas \emph{antes} de construir es parte de planear como el que funde: no se enciende el horno sin tener todo listo.}
 
 \begin{drawbox}{milcTurquesa}{Pseudocódigo + diagrama de flujo + umbral + coherencia}
 \textbf{Pseudocódigo:} la lógica en palabras. Bucle «por siempre» → leer sensor → si (regla) hacer A, si no hacer B. Barato de corregir. \\[1mm]
@@ -327,23 +381,18 @@ Fase 2 · Sistematización con pensamiento computacional
 
 \puente{Ya conoces las herramientas. Es hora de usarlas con \emph{tu} necesidad: escribir su lógica, dibujarla y buscarle los huecos antes de que cuesten caro.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · ANALIZA --- Diseña y depura la lógica de tu aparato} (65 min · individual + parejas). Hora de hacer el plano. Vas a escribir el \textbf{pseudocódigo} de tu necesidad, dibujarlo como \textbf{diagrama de flujo}, fijar tus \textbf{umbrales} y ---clave--- \textbf{buscarle los huecos} antes de que cuesten caro en el módulo 3.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & \textbf{Paso 1 --- Escribe el pseudocódigo (15 min).} Toma tu necesidad afinada (percibir → regla → hacer) y escríbela como lógica en palabras, empezando por el bucle: \emph{``Por siempre: leer \_\_\_\_ (sensor). Si \_\_\_\_ (regla con umbral), hacer \_\_\_\_ (acción). Si no, hacer \_\_\_\_''}. Usa tantas preguntas como necesite tu idea (una alerta de 3 estados necesita dos umbrales). \textbf{Léelo en voz alta} de principio a fin: donde te trabes, corrige ---aquí es barato.\\
-Patrones & \textbf{Paso 2 --- Dibuja el diagrama de flujo (20 min).} Traduce tu pseudocódigo a las cuatro figuras: \textbf{óvalo} para empezar, \textbf{rectángulos} para las acciones (leer, mostrar), \textbf{rombos} para las preguntas del umbral (con sus \emph{dos} flechas: sí / no), y \textbf{flechas} para el camino, cerrando el bucle al inicio. Hazlo grande y limpio. Este dibujo es tu \textbf{cera}: lo que aquí quede bien, luego se funde sin sorpresas.\\
-Abstracción & \textbf{Paso 3 --- Fija y justifica tus umbrales (10 min).} Para cada rombo, decide el \textbf{valor de corte} y escribe \textbf{cómo lo vas a calibrar}: \emph{``mediré el sensor tapado y con luz, y pondré el umbral en el punto medio''}. Si aún no tienes el micro:bit en mano, deja el número \emph{provisional} y anota el método ---lo confirmarás midiendo en el módulo 3. Un umbral con método vale; uno inventado, no.\\
-Algoritmo de armado & \textbf{Paso 4 --- La prueba del compañero (10 min).} Intercambia tu diagrama con tu pareja. Él debe \textbf{seguir las flechas con el dedo} y contarte, sin tu ayuda, qué hace tu aparato en cada caso. \textbf{Cada vez que se pierda, encontraste un hueco:} un rombo sin dos salidas, una acción sin flecha, un camino que no vuelve. Márcalos y arréglalos. \emph{Este es el momento más valioso del módulo: cada hueco tapado hoy es una hora ahorrada mañana.}\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{\textbf{Paso 1 --- Escribe el pseudocódigo (15 min).} Toma tu necesidad afinada (percibir → regla → hacer) y escríbela como lógica en palabras, empezando por el bucle: \emph{``Por siempre: leer \_\_\_\_ (sensor). Si \_\_\_\_ (regla con umbral), hacer \_\_\_\_ (acción). Si no, hacer \_\_\_\_''}. Usa tantas preguntas como necesite tu idea (una alerta de 3 estados necesita dos umbrales). \textbf{Léelo en voz alta} de principio a fin: donde te trabes, corrige ---aquí es barato.}
+\milcpaso{2}{milcMagenta}{\textbf{Paso 2 --- Dibuja el diagrama de flujo (20 min).} Traduce tu pseudocódigo a las cuatro figuras: \textbf{óvalo} para empezar, \textbf{rectángulos} para las acciones (leer, mostrar), \textbf{rombos} para las preguntas del umbral (con sus \emph{dos} flechas: sí / no), y \textbf{flechas} para el camino, cerrando el bucle al inicio. Hazlo grande y limpio. Este dibujo es tu \textbf{cera}: lo que aquí quede bien, luego se funde sin sorpresas.}
+\milcpaso{3}{milcMagenta}{\textbf{Paso 3 --- Fija y justifica tus umbrales (10 min).} Para cada rombo, decide el \textbf{valor de corte} y escribe \textbf{cómo lo vas a calibrar}: \emph{``mediré el sensor tapado y con luz, y pondré el umbral en el punto medio''}. Si aún no tienes el micro:bit en mano, deja el número \emph{provisional} y anota el método ---lo confirmarás midiendo en el módulo 3. Un umbral con método vale; uno inventado, no.}
+\milcpaso{4}{milcMagenta}{\textbf{Paso 4 --- La prueba del compañero (10 min).} Intercambia tu diagrama con tu pareja. Él debe \textbf{seguir las flechas con el dedo} y contarte, sin tu ayuda, qué hace tu aparato en cada caso. \textbf{Cada vez que se pierda, encontraste un hueco:} un rombo sin dos salidas, una acción sin flecha, un camino que no vuelve. Márcalos y arréglalos. \emph{Este es el momento más valioso del módulo: cada hueco tapado hoy es una hora ahorrada mañana.}}
+\milcpaso{5}{milcMagenta}{\textbf{Paso 5 --- Lista de materiales (5 min).} Escribe qué necesitas para construirlo: casi siempre \textbf{un micro:bit} (sensores incluidos); a veces una pila, un cable de cocodrilo, o un sensor externo si tu necesidad excede lo integrado. Como el orfebre, ten todo claro \textbf{antes} de encender el horno.}
+\milcpaso{6}{milcMagenta}{\textbf{Paso 6 --- Cierra el plano (5 min).} Junta las tres piezas ---pseudocódigo, diagrama de flujo depurado, tabla de umbrales--- y la lista de materiales en una sola hoja. \emph{Esto es el plano completo de tu aparato.} En el módulo 3 no vas a diseñar: vas a \textbf{traducirlo} a MakeCode y a medir tus umbrales. La parte difícil ---pensar--- ya la hiciste.}
 
 \begin{drawbox}{milcMagenta}{Antes de dar por bueno tu plano}
 \checkbox Escribí el pseudocódigo con su bucle, su lectura y sus decisiones. \\[1mm]
@@ -369,9 +418,7 @@ Algoritmo de armado & \textbf{Paso 4 --- La prueba del compañero (10 min).} Int
 
 \puente{El producto no es un programa: es su \textbf{plano} ---pseudocódigo, diagrama y umbrales. Con eso, el módulo 3 será traducir, no adivinar.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Plano lógico del aparato — pseudocódigo + diagrama de flujo + umbrales + materiales}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) El pseudocódigo tiene bucle, lectura del sensor y decisiones con umbral. (2) El diagrama de flujo usa las cuatro figuras y cada rombo tiene dos salidas. (3) Ningún camino queda colgado y el bucle se cierra (no hay huecos en la lógica). (4) Cada umbral tiene un valor y un método de calibración justificado (no inventado). (5) Están la lista de materiales y la coherencia entre lo que percibe y lo que hace.
@@ -379,9 +426,7 @@ Producto de la sesión
 
 \puente{Antes de cerrar, prueba tu diagrama con un compañero: si él no puede seguir la lógica sin que se la expliques, todavía tiene huecos.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -407,12 +452,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Cerramos con 3 voces que te ayudan a entender por qué pensar el orden antes de actuar ---y no al revés--- es lo que distingue al oficio de la improvisación.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{``Analéctico quiere indicar el hecho real humano por el que todo hombre, todo grupo o pueblo se sitúa siempre más allá (aná-) del horizonte de la totalidad.''}
+\textit{Analéctico quiere indicar el hecho real humano por el que todo hombre, todo grupo o pueblo se sitúa siempre más allá (aná-) del horizonte de la totalidad.}
 
 Dussel dice que hay saberes que vienen de más allá del sistema establecido. Tu necesidad ---la de tu casa, tu vereda--- suele ser una de esas: no está en ningún catálogo de proyectos. \textbf{Diseñar su lógica es darle forma rigurosa para que exista}: el pseudocódigo y el diagrama convierten una intuición situada en un plano que otro puede leer y construir. \emph{Sistematizar no le quita lo propio a tu idea; le da los huesos para ponerse de pie.}
 
@@ -422,7 +465,7 @@ Dussel dice que hay saberes que vienen de más allá del sistema establecido. Tu
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Epicteto · Enquiridión, 1 (c. 125 d.C.; trad. desde E. Carter) · cuidado interior}
-\textit{``Algunas cosas están en nuestro poder y otras no. Están en nuestro poder la opinión, el impulso, el deseo, el rechazo; en una palabra, todo aquello que es obra nuestra.''}
+\textit{Algunas cosas están en nuestro poder y otras no. Están en nuestro poder la opinión, el impulso, el deseo, el rechazo; en una palabra, todo aquello que es obra nuestra.}
 
 Epicteto separa lo que depende de mí de lo que no. No controlas si el sensor será perfecto ni si el mundo cooperará; \textbf{sí controlas la claridad de tu plan}. Un diagrama sin huecos, un umbral con método, una lógica que otro puede seguir: eso es \emph{obra tuya}, y es donde se gana o se pierde un proyecto. El orfebre no controlaba el fuego, pero sí la secuencia. \textbf{Domina lo que depende de ti ---el diseño--- y el resto se vuelve manejable.}
 
@@ -432,7 +475,7 @@ Epicteto separa lo que depende de mí de lo que no. No controlas si el sensor se
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{``Las tecnologías digitales están re-ontologizando la naturaleza misma de la infoesfera.''}
+\textit{Las tecnologías digitales están re-ontologizando la naturaleza misma de la infoesfera.}
 
 \emph{Re-ontologizar} es transformar la naturaleza de algo. Tu idea, mientras vive solo en tu cabeza, es vaga: cambia cada vez que la piensas. Escribirla como pseudocódigo y diagrama de flujo \textbf{la vuelve otra cosa}: algo preciso, fijo, ejecutable y compartible. El plano no \emph{describe} tu idea: la \textbf{re-ontologiza} en algo que una máquina puede correr y una persona puede revisar. \textbf{Diseñar la lógica es el acto que convierte un deseo en un artefacto posible.}
 
@@ -441,21 +484,24 @@ Epicteto separa lo que depende de mí de lo que no. No controlas si el sensor se
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

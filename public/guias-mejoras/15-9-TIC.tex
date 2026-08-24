@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 9};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 9};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Imagen y texto ---\\el ritmo\\de la lectura}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 15-9-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 2 · Diseño editorial digital}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 2 · Diseño editorial digital}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Imagen y texto ---\\el ritmo\\de la lectura}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 15-9-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} 2 spreads (páginas dobles) de la revista diseñados a mano con foto + texto coherentes, donde la imagen y el texto se ayudan en vez de competir};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+2 spreads (páginas dobles) de la revista diseñados a mano con foto + texto coherentes, donde la imagen y el texto se ayudan en vez de competir
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Imagen y texto --- el ritmo de la lectura}
@@ -258,30 +322,27 @@ Producto final & 2 spreads (páginas dobles) de la revista diseñados a mano con
 
 \puente{Antes de empezar, mira el viaje completo. La sesión 4 te dio paleta de color; hoy combinas todo lo aprendido (grilla + tipografía + color) en piezas reales: 2 spreads diseñados.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Antes de dibujar tus spreads, vamos a leer spreads reales de revistas ilustradas. La forma en que combinan imagen y texto tiene patrones que llevan siglos funcionando.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- 3 spreads reales} (15 min · individual). Busca \textbf{3 spreads} (páginas dobles) reales: (a) uno de \emph{periódico colombiano ilustrado} (El Tiempo, El Espectador, El País del Valle); (b) uno de \emph{revista de tema cultural} (Semana, Cromos, Bocas); (c) uno de \emph{libro o catálogo con buenas imágenes}. Para cada uno: ¿qué se ve primero, la imagen o el titular? ¿la imagen refuerza el texto o lo contradice? ¿cómo se distribuye el espacio?
 \end{softbox}
 
-\checkbox Encontré 3 spreads reales con buena composición imagen-texto.\\
-\checkbox Identifiqué qué se ve primero en cada uno (imagen o titular).\\
-\checkbox Reconocí cómo se reparten el espacio (50/50, 70/30, etc.).
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Encontré 3 spreads reales con buena composición imagen-texto.}
+\milccheckrow{Identifiqué qué se ve primero en cada uno (imagen o titular).}
+\milccheckrow{Reconocí cómo se reparten el espacio (50/50, 70/30, etc.).}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Ya viste spreads reales. Ahora vamos a entender las \textbf{4 relaciones} posibles entre imagen y texto: refuerzo, contraste, narrativa, ornamental. Cada una sirve a un propósito distinto.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Toda relación imagen-texto se reduce a 4 tipos. Vamos a descomponerlos con los pilares del pensamiento computacional para que sepas elegir cuál usar.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & La relación imagen-texto se descompone en 4 tipos: (1) \textbf{refuerzo} (imagen y texto dicen lo mismo desde dos canales --- foto de la cosecha + título ``Llegó la cosecha del café''), (2) \textbf{contraste} (imagen y texto se tensionan productivamente --- foto del campo seco + título ``Año récord'' invita a leer), (3) \textbf{narrativa} (la imagen cuenta un momento, el texto cuenta el resto --- foto de un niño con su perro + texto que explica la historia familiar), (4) \textbf{ornamental} (imagen decorativa sin función informativa --- generalmente débil, evitar en editorial serio).\\
-2. Reconocimiento de patrones & Toda composición fuerte sigue el patrón \textbf{``imagen captura, texto profundiza''}: el ojo entra por la imagen, la mente sigue por el texto. Si tu texto compite con la imagen por la atención principal, la composición pierde. Decide cuál lleva el peso visual y diseña en consecuencia.\\
-3. Abstracción & Lo esencial cabe en una pregunta: \emph{¿qué quiero que el lector vea primero y qué después?}. Sin esa decisión clara, imagen y texto compiten en lugar de bailar juntos.\\
-4. Algoritmo conceptual & Pasos para componer un spread: (1) decide qué historia cuenta; (2) decide qué relación tienen imagen y texto (refuerzo, contraste, narrativa); (3) decide reparto de espacio (50/50, 70/30, imagen full bleed, columnas); (4) decide jerarquía tipográfica dentro del texto; (5) verifica que respire (espacio en blanco generoso).\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{La relación imagen-texto se descompone en 4 tipos: (1) \textbf{refuerzo} (imagen y texto dicen lo mismo desde dos canales --- foto de la cosecha + título ``Llegó la cosecha del café''), (2) \textbf{contraste} (imagen y texto se tensionan productivamente --- foto del campo seco + título ``Año récord'' invita a leer), (3) \textbf{narrativa} (la imagen cuenta un momento, el texto cuenta el resto --- foto de un niño con su perro + texto que explica la historia familiar), (4) \textbf{ornamental} (imagen decorativa sin función informativa --- generalmente débil, evitar en editorial serio).}
+\milcpaso{2}{milcTurquesa}{Toda composición fuerte sigue el patrón \textbf{``imagen captura, texto profundiza''}: el ojo entra por la imagen, la mente sigue por el texto. Si tu texto compite con la imagen por la atención principal, la composición pierde. Decide cuál lleva el peso visual y diseña en consecuencia.}
+\milcpaso{3}{milcTurquesa}{Lo esencial cabe en una pregunta: \emph{¿qué quiero que el lector vea primero y qué después?}. Sin esa decisión clara, imagen y texto compiten en lugar de bailar juntos.}
+\milcpaso{4}{milcTurquesa}{Pasos para componer un spread: (1) decide qué historia cuenta; (2) decide qué relación tienen imagen y texto (refuerzo, contraste, narrativa); (3) decide reparto de espacio (50/50, 70/30, imagen full bleed, columnas); (4) decide jerarquía tipográfica dentro del texto; (5) verifica que respire (espacio en blanco generoso).}
 
 \begin{drawbox}{milcTurquesa}{Anatomía de un spread editorial}
 \textbf{Imagen principal:} foto, ilustración o composición visual dominante. \\[1mm] \textbf{Titular:} sintetiza la historia, dialoga con la imagen. \\[1mm] \textbf{Subtítulo o lead:} complementa el titular, 1-2 líneas. \\[1mm] \textbf{Cuerpo de texto:} desarrolla la historia, en columnas o bloques. \\[1mm] \textbf{Pie de foto:} contextualiza la imagen brevemente. \\[1mm] \textbf{Espacio en blanco:} respiración entre todos los elementos.
@@ -325,23 +379,16 @@ Toda relación imagen-texto se reduce a 4 tipos. Vamos a descomponerlos con los 
 
 \puente{Tienes el método. Toca producir: 2 spreads (páginas dobles) dibujados a mano con foto + texto. Aplicando grilla, tipografía, color y relación imagen-texto.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · CREA --- 2 spreads dibujados a mano} (35 min · individual). Hora de producir. Vas a dibujar 2 spreads (páginas dobles) de tu revista en hojas A4, aplicando todo lo aprendido: grilla, tipografía, paleta de color, y relación imagen-texto. Sin software --- a mano, con lápiz y colores.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & Cada spread se descompone en 4 capas: (1) la grilla (lápiz suave), (2) la imagen (cuadro con dibujo simple o descripción de qué irá), (3) los textos (titular grande, lead, cuerpo simulado con líneas onduladas), (4) el color (aplicando tu paleta).\\
-Patrones & Sigue el patrón \textbf{``primero estructura, después detalle''}: dibuja la grilla y los bloques antes de detalles. Si empiezas dibujando la foto, vas a perder el balance del spread completo.\\
-Abstracción & Cada spread expresa una historia. No mezcles ``portada'' con ``contenido'' en el mismo spread --- elige uno u otro.\\
-Algoritmo de armado & Algoritmo: (1) elige los 2 temas de los spreads (ej.: portada + un artículo); (2) decide la relación imagen-texto de cada uno; (3) dibuja grilla en cada A4; (4) ubica imagen y bloques de texto; (5) escribe titulares reales (no ``Lorem ipsum''); (6) aplica color con la paleta de Actividad 3 sesión 4; (7) revisa que respiren.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{Cada spread se descompone en 4 capas: (1) la grilla (lápiz suave), (2) la imagen (cuadro con dibujo simple o descripción de qué irá), (3) los textos (titular grande, lead, cuerpo simulado con líneas onduladas), (4) el color (aplicando tu paleta).}
+\milcpaso{2}{milcMagenta}{Sigue el patrón \textbf{``primero estructura, después detalle''}: dibuja la grilla y los bloques antes de detalles. Si empiezas dibujando la foto, vas a perder el balance del spread completo.}
+\milcpaso{3}{milcMagenta}{Cada spread expresa una historia. No mezcles ``portada'' con ``contenido'' en el mismo spread --- elige uno u otro.}
+\milcpaso{4}{milcMagenta}{Algoritmo: (1) elige los 2 temas de los spreads (ej.: portada + un artículo); (2) decide la relación imagen-texto de cada uno; (3) dibuja grilla en cada A4; (4) ubica imagen y bloques de texto; (5) escribe titulares reales (no ``Lorem ipsum''); (6) aplica color con la paleta de Actividad 3 sesión 4; (7) revisa que respiren.}
 
 \begin{drawbox}{milcMagenta}{Checklist antes de cerrar los 2 spreads}
 \checkbox 2 spreads en 2 hojas A4 horizontales (páginas dobles). \\[1mm] \checkbox Cada uno con grilla visible (lápiz suave). \\[1mm] \checkbox Imagen ubicada + titular real + lead + cuerpo simulado. \\[1mm] \checkbox Aplicación de tu paleta de color de Sesión 4. \\[1mm] \checkbox Aplicación de tu par tipográfico de Sesión 3 (jerarquía visible). \\[1mm] \checkbox Relación imagen-texto identificada en cada spread (refuerzo / contraste / narrativa).
@@ -359,9 +406,7 @@ Algoritmo de armado & Algoritmo: (1) elige los 2 temas de los spreads (ej.: port
 
 \puente{Lo que sigue resume qué entregas hoy: 2 spreads dibujados con todo el sistema visual aplicado. El criterio principal: que imagen y texto se ayuden, no compitan.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{2 spreads dibujados con grilla, tipografía, color y relación imagen-texto}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) 2 spreads en hojas A4 horizontales (páginas dobles). (2) Grilla visible en cada uno (lápiz suave). (3) Imagen ubicada + titular real + cuerpo simulado. (4) Aplicación de paleta de color de Sesión 4. (5) Aplicación de par tipográfico de Sesión 3 (jerarquía visible). (6) Relación imagen-texto identificada en cada spread.
@@ -369,9 +414,7 @@ Producto de la sesión
 
 \puente{Antes de cerrar, mira la relación imagen-texto desde las cinco dimensiones humanas. La foto ilustrada es un acto político: decide quién aparece, en qué pose, con qué encuadre.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -397,12 +440,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Y para terminar, tres voces sobre imagen y texto. Dussel sobre quién aparece en las fotos editoriales, Marco Aurelio sobre la imagen como complemento de la palabra, Floridi sobre la composición en la infoesfera visual.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{``Las fotos editoriales que dominan revistas globales nunca son neutras: deciden quién es visible y quién queda invisibilizado.''}
+\textit{Las fotos editoriales que dominan revistas globales nunca son neutras: deciden quién es visible y quién queda invisibilizado.}
 
 Las revistas latinoamericanas tradicionales reservaban portadas para presidentes, élites y artistas internacionales. Los rostros campesinos, afros, indígenas casi nunca aparecían --- y cuando aparecían, era como ``problema social'' o ``color local''. Diseñar editorial hoy es decidir conscientemente a quién ponemos en portada y en qué pose. Tu revista escolar puede romper ese patrón.
 
@@ -412,7 +453,7 @@ Las revistas latinoamericanas tradicionales reservaban portadas para presidentes
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
-\textit{``Una imagen vale más que mil palabras solo cuando la imagen está bien elegida.''}
+\textit{Una imagen vale más que mil palabras solo cuando la imagen está bien elegida.}
 
 La frase ``una imagen vale más que mil palabras'' a veces sirve de excusa para no escribir bien. La sabiduría estoica del diseño editorial: imagen Y texto bien hechos valen más que cualquiera por separado. No es escoger entre los dos --- es componer los dos con rigor.
 
@@ -422,7 +463,7 @@ La frase ``una imagen vale más que mil palabras'' a veces sirve de excusa para 
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{``La composición imagen-texto es la gramática básica de la infoesfera visual contemporánea.''}
+\textit{La composición imagen-texto es la gramática básica de la infoesfera visual contemporánea.}
 
 Cada feed de redes, cada portal de noticias, cada anuncio que ves opera con la gramática imagen-texto. Aprender a componerla con criterio te da poder sobre tu propia comunicación digital. Las plataformas (Instagram, LinkedIn, TikTok) imponen formatos --- pero dentro del formato eliges tú.
 
@@ -431,21 +472,24 @@ Cada feed de redes, cada portal de noticias, cada anuncio que ves opera con la g
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

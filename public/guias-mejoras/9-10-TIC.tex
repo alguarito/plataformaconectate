@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 10};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 10};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Producción final ---\\80 páginas compiladas,\\revisadas y firmadas}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 9-10-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 1 · Escritura abierta con IA}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 1 · Escritura abierta con IA}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Producción final ---\\80 páginas compiladas,\\revisadas y firmadas}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 9-10-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} Libro completo de al menos 80 páginas en formato PDF compilado integrando portada + tabla de contenido + 8-12 capítulos diagramados + página de créditos con declaración de derechos y uso de IA + carta del editor (tú) de 1 página firmada con nombre y fecha + revisión de calidad pasando los 12 puntos del checklist + bitácora del proceso completo del periodo documentando los 9 pasos recorridos hasta hoy};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Libro completo de al menos 80 páginas en formato PDF compilado integrando portada + tabla de contenido + 8-12 capítulos diagramados + página de créditos con declaración de derechos y uso de IA + carta del editor (tú) de 1 página firmada con nombre y fecha + revisión de calidad pasando los 12 puntos del checklist + bitácora del proceso completo del periodo documentando los 9 pasos recorridos hasta hoy
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Producción final del libro --- 80 páginas compiladas, revisadas y firmadas}
@@ -258,30 +322,27 @@ Producto final & Libro completo de al menos 80 páginas en formato PDF compilado
 
 \puente{Antes de empezar, mira el viaje completo. Has recorrido 8 sesiones: editor, concepción, prompting, iteración, estructura, derechos, portada, diagramación. Hoy es el \textbf{día de la firma}: integras todo en el libro compilado. La sesión 10 será sustentación pública con feria del libro escolar.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Antes de teorizar, vas a hacer un \emph{inventario completo}: lista lo que tienes producido (todos los capítulos en V3, portada definitiva, mapa estructural, ficha de derechos, declaración de IA, archivo de diagramación) y lo que aún falta (capítulos pendientes, créditos, carta del editor). Ese inventario es el plan de hoy.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · ANALIZA --- Inventario completo de lo producido} (15 min · individual). Haz lista de lo que tienes y de lo que falta para el libro de 80 páginas. Reglas: (1) \textbf{Tengo}: cada capítulo en V3 que esté listo (con apertura/cierre escritos a mano), la portada definitiva con composición, la ficha de derechos, el archivo de diagramación con plantilla aplicada. (2) \textbf{Me falta}: capítulos sin V3, página de créditos, tabla de contenido aplicada al libro completo, carta del editor, revisión final. Para cada item de la columna \emph{me falta}, anota cuánto tiempo necesitas para terminarlo.
 \end{softbox}
 
-\checkbox Listé todo lo que tengo producido.\\
-\checkbox Listé todo lo que aún falta.\\
-\checkbox Estimé tiempo necesario para cada pendiente.
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Listé todo lo que tengo producido.}
+\milccheckrow{Listé todo lo que aún falta.}
+\milccheckrow{Estimé tiempo necesario para cada pendiente.}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Ya tienes el inventario. Ahora vas a entender la \textbf{anatomía del libro compilado profesional}: los 6 componentes obligatorios, el checklist de 12 puntos, los 5 errores típicos del editor que se apura en la producción final.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Tu inventario es el plan de la semana. Ahora necesitas la \textbf{anatomía profesional} del libro compilado para integrar todo con criterio.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & Los \textbf{6 componentes obligatorios} del libro compilado se descomponen así: (1) \textbf{Portada}: imagen + título + autor. (2) \textbf{Página de créditos}: año de publicación, autor con nombre completo, licencia elegida (sesión 6), declaración de uso de IA con modelos y porcentaje aproximado, contacto del autor. (3) \textbf{Tabla de contenido} autogenerada con páginas correctas. (4) \textbf{8-12 capítulos diagramados}: cada uno con su título de estilo, texto V3, numeración correcta. (5) \textbf{Carta del editor}: 1 página, firmada con nombre y fecha, declarando proceso del libro y decisiones críticas. (6) \textbf{Contraportada} opcional con sinopsis de 200 palabras.\\
-2. Reconocimiento de patrones & El \textbf{checklist de 12 puntos} de revisión final cubre 4 dimensiones: (a) \textbf{Contenido}: 8+ capítulos completos, V3 con voz propia, sin clichés evidentes. (b) \textbf{Forma}: tipografía coherente, jerarquía visual aplicada, numeración funcionando, márgenes respirables. (c) \textbf{Derechos}: créditos completos, licencia declarada, uso de IA explícito, fuentes citadas. (d) \textbf{Voz propia}: V3 con escritura humana en puntos críticos, sin que el libro suene a chatbot, carta del editor firmada.\\
-3. Abstracción & La \textbf{carta del editor} es pieza profesional y emocional al mismo tiempo. Tiene 4 párrafos: (a) \textbf{Qué}: en 3-4 líneas, qué es este libro y para quién. (b) \textbf{Cómo}: el proceso seguido (concepción, prompts, iteración, voz propia, derechos). (c) \textbf{Declaración de IA}: qué modelos usaste, en qué partes, qué porcentaje aproximado de texto IA, qué porcentaje humano. (d) \textbf{Compromiso}: lo que asumes como autor responsable. Cierra con nombre completo, fecha, ciudad. Es tu firma profesional.\\
-4. Algoritmo conceptual & Algoritmo: (1) cerrar capítulos pendientes en V3. (2) integrar todos los capítulos en el archivo de diagramación. (3) generar tabla de contenido autogenerada. (4) agregar portada como página 1. (5) agregar página de créditos como página 2. (6) escribir carta del editor. (7) pasar checklist de 12 puntos. (8) corregir lo que falle. (9) exportar PDF final. (10) verificar PDF abierto en otra computadora.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{Los \textbf{6 componentes obligatorios} del libro compilado se descomponen así: (1) \textbf{Portada}: imagen + título + autor. (2) \textbf{Página de créditos}: año de publicación, autor con nombre completo, licencia elegida (sesión 6), declaración de uso de IA con modelos y porcentaje aproximado, contacto del autor. (3) \textbf{Tabla de contenido} autogenerada con páginas correctas. (4) \textbf{8-12 capítulos diagramados}: cada uno con su título de estilo, texto V3, numeración correcta. (5) \textbf{Carta del editor}: 1 página, firmada con nombre y fecha, declarando proceso del libro y decisiones críticas. (6) \textbf{Contraportada} opcional con sinopsis de 200 palabras.}
+\milcpaso{2}{milcTurquesa}{El \textbf{checklist de 12 puntos} de revisión final cubre 4 dimensiones: (a) \textbf{Contenido}: 8+ capítulos completos, V3 con voz propia, sin clichés evidentes. (b) \textbf{Forma}: tipografía coherente, jerarquía visual aplicada, numeración funcionando, márgenes respirables. (c) \textbf{Derechos}: créditos completos, licencia declarada, uso de IA explícito, fuentes citadas. (d) \textbf{Voz propia}: V3 con escritura humana en puntos críticos, sin que el libro suene a chatbot, carta del editor firmada.}
+\milcpaso{3}{milcTurquesa}{La \textbf{carta del editor} es pieza profesional y emocional al mismo tiempo. Tiene 4 párrafos: (a) \textbf{Qué}: en 3-4 líneas, qué es este libro y para quién. (b) \textbf{Cómo}: el proceso seguido (concepción, prompts, iteración, voz propia, derechos). (c) \textbf{Declaración de IA}: qué modelos usaste, en qué partes, qué porcentaje aproximado de texto IA, qué porcentaje humano. (d) \textbf{Compromiso}: lo que asumes como autor responsable. Cierra con nombre completo, fecha, ciudad. Es tu firma profesional.}
+\milcpaso{4}{milcTurquesa}{Algoritmo: (1) cerrar capítulos pendientes en V3. (2) integrar todos los capítulos en el archivo de diagramación. (3) generar tabla de contenido autogenerada. (4) agregar portada como página 1. (5) agregar página de créditos como página 2. (6) escribir carta del editor. (7) pasar checklist de 12 puntos. (8) corregir lo que falle. (9) exportar PDF final. (10) verificar PDF abierto en otra computadora.}
 
 \begin{drawbox}{milcTurquesa}{Anatomía del libro compilado}
 \textbf{Portada:} imagen + título + autor. \\[1mm] \textbf{Créditos:} año + licencia + IA + contacto. \\[1mm] \textbf{TOC:} autogenerada. \\[1mm] \textbf{Capítulos:} 8-12 diagramados. \\[1mm] \textbf{Carta editor:} 1 página firmada. \\[1mm] \textbf{Contraportada:} opcional.
@@ -325,23 +379,16 @@ Tu inventario es el plan de la semana. Ahora necesitas la \textbf{anatomía prof
 
 \puente{Tienes el método. Toca aplicarlo: integras componentes, pasas checklist, escribes carta del editor firmada, exportas PDF final, entregas bitácora del proceso completo del periodo.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · CREA + EXPLICA --- Libro compilado + carta firmada + bitácora} (60 min en sesión + tiempo en casa para cerrar pendientes · individual). Hora de aplicar. Integras componentes, pasas checklist, escribes carta, exportas PDF final, llenas bitácora del proceso completo del periodo.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & Tu producción final se completa en 7 pasos: (1) cerrar capítulos pendientes en V3 (esta semana). (2) integrar todos los capítulos en el archivo de diagramación de la sesión 8. (3) agregar portada como página 1 y créditos como página 2. (4) generar tabla de contenido. (5) escribir y firmar carta del editor. (6) pasar checklist de 12 puntos uno a uno. (7) exportar PDF final y abrirlo en otra computadora o celular para verificar.\\
-Patrones & Sigue el patrón \textbf{``revisar antes de firmar''}: nunca declares el libro final sin haber pasado los 12 puntos del checklist. La firma sin revisión es firma sin valor. La phronesis del editor consiste en \textbf{aceptar la disciplina del checklist aunque tome 1 hora adicional}.\\
-Abstracción & La bitácora del proceso completo del periodo es trabajo aparte: 1 página resumiendo las 9 sesiones recorridas. Para cada sesión: 1 línea sobre qué hiciste, 1 línea sobre qué aprendiste. Es la memoria del oficio que te llevas al grado 11 y a la vida profesional. Documenta el viaje completo, no solo el producto final.\\
-Algoritmo de armado & Algoritmo: (1) cerrar capítulos. (2) integrar diagramación. (3) agregar portada y créditos. (4) TOC. (5) escribir carta. (6) checklist. (7) corregir. (8) exportar PDF. (9) verificar en otra máquina. (10) llenar bitácora del periodo. (11) prepararse mentalmente para sustentación en S10.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{Tu producción final se completa en 7 pasos: (1) cerrar capítulos pendientes en V3 (esta semana). (2) integrar todos los capítulos en el archivo de diagramación de la sesión 8. (3) agregar portada como página 1 y créditos como página 2. (4) generar tabla de contenido. (5) escribir y firmar carta del editor. (6) pasar checklist de 12 puntos uno a uno. (7) exportar PDF final y abrirlo en otra computadora o celular para verificar.}
+\milcpaso{2}{milcMagenta}{Sigue el patrón \textbf{``revisar antes de firmar''}: nunca declares el libro final sin haber pasado los 12 puntos del checklist. La firma sin revisión es firma sin valor. La phronesis del editor consiste en \textbf{aceptar la disciplina del checklist aunque tome 1 hora adicional}.}
+\milcpaso{3}{milcMagenta}{La bitácora del proceso completo del periodo es trabajo aparte: 1 página resumiendo las 9 sesiones recorridas. Para cada sesión: 1 línea sobre qué hiciste, 1 línea sobre qué aprendiste. Es la memoria del oficio que te llevas al grado 11 y a la vida profesional. Documenta el viaje completo, no solo el producto final.}
+\milcpaso{4}{milcMagenta}{Algoritmo: (1) cerrar capítulos. (2) integrar diagramación. (3) agregar portada y créditos. (4) TOC. (5) escribir carta. (6) checklist. (7) corregir. (8) exportar PDF. (9) verificar en otra máquina. (10) llenar bitácora del periodo. (11) prepararse mentalmente para sustentación en S10.}
 
 \begin{drawbox}{milcMagenta}{Checklist final de los 12 puntos}
 \checkbox 8-12 capítulos completos en V3. \\[1mm] \checkbox Voz propia visible en aperturas y cierres. \\[1mm] \checkbox Sin clichés evidentes. \\[1mm] \checkbox Tipografía coherente en todo el libro. \\[1mm] \checkbox Jerarquía visual aplicada consistente. \\[1mm] \checkbox Numeración de páginas correcta. \\[1mm] \checkbox Márgenes e interlineado respirables. \\[1mm] \checkbox Página de créditos con licencia declarada. \\[1mm] \checkbox Uso de IA explícitamente declarado. \\[1mm] \checkbox Fuentes citadas si las hay. \\[1mm] \checkbox Carta del editor firmada con nombre y fecha. \\[1mm] \checkbox PDF abierto en otra máquina y verificado.
@@ -359,9 +406,7 @@ Algoritmo de armado & Algoritmo: (1) cerrar capítulos. (2) integrar diagramaci�
 
 \puente{Lo que sigue resume \emph{qué} entregas hoy: PDF de 80+ páginas + checklist + carta firmada + bitácora del proceso. El criterio principal: que cualquiera abriendo tu PDF reconozca una pieza profesional, no documento escolar improvisado.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{PDF 80+ páginas + checklist 12 puntos + carta editor firmada + bitácora}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) PDF compilado de 80+ páginas. (2) 6 componentes obligatorios presentes. (3) Checklist de 12 puntos pasado. (4) Carta del editor firmada con nombre y fecha. (5) Bitácora del periodo completa. (6) PDF verificado en otra máquina.
@@ -369,9 +414,7 @@ Producto de la sesión
 
 \puente{Antes de cerrar, mira la producción final desde las cinco dimensiones humanas. Firmar con honestidad lo que terminaste es honor del oficio; entregar sin revisar es desperdicio de las 8 sesiones anteriores.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -397,12 +440,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Y para terminar, tres voces sobre la firma. Dussel sobre la pieza terminada que devuelve a la comunidad, Marco Aurelio sobre la disciplina del checklist, Floridi sobre el libro firmado como acto profesional contemporáneo.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{``El libro firmado por el editor humano en la era de IA es acto de dignidad cultural que la cultura generativa necesita.''}
+\textit{El libro firmado por el editor humano en la era de IA es acto de dignidad cultural que la cultura generativa necesita.}
 
 Cuando firmas tu libro con nombre, fecha y declaración de uso de IA, estás haciendo lo que la cultura generativa contemporánea necesita: \textbf{seres humanos que asumen autoría con honestidad}. La filosofía de la liberación pide ese acto: no esconder lo hecho con IA, no fingir autoría pura, no diluir responsabilidad. Tu carta del editor firmada es modelo profesional contemporáneo que pocos autores aún practican.
 
@@ -412,7 +453,7 @@ Cuando firmas tu libro con nombre, fecha y declaración de uso de IA, estás hac
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
-\textit{``La disciplina del checklist antes de firmar es virtud profesional; el atajo de firmar sin revisar es vicio que se descubre con el tiempo.''}
+\textit{La disciplina del checklist antes de firmar es virtud profesional; el atajo de firmar sin revisar es vicio que se descubre con el tiempo.}
 
 Es tentador exportar el PDF y declararlo final apenas se cierra el último capítulo. La sabiduría estoica recomienda lo opuesto: \emph{pasa el checklist antes de la firma}. Esa hora de revisión adicional separa al editor profesional del aficionado. La phronesis del oficio honra a quien revisa con disciplina.
 
@@ -422,7 +463,7 @@ Es tentador exportar el PDF y declararlo final apenas se cierra el último capí
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{``El libro firmado con declaración honesta de IA es el modelo editorial del siglo XXI; ocultar el uso de IA es modelo obsoleto.''}
+\textit{El libro firmado con declaración honesta de IA es el modelo editorial del siglo XXI; ocultar el uso de IA es modelo obsoleto.}
 
 En 2026 y los años siguientes, los libros producidos con asistencia de IA serán mayoría. La ética editorial del siglo XXI exige declaración honesta, no ocultamiento. Tu libro con carta del editor firmada se posiciona en el modelo profesional emergente. Aunque sea proyecto escolar, las prácticas son las mismas que la industria editorial profesional adoptará obligatoriamente en pocos años.
 
@@ -431,21 +472,24 @@ En 2026 y los años siguientes, los libros producidos con asistencia de IA será
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

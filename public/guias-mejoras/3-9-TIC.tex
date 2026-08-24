@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 9};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 9};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont La balanza y el peso ---\\medir como\\acto político}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 3-9-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 1 · Historia de la técnica}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 1 · Historia de la técnica}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont La balanza y el peso ---\\medir como\\acto político}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 3-9-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} Experimento de pesos con balanza casera + reflexión escrita (1 página) sobre quién decide los patrones de medida y por qué eso es político};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Experimento de pesos con balanza casera + reflexión escrita (1 página) sobre quién decide los patrones de medida y por qué eso es político
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: La balanza y el peso --- medir como acto político}
@@ -258,30 +322,27 @@ Producto final & Experimento de pesos con balanza casera + reflexión escrita (1
 
 \puente{Antes de empezar, mira el viaje completo. La sesión 2 vio máquinas que multiplican fuerza; hoy ves un objeto sencillo que multiplica algo más sutil: la confianza social. Sin balanza confiable no hay comercio justo.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Antes de hablar de patrones globales, mira los patrones que rigen tu día. ¿Quién decidió qué nota es ``buena''? ¿Quién decidió cuántos seguidores son ``muchos''? Cada métrica esconde una decisión política previa.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- Patrones de medida en tu vida} (15 min · individual). Sin moverte mucho, anota \textbf{5 mediciones distintas} que regulan tu vida actual: nota de un examen, tiempo de pantalla, libras de comida en casa, número de seguidores en una red, calorías de un producto. Para cada una: ¿quién definió el patrón? ¿Qué pasa contigo según el resultado de esa medición?
 \end{softbox}
 
-\checkbox Identifiqué 5 mediciones que regulan mi vida actual.\\
-\checkbox Para cada una busqué (mentalmente o googleando) quién la define.\\
-\checkbox Encontré al menos UNA medición cuyo patrón me parece injusto o discutible.
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Identifiqué 5 mediciones que regulan mi vida actual.}
+\milccheckrow{Para cada una busqué (mentalmente o googleando) quién la define.}
+\milccheckrow{Encontré al menos UNA medición cuyo patrón me parece injusto o discutible.}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Ya viste patrones que rigen tu vida. Ahora vamos a entender los \textbf{tres elementos} de toda balanza: punto de apoyo, dos brazos, patrón conocido en uno de los brazos. Esa estructura es la misma desde el orfebre Quimbaya hasta la balanza digital del supermercado.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Toda balanza --- de la plaza ancestral a la digital del supermercado --- comparte 3 elementos. Vamos a descomponerlos con los pilares del pensamiento computacional y veremos cómo ese diseño tan simple sostiene la confianza social.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & Una balanza se descompone en 3 elementos: (1) \textbf{punto de apoyo} (donde se equilibra), (2) \textbf{dos brazos iguales} (uno para lo que se pesa, otro para el patrón), (3) \textbf{patrón conocido} (las pesas calibradas, la unidad acordada). Quita uno y la balanza miente.\\
-2. Reconocimiento de patrones & Toda balanza sigue el patrón \textbf{``equilibrio = verdad''}: si los dos brazos se equilibran con un patrón conocido en un lado y lo desconocido en el otro, podemos confiar en que el peso es el del patrón. Sin patrón conocido, no hay verdad; sin equilibrio, tampoco.\\
-3. Abstracción & Lo esencial de medir cabe en una pregunta: \emph{¿quién definió el patrón y qué decide a partir de él?}. Una balanza confiable necesita responder las dos.\\
-4. Algoritmo conceptual & Pasos para evaluar cualquier sistema de medición: (1) ¿qué se mide?; (2) ¿con qué patrón?; (3) ¿quién definió ese patrón y cuándo?; (4) ¿qué consecuencias prácticas tiene el resultado de la medición?.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{Una balanza se descompone en 3 elementos: (1) \textbf{punto de apoyo} (donde se equilibra), (2) \textbf{dos brazos iguales} (uno para lo que se pesa, otro para el patrón), (3) \textbf{patrón conocido} (las pesas calibradas, la unidad acordada). Quita uno y la balanza miente.}
+\milcpaso{2}{milcTurquesa}{Toda balanza sigue el patrón \textbf{``equilibrio = verdad''}: si los dos brazos se equilibran con un patrón conocido en un lado y lo desconocido en el otro, podemos confiar en que el peso es el del patrón. Sin patrón conocido, no hay verdad; sin equilibrio, tampoco.}
+\milcpaso{3}{milcTurquesa}{Lo esencial de medir cabe en una pregunta: \emph{¿quién definió el patrón y qué decide a partir de él?}. Una balanza confiable necesita responder las dos.}
+\milcpaso{4}{milcTurquesa}{Pasos para evaluar cualquier sistema de medición: (1) ¿qué se mide?; (2) ¿con qué patrón?; (3) ¿quién definió ese patrón y cuándo?; (4) ¿qué consecuencias prácticas tiene el resultado de la medición?.}
 
 \begin{drawbox}{milcTurquesa}{Anatomía de un sistema de medición}
 \textbf{Qué se mide:} la magnitud (peso, tiempo, conocimiento, popularidad). \\[1mm] \textbf{Patrón:} la unidad acordada (kilo, hora, nota, seguidor). \\[1mm] \textbf{Autoridad:} quién decide y mantiene el patrón. \\[1mm] \textbf{Instrumento:} la balanza, el reloj, el examen, el contador. \\[1mm] \textbf{Consecuencia:} qué pasa contigo según el resultado.
@@ -325,23 +379,16 @@ Toda balanza --- de la plaza ancestral a la digital del supermercado --- compart
 
 \puente{Tienes el principio. Toca construir: una balanza casera con materiales reciclados (gancho de ropa, vasitos, una regla, un eje). Si tu balanza funciona, has heredado un oficio milenario sin que nadie te lo enseñara.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · CREA --- Balanza casera + reflexión política} (30 min · individual). Hora de hacer dos cosas: (a) construir una balanza casera que funcione, (b) escribir una reflexión de 1 página sobre un sistema de medición que rige tu vida.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & Tu balanza casera se descompone en 4 piezas: un gancho de ropa o regla como brazo, dos vasos o tapas como platillos, hilo o cordón para colgarlos, un punto de apoyo (lápiz, dedo, clavo). Total cero pesos.\\
-Patrones & Sigue el patrón ``equilibrio antes de patrón'': primero asegura que tu balanza vacía se equilibra perfectamente (ambos platillos al mismo nivel). Después agrega lo que quieres comparar.\\
-Abstracción & Cada peso que compares expresa una sola idea: ``este objeto pesa más/menos/igual que este otro''. No necesitas gramos exactos para el ejercicio --- la comparación es lo que importa.\\
-Algoritmo de armado & Algoritmo: (1) construye la balanza; (2) verifica equilibrio en vacío; (3) pon UN objeto en cada platillo y observa cuál pesa más; (4) ahora invierte y verifica; (5) escribe la reflexión de 1 página sobre 1 sistema de medición que rige tu vida.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{Tu balanza casera se descompone en 4 piezas: un gancho de ropa o regla como brazo, dos vasos o tapas como platillos, hilo o cordón para colgarlos, un punto de apoyo (lápiz, dedo, clavo). Total cero pesos.}
+\milcpaso{2}{milcMagenta}{Sigue el patrón ``equilibrio antes de patrón'': primero asegura que tu balanza vacía se equilibra perfectamente (ambos platillos al mismo nivel). Después agrega lo que quieres comparar.}
+\milcpaso{3}{milcMagenta}{Cada peso que compares expresa una sola idea: ``este objeto pesa más/menos/igual que este otro''. No necesitas gramos exactos para el ejercicio --- la comparación es lo que importa.}
+\milcpaso{4}{milcMagenta}{Algoritmo: (1) construye la balanza; (2) verifica equilibrio en vacío; (3) pon UN objeto en cada platillo y observa cuál pesa más; (4) ahora invierte y verifica; (5) escribe la reflexión de 1 página sobre 1 sistema de medición que rige tu vida.}
 
 \begin{drawbox}{milcMagenta}{Checklist antes de cerrar la actividad}
 \checkbox Balanza casera construida y verificada (equilibra en vacío). \\[1mm] \checkbox Pude comparar correctamente al menos 2 pares de objetos. \\[1mm] \checkbox Foto o dibujo de la balanza en el cuaderno. \\[1mm] \checkbox Reflexión escrita de 1 página sobre 1 sistema de medición concreto. \\[1mm] \checkbox La reflexión nombra explícitamente a quién beneficia y a quién perjudica ese sistema.
@@ -359,9 +406,7 @@ Algoritmo de armado & Algoritmo: (1) construye la balanza; (2) verifica equilibr
 
 \puente{Lo que sigue es el resumen de qué entregas hoy: balanza casera + reflexión escrita. El criterio principal: que la balanza distinga 2 pesos distintos y que la reflexión nombre 1 sistema de medición que rige tu vida y NO sea neutral.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Balanza casera funcional + reflexión política sobre medir}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) La balanza casera se equilibra en vacío y permite comparar 2 objetos. (2) Hay dibujo o foto de la balanza con piezas etiquetadas. (3) La reflexión elige UN sistema de medición concreto. (4) La reflexión nombra explícitamente quién define el patrón. (5) La reflexión nombra a quién beneficia y a quién perjudica.
@@ -369,9 +414,7 @@ Producto de la sesión
 
 \puente{Antes de cerrar, mira el acto de medir desde las cinco dimensiones humanas. Las pesas de la plaza --- y las métricas de tu celular --- no son objetos neutrales. Vale la pena nombrar a quién sirven y a quién perjudican.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -397,12 +440,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Y para terminar, tres voces sobre medir. Dussel sobre las medidas coloniales, Epicteto sobre lo que sí depende de ti cuando otros te miden, Floridi sobre la dataficación de la vida.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{``Toda imposición de medida es un acto de poder; toda recuperación de medida propia es un acto de liberación.''}
+\textit{Toda imposición de medida es un acto de poder; toda recuperación de medida propia es un acto de liberación.}
 
 Las medidas coloniales (vara, fanega, arroba) impuestas sobre el campesino indígena cambiaron lo que valía su tierra sin que él decidiera. Hoy las métricas digitales (algoritmos de redes, scores crediticios, calificaciones automáticas de IA) hacen algo parecido: deciden tu acceso sin que sepas el patrón. Recuperar el control sobre cómo te miden es un acto político actual.
 
@@ -412,7 +453,7 @@ Las medidas coloniales (vara, fanega, arroba) impuestas sobre el campesino indí
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Epicteto · cuidado interior}
-\textit{``No te perturbe lo que otros miden de ti; perturba\-te solo lo que tú mides en ti mismo.''}
+\textit{No te perturbe lo que otros miden de ti; perturba\-te solo lo que tú mides en ti mismo.}
 
 Que el algoritmo de TikTok te ``mida'' con likes no depende de ti. Que el sistema escolar te asigne una nota no depende totalmente de ti. Lo que sí depende: tu propia medida de avance, tu propia escala de qué hiciste bien hoy, tu propio criterio. La libertad estoica empieza por elegir cuál medida tomas como autoridad sobre tu vida.
 
@@ -422,7 +463,7 @@ Que el algoritmo de TikTok te ``mida'' con likes no depende de ti. Que el sistem
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{``La dataficación es una forma moderna de medición política: lo que se mide se vuelve real, lo que no se mide se invisibiliza.''}
+\textit{La dataficación es una forma moderna de medición política: lo que se mide se vuelve real, lo que no se mide se invisibiliza.}
 
 Cada vez que una plataforma decide qué medir de ti (clics, tiempo, ubicación, contactos) está construyendo una versión tuya. Lo que no mide queda fuera de tu identidad digital. Por eso elegir qué herramientas usar y qué datos compartir es un acto profundamente político --- decides qué de ti existe en la infoesfera.
 
@@ -431,21 +472,24 @@ Cada vez que una plataforma decide qué medir de ti (clics, tiempo, ubicación, 
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

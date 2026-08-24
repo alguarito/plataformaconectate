@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 6};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 6};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Apertura\\periodo 3 ---\\escribir y\\buscar con\\criterio}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 21-6-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 3 · Procesador de texto e Internet}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 3 · Procesador de texto e Internet}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Apertura\\periodo 3 ---\\escribir y\\buscar con\\criterio}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 21-6-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} En el cuaderno: \textbf{(a) reflexión personal} sobre tu \emph{relación actual con la escritura digital} (¿usas Word? ¿Docs? ¿escribes en celular o computador? ¿cuánto te demoras escribiendo 1 página?); \textbf{(b) reflexión sobre tu uso de internet} (¿cuántas búsquedas en Google haces al día? ¿confías en lo que lees? ¿revisas fuentes?); \textbf{(c) las 5 preguntas-radar} del periodo 3; \textbf{(d) compromiso firmado} de practicar Word + investigar críticamente durante el periodo.};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+En el cuaderno: \textbf{(a) reflexión personal} sobre tu \emph{relación actual con la escritura digital} (¿usas Word? ¿Docs? ¿escribes en celular o computador? ¿cuánto te demoras escribiendo 1 página?); \textbf{(b) reflexión sobre tu uso de internet} (¿cuántas búsquedas en Google haces al día? ¿confías en lo que lees? ¿revisas fuentes?); \textbf{(c) las 5 preguntas-radar} del periodo 3; \textbf{(d) compromiso firmado} de practicar Word + investigar críticamente durante el periodo.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Apertura periodo 3 --- el oficio de escribir y buscar con criterio}
@@ -258,30 +322,27 @@ Producto final & En el cuaderno: \textbf{(a) reflexión personal} sobre tu \emph
 
 \puente{Hoy haces 4 cosas: reflexionas sobre tu escritura y búsqueda actuales, conoces la ruta del P3, firmas el compromiso, y defines tus preguntas-radar.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Empezamos con un diagnóstico honesto de cómo escribes y buscas hoy.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- Diagnóstico honesto de tu escritura y búsqueda} (12 min · individual). En el cuaderno responde estas 10 preguntas con UNA frase corta cada una. Sé honesto, esto es para que tú mismo veas dónde estás. \textbf{Sobre escritura:} \emph{(1) ¿Cuándo escribiste por última vez algo más largo de 1 página? ¿En cuaderno o digital?} \emph{(2) ¿Has usado Word? ¿Cuántas veces aproximadamente?} \emph{(3) ¿Conoces Google Docs?} \emph{(4) ¿Cuánto te demoras escribiendo 1 página en computador?} \emph{(5) ¿Sabes lo que es ``alineación justificada''?}. \textbf{Sobre búsqueda:} \emph{(6) ¿Cuántas veces al día buscas algo en Google?} \emph{(7) ¿Lees solo el primer resultado o miras varios?} \emph{(8) ¿Has notado anuncios entre los resultados?} \emph{(9) ¿Confías en Wikipedia para tareas?} \emph{(10) ¿Has verificado alguna vez si una noticia que viste en internet es verdadera?}. Anota tus respuestas sin pena: esto es radar, no examen.
 \end{softbox}
 
-\checkbox Respondí las 10 preguntas con honestidad.\\
-\checkbox No copié ni le pregunté al compañero.\\
-\checkbox Me detuve en las preguntas que me dieron duda.
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Respondí las 10 preguntas con honestidad.}
+\milccheckrow{No copié ni le pregunté al compañero.}
+\milccheckrow{Me detuve en las preguntas que me dieron duda.}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Después conoces la ruta del P3 (10 sesiones en 2 mitades) y las 5 reglas de uso ético.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Tu diagnóstico te dice dónde estás hoy. Ahora conoce \textbf{la ruta del periodo 3} para saber a dónde llegas en 10 sesiones.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & \textbf{La ruta del periodo 3 --- las 2 mitades.} \textbf{Primera mitad (S2 a S6) --- Procesador de texto:} \emph{S2: ¿Qué es un procesador de texto?} \emph{S3: Formato básico (negrita, alineación, color).} \emph{S4: Listas y numeración.} \emph{S5: Tablas e imágenes.} \emph{S6: Encabezado, pie y números.} Al terminar esta mitad sabes \emph{escribir un documento profesional con todos los elementos}. \textbf{Segunda mitad (S7 a S9) --- Internet:} \emph{S7: ¿Qué es internet? (cómo viajan los datos).} \emph{S8: Buscar bien (operadores de búsqueda).} \emph{S9: Evaluar fuentes (método CRAAP).} Al terminar esta mitad sabes \emph{buscar información y filtrarla con criterio}. \textbf{Cierre integrador (S10):} \emph{Mi primer documento informativo} que combina ambas mitades.\\
-2. Reconocimiento de patrones & \textbf{Por qué este periodo es el más práctico.} En P1 viste \emph{conceptos} (identidad digital, netiqueta). En P2 viste \emph{estructura} (hardware, software). En P3 produces \textbf{productos concretos}: documentos, búsquedas, comparaciones de fuentes. \emph{Cada sesión termina con algo que puedes mostrar}. Las habilidades de P3 las vas a usar el resto del año en otras materias (tareas de Historia, informes de Ciencias, etc.) y toda tu vida adulta (universidad, trabajo). No es exagerado: \textbf{escribir bien + buscar bien son las 2 habilidades más rentables del siglo XXI}.\\
-3. Abstracción & \textbf{Las 5 reglas de uso ético de internet (no negociables).} (1) \textbf{Cita siempre tus fuentes:} si tomas información de un sitio, dilo. \emph{Copiar sin citar = plagio = falta grave}. (2) \textbf{Verifica antes de creer:} mínimo 2 fuentes confiables que coincidan. (3) \textbf{No comparta lo que no verifica:} si lo dudas, no lo mandes a otros. (4) \textbf{Respeta los derechos de autor:} no usar imágenes con copyright sin permiso. Usa Pixabay, Unsplash. (5) \textbf{Usa internet para sumar, no para restar:} a tu aprendizaje, a otros, al mundo. Si lo que vas a hacer le quita a alguien (su tranquilidad, su reputación, su tiempo), repíensalo.\\
-4. Algoritmo conceptual & \textbf{4 herramientas del oficio en P3.} (1) \textbf{Procesador de texto} (Word o Docs): donde produces los documentos. (2) \textbf{Buscador} (Google, Bing): donde investigas. (3) \textbf{Cuaderno físico}: donde planificas antes de escribir digital (\emph{doña Mercedes decía: primero pensar, después escribir}). (4) \textbf{Fuentes confiables}: Wikipedia (punto de partida), sitios de gobierno (.gov.co), universidades (.edu), enciclopedias en línea. Aprenderás a distinguir todo esto en las 10 sesiones.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{\textbf{La ruta del periodo 3 --- las 2 mitades.} \textbf{Primera mitad (S2 a S6) --- Procesador de texto:} \emph{S2: ¿Qué es un procesador de texto?} \emph{S3: Formato básico (negrita, alineación, color).} \emph{S4: Listas y numeración.} \emph{S5: Tablas e imágenes.} \emph{S6: Encabezado, pie y números.} Al terminar esta mitad sabes \emph{escribir un documento profesional con todos los elementos}. \textbf{Segunda mitad (S7 a S9) --- Internet:} \emph{S7: ¿Qué es internet? (cómo viajan los datos).} \emph{S8: Buscar bien (operadores de búsqueda).} \emph{S9: Evaluar fuentes (método CRAAP).} Al terminar esta mitad sabes \emph{buscar información y filtrarla con criterio}. \textbf{Cierre integrador (S10):} \emph{Mi primer documento informativo} que combina ambas mitades.}
+\milcpaso{2}{milcTurquesa}{\textbf{Por qué este periodo es el más práctico.} En P1 viste \emph{conceptos} (identidad digital, netiqueta). En P2 viste \emph{estructura} (hardware, software). En P3 produces \textbf{productos concretos}: documentos, búsquedas, comparaciones de fuentes. \emph{Cada sesión termina con algo que puedes mostrar}. Las habilidades de P3 las vas a usar el resto del año en otras materias (tareas de Historia, informes de Ciencias, etc.) y toda tu vida adulta (universidad, trabajo). No es exagerado: \textbf{escribir bien + buscar bien son las 2 habilidades más rentables del siglo XXI}.}
+\milcpaso{3}{milcTurquesa}{\textbf{Las 5 reglas de uso ético de internet (no negociables).} (1) \textbf{Cita siempre tus fuentes:} si tomas información de un sitio, dilo. \emph{Copiar sin citar = plagio = falta grave}. (2) \textbf{Verifica antes de creer:} mínimo 2 fuentes confiables que coincidan. (3) \textbf{No comparta lo que no verifica:} si lo dudas, no lo mandes a otros. (4) \textbf{Respeta los derechos de autor:} no usar imágenes con copyright sin permiso. Usa Pixabay, Unsplash. (5) \textbf{Usa internet para sumar, no para restar:} a tu aprendizaje, a otros, al mundo. Si lo que vas a hacer le quita a alguien (su tranquilidad, su reputación, su tiempo), repíensalo.}
+\milcpaso{4}{milcTurquesa}{\textbf{4 herramientas del oficio en P3.} (1) \textbf{Procesador de texto} (Word o Docs): donde produces los documentos. (2) \textbf{Buscador} (Google, Bing): donde investigas. (3) \textbf{Cuaderno físico}: donde planificas antes de escribir digital (\emph{doña Mercedes decía: primero pensar, después escribir}). (4) \textbf{Fuentes confiables}: Wikipedia (punto de partida), sitios de gobierno (.gov.co), universidades (.edu), enciclopedias en línea. Aprenderás a distinguir todo esto en las 10 sesiones.}
 
 \begin{drawbox}{milcTurquesa}{Ruta P3 + 5 reglas éticas}
 \textbf{Ruta P3 (2 mitades):} \\[1mm]
@@ -329,23 +383,18 @@ Cierre: S10 (documento integrador). \\[1mm]
 
 \puente{Con la ruta clara, escribes tu reflexión personal y firmas el compromiso.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · CREA --- Reflexión personal + 5 preguntas + compromiso} (25 min · individual). Vas a producir 3 cosas en el cuaderno: una reflexión sobre tu uso actual, 5 preguntas-radar para el periodo, y un compromiso firmado.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & \textbf{Paso 1 --- Reflexión personal (mitad superior de la hoja).} Toma tu diagnóstico de Actividad 1 (las 10 preguntas) y \textbf{convierte las 10 respuestas en un párrafo reflexivo} de 5-6 líneas. Empieza con \emph{``Hoy en escritura digital yo...''} y termina con \emph{``Lo que quiero mejorar este periodo es...''}. No copies las respuestas: refléjalas. Esto te entrena en redactar tu propia voz.\\
-Patrones & \textbf{Paso 2 --- Las 5 preguntas-radar del periodo (centro de la hoja).} Subtítulo: \textbf{``Mis 5 preguntas-radar del P3''}. Lista numerada de 5 preguntas que esperas resolver durante el periodo. Sugerencias para inspirarte (no copies estas, inventa tuyas): \emph{``¿Cómo escribo un documento que se vea profesional?''}, \emph{``¿Cómo busco información sin caer en publicidad?''}, \emph{``¿Cómo sé si una página dice verdad?''}, \emph{``¿Cómo cito fuentes correctamente?''}, \emph{``¿Cuántas veces al día debería revisar las fuentes que leo?''}.\\
-Abstracción & \textbf{Paso 3 --- Las 5 reglas éticas firmadas (mitad inferior).} Subtítulo: \textbf{``Mi compromiso ético del P3''}. Reproduce las 5 reglas (cita fuentes, verifica, no comparta sin verificar, respeta derechos, usa para sumar). Al lado de cada una, palomita ✓ si te comprometes. Si dudas con alguna, conversa con el profe antes de firmar.\\
-Algoritmo de armado & \textbf{Paso 4 --- Compromiso del oficio.} Debajo de las reglas, escribe esta frase en grande: \textbf{``Me comprometo a escribir con mi voz, no con voz prestada. A buscar con criterio, no con prisa.''}. Subráyala. Estos son los 2 pilares éticos del periodo 3.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{\textbf{Paso 1 --- Reflexión personal (mitad superior de la hoja).} Toma tu diagnóstico de Actividad 1 (las 10 preguntas) y \textbf{convierte las 10 respuestas en un párrafo reflexivo} de 5-6 líneas. Empieza con \emph{``Hoy en escritura digital yo...''} y termina con \emph{``Lo que quiero mejorar este periodo es...''}. No copies las respuestas: refléjalas. Esto te entrena en redactar tu propia voz.}
+\milcpaso{2}{milcMagenta}{\textbf{Paso 2 --- Las 5 preguntas-radar del periodo (centro de la hoja).} Subtítulo: \textbf{``Mis 5 preguntas-radar del P3''}. Lista numerada de 5 preguntas que esperas resolver durante el periodo. Sugerencias para inspirarte (no copies estas, inventa tuyas): \emph{``¿Cómo escribo un documento que se vea profesional?''}, \emph{``¿Cómo busco información sin caer en publicidad?''}, \emph{``¿Cómo sé si una página dice verdad?''}, \emph{``¿Cómo cito fuentes correctamente?''}, \emph{``¿Cuántas veces al día debería revisar las fuentes que leo?''}.}
+\milcpaso{3}{milcMagenta}{\textbf{Paso 3 --- Las 5 reglas éticas firmadas (mitad inferior).} Subtítulo: \textbf{``Mi compromiso ético del P3''}. Reproduce las 5 reglas (cita fuentes, verifica, no comparta sin verificar, respeta derechos, usa para sumar). Al lado de cada una, palomita ✓ si te comprometes. Si dudas con alguna, conversa con el profe antes de firmar.}
+\milcpaso{4}{milcMagenta}{\textbf{Paso 4 --- Compromiso del oficio.} Debajo de las reglas, escribe esta frase en grande: \textbf{``Me comprometo a escribir con mi voz, no con voz prestada. A buscar con criterio, no con prisa.''}. Subráyala. Estos son los 2 pilares éticos del periodo 3.}
+\milcpaso{5}{milcMagenta}{\textbf{Paso 5 --- Sesión 1 con encabezado fijo.} En el cuaderno principal escribe el encabezado de la sesión 1: \emph{``Guía: 6° · Periodo 3 · Guía 1 --- Apertura. Fecha: \_\_/\_\_/2026''}. Debajo, anota qué hiciste en las 3 actividades (diagnóstico, ruta y reglas, compromiso).}
+\milcpaso{6}{milcMagenta}{\textbf{Paso 6 --- Firma y cierre.} Al final, firma con tu nombre completo y fecha. La próxima clase es \emph{S2: ¿Qué es un procesador de texto?}. Trae el cuaderno, trae las 5 preguntas en la cabeza, y ven listo a empezar a escribir digital.}
 
 \begin{drawbox}{milcMagenta}{Antes de cerrar la S1 del P3}
 \checkbox La reflexión personal es un párrafo de 5-6 líneas escrito con mi voz. \\[1mm]
@@ -368,9 +417,7 @@ Algoritmo de armado & \textbf{Paso 4 --- Compromiso del oficio.} Debajo de las r
 
 \puente{El producto es la reflexión + 5 preguntas-radar + compromiso firmado.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Reflexión + 5 preguntas + compromiso ético del periodo 3 · firmado}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) La reflexión personal está escrita con voz propia (5-6 líneas). (2) Las 5 preguntas-radar son personales y específicas. (3) Las 5 reglas éticas tienen firma de compromiso. (4) El compromiso del oficio está subrayado y visible. (5) La sesión 1 tiene encabezado fijo y registro de actividades.
@@ -378,9 +425,7 @@ Producto de la sesión
 
 \puente{Antes de salir, verifica que tus 5 preguntas son sinceras (no copiadas).}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -406,12 +451,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Cerramos con 3 voces que te ayudan a entender por qué saber escribir y buscar es ciudadanía moderna.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{````Escribir con tu voz es decir: existo, pienso, tengo algo que aportar. Eso es soberanía.''''}
+\textit{``Escribir con tu voz es decir: existo, pienso, tengo algo que aportar. Eso es soberanía.''}
 
 Mucha gente vive sin escribir nunca su propia voz: copia, repite, replica. \textbf{El que escribe con voz propia se vuelve sujeto, no objeto}. El que solo recibe información sin producir queda dependiente. \emph{Este periodo te entrena en producir, no solo consumir}. Es la diferencia entre ser leído y ser leyente. Doña Mercedes lo sabía: enseñar a escribir es enseñar a ser persona.
 
@@ -421,7 +464,7 @@ Mucha gente vive sin escribir nunca su propia voz: copia, repite, replica. \text
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
-\textit{````Escribir es pensar despacio. Buscar es elegir despacio. Las dos disciplinas hacen al ciudadano libre.''''}
+\textit{``Escribir es pensar despacio. Buscar es elegir despacio. Las dos disciplinas hacen al ciudadano libre.''}
 
 \textbf{Escribir y buscar son disciplinas lentas} en un mundo rápido. La gente apurada \emph{escribe mal y busca peor}: improvisa, copia, se cree el primer resultado. La gente disciplinada \emph{escribe con cuidado y busca con criterio}: produce documentos profesionales y encuentra información buena. La diferencia se nota al cabo de los años: unos quedan dependientes, otros toman decisiones por sí mismos.
 
@@ -431,7 +474,7 @@ Mucha gente vive sin escribir nunca su propia voz: copia, repite, replica. \text
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{````En el siglo XXI, no saber escribir bien y no saber buscar bien es como en el siglo XX no saber leer. Te excluye de decisiones importantes.''''}
+\textit{``En el siglo XXI, no saber escribir bien y no saber buscar bien es como en el siglo XX no saber leer. Te excluye de decisiones importantes.''}
 
 \textbf{Tu vida adulta dependerá de escribir y buscar bien}: para postular trabajos, hacer trabajos universitarios, defender derechos, votar con criterio, criar hijos en una era digital. \emph{Las habilidades del P3 son alfabetización del siglo XXI}. No es opcional. Tu yo de 25 años te lo agradecerá. Tu yo de 50 años no podría vivir sin esto.
 
@@ -440,21 +483,24 @@ Mucha gente vive sin escribir nunca su propia voz: copia, repite, replica. \text
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

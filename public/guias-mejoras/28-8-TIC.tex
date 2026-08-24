@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 8};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 8};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Estética de la liberación ---\\cultura popular\\y producción ética}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 28-8-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 3 · Multimedia, narrativa y ciberseguridad}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 3 · Multimedia, narrativa y ciberseguridad}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Estética de la liberación ---\\cultura popular\\y producción ética}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 28-8-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} 1 pieza multimedia (afiche, video de 1 min, podcast corto, infografía) sobre un tema de la cultura popular vallecaucana o colombiana (salsa, comida típica, oficios del barrio, fiestas tradicionales, microempresarios del barrio) que aplique los principios de la \emph{estética de la liberación} de Enrique Dussel + análisis escrito de 1 página explicando: qué voz amplifica, a quién dignifica, qué dejaste fuera y por qué + comparación con 1 pieza comercial sobre el mismo tema, identificando diferencias};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+1 pieza multimedia (afiche, video de 1 min, podcast corto, infografía) sobre un tema de la cultura popular vallecaucana o colombiana (salsa, comida típica, oficios del barrio, fiestas tradicionales, microempresarios del barrio) que aplique los principios de la \emph{estética de la liberación} de Enrique Dussel + análisis escrito de 1 página explicando: qué voz amplifica, a quién dignifica, qué dejaste fuera y por qué + comparación con 1 pieza comercial sobre el mismo tema, identificando diferencias
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Estética de la liberación --- cultura popular y producción ética}
@@ -258,30 +322,27 @@ Producto final & 1 pieza multimedia (afiche, video de 1 min, podcast corto, info
 
 \puente{Antes de empezar, mira el viaje completo. Has aprendido a producir imagen, narrativa, audio (S1-S5) y a actuar con responsabilidad ética (S6-S7). Hoy le agregas la \textbf{dimensión política de la producción}: toda pieza toma posición. La sesión 9 (proyecto integrador) y la 10 (sustentación) son la cima del año.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Antes de teorizar, vas a hacer un \emph{inventario rápido}: 5 elementos de la cultura popular del Valle o de tu barrio que crees que la publicidad comercial NO suele representar bien (oficios, comidas, músicas, personajes, fiestas). Esa lista es la materia prima de la pieza.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- Inventario de cultura popular} (15 min · individual). Anota 5 elementos de la cultura popular del Valle del Cauca, del Pacífico colombiano o de tu barrio que creas que la publicidad comercial casi nunca representa con respeto. Pueden ser: oficios (vendedor de chontaduro, palenquera, mototaxista, lavandera), comidas (sancocho de gallina, lulada, marranitas), músicas (currulao, salsa choke, vallenato sabanero), personajes (la abuela cuentista, el sereno, el reparador), fiestas (la del señor de los Milagros, las fiestas patronales del barrio). Elige 1 de los 5 para tu pieza.
 \end{softbox}
 
-\checkbox Anoté 5 elementos de cultura popular.\\
-\checkbox Pensé por qué la publicidad no los representa bien.\\
-\checkbox Elegí 1 con propósito claro.
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Anoté 5 elementos de cultura popular.}
+\milccheckrow{Pensé por qué la publicidad no los representa bien.}
+\milccheckrow{Elegí 1 con propósito claro.}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Ya tienes inventario. Ahora vas a entender la \textbf{anatomía de la estética de la liberación}: los 4 principios de Dussel, los 5 errores típicos del productor que se cree neutral (caricaturización, romantización, exotismo, paternalismo, extractivismo cultural).}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Tu inventario es la materia. Ahora necesitas la \textbf{anatomía formal} de la estética de la liberación: los 4 principios de Dussel, los errores típicos del productor que reproduce jerarquías sin querer.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & Los \textbf{4 principios de Dussel} aplicados a producción multimedia se descomponen así: (1) \textbf{Centrar la voz del sur}: el sujeto principal de tu pieza es alguien del Valle, del Pacífico, del barrio. No un personaje genérico. (2) \textbf{Dignificar al sujeto retratado}: aparece con nombre, oficio, contexto. No como tipo folclórico (\emph{``el negro alegre''}, \emph{``el indígena místico''}). (3) \textbf{Mostrar contradicciones, no esconderlas}: la cultura popular tiene riqueza y dificultades; mostrar ambas. (4) \textbf{Producir para la comunidad}: la pieza debe poder mostrarse al sujeto y este reconocerse con orgullo.\\
-2. Reconocimiento de patrones & Los \textbf{5 errores típicos} de la producción que se cree neutral pero reproduce jerarquías: (a) \textbf{Caricaturización}: el sujeto aparece exagerado, ridiculizado. (b) \textbf{Romantización}: el sujeto aparece idealizado, sin las dificultades reales. (c) \textbf{Exotismo}: el sujeto aparece como rareza para consumo del espectador externo. (d) \textbf{Paternalismo}: el sujeto aparece como víctima necesitada de salvación, no como agente con dignidad propia. (e) \textbf{Extractivismo cultural}: usar elementos culturales (música, símbolos, lenguaje) sin acreditar la comunidad de origen ni devolverle nada.\\
-3. Abstracción & Lo esencial cabe en una pregunta: \emph{¿la persona o comunidad retratada se reconocería en mi pieza con orgullo?}. Si la respuesta es sí, la pieza dignifica. Si la respuesta es no o dudosa, la pieza reproduce jerarquías. La phronesis del oficio multimedia consiste en \textbf{producir lo que el sujeto retratado aprobaría si pudiera verlo}.\\
-4. Algoritmo conceptual & Algoritmo: (1) elegir tema del inventario. (2) preguntarse: ¿conozco a alguien real que viva o practique este tema? (idealmente sí, para consultar). (3) producir pieza centrando voz del sur. (4) revisar contra los 5 errores. (5) idealmente, mostrar borrador a alguien de la comunidad retratada antes de publicar. (6) escribir análisis con los 4 principios.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{Los \textbf{4 principios de Dussel} aplicados a producción multimedia se descomponen así: (1) \textbf{Centrar la voz del sur}: el sujeto principal de tu pieza es alguien del Valle, del Pacífico, del barrio. No un personaje genérico. (2) \textbf{Dignificar al sujeto retratado}: aparece con nombre, oficio, contexto. No como tipo folclórico (\emph{``el negro alegre''}, \emph{``el indígena místico''}). (3) \textbf{Mostrar contradicciones, no esconderlas}: la cultura popular tiene riqueza y dificultades; mostrar ambas. (4) \textbf{Producir para la comunidad}: la pieza debe poder mostrarse al sujeto y este reconocerse con orgullo.}
+\milcpaso{2}{milcTurquesa}{Los \textbf{5 errores típicos} de la producción que se cree neutral pero reproduce jerarquías: (a) \textbf{Caricaturización}: el sujeto aparece exagerado, ridiculizado. (b) \textbf{Romantización}: el sujeto aparece idealizado, sin las dificultades reales. (c) \textbf{Exotismo}: el sujeto aparece como rareza para consumo del espectador externo. (d) \textbf{Paternalismo}: el sujeto aparece como víctima necesitada de salvación, no como agente con dignidad propia. (e) \textbf{Extractivismo cultural}: usar elementos culturales (música, símbolos, lenguaje) sin acreditar la comunidad de origen ni devolverle nada.}
+\milcpaso{3}{milcTurquesa}{Lo esencial cabe en una pregunta: \emph{¿la persona o comunidad retratada se reconocería en mi pieza con orgullo?}. Si la respuesta es sí, la pieza dignifica. Si la respuesta es no o dudosa, la pieza reproduce jerarquías. La phronesis del oficio multimedia consiste en \textbf{producir lo que el sujeto retratado aprobaría si pudiera verlo}.}
+\milcpaso{4}{milcTurquesa}{Algoritmo: (1) elegir tema del inventario. (2) preguntarse: ¿conozco a alguien real que viva o practique este tema? (idealmente sí, para consultar). (3) producir pieza centrando voz del sur. (4) revisar contra los 5 errores. (5) idealmente, mostrar borrador a alguien de la comunidad retratada antes de publicar. (6) escribir análisis con los 4 principios.}
 
 \begin{drawbox}{milcTurquesa}{Anatomía de la estética de la liberación}
 \textbf{Principio 1:} centrar voz del sur. \\[1mm] \textbf{Principio 2:} dignificar al sujeto. \\[1mm] \textbf{Principio 3:} mostrar contradicciones. \\[1mm] \textbf{Principio 4:} producir para la comunidad. \\[1mm] \textbf{Regla:} el sujeto debería reconocerse con orgullo.
@@ -325,23 +379,16 @@ Tu inventario es la materia. Ahora necesitas la \textbf{anatomía formal} de la 
 
 \puente{Tienes el método. Toca aplicarlo: produces tu pieza multimedia sobre cultura popular vallecaucana o de tu barrio aplicando los 4 principios, analizas qué amplifica y qué deja fuera, comparas con 1 pieza comercial sobre el mismo tema.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · CREA + EVALÚA --- Pieza multimedia + análisis + comparación} (40 min · individual). Hora de aplicar. Produces pieza sobre tu tema elegido, escribes análisis con los 4 principios, comparas con 1 pieza comercial sobre el mismo tema.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & Tu pieza se construye en 5 pasos: (1) elegir formato según el tema (afiche para oficio, video de 1 min para fiesta, podcast para música, infografía para comida). (2) usar las habilidades de S1-S5 (jerarquía visual, narrativa, audio). (3) centrar voz del sur (nombrar al sujeto, contar su contexto). (4) mostrar 1 contradicción (no solo lo bonito). (5) revisar contra los 5 errores antes de cerrar.\\
-Patrones & El análisis Dussel-style tiene 4 párrafos: (a) ¿Qué voz amplifica mi pieza? (a quién hace audible). (b) ¿A quién dignifica? (qué dignidad otorga). (c) ¿Qué dejé fuera y por qué? (honestidad sobre los límites de la pieza). (d) ¿Qué cambiaría si pudiera consultar al sujeto retratado?\\
-Abstracción & La comparación con pieza comercial muestra el contraste: tomas 1 publicidad o pieza de medios masivos sobre el mismo tema y describes en 2-3 líneas las diferencias. Ejemplo: \emph{``La publicidad de la marca X sobre salsa cali muestra solo a bailarines profesionales sin nombre; mi pieza muestra a Doña Rosa, que baila en el patio de su casa los sábados con sus nietos''}.\\
-Algoritmo de armado & Algoritmo: (1) producir pieza. (2) revisar contra errores. (3) escribir análisis 4 párrafos. (4) buscar pieza comercial para comparar. (5) escribir comparación.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{Tu pieza se construye en 5 pasos: (1) elegir formato según el tema (afiche para oficio, video de 1 min para fiesta, podcast para música, infografía para comida). (2) usar las habilidades de S1-S5 (jerarquía visual, narrativa, audio). (3) centrar voz del sur (nombrar al sujeto, contar su contexto). (4) mostrar 1 contradicción (no solo lo bonito). (5) revisar contra los 5 errores antes de cerrar.}
+\milcpaso{2}{milcMagenta}{El análisis Dussel-style tiene 4 párrafos: (a) ¿Qué voz amplifica mi pieza? (a quién hace audible). (b) ¿A quién dignifica? (qué dignidad otorga). (c) ¿Qué dejé fuera y por qué? (honestidad sobre los límites de la pieza). (d) ¿Qué cambiaría si pudiera consultar al sujeto retratado?}
+\milcpaso{3}{milcMagenta}{La comparación con pieza comercial muestra el contraste: tomas 1 publicidad o pieza de medios masivos sobre el mismo tema y describes en 2-3 líneas las diferencias. Ejemplo: \emph{``La publicidad de la marca X sobre salsa cali muestra solo a bailarines profesionales sin nombre; mi pieza muestra a Doña Rosa, que baila en el patio de su casa los sábados con sus nietos''}.}
+\milcpaso{4}{milcMagenta}{Algoritmo: (1) producir pieza. (2) revisar contra errores. (3) escribir análisis 4 párrafos. (4) buscar pieza comercial para comparar. (5) escribir comparación.}
 
 \begin{drawbox}{milcMagenta}{Checklist antes de entregar}
 \checkbox Pieza multimedia producida sobre tema del inventario. \\[1mm] \checkbox Sujeto retratado con nombre y contexto. \\[1mm] \checkbox 1 contradicción mostrada. \\[1mm] \checkbox Revisada contra los 5 errores. \\[1mm] \checkbox Análisis de 4 párrafos con los principios. \\[1mm] \checkbox Comparación con pieza comercial.
@@ -359,9 +406,7 @@ Algoritmo de armado & Algoritmo: (1) producir pieza. (2) revisar contra errores.
 
 \puente{Lo que sigue resume \emph{qué} entregas hoy: pieza multimedia + análisis Dussel-style + comparación. El criterio principal: que la persona o comunidad retratada, viendo tu pieza, se reconozca con dignidad y no con vergüenza.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Pieza multimedia + análisis Dussel + comparación}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) Tema de cultura popular del Valle o barrio. (2) Sujeto con nombre y contexto. (3) 4 principios de Dussel aplicados. (4) Análisis honesto de 4 párrafos. (5) Comparación con pieza comercial. (6) Posibilidad de mostrar al sujeto retratado.
@@ -369,9 +414,7 @@ Producto de la sesión
 
 \puente{Antes de cerrar, mira la estética desde las cinco dimensiones humanas. Producir con sentido comunitario es respeto por el pueblo retratado; producir sin pensar a quién dignifica reproduce las jerarquías que el sistema ya impone.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -397,12 +440,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Y para terminar, tres voces sobre la dignidad estética. Dussel sobre los pueblos que se representan a sí mismos, Séneca sobre la simplicidad como virtud frente al exotismo, Floridi sobre la producción cultural responsable en la era digital.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{``Toda pieza estética toma posición; reconocer cuál es ya es acto de phronesis política.''}
+\textit{Toda pieza estética toma posición; reconocer cuál es ya es acto de phronesis política.}
 
 La pieza neutral no existe. Toda producción multimedia amplifica algunas voces y silencia otras, dignifica a unos y reduce a otros. La filosofía de la liberación pide ese reconocimiento honesto: \textbf{declara qué posición toma tu pieza}. Esa honestidad no la debilita; la fortalece. La phronesis del oficio cultural consiste en \textbf{ser consciente de la política de la producción estética}.
 
@@ -412,7 +453,7 @@ La pieza neutral no existe. Toda producción multimedia amplifica algunas voces 
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Séneca · cuidado interior}
-\textit{``La simplicidad respeta al sujeto; el exotismo lo convierte en espectáculo.''}
+\textit{La simplicidad respeta al sujeto; el exotismo lo convierte en espectáculo.}
 
 Es tentador exotizar la cultura popular para hacerla \emph{``interesante''}. La sabiduría estoica recomienda lo opuesto: \emph{representa con simplicidad y respeto}. La salsa cali no necesita florituras visuales para ser respetada; basta con representarla con dignidad. El exotismo convierte cultura en mercancía; la simplicidad la honra como es.
 
@@ -422,7 +463,7 @@ Es tentador exotizar la cultura popular para hacerla \emph{``interesante''}. La 
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{``La producción cultural en la era digital es responsabilidad ética, no solo expresión personal.''}
+\textit{La producción cultural en la era digital es responsabilidad ética, no solo expresión personal.}
 
 En la era de la información, las piezas culturales circulan masivamente. La ética digital pide responsabilidad: no producir estereotipos, no extractivismo cultural sin acreditar, no caricaturización. Tu pieza de hoy te entrena en una práctica que rige toda producción multimedia: \textbf{ser consciente del impacto cultural de lo que publicas}.
 
@@ -431,21 +472,24 @@ En la era de la información, las piezas culturales circulan masivamente. La ét
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

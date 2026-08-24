@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 7};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 7};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Outlook y\\Teams ---\\comunicarme\\con voz\\profesional}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 9-7-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 1 · Trabajo colaborativo en la nube}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 1 · Trabajo colaborativo en la nube}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Outlook y\\Teams ---\\comunicarme\\con voz\\profesional}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 9-7-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} \textbf{(a) 3 correos profesionales reales enviados desde Outlook} institucional (uno al profe, uno al coordinador, uno a un compañero); \textbf{(b) 1 reunión virtual programada} en Teams con tu equipo de la S6 (un equipo de 3); \textbf{(c) en el cuaderno}: tabla comparativa Outlook vs Teams vs WhatsApp con 5 criterios + bitácora de la reunión virtual.};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+\textbf{(a) 3 correos profesionales reales enviados desde Outlook} institucional (uno al profe, uno al coordinador, uno a un compañero); \textbf{(b) 1 reunión virtual programada} en Teams con tu equipo de la S6 (un equipo de 3); \textbf{(c) en el cuaderno}: tabla comparativa Outlook vs Teams vs WhatsApp con 5 criterios + bitácora de la reunión virtual.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Outlook y Teams --- comunicarme con voz profesional}
@@ -258,30 +322,27 @@ Producto final & \textbf{(a) 3 correos profesionales reales enviados desde Outlo
 
 \puente{Hoy haces 4 cosas: diferencias Outlook y Teams, envías 3 correos formales, programas una reunión Teams, evalúas comunicaciones reales.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Empezamos con un test de 6 mensajes: ¿Outlook, Teams o WhatsApp?}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- 6 mensajes, 3 canales} (10 min · individual). Lee estos 6 mensajes y escribe en el cuaderno qué canal usarías: \textbf{O (Outlook formal)}, \textbf{T (Teams)}, \textbf{W (WhatsApp personal)}. \emph{(1) Pedirle al rector que considere reabrir el cupo de un compañero. (2) Preguntarle a un amigo cercano si va a la fiesta del sábado. (3) Coordinar con tu equipo de 3 dónde se reúnen mañana para hacer el trabajo. (4) Solicitar a una universidad información sobre carreras. (5) Mandar un meme gracioso a tu mejor amiga. (6) Avisar a tu profe que vas a faltar mañana por cita médica.}
 \end{softbox}
 
-\checkbox Leí los 6 mensajes con calma.\\
-\checkbox Marqué O, T o W en cada uno.\\
-\checkbox Pensé en el nivel de formalidad de cada situación.
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Leí los 6 mensajes con calma.}
+\milccheckrow{Marqué O, T o W en cada uno.}
+\milccheckrow{Pensé en el nivel de formalidad de cada situación.}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Después aprendes las 3 herramientas con sus usos correctos.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Tu intuición se afila. Aprende los \textbf{usos correctos de cada canal} y por qué Outlook + Teams son superiores a WhatsApp para asuntos académicos y profesionales. \emph{Respuestas correctas:} 1=O, 2=W, 3=T, 4=O, 5=W, 6=O.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & \textbf{Outlook --- el canal formal.} Lo usas para mensajes que \textbf{necesitan registro, autoridad y formalidad}. Tu cuenta institucional ya tiene Outlook activo en \texttt{outlook.office.com}. \textbf{Las 5 partes obligatorias del correo formal} (ya las viste en G6·P1·S3): \emph{(1) Destinatario}, \emph{(2) Asunto claro}, \emph{(3) Saludo formal}, \emph{(4) Cuerpo en 3 bloques}, \emph{(5) Despedida + firma con tu nombre + grado}. \textbf{Funciones útiles de Outlook:} \emph{calendario integrado} (programa reuniones desde el correo), \emph{firma automática} (al final de todos tus correos pones tu firma fija), \emph{categorías y reglas} (organiza correos por color). \textbf{Una excelente práctica:} crea una firma fija en Outlook con tu nombre + grado + colegio.\\
-2. Reconocimiento de patrones & \textbf{Teams --- el canal ágil profesional.} Lo usas para \textbf{comunicación rápida entre miembros de un mismo equipo o curso}, sin la formalidad del correo. \textbf{3 componentes principales:} \emph{(a) Chat:} conversaciones por escrito (similar a WhatsApp pero institucional, queda guardado en la cuenta del colegio). \emph{(b) Llamadas y videollamadas:} 1 a 1 o en grupo, audio o video, con compartir pantalla. \emph{(c) Reuniones programadas:} eventos con hora, fecha, lista de invitados y enlace que todos abren al mismo tiempo. \textbf{Cómo programar reunión en Teams:} ícono \emph{Calendario} → \emph{Nueva reunión} → poner título, fecha, hora, agregar invitados → \emph{Enviar}. Los invitados reciben correo en Outlook con el enlace y se les agrega a su calendario automáticamente.\\
-3. Abstracción & \textbf{WhatsApp vs Outlook vs Teams --- la tabla maestra.} \textbf{WhatsApp:} para amigos y familia. Personal. No queda en archivo institucional. NUNCA para asuntos académicos serios. \textbf{Outlook:} para asuntos formales. Asincrónico. Queda registrado. NO para coordinación rápida de equipos. \textbf{Teams:} para equipos profesionales. Sincrónico/asincrónico. Queda registrado en cuenta institucional. NO para asuntos personales con familia.\\
-4. Algoritmo conceptual & \textbf{Errores frecuentes al elegir canal.} (1) \emph{Mandar al profe un meme por WhatsApp en lugar de un correo formal por situación seria} --- mezclas niveles, generas confusión. (2) \emph{Hacer una solicitud al coordinador por chat de Teams en lugar de un correo Outlook} --- los chats se pierden rápido; el correo queda registrado. (3) \emph{Programar reunión Teams sin agenda} --- los participantes no saben qué se va a discutir; pierde tiempo. (4) \emph{No mirar el correo institucional regularmente} --- te pierdes anuncios importantes. Revisa mínimo 1 vez al día.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{\textbf{Outlook --- el canal formal.} Lo usas para mensajes que \textbf{necesitan registro, autoridad y formalidad}. Tu cuenta institucional ya tiene Outlook activo en \texttt{outlook.office.com}. \textbf{Las 5 partes obligatorias del correo formal} (ya las viste en G6·P1·S3): \emph{(1) Destinatario}, \emph{(2) Asunto claro}, \emph{(3) Saludo formal}, \emph{(4) Cuerpo en 3 bloques}, \emph{(5) Despedida + firma con tu nombre + grado}. \textbf{Funciones útiles de Outlook:} \emph{calendario integrado} (programa reuniones desde el correo), \emph{firma automática} (al final de todos tus correos pones tu firma fija), \emph{categorías y reglas} (organiza correos por color). \textbf{Una excelente práctica:} crea una firma fija en Outlook con tu nombre + grado + colegio.}
+\milcpaso{2}{milcTurquesa}{\textbf{Teams --- el canal ágil profesional.} Lo usas para \textbf{comunicación rápida entre miembros de un mismo equipo o curso}, sin la formalidad del correo. \textbf{3 componentes principales:} \emph{(a) Chat:} conversaciones por escrito (similar a WhatsApp pero institucional, queda guardado en la cuenta del colegio). \emph{(b) Llamadas y videollamadas:} 1 a 1 o en grupo, audio o video, con compartir pantalla. \emph{(c) Reuniones programadas:} eventos con hora, fecha, lista de invitados y enlace que todos abren al mismo tiempo. \textbf{Cómo programar reunión en Teams:} ícono \emph{Calendario} → \emph{Nueva reunión} → poner título, fecha, hora, agregar invitados → \emph{Enviar}. Los invitados reciben correo en Outlook con el enlace y se les agrega a su calendario automáticamente.}
+\milcpaso{3}{milcTurquesa}{\textbf{WhatsApp vs Outlook vs Teams --- la tabla maestra.} \textbf{WhatsApp:} para amigos y familia. Personal. No queda en archivo institucional. NUNCA para asuntos académicos serios. \textbf{Outlook:} para asuntos formales. Asincrónico. Queda registrado. NO para coordinación rápida de equipos. \textbf{Teams:} para equipos profesionales. Sincrónico/asincrónico. Queda registrado en cuenta institucional. NO para asuntos personales con familia.}
+\milcpaso{4}{milcTurquesa}{\textbf{Errores frecuentes al elegir canal.} (1) \emph{Mandar al profe un meme por WhatsApp en lugar de un correo formal por situación seria} --- mezclas niveles, generas confusión. (2) \emph{Hacer una solicitud al coordinador por chat de Teams en lugar de un correo Outlook} --- los chats se pierden rápido; el correo queda registrado. (3) \emph{Programar reunión Teams sin agenda} --- los participantes no saben qué se va a discutir; pierde tiempo. (4) \emph{No mirar el correo institucional regularmente} --- te pierdes anuncios importantes. Revisa mínimo 1 vez al día.}
 
 \begin{drawbox}{milcTurquesa}{3 canales con sus usos}
 \textbf{Outlook:} formal, registrado. Correos a profes, autoridades, instituciones. \\[1mm]
@@ -327,23 +381,18 @@ Tu intuición se afila. Aprende los \textbf{usos correctos de cada canal} y por 
 
 \puente{Con todo claro, envías los 3 correos y programas la reunión Teams.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · APLICA --- 3 correos profesionales + 1 reunión Teams} (32 min · individual). Vas a enviar 3 correos reales por Outlook y programar 1 reunión de Teams con tu equipo de la S6. Si no tienes computador en clase, planeas todo en el cuaderno y ejecutas en casa esta semana.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & \textbf{Paso 1 --- Abre Outlook.} Ve a \texttt{outlook.office.com}, inicia sesión con tu cuenta institucional. Verás la bandeja de entrada. Antes de empezar, ve a \emph{Configuración → Firma de correo electrónico} y crea tu firma fija: \emph{``Atentamente, [Tu nombre completo], Grado 7[letra], I.E. Sor María Juliana, año 2026.''}. Guarda. De ahora en adelante esa firma aparece automáticamente al final de cada correo que escribas.\\
-Patrones & \textbf{Paso 2 --- Correo 1: al profe.} \emph{Nuevo correo}. Destinatario: el correo institucional de tu profe de Tecnología. Asunto: \emph{``Solicitud de aclaración sobre la actividad de la próxima sesión''}. Cuerpo en 3 bloques: \emph{(1) qué quieres aclarar (1 frase)}, \emph{(2) por qué tienes esa duda (1 frase)}, \emph{(3) qué pides (que te confirme algo, te explique, etc., 1 frase)}. Máximo 5 líneas en total. Tu firma aparece sola al final. Envía.\\
-Abstracción & \textbf{Paso 3 --- Correo 2: al coordinador.} Destinatario: correo del coordinador (pregunta al profe si no lo tienes). Asunto: \emph{``Sugerencia para la sala de Tecnología --- estudiante de grado 7''}. Cuerpo: una sugerencia constructiva (un ventilador, mejor luz, una pizarra adicional, lo que tú propongas). 3 bloques: idea, por qué la propones, qué necesita para implementarse. Envía.\\
-Algoritmo de armado & \textbf{Paso 4 --- Correo 3: a un compañero.} Destinatario: correo institucional de un compañero. Asunto: \emph{``Coordinación trabajo grupal G7-P1''}. Cuerpo: propón día y hora para que se reúnan a revisar el trabajo de la S6, o pregúntale algo concreto sobre el trabajo. Envía. Después verifica con él que recibió el correo.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{\textbf{Paso 1 --- Abre Outlook.} Ve a \texttt{outlook.office.com}, inicia sesión con tu cuenta institucional. Verás la bandeja de entrada. Antes de empezar, ve a \emph{Configuración → Firma de correo electrónico} y crea tu firma fija: \emph{``Atentamente, [Tu nombre completo], Grado 7[letra], I.E. Sor María Juliana, año 2026.''}. Guarda. De ahora en adelante esa firma aparece automáticamente al final de cada correo que escribas.}
+\milcpaso{2}{milcMagenta}{\textbf{Paso 2 --- Correo 1: al profe.} \emph{Nuevo correo}. Destinatario: el correo institucional de tu profe de Tecnología. Asunto: \emph{``Solicitud de aclaración sobre la actividad de la próxima sesión''}. Cuerpo en 3 bloques: \emph{(1) qué quieres aclarar (1 frase)}, \emph{(2) por qué tienes esa duda (1 frase)}, \emph{(3) qué pides (que te confirme algo, te explique, etc., 1 frase)}. Máximo 5 líneas en total. Tu firma aparece sola al final. Envía.}
+\milcpaso{3}{milcMagenta}{\textbf{Paso 3 --- Correo 2: al coordinador.} Destinatario: correo del coordinador (pregunta al profe si no lo tienes). Asunto: \emph{``Sugerencia para la sala de Tecnología --- estudiante de grado 7''}. Cuerpo: una sugerencia constructiva (un ventilador, mejor luz, una pizarra adicional, lo que tú propongas). 3 bloques: idea, por qué la propones, qué necesita para implementarse. Envía.}
+\milcpaso{4}{milcMagenta}{\textbf{Paso 4 --- Correo 3: a un compañero.} Destinatario: correo institucional de un compañero. Asunto: \emph{``Coordinación trabajo grupal G7-P1''}. Cuerpo: propón día y hora para que se reúnan a revisar el trabajo de la S6, o pregúntale algo concreto sobre el trabajo. Envía. Después verifica con él que recibió el correo.}
+\milcpaso{5}{milcMagenta}{\textbf{Paso 5 --- Reunión Teams.} Ve al ícono de \emph{Teams} (calendario en la barra lateral). Clic en \emph{Nueva reunión}. Llena los datos: \emph{Título}: \emph{``Revisión trabajo grupal G7-P1''}. \emph{Fecha y hora}: alguna esta semana, 30 minutos. \emph{Agregar participantes}: los 2 compañeros de tu equipo de S6 (escribe sus correos). \emph{Agenda}: \emph{``(1) revisar trabajo colaborativo, (2) acordar cambios finales, (3) entregar al profe''}. Clic en \emph{Enviar}. Tus 2 compañeros recibirán invitación.}
+\milcpaso{6}{milcMagenta}{\textbf{Paso 6 --- Bitácora + reflexión + firma.} En el cuaderno: \emph{(a) Lista de los 3 correos enviados (destinatario + asunto). (b) Datos de la reunión Teams (fecha, hora, participantes, agenda). (c) Reflexión: ``Mi descubrimiento de hoy fue: \_\_\_\_''}. Firma con nombre y fecha. Esta sesión te entrenó en comunicación profesional digital.}
 
 \begin{drawbox}{milcMagenta}{Antes de cerrar la S9}
 \checkbox Mi firma fija está configurada en Outlook. \\[1mm]
@@ -366,9 +415,7 @@ Algoritmo de armado & \textbf{Paso 4 --- Correo 3: a un compañero.} Destinatari
 
 \puente{El producto son los 3 correos enviados + reunión Teams + tabla comparativa.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{3 correos profesionales enviados + 1 reunión Teams programada · bitácora firmada}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) Los 3 correos siguen las 5 partes obligatorias. (2) Cada correo tiene cuerpo máximo de 5 líneas. (3) La firma fija aparece al final de cada correo. (4) La reunión Teams tiene título, fecha, hora, 2 invitados, agenda. (5) La bitácora está completa y firmada.
@@ -376,9 +423,7 @@ Producto de la sesión
 
 \puente{Antes de salir, verifica que los 3 correos cumplen las 5 partes y que la reunión está programada con invitaciones enviadas.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -404,12 +449,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Cerramos con 3 voces sobre por qué usar el canal correcto es respetar al lector.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{````Hablar igual con todos no es respeto: es desconocimiento. El respeto adapta el lenguaje al lector.''''}
+\textit{``Hablar igual con todos no es respeto: es desconocimiento. El respeto adapta el lenguaje al lector.''}
 
 Hay gente que cree que \emph{``yo hablo igual con todo el mundo''} es virtud. No es: es \textbf{confusión de canales}. \emph{Hablarle al rector como le hablas a tu amigo es no entender que el rector ocupa un lugar distinto en la conversación}. Doña Mercedes mandaba carta formal al alcalde y recado verbal al vecino: \emph{2 canales, mismas reglas de respeto adaptadas al contexto}. Hoy en digital, Outlook es para uno; Teams para otro; WhatsApp para otro más. Saber elegir es respeto.
 
@@ -419,7 +462,7 @@ Hay gente que cree que \emph{``yo hablo igual con todo el mundo''} es virtud. No
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
-\textit{````La carta formal queda. El recado se va con el viento. Sabe usar las dos a su tiempo.''''}
+\textit{``La carta formal queda. El recado se va con el viento. Sabe usar las dos a su tiempo.''}
 
 Marco Aurelio gobernaba el imperio con \textbf{dos canales}: \emph{decretos escritos} (que quedaban en archivo para siempre) y \emph{conversaciones verbales} (rápidas, ágiles, no registradas). Sabía cuándo usar cada uno. En el digital de hoy, esos dos canales son Outlook y Teams. Quien conoce ambos opera con \emph{precisión profesional}; quien solo conoce uno (o usa WhatsApp para todo) opera con menos finura.
 
@@ -429,7 +472,7 @@ Marco Aurelio gobernaba el imperio con \textbf{dos canales}: \emph{decretos escr
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{````Tener correo institucional y saber usarlo es el primer rito de paso a la vida adulta digital.''''}
+\textit{``Tener correo institucional y saber usarlo es el primer rito de paso a la vida adulta digital.''}
 
 \textbf{Tu correo institucional} (\texttt{...@sormariajuliana.edu.co}) es \emph{tu primera identidad oficial digital}. Lo vas a reemplazar después por \emph{...@universidad.edu.co} y luego por \emph{...@empresa.com}. Pero el oficio es el mismo: \emph{escribir formal, claro, con firma, con asunto, con respeto}. Hoy entrenas ese oficio en la versión escolar. Mañana lo usarás en la versión universitaria. En 10 años en la profesional. Lo que aprendes hoy queda.
 
@@ -438,21 +481,24 @@ Marco Aurelio gobernaba el imperio con \textbf{dos canales}: \emph{decretos escr
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

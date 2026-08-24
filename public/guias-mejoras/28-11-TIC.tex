@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 11};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 11};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Ética y legal ---\\la palabra empeñada\\en lo digital}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 28-11-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 3 · Proyecto final emprendedor}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 3 · Proyecto final emprendedor}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Ética y legal ---\\la palabra empeñada\\en lo digital}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 28-11-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} 3 documentos legales y éticos del MVP en versión simple y honesta (a) Política de privacidad adaptada a la Ley 1581 de 2012 (habeas data colombiano), (b) Términos de uso del MVP con derechos y obligaciones del usuario, (c) Autoevaluación ética estructurada en las 4 preguntas de Floridi sobre el impacto del proyecto en la infosfera, con compromiso por escrito de qué se mantendrá, qué se ajustará y qué se descartará por razones éticas};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+3 documentos legales y éticos del MVP en versión simple y honesta (a) Política de privacidad adaptada a la Ley 1581 de 2012 (habeas data colombiano), (b) Términos de uso del MVP con derechos y obligaciones del usuario, (c) Autoevaluación ética estructurada en las 4 preguntas de Floridi sobre el impacto del proyecto en la infosfera, con compromiso por escrito de qué se mantendrá, qué se ajustará y qué se descartará por razones éticas
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Ética y legal --- la palabra empeñada en lo digital}
@@ -258,30 +322,27 @@ Producto final & 3 documentos legales y éticos del MVP en versión simple y hon
 
 \puente{Antes de empezar, mira el viaje completo. La sesión 7 cerró la dimensión financiera; hoy cierras la dimensión ético-legal. Las sesiones 9 (versión final del MVP) y 10 (sustentación pública) tomarán los compromisos éticos de hoy como parte del producto final. Sin política clara y autoevaluación honesta, el MVP escalado se convierte en pasivo legal y reputacional.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Antes de teorizar, vas a hacer una \emph{auditoría de datos} de tu MVP: ¿qué información pides al usuario?, ¿dónde se almacena (Google Forms, Sheets, ManyChat, base propia)?, ¿quién tiene acceso?, ¿qué pasaría si esos datos se filtraran? Esa auditoría revela el alcance real de tu responsabilidad legal.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- Auditoría de datos del MVP} (15 min · individual). Revisa tu MVP de la sesión 4 y haz una lista honesta de los datos que recoge del usuario. Reglas: (1) lista \textbf{cada dato} pedido (nombre, correo, teléfono, edad, ubicación, comportamiento de uso, dirección IP automática, foto, documento). (2) para cada dato, anota \textbf{dónde se almacena} (Google Sheets, ManyChat, Tally, base local, correo personal). (3) anota \textbf{quién tiene acceso} hoy (solo tú, herramienta sin tu control, terceros con permisos). (4) anota \textbf{cuánto tiempo} planeas guardarlo. (5) imagina el \textbf{escenario peor}: si esa base de datos se filtrara mañana en redes sociales, ¿qué daño concreto recibiría cada usuario?
 \end{softbox}
 
-\checkbox Listé cada dato que el MVP recoge.\\
-\checkbox Para cada dato anoté dónde se almacena y quién tiene acceso.\\
-\checkbox Definí tiempo de retención de cada dato.
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Listé cada dato que el MVP recoge.}
+\milccheckrow{Para cada dato anoté dónde se almacena y quién tiene acceso.}
+\milccheckrow{Definí tiempo de retención de cada dato.}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Ya tienes el inventario de datos. Ahora vas a entender la \textbf{anatomía ético-legal} del MVP: los 5 elementos obligatorios de una Política de Privacidad bajo Ley 1581, los 6 elementos de unos Términos de Uso mínimos, las 4 preguntas de Floridi sobre la infosfera y los 5 errores típicos del emprendedor novato (copiar-pegar política ajena, omitir política, no leer lo que se firma, no permitir borrado de datos, no avisar al usuario de cambios).}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Una política de privacidad copiada de internet sin entenderla es la versión digital del contrato firmado sin leer: protege legalmente al que copió, no al usuario. Para que tu proyecto cierre con dignidad ético-legal necesitas la \textbf{anatomía de los 3 documentos} (privacidad, términos, autoevaluación) y las \textbf{4 preguntas éticas} de Floridi aplicadas con honestidad.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & La \textbf{Política de Privacidad} bajo Ley 1581 de 2012 tiene 5 elementos obligatorios: (1) \textbf{Qué datos se recogen}: lista explícita (no \emph{``datos personales''}, sino \emph{``nombre, correo electrónico, número de WhatsApp''}). (2) \textbf{Para qué se usan}: finalidad concreta (\emph{``contactar al usuario para coordinar la demo''}). (3) \textbf{Con quién se comparten}: terceros nombrados (\emph{``Google Workspace como proveedor de Sheets, ManyChat como proveedor de chatbot''}). (4) \textbf{Cuánto tiempo se guardan}: plazo concreto en meses o años. (5) \textbf{Derechos del usuario}: cómo pedir acceso, corrección, eliminación de sus datos. Si tu política no tiene estos 5, no es política: es texto decorativo.\\
-2. Reconocimiento de patrones & Los \textbf{Términos de Uso} mínimos tienen 6 elementos: (1) Quién opera el servicio (nombre del proyecto + responsable). (2) Qué ofrece el servicio (descripción honesta del MVP). (3) Qué se compromete a hacer (cumplir lo prometido, responder en X tiempo). (4) Qué espera del usuario (uso adecuado, no compartir cuenta, no usar para X). (5) Qué pasa si algo falla (responsabilidades limitadas, garantías). (6) Cómo se contacta al responsable (correo o teléfono real). En lenguaje claro, no jurídico copiado.\\
-3. Abstracción & Las \textbf{4 preguntas éticas de Floridi} sobre impacto en la infosfera: (1) \textbf{Autenticidad}: ¿mi MVP fomenta información verídica o ruido informacional? (2) \textbf{Dignidad}: ¿trata al usuario como sujeto con autonomía o como objeto a manipular? (3) \textbf{Privacidad}: ¿recoge solo lo necesario o acumula datos por si acaso? (4) \textbf{Transparencia}: ¿el usuario entiende lo que ocurre o el sistema es opaco a propósito? La phronesis ética consiste en \textbf{responder con honestidad aunque la respuesta exija ajustar el proyecto}.\\
-4. Algoritmo conceptual & Algoritmo: (1) escribe la Política de Privacidad con los 5 elementos en lenguaje claro; (2) escribe Términos de Uso con los 6 elementos; (3) aplica las 4 preguntas de Floridi a tu MVP con respuesta honesta a cada una; (4) identifica al menos 1 ajuste concreto que harás por razones éticas (\emph{``no pediré la edad porque no la necesito''}, \emph{``borraré los datos de inscripciones no convertidas a los 30 días''}); (5) integra los 3 documentos como link visible desde la captura del MVP.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{La \textbf{Política de Privacidad} bajo Ley 1581 de 2012 tiene 5 elementos obligatorios: (1) \textbf{Qué datos se recogen}: lista explícita (no \emph{``datos personales''}, sino \emph{``nombre, correo electrónico, número de WhatsApp''}). (2) \textbf{Para qué se usan}: finalidad concreta (\emph{``contactar al usuario para coordinar la demo''}). (3) \textbf{Con quién se comparten}: terceros nombrados (\emph{``Google Workspace como proveedor de Sheets, ManyChat como proveedor de chatbot''}). (4) \textbf{Cuánto tiempo se guardan}: plazo concreto en meses o años. (5) \textbf{Derechos del usuario}: cómo pedir acceso, corrección, eliminación de sus datos. Si tu política no tiene estos 5, no es política: es texto decorativo.}
+\milcpaso{2}{milcTurquesa}{Los \textbf{Términos de Uso} mínimos tienen 6 elementos: (1) Quién opera el servicio (nombre del proyecto + responsable). (2) Qué ofrece el servicio (descripción honesta del MVP). (3) Qué se compromete a hacer (cumplir lo prometido, responder en X tiempo). (4) Qué espera del usuario (uso adecuado, no compartir cuenta, no usar para X). (5) Qué pasa si algo falla (responsabilidades limitadas, garantías). (6) Cómo se contacta al responsable (correo o teléfono real). En lenguaje claro, no jurídico copiado.}
+\milcpaso{3}{milcTurquesa}{Las \textbf{4 preguntas éticas de Floridi} sobre impacto en la infosfera: (1) \textbf{Autenticidad}: ¿mi MVP fomenta información verídica o ruido informacional? (2) \textbf{Dignidad}: ¿trata al usuario como sujeto con autonomía o como objeto a manipular? (3) \textbf{Privacidad}: ¿recoge solo lo necesario o acumula datos por si acaso? (4) \textbf{Transparencia}: ¿el usuario entiende lo que ocurre o el sistema es opaco a propósito? La phronesis ética consiste en \textbf{responder con honestidad aunque la respuesta exija ajustar el proyecto}.}
+\milcpaso{4}{milcTurquesa}{Algoritmo: (1) escribe la Política de Privacidad con los 5 elementos en lenguaje claro; (2) escribe Términos de Uso con los 6 elementos; (3) aplica las 4 preguntas de Floridi a tu MVP con respuesta honesta a cada una; (4) identifica al menos 1 ajuste concreto que harás por razones éticas (\emph{``no pediré la edad porque no la necesito''}, \emph{``borraré los datos de inscripciones no convertidas a los 30 días''}); (5) integra los 3 documentos como link visible desde la captura del MVP.}
 
 \begin{drawbox}{milcTurquesa}{Anatomía ético-legal del MVP}
 \textbf{Política de Privacidad:} 5 elementos (qué datos, para qué, con quién, cuánto tiempo, derechos). \\[1mm] \textbf{Términos de Uso:} 6 elementos (quién, qué, compromiso, expectativa, falla, contacto). \\[1mm] \textbf{4 preguntas Floridi:} autenticidad, dignidad, privacidad, transparencia. \\[1mm] \textbf{Compromiso de ajuste:} al menos 1 cambio por razones éticas.
@@ -325,23 +379,16 @@ Una política de privacidad copiada de internet sin entenderla es la versión di
 
 \puente{Tienes el método. Toca redactar. Vas a escribir los 3 documentos en lenguaje claro (no jurídico copiado de internet), aplicar las 4 preguntas de Floridi a tu proyecto con honestidad y declarar qué vas a mantener, ajustar o descartar por razones éticas.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · CREA --- 3 documentos ético-legales del MVP} (40 min · individual). Hora de redactar. Escribes los 3 documentos en lenguaje claro y honesto, identificas los ajustes éticos que harás antes de la sustentación, e integras los documentos al MVP como links visibles.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & Tus 3 documentos se construyen siguiendo plantillas mínimas: (a) \textbf{Política de Privacidad}: 1 página máximo, lenguaje claro, los 5 elementos obligatorios estructurados como respuestas a 5 preguntas (\emph{``¿qué datos recogemos?''}, \emph{``¿para qué los usamos?''}, etc.). (b) \textbf{Términos de Uso}: 1 página máximo, los 6 elementos en lenguaje cotidiano. (c) \textbf{Autoevaluación Ética}: 4 preguntas de Floridi con respuesta honesta de 3-4 líneas cada una + compromisos de ajuste concretos.\\
-Patrones & Sigue el patrón \textbf{``lenguaje cotidiano sobre jerga legal''}: tus documentos no son contratos formales, son acuerdos honestos entre tú y tu usuario. Si el lenguaje suena a abogado de televisión, está mal escrito. Mejor frases cortas, segunda persona (\emph{``recogemos tu correo''}, \emph{``puedes pedir borrar tus datos en cualquier momento''}). La phronesis legal consiste en \textbf{que el usuario común entienda lo que firma}.\\
-Abstracción & El compromiso de ajuste es la pieza más importante de la autoevaluación: no basta con responder las preguntas; debes declarar al menos 1 acción concreta. Ejemplos: (a) \emph{``Reduciré los campos del formulario de 8 a 4 porque no necesito edad, ciudad, ocupación, ni teléfono''}. (b) \emph{``Cambiaré el botón de \emph{Aceptar} por uno que diga \emph{Entiendo y acepto cómo se usan mis datos}}. (c) \emph{``Eliminaré la base de inscripciones no convertidas cada 30 días en lugar de retenerla indefinidamente''}. Sin compromiso de ajuste concreto, la autoevaluación es decorativa.\\
-Algoritmo de armado & Algoritmo: (1) redacta Política en lenguaje claro; (2) redacta Términos en lenguaje claro; (3) responde las 4 preguntas de Floridi con honestidad; (4) declara compromiso de al menos 1 ajuste; (5) integra los 3 documentos al MVP como link visible desde la captura; (6) pídele a un familiar que no conoce tu proyecto que los lea y te diga si entendió.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{Tus 3 documentos se construyen siguiendo plantillas mínimas: (a) \textbf{Política de Privacidad}: 1 página máximo, lenguaje claro, los 5 elementos obligatorios estructurados como respuestas a 5 preguntas (\emph{``¿qué datos recogemos?''}, \emph{``¿para qué los usamos?''}, etc.). (b) \textbf{Términos de Uso}: 1 página máximo, los 6 elementos en lenguaje cotidiano. (c) \textbf{Autoevaluación Ética}: 4 preguntas de Floridi con respuesta honesta de 3-4 líneas cada una + compromisos de ajuste concretos.}
+\milcpaso{2}{milcMagenta}{Sigue el patrón \textbf{``lenguaje cotidiano sobre jerga legal''}: tus documentos no son contratos formales, son acuerdos honestos entre tú y tu usuario. Si el lenguaje suena a abogado de televisión, está mal escrito. Mejor frases cortas, segunda persona (\emph{``recogemos tu correo''}, \emph{``puedes pedir borrar tus datos en cualquier momento''}). La phronesis legal consiste en \textbf{que el usuario común entienda lo que firma}.}
+\milcpaso{3}{milcMagenta}{El compromiso de ajuste es la pieza más importante de la autoevaluación: no basta con responder las preguntas; debes declarar al menos 1 acción concreta. Ejemplos: (a) \emph{``Reduciré los campos del formulario de 8 a 4 porque no necesito edad, ciudad, ocupación, ni teléfono''}. (b) \emph{``Cambiaré el botón de \emph{Aceptar} por uno que diga \emph{Entiendo y acepto cómo se usan mis datos}}. (c) \emph{``Eliminaré la base de inscripciones no convertidas cada 30 días en lugar de retenerla indefinidamente''}. Sin compromiso de ajuste concreto, la autoevaluación es decorativa.}
+\milcpaso{4}{milcMagenta}{Algoritmo: (1) redacta Política en lenguaje claro; (2) redacta Términos en lenguaje claro; (3) responde las 4 preguntas de Floridi con honestidad; (4) declara compromiso de al menos 1 ajuste; (5) integra los 3 documentos al MVP como link visible desde la captura; (6) pídele a un familiar que no conoce tu proyecto que los lea y te diga si entendió.}
 
 \begin{drawbox}{milcMagenta}{Checklist antes de cerrar la sesión}
 \checkbox Política de Privacidad con los 5 elementos en lenguaje claro. \\[1mm] \checkbox Términos de Uso con los 6 elementos en lenguaje claro. \\[1mm] \checkbox Las 4 preguntas de Floridi respondidas con honestidad. \\[1mm] \checkbox Al menos 1 compromiso de ajuste ético escrito. \\[1mm] \checkbox 3 documentos integrados al MVP como link visible. \\[1mm] \checkbox Un familiar leyó los documentos y los entendió. \\[1mm] \checkbox Los ajustes se aplicarán antes de la sesión 9.
@@ -359,9 +406,7 @@ Algoritmo de armado & Algoritmo: (1) redacta Política en lenguaje claro; (2) re
 
 \puente{Lo que sigue resume \emph{qué} entregas hoy: Política de Privacidad simple + Términos de Uso simples + Autoevaluación Ética con compromiso. El criterio principal: que un usuario común leyendo tus documentos pueda entender en 5 minutos qué pasa con sus datos y qué se compromete contigo, sin necesidad de abogado.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Política + Términos + Autoevaluación ética con compromiso de ajuste}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) Política de Privacidad con los 5 elementos de Ley 1581 en lenguaje claro. (2) Términos de Uso con los 6 elementos mínimos. (3) Las 4 preguntas de Floridi respondidas con honestidad. (4) Al menos 1 compromiso de ajuste concreto. (5) Documentos integrados al MVP como link visible. (6) Validación con lectura por persona común no familiarizada.
@@ -369,9 +414,7 @@ Producto de la sesión
 
 \puente{Antes de cerrar, mira la dimensión ética desde las cinco dimensiones humanas. Empeñar la palabra digital es honor del oficio; copiar políticas sin leer es deshonor escondido tras lenguaje legal.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -397,12 +440,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Y para terminar, tres voces sobre la palabra y el honor. Dussel sobre el derecho del afectado a ser informado y consultado, Epicteto sobre la coherencia entre palabra y acción, Floridi sobre la infosfera como entorno ético compartido.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{``El derecho del afectado a ser informado y consultado es la primera condición de la ética profesional.''}
+\textit{El derecho del afectado a ser informado y consultado es la primera condición de la ética profesional.}
 
 Tu usuario es el afectado de tu proyecto: sus datos quedan en tu sistema, su tiempo se invierte en tu MVP, su confianza sostiene tu modelo. La filosofía de la liberación pide reconocerlo como sujeto con derechos, no como objeto del que se extrae información. La Política de Privacidad y los Términos no son trámite: son el acto formal de tratarlo como sujeto. Quien escribe política copiada sin leerla repite la lógica colonial del contrato impuesto al pueblo.
 
@@ -412,7 +453,7 @@ Tu usuario es el afectado de tu proyecto: sus datos quedan en tu sistema, su tie
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Epicteto · cuidado interior}
-\textit{``Lo prometido y lo hecho deben coincidir; la grieta entre ambos es la medida del defecto del carácter.''}
+\textit{Lo prometido y lo hecho deben coincidir; la grieta entre ambos es la medida del defecto del carácter.}
 
 Es tentador escribir política bonita y operar distinto. La disciplina estoica recomienda lo opuesto: \emph{lo prometido y lo hecho deben coincidir}. Si tu política dice que borras datos al mes y los guardas un año, no tienes problema legal solo: tienes problema de carácter profesional. La phronesis del oficio digital consiste en \textbf{escribir solo lo que vas a cumplir y cumplir todo lo que escribes}.
 
@@ -422,7 +463,7 @@ Es tentador escribir política bonita y operar distinto. La disciplina estoica r
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{``La infosfera es el entorno ético compartido donde toda acción digital tiene consecuencias para los demás.''}
+\textit{La infosfera es el entorno ético compartido donde toda acción digital tiene consecuencias para los demás.}
 
 Tu MVP no opera en vacío: vive en la \emph{infosfera}, el ecosistema de información que todos compartimos. Cada decisión sobre datos, transparencia, autenticidad afecta a otros usuarios e indirectamente a la confianza colectiva en el oficio digital. Las 4 preguntas de Floridi te entrenan en pensar tu proyecto como \emph{ciudadano de la infosfera}, no como operador aislado. Quien se entrena hoy en esa ética escala con dignidad; quien la posterga acumula deuda ética con la sociedad.
 
@@ -431,21 +472,24 @@ Tu MVP no opera en vacío: vive en la \emph{infosfera}, el ecosistema de informa
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

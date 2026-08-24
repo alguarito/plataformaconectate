@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,51 +229,65 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont MÓDULO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SEMILLERO DE INVESTIGACIÓN · CONECTATE};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont MÓDULO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SEMILLERO DE INVESTIGACIÓN · CONECTATE};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 3};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 3};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
   
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Construir y programar\\en MakeCode ---\\del potro emberá\\probado en el río\\al prototipo probado}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Robótica y sistemas embebidos}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Módulo 3 · Fase MILC: Praxis · 3 h de clase}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Módulo 3 · Fase MILC: Praxis · 3 h de clase}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Construir y programar\\en MakeCode ---\\del potro emberá\\probado en el río\\al prototipo probado}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Robótica y sistemas embebidos}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} Tu \textbf{prototipo funcional con micro:bit}, construido y probado: el \textbf{programa en MakeCode} (traducido de tu diagrama de flujo del módulo 2 y \textbf{comentado}), con sus \textbf{umbrales medidos de verdad}, probado en \textbf{5 escenarios} (resultado esperado / real) con al menos un \textbf{ajuste} documentado, y un \textbf{video corto} de tu aparato funcionando. Si no tienes micro:bit físico, vale el simulador de MakeCode más el video de la pantalla.};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Tu \textbf{prototipo funcional con micro:bit}, construido y probado: el \textbf{programa en MakeCode} (traducido de tu diagrama de flujo del módulo 2 y \textbf{comentado}), con sus \textbf{umbrales medidos de verdad}, probado en \textbf{5 escenarios} (resultado esperado / real) con al menos un \textbf{ajuste} documentado, y un \textbf{video corto} de tu aparato funcionando. Si no tienes micro:bit físico, vale el simulador de MakeCode más el video de la pantalla.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Construir y programar en MakeCode --- del potro emberá probado en el río al prototipo probado}
@@ -257,30 +321,27 @@ Producto final & Tu \textbf{prototipo funcional con micro:bit}, construido y pro
 
 \puente{Escuchaste (módulo 1) y diseñaste el plano (módulo 2). Hoy \textbf{construyes}: traduces tu diagrama a bloques, mides tus umbrales de verdad y pruebas el aparato ---como el emberá lleva el potro al río.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Antes de armar bloques, saca tu plano del módulo 2. Un buen prototipo no empieza en MakeCode: empieza en el diagrama que ya depuraste.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- De tu diagrama a los bloques} (30 min · individual + grupo). \textbf{Momento A (10 min) --- El caso del potro.} El profe cuenta cómo el emberá prueba su canoa en el río ---donde aparecen las fallas que no se ven en tierra--- y pregunta: \emph{¿por qué «se ve bien» no es lo mismo que «funciona»?}. \textbf{Momento B (12 min) --- Traducir, no inventar.} En grupo, tomen un diagrama de flujo simple y \textbf{emparéjenlo con sus bloques}: óvalo → «por siempre»; rectángulo «leer» → variable = sensor; rombo → «si\ldots si no»; rectángulo «mostrar» → bloque mostrar. \textbf{Momento C (8 min) --- Mi plano, listo para traducir.} Cada quien saca su diagrama de flujo del módulo 2 y marca, al lado de cada figura, \textbf{qué bloque de MakeCode} le tocará. \textbf{En el cuaderno:} el emparejamiento figura → bloque + tu diagrama del módulo 2 anotado con sus bloques.
 \end{softbox}
 
-\checkbox Puedo explicar por qué «se ve bien» no es lo mismo que «funciona».\\
-\checkbox Emparejé cada figura del diagrama de flujo con su bloque de MakeCode.\\
-\checkbox Anoté, sobre mi diagrama del módulo 2, qué bloque le toca a cada figura.
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Puedo explicar por qué «se ve bien» no es lo mismo que «funciona».}
+\milccheckrow{Emparejé cada figura del diagrama de flujo con su bloque de MakeCode.}
+\milccheckrow{Anoté, sobre mi diagrama del módulo 2, qué bloque le toca a cada figura.}
 
 \begin{infoband}{milcVerde}
 
@@ -290,23 +351,16 @@ Fase 1 · Escucha
 
 \puente{Ya tienes tu plano. Ahora aprende a traducirlo: qué bloque es cada figura, cómo se mide un umbral de verdad y cómo se prueba en escenarios.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 \textbf{Actividad 2 · EXPLICA --- Traducir, calibrar y probar} (55 min · grupo + individual). Ya sabes que programar es traducir. Ahora entiende los \textbf{bloques} de MakeCode que necesitas, cómo \textbf{medir} un umbral de verdad y cómo se \textbf{prueba} un aparato en escenarios ---la prueba del río.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & \textbf{Pilar 1 --- Cada figura, un bloque.} MakeCode es visual: se arrastran bloques que encajan. Los que necesitas casi siempre: el bucle \textbf{«por siempre»} (tu óvalo: el aparato vigila sin parar); una \textbf{variable} para guardar la lectura (\emph{luz = nivel de luz}); la estructura \textbf{«si\ldots si no»} (tu rombo: la decisión con tu umbral); y los \textbf{actuadores} \emph{mostrar íconos}, \emph{mostrar número}, \emph{reproducir sonido} (tu rectángulo de acción). Para 3 estados se usa \textbf{«si\ldots si no si\ldots si no»}. \textbf{No memorices:} busca cada bloque por su nombre en las gavetas de colores de MakeCode. Si tu diagrama del módulo 2 estaba claro, esto es armar un rompecabezas cuyas piezas ya conoces.\\
-2. Reconocimiento de patrones & \textbf{Pilar 2 --- Calibrar de verdad: del método al número.} En el módulo 2 escribiste \emph{cómo} calibrarías; hoy lo \textbf{haces}. Con el micro:bit (o el simulador): lee el sensor en la condición \textbf{«baja»} (tapado, frío, quieto) y \textbf{anota el número}; léelo en la condición \textbf{«alta»} (con luz, caliente, agitado) y anota; \textbf{pon el umbral entre los dos}, más cerca del que quieras distinguir. \emph{``Tapado me dio 5, con luz 180; pongo el umbral en 40''}. Ese número ya no es un invento: es una medida. \textbf{Un umbral bien calibrado es la diferencia} entre un aparato que acierta y uno que se dispara por cualquier cosa.\\
-3. Abstracción & \textbf{Pilar 3 --- Probar es llevar el aparato al río.} Un programa que corre no es un aparato que sirve ---eso solo lo dice la \textbf{prueba}. Se definen \textbf{5 escenarios} concretos con su resultado \textbf{esperado}, se corre el aparato en cada uno y se anota el \textbf{real}. Para un detector de luz: (1) tapado → espero «oscuro»; (2) bajo el bombillo → «con luz»; (3) en penumbra → «intermedio»; (4) tapando de a poco → que cambie en el umbral; (5) moviéndolo cerca de una pantalla → ver si se confunde. \textbf{La prueba no busca aplausos: busca fallas.} El escenario que \emph{rompe} tu aparato es el más valioso, porque te dice qué arreglar ---como la primera navegada le dice al emberá qué lado rebajar.\\
-4. Algoritmo conceptual & \textbf{Pilar 4 --- Ajustar, comentar, mostrar.} Cuando un escenario falla ---y alguno fallará--- no es un fracaso: es el oficio. \textbf{Ajusta} (casi siempre un umbral o una regla), anota \textbf{qué cambiaste y por qué}, y \textbf{vuelve a probar}. Ese ciclo probar → ajustar → probar es lo que vuelve confiable un aparato. Dos remates: \textbf{comenta tu código} ---una nota corta en los bloques clave, para que otro (o tú en un mes) entienda la lógica---, y graba un \textbf{video corto} mostrándolo funcionar en un par de escenarios. \emph{El emberá no explica su canoa con palabras: la pone a flotar. Tu video es tu canoa flotando.}\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{\textbf{Pilar 1 --- Cada figura, un bloque.} MakeCode es visual: se arrastran bloques que encajan. Los que necesitas casi siempre: el bucle \textbf{«por siempre»} (tu óvalo: el aparato vigila sin parar); una \textbf{variable} para guardar la lectura (\emph{luz = nivel de luz}); la estructura \textbf{«si\ldots si no»} (tu rombo: la decisión con tu umbral); y los \textbf{actuadores} \emph{mostrar íconos}, \emph{mostrar número}, \emph{reproducir sonido} (tu rectángulo de acción). Para 3 estados se usa \textbf{«si\ldots si no si\ldots si no»}. \textbf{No memorices:} busca cada bloque por su nombre en las gavetas de colores de MakeCode. Si tu diagrama del módulo 2 estaba claro, esto es armar un rompecabezas cuyas piezas ya conoces.}
+\milcpaso{2}{milcTurquesa}{\textbf{Pilar 2 --- Calibrar de verdad: del método al número.} En el módulo 2 escribiste \emph{cómo} calibrarías; hoy lo \textbf{haces}. Con el micro:bit (o el simulador): lee el sensor en la condición \textbf{«baja»} (tapado, frío, quieto) y \textbf{anota el número}; léelo en la condición \textbf{«alta»} (con luz, caliente, agitado) y anota; \textbf{pon el umbral entre los dos}, más cerca del que quieras distinguir. \emph{``Tapado me dio 5, con luz 180; pongo el umbral en 40''}. Ese número ya no es un invento: es una medida. \textbf{Un umbral bien calibrado es la diferencia} entre un aparato que acierta y uno que se dispara por cualquier cosa.}
+\milcpaso{3}{milcTurquesa}{\textbf{Pilar 3 --- Probar es llevar el aparato al río.} Un programa que corre no es un aparato que sirve ---eso solo lo dice la \textbf{prueba}. Se definen \textbf{5 escenarios} concretos con su resultado \textbf{esperado}, se corre el aparato en cada uno y se anota el \textbf{real}. Para un detector de luz: (1) tapado → espero «oscuro»; (2) bajo el bombillo → «con luz»; (3) en penumbra → «intermedio»; (4) tapando de a poco → que cambie en el umbral; (5) moviéndolo cerca de una pantalla → ver si se confunde. \textbf{La prueba no busca aplausos: busca fallas.} El escenario que \emph{rompe} tu aparato es el más valioso, porque te dice qué arreglar ---como la primera navegada le dice al emberá qué lado rebajar.}
+\milcpaso{4}{milcTurquesa}{\textbf{Pilar 4 --- Ajustar, comentar, mostrar.} Cuando un escenario falla ---y alguno fallará--- no es un fracaso: es el oficio. \textbf{Ajusta} (casi siempre un umbral o una regla), anota \textbf{qué cambiaste y por qué}, y \textbf{vuelve a probar}. Ese ciclo probar → ajustar → probar es lo que vuelve confiable un aparato. Dos remates: \textbf{comenta tu código} ---una nota corta en los bloques clave, para que otro (o tú en un mes) entienda la lógica---, y graba un \textbf{video corto} mostrándolo funcionar en un par de escenarios. \emph{El emberá no explica su canoa con palabras: la pone a flotar. Tu video es tu canoa flotando.}}
 
 \begin{drawbox}{milcTurquesa}{Bloques + calibración + prueba + ajuste}
 \textbf{Bloques:} «por siempre» (óvalo) · variable = sensor (leer) · «si\ldots si no» con umbral (rombo) · mostrar/sonar (acción). \\[1mm]
@@ -327,23 +381,18 @@ Fase 2 · Sistematización con pensamiento computacional
 
 \puente{Ya sabes traducir. Es hora de construir tu aparato, calibrarlo con medidas reales y \textbf{llevarlo al río}: los 5 escenarios de prueba.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · CREA + EVALÚA --- Construye, calibra y prueba tu prototipo} (85 min · individual o parejas). Hora de fundir el oro. Vas a armar tu aparato en MakeCode traduciendo tu plano, calibrar sus umbrales con medidas reales, probarlo en 5 escenarios y ajustar lo que falle ---y grabar tu canoa flotando.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & \textbf{Paso 1 --- Traduce el plano a bloques (25 min).} Abre \emph{makecode.microbit.org} con tu diagrama de flujo del módulo 2 al lado. Arma, figura por figura: el bucle \textbf{«por siempre»}, la \textbf{variable} con la lectura del sensor, la estructura \textbf{«si\ldots si no»} con tu umbral, y los \textbf{actuadores} (mostrar ícono/número, sonido). Prueba en el \textbf{simulador} moviendo el sensor en pantalla mientras armas. \textbf{No inventes lógica nueva:} si algo no encaja, el problema suele estar en el plano ---vuelve a él, no improvises.\\
-Patrones & \textbf{Paso 2 --- Calibra con medidas reales (10 min).} Con el micro:bit (o el simulador), \textbf{mide}: la condición baja (tapado/frío/quieto) → anota; la alta (luz/calor/movimiento) → anota; \textbf{fija el umbral} entre las dos y actualízalo en tu bloque «si». Escribe la justificación: \emph{``baja = \_\_, alta = \_\_, umbral = \_\_''}. Ahora tu decisión se apoya en números, no en corazonadas.\\
-Abstracción & \textbf{Paso 3 --- Comenta tu código (5 min).} En los bloques clave, deja una \textbf{nota corta} (MakeCode permite comentarios): \emph{``aquí decido si está oscuro''}, \emph{``umbral calibrado el \_\_''}. Un código comentado es un código que otro puede seguir ---y que tú entenderás dentro de un mes.\\
-Algoritmo de armado & \textbf{Paso 4 --- Llévalo al río: 5 escenarios (25 min).} Saca tu tabla de 5 escenarios (la escribiste en la Actividad 2). Corre el aparato en cada uno y anota el resultado \textbf{real} junto al \textbf{esperado}. \textbf{¿Coincidieron los 5?} Si uno falla ---y busca que falle---, no lo tapes: \textbf{ajusta} (casi siempre el umbral o una regla), anota \textbf{qué cambiaste}, y \textbf{repite el escenario}. Ese ajuste documentado es la joya del módulo: prueba que tu aparato mejoró con evidencia, no con suerte.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{\textbf{Paso 1 --- Traduce el plano a bloques (25 min).} Abre \emph{makecode.microbit.org} con tu diagrama de flujo del módulo 2 al lado. Arma, figura por figura: el bucle \textbf{«por siempre»}, la \textbf{variable} con la lectura del sensor, la estructura \textbf{«si\ldots si no»} con tu umbral, y los \textbf{actuadores} (mostrar ícono/número, sonido). Prueba en el \textbf{simulador} moviendo el sensor en pantalla mientras armas. \textbf{No inventes lógica nueva:} si algo no encaja, el problema suele estar en el plano ---vuelve a él, no improvises.}
+\milcpaso{2}{milcMagenta}{\textbf{Paso 2 --- Calibra con medidas reales (10 min).} Con el micro:bit (o el simulador), \textbf{mide}: la condición baja (tapado/frío/quieto) → anota; la alta (luz/calor/movimiento) → anota; \textbf{fija el umbral} entre las dos y actualízalo en tu bloque «si». Escribe la justificación: \emph{``baja = \_\_, alta = \_\_, umbral = \_\_''}. Ahora tu decisión se apoya en números, no en corazonadas.}
+\milcpaso{3}{milcMagenta}{\textbf{Paso 3 --- Comenta tu código (5 min).} En los bloques clave, deja una \textbf{nota corta} (MakeCode permite comentarios): \emph{``aquí decido si está oscuro''}, \emph{``umbral calibrado el \_\_''}. Un código comentado es un código que otro puede seguir ---y que tú entenderás dentro de un mes.}
+\milcpaso{4}{milcMagenta}{\textbf{Paso 4 --- Llévalo al río: 5 escenarios (25 min).} Saca tu tabla de 5 escenarios (la escribiste en la Actividad 2). Corre el aparato en cada uno y anota el resultado \textbf{real} junto al \textbf{esperado}. \textbf{¿Coincidieron los 5?} Si uno falla ---y busca que falle---, no lo tapes: \textbf{ajusta} (casi siempre el umbral o una regla), anota \textbf{qué cambiaste}, y \textbf{repite el escenario}. Ese ajuste documentado es la joya del módulo: prueba que tu aparato mejoró con evidencia, no con suerte.}
+\milcpaso{5}{milcMagenta}{\textbf{Paso 5 --- Graba tu canoa flotando (10 min).} Con un celular, graba un \textbf{video corto} (30--60 s) mostrando tu aparato \textbf{funcionar} en al menos 2 escenarios: qué percibe, cómo reacciona. No hace falta editarlo; hace falta que se \textbf{vea funcionar}. El emberá no describe su canoa: la pone a flotar. Tu video es esa prueba.}
+\milcpaso{6}{milcMagenta}{\textbf{Paso 6 --- Cierra el prototipo (10 min).} Reúne todo: el programa (comentado), la tabla de calibración, la tabla de 5 escenarios con su ajuste, y el video. \emph{Esto es un prototipo probado, no un dibujo.} En el módulo 4 vas a \textbf{evaluarlo a fondo} ---sus fallas, sus límites, su mejora--- y a decidir a quién sirve y con qué cuidado. Hoy hiciste lo que el emberá: no dijiste que tu canoa sirve; la \textbf{probaste} en el agua.}
 
 \begin{drawbox}{milcMagenta}{Antes de dar por bueno tu prototipo}
 \checkbox Traduje mi diagrama de flujo del módulo 2 a bloques (no inventé lógica nueva). \\[1mm]
@@ -369,9 +418,7 @@ Algoritmo de armado & \textbf{Paso 4 --- Llévalo al río: 5 escenarios (25 min)
 
 \puente{El producto no es «un programa que corre»: es un \textbf{prototipo probado} ---calibrado, comentado, superando 5 escenarios--- con su video. Eso es un aparato que sirve.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Prototipo micro:bit funcional, calibrado, comentado y probado en 5 escenarios (con video)}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) El programa traduce el diagrama de flujo del módulo 2 (misma lógica, sin huecos). (2) Los umbrales están calibrados con medidas reales y justificados. (3) El código está comentado en sus bloques clave. (4) Los 5 escenarios están documentados (esperado/real) con al menos un ajuste. (5) Hay un video corto que muestra el aparato funcionando.
@@ -379,9 +426,7 @@ Producto de la sesión
 
 \puente{Antes de cerrar, sé honesto: ¿en qué escenario falló y qué ajustaste? Un aparato que nunca falló en la prueba probablemente no se probó bien.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -407,12 +452,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Cerramos con 3 voces que te ayudan a entender por qué construir y probar ---no solo saber--- es lo que convierte una idea en un aparato en el que se puede confiar.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{``El otro se revela realmente como otro\ldots como el pobre, el oprimido; el que, a la vera del camino, fuera del sistema, muestra su rostro sufriente y sin embargo desafiante: «¡Tengo hambre!, ¡tengo derecho a comer!»''}
+\textit{El otro se revela realmente como otro\ldots como el pobre, el oprimido; el que, a la vera del camino, fuera del sistema, muestra su rostro sufriente y sin embargo desafiante: «¡Tengo hambre!, ¡tengo derecho a comer!»}
 
 En el módulo 1 escuchaste el reclamo de una necesidad. Hoy \textbf{la respondes con las manos}: construir el aparato que sirve es praxis ---transformar la realidad, no solo pensarla. Dussel diría que la técnica se justifica cuando \emph{obra} a favor de una vida concreta: la abuela que oirá el timbre, el corral que no quedará abierto. \textbf{Un prototipo que funciona y sirve es una idea que dejó de ser palabra y se volvió acto.}
 
@@ -422,7 +465,7 @@ En el módulo 1 escuchaste el reclamo de una necesidad. Hoy \textbf{la respondes
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Séneca · Cartas a Lucilio, 20 (c. 64 d.C.) · cuidado interior}
-\textit{``La filosofía enseña a obrar, no a hablar; quiere que cada uno viva a la manera que prescribe, que estén en armonía nuestras palabras con nuestras acciones.''}
+\textit{La filosofía enseña a obrar, no a hablar; quiere que cada uno viva a la manera que prescribe, que estén en armonía nuestras palabras con nuestras acciones.}
 
 Séneca desconfía del que solo habla. Tu diagrama del módulo 2 era una promesa; hoy la \textbf{cumples con actos}: armar los bloques, medir los umbrales, correr las pruebas. \textbf{Un aparato que solo existe en el plano no sirve a nadie; uno construido y probado, sí.} Y cuando un escenario falla, la coherencia estoica no es esconderlo: es ajustar, para que tus actos (el aparato) respalden tus palabras (lo que dijiste que haría).
 
@@ -432,7 +475,7 @@ Séneca desconfía del que solo habla. Tu diagrama del módulo 2 era una promesa
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{``Los pequeños patrones solo pueden ser significativos si se agregan correctamente, se comparan y se procesan a tiempo.''}
+\textit{Los pequeños patrones solo pueden ser significativos si se agregan correctamente, se comparan y se procesan a tiempo.}
 
 Floridi dice que un dato suelto no significa nada: hay que agregarlo y compararlo. Un aparato que funcionó \textbf{una vez} no está probado ---pudo ser suerte. Solo al correr \textbf{varios escenarios} y \textbf{comparar} esperado con real aparece la verdad sobre tu prototipo: dónde acierta y dónde falla. \textbf{La confianza no nace de un funcionamiento afortunado, sino del patrón que forman las cinco pruebas juntas.} Probar es convertir «me funcionó» en «funciona».
 
@@ -441,21 +484,24 @@ Floridi dice que un dato suelto no significa nada: hay que agregarlo y compararl
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

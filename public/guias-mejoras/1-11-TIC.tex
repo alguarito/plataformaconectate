@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 11};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 11};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Mi marca digital ---\\del oficio heredado\\a la huella propia}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 1-11-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 1 · Presencia y marca digital}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 1 · Presencia y marca digital}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Mi marca digital ---\\del oficio heredado\\a la huella propia}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 1-11-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} Manifiesto de marca personal en una página de cuaderno};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Manifiesto de marca personal en una página de cuaderno
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Mi marca digital --- del oficio heredado a la huella propia}
@@ -258,30 +322,27 @@ Producto final & Manifiesto de marca personal en una página de cuaderno\\
 
 \puente{Antes de empezar, mira el viaje completo. Cinco estaciones, una promesa: al final de la guía habrás escrito --- de tu propia mano --- el manifiesto de marca personal que va a ser tu ancla durante todo el periodo.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Una marca no se construye al aire: se levanta sobre lo que ya existe. Antes de proyectar quién quieres ser, vamos a mirar la huella que ya dejaste en internet. Es el espejo más duro y el más útil que tienes hoy.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · ANALIZA --- Audita tu huella digital actual} (20 min · individual). En tu celular, abre Google en una pestaña de incógnito y busca tu nombre completo entre comillas. Revisa los primeros 10 resultados de Google y los primeros 5 de Google Imágenes. Luego revisa las últimas 20 publicaciones de tus 3 redes principales (Instagram, TikTok, Facebook o las que uses) con ojo de futuro empleador.
 \end{softbox}
 
-\checkbox Busqué mi nombre completo en Google incógnito y revisé los primeros 10 resultados.\\
-\checkbox Revisé las últimas 20 publicaciones de mis 3 redes principales con ojo de futuro empleador.\\
-\checkbox Clasifiqué cada elemento en: suma, neutro o resta a mi marca.
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Busqué mi nombre completo en Google incógnito y revisé los primeros 10 resultados.}
+\milccheckrow{Revisé las últimas 20 publicaciones de mis 3 redes principales con ojo de futuro empleador.}
+\milccheckrow{Clasifiqué cada elemento en: suma, neutro o resta a mi marca.}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Ya viste lo que la red dice de ti hoy. Ahora vamos a entender qué hace fuerte a una marca, para que la tuya tenga \textbf{criterio}, no \textbf{instinto}. Cuatro pilares del pensamiento computacional aplicados a una sola pregunta: ¿qué prometo, a quién, y por qué?}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Una marca personal se compone de cuatro elementos. Vamos a descomponerlos con los pilares del pensamiento computacional para construir tu \textbf{propuesta de valor} con criterio --- no por instinto ni por copia.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & \textbf{Descomposición.} Separamos la marca en sus 4 piezas para no diluirla: \textbf{identidad} (quién soy hoy, no quién quisiera ser), \textbf{audiencia} (a quién hablo, lo más concreto posible: ``estudiantes de mi universidad que buscan prácticas'', no ``personas''), \textbf{promesa} (qué resuelvo, en términos del beneficio que recibe el otro, no del esfuerzo que invierto yo) y \textbf{evidencia} (cómo se prueba, con ejemplos reales que ya existen, no con futuros condicionales).\\
-2. Reconocimiento de patrones & \textbf{Reconocimiento de patrones.} Toda marca fuerte sigue el patrón ``Ayudo a [X] a [resolver/lograr Y] gracias a [Z]''. Una marca de panadería del barrio: ``Ayudo a familias de Cartago a celebrar lo importante con pan recién hecho gracias a la receta de mi abuela''. Cambia cualquiera de las tres variables y la marca pierde nitidez: si dices ``ayudo a personas'' pierdes audiencia, si dices ``con calidad'' pierdes el qué.\\
-3. Abstracción & \textbf{Abstracción.} Lo esencial de tu marca cabe en \emph{una frase} --- si necesitas tres párrafos para explicar quién eres, todavía no la has abstraído. Esa frase es tu \emph{elevator pitch}: la que dirías en un ascensor, en una cita rápida, en la primera línea de tu LinkedIn. Si la tienes clara, todo lo demás (sitio, redes, perfil) se vuelve consecuencia natural. Si no, cualquier decisión visual o textual se sentirá improvisada.\\
-4. Algoritmo conceptual & \textbf{Algoritmo.} Pasos para construirla: (1) lista 3 audiencias posibles --- lo más concretas que puedas (``estudiantes de comunicación que quieren agencia'', no ``jóvenes''); (2) lista 3 resultados que sabes producir, verificables con evidencia ya existente en tu vida; (3) combínalos en 3 frases con el patrón ``Ayudo a [X] a [Y] gracias a [Z]''; (4) léelas en voz alta --- la que no te avergüenza ni te infla es la auténtica. Esa es tu propuesta de valor.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{\textbf{Descomposición.} Separamos la marca en sus 4 piezas para no diluirla: \textbf{identidad} (quién soy hoy, no quién quisiera ser), \textbf{audiencia} (a quién hablo, lo más concreto posible: ``estudiantes de mi universidad que buscan prácticas'', no ``personas''), \textbf{promesa} (qué resuelvo, en términos del beneficio que recibe el otro, no del esfuerzo que invierto yo) y \textbf{evidencia} (cómo se prueba, con ejemplos reales que ya existen, no con futuros condicionales).}
+\milcpaso{2}{milcTurquesa}{\textbf{Reconocimiento de patrones.} Toda marca fuerte sigue el patrón ``Ayudo a [X] a [resolver/lograr Y] gracias a [Z]''. Una marca de panadería del barrio: ``Ayudo a familias de Cartago a celebrar lo importante con pan recién hecho gracias a la receta de mi abuela''. Cambia cualquiera de las tres variables y la marca pierde nitidez: si dices ``ayudo a personas'' pierdes audiencia, si dices ``con calidad'' pierdes el qué.}
+\milcpaso{3}{milcTurquesa}{\textbf{Abstracción.} Lo esencial de tu marca cabe en \emph{una frase} --- si necesitas tres párrafos para explicar quién eres, todavía no la has abstraído. Esa frase es tu \emph{elevator pitch}: la que dirías en un ascensor, en una cita rápida, en la primera línea de tu LinkedIn. Si la tienes clara, todo lo demás (sitio, redes, perfil) se vuelve consecuencia natural. Si no, cualquier decisión visual o textual se sentirá improvisada.}
+\milcpaso{4}{milcTurquesa}{\textbf{Algoritmo.} Pasos para construirla: (1) lista 3 audiencias posibles --- lo más concretas que puedas (``estudiantes de comunicación que quieren agencia'', no ``jóvenes''); (2) lista 3 resultados que sabes producir, verificables con evidencia ya existente en tu vida; (3) combínalos en 3 frases con el patrón ``Ayudo a [X] a [Y] gracias a [Z]''; (4) léelas en voz alta --- la que no te avergüenza ni te infla es la auténtica. Esa es tu propuesta de valor.}
 
 \begin{drawbox}{milcTurquesa}{Anatomía de una propuesta de valor sólida}
 \textbf{Ayudo a} [audiencia concreta, no ``personas''] \textbf{a} [resolver/lograr resultado específico, no ``ayudar''] \textbf{gracias a} [tu fortaleza distintiva, no ``ser creativo'']. \\[2mm] \textbf{Ejemplo débil:} ``Soy creativo y me gusta el diseño.'' \\[1mm] \textbf{Ejemplo fuerte:} ``Ayudo a pequeños negocios de Cartago a contar su historia en video corto.''
@@ -325,23 +379,16 @@ Una marca personal se compone de cuatro elementos. Vamos a descomponerlos con lo
 
 \puente{Ya tienes tu propuesta de valor en una frase. Bien. Ahora la vas a convertir en un manifiesto completo --- una página de tu cuaderno que será tu ancla durante todo el periodo 1. Cada guía siguiente lo desarrolla; hoy lo dejas escrito.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · CREA --- Tu Manifiesto de Marca Personal} (30 min · individual). En una página del cuaderno vas a escribir 5 bloques cortos con títulos fijos. Este manifiesto será tu ancla durante todo el periodo 1 --- cada guía siguiente lo desarrolla.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & \textbf{Descomposición.} Tu manifiesto se descompone en 5 bloques fijos, cada uno con función pedagógica distinta: \textbf{Quién soy} (te ancla en lo real, sin currículum), \textbf{A quién sirvo} (compromete a una audiencia concreta), \textbf{Qué prometo} (declara el valor entregado), \textbf{Qué NO soy} (delimita los rechazos --- crucial para tu identidad), \textbf{Cómo me reconocerán} (vuelve la promesa observable). Los 5 bloques actúan juntos; si falta cualquiera, la marca queda incompleta.\\
-Patrones & \textbf{Patrones.} Sigue el patrón clásico de manifiestos fuertes: \textbf{lenguaje directo} (sin adjetivos vacíos como ``apasionado''), \textbf{primera persona} (yo, no ``el alumno''), \textbf{frases cortas} (no más de una idea por oración), \textbf{evidencia concreta} (un proyecto real, una pieza terminada). El opuesto se reconoce fácil: lleno de promesas vagas y sin un solo ejemplo verificable.\\
-Abstracción & \textbf{Abstracción.} Cada bloque expresa una sola idea --- si un bloque tuyo dice tres cosas distintas, todavía no abstrajiste lo esencial. Es el momento más difícil del manifiesto: el primer borrador siempre dice de más. Releerlo al día siguiente con un lápiz para tachar es lo que separa una marca confusa de una nítida. El test final: léelo en voz alta a alguien que te conoce y mira si te reconoce.\\
-Algoritmo de armado & \textbf{Algoritmo.} Pasos para no perderte: (1) escribe los 5 títulos en blanco en la página, dejando espacio entre cada uno; (2) llena ``Quién soy'' primero, en 2-3 renglones --- sin currículum, sin inflar; (3) cierra con ``Qué NO soy'' usando 3 cosas concretas (``no soy el que diseña carteles en una hora'', no ``no soy malo''); (4) ``Cómo me reconocerán'' con 3 evidencias observables (manera de escribir, temas que repites, una marca visual que ya tienes).\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{\textbf{Descomposición.} Tu manifiesto se descompone en 5 bloques fijos, cada uno con función pedagógica distinta: \textbf{Quién soy} (te ancla en lo real, sin currículum), \textbf{A quién sirvo} (compromete a una audiencia concreta), \textbf{Qué prometo} (declara el valor entregado), \textbf{Qué NO soy} (delimita los rechazos --- crucial para tu identidad), \textbf{Cómo me reconocerán} (vuelve la promesa observable). Los 5 bloques actúan juntos; si falta cualquiera, la marca queda incompleta.}
+\milcpaso{2}{milcMagenta}{\textbf{Patrones.} Sigue el patrón clásico de manifiestos fuertes: \textbf{lenguaje directo} (sin adjetivos vacíos como ``apasionado''), \textbf{primera persona} (yo, no ``el alumno''), \textbf{frases cortas} (no más de una idea por oración), \textbf{evidencia concreta} (un proyecto real, una pieza terminada). El opuesto se reconoce fácil: lleno de promesas vagas y sin un solo ejemplo verificable.}
+\milcpaso{3}{milcMagenta}{\textbf{Abstracción.} Cada bloque expresa una sola idea --- si un bloque tuyo dice tres cosas distintas, todavía no abstrajiste lo esencial. Es el momento más difícil del manifiesto: el primer borrador siempre dice de más. Releerlo al día siguiente con un lápiz para tachar es lo que separa una marca confusa de una nítida. El test final: léelo en voz alta a alguien que te conoce y mira si te reconoce.}
+\milcpaso{4}{milcMagenta}{\textbf{Algoritmo.} Pasos para no perderte: (1) escribe los 5 títulos en blanco en la página, dejando espacio entre cada uno; (2) llena ``Quién soy'' primero, en 2-3 renglones --- sin currículum, sin inflar; (3) cierra con ``Qué NO soy'' usando 3 cosas concretas (``no soy el que diseña carteles en una hora'', no ``no soy malo''); (4) ``Cómo me reconocerán'' con 3 evidencias observables (manera de escribir, temas que repites, una marca visual que ya tienes).}
 
 \begin{drawbox}{milcMagenta}{Checklist del manifiesto antes de cerrar el cuaderno}
 \checkbox Los 5 bloques están presentes y titulados. \\[1mm] \checkbox ``Qué NO soy'' tiene al menos 3 cosas concretas (no ``no soy malo''). \\[1mm] \checkbox ``Cómo me reconocerán'' da 3 evidencias observables (manera de escribir, temas que repites, una marca visual). \\[1mm] \checkbox Lo puedes leer en voz alta sin avergonzarte ni inflarte. \\[1mm] \checkbox Tu propuesta de valor (Actividad 2) se refleja de forma coherente.
@@ -359,9 +406,7 @@ Algoritmo de armado & \textbf{Algoritmo.} Pasos para no perderte: (1) escribe lo
 
 \puente{Lo que sigue es el resumen de \emph{qué} entregas hoy y \emph{cómo se sabe} si quedó bien hecho. Léelo antes de cerrar el cuaderno: son los criterios con los que el manifiesto se evalúa --- a ti mismo, primero.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Manifiesto de marca personal en una página de cuaderno}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) Los 5 bloques están presentes y titulados con el nombre exacto. (2) ``Qué NO soy'' tiene al menos 3 cosas concretas. (3) ``Cómo me reconocerán'' da 3 evidencias observables (no abstracciones). (4) El manifiesto suena a ti --- ni inflado ni copiado. (5) Tu propuesta de valor de la Actividad 2 se refleja con coherencia.
@@ -369,9 +414,7 @@ Producto de la sesión
 
 \puente{Antes de cerrar, mira tu trabajo desde cinco dimensiones humanas. Evaluar no es la nota: es lo que se queda en ti cuando esta guía pase. Personal, emocional, ciudadana, local, intergeneracional --- cinco preguntas pequeñas que cambian con el tiempo.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -397,12 +440,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Y para terminar, tres voces antiguas que te van a acompañar durante toda la secundaria. Dussel, un estoico, Floridi. No los memorices --- escúchalos. Cada uno te ofrece un lente distinto para mirar la marca personal que acabas de escribir.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{``Sin reconocimiento del Otro no hay justicia, sólo poder.''}
+\textit{Sin reconocimiento del Otro no hay justicia, sólo poder.}
 
 Una marca personal puede ser un acto de reconocimiento o un acto de poder. Si tu marca solo te promociona a ti, ejerce poder; si abre espacio a otros, encuentra justicia. En el Valle, las marcas familiares más respetadas eran las que sostuvieron una comunidad.
 
@@ -412,7 +453,7 @@ Una marca personal puede ser un acto de reconocimiento o un acto de poder. Si tu
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
-\textit{``Tu vida es lo que tus pensamientos hagan de ella.''}
+\textit{Tu vida es lo que tus pensamientos hagan de ella.}
 
 Lo que publicas, cómo respondes a un mensaje incómodo, cómo manejas un comentario hostil: todo \emph{eso} depende de ti. Los algoritmos, los juicios ajenos, el clima de las redes: \emph{eso no}. Distinguir las dos columnas es la ataraxia digital.
 
@@ -422,7 +463,7 @@ Lo que publicas, cómo respondes a un mensaje incómodo, cómo manejas un coment
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{``Somos inforgs en una infoesfera que cuidamos o degradamos con cada acto informacional.''}
+\textit{Somos inforgs en una infoesfera que cuidamos o degradamos con cada acto informacional.}
 
 Cada publicación tuya es un acto informacional: añade valor a la infoesfera o la ensucia. Tu marca personal, en términos de Floridi, es una responsabilidad sobre el bien común informacional. No es vanidad: es ética digital aplicada.
 
@@ -431,21 +472,24 @@ Cada publicación tuya es un acto informacional: añade valor a la infoesfera o 
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 10};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 10};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont 4 tipos de texto\\profesional ---\\cada oficio su tono}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 11-10-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 2 · Informes técnicos y comunicación profesional con IA}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 2 · Informes técnicos y comunicación profesional con IA}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont 4 tipos de texto\\profesional ---\\cada oficio su tono}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 11-10-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} Tabla comparativa de los 4 tipos de texto profesional con (a) propósito específico, (b) audiencia típica, (c) estructura mínima, (d) tono apropiado + 1 ejemplo real por cada tipo capturado de prensa, redes profesionales (LinkedIn), publicaciones institucionales o publicidad + análisis breve de 5 líneas explicando qué diferencia concretamente un informe técnico de uno comercial + reflexión sobre cuál de los 4 tipos vas a usar más en tu vida laboral próxima};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Tabla comparativa de los 4 tipos de texto profesional con (a) propósito específico, (b) audiencia típica, (c) estructura mínima, (d) tono apropiado + 1 ejemplo real por cada tipo capturado de prensa, redes profesionales (LinkedIn), publicaciones institucionales o publicidad + análisis breve de 5 líneas explicando qué diferencia concretamente un informe técnico de uno comercial + reflexión sobre cuál de los 4 tipos vas a usar más en tu vida laboral próxima
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: 4 tipos de texto profesional --- informe, comercial, técnico, estudio de mercado}
@@ -258,30 +322,27 @@ Producto final & Tabla comparativa de los 4 tipos de texto profesional con (a) p
 
 \puente{Antes de empezar, mira el viaje completo. Cerraste el proyecto del libro (P1). Hoy abre el periodo 2: \textbf{texto profesional con asistencia de IA}. Las próximas 9 sesiones (estructura del informe, Google Docs, Markdown, encuestas, análisis con IA, informe comercial, correo profesional, mini-proyecto, sustentación) construyen sobre la habilidad de distinguir los 4 tipos.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Antes de teorizar, vas a hacer una \emph{auditoría rápida}: busca 4 textos reales (en LinkedIn, prensa, sitios institucionales, publicidad). Para cada uno, intenta identificar qué tipo es. Esa observación intuitiva te enseña los 4 tonos en uso.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- Auditoría de 4 textos reales} (15 min · individual). Busca 4 textos reales en internet, redes profesionales (LinkedIn), prensa o publicidad. Idealmente uno de cada tipo: (1) un \textbf{informe técnico} (informe del DANE, informe de gestión escolar, reporte de Cámara de Comercio). (2) un \textbf{texto comercial} (propuesta comercial publicada, presentación de servicio, anuncio publicitario detallado). (3) un \textbf{estudio de mercado} (análisis sectorial, reporte de tendencias publicado). (4) un \textbf{informe técnico-comercial mixto} (caso de éxito empresarial, white paper). Para cada uno anota: ¿qué tipo crees que es?, ¿qué te indica el tono?.
 \end{softbox}
 
-\checkbox Encontré 4 textos reales (1 por tipo).\\
-\checkbox Identifiqué qué tipo es cada uno.\\
-\checkbox Reconocí qué tono distingue a cada tipo.
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Encontré 4 textos reales (1 por tipo).}
+\milccheckrow{Identifiqué qué tipo es cada uno.}
+\milccheckrow{Reconocí qué tono distingue a cada tipo.}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Ya tienes 4 ejemplos. Ahora vas a entender la \textbf{anatomía de los 4 tipos}: propósito, audiencia, estructura, tono. Y los 5 errores típicos de confundir tipos.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Tus 4 ejemplos te dan vocabulario. Ahora necesitas la \textbf{anatomía profesional} de los 4 tipos.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & Los \textbf{4 tipos de texto profesional} se descomponen así: (1) \textbf{Informe técnico}: \emph{propósito} informar para decisión técnica; \emph{audiencia} especialistas o supervisores; \emph{estructura} intro + metodología + resultados + conclusiones + recomendaciones; \emph{tono} neutro, datos verificables, sin opiniones personales. Ejemplos cotidianos: informe de gestión escolar, reporte de proyecto. (2) \textbf{Texto comercial}: \emph{propósito} persuadir para vender o contratar; \emph{audiencia} cliente potencial; \emph{estructura} problema + solución + beneficios + propuesta + llamada a la acción; \emph{tono} cálido pero profesional, orientado al cierre. (3) \textbf{Estudio de mercado}: \emph{propósito} dar contexto estratégico; \emph{audiencia} gerencia, emprendedores, inversionistas; \emph{estructura} contexto sectorial + metodología + análisis + conclusiones; \emph{tono} analítico, basado en datos. (4) \textbf{Texto técnico-comercial mixto}: \emph{propósito} explicar técnicamente con propósito comercial; \emph{audiencia} cliente sofisticado; \emph{estructura} problema técnico + solución detallada + caso de éxito + propuesta; \emph{tono} riguroso pero accesible.\\
-2. Reconocimiento de patrones & El patrón profesional clave: \textbf{el tono se elige por la audiencia, no por preferencia personal}. Si tu lector es un ingeniero, el tono técnico le inspira confianza. Si tu lector es un cliente novato, el tono técnico lo aleja. La phronesis del oficio consiste en \textbf{ajustar el registro a quien lee, no al que escribe}.\\
-3. Abstracción & La \textbf{diferencia clave entre informe técnico y comercial} con el mismo tema: ej. \emph{``nueva máquina de café''}. (a) Informe técnico: \emph{``La cafetera modelo X-200 procesa 50 tazas/hora con consumo 1.2 kWh, presión 9 bar, tanque 3L. Tiempo medio entre fallos según pruebas: 1200 horas''}. (b) Texto comercial: \emph{``Imagine empezar cada mañana con café de cafetería en su casa. La X-200 lo hace posible en 60 segundos. Diseño elegante, manejo simple, garantía 2 años. Hoy con 20 por ciento de descuento''}. Mismo producto, distinta audiencia, distinto tono, distinta estructura.\\
-4. Algoritmo conceptual & Algoritmo de identificación: (1) leer el primer párrafo. (2) preguntar: ¿quién es el lector ideal? (3) preguntar: ¿qué quiere lograr el texto? (4) según la combinación lector + propósito, identificar el tipo. Una vez identificado, ajusta tu lectura: en informe técnico busca datos; en texto comercial busca beneficios; en estudio busca tendencias; en mixto busca rigor con cierre.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{Los \textbf{4 tipos de texto profesional} se descomponen así: (1) \textbf{Informe técnico}: \emph{propósito} informar para decisión técnica; \emph{audiencia} especialistas o supervisores; \emph{estructura} intro + metodología + resultados + conclusiones + recomendaciones; \emph{tono} neutro, datos verificables, sin opiniones personales. Ejemplos cotidianos: informe de gestión escolar, reporte de proyecto. (2) \textbf{Texto comercial}: \emph{propósito} persuadir para vender o contratar; \emph{audiencia} cliente potencial; \emph{estructura} problema + solución + beneficios + propuesta + llamada a la acción; \emph{tono} cálido pero profesional, orientado al cierre. (3) \textbf{Estudio de mercado}: \emph{propósito} dar contexto estratégico; \emph{audiencia} gerencia, emprendedores, inversionistas; \emph{estructura} contexto sectorial + metodología + análisis + conclusiones; \emph{tono} analítico, basado en datos. (4) \textbf{Texto técnico-comercial mixto}: \emph{propósito} explicar técnicamente con propósito comercial; \emph{audiencia} cliente sofisticado; \emph{estructura} problema técnico + solución detallada + caso de éxito + propuesta; \emph{tono} riguroso pero accesible.}
+\milcpaso{2}{milcTurquesa}{El patrón profesional clave: \textbf{el tono se elige por la audiencia, no por preferencia personal}. Si tu lector es un ingeniero, el tono técnico le inspira confianza. Si tu lector es un cliente novato, el tono técnico lo aleja. La phronesis del oficio consiste en \textbf{ajustar el registro a quien lee, no al que escribe}.}
+\milcpaso{3}{milcTurquesa}{La \textbf{diferencia clave entre informe técnico y comercial} con el mismo tema: ej. \emph{``nueva máquina de café''}. (a) Informe técnico: \emph{``La cafetera modelo X-200 procesa 50 tazas/hora con consumo 1.2 kWh, presión 9 bar, tanque 3L. Tiempo medio entre fallos según pruebas: 1200 horas''}. (b) Texto comercial: \emph{``Imagine empezar cada mañana con café de cafetería en su casa. La X-200 lo hace posible en 60 segundos. Diseño elegante, manejo simple, garantía 2 años. Hoy con 20 por ciento de descuento''}. Mismo producto, distinta audiencia, distinto tono, distinta estructura.}
+\milcpaso{4}{milcTurquesa}{Algoritmo de identificación: (1) leer el primer párrafo. (2) preguntar: ¿quién es el lector ideal? (3) preguntar: ¿qué quiere lograr el texto? (4) según la combinación lector + propósito, identificar el tipo. Una vez identificado, ajusta tu lectura: en informe técnico busca datos; en texto comercial busca beneficios; en estudio busca tendencias; en mixto busca rigor con cierre.}
 
 \begin{drawbox}{milcTurquesa}{Anatomía de los 4 tipos}
 \textbf{Informe técnico:} neutro, datos, decisión técnica. \\[1mm] \textbf{Comercial:} cálido, persuasivo, cierre de venta. \\[1mm] \textbf{Estudio de mercado:} analítico, contexto estratégico. \\[1mm] \textbf{Técnico-comercial mixto:} riguroso + accesible.
@@ -325,23 +379,16 @@ Tus 4 ejemplos te dan vocabulario. Ahora necesitas la \textbf{anatomía profesio
 
 \puente{Tienes el método. Toca aplicarlo: construyes tabla comparativa, agregas 1 ejemplo real por tipo, escribes análisis de diferencia informe vs comercial, reflexionas sobre cuál usarás más.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · EXPLICA + EVALÚA --- Tabla + ejemplos + análisis + reflexión} (35 min · individual). Hora de aplicar. Construyes tabla comparativa, agregas 1 ejemplo real por cada tipo, escribes análisis de diferencia, reflexionas sobre cuál usarás más en tu vida laboral.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & Tu tabla comparativa tiene 4 filas (1 por tipo) × 5 columnas (Tipo, Propósito, Audiencia, Estructura, Tono). Llena cada celda con 1-2 frases concretas. Para cada tipo, agrega también un link o referencia al ejemplo real que encontraste en la Actividad 1.\\
-Patrones & El análisis de diferencia informe vs comercial se escribe en 5 líneas usando un mismo tema (puede ser un producto, un servicio, un evento). Muestra cómo cambia la palabra cuando cambia la audiencia. Ejemplo: \emph{``Una computadora portátil. En informe técnico: marca, modelo, especificaciones técnicas, consumo, garantía técnica. En texto comercial: \emph{lleva tu trabajo a cualquier parte}, batería todo el día, diseño elegante, precio promocional''}.\\
-Abstracción & La reflexión final responde: \emph{¿cuál de los 4 tipos voy a usar más en mi vida laboral próxima?}. Esto depende de tu vocación: si vas a estudiar ingeniería, probablemente informes técnicos. Si emprendimiento, textos comerciales. Si administración pública, informes y estudios. La reflexión te ayuda a priorizar qué texto profesional dominar mejor en las próximas sesiones.\\
-Algoritmo de armado & Algoritmo: (1) construir tabla 4 filas × 5 columnas. (2) agregar 1 ejemplo real por tipo. (3) escribir análisis de 5 líneas comparando informe vs comercial sobre mismo tema. (4) escribir reflexión sobre qué tipo usarás más. (5) verificar coherencia entre tabla y análisis.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{Tu tabla comparativa tiene 4 filas (1 por tipo) × 5 columnas (Tipo, Propósito, Audiencia, Estructura, Tono). Llena cada celda con 1-2 frases concretas. Para cada tipo, agrega también un link o referencia al ejemplo real que encontraste en la Actividad 1.}
+\milcpaso{2}{milcMagenta}{El análisis de diferencia informe vs comercial se escribe en 5 líneas usando un mismo tema (puede ser un producto, un servicio, un evento). Muestra cómo cambia la palabra cuando cambia la audiencia. Ejemplo: \emph{``Una computadora portátil. En informe técnico: marca, modelo, especificaciones técnicas, consumo, garantía técnica. En texto comercial: \emph{lleva tu trabajo a cualquier parte}, batería todo el día, diseño elegante, precio promocional''}.}
+\milcpaso{3}{milcMagenta}{La reflexión final responde: \emph{¿cuál de los 4 tipos voy a usar más en mi vida laboral próxima?}. Esto depende de tu vocación: si vas a estudiar ingeniería, probablemente informes técnicos. Si emprendimiento, textos comerciales. Si administración pública, informes y estudios. La reflexión te ayuda a priorizar qué texto profesional dominar mejor en las próximas sesiones.}
+\milcpaso{4}{milcMagenta}{Algoritmo: (1) construir tabla 4 filas × 5 columnas. (2) agregar 1 ejemplo real por tipo. (3) escribir análisis de 5 líneas comparando informe vs comercial sobre mismo tema. (4) escribir reflexión sobre qué tipo usarás más. (5) verificar coherencia entre tabla y análisis.}
 
 \begin{drawbox}{milcMagenta}{Checklist antes de entregar}
 \checkbox Tabla con 4 tipos y 5 columnas. \\[1mm] \checkbox 1 ejemplo real por cada tipo (link o captura). \\[1mm] \checkbox Análisis informe vs comercial con mismo tema. \\[1mm] \checkbox Reflexión sobre qué tipo usarás más. \\[1mm] \checkbox Tabla coherente con análisis. \\[1mm] \checkbox Distingo los 4 tipos al primer párrafo.
@@ -359,9 +406,7 @@ Algoritmo de armado & Algoritmo: (1) construir tabla 4 filas × 5 columnas. (2) 
 
 \puente{Lo que sigue resume \emph{qué} entregas hoy: tabla + 4 ejemplos + análisis + reflexión. El criterio principal: que puedas reconocer al instante qué tipo de texto te están pidiendo cuando alguien te diga \emph{``escríbeme un X''}.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Tabla 4 tipos + 4 ejemplos + análisis + reflexión personal}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) Tabla comparativa con 5 columnas por tipo. (2) 1 ejemplo real por cada tipo. (3) Análisis informe vs comercial con mismo tema. (4) Reflexión sobre uso futuro. (5) Coherencia tabla con análisis. (6) Distinción de tipos al primer párrafo.
@@ -369,9 +414,7 @@ Producto de la sesión
 
 \puente{Antes de cerrar, mira los 4 tipos desde las cinco dimensiones humanas. Distinguir los tonos es respeto por la audiencia de cada texto; usar uno solo para todo es perder oficio profesional.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -397,12 +440,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Y para terminar, tres voces sobre la palabra adecuada. Dussel sobre los textos que sirven a audiencias específicas, Séneca sobre la sobriedad del tono correcto, Floridi sobre la comunicación contextual como ética profesional.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{``El tono que respeta a la audiencia es liberador; el tono uniforme impuesto a toda audiencia es violencia comunicativa.''}
+\textit{El tono que respeta a la audiencia es liberador; el tono uniforme impuesto a toda audiencia es violencia comunicativa.}
 
 Cuando escribes con el mismo tono para todas las audiencias, estás imponiendo tu manera de hablar a quien debe leer. La filosofía de la liberación pide lo opuesto: \textbf{ajustar el registro a quien lee}. El cliente novato merece tono accesible; el especialista merece tono técnico. La phronesis comunicativa consiste en \textbf{servir a la audiencia, no imponer la propia voz}.
 
@@ -412,7 +453,7 @@ Cuando escribes con el mismo tono para todas las audiencias, estás imponiendo t
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Séneca · cuidado interior}
-\textit{``La sobriedad del tono correcto es virtud profesional; el adorno inadecuado a la audiencia es vicio del que escribe.''}
+\textit{La sobriedad del tono correcto es virtud profesional; el adorno inadecuado a la audiencia es vicio del que escribe.}
 
 Es tentador querer sonar elegante en todo texto. La sabiduría estoica recomienda lo opuesto: \emph{usa el tono justo para la audiencia, ni más ni menos}. Un informe técnico con prosa florida pierde credibilidad. Un texto comercial con frialdad técnica pierde clientes. La phronesis del oficio consiste en \textbf{aceptar la disciplina del registro apropiado}.
 
@@ -422,7 +463,7 @@ Es tentador querer sonar elegante en todo texto. La sabiduría estoica recomiend
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{``La comunicación contextual es la nueva ética profesional en la era de la información distribuida.''}
+\textit{La comunicación contextual es la nueva ética profesional en la era de la información distribuida.}
 
 En la era de la información, los textos circulan en contextos múltiples. La ética profesional pide que cada texto se ajuste al contexto de su lectura. Tu tabla comparativa de hoy te entrena en esa práctica que rige toda profesión que produzca documentos: \textbf{distinguir el tipo de texto según el contexto y la audiencia}.
 
@@ -431,21 +472,24 @@ En la era de la información, los textos circulan en contextos múltiples. La é
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

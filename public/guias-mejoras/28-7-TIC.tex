@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 7};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 7};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Ética de\\la IA ---\\sesgo,\\privacidad,\\derechos y\\deepfakes}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 28-7-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 3 · Inteligencia Artificial}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 3 · Inteligencia Artificial}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Ética de\\la IA ---\\sesgo,\\privacidad,\\derechos y\\deepfakes}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 28-7-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} En el cuaderno: \textbf{(a) 5 dilemas éticos analizados} (uno por cada tema: sesgo, privacidad, derechos de autor, deepfakes, autenticidad académica), con tu posición personal sobre cada uno y justificación; \textbf{(b) tu ``código personal de ética con IA''} con mínimo 5 reglas que prometes cumplir, firmado como compromiso; \textbf{(c) reflexión}: ``¿Qué tipo de ciudadano digital quiero ser cuando sea adulto?''.};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+En el cuaderno: \textbf{(a) 5 dilemas éticos analizados} (uno por cada tema: sesgo, privacidad, derechos de autor, deepfakes, autenticidad académica), con tu posición personal sobre cada uno y justificación; \textbf{(b) tu ``código personal de ética con IA''} con mínimo 5 reglas que prometes cumplir, firmado como compromiso; \textbf{(c) reflexión}: ``¿Qué tipo de ciudadano digital quiero ser cuando sea adulto?''.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Ética de la IA --- sesgo, privacidad, derechos y deepfakes}
@@ -258,30 +322,27 @@ Producto final & En el cuaderno: \textbf{(a) 5 dilemas éticos analizados} (uno 
 
 \puente{Hoy haces 4 cosas: identificas los 5 temas, analizas 5 dilemas reales, formulas tu posición, escribes tu código personal.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Empezamos con 5 dilemas que ya existen, no son ciencia ficción.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · EVALÚA --- 5 dilemas éticos reales} (12 min · individual). Lee estos 5 dilemas y en el cuaderno escribe tu posición + justificación (3-4 líneas por cada uno). \emph{Dilema 1 (sesgo):} \emph{una IA aprueba créditos bancarios y rechaza más a personas de barrios populares de Cartago. ¿Es justo? ¿Qué debería pasar?}. \emph{Dilema 2 (privacidad):} \emph{le cuentas a ChatGPT que tienes una pelea con tu papá y le pides consejo. ¿Está bien? ¿Quién más podría ver esa conversación?}. \emph{Dilema 3 (derechos de autor):} \emph{usas DALL-E para generar una imagen y la imprimes para venderla. ¿Es tuya la imagen? ¿De quién? ¿Es ético venderla?}. \emph{Dilema 4 (deepfake):} \emph{ves un video viral del presidente diciendo algo escandaloso. Resulta ser deepfake. ¿Qué consecuencias tiene esto para la democracia? ¿Cómo me protejo?}. \emph{Dilema 5 (autenticidad académica):} \emph{tu compañero usa ChatGPT para escribir su ensayo completo y lo entrega como suyo. ¿Es trampa? ¿O es como usar Wikipedia?}.
 \end{softbox}
 
-\checkbox Leí los 5 dilemas con calma.\\
-\checkbox Pensé en mi posición personal.\\
-\checkbox Escribí 3-4 líneas por cada uno con justificación.
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Leí los 5 dilemas con calma.}
+\milccheckrow{Pensé en mi posición personal.}
+\milccheckrow{Escribí 3-4 líneas por cada uno con justificación.}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Después aprendes los 5 temas a fondo con casos reales.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Tu posición personal es válida. Ahora profundiza en cada uno de los 5 temas con casos reales documentados.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & \textbf{Tema 1 --- SESGO ALGORÍTMICO.} Ya lo viste en S4. Resumen: las IAs reproducen los sesgos de sus datos. Casos reales: Amazon descartando CVs de mujeres, Google clasificando personas afro como animales, COMPAS sesgada en el sistema de justicia EEUU. \textbf{Tu responsabilidad ética como usuario:} (a) saber que existe; (b) verificar; (c) no aceptar pasivamente decisiones que parecen injustas; (d) exigir que los servicios que usas sean transparentes.\\
-2. Reconocimiento de patrones & \textbf{Tema 2 --- PRIVACIDAD.} Cuando le escribes algo a ChatGPT, esa conversación \emph{queda guardada} en servidores de OpenAI. Algunas empresas (no todas) usan tus conversaciones para entrenar futuras versiones. Otras venden datos a terceros. \emph{No compartas info sensible:} cédula, contraseñas, dirección exacta, info médica, asuntos íntimos. \textbf{Una vez escrito, no sabes dónde queda}. Caso real: empleados de Samsung pegaron código secreto en ChatGPT (2023), el código quedó en los servidores de OpenAI. Samsung prohibió ChatGPT a sus empleados.\\
-3. Abstracción & \textbf{Tema 3 --- DERECHOS DE AUTOR.} La IA aprendió de millones de textos e imágenes (muchas con derechos de autor). Cuando ChatGPT escribe un cuento, ¿es plagio? ¿Es creación nueva? \emph{Los tribunales del mundo están debatiendo esto}. \textbf{Tu posición práctica:} (a) atribuye cuando uses ideas de IA en tus trabajos; (b) no vendas creaciones de IA como tuyas sin atribución; (c) reconoce que la cosa creativa ``híbrida'' (parcialmente tuya, parcialmente IA) es categoría nueva.\\
-4. Algoritmo conceptual & \textbf{Tema 4 --- DEEPFAKES.} Videos, imágenes y audios falsos generados por IA. Tan convincentes que pueden engañar al ojo humano. \emph{Usos malos:} pornografía no consentida, suplantación de identidad, fraude, manipulación política. \emph{Usos legítimos:} efectos en cine, doblaje multilingüe, accesibilidad. \textbf{Cómo protegerse:} verificar fuente, buscar artefactos en bordes/manos, contrastar con fuentes confiables, NO compartir sin verificar. \textbf{Tema 5 --- AUTENTICIDAD ACADÉMICA.} ¿Es trampa usar IA en tareas? \emph{Depende del uso:} (a) usar IA para entender = LEGÍTIMO; (b) usar IA para estructurar = LEGÍTIMO con atribución; (c) usar IA para escribir el ensayo completo y entregarlo como tuyo = TRAMPA. La diferencia es \emph{si tú aprendiste o solo entregaste un producto}. Los colegios están definiendo políticas; los profesores también. \emph{La regla universal: si no aprendiste, es trampa}.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{\textbf{Tema 1 --- SESGO ALGORÍTMICO.} Ya lo viste en S4. Resumen: las IAs reproducen los sesgos de sus datos. Casos reales: Amazon descartando CVs de mujeres, Google clasificando personas afro como animales, COMPAS sesgada en el sistema de justicia EEUU. \textbf{Tu responsabilidad ética como usuario:} (a) saber que existe; (b) verificar; (c) no aceptar pasivamente decisiones que parecen injustas; (d) exigir que los servicios que usas sean transparentes.}
+\milcpaso{2}{milcTurquesa}{\textbf{Tema 2 --- PRIVACIDAD.} Cuando le escribes algo a ChatGPT, esa conversación \emph{queda guardada} en servidores de OpenAI. Algunas empresas (no todas) usan tus conversaciones para entrenar futuras versiones. Otras venden datos a terceros. \emph{No compartas info sensible:} cédula, contraseñas, dirección exacta, info médica, asuntos íntimos. \textbf{Una vez escrito, no sabes dónde queda}. Caso real: empleados de Samsung pegaron código secreto en ChatGPT (2023), el código quedó en los servidores de OpenAI. Samsung prohibió ChatGPT a sus empleados.}
+\milcpaso{3}{milcTurquesa}{\textbf{Tema 3 --- DERECHOS DE AUTOR.} La IA aprendió de millones de textos e imágenes (muchas con derechos de autor). Cuando ChatGPT escribe un cuento, ¿es plagio? ¿Es creación nueva? \emph{Los tribunales del mundo están debatiendo esto}. \textbf{Tu posición práctica:} (a) atribuye cuando uses ideas de IA en tus trabajos; (b) no vendas creaciones de IA como tuyas sin atribución; (c) reconoce que la cosa creativa ``híbrida'' (parcialmente tuya, parcialmente IA) es categoría nueva.}
+\milcpaso{4}{milcTurquesa}{\textbf{Tema 4 --- DEEPFAKES.} Videos, imágenes y audios falsos generados por IA. Tan convincentes que pueden engañar al ojo humano. \emph{Usos malos:} pornografía no consentida, suplantación de identidad, fraude, manipulación política. \emph{Usos legítimos:} efectos en cine, doblaje multilingüe, accesibilidad. \textbf{Cómo protegerse:} verificar fuente, buscar artefactos en bordes/manos, contrastar con fuentes confiables, NO compartir sin verificar. \textbf{Tema 5 --- AUTENTICIDAD ACADÉMICA.} ¿Es trampa usar IA en tareas? \emph{Depende del uso:} (a) usar IA para entender = LEGÍTIMO; (b) usar IA para estructurar = LEGÍTIMO con atribución; (c) usar IA para escribir el ensayo completo y entregarlo como tuyo = TRAMPA. La diferencia es \emph{si tú aprendiste o solo entregaste un producto}. Los colegios están definiendo políticas; los profesores también. \emph{La regla universal: si no aprendiste, es trampa}.}
 
 \begin{drawbox}{milcTurquesa}{5 temas éticos clave}
 \textbf{1.} SESGO: discriminación por datos parciales. \\[1mm]
@@ -329,23 +383,18 @@ Tu posición personal es válida. Ahora profundiza en cada uno de los 5 temas co
 
 \puente{Con todo claro, escribes tu código personal de ética + análisis de dilemas.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · CREA --- Mi código personal de ética con IA} (28 min · individual). Vas a construir tu propio código de ética: 5+ reglas que prometes cumplir. Es ejercicio adulto de definir cómo vas a usar IA durante tu vida.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & \textbf{Paso 1 --- Título y dedicatoria.} En el cuaderno escribe: \textbf{``Mi código personal de ética con IA''}. Debajo, en una línea: \emph{``Comprometido con mi yo de 25 años, [tu nombre], grado 7°, año 2026''}. Este código no es ``para entregar al profe''; es para ti.\\
-Patrones & \textbf{Paso 2 --- Mis 5 reglas (mínimo).} Lista numerada del 1 al 5+. Sugerencias para inspirarte (no copies; adáptalas a tu voz): \emph{(1) Siempre verifico lo que la IA me dice antes de usarlo. (2) No comparto datos personales sensibles con ningún chatbot. (3) Atribuyo cuando uso IA como asistente en tareas: la cito como fuente. (4) Solo creo contenido con IA si lo identifico como tal (no lo paso como creación 100\% propia). (5) No comparto deepfakes ni contenidos falsos sin verificar primero. (6) Uso la IA para aprender, no para evitar aprender. (7) Reviso una vez al mes mis hábitos con IA: ¿estoy siendo coherente con mi código?}.\\
-Abstracción & \textbf{Paso 3 --- Justificación de cada regla.} Debajo de cada una, escribe 1 línea explicando \emph{por qué la elegiste}. Esto te ayuda a memorizarla y le da sentido. Ejemplo: \emph{``Regla 1 elegida porque sé que las IAs alucinan y no quiero citar mentiras como verdades''}.\\
-Algoritmo de armado & \textbf{Paso 4 --- Análisis profundo de los 5 dilemas de la Actividad 1.} Vuelve a tus 5 respuestas de la Actividad 1. Con lo aprendido en la sistematización, \emph{¿cambiarías alguna respuesta?}. Anota: \emph{``Después de aprender la sistematización, mi posición sobre el dilema [N] cambió porque \_\_\_''}. Si no cambia, está bien; lo importante es revisar con criterio.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{\textbf{Paso 1 --- Título y dedicatoria.} En el cuaderno escribe: \textbf{``Mi código personal de ética con IA''}. Debajo, en una línea: \emph{``Comprometido con mi yo de 25 años, [tu nombre], grado 7°, año 2026''}. Este código no es ``para entregar al profe''; es para ti.}
+\milcpaso{2}{milcMagenta}{\textbf{Paso 2 --- Mis 5 reglas (mínimo).} Lista numerada del 1 al 5+. Sugerencias para inspirarte (no copies; adáptalas a tu voz): \emph{(1) Siempre verifico lo que la IA me dice antes de usarlo. (2) No comparto datos personales sensibles con ningún chatbot. (3) Atribuyo cuando uso IA como asistente en tareas: la cito como fuente. (4) Solo creo contenido con IA si lo identifico como tal (no lo paso como creación 100\% propia). (5) No comparto deepfakes ni contenidos falsos sin verificar primero. (6) Uso la IA para aprender, no para evitar aprender. (7) Reviso una vez al mes mis hábitos con IA: ¿estoy siendo coherente con mi código?}.}
+\milcpaso{3}{milcMagenta}{\textbf{Paso 3 --- Justificación de cada regla.} Debajo de cada una, escribe 1 línea explicando \emph{por qué la elegiste}. Esto te ayuda a memorizarla y le da sentido. Ejemplo: \emph{``Regla 1 elegida porque sé que las IAs alucinan y no quiero citar mentiras como verdades''}.}
+\milcpaso{4}{milcMagenta}{\textbf{Paso 4 --- Análisis profundo de los 5 dilemas de la Actividad 1.} Vuelve a tus 5 respuestas de la Actividad 1. Con lo aprendido en la sistematización, \emph{¿cambiarías alguna respuesta?}. Anota: \emph{``Después de aprender la sistematización, mi posición sobre el dilema [N] cambió porque \_\_\_''}. Si no cambia, está bien; lo importante es revisar con criterio.}
+\milcpaso{5}{milcMagenta}{\textbf{Paso 5 --- Reflexión: ¿qué tipo de ciudadano digital quiero ser?} En 4-5 líneas, escribe tu propia respuesta. Sugerencias para inspirarte (no copies): \emph{``Quiero ser un ciudadano digital que usa IA con criterio, no como esclavo de las apps''}. \emph{``Quiero saber distinguir verdad de mentira en internet''}. \emph{``Quiero proteger mi privacidad y la de los demás''}. \emph{``Quiero aportar a una sociedad digital con criterio ético''}. Adapta a tu voz.}
+\milcpaso{6}{milcMagenta}{\textbf{Paso 6 --- Firma de cierre.} Al final escribe: \emph{``Me comprometo a cumplir este código durante mi vida adulta digital. Lo revisaré una vez al año para actualizarlo según mi crecimiento.''}. Firma con nombre completo y fecha. Este documento te acompaña.}
 
 \begin{drawbox}{milcMagenta}{Antes de cerrar la S8}
 \checkbox Mi código personal tiene mínimo 5 reglas. \\[1mm]
@@ -368,9 +417,7 @@ Algoritmo de armado & \textbf{Paso 4 --- Análisis profundo de los 5 dilemas de 
 
 \puente{El producto es ese código firmado + 5 dilemas analizados.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Mi código personal de ética con IA · 5+ reglas + reflexión · firmado}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) El código tiene mínimo 5 reglas personales (no copiadas). (2) Cada regla tiene justificación de por qué la elegiste. (3) Revisaste los 5 dilemas de la Actividad 1 con criterio nuevo. (4) Hay reflexión sobre qué tipo de ciudadano digital quieres ser. (5) El código está firmado como compromiso real.
@@ -378,9 +425,7 @@ Producto de la sesión
 
 \puente{Antes de salir, comparte tu código con un compañero --- ¿se parecen o son distintos?.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -406,12 +451,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Cerramos con 3 voces sobre por qué la ética con IA es responsabilidad de tu generación.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{````La ética no es lujo de unos pocos: es responsabilidad de todos. Cuando usas IA, tus decisiones pequeñas suman a un mundo más justo o menos.''''}
+\textit{``La ética no es lujo de unos pocos: es responsabilidad de todos. Cuando usas IA, tus decisiones pequeñas suman a un mundo más justo o menos.''}
 
 \textbf{Cada vez que decides usar IA con criterio} --- verificar, no compartir datos, atribuir, no propagar deepfakes --- estás aportando a un mundo digital más justo. \emph{Cada vez que decides usarla sin ética}, estás aportando a uno menos justo. No es exageración: las decisiones individuales se suman. \emph{Tu código personal hoy es voto por la sociedad digital que quieres habitar en 20 años}.
 
@@ -421,7 +464,7 @@ Triángulo de pensamiento · cierre filosófico
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
-\textit{````Sé el mismo cuando nadie te ve que cuando todos te miran. La integridad no se ajusta a la audiencia.''''}
+\textit{``Sé el mismo cuando nadie te ve que cuando todos te miran. La integridad no se ajusta a la audiencia.''}
 
 \textbf{La integridad con IA es lo mismo}. Cuando le pides al LLM ayudar con tu tarea, \emph{nadie te observa}: solo tú y el chat. \emph{La decisión de usarlo con ética o sin ética la tomas tú solo}. El estoico hace lo correcto sin importar quién mira. Tu código personal te entrena en esa integridad antigua, aplicada al mundo digital.
 
@@ -431,7 +474,7 @@ Triángulo de pensamiento · cierre filosófico
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{````En 2030 habrá millones de personas usando IA sin ética alguna. Los pocos que la usen con ética serán los líderes de la próxima década.''''}
+\textit{``En 2030 habrá millones de personas usando IA sin ética alguna. Los pocos que la usen con ética serán los líderes de la próxima década.''}
 
 \textbf{La mayoría de adultos hoy usa IA sin pensar en ética}: copia, plagia, propaga deepfakes, no verifica. Eso \emph{abre espacio para que los que sí piensan en ética destaquen}. \emph{En universidad, en trabajo, en proyectos sociales}: los que usan IA con criterio ético van a ser reconocidos. Tu código personal hoy es preparación para ese liderazgo futuro.
 
@@ -440,21 +483,24 @@ Triángulo de pensamiento · cierre filosófico
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 9};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 9};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Tecnologías propias ---\\saberes que el mundo\\aprende ahora}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 9-9-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 1 · Historia de la técnica}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 1 · Historia de la técnica}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Tecnologías propias ---\\saberes que el mundo\\aprende ahora}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 9-9-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} Ficha completa de 1 página sobre una tecnología local sub-reconocida (agricultura andina de andenes, navegación afro-pacífica, arquitectura en guadua, medicina indígena, etc.), incluyendo descripción técnica, ventajas y por qué importa hoy};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Ficha completa de 1 página sobre una tecnología local sub-reconocida (agricultura andina de andenes, navegación afro-pacífica, arquitectura en guadua, medicina indígena, etc.), incluyendo descripción técnica, ventajas y por qué importa hoy
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Tecnologías propias --- saberes que el mundo aprende ahora}
@@ -258,30 +322,27 @@ Producto final & Ficha completa de 1 página sobre una tecnología local sub-rec
 
 \puente{Antes de empezar, mira el viaje completo. Las sesiones 1-8 te dieron lentes para mirar la técnica con criterio histórico. Hoy aplicas esos lentes a lo más cercano: los saberes propios que están bajo tus pies y que muchas veces no ves.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Antes de elegir tu tecnología propia, vamos a leer 4 ejemplos reales (andenes, guadua, navegación afro-pacífica, medicina ancestral). Lo importante no es admirarlos --- es entender por qué funcionan técnicamente.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- 4 tecnologías propias reales} (15 min · individual). Lee la información (en internet o materiales del aula) sobre estas 4 tecnologías propias colombianas/latinoamericanas: (a) \emph{andenes andinos}, (b) \emph{arquitectura en guadua del Pacífico}, (c) \emph{navegación afro-pacífica}, (d) \emph{medicina kogui de la Sierra Nevada}. Para cada una: ¿qué problema técnico resuelve? ¿qué ventaja tiene sobre alternativas modernas? ¿por qué crees que la modernidad la subvaloró?
 \end{softbox}
 
-\checkbox Leí información concreta sobre las 4 tecnologías propias.\\
-\checkbox Identifiqué qué problema técnico resuelve cada una.\\
-\checkbox Anoté al menos UNA ventaja sobre alternativas modernas en cada caso.
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Leí información concreta sobre las 4 tecnologías propias.}
+\milccheckrow{Identifiqué qué problema técnico resuelve cada una.}
+\milccheckrow{Anoté al menos UNA ventaja sobre alternativas modernas en cada caso.}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Ya viste 4 ejemplos. Ahora vamos a entender los \textbf{4 criterios técnicos} que hacen que un saber tradicional califique como ``tecnología regenerativa'': funcionalidad probada, sostenibilidad, adaptabilidad al contexto, transmisibilidad intergeneracional.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Toda tecnología propia que sobrevive a la prueba del tiempo cumple 4 criterios técnicos. Vamos a descomponerlos con los pilares del pensamiento computacional para que tu defensa sea rigurosa, no romántica.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & Una tecnología regenerativa propia se descompone en 4 criterios: (1) \textbf{funcionalidad probada} (resuelve un problema técnico real, demostrado por siglos de uso), (2) \textbf{sostenibilidad} (no agota recursos --- los regenera o mantiene), (3) \textbf{adaptabilidad al contexto} (encaja con clima, materiales, cultura locales), (4) \textbf{transmisibilidad intergeneracional} (se enseña sin tecnología compleja, generación a generación).\\
-2. Reconocimiento de patrones & Toda tecnología propia sigue el patrón \textbf{``probada por longue durée''}: la prueba de su valor no es la moda ni la novedad, sino su persistencia en el tiempo. Un sistema agrícola que lleva 3000 años nutriendo poblaciones es \emph{evidencia técnica más sólida} que una solución industrial que lleva 50 años con efectos colaterales crecientes.\\
-3. Abstracción & Lo esencial de una defensa de tecnología propia cabe en una pregunta: \emph{¿esta técnica resuelve mejor que sus alternativas modernas el problema que aborda?}. Si la respuesta honesta es ``en algunos aspectos sí, en otros no'', defínelos. Si es ``solo es bonita y tradicional'', no es defensa técnica.\\
-4. Algoritmo conceptual & Pasos para evaluar cualquier tecnología propia: (1) ¿qué problema técnico específico resuelve?; (2) ¿qué evidencia hay de que lo resuelve bien (siglos, dispersión geográfica, adopción actual)?; (3) ¿qué desventaja tiene comparada con alternativa moderna?; (4) ¿qué problema contemporáneo podría ayudar a resolver?.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{Una tecnología regenerativa propia se descompone en 4 criterios: (1) \textbf{funcionalidad probada} (resuelve un problema técnico real, demostrado por siglos de uso), (2) \textbf{sostenibilidad} (no agota recursos --- los regenera o mantiene), (3) \textbf{adaptabilidad al contexto} (encaja con clima, materiales, cultura locales), (4) \textbf{transmisibilidad intergeneracional} (se enseña sin tecnología compleja, generación a generación).}
+\milcpaso{2}{milcTurquesa}{Toda tecnología propia sigue el patrón \textbf{``probada por longue durée''}: la prueba de su valor no es la moda ni la novedad, sino su persistencia en el tiempo. Un sistema agrícola que lleva 3000 años nutriendo poblaciones es \emph{evidencia técnica más sólida} que una solución industrial que lleva 50 años con efectos colaterales crecientes.}
+\milcpaso{3}{milcTurquesa}{Lo esencial de una defensa de tecnología propia cabe en una pregunta: \emph{¿esta técnica resuelve mejor que sus alternativas modernas el problema que aborda?}. Si la respuesta honesta es ``en algunos aspectos sí, en otros no'', defínelos. Si es ``solo es bonita y tradicional'', no es defensa técnica.}
+\milcpaso{4}{milcTurquesa}{Pasos para evaluar cualquier tecnología propia: (1) ¿qué problema técnico específico resuelve?; (2) ¿qué evidencia hay de que lo resuelve bien (siglos, dispersión geográfica, adopción actual)?; (3) ¿qué desventaja tiene comparada con alternativa moderna?; (4) ¿qué problema contemporáneo podría ayudar a resolver?.}
 
 \begin{drawbox}{milcTurquesa}{Anatomía de una tecnología propia regenerativa}
 \textbf{Nombre y origen geográfico:} de dónde viene, qué pueblo. \\[1mm] \textbf{Problema técnico que resuelve:} específico (no ``ayuda al medio ambiente''). \\[1mm] \textbf{Mecanismo:} cómo funciona técnicamente. \\[1mm] \textbf{Evidencia:} siglos de uso, dispersión, adopción actual. \\[1mm] \textbf{Comparación:} ventajas y desventajas frente a alternativa moderna. \\[1mm] \textbf{Aplicación contemporánea:} qué problema actual podría ayudar a resolver.
@@ -325,23 +379,16 @@ Toda tecnología propia que sobrevive a la prueba del tiempo cumple 4 criterios 
 
 \puente{Tienes el método. Toca producir: una ficha técnica de 1 página sobre UNA tecnología propia, defendida con argumentos técnicos y contemporáneos --- no con nostalgia.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · CREA --- Ficha técnica de UNA tecnología propia} (30 min · individual). Hora de producir. Vas a elegir UNA tecnología propia (las 4 de la Actividad 1 u otra que conozcas de tu región: trapiche, conuco, telar wayuu, chinampa, etc.) y vas a redactar una ficha técnica de 1 página que la defienda con argumentos técnicos, no nostálgicos.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & Tu ficha se descompone en 6 secciones: (1) nombre + origen geográfico (1 línea), (2) problema que resuelve (1 párrafo), (3) mecanismo técnico (cómo funciona, 1 párrafo + dibujo), (4) evidencia histórica (1 párrafo), (5) comparación con alternativa moderna (1 tabla simple), (6) aplicación contemporánea (1 párrafo: qué problema actual podría ayudar a resolver).\\
-Patrones & Sigue el patrón \textbf{``técnico vence a romántico''}: cada vez que escribas algo que suene a ``es bonito porque es tradición'', reescríbelo en términos técnicos: ``regenera suelo retención hídrica + fijación de nitrógeno'' es defensa técnica; ``es nuestra herencia ancestral'' es romántica.\\
-Abstracción & Cada sección expresa una sola idea principal. Si tu sección de mecanismo dice 3 cosas confusas, divídela.\\
-Algoritmo de armado & Algoritmo: (1) elige la tecnología; (2) investiga 10 minutos en internet con criterio; (3) llena las 6 secciones; (4) dibuja un esquema del mecanismo; (5) cierra con aplicación contemporánea concreta.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{Tu ficha se descompone en 6 secciones: (1) nombre + origen geográfico (1 línea), (2) problema que resuelve (1 párrafo), (3) mecanismo técnico (cómo funciona, 1 párrafo + dibujo), (4) evidencia histórica (1 párrafo), (5) comparación con alternativa moderna (1 tabla simple), (6) aplicación contemporánea (1 párrafo: qué problema actual podría ayudar a resolver).}
+\milcpaso{2}{milcMagenta}{Sigue el patrón \textbf{``técnico vence a romántico''}: cada vez que escribas algo que suene a ``es bonito porque es tradición'', reescríbelo en términos técnicos: ``regenera suelo retención hídrica + fijación de nitrógeno'' es defensa técnica; ``es nuestra herencia ancestral'' es romántica.}
+\milcpaso{3}{milcMagenta}{Cada sección expresa una sola idea principal. Si tu sección de mecanismo dice 3 cosas confusas, divídela.}
+\milcpaso{4}{milcMagenta}{Algoritmo: (1) elige la tecnología; (2) investiga 10 minutos en internet con criterio; (3) llena las 6 secciones; (4) dibuja un esquema del mecanismo; (5) cierra con aplicación contemporánea concreta.}
 
 \begin{drawbox}{milcMagenta}{Checklist antes de cerrar la ficha}
 \checkbox Ficha cabe en 1 página A4 con las 6 secciones. \\[1mm] \checkbox Hay un dibujo del mecanismo (no foto, dibujo a mano o digital). \\[1mm] \checkbox Tabla de comparación con alternativa moderna. \\[1mm] \checkbox Aplicación contemporánea concreta (no genérica). \\[1mm] \checkbox Cero apelaciones a ``es nuestra tradición''; solo argumentos técnicos. \\[1mm] \checkbox Un compañero podría leerla y reconocer la tecnología como ``hito técnico'' aplicando los 4 criterios.
@@ -359,9 +406,7 @@ Algoritmo de armado & Algoritmo: (1) elige la tecnología; (2) investiga 10 minu
 
 \puente{Lo que sigue es el resumen de qué entregas hoy: 1 ficha técnica. El criterio principal: que un ingeniero externo pueda leerla y entender por qué esa tecnología funciona técnicamente, sin que tú apeles a ``es tradicional, por eso vale''.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Ficha técnica de 1 página defendiendo una tecnología propia con argumentos rigurosos}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) Las 6 secciones presentes y completas. (2) Dibujo del mecanismo técnico (no solo descripción verbal). (3) Tabla de comparación con alternativa moderna. (4) Aplicación contemporánea concreta. (5) Cero argumentos solo de tradición; todo defendido técnicamente. (6) Aplica al menos 3 de los 4 criterios de tecnología regenerativa.
@@ -369,9 +414,7 @@ Producto de la sesión
 
 \puente{Antes de cerrar, mira las tecnologías propias desde las cinco dimensiones humanas. Recuperarlas no es nostalgia: es justicia histórica, sostenibilidad real, y soberanía técnica. Vale la pena nombrar las tres.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -397,12 +440,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Y para terminar, tres voces sobre lo propio y lo global. Dussel sobre la colonialidad del conocimiento, Marco Aurelio sobre lo que dura cuando todo lo demás cambia, Floridi sobre tecnologías regenerativas como infoesfera saludable.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{``La descolonización del conocimiento empieza por reconocer técnicamente lo que la modernidad subvaloró.''}
+\textit{La descolonización del conocimiento empieza por reconocer técnicamente lo que la modernidad subvaloró.}
 
 Durante 500 años la modernidad europea llamó ``primitivas'' a las técnicas precolombinas. Esa clasificación no era descripción técnica --- era política de poder. Hoy reconocer la guadua como ingeniería sismorresistente, los andenes como agronomía regenerativa, la medicina kogui como farmacología compleja, no es ``rescate cultural'': es justicia técnica. Tus abuelos siempre lo supieron; la academia apenas se está enterando.
 
@@ -412,7 +453,7 @@ Durante 500 años la modernidad europea llamó ``primitivas'' a las técnicas pr
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
-\textit{``Lo que sobrevive siglos sin renovación tecnológica sostiene su propio peso.''}
+\textit{Lo que sobrevive siglos sin renovación tecnológica sostiene su propio peso.}
 
 Una tecnología que se mantiene 1000 años sin necesidad de actualización constante (sin software, sin batería, sin recambio) demuestra elegancia estructural que la mayoría de soluciones modernas no alcanzan. La sabiduría estoica reconoce el valor de la \emph{simplicidad probada}: lo que dura, dura por algo.
 
@@ -422,7 +463,7 @@ Una tecnología que se mantiene 1000 años sin necesidad de actualización const
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{``La infoesfera saludable necesita tanto las tecnologías propias regenerativas como las digitales avanzadas.''}
+\textit{La infoesfera saludable necesita tanto las tecnologías propias regenerativas como las digitales avanzadas.}
 
 Pretender que la solución a los problemas contemporáneos viene solo de Silicon Valley es una limitación del horizonte. La crisis climática se va a resolver con energía renovable digital \emph{y} con agronomía andina, con IA \emph{y} con medicina indígena, con edificios inteligentes \emph{y} con arquitectura en guadua. La infoesfera saludable es híbrida, no monocultural.
 
@@ -431,21 +472,24 @@ Pretender que la solución a los problemas contemporáneos viene solo de Silicon
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

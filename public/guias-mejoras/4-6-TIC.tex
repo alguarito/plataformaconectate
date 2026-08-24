@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 6};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 6};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Netiqueta ---\\los 10 acuerdos\\para llevarte bien\\en internet}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 4-6-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 1 · Comunicación e identidad digital}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 1 · Comunicación e identidad digital}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Netiqueta ---\\los 10 acuerdos\\para llevarte bien\\en internet}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 4-6-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} Un \textbf{cartel personal de los 10 acuerdos de netiqueta} dibujado en hoja completa del cuaderno. Cada acuerdo va con \textbf{un ejemplo de cumplirlo} y \textbf{un ejemplo de romperlo} con tus propias palabras. Más \textbf{una promesa firmada} al final: \emph{``Me comprometo a respetar estos 10 acuerdos en todos los chats, juegos y redes en que esté.''} Lo muestras antes de salir.};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Un \textbf{cartel personal de los 10 acuerdos de netiqueta} dibujado en hoja completa del cuaderno. Cada acuerdo va con \textbf{un ejemplo de cumplirlo} y \textbf{un ejemplo de romperlo} con tus propias palabras. Más \textbf{una promesa firmada} al final: \emph{``Me comprometo a respetar estos 10 acuerdos en todos los chats, juegos y redes en que esté.''} Lo muestras antes de salir.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Netiqueta --- los 10 acuerdos para llevarte bien en internet}
@@ -258,30 +322,27 @@ Producto final & Un \textbf{cartel personal de los 10 acuerdos de netiqueta} dib
 
 \puente{Hoy haces 4 cosas: lees situaciones reales, descubres los 10 acuerdos, evalúas mensajes, y haces tu cartel.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Empezamos viendo 3 situaciones de chats que tal vez te suenan familiares.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · ANALIZA --- Tres situaciones que ya viste} (10 min · individual). Lee estas 3 escenas y en el cuaderno escribe \textbf{qué se hizo mal} en cada una. No tienes que saber los nombres técnicos; cuéntalo con tus palabras. \textbf{Escena A:} En un grupo de WhatsApp del salón, alguien escribe a las 11 de la noche: \emph{``oigan quien tiene la tarea de mate'' --- ``oigan respondan'' --- ``oigan estoy preguntando algo''} (tres mensajes seguidos). \textbf{Escena B:} En Roblox, un jugador escribe en el chat: \emph{``ERES UN MAL JUGADOR APRENDE A JUGAR INÚTIL''}. \textbf{Escena C:} En un grupo de TikTok, alguien comparte una foto de un compañero del salón que se cayó, sin pedirle permiso, con risas.
 \end{softbox}
 
-\checkbox Leí las 3 escenas con calma.\\
-\checkbox Identifiqué qué se hizo mal en cada una.\\
-\checkbox Lo escribí con mis palabras, no copié de otro lado.
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Leí las 3 escenas con calma.}
+\milccheckrow{Identifiqué qué se hizo mal en cada una.}
+\milccheckrow{Lo escribí con mis palabras, no copié de otro lado.}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Después de las situaciones, aprendes los 10 acuerdos exactos con su nombre.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Las 3 escenas que acabaste de leer rompen 3 acuerdos distintos. Pero hay más. En total son \textbf{10 acuerdos básicos de netiqueta} que todo estudiante de tu edad debería conocer. Los vas a aprender ahora.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & \textbf{1. Saluda y despídete.} Como en la vida real: empiezas con un saludo (\emph{``Buenos días''}, \emph{``Hola''}) y terminas con una despedida (\emph{``Gracias''}, \emph{``Hasta mañana''}). No mandes mensajes pelados. \textbf{2. No grites con mayúsculas.} ESCRIBIR TODO EN MAYÚSCULAS es gritar. Solo se usa para una palabra que necesita énfasis, no para frases enteras. \textbf{3. No spam.} No mandes el mismo mensaje 5 veces seguidas. Si nadie responde, espera; si es urgente, llama por teléfono.\\
-2. Reconocimiento de patrones & \textbf{4. Cuida los horarios.} No mandes mensajes a horas raras (11 de la noche a 7 de la mañana) salvo emergencia real. Hay personas durmiendo. \textbf{5. Respeta lo que se dice en privado.} Si alguien te cuenta algo en chat privado, no lo compartas con el grupo sin permiso. \textbf{6. No publiques fotos de otros sin pedirles permiso.} Aunque la foto sea graciosa. Aunque la persona ``no se vaya a dar cuenta''. Pedir permiso es regla básica.\\
-3. Abstracción & \textbf{7. Piensa antes de escribir.} En la vida real, las palabras se las lleva el viento. En internet, las palabras quedan. Antes de enviar algo molesto o brusco, lee otra vez: \emph{``¿De verdad quiero decir esto así?''}. \textbf{8. No insultes ni humilles, ni en broma.} Lo que en persona puede ser broma, en pantalla suele leerse como insulto. No hay tono de voz, no hay sonrisa. Mejor evítalo.\\
-4. Algoritmo conceptual & \textbf{9. Si algo está mal, no lo reenvíes.} Cadenas falsas, fotos íntimas de alguien, noticias raras, retos peligrosos. \textbf{Reenviarlo te hace parte del problema}. La regla es: si lo dudas, no lo mandes. \textbf{10. Habla con un adulto cuando te asustes.} Si alguien en internet te molesta, te amenaza, te pide fotos raras, te dice cosas que te hacen sentir mal --- cuéntale a un adulto de confianza (mamá, papá, profe, abuela). No estás solo.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{\textbf{1. Saluda y despídete.} Como en la vida real: empiezas con un saludo (\emph{``Buenos días''}, \emph{``Hola''}) y terminas con una despedida (\emph{``Gracias''}, \emph{``Hasta mañana''}). No mandes mensajes pelados. \textbf{2. No grites con mayúsculas.} ESCRIBIR TODO EN MAYÚSCULAS es gritar. Solo se usa para una palabra que necesita énfasis, no para frases enteras. \textbf{3. No spam.} No mandes el mismo mensaje 5 veces seguidas. Si nadie responde, espera; si es urgente, llama por teléfono.}
+\milcpaso{2}{milcTurquesa}{\textbf{4. Cuida los horarios.} No mandes mensajes a horas raras (11 de la noche a 7 de la mañana) salvo emergencia real. Hay personas durmiendo. \textbf{5. Respeta lo que se dice en privado.} Si alguien te cuenta algo en chat privado, no lo compartas con el grupo sin permiso. \textbf{6. No publiques fotos de otros sin pedirles permiso.} Aunque la foto sea graciosa. Aunque la persona ``no se vaya a dar cuenta''. Pedir permiso es regla básica.}
+\milcpaso{3}{milcTurquesa}{\textbf{7. Piensa antes de escribir.} En la vida real, las palabras se las lleva el viento. En internet, las palabras quedan. Antes de enviar algo molesto o brusco, lee otra vez: \emph{``¿De verdad quiero decir esto así?''}. \textbf{8. No insultes ni humilles, ni en broma.} Lo que en persona puede ser broma, en pantalla suele leerse como insulto. No hay tono de voz, no hay sonrisa. Mejor evítalo.}
+\milcpaso{4}{milcTurquesa}{\textbf{9. Si algo está mal, no lo reenvíes.} Cadenas falsas, fotos íntimas de alguien, noticias raras, retos peligrosos. \textbf{Reenviarlo te hace parte del problema}. La regla es: si lo dudas, no lo mandes. \textbf{10. Habla con un adulto cuando te asustes.} Si alguien en internet te molesta, te amenaza, te pide fotos raras, te dice cosas que te hacen sentir mal --- cuéntale a un adulto de confianza (mamá, papá, profe, abuela). No estás solo.}
 
 \begin{drawbox}{milcTurquesa}{Los 10 acuerdos de netiqueta}
 \textbf{1.} Saluda y despídete. \\[1mm]
@@ -334,23 +388,18 @@ Las 3 escenas que acabaste de leer rompen 3 acuerdos distintos. Pero hay más. E
 
 \puente{Con los 10 acuerdos en mente, dibujas tu cartel personal en el cuaderno.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · CREA --- Tu cartel personal de netiqueta} (25 min · individual). Vas a hacer en una hoja completa del cuaderno un \textbf{cartel personal} con los 10 acuerdos. Cada acuerdo lleva 2 ejemplos pequeños: uno de \textbf{cumplir} y uno de \textbf{romper} el acuerdo. Vas a inventar los ejemplos tú; no los copies del libro. Al final, firmas el cartel con tu nombre como una promesa.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & \textbf{Paso 1.} En la parte superior de la hoja escribe el título grande: \textbf{``Mis 10 acuerdos de netiqueta''} y debajo: \emph{``Promesa de [tu nombre], grado 6[tu letra], año 2026''}. Subraya el título.\\
-Patrones & \textbf{Paso 2.} Divide la hoja en \textbf{10 cuadritos} (2 columnas, 5 filas, por ejemplo) o haz una lista bien ordenada. Cada cuadrito o renglón es para 1 acuerdo. Numéralos del 1 al 10.\\
-Abstracción & \textbf{Paso 3.} En cada cuadrito escribe: arriba el \textbf{nombre del acuerdo} (corto, máximo 5 palabras). Abajo \textbf{un ejemplo de cumplirlo} (\emph{``Cumpliendo: ...''}) y \textbf{un ejemplo de romperlo} (\emph{``Rompiendo: ...''}). Los ejemplos los inventas tú, deben ser cosas que pasan en tu vida.\\
-Algoritmo de armado & \textbf{Paso 4.} Para los acuerdos que tienen que ver con grupos del colegio (por ejemplo el acuerdo 3 o el 6), trata de que el ejemplo sea del salón de 6° o de una situación que ya viste o que podría pasar. Esto hace tu cartel \emph{tuyo}.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{\textbf{Paso 1.} En la parte superior de la hoja escribe el título grande: \textbf{``Mis 10 acuerdos de netiqueta''} y debajo: \emph{``Promesa de [tu nombre], grado 6[tu letra], año 2026''}. Subraya el título.}
+\milcpaso{2}{milcMagenta}{\textbf{Paso 2.} Divide la hoja en \textbf{10 cuadritos} (2 columnas, 5 filas, por ejemplo) o haz una lista bien ordenada. Cada cuadrito o renglón es para 1 acuerdo. Numéralos del 1 al 10.}
+\milcpaso{3}{milcMagenta}{\textbf{Paso 3.} En cada cuadrito escribe: arriba el \textbf{nombre del acuerdo} (corto, máximo 5 palabras). Abajo \textbf{un ejemplo de cumplirlo} (\emph{``Cumpliendo: ...''}) y \textbf{un ejemplo de romperlo} (\emph{``Rompiendo: ...''}). Los ejemplos los inventas tú, deben ser cosas que pasan en tu vida.}
+\milcpaso{4}{milcMagenta}{\textbf{Paso 4.} Para los acuerdos que tienen que ver con grupos del colegio (por ejemplo el acuerdo 3 o el 6), trata de que el ejemplo sea del salón de 6° o de una situación que ya viste o que podría pasar. Esto hace tu cartel \emph{tuyo}.}
+\milcpaso{5}{milcMagenta}{\textbf{Paso 5.} Al lado de cada acuerdo dibuja un \textbf{ícono pequeño} que te recuerde de qué trata. Cualquier ícono que tú entiendas. Ejemplo: el acuerdo 2 (no gritar) puede tener una boca tachada. El 9 (no reenviar lo malo) puede tener un mensaje con una flecha tachada.}
+\milcpaso{6}{milcMagenta}{\textbf{Paso 6.} Al final de la hoja, en la esquina inferior derecha, escribe la promesa: \emph{``Me comprometo a respetar estos 10 acuerdos en chats, juegos, redes y correos.''} y firma con tu nombre completo + fecha. Esa firma cuenta como compromiso tuyo.}
 
 \begin{drawbox}{milcMagenta}{Antes de mostrar tu cartel}
 \checkbox El cartel ocupa una hoja entera del cuaderno. \\[1mm]
@@ -373,9 +422,7 @@ Algoritmo de armado & \textbf{Paso 4.} Para los acuerdos que tienen que ver con 
 
 \puente{El producto es el cartel firmado: lo guardas como compromiso tuyo.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Cartel personal de los 10 acuerdos de netiqueta · firmado}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) El cartel ocupa una página completa. (2) Están los 10 acuerdos en orden del 1 al 10. (3) Cada acuerdo tiene su ejemplo de cumplirlo y de romperlo. (4) Los ejemplos son inventados por el estudiante, contextualizados. (5) El cartel está firmado y con fecha.
@@ -383,9 +430,7 @@ Producto de la sesión
 
 \puente{Antes de salir, revisas que tu cartel tiene los 10 acuerdos, los ejemplos y la firma.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -411,12 +456,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Cerramos con 3 voces que te ayudan a entender por qué el respeto pesa más en pantalla que cara a cara.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{````Antes de hablar a otro, primero hay que reconocer que el otro es persona como tú.''''}
+\textit{``Antes de hablar a otro, primero hay que reconocer que el otro es persona como tú.''}
 
 En internet no ves la cara del otro. No ves si está cansado, si llora, si tiene un mal día. \textbf{Por eso la regla es más fuerte ahí}: tratar al otro como persona, no como avatar. Cada nombre que aparece en un chat es un ser humano del otro lado. Saludarlo, escribirle con cuidado, no humillarlo --- eso es reconocer a la persona.
 
@@ -426,7 +469,7 @@ En internet no ves la cara del otro. No ves si está cansado, si llora, si tiene
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Epicteto · cuidado interior}
-\textit{````No es lo que te dicen lo que te hace daño, es cómo respondes a lo que te dicen.''''}
+\textit{``No es lo que te dicen lo que te hace daño, es cómo respondes a lo que te dicen.''}
 
 Si alguien te escribe algo molesto en un chat, lo que te enciende es \emph{cómo reaccionas tú}, no lo que dijo el otro. \textbf{Tienes 3 caminos:} (1) responder con otro insulto y encender el problema, (2) ignorar y bloquear, (3) avisarle a un adulto si es serio. Los caminos 2 y 3 son los inteligentes. La rabia se enfría con un vaso de agua, no escribiendo.
 
@@ -436,7 +479,7 @@ Si alguien te escribe algo molesto en un chat, lo que te enciende es \emph{cómo
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{````Cada mensaje que envías deja huella. La gente recordará no lo que dijiste, sino cómo lo dijiste.''''}
+\textit{``Cada mensaje que envías deja huella. La gente recordará no lo que dijiste, sino cómo lo dijiste.''}
 
 De todos los mensajes que envíes en tu vida, \textbf{la gente se acordará más del tono que del contenido}. Pueden no recordar exactamente qué pediste, pero recordarán si pediste con respeto o si llegaste empujando. La netiqueta no es debilidad: es saber que el tono pesa.
 
@@ -445,21 +488,24 @@ De todos los mensajes que envíes en tu vida, \textbf{la gente se acordará más
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

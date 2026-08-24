@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,51 +229,65 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont MÓDULO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SEMILLERO DE INVESTIGACIÓN · CONECTATE};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont MÓDULO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SEMILLERO DE INVESTIGACIÓN · CONECTATE};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 3};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 3};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
   
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Del ojo al instrumento ---\\un fotómetro con micro:bit\\para medir el cielo}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Astronomía y ciencia ciudadana}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Módulo 3 · Fase MILC: Praxis · 3 h de clase}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Módulo 3 · Fase MILC: Praxis · 3 h de clase}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Del ojo al instrumento ---\\un fotómetro con micro:bit\\para medir el cielo}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Astronomía y ciencia ciudadana}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} Tu \textbf{fotómetro de contaminación lumínica con micro:bit}, construido y calibrado: el programa en MakeCode (con su \textbf{pseudocódigo} previo y su \textbf{tabla de umbrales} justificada), probado en \textbf{5 escenarios} (esperado / real). Más tu \textbf{tabla de contraste}: la lectura del instrumento frente a la estimación \emph{a ojo} de tu magnitud límite del módulo 1 ---¿coinciden?, ¿dónde no?, ¿por qué?};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Tu \textbf{fotómetro de contaminación lumínica con micro:bit}, construido y calibrado: el programa en MakeCode (con su \textbf{pseudocódigo} previo y su \textbf{tabla de umbrales} justificada), probado en \textbf{5 escenarios} (esperado / real). Más tu \textbf{tabla de contraste}: la lectura del instrumento frente a la estimación \emph{a ojo} de tu magnitud límite del módulo 1 ---¿coinciden?, ¿dónde no?, ¿por qué?
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Del ojo al instrumento --- un fotómetro con micro:bit para medir el cielo}
@@ -257,30 +321,27 @@ Producto final & Tu \textbf{fotómetro de contaminación lumínica con micro:bit
 
 \puente{En el módulo 1 miraste con el ojo; en el 2 ordenaste los datos. Hoy \textbf{construyes el instrumento}: un fotómetro con micro:bit que convierte tu «me pareció oscuro» en un número que otro puede comprobar.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Antes de construir, reconoce cuándo el ojo basta y cuándo engaña. Tu propia magnitud límite del módulo 1 es el punto de partida: ¿qué tan confiable fue?}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- ¿Cuándo basta el ojo y cuándo engaña?} (35 min · individual + grupo). \textbf{Momento A (10 min) --- Prueba tu ojo.} El profe muestra 3 pares de cosas (dos grises casi iguales, dos sonidos, dos pesos en la mano) y cada quien estima cuál es «más». Se revela la respuesta con un instrumento (regla, balanza). \emph{¿Acertó tu ojo? ¿En qué falló?}. \textbf{Momento B (15 min) --- El caso de la pesa.} El profe presenta el paso de «vender al ojo» a «vender con pesa» y la pregunta: \emph{¿la pesa reemplazó el ojo de la casera, o lo hizo confiable para todos?}. Discutan: ¿qué gana una medida cuando \textbf{se puede compartir y comprobar}? \textbf{Momento C (10 min) --- Tu ojo del módulo 1.} Saca tu magnitud límite (las estrellas que contaste). \emph{¿La contarías igual otra noche? ¿Otro compañero contaría lo mismo?}. \textbf{En el cuaderno:} en qué acertó y en qué falló tu ojo + una frase sobre qué le da un instrumento a una observación (repetible · comparable · comprobable).
 \end{softbox}
 
-\checkbox Estimé a ojo y comparé con la medida real de un instrumento.\\
-\checkbox Puedo decir qué gana una medida cuando se puede compartir y comprobar.\\
-\checkbox Reconocí un límite de mi estimación a ojo del módulo 1.
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Estimé a ojo y comparé con la medida real de un instrumento.}
+\milccheckrow{Puedo decir qué gana una medida cuando se puede compartir y comprobar.}
+\milccheckrow{Reconocí un límite de mi estimación a ojo del módulo 1.}
 
 \begin{infoband}{milcVerde}
 
@@ -290,23 +351,16 @@ Fase 1 · Escucha
 
 \puente{Ya sabes por qué hace falta un instrumento. Ahora entiende cómo mide luz el micro:bit y por qué un número crudo no sirve sin \textbf{umbrales calibrados}.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 \textbf{Actividad 2 · EXPLICA --- Cómo mide luz el micro:bit y qué es calibrar} (55 min · grupo + individual). Ya sabes por qué hace falta un instrumento. Ahora entiende \textbf{cómo} el micro:bit mide luz, por qué un número crudo no basta, y cómo se \textbf{diseña la lógica} antes de tocar un bloque.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & \textbf{Pilar 1 --- El instrumento ya está dentro.} El micro:bit trae un \textbf{sensor de luz integrado}: su matriz de 25 LED, que normalmente muestra íconos, también \textbf{mide} la luz que le llega (los LED, al revés, funcionan como pequeños detectores). En MakeCode se lee con \texttt{input.lightLevel()} y devuelve un número de \textbf{0 a 255}: 0 en oscuridad total, 255 con mucha luz encima. \textbf{No hay que cablear ni comprar nada:} el fotómetro es el propio micro:bit. \emph{Si no tienes el aparato físico, el simulador de MakeCode trae una barrita de luz que te deja programar y probar igual;} la medida del cielo real la harán con el dispositivo, aunque sea uno por grupo.\\
-2. Reconocimiento de patrones & \textbf{Pilar 2 --- Un número crudo no dice nada: hay que calibrar.} \texttt{lightLevel} te da \emph{42}. ¿Eso es oscuro o claro? \textbf{Depende de con qué lo compares.} Calibrar es \textbf{fijar umbrales} midiendo condiciones \emph{conocidas}: tapa el sensor (eso es tu «oscuro», anota el número), ponlo bajo la luz del salón (tu «claro», anota), y decide las líneas de corte. Por ejemplo: \emph{menos de 30 = cielo oscuro; de 30 a 90 = intermedio; más de 90 = con luz}. \textbf{Esos números son tuyos y se justifican con tus medidas}, igual que la casera ajustaba su pesa contra un peso patrón. Sin calibrar, tu fotómetro es un número suelto; calibrado, es un instrumento.\\
-3. Abstracción & \textbf{Pilar 3 --- La lógica antes que los bloques: pseudocódigo.} Nunca se empieza arrastrando bloques. Primero se escribe la \textbf{lógica en palabras} (pseudocódigo), como aprendiste en el pensamiento computacional: \emph{``Por siempre: leer luz. Si luz < 30, mostrar luna llena (cielo oscuro). Si no, si luz < 90, mostrar media luna. Si no, mostrar sol (mucha luz). Al oprimir A, mostrar el número exacto''}. \textbf{Esa estructura ---leer → comparar con umbrales → actuar--- es la misma de la curandera} que con su mano distinguía \emph{normal / fiebre leve / fiebre fuerte}. Escribir la lógica antes evita perderse después: los bloques solo \textbf{traducen} lo que ya decidiste.\\
-4. Algoritmo conceptual & \textbf{Pilar 4 --- Una medida no vale hasta que se prueba.} La casera comprobaba su pesa con un peso patrón; tú compruebas tu fotómetro con \textbf{escenarios de prueba}. Antes de creerle, defines \textbf{5 situaciones} con su resultado \emph{esperado} y anotas el \emph{real}: sensor tapado (espero «oscuro»), bajo el bombillo (espero «con luz»), en penumbra (espero «intermedio»), apuntando a la ventana, apuntando a una pantalla encendida. \emph{Si en algún escenario el instrumento no hace lo esperado, no está listo:} ajustas los umbrales y vuelves a probar. \textbf{Probar no es desconfianza: es lo que convierte un programa en un instrumento en el que se puede creer.}\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{\textbf{Pilar 1 --- El instrumento ya está dentro.} El micro:bit trae un \textbf{sensor de luz integrado}: su matriz de 25 LED, que normalmente muestra íconos, también \textbf{mide} la luz que le llega (los LED, al revés, funcionan como pequeños detectores). En MakeCode se lee con \texttt{input.lightLevel()} y devuelve un número de \textbf{0 a 255}: 0 en oscuridad total, 255 con mucha luz encima. \textbf{No hay que cablear ni comprar nada:} el fotómetro es el propio micro:bit. \emph{Si no tienes el aparato físico, el simulador de MakeCode trae una barrita de luz que te deja programar y probar igual;} la medida del cielo real la harán con el dispositivo, aunque sea uno por grupo.}
+\milcpaso{2}{milcTurquesa}{\textbf{Pilar 2 --- Un número crudo no dice nada: hay que calibrar.} \texttt{lightLevel} te da \emph{42}. ¿Eso es oscuro o claro? \textbf{Depende de con qué lo compares.} Calibrar es \textbf{fijar umbrales} midiendo condiciones \emph{conocidas}: tapa el sensor (eso es tu «oscuro», anota el número), ponlo bajo la luz del salón (tu «claro», anota), y decide las líneas de corte. Por ejemplo: \emph{menos de 30 = cielo oscuro; de 30 a 90 = intermedio; más de 90 = con luz}. \textbf{Esos números son tuyos y se justifican con tus medidas}, igual que la casera ajustaba su pesa contra un peso patrón. Sin calibrar, tu fotómetro es un número suelto; calibrado, es un instrumento.}
+\milcpaso{3}{milcTurquesa}{\textbf{Pilar 3 --- La lógica antes que los bloques: pseudocódigo.} Nunca se empieza arrastrando bloques. Primero se escribe la \textbf{lógica en palabras} (pseudocódigo), como aprendiste en el pensamiento computacional: \emph{``Por siempre: leer luz. Si luz < 30, mostrar luna llena (cielo oscuro). Si no, si luz < 90, mostrar media luna. Si no, mostrar sol (mucha luz). Al oprimir A, mostrar el número exacto''}. \textbf{Esa estructura ---leer → comparar con umbrales → actuar--- es la misma de la curandera} que con su mano distinguía \emph{normal / fiebre leve / fiebre fuerte}. Escribir la lógica antes evita perderse después: los bloques solo \textbf{traducen} lo que ya decidiste.}
+\milcpaso{4}{milcTurquesa}{\textbf{Pilar 4 --- Una medida no vale hasta que se prueba.} La casera comprobaba su pesa con un peso patrón; tú compruebas tu fotómetro con \textbf{escenarios de prueba}. Antes de creerle, defines \textbf{5 situaciones} con su resultado \emph{esperado} y anotas el \emph{real}: sensor tapado (espero «oscuro»), bajo el bombillo (espero «con luz»), en penumbra (espero «intermedio»), apuntando a la ventana, apuntando a una pantalla encendida. \emph{Si en algún escenario el instrumento no hace lo esperado, no está listo:} ajustas los umbrales y vuelves a probar. \textbf{Probar no es desconfianza: es lo que convierte un programa en un instrumento en el que se puede creer.}}
 
 \begin{drawbox}{milcTurquesa}{Fotómetro micro:bit + umbrales + pseudocódigo + pruebas}
 \textbf{Sensor:} \texttt{input.lightLevel()} $\to$ número de 0 (oscuro) a 255 (mucha luz). Sin cablear. \\[1mm]
@@ -327,23 +381,18 @@ Fase 2 · Sistematización con pensamiento computacional
 
 \puente{Ya tienes la lógica en la cabeza. Es hora de bajarla a pseudocódigo, armarla en MakeCode y \textbf{ponerla a prueba} ---nadie da por buena una medida sin probarla.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · CREA + EVALÚA --- Construye, calibra y contrasta tu fotómetro} (75 min · individual o parejas). Hora de construir. Vas a armar el fotómetro en MakeCode, calibrarlo con tus propias medidas, probarlo en 5 escenarios y ---lo más importante--- \textbf{contrastarlo con tu ojo} del módulo 1.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & \textbf{Paso 1 --- Calibra primero (15 min).} Antes de programar, \textbf{mide condiciones conocidas} y anótalas. Con un micro:bit (o el simulador): lee \texttt{lightLevel} con el sensor \emph{tapado} (tu «oscuro»: anota el número), bajo la \emph{luz del salón} (tu «claro»: anota), y en \emph{penumbra} (media luz: anota). Con esos tres números, \textbf{decide tus dos umbrales} y escríbelos con su justificación: \emph{``pongo el umbral 1 en \_\_ porque tapado me dio \_\_''}. Sin este paso, todo lo demás es adivinar.\\
-Patrones & \textbf{Paso 2 --- Escribe el pseudocódigo (10 min).} En el cuaderno, la lógica en palabras: \emph{``Por siempre: leer luz. Si luz < umbral 1 → mostrar luna (oscuro). Si no, si luz < umbral 2 → mostrar media luna (intermedio). Si no → mostrar sol (con luz). Al oprimir A → mostrar el número''}. Léelo en voz alta: ¿tiene sentido de principio a fin? Corrige aquí, que es barato; corregir en bloques es caro.\\
-Abstracción & \textbf{Paso 3 --- Ármalo en MakeCode (20 min).} Ahora traduce tu pseudocódigo a bloques en \emph{makecode.microbit.org}. Necesitas: un bucle \textbf{«por siempre»}, la variable \textbf{luz} = \texttt{lightLevel}, una estructura \textbf{si / si no si / si no} con tus umbrales, e íconos distintos para cada rango. Añade: al \textbf{oprimir el botón A}, que \textbf{muestre el número} exacto. Prueba en el simulador moviendo la barrita de luz mientras lo armas.\\
-Algoritmo de armado & \textbf{Paso 4 --- Pruébalo en 5 escenarios (15 min).} Nadie da por buena una medida sin probarla. Llena la tabla: para cada escenario escribe el resultado \textbf{esperado} y luego el \textbf{real}. Escenarios: (1) sensor tapado, (2) bajo el bombillo, (3) en penumbra, (4) apuntando a la ventana, (5) apuntando a una pantalla encendida. \textbf{¿Coincidió esperado con real en los 5?} Si no, \textbf{ajusta un umbral y vuelve a probar} ---y anota qué cambiaste. Ese ajuste es la parte más valiosa.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{\textbf{Paso 1 --- Calibra primero (15 min).} Antes de programar, \textbf{mide condiciones conocidas} y anótalas. Con un micro:bit (o el simulador): lee \texttt{lightLevel} con el sensor \emph{tapado} (tu «oscuro»: anota el número), bajo la \emph{luz del salón} (tu «claro»: anota), y en \emph{penumbra} (media luz: anota). Con esos tres números, \textbf{decide tus dos umbrales} y escríbelos con su justificación: \emph{``pongo el umbral 1 en \_\_ porque tapado me dio \_\_''}. Sin este paso, todo lo demás es adivinar.}
+\milcpaso{2}{milcMagenta}{\textbf{Paso 2 --- Escribe el pseudocódigo (10 min).} En el cuaderno, la lógica en palabras: \emph{``Por siempre: leer luz. Si luz < umbral 1 → mostrar luna (oscuro). Si no, si luz < umbral 2 → mostrar media luna (intermedio). Si no → mostrar sol (con luz). Al oprimir A → mostrar el número''}. Léelo en voz alta: ¿tiene sentido de principio a fin? Corrige aquí, que es barato; corregir en bloques es caro.}
+\milcpaso{3}{milcMagenta}{\textbf{Paso 3 --- Ármalo en MakeCode (20 min).} Ahora traduce tu pseudocódigo a bloques en \emph{makecode.microbit.org}. Necesitas: un bucle \textbf{«por siempre»}, la variable \textbf{luz} = \texttt{lightLevel}, una estructura \textbf{si / si no si / si no} con tus umbrales, e íconos distintos para cada rango. Añade: al \textbf{oprimir el botón A}, que \textbf{muestre el número} exacto. Prueba en el simulador moviendo la barrita de luz mientras lo armas.}
+\milcpaso{4}{milcMagenta}{\textbf{Paso 4 --- Pruébalo en 5 escenarios (15 min).} Nadie da por buena una medida sin probarla. Llena la tabla: para cada escenario escribe el resultado \textbf{esperado} y luego el \textbf{real}. Escenarios: (1) sensor tapado, (2) bajo el bombillo, (3) en penumbra, (4) apuntando a la ventana, (5) apuntando a una pantalla encendida. \textbf{¿Coincidió esperado con real en los 5?} Si no, \textbf{ajusta un umbral y vuelve a probar} ---y anota qué cambiaste. Ese ajuste es la parte más valiosa.}
+\milcpaso{5}{milcMagenta}{\textbf{Paso 5 --- Contrasta con tu ojo del módulo 1 (10 min).} Aquí está el corazón del módulo. Recuerda: \textbf{más luz de fondo = más contaminación = menos estrellas visibles}. Así que donde tu ojo vio \emph{más} estrellas (cielo oscuro), el fotómetro debería dar un número \emph{más bajo}. Haz una \textbf{tabla de contraste}: lugar/noche · estrellas que conté (ojo) · lectura del fotómetro (instrumento) · ¿concuerdan? Escribe 2 frases: dónde el ojo y el instrumento \textbf{coinciden} y dónde \textbf{no}, y una hipótesis de por qué.}
+\milcpaso{6}{milcMagenta}{\textbf{Paso 6 --- Sé honesto con tu instrumento (5 min).} Ningún instrumento es perfecto. Escribe \textbf{una cosa en la que le crees} a tu fotómetro (p. ej. distinguir tu patio de una esquina con poste) y \textbf{una en la que no} (p. ej. medir estrellas débiles, para lo que el sensor es muy flojo). \emph{Reconocer el límite de tu propia pesa es lo que te separa de quien cree que su número es la verdad absoluta.}}
 
 \begin{drawbox}{milcMagenta}{Antes de dar por bueno tu fotómetro}
 \checkbox Calibré con condiciones conocidas (tapado, penumbra, luz) y anoté los números. \\[1mm]
@@ -370,9 +419,7 @@ Algoritmo de armado & \textbf{Paso 4 --- Pruébalo en 5 escenarios (15 min).} Na
 
 \puente{El producto no es «un programa que corre»: es un \textbf{instrumento calibrado} que da lecturas repetibles, y una \textbf{tabla que lo contrasta con tu ojo}. Eso ya es medir de verdad.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Fotómetro micro:bit calibrado + tabla de contraste instrumento vs ojo}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) Los umbrales están calibrados con medidas reales, no inventados. (2) Hay pseudocódigo escrito antes de los bloques, y el programa lo cumple. (3) El programa muestra un ícono por rango y el número exacto al oprimir A. (4) Los 5 escenarios de prueba están documentados (esperado/real) con al menos un ajuste. (5) La tabla de contraste instrumento vs ojo tiene 2 frases de análisis y 1 límite reconocido.
@@ -380,9 +427,7 @@ Producto de la sesión
 
 \puente{Antes de cerrar, sé honesto con tu instrumento: ¿en qué le crees y en qué no? Un buen investigador conoce los límites de su propia pesa.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -408,12 +453,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Cerramos con 3 voces que te ayudan a entender por qué construir un instrumento ---y no solo confiar en el ojo--- es un acto de rigor y de justicia.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{``El otro se revela realmente como otro\ldots como el pobre, el oprimido; el que, a la vera del camino, fuera del sistema, muestra su rostro sufriente y sin embargo desafiante: «¡Tengo hambre!, ¡tengo derecho a comer!»''}
+\textit{El otro se revela realmente como otro\ldots como el pobre, el oprimido; el que, a la vera del camino, fuera del sistema, muestra su rostro sufriente y sin embargo desafiante: «¡Tengo hambre!, ¡tengo derecho a comer!»}
 
 Dussel dice que el excluido no pide permiso: exige, y con derecho. El cielo de Cartago está «fuera del sistema» de los grandes observatorios, y por eso casi nadie lo mide. Cuando construyes un fotómetro con tus manos y produces una lectura que otro puede comprobar, le das a tu comunidad con qué reclamar: «aquí hay esta luz de más, y lo puedo demostrar». \textbf{Construir el instrumento es praxis: no te quedas contemplando el problema, lo transformas en evidencia.}
 
@@ -423,7 +466,7 @@ Dussel dice que el excluido no pide permiso: exige, y con derecho. El cielo de C
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Séneca · Cartas a Lucilio, 20 (c. 64 d.C.) · cuidado interior}
-\textit{``La filosofía enseña a obrar, no a hablar; quiere que cada uno viva a la manera que prescribe, que estén en armonía nuestras palabras con nuestras acciones.''}
+\textit{La filosofía enseña a obrar, no a hablar; quiere que cada uno viva a la manera que prescribe, que estén en armonía nuestras palabras con nuestras acciones.}
 
 Séneca desconfía del que solo habla. No basta con \emph{entender} que un instrumento mide mejor que el ojo: hay que \textbf{construirlo, calibrarlo y probarlo}. Un fotómetro que solo existe en tu cabeza no mide nada; uno armado, con sus umbrales justificados y sus cinco pruebas, sí. \textbf{La praxis ---hacer con las manos lo que sabes con la cabeza--- es lo que separa al que opina del que investiga.} Tus palabras («este cielo tiene mucha luz») recién valen cuando tus actos (medir, calibrar, comprobar) las respaldan.
 
@@ -433,7 +476,7 @@ Séneca desconfía del que solo habla. No basta con \emph{entender} que un instr
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{``Las tecnologías digitales están re-ontologizando la naturaleza misma de la infoesfera.''}
+\textit{Las tecnologías digitales están re-ontologizando la naturaleza misma de la infoesfera.}
 
 \emph{Re-ontologizar} suena difícil, pero dice algo simple: una tecnología no solo hace tareas, \textbf{cambia la naturaleza misma de aquello que toca}. Tu fotómetro no le \emph{añade} un número al cielo: transforma tu «me pareció oscuro» (una impresión privada, que se pierde) en un dato público (repetible, comparable, comprobable). El instrumento \textbf{re-ontologiza tu observación}: la vuelve parte de un saber compartido. Por eso construir la herramienta cambia no solo lo que mides, sino lo que \emph{cuenta} como conocer.
 
@@ -442,21 +485,24 @@ Séneca desconfía del que solo habla. No basta con \emph{entender} que un instr
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

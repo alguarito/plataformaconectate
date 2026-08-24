@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 6};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 6};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Comunicación\\responsable ---\\los 3 filtros\\antes de\\publicar}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 9-6-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 1 · Comunicación e identidad digital}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 1 · Comunicación e identidad digital}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Comunicación\\responsable ---\\los 3 filtros\\antes de\\publicar}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 9-6-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} Un \textbf{decálogo personal del comunicador responsable} en una hoja del cuaderno con \textbf{tus 3 filtros} (¿es verdad? ¿es necesario? ¿es amable?), \textbf{2 técnicas para no estar de acuerdo con respeto}, y \textbf{1 estrategia para defender a alguien que están atacando}. Más \textbf{3 mensajes reales} que tú reescribes en el cuaderno aplicando los filtros (un comentario, un chat, una historia). Firma de cierre: \emph{``Antes de pulsar enviar, paso por mis 3 filtros.''}.};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Un \textbf{decálogo personal del comunicador responsable} en una hoja del cuaderno con \textbf{tus 3 filtros} (¿es verdad? ¿es necesario? ¿es amable?), \textbf{2 técnicas para no estar de acuerdo con respeto}, y \textbf{1 estrategia para defender a alguien que están atacando}. Más \textbf{3 mensajes reales} que tú reescribes en el cuaderno aplicando los filtros (un comentario, un chat, una historia). Firma de cierre: \emph{``Antes de pulsar enviar, paso por mis 3 filtros.''}.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Comunicación responsable --- los 3 filtros antes de publicar}
@@ -258,30 +322,27 @@ Producto final & Un \textbf{decálogo personal del comunicador responsable} en u
 
 \puente{Hoy haces 4 cosas: aplicas los 3 filtros a mensajes reales, aprendes a discrepar sin pelear, decides cuándo defender a alguien, y firmas tu decálogo.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Empezamos analizando 5 mensajes que parecen normales pero rompen los filtros.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · ANALIZA --- 5 mensajes que parecen normales} (12 min · individual). Lee los 5 mensajes y para cada uno, en el cuaderno, escribe: \textbf{(a) ¿Pasaría el filtro de ``es verdad''?} \textbf{(b) ¿Pasaría el de ``es necesario''?} \textbf{(c) ¿Pasaría el de ``es amable''?}. Después decide \emph{sí, lo envío} o \emph{no, lo reescribo}. \textbf{M1:} \emph{``Vi que Pedro lloró en clase, mándeselo al grupo''}. \textbf{M2:} \emph{``Profe, su clase de hoy estuvo aburridísima.''} (en el chat del salón). \textbf{M3:} \emph{``Reenvío: en Cartago hay un virus que mata por mensajes, no abran links''}. \textbf{M4:} \emph{``Lara, no entendí el ejercicio 3, ¿me lo explicas?''}. \textbf{M5:} \emph{``El uniforme de Sara hoy estaba feo''} (en una historia pública).
 \end{softbox}
 
-\checkbox Leí los 5 mensajes con calma.\\
-\checkbox Apliqué los 3 filtros a cada uno.\\
-\checkbox Decidí cuáles enviaría y cuáles reescribiría, con razones.
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Leí los 5 mensajes con calma.}
+\milccheckrow{Apliqué los 3 filtros a cada uno.}
+\milccheckrow{Decidí cuáles enviaría y cuáles reescribiría, con razones.}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Después de los mensajes, aprendes las 3 técnicas: filtrar, discrepar con respeto, ser \emph{upstander}.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Los 3 filtros son la base. Pero también necesitas \textbf{2 técnicas más} para los momentos difíciles: cuando no estás de acuerdo con alguien, y cuando ves que están atacando a otro. Hoy aprendes las 3 herramientas.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & \textbf{Técnica 1 --- Los 3 filtros antes de publicar.} \emph{Filtro 1: ¿Es verdad?} Verifico que lo que digo o reenvío sea cierto. Si no estoy seguro, no lo mando. Las cadenas falsas, las noticias raras, los rumores --- no pasan. \emph{Filtro 2: ¿Es necesario?} ¿Aporta algo? ¿Suma? Si solo es ruido o chisme, no pasa. \emph{Filtro 3: ¿Es amable?} ¿Lo diría en persona, frente a la persona? ¿Lo diría delante de mi mamá? Si no, no pasa.\\
-2. Reconocimiento de patrones & \textbf{Técnica 2 --- Discrepar sin pelear.} Puedes pensar diferente sin convertir todo en pelea. \emph{Paso A:} antes de responder con rabia, espera 5 minutos. \emph{Paso B:} usa la fórmula \textbf{``Yo siento... cuando... porque...''} en vez de \textbf{``Tú eres... siempre...''}. Ejemplo: en vez de \emph{``Eres un mentiroso''}, di \emph{``Yo siento que no me crees cuando dices eso, porque vi otra cosa''}. \emph{Paso C:} acepta que el otro puede no cambiar de opinión --- y aun así pueden seguir hablando.\\
-3. Abstracción & \textbf{Técnica 3 --- Ser \emph{upstander} (no \emph{bystander}).} Cuando ves que están atacando a alguien en internet, hay 3 opciones: (a) callar y mirar (\emph{bystander} = espectador), (b) unirse al ataque, (c) defender al atacado (\emph{upstander} = el que se para). \textbf{Defender no es pelear:} es escribirle \emph{en privado} a la víctima (\emph{``vi lo que pasa, ¿estás bien?''}), avisar a un adulto si es grave, o decir en el grupo algo neutral como \emph{``Eso no me parece justo''}. Cada vez que tú defiendes, los otros también se animan a hacerlo.\\
-4. Algoritmo conceptual & \textbf{4 errores en comunicación digital que destruyen amistades.} (1) \textbf{Escribir con rabia caliente} --- siempre se sale peor. La regla es: si tienes rabia, espera. (2) \textbf{Sacar conversaciones de contexto} --- mandar capturas a otros mostrando solo una parte. La parte completa cambia todo. (3) \textbf{Reenviar lo que te contaron en privado} --- rompe la confianza más rápido que nada. (4) \textbf{Sumarte a un ataque por miedo} --- pasa todo el tiempo: alguien empieza a burlarse de un compañero y otros se suman para no quedar mal. Eso te hace cómplice.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{\textbf{Técnica 1 --- Los 3 filtros antes de publicar.} \emph{Filtro 1: ¿Es verdad?} Verifico que lo que digo o reenvío sea cierto. Si no estoy seguro, no lo mando. Las cadenas falsas, las noticias raras, los rumores --- no pasan. \emph{Filtro 2: ¿Es necesario?} ¿Aporta algo? ¿Suma? Si solo es ruido o chisme, no pasa. \emph{Filtro 3: ¿Es amable?} ¿Lo diría en persona, frente a la persona? ¿Lo diría delante de mi mamá? Si no, no pasa.}
+\milcpaso{2}{milcTurquesa}{\textbf{Técnica 2 --- Discrepar sin pelear.} Puedes pensar diferente sin convertir todo en pelea. \emph{Paso A:} antes de responder con rabia, espera 5 minutos. \emph{Paso B:} usa la fórmula \textbf{``Yo siento... cuando... porque...''} en vez de \textbf{``Tú eres... siempre...''}. Ejemplo: en vez de \emph{``Eres un mentiroso''}, di \emph{``Yo siento que no me crees cuando dices eso, porque vi otra cosa''}. \emph{Paso C:} acepta que el otro puede no cambiar de opinión --- y aun así pueden seguir hablando.}
+\milcpaso{3}{milcTurquesa}{\textbf{Técnica 3 --- Ser \emph{upstander} (no \emph{bystander}).} Cuando ves que están atacando a alguien en internet, hay 3 opciones: (a) callar y mirar (\emph{bystander} = espectador), (b) unirse al ataque, (c) defender al atacado (\emph{upstander} = el que se para). \textbf{Defender no es pelear:} es escribirle \emph{en privado} a la víctima (\emph{``vi lo que pasa, ¿estás bien?''}), avisar a un adulto si es grave, o decir en el grupo algo neutral como \emph{``Eso no me parece justo''}. Cada vez que tú defiendes, los otros también se animan a hacerlo.}
+\milcpaso{4}{milcTurquesa}{\textbf{4 errores en comunicación digital que destruyen amistades.} (1) \textbf{Escribir con rabia caliente} --- siempre se sale peor. La regla es: si tienes rabia, espera. (2) \textbf{Sacar conversaciones de contexto} --- mandar capturas a otros mostrando solo una parte. La parte completa cambia todo. (3) \textbf{Reenviar lo que te contaron en privado} --- rompe la confianza más rápido que nada. (4) \textbf{Sumarte a un ataque por miedo} --- pasa todo el tiempo: alguien empieza a burlarse de un compañero y otros se suman para no quedar mal. Eso te hace cómplice.}
 
 \begin{drawbox}{milcTurquesa}{Las 3 técnicas del comunicador responsable}
 \textbf{1.} Los 3 filtros antes de publicar: ¿verdad? + ¿necesario? + ¿amable? \\[1mm]
@@ -327,23 +381,18 @@ Los 3 filtros son la base. Pero también necesitas \textbf{2 técnicas más} par
 
 \puente{Con las técnicas en mente, escribes tu decálogo y reescribes 3 mensajes propios.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · CREA --- Tu decálogo personal + 3 mensajes reescritos} (28 min · individual). Vas a hacer en una hoja del cuaderno tu \textbf{decálogo del comunicador responsable} (10 reglas tuyas) y vas a \textbf{reescribir 3 mensajes} reales que tú o un compañero hayan enviado, aplicando los 3 filtros y las 2 técnicas.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & \textbf{Paso 1 --- Encabezado y formato.} En la parte superior escribe el título: \textbf{``Mi decálogo del comunicador responsable''} y debajo: \emph{``[Tu nombre], grado 6[tu letra], año 2026''}. Subraya el título. Numera del 1 al 10 en la hoja antes de empezar a escribir el contenido.\\
-Patrones & \textbf{Paso 2 --- Las 10 reglas.} Escribe 10 reglas \textbf{con tus palabras}. Las 3 primeras son los 3 filtros (verdad, necesario, amable). Las siguientes 7 son tuyas: pueden incluir cosas como \emph{``Espero 5 minutos antes de responder con rabia''}, \emph{``No reenvío cadenas''}, \emph{``Si veo a alguien siendo atacado, escribo en privado a la víctima''}, etc. No copies; piensa cuáles aplican a tu vida.\\
-Abstracción & \textbf{Paso 3 --- Bloque de mensajes reescritos.} Debajo del decálogo, escribe el subtítulo \textbf{``3 mensajes reescritos''}. Vas a tomar 3 mensajes que \textbf{tú o un compañero hayan enviado} en los últimos días (sin nombrarlos), uno por cada tipo: un \emph{comentario en redes}, un \emph{chat de grupo}, una \emph{historia o publicación}.\\
-Algoritmo de armado & \textbf{Paso 4 --- Mensaje 1.} Escribe el mensaje original (sin nombres) en \emph{itálicas}. Debajo escribe: \emph{``Falla el filtro de [verdad/necesario/amable] porque [razón]''}. Después escribe \textbf{tu versión nueva} que sí pasa los 3 filtros. Comparas las 2 versiones uno al lado del otro si quieres.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{\textbf{Paso 1 --- Encabezado y formato.} En la parte superior escribe el título: \textbf{``Mi decálogo del comunicador responsable''} y debajo: \emph{``[Tu nombre], grado 6[tu letra], año 2026''}. Subraya el título. Numera del 1 al 10 en la hoja antes de empezar a escribir el contenido.}
+\milcpaso{2}{milcMagenta}{\textbf{Paso 2 --- Las 10 reglas.} Escribe 10 reglas \textbf{con tus palabras}. Las 3 primeras son los 3 filtros (verdad, necesario, amable). Las siguientes 7 son tuyas: pueden incluir cosas como \emph{``Espero 5 minutos antes de responder con rabia''}, \emph{``No reenvío cadenas''}, \emph{``Si veo a alguien siendo atacado, escribo en privado a la víctima''}, etc. No copies; piensa cuáles aplican a tu vida.}
+\milcpaso{3}{milcMagenta}{\textbf{Paso 3 --- Bloque de mensajes reescritos.} Debajo del decálogo, escribe el subtítulo \textbf{``3 mensajes reescritos''}. Vas a tomar 3 mensajes que \textbf{tú o un compañero hayan enviado} en los últimos días (sin nombrarlos), uno por cada tipo: un \emph{comentario en redes}, un \emph{chat de grupo}, una \emph{historia o publicación}.}
+\milcpaso{4}{milcMagenta}{\textbf{Paso 4 --- Mensaje 1.} Escribe el mensaje original (sin nombres) en \emph{itálicas}. Debajo escribe: \emph{``Falla el filtro de [verdad/necesario/amable] porque [razón]''}. Después escribe \textbf{tu versión nueva} que sí pasa los 3 filtros. Comparas las 2 versiones uno al lado del otro si quieres.}
+\milcpaso{5}{milcMagenta}{\textbf{Paso 5 --- Mensaje 2 y 3.} Repite el Paso 4 con los otros 2 mensajes. Procura que los 3 sean de \emph{distintos contextos}: chat, comentario público, historia. Eso te entrena para los 3 espacios distintos.}
+\milcpaso{6}{milcMagenta}{\textbf{Paso 6 --- Firma de cierre.} En la esquina inferior derecha escribe la frase: \textbf{``Antes de pulsar enviar, paso por mis 3 filtros.''}. Subráyala. Firma con nombre completo y fecha. La idea es que veas esa hoja antes de mandar algo que dudes.}
 
 \begin{drawbox}{milcMagenta}{Antes de cerrar tu decálogo}
 \checkbox El decálogo tiene 10 reglas numeradas. \\[1mm]
@@ -366,9 +415,7 @@ Algoritmo de armado & \textbf{Paso 4 --- Mensaje 1.} Escribe el mensaje original
 
 \puente{El producto es el decálogo + los 3 mensajes reescritos.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Decálogo personal + 3 mensajes reescritos · firmado}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) El decálogo tiene exactamente 10 reglas numeradas. (2) Las 3 primeras son los 3 filtros, las 7 siguientes son personalizadas. (3) Hay 3 mensajes reescritos en 3 contextos distintos. (4) Cada uno muestra la versión original y la versión nueva. (5) Está firmado, fechado y con la frase de cierre visible.
@@ -376,9 +423,7 @@ Producto de la sesión
 
 \puente{Antes de salir, miras tus 3 mensajes nuevos: ¿pasan los 3 filtros sin trampa?}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -404,12 +449,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Cerramos con 3 voces que te ayudan a entender por qué hablar bien es un acto de valentía.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{````Decir la verdad sin amabilidad es violencia. Decirla con amabilidad es justicia.''''}
+\textit{``Decir la verdad sin amabilidad es violencia. Decirla con amabilidad es justicia.''}
 
 Hay personas que se creen \emph{honestas} solo por decir cualquier cosa cruda: \emph{``yo digo lo que pienso''}. Pero decir la verdad sin cuidado no es honestidad, es violencia. \textbf{La verdad amable existe y es posible}: la usan los buenos profes, los médicos sensatos, los amigos verdaderos. La técnica de los 3 filtros te entrena para eso: poder decir lo que piensas sin destruir al otro.
 
@@ -419,7 +462,7 @@ Hay personas que se creen \emph{honestas} solo por decir cualquier cosa cruda: \
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
-\textit{````El que habla pensando, manda dos veces. El que habla sin pensar, se arrepiente dos veces.''''}
+\textit{``El que habla pensando, manda dos veces. El que habla sin pensar, se arrepiente dos veces.''}
 
 Pensar antes de hablar es más rápido que arrepentirse después. \textbf{Cada minuto pensando ahorra horas explicando.} El comunicador responsable no es lento: es \emph{eficiente}. Filtra de una, dice lo que sirve, no tiene que pedir disculpas todo el tiempo. Tu yo del futuro te lo agradece.
 
@@ -429,7 +472,7 @@ Pensar antes de hablar es más rápido que arrepentirse después. \textbf{Cada m
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{````Cada mensaje que envías construye o destruye relaciones, sin punto medio. No hay mensajes neutros.''''}
+\textit{``Cada mensaje que envías construye o destruye relaciones, sin punto medio. No hay mensajes neutros.''}
 
 Hay gente que cree que un mensaje es solo un mensaje, que ``no es para tanto''. \textbf{En realidad cada mensaje suma o resta} a una relación. Los chats con tus amigos del salón están hechos de \emph{cientos de mensajes pequeños}, cada uno construyó o desgastó confianza. Si vas mensaje por mensaje cuidando, la amistad crece. Si vas descuidando, se va apagando sin que nadie sepa cuándo.
 
@@ -438,21 +481,24 @@ Hay gente que cree que un mensaje es solo un mensaje, que ``no es para tanto''. 
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

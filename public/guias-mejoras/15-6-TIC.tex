@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 6};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 6};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Hardware vs\\software ---\\el cuerpo\\y las\\instrucciones}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 15-6-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 2 · Hardware y software}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 2 · Hardware y software}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Hardware vs\\software ---\\el cuerpo\\y las\\instrucciones}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 15-6-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} Un \textbf{mapa de ``Mi computador''} dividido en dos mitades (hardware a la izquierda, software a la derecha), donde clasificas \textbf{15 elementos} reales que existen en tu equipo (o que has visto). Más \textbf{una analogía dibujada}: la \emph{costurera del barrio} con su tela (hardware) y su patrón de papel (software). Más \textbf{una frase comparativa propia} de 1-2 líneas que diga \emph{qué hace cada parte} con tus palabras.};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Un \textbf{mapa de ``Mi computador''} dividido en dos mitades (hardware a la izquierda, software a la derecha), donde clasificas \textbf{15 elementos} reales que existen en tu equipo (o que has visto). Más \textbf{una analogía dibujada}: la \emph{costurera del barrio} con su tela (hardware) y su patrón de papel (software). Más \textbf{una frase comparativa propia} de 1-2 líneas que diga \emph{qué hace cada parte} con tus palabras.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Hardware vs software --- el cuerpo y las instrucciones}
@@ -258,30 +322,27 @@ Producto final & Un \textbf{mapa de ``Mi computador''} dividido en dos mitades (
 
 \puente{Hoy haces 4 cosas: clasificas 15 cosas en hardware o software, aprendes las 3 diferencias clave, dibujas el mapa con la analogía de la costurera, y firmas tu trabajo.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Empezamos con un juego rápido: te leo 15 cosas y tú las clasificas.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- Clasifica 15 cosas} (12 min · individual). En el cuaderno, dibuja 2 columnas: encabezado izquierda \textbf{HARDWARE} (lo que se toca), encabezado derecha \textbf{SOFTWARE} (las instrucciones). Después clasifica estos \textbf{15 elementos}: \emph{(1) teclado, (2) Windows 11, (3) Roblox, (4) tarjeta madre, (5) la app de WhatsApp, (6) el monitor, (7) Microsoft Word, (8) el ratón inalámbrico, (9) tu foto de perfil de TikTok, (10) la fuente de poder, (11) Chrome (el navegador), (12) la cámara web, (13) el sistema operativo Android del celular, (14) los audífonos, (15) tu archivo de tarea en Word}. Usa la regla simple: \emph{si lo puedes tocar con la mano, es hardware; si no, es software}.
 \end{softbox}
 
-\checkbox Dibujé las 2 columnas en el cuaderno.\\
-\checkbox Clasifiqué los 15 elementos en una de las 2 columnas.\\
-\checkbox Apliqué la regla del toque (si lo puedo tocar, hardware; si no, software).
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Dibujé las 2 columnas en el cuaderno.}
+\milccheckrow{Clasifiqué los 15 elementos en una de las 2 columnas.}
+\milccheckrow{Apliqué la regla del toque (si lo puedo tocar, hardware; si no, software).}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Después del juego, ves las 3 diferencias que SIEMPRE separan hardware de software.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 La regla del toque es la primera ayuda. Ahora vas a aprender \textbf{3 diferencias clave} que siempre separan hardware de software. Si dominas las 3, sabrás clasificar cualquier cosa que aparezca en el futuro.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & \textbf{Diferencia 1 --- ¿Lo puedo tocar?} El hardware se toca; el software no. \emph{Hardware:} teclado, monitor, gabinete, cable, chip. \emph{Software:} Windows, una app, un archivo. Esta es la prueba más rápida. \textbf{Diferencia 2 --- ¿Dónde está físicamente?} El hardware está \emph{afuera o adentro} del gabinete, pero ocupa espacio físico. El software vive \emph{dentro del hardware} (guardado en disco duro o RAM). Si lo metes en una caja para mudarte, son piezas de hardware. Si lo mandas por internet, son archivos de software.\\
-2. Reconocimiento de patrones & \textbf{Diferencia 3 --- ¿Cómo se ``daña'' y se ``repara''?} El hardware se daña \emph{físicamente} (se cae, se moja, se quema). Se repara cambiando la pieza dañada (\emph{``cambio el ratón''}). El software se daña con \emph{errores, virus, archivos corruptos}. Se repara con \emph{actualización, reinstalación o borrar}. \textbf{Si tu computador no enciende y huele a quemado, es hardware. Si todo enciende pero ningún programa abre, es software}.\\
-3. Abstracción & \textbf{Aplicación a tu pregunta-puente.} Cuando la pantalla del celular se raja, eso es \textbf{hardware} (físico). Cuando la cambias en el técnico, tus fotos siguen ahí porque están en el \textbf{disco duro} (también hardware, pero distinto al de la pantalla) y los archivos son \textbf{software}. Por eso \emph{cambiar la pantalla no borra tus fotos}: el hardware roto fue la pantalla, no el disco; y el software (tus fotos) vive aparte.\\
-4. Algoritmo conceptual & \textbf{Las 3 categorías de software más comunes.} (1) \textbf{Sistema operativo (SO)}: el ``gerente'' que coordina todo --- Windows, Linux, Android, iOS. Sin él el computador no funciona. (2) \textbf{Programas o apps}: hacen una tarea específica --- Word (escribir), Chrome (navegar), TikTok (video), Roblox (juego). (3) \textbf{Archivos}: lo que tú creas o descargas --- una foto, un video, un documento. \emph{Los 3 son software}, pero hacen cosas distintas.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{\textbf{Diferencia 1 --- ¿Lo puedo tocar?} El hardware se toca; el software no. \emph{Hardware:} teclado, monitor, gabinete, cable, chip. \emph{Software:} Windows, una app, un archivo. Esta es la prueba más rápida. \textbf{Diferencia 2 --- ¿Dónde está físicamente?} El hardware está \emph{afuera o adentro} del gabinete, pero ocupa espacio físico. El software vive \emph{dentro del hardware} (guardado en disco duro o RAM). Si lo metes en una caja para mudarte, son piezas de hardware. Si lo mandas por internet, son archivos de software.}
+\milcpaso{2}{milcTurquesa}{\textbf{Diferencia 3 --- ¿Cómo se ``daña'' y se ``repara''?} El hardware se daña \emph{físicamente} (se cae, se moja, se quema). Se repara cambiando la pieza dañada (\emph{``cambio el ratón''}). El software se daña con \emph{errores, virus, archivos corruptos}. Se repara con \emph{actualización, reinstalación o borrar}. \textbf{Si tu computador no enciende y huele a quemado, es hardware. Si todo enciende pero ningún programa abre, es software}.}
+\milcpaso{3}{milcTurquesa}{\textbf{Aplicación a tu pregunta-puente.} Cuando la pantalla del celular se raja, eso es \textbf{hardware} (físico). Cuando la cambias en el técnico, tus fotos siguen ahí porque están en el \textbf{disco duro} (también hardware, pero distinto al de la pantalla) y los archivos son \textbf{software}. Por eso \emph{cambiar la pantalla no borra tus fotos}: el hardware roto fue la pantalla, no el disco; y el software (tus fotos) vive aparte.}
+\milcpaso{4}{milcTurquesa}{\textbf{Las 3 categorías de software más comunes.} (1) \textbf{Sistema operativo (SO)}: el ``gerente'' que coordina todo --- Windows, Linux, Android, iOS. Sin él el computador no funciona. (2) \textbf{Programas o apps}: hacen una tarea específica --- Word (escribir), Chrome (navegar), TikTok (video), Roblox (juego). (3) \textbf{Archivos}: lo que tú creas o descargas --- una foto, un video, un documento. \emph{Los 3 son software}, pero hacen cosas distintas.}
 
 \begin{drawbox}{milcTurquesa}{Las 3 diferencias hardware vs software}
 \textbf{1.} ¿Lo puedo tocar? Hardware sí, software no. \\[1mm]
@@ -327,23 +381,18 @@ La regla del toque es la primera ayuda. Ahora vas a aprender \textbf{3 diferenci
 
 \puente{Con las 3 diferencias en mente, dibujas tu mapa de ``Mi computador'' y la costurera de doña Carmen.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · CREA --- Mapa de ``Mi computador'' + la costurera} (28 min · individual). En una hoja completa del cuaderno vas a hacer 2 cosas. \textbf{Arriba (2/3 de la hoja):} mapa de \emph{Mi computador} con los 15 elementos clasificados en hardware y software. \textbf{Abajo (1/3 de la hoja):} dibujo de la \emph{costurera de doña Carmen} con su tela (hardware) y su patrón (software), más tu frase comparativa.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & \textbf{Paso 1 --- Título y división.} Arriba escribe el título: \textbf{``Mi computador --- hardware y software''} y debajo: \emph{``[Tu nombre], grado 6[tu letra], año 2026''}. Subraya el título. \textbf{Divide los 2/3 superiores de la hoja en 2 mitades verticales} con una línea: izquierda HARDWARE, derecha SOFTWARE.\\
-Patrones & \textbf{Paso 2 --- Llena las 2 columnas.} En la mitad izquierda (HARDWARE) escribe en lista los elementos del hardware de la Actividad 1, dibujando un ícono pequeño al lado de cada uno (un teclado para ``teclado'', un cuadrado para ``monitor'', etc.). En la mitad derecha (SOFTWARE), haz lo mismo con los del software --- aquí los íconos pueden ser logos simples (la W de Word, el círculo verde de WhatsApp, una hoja para los archivos).\\
-Abstracción & \textbf{Paso 3 --- La costurera.} En el tercio inferior dibuja a \textbf{doña Carmen sentada en su máquina de coser}. A su izquierda dibuja un \textbf{rollo de tela} con la etiqueta: \emph{``Tela = HARDWARE (lo que se toca)''}. A su derecha dibuja un \textbf{patrón de papel} con la etiqueta: \emph{``Patrón = SOFTWARE (las instrucciones)''}. No tiene que estar perfecto, solo que se vea la idea.\\
-Algoritmo de armado & \textbf{Paso 4 --- Tu frase comparativa.} Debajo de doña Carmen, escribe una frase tuya de 1-2 líneas que compare hardware y software con tus palabras. Ejemplo: \emph{``El hardware es el cuerpo del computador, el software es su voz: sin uno o sin otro, no me puede contar nada.''}. No copies; invéntala.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{\textbf{Paso 1 --- Título y división.} Arriba escribe el título: \textbf{``Mi computador --- hardware y software''} y debajo: \emph{``[Tu nombre], grado 6[tu letra], año 2026''}. Subraya el título. \textbf{Divide los 2/3 superiores de la hoja en 2 mitades verticales} con una línea: izquierda HARDWARE, derecha SOFTWARE.}
+\milcpaso{2}{milcMagenta}{\textbf{Paso 2 --- Llena las 2 columnas.} En la mitad izquierda (HARDWARE) escribe en lista los elementos del hardware de la Actividad 1, dibujando un ícono pequeño al lado de cada uno (un teclado para ``teclado'', un cuadrado para ``monitor'', etc.). En la mitad derecha (SOFTWARE), haz lo mismo con los del software --- aquí los íconos pueden ser logos simples (la W de Word, el círculo verde de WhatsApp, una hoja para los archivos).}
+\milcpaso{3}{milcMagenta}{\textbf{Paso 3 --- La costurera.} En el tercio inferior dibuja a \textbf{doña Carmen sentada en su máquina de coser}. A su izquierda dibuja un \textbf{rollo de tela} con la etiqueta: \emph{``Tela = HARDWARE (lo que se toca)''}. A su derecha dibuja un \textbf{patrón de papel} con la etiqueta: \emph{``Patrón = SOFTWARE (las instrucciones)''}. No tiene que estar perfecto, solo que se vea la idea.}
+\milcpaso{4}{milcMagenta}{\textbf{Paso 4 --- Tu frase comparativa.} Debajo de doña Carmen, escribe una frase tuya de 1-2 líneas que compare hardware y software con tus palabras. Ejemplo: \emph{``El hardware es el cuerpo del computador, el software es su voz: sin uno o sin otro, no me puede contar nada.''}. No copies; invéntala.}
+\milcpaso{5}{milcMagenta}{\textbf{Paso 5 --- Conexiones cruzadas.} Mira tu mapa de arriba. Traza 3 flechas pequeñas que conecten un elemento del hardware con un elemento del software que lo use. Por ejemplo: flecha del \emph{teclado} al \emph{Word} (porque escribes con teclado en Word). Flecha del \emph{ratón} al \emph{Chrome}. Flecha de los \emph{audífonos} a un \emph{archivo de música}. Esto muestra que hardware y software \emph{trabajan juntos}.}
+\milcpaso{6}{milcMagenta}{\textbf{Paso 6 --- Firma.} Al final, en la esquina inferior derecha, firma con nombre completo y fecha. Subraya tu frase comparativa para que se vea claramente.}
 
 \begin{drawbox}{milcMagenta}{Antes de mostrar tu mapa}
 \checkbox La hoja está dividida en 2 mitades verticales (hardware / software). \\[1mm]
@@ -366,9 +415,7 @@ Algoritmo de armado & \textbf{Paso 4 --- Tu frase comparativa.} Debajo de doña 
 
 \puente{El producto es ese mapa firmado con 15 elementos clasificados + analogía + frase comparativa.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Mapa hardware/software con 15 elementos + analogía costurera · firmado}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) El mapa cubre los 2/3 superiores con 2 columnas claras. (2) Los 15 elementos están clasificados correctamente. (3) Cada elemento tiene un ícono pequeño que lo represente. (4) Está la costurera con tela y patrón etiquetados. (5) La frase comparativa propia está visible y firmada.
@@ -376,9 +423,7 @@ Producto de la sesión
 
 \puente{Antes de salir, mira tu mapa: ¿podrías tachar todos los del hardware y ver qué queda en software? ¿Te queda algo del lado equivocado?}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -404,12 +449,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Cerramos con 3 voces que te ayudan a entender por qué la unión entre cuerpo e instrucción es lo que da vida a la tecnología.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{````El cuerpo y la palabra son inseparables. Un trabajo sin las dos manos no se completa.''''}
+\textit{``El cuerpo y la palabra son inseparables. Un trabajo sin las dos manos no se completa.''}
 
 Doña Carmen no podía coser solo con tela. El relojero no podía arreglar solo con martillo. Tu computador no puede funcionar solo con hardware. \textbf{Hardware y software son las 2 manos del trabajo digital}: una sostiene, la otra dirige. La gente que entiende esta unión deja de pensar que la tecnología es magia y empieza a verla como \emph{trabajo de personas con dos manos}.
 
@@ -419,7 +462,7 @@ Doña Carmen no podía coser solo con tela. El relojero no podía arreglar solo 
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
-\textit{````Cuida el cuerpo. Cuida la palabra. Lo que está adentro y lo que está afuera son uno.''''}
+\textit{``Cuida el cuerpo. Cuida la palabra. Lo que está adentro y lo que está afuera son uno.''}
 
 Si maltratas tu hardware (golpes, suciedad, mojadura), el software no puede correr bien aunque sea el mejor del mundo. Si descuidas el software (no actualizas, te llenas de virus, instalas cualquier cosa), el hardware no rinde aunque sea el más caro. \textbf{El cuidado del computador es cuidar ambos a la vez}, como un solo gesto.
 
@@ -429,7 +472,7 @@ Si maltratas tu hardware (golpes, suciedad, mojadura), el software no puede corr
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{````La distinción entre lo físico y lo digital es práctica, no esencial: ambos son reales.''''}
+\textit{``La distinción entre lo físico y lo digital es práctica, no esencial: ambos son reales.''}
 
 Mucha gente cree que \emph{``lo digital no es real porque no se toca''}. Falso. \textbf{Una foto digital es tan real como una foto en papel}; un programa es tan real como una herramienta. Solo que existen de otra manera. Aprender a distinguir hardware y software es aprender que \emph{lo real toma muchas formas} y que todas merecen el mismo cuidado.
 
@@ -438,21 +481,24 @@ Mucha gente cree que \emph{``lo digital no es real porque no se toca''}. Falso. 
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

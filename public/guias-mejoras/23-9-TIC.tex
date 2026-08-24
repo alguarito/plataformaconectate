@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 9};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 9};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Fórmulas básicas ---\\SUMA, PROMEDIO,\\MAX, MIN, CONTAR}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 23-9-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 3 · Datos --- del registro al insight}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 3 · Datos --- del registro al insight}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Fórmulas básicas ---\\SUMA, PROMEDIO,\\MAX, MIN, CONTAR}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 23-9-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} 5 indicadores básicos calculados con fórmula sobre la propia tabla del estudiante, con interpretación de qué significa cada uno en su contexto};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+5 indicadores básicos calculados con fórmula sobre la propia tabla del estudiante, con interpretación de qué significa cada uno en su contexto
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Fórmulas básicas --- SUMA, PROMEDIO, MAX, MIN, CONTAR}
@@ -258,30 +322,27 @@ Producto final & 5 indicadores básicos calculados con fórmula sobre la propia 
 
 \puente{Antes de empezar, mira el viaje completo. La sesión 2 te dio la tabla limpia; hoy le aplicas las primeras 5 fórmulas. Es la base operativa de todo Excel --- sin estas 5 nada más funciona; con estas 5 el 80\% de los problemas cotidianos se resuelve.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Antes de teorizar, vas a calcular mentalmente versus con fórmula los mismos 5 indicadores sobre tu propia tabla. Verás dónde tu mente es más rápida y dónde la fórmula evita errores.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- Mente vs fórmula} (15 min · individual). Toma tu tabla de la sesión 2 (15+ filas con columna numérica). Calcula \emph{mentalmente}: total, promedio, máximo, mínimo, cantidad de filas. Anota tus resultados y el tiempo que te tomó. Después aplica las 5 fórmulas en la hoja y compara: ¿qué método fue más rápido?, ¿qué método dio resultado correcto?
 \end{softbox}
 
-\checkbox Hice los 5 cálculos mentalmente con tiempo cronometrado.\\
-\checkbox Apliqué las 5 fórmulas (SUMA, PROMEDIO, MAX, MIN, CONTAR).\\
-\checkbox {'Comparé honestamente': 'cuál ganó en velocidad, cuál ganó en precisión.'}
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Hice los 5 cálculos mentalmente con tiempo cronometrado.}
+\milccheckrow{Apliqué las 5 fórmulas (SUMA, PROMEDIO, MAX, MIN, CONTAR).}
+\milccheckrow{{'Comparé honestamente': 'cuál ganó en velocidad, cuál ganó en precisión.'}}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Ya viste el contraste. Ahora vamos a entender la \textbf{anatomía} de cada una de las 5 fórmulas: qué pregunta responde, qué rango toma, qué tipo de dato exige, qué error frecuente da.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Las 5 fórmulas básicas comparten sintaxis pero responden preguntas distintas. Vamos a descomponerlas con los pilares del pensamiento computacional para que sepas exactamente cuándo aplicar cuál.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & Las 5 fórmulas se descomponen así: (1) \texttt{=SUMA(rango)} responde \emph{¿cuánto en total?}, exige columna numérica; (2) \texttt{=PROMEDIO(rango)} responde \emph{¿cuánto típicamente?}, exige columna numérica, ignora vacías; (3) \texttt{=MAX(rango)} responde \emph{¿cuál es el más alto?}, exige numérica o fecha; (4) \texttt{=MIN(rango)} responde \emph{¿cuál es el más bajo?}, igual que MAX; (5) \texttt{=CONTAR(rango)} cuenta solo números, mientras \texttt{=CONTARA(rango)} cuenta cualquier celda no vacía.\\
-2. Reconocimiento de patrones & Toda fórmula sigue el patrón \textbf{``rango antes que celda suelta''}: nunca selecciones celda por celda; siempre toma un rango (B2:B16). Si tu tabla crece después, usa rangos abiertos (B:B) o tablas estructuradas. Esa disciplina hace que las fórmulas sigan funcionando cuando agregas filas.\\
-3. Abstracción & Lo esencial del cálculo cabe en una pregunta: \emph{¿qué decisión voy a tomar con este número?}. SUMA total de ventas: decisión de pedido. PROMEDIO de notas: decisión pedagógica. MAX: identificar caso destacado. MIN: identificar caso en riesgo. CONTAR: tamaño de la muestra. Sin decisión asociada, el número es decoración.\\
-4. Algoritmo conceptual & Pasos para aplicar cualquier fórmula: (1) identifica la pregunta; (2) elige la fórmula que la responde; (3) selecciona el rango correcto (toda la columna sin encabezado); (4) verifica que el tipo de dato sea apropiado; (5) interpreta el resultado en términos de la pregunta original.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{Las 5 fórmulas se descomponen así: (1) \texttt{=SUMA(rango)} responde \emph{¿cuánto en total?}, exige columna numérica; (2) \texttt{=PROMEDIO(rango)} responde \emph{¿cuánto típicamente?}, exige columna numérica, ignora vacías; (3) \texttt{=MAX(rango)} responde \emph{¿cuál es el más alto?}, exige numérica o fecha; (4) \texttt{=MIN(rango)} responde \emph{¿cuál es el más bajo?}, igual que MAX; (5) \texttt{=CONTAR(rango)} cuenta solo números, mientras \texttt{=CONTARA(rango)} cuenta cualquier celda no vacía.}
+\milcpaso{2}{milcTurquesa}{Toda fórmula sigue el patrón \textbf{``rango antes que celda suelta''}: nunca selecciones celda por celda; siempre toma un rango (B2:B16). Si tu tabla crece después, usa rangos abiertos (B:B) o tablas estructuradas. Esa disciplina hace que las fórmulas sigan funcionando cuando agregas filas.}
+\milcpaso{3}{milcTurquesa}{Lo esencial del cálculo cabe en una pregunta: \emph{¿qué decisión voy a tomar con este número?}. SUMA total de ventas: decisión de pedido. PROMEDIO de notas: decisión pedagógica. MAX: identificar caso destacado. MIN: identificar caso en riesgo. CONTAR: tamaño de la muestra. Sin decisión asociada, el número es decoración.}
+\milcpaso{4}{milcTurquesa}{Pasos para aplicar cualquier fórmula: (1) identifica la pregunta; (2) elige la fórmula que la responde; (3) selecciona el rango correcto (toda la columna sin encabezado); (4) verifica que el tipo de dato sea apropiado; (5) interpreta el resultado en términos de la pregunta original.}
 
 \begin{drawbox}{milcTurquesa}{Anatomía de una fórmula bien escrita}
 \textbf{Pregunta:} qué responde la fórmula en 1 frase. \\[1mm] \textbf{Fórmula:} =FUNCION(rango). \\[1mm] \textbf{Rango:} desde fila 2 hasta el final, columna correcta. \\[1mm] \textbf{Tipo esperado:} la columna debe contener el tipo apropiado (números para SUMA, fechas para MAX de fechas). \\[1mm] \textbf{Resultado:} el número que devuelve. \\[1mm] \textbf{Interpretación:} 1 frase que dice qué significa para la decisión.
@@ -325,23 +379,16 @@ Las 5 fórmulas básicas comparten sintaxis pero responden preguntas distintas. 
 
 \puente{Tienes el método. Toca aplicarlo: calcular 5 indicadores sobre tu propia tabla, escribir cada fórmula con criterio, e interpretar qué significa cada resultado en el contexto de tu pregunta original.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · APLICA --- 5 indicadores con interpretación} (30 min · individual). Hora de aplicar. Sobre tu propia tabla de Sesión 2, calcula los 5 indicadores básicos usando fórmula (no a mano) y escribe la interpretación de cada uno en el contexto de tu pregunta original.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & Tu cálculo se descompone en 5 piezas: (1) SUMA, (2) PROMEDIO, (3) MAX, (4) MIN, (5) CONTAR (o CONTARA). Para cada una: fórmula escrita + resultado obtenido + interpretación en 1 frase referida a tu pregunta original.\\
-Patrones & Sigue el patrón \textbf{``cada indicador responde una pregunta''}: no aplicas la fórmula porque sí. Antes de cada cálculo, escribe en una nota la pregunta que vas a responder. Ese hábito separa al analista del que solo ``llena hojas''.\\
-Abstracción & Cada interpretación expresa una sola idea. Si tu PROMEDIO da 6.2 y dices ``el promedio es 6.2, lo cual significa que el curso anda regular pero hay quienes están bien y quienes están mal'', divídelo en 2-3 frases o reduce a la más fuerte. La interpretación clara vence a la verbosa.\\
-Algoritmo de armado & Algoritmo: (1) ubica la columna numérica relevante; (2) escribe la pregunta; (3) elige fórmula; (4) aplica; (5) anota resultado; (6) escribe interpretación. Repite para los 5.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{Tu cálculo se descompone en 5 piezas: (1) SUMA, (2) PROMEDIO, (3) MAX, (4) MIN, (5) CONTAR (o CONTARA). Para cada una: fórmula escrita + resultado obtenido + interpretación en 1 frase referida a tu pregunta original.}
+\milcpaso{2}{milcMagenta}{Sigue el patrón \textbf{``cada indicador responde una pregunta''}: no aplicas la fórmula porque sí. Antes de cada cálculo, escribe en una nota la pregunta que vas a responder. Ese hábito separa al analista del que solo ``llena hojas''.}
+\milcpaso{3}{milcMagenta}{Cada interpretación expresa una sola idea. Si tu PROMEDIO da 6.2 y dices ``el promedio es 6.2, lo cual significa que el curso anda regular pero hay quienes están bien y quienes están mal'', divídelo en 2-3 frases o reduce a la más fuerte. La interpretación clara vence a la verbosa.}
+\milcpaso{4}{milcMagenta}{Algoritmo: (1) ubica la columna numérica relevante; (2) escribe la pregunta; (3) elige fórmula; (4) aplica; (5) anota resultado; (6) escribe interpretación. Repite para los 5.}
 
 \begin{drawbox}{milcMagenta}{Checklist antes de cerrar los 5 indicadores}
 \checkbox 5 fórmulas escritas con sintaxis correcta. \\[1mm] \checkbox 5 resultados obtenidos y verificados. \\[1mm] \checkbox 5 interpretaciones de 1 frase cada una, ligadas a la pregunta original. \\[1mm] \checkbox Reconozco qué indicador es el más relevante para mi decisión. \\[1mm] \checkbox Verifiqué que el tipo de dato de cada columna sea apropiado para la fórmula aplicada.
@@ -359,9 +406,7 @@ Algoritmo de armado & Algoritmo: (1) ubica la columna numérica relevante; (2) e
 
 \puente{Lo que sigue resume \emph{qué} entregas hoy: 5 indicadores calculados + 5 interpretaciones en tus palabras. El criterio principal: que cada cifra tenga una frase de interpretación que diga ``esto significa X para mi pregunta''.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{5 indicadores básicos calculados con fórmula + interpretación contextual}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) 5 fórmulas escritas con sintaxis correcta. (2) 5 resultados verificados. (3) 5 interpretaciones de 1 frase cada una. (4) Cada interpretación está ligada a la pregunta original. (5) Identifico el indicador más relevante para mi decisión. (6) Tipos de datos verificados (numéricos donde corresponde).
@@ -369,9 +414,7 @@ Producto de la sesión
 
 \puente{Antes de cerrar, mira las 5 fórmulas desde las cinco dimensiones humanas. Calcular bien es respeto al dato; interpretar bien es respeto a la decisión que viene después.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -397,12 +440,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Y para terminar, tres voces sobre el cálculo. Dussel sobre los números que invisibilizan, Marco Aurelio sobre la aritmética como virtud, Floridi sobre los indicadores como infraestructura cognitiva.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{``Un promedio que no nombra a los extremos es un indicador que invisibiliza a las minorías.''}
+\textit{Un promedio que no nombra a los extremos es un indicador que invisibiliza a las minorías.}
 
 El promedio escolar de 6.2 puede esconder a 5 estudiantes con notas brillantes y a 5 al borde de reprobar. El promedio de ingresos de un país puede esconder enormes desigualdades. La phronesis del analista exige que el promedio nunca se reporte solo: siempre acompañarlo de MAX y MIN, y idealmente de la dispersión. Reportar promedio sin extremos es decisión política sutil que invisibiliza a quienes más necesitan visibilidad.
 
@@ -412,7 +453,7 @@ El promedio escolar de 6.2 puede esconder a 5 estudiantes con notas brillantes y
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
-\textit{``La aritmética básica bien aplicada es virtud --- la aritmética compleja sin interpretación es ego.''}
+\textit{La aritmética básica bien aplicada es virtud --- la aritmética compleja sin interpretación es ego.}
 
 Es tentador aprender fórmulas complejas (SUMAR.SI, BUSCARV, INDICE-COINCIDIR) y olvidar que el 80\% de las decisiones cotidianas se resuelve con las 5 básicas. La sabiduría estoica recomienda \emph{dominar lo básico antes de impresionar con lo complejo}. Quien aplica SUMA, PROMEDIO, MAX, MIN y CONTAR con criterio resuelve más problemas reales que quien deslumbra con fórmulas avanzadas mal aplicadas.
 
@@ -422,7 +463,7 @@ Es tentador aprender fórmulas complejas (SUMAR.SI, BUSCARV, INDICE-COINCIDIR) y
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{``Las 5 fórmulas básicas son la infraestructura cognitiva mínima para decidir en la infoesfera de datos contemporánea.''}
+\textit{Las 5 fórmulas básicas son la infraestructura cognitiva mínima para decidir en la infoesfera de datos contemporánea.}
 
 Cualquier persona adulta debería saber aplicar SUMA, PROMEDIO, MAX, MIN y CONTAR. Es alfabetización numérica básica del XXI. Quien no las domina depende de otros para interpretar tablas, lo cual es vulnerabilidad cívica: créditos, becas, salud --- todo se reporta con esas 5. Dominarlas es independencia cognitiva.
 
@@ -431,21 +472,24 @@ Cualquier persona adulta debería saber aplicar SUMA, PROMEDIO, MAX, MIN y CONTA
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

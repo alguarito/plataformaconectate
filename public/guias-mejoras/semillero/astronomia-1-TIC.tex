@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,51 +229,65 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont MÓDULO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SEMILLERO DE INVESTIGACIÓN · CONECTATE};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont MÓDULO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SEMILLERO DE INVESTIGACIÓN · CONECTATE};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 1};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 1};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
   
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Mirar el cielo\\de Cartago ---\\de las Cabrillas del abuelo\\a la observación\\con método}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Astronomía y ciencia ciudadana}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Módulo 1 · Fase MILC: Escucha · 3 h de clase}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Módulo 1 · Fase MILC: Escucha · 3 h de clase}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Mirar el cielo\\de Cartago ---\\de las Cabrillas del abuelo\\a la observación\\con método}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Astronomía y ciencia ciudadana}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} Tu \textbf{bitácora de observación calibrada} (diseñada y probada en clase, lista para usar esta noche en casa): encabezado con lugar, fecha, hora y condiciones; tabla de registro con altura, azimut y brillo; y tu \textbf{escala de puño medida} en grados. Más tu \textbf{lista de preguntas priorizadas} sobre el cielo, con \textbf{una} marcada como tu \textbf{pregunta investigable} del itinerario (delimitada y verificable).};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Tu \textbf{bitácora de observación calibrada} (diseñada y probada en clase, lista para usar esta noche en casa): encabezado con lugar, fecha, hora y condiciones; tabla de registro con altura, azimut y brillo; y tu \textbf{escala de puño medida} en grados. Más tu \textbf{lista de preguntas priorizadas} sobre el cielo, con \textbf{una} marcada como tu \textbf{pregunta investigable} del itinerario (delimitada y verificable).
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Mirar el cielo de Cartago --- de las Cabrillas del abuelo a la observación con método}
@@ -257,30 +321,27 @@ Producto final & Tu \textbf{bitácora de observación calibrada} (diseñada y pr
 
 \puente{Acabas de descubrir que una \emph{``creencia de viejos''} era ciencia. Hoy tienes 3 horas para tres movimientos: \textbf{escuchar} el cielo que ya conoces, \textbf{entender} cómo se mide, y \textbf{calibrar} tu instrumento --- que eres tú mismo --- antes de salir a observar esta noche.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Antes de aprender a medir el cielo, hay que reconocer el que ya traes. Todos hemos mirado hacia arriba; casi nadie ha registrado lo que vio.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- El cielo que ya conoces} (40 min · individual + grupo). \textbf{Momento A (10 min) --- Círculo del cielo.} En círculo, cada estudiante responde en 1 frase: \emph{(1) ¿Cuál es la vez que más recuerdas haber mirado el cielo de noche?} \emph{(2) ¿Alguien de tu familia te dijo alguna vez algo sobre las estrellas, la luna o la lluvia?}. El profe anota en el tablero \textbf{las señales familiares} que salgan (\emph{``la luna tierna''}, \emph{``el cerco de la luna''}, \emph{``las Cabrillas''}, \emph{``el lucero''}). \textbf{Momento B (15 min) --- El caso de las Cabrillas.} El profe presenta el caso: la regla del abuelo, la burla de \emph{``creencia de viejos''} y el hallazgo de \emph{Nature} en el 2000. Pregunta al grupo: \emph{¿por qué nadie le creyó al abuelo durante 400 años?}. \textbf{Momento C (15 min) --- Inventario del cielo.} Cada quien escribe su inventario: qué objetos del cielo puede nombrar, cuáles ha visto de verdad y qué \textbf{nunca} ha visto aunque sabe que está ahí. \textbf{En el cuaderno:} tus 2 respuestas + las señales del tablero + tu inventario en 3 columnas (\emph{lo nombro} / \emph{lo he visto} / \emph{nunca lo he visto}).
 \end{softbox}
 
-\checkbox Respondí las 2 preguntas del círculo en voz alta.\\
-\checkbox Anoté al menos 3 señales del cielo que usan (o usaban) en mi familia o mi vereda.\\
-\checkbox Mi inventario tiene las 3 columnas llenas, incluida la de «nunca lo he visto».
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Respondí las 2 preguntas del círculo en voz alta.}
+\milccheckrow{Anoté al menos 3 señales del cielo que usan (o usaban) en mi familia o mi vereda.}
+\milccheckrow{Mi inventario tiene las 3 columnas llenas, incluida la de «nunca lo he visto».}
 
 \begin{infoband}{milcVerde}
 
@@ -290,23 +351,16 @@ Fase 1 · Escucha
 
 \puente{Ya pusiste sobre la mesa lo que sabías. Ahora vamos a darle nombre de oficio: cómo se ubica un astro, cómo se mide su brillo y por qué la ciudad te está robando estrellas.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 \textbf{Actividad 2 · EXPLICA --- Cómo se mide el cielo} (70 min · grupo + individual). Ya sabes lo que has visto. Ahora vas a aprender \textbf{el lenguaje del oficio}: dos números para ubicar, una escala para el brillo, y una mala noticia sobre las luces de tu barrio.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & \textbf{Pilar 1 --- La esfera celeste: dos números bastan.} Párate en el patio y mira alrededor: el cielo se te aparece como \textbf{medio domo} apoyado en el horizonte. Los astrónomos no pelean con esa ilusión, \textbf{la usan}: si el cielo es un domo, cualquier punto se ubica con 2 números. \textbf{Altura:} cuántos \textbf{grados} está por encima del horizonte ($0°$ = tocando el horizonte; $90°$ = justo sobre tu cabeza, el \textbf{cénit}). \textbf{Azimut:} hacia dónde, contando en grados desde el Norte y girando hacia el Este ($N = 0°$, $E = 90°$, $S = 180°$, $O = 270°$). Con \emph{``altura 30°, azimut 90°''} cualquier persona del mundo apunta al mismo pedazo de cielo que tú. \textbf{Ese par de números es la diferencia entre ``vi una estrella bonita'' y un dato}.\\
-2. Reconocimiento de patrones & \textbf{Pilar 2 --- La magnitud: una escala al revés.} Hiparco (siglo II a.\,C.) agrupó las estrellas por brillo: llamó \emph{``de primera magnitud''} a las más brillantes y \emph{``de sexta''} a las apenitas visibles. Quedó una escala \textbf{invertida y contraintuitiva}: \textbf{entre más brillante, más pequeño el número}, y hasta \textbf{negativo} en los astros muy brillantes. Sirio: $-1{,}5$. Vega: $0$. La estrella más débil que ve un ojo humano \emph{en cielo perfecto}: cerca de $6$. Ojo con la trampa: la magnitud aparente mide \textbf{cómo se ve desde aquí}, no qué tan potente es la estrella \emph{de verdad} --- una vela cerca gana a un reflector lejano. \emph{Esa distinción (aparente vs.\ real) es la que sostiene media astronomía moderna}.\\
-3. Abstracción & \textbf{Pilar 3 --- La contaminación lumínica: te están robando estrellas.} Cada bombillo que alumbra \textbf{hacia arriba} (en vez de hacia el piso) dispersa luz en el aire y \textbf{sube el brillo del fondo del cielo}. Resultado: las estrellas débiles \emph{se ahogan} en ese resplandor. Se mide con la \textbf{escala Bortle}, de \textbf{1} (cielo virgen: se ve la Vía Láctea proyectando sombra) a \textbf{9} (centro de ciudad: se cuentan unas pocas decenas de estrellas). En el centro de Cartago, un cielo urbano típico deja ver estrellas hasta magnitud $\approx 4$; en una vereda oscura del municipio, hasta $\approx 6$. \textbf{La misma noche, el mismo cielo, y la mitad de las estrellas desaparecidas} --- no por la naturaleza, sino por el alumbrado. Eso lo puedes \textbf{medir} tú: se llama \textbf{magnitud límite}.\\
-4. Algoritmo conceptual & \textbf{Pilar 4 --- Mirar no es observar.} \emph{Mirar} es que los ojos apunten hacia arriba. \emph{Observar} es otra cosa, y tiene 5 exigencias: \textbf{(1) Qué} --- decides de antemano qué buscas (no \emph{``a ver qué sale''}). \textbf{(2) Cuándo y dónde} --- fecha, hora y lugar exactos, porque el cielo gira y a otra hora \emph{no es el mismo cielo}. \textbf{(3) Con qué} --- ojo, puño, celular; y sus límites. \textbf{(4) Condiciones} --- nubes, luna, luces alrededor: lo que \emph{no} viste también es dato. \textbf{(5) Registro inmediato} --- se anota \emph{en el momento}, no de memoria al otro día. \textbf{La prueba de fuego:} tu registro sirve si \textbf{otra persona puede repetir tu observación} leyéndolo. Si no, era un paseo, no un dato. \emph{El abuelo cumplía las 5 sin haber leído un solo manual.}\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{\textbf{Pilar 1 --- La esfera celeste: dos números bastan.} Párate en el patio y mira alrededor: el cielo se te aparece como \textbf{medio domo} apoyado en el horizonte. Los astrónomos no pelean con esa ilusión, \textbf{la usan}: si el cielo es un domo, cualquier punto se ubica con 2 números. \textbf{Altura:} cuántos \textbf{grados} está por encima del horizonte ($0°$ = tocando el horizonte; $90°$ = justo sobre tu cabeza, el \textbf{cénit}). \textbf{Azimut:} hacia dónde, contando en grados desde el Norte y girando hacia el Este ($N = 0°$, $E = 90°$, $S = 180°$, $O = 270°$). Con \emph{``altura 30°, azimut 90°''} cualquier persona del mundo apunta al mismo pedazo de cielo que tú. \textbf{Ese par de números es la diferencia entre ``vi una estrella bonita'' y un dato}.}
+\milcpaso{2}{milcTurquesa}{\textbf{Pilar 2 --- La magnitud: una escala al revés.} Hiparco (siglo II a.\,C.) agrupó las estrellas por brillo: llamó \emph{``de primera magnitud''} a las más brillantes y \emph{``de sexta''} a las apenitas visibles. Quedó una escala \textbf{invertida y contraintuitiva}: \textbf{entre más brillante, más pequeño el número}, y hasta \textbf{negativo} en los astros muy brillantes. Sirio: $-1{,}5$. Vega: $0$. La estrella más débil que ve un ojo humano \emph{en cielo perfecto}: cerca de $6$. Ojo con la trampa: la magnitud aparente mide \textbf{cómo se ve desde aquí}, no qué tan potente es la estrella \emph{de verdad} --- una vela cerca gana a un reflector lejano. \emph{Esa distinción (aparente vs.\ real) es la que sostiene media astronomía moderna}.}
+\milcpaso{3}{milcTurquesa}{\textbf{Pilar 3 --- La contaminación lumínica: te están robando estrellas.} Cada bombillo que alumbra \textbf{hacia arriba} (en vez de hacia el piso) dispersa luz en el aire y \textbf{sube el brillo del fondo del cielo}. Resultado: las estrellas débiles \emph{se ahogan} en ese resplandor. Se mide con la \textbf{escala Bortle}, de \textbf{1} (cielo virgen: se ve la Vía Láctea proyectando sombra) a \textbf{9} (centro de ciudad: se cuentan unas pocas decenas de estrellas). En el centro de Cartago, un cielo urbano típico deja ver estrellas hasta magnitud $\approx 4$; en una vereda oscura del municipio, hasta $\approx 6$. \textbf{La misma noche, el mismo cielo, y la mitad de las estrellas desaparecidas} --- no por la naturaleza, sino por el alumbrado. Eso lo puedes \textbf{medir} tú: se llama \textbf{magnitud límite}.}
+\milcpaso{4}{milcTurquesa}{\textbf{Pilar 4 --- Mirar no es observar.} \emph{Mirar} es que los ojos apunten hacia arriba. \emph{Observar} es otra cosa, y tiene 5 exigencias: \textbf{(1) Qué} --- decides de antemano qué buscas (no \emph{``a ver qué sale''}). \textbf{(2) Cuándo y dónde} --- fecha, hora y lugar exactos, porque el cielo gira y a otra hora \emph{no es el mismo cielo}. \textbf{(3) Con qué} --- ojo, puño, celular; y sus límites. \textbf{(4) Condiciones} --- nubes, luna, luces alrededor: lo que \emph{no} viste también es dato. \textbf{(5) Registro inmediato} --- se anota \emph{en el momento}, no de memoria al otro día. \textbf{La prueba de fuego:} tu registro sirve si \textbf{otra persona puede repetir tu observación} leyéndolo. Si no, era un paseo, no un dato. \emph{El abuelo cumplía las 5 sin haber leído un solo manual.}}
 
 \begin{drawbox}{milcTurquesa}{Esfera celeste + magnitud + Bortle + observar}
 \textbf{Ubicar:} altura ($0°$ horizonte $\to 90°$ cénit) + azimut ($N=0°$, $E=90°$, $S=180°$, $O=270°$). \\[1mm]
@@ -328,23 +382,18 @@ Fase 2 · Sistematización con pensamiento computacional
 
 \puente{Ya sabes qué se mide. Falta lo esencial: \textbf{calibrar tu instrumento}. Tu mano tiene una regla de grados escondida, y hoy vas a medirla, porque esta noche no habrá quien te preste un telescopio.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · APLICA --- Calibra tu instrumento y arma la bitácora} (60 min · individual + parejas). Esta noche no vas a tener telescopio: \textbf{vas a tener tu mano, tus ojos y tu bitácora}. Los tres se calibran hoy, aquí, con luz. Nadie calibra instrumentos a oscuras.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & \textbf{Paso 1 --- Mide tu puño (10 min).} Tu mano, con el brazo \textbf{completamente estirado}, es un transportador. Las medidas estándar: \textbf{meñique} $\approx 1°$ · \textbf{tres dedos juntos} $\approx 5°$ · \textbf{puño cerrado} $\approx 10°$ · \textbf{mano abierta} (pulgar a meñique) $\approx 20°$. \textbf{Pero tu mano es tuya}, así que \textbf{compruébala}: en parejas, usa una referencia conocida de la sala (el profe marca en la pared dos puntos separados por un ángulo conocido, o usa la altura de un poste a distancia medida) y \textbf{ajusta tu propio valor}. Anota tu escala personal: \emph{``mi puño = \_\_ grados''}. \textbf{Ese número es tu calibración}, y sin él tus medidas de esta noche no valen.\\
-Patrones & \textbf{Paso 2 --- Encuentra el norte sin brújula (10 min).} Necesitas el azimut, y el azimut arranca del Norte. Método del sol: \textbf{el sol se pone por el Occidente}. Parado en el patio a la hora de salida, extiende el brazo hacia donde se pone el sol: eso es \textbf{O} ($270°$). Tu espalda queda al \textbf{E} ($90°$); tu derecha, al \textbf{N} ($0°$); tu izquierda, al \textbf{S} ($180°$). \textbf{Dibuja la rosa de los vientos de tu casa} (o del patio) en el cuaderno y marca \textbf{desde qué ventana o punto vas a observar esta noche} y hacia dónde te queda cada cardinal. \emph{Si no sabes hacia dónde miras, no tienes azimut; y sin azimut no tienes dato.}\\
-Abstracción & \textbf{Paso 3 --- Diseña la bitácora (15 min).} En una hoja doble de tu cuaderno arma la bitácora con \textbf{2 zonas}. \textbf{Zona de encabezado} (se llena una vez por noche): lugar exacto · fecha · hora de inicio y fin · fase de la luna · nubosidad estimada en \% · luces alrededor (¿poste? ¿ventana encendida?) · \textbf{magnitud límite} medida. \textbf{Zona de registro} (una fila por objeto): \emph{objeto o descripción} · \emph{altura (puños)} · \emph{altura (grados)} · \emph{azimut} · \emph{¿titila?} · \emph{brillo comparado} · \emph{hora exacta} · \emph{observaciones}. Deja \textbf{mínimo 8 filas}. Al final, una franja: \textbf{``lo que esperaba ver y NO vi''}.\\
-Algoritmo de armado & \textbf{Paso 4 --- Aprende a medir la magnitud límite (10 min).} Es tu medida de \textbf{qué tan bueno es el cielo} desde tu casa, y es simple: \textbf{cuenta las estrellas} que alcanzas a ver dentro de una figura conocida del cielo (el profe entrega la carta de la figura que estará visible esta noche). Más estrellas contadas = cielo más oscuro = magnitud límite más alta. \textbf{Regla de oro:} antes de contar, \textbf{20 minutos sin mirar ninguna pantalla} --- tu pupila necesita ese tiempo para abrirse. Si miras el celular, empiezas de cero. \emph{Anota el conteo, no la impresión}: \emph{``conté 7''}, no \emph{``se veían hartas''}.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{\textbf{Paso 1 --- Mide tu puño (10 min).} Tu mano, con el brazo \textbf{completamente estirado}, es un transportador. Las medidas estándar: \textbf{meñique} $\approx 1°$ · \textbf{tres dedos juntos} $\approx 5°$ · \textbf{puño cerrado} $\approx 10°$ · \textbf{mano abierta} (pulgar a meñique) $\approx 20°$. \textbf{Pero tu mano es tuya}, así que \textbf{compruébala}: en parejas, usa una referencia conocida de la sala (el profe marca en la pared dos puntos separados por un ángulo conocido, o usa la altura de un poste a distancia medida) y \textbf{ajusta tu propio valor}. Anota tu escala personal: \emph{``mi puño = \_\_ grados''}. \textbf{Ese número es tu calibración}, y sin él tus medidas de esta noche no valen.}
+\milcpaso{2}{milcMagenta}{\textbf{Paso 2 --- Encuentra el norte sin brújula (10 min).} Necesitas el azimut, y el azimut arranca del Norte. Método del sol: \textbf{el sol se pone por el Occidente}. Parado en el patio a la hora de salida, extiende el brazo hacia donde se pone el sol: eso es \textbf{O} ($270°$). Tu espalda queda al \textbf{E} ($90°$); tu derecha, al \textbf{N} ($0°$); tu izquierda, al \textbf{S} ($180°$). \textbf{Dibuja la rosa de los vientos de tu casa} (o del patio) en el cuaderno y marca \textbf{desde qué ventana o punto vas a observar esta noche} y hacia dónde te queda cada cardinal. \emph{Si no sabes hacia dónde miras, no tienes azimut; y sin azimut no tienes dato.}}
+\milcpaso{3}{milcMagenta}{\textbf{Paso 3 --- Diseña la bitácora (15 min).} En una hoja doble de tu cuaderno arma la bitácora con \textbf{2 zonas}. \textbf{Zona de encabezado} (se llena una vez por noche): lugar exacto · fecha · hora de inicio y fin · fase de la luna · nubosidad estimada en \% · luces alrededor (¿poste? ¿ventana encendida?) · \textbf{magnitud límite} medida. \textbf{Zona de registro} (una fila por objeto): \emph{objeto o descripción} · \emph{altura (puños)} · \emph{altura (grados)} · \emph{azimut} · \emph{¿titila?} · \emph{brillo comparado} · \emph{hora exacta} · \emph{observaciones}. Deja \textbf{mínimo 8 filas}. Al final, una franja: \textbf{``lo que esperaba ver y NO vi''}.}
+\milcpaso{4}{milcMagenta}{\textbf{Paso 4 --- Aprende a medir la magnitud límite (10 min).} Es tu medida de \textbf{qué tan bueno es el cielo} desde tu casa, y es simple: \textbf{cuenta las estrellas} que alcanzas a ver dentro de una figura conocida del cielo (el profe entrega la carta de la figura que estará visible esta noche). Más estrellas contadas = cielo más oscuro = magnitud límite más alta. \textbf{Regla de oro:} antes de contar, \textbf{20 minutos sin mirar ninguna pantalla} --- tu pupila necesita ese tiempo para abrirse. Si miras el celular, empiezas de cero. \emph{Anota el conteo, no la impresión}: \emph{``conté 7''}, no \emph{``se veían hartas''}.}
+\milcpaso{5}{milcMagenta}{\textbf{Paso 5 --- Ensayo en seco (10 min).} Con luz de día, en el patio: elige \textbf{3 objetos} cualesquiera (la punta de un poste, una antena, una nube, la luna si está de día) y \textbf{registra los 3 en tu bitácora como si fuera de noche} --- altura en puños, conversión a grados, azimut, hora exacta. Después \textbf{intercambia el cuaderno con tu pareja}: él debe pararse donde estabas tú y, \textbf{leyendo solo tu registro}, apuntar al objeto. \textbf{Si no lo encuentra, tu bitácora todavía no sirve} --- arréglala ahora, no esta noche a oscuras.}
+\milcpaso{6}{milcMagenta}{\textbf{Paso 6 --- Formula tu pregunta investigable (5 min).} Vuelve a tu inventario de la Actividad 1, a la columna \textbf{``nunca lo he visto''}. De ahí sale tu pregunta. Escribe \textbf{3 preguntas} sobre el cielo de Cartago y \textbf{prioriza 1}. Para que sea \textbf{investigable} debe pasar 3 filtros: \textbf{(1) delimitada} (no \emph{``¿cómo es el universo?''}, sino \emph{``¿cuántas estrellas más veo desde la vereda que desde mi cuadra?''}); \textbf{(2) verificable} (se puede responder con observación, no solo con opinión); \textbf{(3) a tu alcance} (con ojo, puño y bitácora, sin telescopio). Márcala: \textbf{esa es tu pregunta-radar del itinerario}.}
 
 \begin{drawbox}{milcMagenta}{Antes de salir de la sala}
 \checkbox Medí y anoté mi escala personal: «mi puño = \_\_ grados». \\[1mm]
@@ -369,9 +418,7 @@ Algoritmo de armado & \textbf{Paso 4 --- Aprende a medir la magnitud límite (10
 
 \puente{El producto no es un dibujito del cielo: es una \textbf{bitácora calibrada} y una \textbf{pregunta investigable}. Con esas dos cosas ya eres, técnicamente, un observador.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Bitácora de observación calibrada + pregunta investigable priorizada}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) La escala personal del puño está medida en grados, no copiada del estándar. (2) La bitácora tiene encabezado completo (lugar, fecha, hora, luna, nubosidad, luces, magnitud límite). (3) La zona de registro tiene mínimo 8 filas con columnas de altura, azimut, hora y brillo. (4) El ensayo en seco fue verificado por un compañero, que sí ubicó el objeto leyendo el registro. (5) Hay 3 preguntas escritas y 1 priorizada que pasa los 3 filtros (delimitada, verificable, a mi alcance).
@@ -379,9 +426,7 @@ Producto de la sesión
 
 \puente{Antes de salir, prueba tu bitácora en seco: si un compañero no puede repetir tu observación leyéndola, todavía no sirve.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -407,12 +452,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Cerramos con 3 voces que te ayudan a entender por qué mirar el cielo --- y anotar lo que ves --- nunca fue un pasatiempo inocente.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{``El otro se revela realmente como otro\ldots como el pobre, el oprimido; el que, a la vera del camino, fuera del sistema, muestra su rostro sufriente y sin embargo desafiante: «¡Tengo hambre!, ¡tengo derecho a comer!»''}
+\textit{El otro se revela realmente como otro\ldots como el pobre, el oprimido; el que, a la vera del camino, fuera del sistema, muestra su rostro sufriente y sin embargo desafiante: «¡Tengo hambre!, ¡tengo derecho a comer!»}
 
 Para Dussel, el otro ---el pobre, el excluido--- no es un objeto: es un rostro que reclama y una voz que exige ser oída. Durante 400 años, el saber del abuelo campesino fue \emph{``creencia de viejos''}, una voz fuera del sistema, hasta que una revista del norte lo escuchó y entonces \textbf{sí} fue conocimiento. Pero \textbf{¿el saber del abuelo empezó a ser cierto en el 2000, o siempre lo fue y solo entonces alguien lo escuchó?}. La ciencia no le \emph{dio} la razón: \textbf{le reconoció} una razón que ya tenía. Cuando esta noche abras tu bitácora, le das la palabra a un cielo ---el de Cartago--- con dueños de saber que casi nadie ha citado.
 
@@ -422,7 +465,7 @@ Para Dussel, el otro ---el pobre, el excluido--- no es un objeto: es un rostro q
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · Meditaciones VII, 47 (trad. Bach Pellicer, Gredos, 1977) · cuidado interior}
-\textit{``Contempla las evoluciones de los astros y piensa al mismo tiempo que evolucionas con ellos; y reflexiona continuamente cómo los elementos cambian unos en otros. Estas elevadas meditaciones purifican el alma de las mancillas de su vida terrestre.''}
+\textit{Contempla las evoluciones de los astros y piensa al mismo tiempo que evolucionas con ellos; y reflexiona continuamente cómo los elementos cambian unos en otros. Estas elevadas meditaciones purifican el alma de las mancillas de su vida terrestre.}
 
 Marco Aurelio escribió esto siendo emperador, en campaña, entre guerras y pestes: \textbf{levantar los ojos era su forma de recuperar la proporción}. No dice \emph{``mira el cielo para distraerte''}; dice \emph{evoluciona con los astros} --- ponte adentro, reconoce que eres parte de lo que observas. Esta noche vas a estar 20 minutos a oscuras, sin pantalla, esperando que tu pupila se abra. \textbf{Esa espera incómoda es la mitad del ejercicio}: el cielo no se le entrega al afanado. \emph{La disciplina del observador es, antes que técnica, una disciplina del tiempo.}
 
@@ -432,7 +475,7 @@ Marco Aurelio escribió esto siendo emperador, en campaña, entre guerras y pest
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{``Somos organismos informacionales ---inforgs--- que compartimos un entorno global hecho, en última instancia, de información: la infoesfera.''}
+\textit{Somos organismos informacionales ---inforgs--- que compartimos un entorno global hecho, en última instancia, de información: la infoesfera.}
 
 Floridi dice que todos somos \emph{inforgs}: seres que vivimos inmersos en un mundo hecho de información, la infoesfera. Miles de personas en Cartago van a mirar el cielo esta noche, y \textbf{casi ninguna va a producir un solo dato}: mirar sin registrar no añade nada a esa infoesfera compartida. La diferencia entre un paseo y una observación es \textbf{una libreta}. Tu bitácora es un acto de creación: conviertes \textbf{luz} en \textbf{información} que ya puede compararse, discutirse y refutarse. \emph{El abuelo registraba en la memoria y en la palabra; tú registras en papel; la NASA registra en píxeles.} \textbf{Los tres hacen lo mismo}: sostener lo visto para que no se lo lleve la noche.
 
@@ -441,21 +484,24 @@ Floridi dice que todos somos \emph{inforgs}: seres que vivimos inmersos en un mu
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

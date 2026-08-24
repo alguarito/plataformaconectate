@@ -10,7 +10,7 @@
 %   Pág N   - Sustentación + declaración IA + cierre
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.6cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -19,10 +19,32 @@
 \usepackage{tabularx}
 \usepackage{array}
 \usepackage{fancyhdr}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 \usepackage{multicol}
+
+% Helvetica Neue no trae varios glifos que el YAML usa con normalidad. Sin este
+% mapeo se compilaban a NADA, en silencio: 80 flechas desaparecidas entre
+% proyectos y examenes (el mismo bug que la plantilla de guias ya tenia resuelto).
+\usepackage{newunicodechar}
+\usepackage{pifont}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
+
+% Sin particion de palabras y en bandera a la derecha: una palabra cortada por
+% guion al final de linea frena la lectura mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
@@ -31,6 +53,9 @@
 \renewcommand{\arraystretch}{1.22}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+% Renglon para rellenar a mano (misma pieza que en la plantilla de guias).
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.6pt}\color{milcNegro}}
 
 % Paleta institucional MILC.
 \definecolor{milcMagenta}{HTML}{E6007E}
@@ -102,36 +127,72 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: turquesa a sangre en toda la pagina con una trama de arcos encima.
+% En la fotocopiadora del colegio esa plancha se comia el toner y la trama
+% salia como suciedad. Ahora la banda ocupa el tercio superior.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[milcTurquesa!85] (current page.south west) rectangle (current page.north east);
-  \foreach \x in {-1,1,...,23}{
-    \foreach \y in {-1,1,...,31}{
-      \draw[milcVino, opacity=.10, line width=.6pt] (\x,\y) .. controls +(1,.6) and +(-1,-.6) .. +(2,1.4);
-      \draw[milcVino, opacity=.08, line width=.6pt] (\x+.6,\y+.4) arc (210:510:.45);
-    }
-  }
+  \path[fill=milcTurquesa]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
+
+  \node[anchor=north west,text=white] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont PROYECTO INTEGRADOR};
+  \node[anchor=north west,text=white,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=white,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
+
+  \node[anchor=west,text=white] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont <<<GRADO>>>};
+  \draw[white,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
+
+  \node[anchor=west,text=white,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
+    {
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont PERIODO <<<PERIODO>>>}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont <<<TITULO_PORTADA>>>}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont proyecto-<<<PERIODO>>>-<<<GRADO>>>-TIC}
+    };
 \end{tikzpicture}
 
-\vspace*{1.5cm}
-\begin{tcolorbox}[
-  enhanced,colback=milcTurquesa!85!black,colframe=milcTurquesa!85!black,
-  arc=12mm,width=.86\textwidth,boxrule=0pt,
-  left=11mm,right=11mm,top=10mm,bottom=10mm,center,
-  overlay={\draw[milcMagenta,line width=2pt,dash pattern=on 9pt off 8pt,rounded corners=10mm]
-    ([xshift=7mm,yshift=-7mm]frame.north west) rectangle ([xshift=-7mm,yshift=7mm]frame.south east);}]
-  \centering
-  {\sffamily\bfseries\color{white}\fontsize{13}{15}\selectfont PROYECTO INTEGRADOR · TECNOLOGÍA E INFORMÁTICA}\\[10mm]
-  {\sffamily\bfseries\color{white}\fontsize{30}{34}\selectfont <<<TITULO_PORTADA>>>}\\[9mm]
-  {\sffamily\bfseries\color{milcMostaza}\fontsize{18}{20}\selectfont proyecto-<<<PERIODO>>>-<<<GRADO>>>-TIC}\\[7mm]
-  {\sffamily\color{white}\Large Grado <<<GRADO>>> · Periodo <<<PERIODO>>>}\\[8mm]
-  {\sffamily\bfseries\color{white}\large Institución Educativa Sor María Juliana}\\[2mm]
-  {\sffamily\color{white}\small Autor: <<<AUTOR>>>}\\[4mm]
-  {\sffamily\itshape\color{white}\small <<<DURACION_SEMANAS>>> semanas · modalidad <<<MODALIDAD>>>}
-\end{tcolorbox}
+\vspace*{9.4cm}
 \vfill
-\begin{tcolorbox}[enhanced,colback=milcVino,colframe=milcVino,arc=5mm,boxrule=0pt,width=.86\textwidth,left=6mm,right=6mm,top=4mm,bottom=4mm,center]
-{\color{white}\sffamily\small MILC v3 · Reto · Insumos · Entregables · Triángulo · Rúbrica · Sustentación}
+
+\begin{tabularx}{\linewidth}{XX}
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=2mm,boxrule=1pt,
+  left=4mm,right=4mm,top=3mm,bottom=3mm,nobeforeafter]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{DURACIÓN}}\\[1.5mm]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont <<<DURACION_SEMANAS>>> semanas}
 \end{tcolorbox}
+&
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=2mm,boxrule=1pt,
+  left=4mm,right=4mm,top=3mm,bottom=3mm,nobeforeafter]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MODALIDAD}}\\[1.5mm]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont <<<MODALIDAD>>>}
+\end{tcolorbox}
+\end{tabularx}
+
+\vspace{6mm}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{INTEGRANTES DEL EQUIPO}}\\[3mm]
+\begin{tabularx}{\linewidth}{XXX}
+\linead{\linewidth} & \linead{\linewidth} & \linead{\linewidth}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre}}\\[3mm]
+\end{tabularx}
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}}\quad\linead{3.5cm}\quad
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha de entrega}}\quad\linead{3.5cm}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: <<<AUTOR>>>}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{MILC v3 · reto · insumos · entregables · triángulo · rúbrica · sustentación}}
 
 % ─── Página 2 · Brief del proyecto ───────────────────────────────────
 

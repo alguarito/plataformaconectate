@@ -14,7 +14,7 @@
 %   - Aprendizajes cubiertos visibles al inicio.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -24,19 +24,36 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
+
+% Helvetica Neue no trae varios glifos que el YAML usa con normalidad. Sin este
+% mapeo se compilaban a NADA, en silencio: 80 flechas desaparecidas entre
+% proyectos y examenes (el mismo bug que la plantilla de guias ya tenia resuelto).
+\usepackage{newunicodechar}
+\usepackage{pifont}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
+
+% Sin particion de palabras y en bandera a la derecha: una palabra cortada por
+% guion al final de linea frena la lectura mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -125,59 +142,77 @@
 
 \begin{document}
 \thispagestyle{empty}
-\begin{tikzpicture}[remember picture,overlay]
-  % Fondo negro absoluto (toda la página).
-  \fill[examenFondo] (current page.south west) rectangle (current page.north east);
 
-  % Chip institucional arriba a la izquierda.
-  \node[anchor=north west,text=examenTexto] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{11}{13}\selectfont EXAMEN FINAL};
-  \node[anchor=north west,text=examenTextoSubtle] at ([xshift=2.0cm,yshift=-2.45cm]current page.north west)
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: pagina entera en negro. Es el documento que mas se imprime del
+% catalogo —uno por estudiante— y esa plancha vaciaba el toner del colegio.
+% La banda ahora ocupa una cuarta parte; el resto va en blanco.
+\begin{tikzpicture}[remember picture,overlay]
+  \path[fill=examenFondo]
+    (current page.north west) rectangle ([yshift=-6.8cm]current page.north east);
+
+  \node[anchor=north west,text=examenTexto] at ([xshift=2.0cm,yshift=-1.75cm]current page.north west)
+    {\sffamily\bfseries\fontsize{13}{15}\selectfont EXAMEN FINAL};
+  \node[anchor=north west,text=examenTextoSubtle] at ([xshift=2.0cm,yshift=-2.6cm]current page.north west)
     {\sffamily\bfseries\fontsize{9}{11}\selectfont GRADO <<<GRADO>>>° · PERÍODO <<<PERIODO>>> · TECNOLOGÍA E INFORMÁTICA};
 
-  % Chip de color del periodo arriba a la derecha (acento sutil).
-  % Usamos un node con fill para que el rectángulo se ajuste al texto
-  % automáticamente (evita cortes cuando el contenido cambia de ancho).
   \node[fill=milcPeriodoPrimary,text=white,rounded corners=2mm,
         inner xsep=4mm,inner ysep=2mm,anchor=north east]
-    at ([xshift=-2.0cm,yshift=-1.85cm]current page.north east)
+    at ([xshift=-2.0cm,yshift=-1.75cm]current page.north east)
     {\sffamily\bfseries\fontsize{9}{11}\selectfont APLICACIÓN · SESIÓN 10};
 
-  % Título principal grande (centrado, blanco).
-  \node[anchor=west,text=examenTexto,text width=17cm,align=left] at ([xshift=2.0cm,yshift=-9.5cm]current page.north west)
-    {\sffamily\bfseries\fontsize{36}{42}\selectfont <<<TITULO_PORTADA>>>};
-
-  % Subtítulo (gris claro).
-  \node[anchor=west,text=examenTextoSubtle,text width=17cm,align=left] at ([xshift=2.0cm,yshift=-14.5cm]current page.north west)
-    {\sffamily\fontsize{14}{18}\selectfont Síntesis · Aplicación · Argumentación.\\Verifica la transferencia de lo aprendido en las 10 sesiones del período.};
-
-  % Pie con metadatos (duración, fecha, ponderación, autor).
-  \path[draw=examenTextoSubtle,line width=.4pt]
-    ([xshift=2.0cm,yshift=4.0cm]current page.south west) --
-    ([xshift=-2.0cm,yshift=4.0cm]current page.south east);
-
-  \node[anchor=west,text=examenTexto,text width=17cm,align=left] at ([xshift=2.0cm,yshift=3.0cm]current page.south west)
-    {\sffamily\bfseries\fontsize{11}{14}\selectfont DURACIÓN \quad\textcolor{examenTextoSubtle}{<<<DURACION_MIN>>> min} \hspace{1.0cm} APLICACIÓN \quad\textcolor{examenTextoSubtle}{<<<FECHA_APLICACION>>>} \hspace{1.0cm} PONDERACIÓN \quad\textcolor{examenTextoSubtle}{<<<PONDERACION>>>\%}};
-
-  \node[anchor=west,text=examenTextoSubtle,text width=17cm,align=left] at ([xshift=2.0cm,yshift=1.9cm]current page.south west)
-    {\sffamily\fontsize{10}{12}\selectfont Institución Educativa Sor María Juliana · Cartago, Valle del Cauca\\Autor: Dr. Álvaro Cárdenas Orozco · Metodología MILC v3};
+  \node[anchor=west,text=examenTexto,text width=17cm,align=left] at ([xshift=2.0cm,yshift=-5.0cm]current page.north west)
+    {\sffamily\bfseries\fontsize{26}{30}\selectfont <<<TITULO_PORTADA>>>};
 \end{tikzpicture}
-\mbox{}
-\newpage
 
-% ─── Datos del estudiante (página 2) ─────────────────────────────────
+\vspace*{5.6cm}
 
-\section*{Datos del estudiante}
+{\sffamily\fontsize{14}{19}\selectfont Síntesis · aplicación · argumentación.\\
+Verifica la transferencia de lo aprendido en las 10 sesiones del período.}
 
-\noindent
-\begin{tabularx}{\linewidth}{@{}p{3.5cm}Y@{}}
-Nombre completo: & \color{milcLinea}\rule{\linewidth}{0.5pt}\color{milcNegro}\\[3mm]
-Grado y grupo: & \color{milcLinea}\rule{\linewidth}{0.5pt}\color{milcNegro}\\[3mm]
-Fecha: & \color{milcLinea}\rule{\linewidth}{0.5pt}\color{milcNegro}\\[3mm]
-Firma: & \color{milcLinea}\rule{\linewidth}{0.5pt}\color{milcNegro}\\
+\vspace{9mm}
+
+\begin{tabularx}{\linewidth}{XXX}
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=2mm,boxrule=1pt,
+  left=4mm,right=4mm,top=3mm,bottom=3mm,nobeforeafter]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{DURACIÓN}}\\[1.5mm]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont <<<DURACION_MIN>>> min}
+\end{tcolorbox}
+&
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=2mm,boxrule=1pt,
+  left=4mm,right=4mm,top=3mm,bottom=3mm,nobeforeafter]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{APLICACIÓN}}\\[1.5mm]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont <<<FECHA_APLICACION>>>}
+\end{tcolorbox}
+&
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=2mm,boxrule=1pt,
+  left=4mm,right=4mm,top=3mm,bottom=3mm,nobeforeafter]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{PONDERACIÓN}}\\[1.5mm]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont <<<PONDERACION>>>\%}
+\end{tcolorbox}
 \end{tabularx}
 
-\vspace{4mm}
+\vspace{11mm}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=6mm,right=6mm,top=5mm,bottom=5mm]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{DATOS DEL ESTUDIANTE}}\\[4mm]
+\begin{tabularx}{\linewidth}{@{}p{3.4cm}Y@{}}
+Nombre completo: & \color{milcLinea}\rule{\linewidth}{0.6pt}\color{milcNegro}\\[5mm]
+Grado y grupo: & \color{milcLinea}\rule{\linewidth}{0.6pt}\color{milcNegro}\\[5mm]
+Fecha: & \color{milcLinea}\rule{\linewidth}{0.6pt}\color{milcNegro}\\[5mm]
+Firma: & \color{milcLinea}\rule{\linewidth}{0.6pt}\color{milcNegro}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\fontsize{10}{13}\selectfont Institución Educativa Sor María Juliana · Cartago, Valle del Cauca\\
+Autor: Dr. Álvaro Cárdenas Orozco · Metodología MILC v3}
+
+\newpage
+
 
 % ─── Instrucciones ───────────────────────────────────────────────────
 

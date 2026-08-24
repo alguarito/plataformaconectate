@@ -210,11 +210,29 @@ def construir_placeholders(data: dict) -> dict[str, str]:
     return placeholders
 
 
-def llenar_template(placeholders: dict[str, str]) -> str:
+# Rangos de pictogramas que Helvetica Neue no tiene. Si llegan al .tex,
+# xelatex los descarta EN SILENCIO («Missing character») y deja un espacio
+# suelto donde iba el simbolo: asi se estuvo imprimiendo el 💭 que encabeza
+# los bloques del triangulo en seis proyectos. Se filtran aqui, no en el
+# YAML, para no alterar lo que consume la web.
+_PICTOGRAMAS = re.compile(
+    "[\U0001F300-\U0001FAFF\u2600-\u27BF\uFE0F\u2B00-\u2BFF]"
+)
+
+
+def sin_pictogramas(texto: str, clave: str) -> str:
+    limpio = _PICTOGRAMAS.sub("", texto)
+    n = len(texto) - len(limpio)
+    if n:
+        print(f"  · {clave}: {n} pictograma(s) sin glifo retirados del PDF")
+    return re.sub(r"  +", " ", limpio)
+
+
+def llenar_template(placeholders: dict[str, str], clave: str = "") -> str:
     template = TEMPLATE.read_text(encoding="utf-8")
     out = template
     for key, value in placeholders.items():
-        out = out.replace(f"<<<{key}>>>", value)
+        out = out.replace(f"<<<{key}>>>", sin_pictogramas(value, clave or key))
     pendientes = re.findall(r"<<<[A-Z_0-9]+>>>", out)
     if pendientes:
         raise RuntimeError(f"Placeholders sin reemplazar: {sorted(set(pendientes))}")

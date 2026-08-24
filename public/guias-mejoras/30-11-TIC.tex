@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 11};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 11};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Sustentación pública ---\\el aprendiz\\frente a los mayores}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 30-11-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 3 · Proyecto final emprendedor}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 3 · Proyecto final emprendedor}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Sustentación pública ---\\el aprendiz\\frente a los mayores}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 30-11-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} Sustentación pública de 15 minutos con (a) presentación oral del proyecto entero usando el deck de la sesión 6 actualizado a versión final, (b) demo del MVP en vivo (no captura), (c) sesión de preguntas y respuestas de 10 minutos donde el aprendiz responde con honestidad, (d) manifiesto final de 1 página integrando todo el grado 11 (los 3 periodos --- marca digital, automatización, emprendimiento) firmado y entregado al docente como cierre del bachillerato técnico};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Sustentación pública de 15 minutos con (a) presentación oral del proyecto entero usando el deck de la sesión 6 actualizado a versión final, (b) demo del MVP en vivo (no captura), (c) sesión de preguntas y respuestas de 10 minutos donde el aprendiz responde con honestidad, (d) manifiesto final de 1 página integrando todo el grado 11 (los 3 periodos --- marca digital, automatización, emprendimiento) firmado y entregado al docente como cierre del bachillerato técnico
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Sustentación pública --- el aprendiz frente a los mayores}
@@ -258,30 +322,27 @@ Producto final & Sustentación pública de 15 minutos con (a) presentación oral
 
 \puente{Antes de empezar, mira el viaje completo. Has recorrido 30 sesiones, 3 periodos, 10 sesiones del proyecto emprendedor. Hoy todo eso \textbf{se cierra ante una audiencia real}. No es ensayo: es la graduación del aprendiz. Después de hoy, el grado 11 termina; lo que sigue es vida adulta, estudios superiores, oficio en el mundo. La sustentación es el último ritual del bachillerato y el primer ritual de la vida profesional.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Antes de teorizar, vas a hacer una \emph{síntesis del viaje completo}: ¿qué aprendiste en P1 (marca digital)?, ¿qué en P2 (automatización)?, ¿qué en P3 (emprendimiento)? Y, atravesando los 3 periodos: ¿qué cambió en ti como estudiante, como ciudadano, como aprendiz de oficio digital?}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · ANALIZA --- Síntesis del viaje completo del grado 11} (20 min · individual). Revisa tus cuadernos de los 3 periodos y haz una síntesis en 3 columnas: (a) \textbf{P1 --- Presencia y marca digital}: 2-3 aprendizajes clave + 1 error revelador. (b) \textbf{P2 --- Automatización y procesos}: 2-3 aprendizajes clave + 1 error revelador. (c) \textbf{P3 --- Proyecto emprendedor}: 2-3 aprendizajes clave + 1 error revelador. Atravesando las 3 columnas, identifica el \textbf{aprendizaje meta} (lo que aprendiste sobre ti mismo como estudiante de oficio digital). Esa síntesis es la columna vertebral del manifiesto.
 \end{softbox}
 
-\checkbox Listé 2-3 aprendizajes por periodo.\\
-\checkbox Identifiqué 1 error revelador por periodo.\\
-\checkbox Nombré el aprendizaje meta (sobre mí mismo).
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Listé 2-3 aprendizajes por periodo.}
+\milccheckrow{Identifiqué 1 error revelador por periodo.}
+\milccheckrow{Nombré el aprendizaje meta (sobre mí mismo).}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Ya tienes la síntesis. Ahora vas a entender la \textbf{anatomía de la sustentación profesional}: la estructura de los 15 minutos (5 minutos presentación, 5 minutos demo, 5 minutos manifiesto, luego 10 minutos preguntas), los 7 tipos de preguntas duras que la audiencia hará (y cómo responder con honestidad), los 6 errores típicos del sustentante novato (leer slides, evadir preguntas, inflar logros, ocultar fallas, hablar para uno mismo, terminar sin cierre).}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Una sustentación novata es lectura nerviosa de slides. Una sustentación profesional es defensa pública del oficio aprendido. Para que tu sustentación de hoy sea del segundo tipo necesitas la \textbf{anatomía de los 15 minutos}, los 7 tipos de preguntas duras que llegarán y los errores que delatan al sustentante que no preparó.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & Los \textbf{15 minutos de sustentación} se descomponen en 3 segmentos de 5 minutos cada uno: (1) \textbf{Presentación} (5 min): pitch actualizado de la sesión 6 con los hallazgos de S7, S8 y S9 integrados; estructura de 7 slides pero con tiempos más holgados que los 3 minutos originales. (2) \textbf{Demo en vivo} (5 min): el sustentante recorre el MVP versión final en pantalla compartida, no muestra capturas; debe estar funcionando. (3) \textbf{Manifiesto} (5 min): lectura del manifiesto final de 1 página con voz firme y mirada al público. Después de los 15 minutos viene la \textbf{sesión de preguntas y respuestas de 10 minutos}, donde la audiencia hace 3-5 preguntas y el sustentante responde con honestidad.\\
-2. Reconocimiento de patrones & Los \textbf{7 tipos de preguntas duras} más frecuentes en sustentaciones: (a) \textbf{Crítica de validación}: \emph{``¿cómo sabes que el problema es real?''} (responder con la S2). (b) \textbf{Crítica de mercado}: \emph{``¿quién es tu competencia y por qué eres distinto?''}. (c) \textbf{Crítica financiera}: \emph{``¿cuánto necesitas para sostenerte 6 meses?''} (responder con S7). (d) \textbf{Crítica técnica}: \emph{``¿qué pasa si tu MVP se cae el día de la demo?''}. (e) \textbf{Crítica ética}: \emph{``¿qué haces con los datos si alguien los pide?''} (responder con S8). (f) \textbf{Crítica de futuro}: \emph{``¿qué sigue después del grado 11?''}. (g) \textbf{Crítica personal}: \emph{``¿qué cambiarías si empezaras hoy?''}. Para cada una, la phronesis recomienda responder con \textbf{honestidad + dato + límite}: la verdad, una cifra, y el reconocimiento de lo que falta.\\
-3. Abstracción & Lo esencial cabe en una pregunta: \emph{¿estoy defendiendo lo que hice o estoy disfrazándolo?}. Si el sustentante disfraza limitaciones, infla datos o evade preguntas, la audiencia experimentada lo detecta en el primer minuto. La phronesis del sustentante consiste en \textbf{aceptar la limitación con elegancia profesional}: \emph{``Tienes razón, eso no lo resolví. La razón es X. Si tuviera 3 meses más, haría Y''}.\\
-4. Algoritmo conceptual & Algoritmo: (1) actualiza el deck de S6 con los hallazgos de S7-S9; (2) prepara la demo asegurándote que el MVP funciona offline si la red falla; (3) redacta el manifiesto final de 1 página; (4) ensaya cronometrado al menos 2 veces; (5) preanticipa las 7 preguntas duras con respuestas preparadas; (6) presenta; (7) responde con honestidad; (8) entrega el manifiesto firmado al docente.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{Los \textbf{15 minutos de sustentación} se descomponen en 3 segmentos de 5 minutos cada uno: (1) \textbf{Presentación} (5 min): pitch actualizado de la sesión 6 con los hallazgos de S7, S8 y S9 integrados; estructura de 7 slides pero con tiempos más holgados que los 3 minutos originales. (2) \textbf{Demo en vivo} (5 min): el sustentante recorre el MVP versión final en pantalla compartida, no muestra capturas; debe estar funcionando. (3) \textbf{Manifiesto} (5 min): lectura del manifiesto final de 1 página con voz firme y mirada al público. Después de los 15 minutos viene la \textbf{sesión de preguntas y respuestas de 10 minutos}, donde la audiencia hace 3-5 preguntas y el sustentante responde con honestidad.}
+\milcpaso{2}{milcTurquesa}{Los \textbf{7 tipos de preguntas duras} más frecuentes en sustentaciones: (a) \textbf{Crítica de validación}: \emph{``¿cómo sabes que el problema es real?''} (responder con la S2). (b) \textbf{Crítica de mercado}: \emph{``¿quién es tu competencia y por qué eres distinto?''}. (c) \textbf{Crítica financiera}: \emph{``¿cuánto necesitas para sostenerte 6 meses?''} (responder con S7). (d) \textbf{Crítica técnica}: \emph{``¿qué pasa si tu MVP se cae el día de la demo?''}. (e) \textbf{Crítica ética}: \emph{``¿qué haces con los datos si alguien los pide?''} (responder con S8). (f) \textbf{Crítica de futuro}: \emph{``¿qué sigue después del grado 11?''}. (g) \textbf{Crítica personal}: \emph{``¿qué cambiarías si empezaras hoy?''}. Para cada una, la phronesis recomienda responder con \textbf{honestidad + dato + límite}: la verdad, una cifra, y el reconocimiento de lo que falta.}
+\milcpaso{3}{milcTurquesa}{Lo esencial cabe en una pregunta: \emph{¿estoy defendiendo lo que hice o estoy disfrazándolo?}. Si el sustentante disfraza limitaciones, infla datos o evade preguntas, la audiencia experimentada lo detecta en el primer minuto. La phronesis del sustentante consiste en \textbf{aceptar la limitación con elegancia profesional}: \emph{``Tienes razón, eso no lo resolví. La razón es X. Si tuviera 3 meses más, haría Y''}.}
+\milcpaso{4}{milcTurquesa}{Algoritmo: (1) actualiza el deck de S6 con los hallazgos de S7-S9; (2) prepara la demo asegurándote que el MVP funciona offline si la red falla; (3) redacta el manifiesto final de 1 página; (4) ensaya cronometrado al menos 2 veces; (5) preanticipa las 7 preguntas duras con respuestas preparadas; (6) presenta; (7) responde con honestidad; (8) entrega el manifiesto firmado al docente.}
 
 \begin{drawbox}{milcTurquesa}{Anatomía de la sustentación}
 \textbf{Presentación (5 min):} pitch actualizado con hallazgos. \\[1mm] \textbf{Demo en vivo (5 min):} MVP funcionando. \\[1mm] \textbf{Manifiesto (5 min):} lectura del cierre del grado. \\[1mm] \textbf{Preguntas (10 min):} respuesta con honestidad + dato + límite. \\[1mm] \textbf{Entrega:} manifiesto firmado al docente.
@@ -325,23 +379,16 @@ Una sustentación novata es lectura nerviosa de slides. Una sustentación profes
 
 \puente{Tienes el método. Toca ejecutar. Vas a actualizar el deck de la sesión 6 con los hallazgos de S7, S8 y S9; preparar la demo en vivo (no captura); redactar el manifiesto final del grado 11; ensayar la sustentación cronometrada; hacerla en público; recibir preguntas con honestidad; cerrar con la entrega del manifiesto firmado al docente.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · CREA + EVALÚA --- Manifiesto final + sustentación ejecutada} (60 min de sesión + sustentación pública en horario asignado · individual). Hora del cierre. Redactas el manifiesto final del grado 11, actualizas el deck, ensayas, sustentas en público, respondes preguntas, entregas el manifiesto firmado al docente.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & Tu sustentación se construye en 7 pasos: (1) actualizar el deck de S6 con los hallazgos de S7-S9 integrados; (2) preparar la demo en vivo (probar conexión, tener plan B si falla la red); (3) redactar el manifiesto final de 1 página en 4 párrafos (qué aprendí en P1, P2, P3, qué me llevo al futuro); (4) ensayar cronometrado al menos 2 veces; (5) preanticipar las 7 preguntas duras; (6) presentar; (7) responder con honestidad + dato + límite.\\
-Patrones & Sigue el patrón \textbf{``honestidad sobre perfección''}: la audiencia profesional respeta más al sustentante que reconoce limitaciones con argumento que al que finge proyecto impecable. La phronesis del cierre consiste en \textbf{terminar con dignidad lo terminado y declarar con honestidad lo pendiente}, sin disfrazar ninguno.\\
-Abstracción & El \textbf{manifiesto final} tiene estructura mínima de 4 párrafos: (a) \textbf{P1 --- Marca digital}: \emph{``Aprendí que la presencia digital se construye con [hallazgo concreto], no con [error revelador]''}. (b) \textbf{P2 --- Automatización}: \emph{``Aprendí que automatizar procesos exige [hallazgo], no solo [reducción a la idea]''}. (c) \textbf{P3 --- Emprendimiento}: \emph{``Aprendí que emprender es [hallazgo], y que mi proyecto [estado actual + futuro]''}. (d) \textbf{Compromiso futuro}: \emph{``Me llevo del grado 11 [aprendizaje meta]. Me comprometo a [acción concreta en el próximo año de vida]''}. Firma con nombre completo + fecha.\\
-Algoritmo de armado & Algoritmo final: (1) actualizar deck; (2) preparar demo con plan B; (3) redactar manifiesto; (4) ensayar; (5) sustentar; (6) responder con honestidad; (7) entregar el manifiesto firmado al docente; (8) reservar 5 minutos después para reflexión personal: \emph{¿qué hice bien?, ¿qué haría distinto?, ¿qué me llevo de la audiencia?}.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{Tu sustentación se construye en 7 pasos: (1) actualizar el deck de S6 con los hallazgos de S7-S9 integrados; (2) preparar la demo en vivo (probar conexión, tener plan B si falla la red); (3) redactar el manifiesto final de 1 página en 4 párrafos (qué aprendí en P1, P2, P3, qué me llevo al futuro); (4) ensayar cronometrado al menos 2 veces; (5) preanticipar las 7 preguntas duras; (6) presentar; (7) responder con honestidad + dato + límite.}
+\milcpaso{2}{milcMagenta}{Sigue el patrón \textbf{``honestidad sobre perfección''}: la audiencia profesional respeta más al sustentante que reconoce limitaciones con argumento que al que finge proyecto impecable. La phronesis del cierre consiste en \textbf{terminar con dignidad lo terminado y declarar con honestidad lo pendiente}, sin disfrazar ninguno.}
+\milcpaso{3}{milcMagenta}{El \textbf{manifiesto final} tiene estructura mínima de 4 párrafos: (a) \textbf{P1 --- Marca digital}: \emph{``Aprendí que la presencia digital se construye con [hallazgo concreto], no con [error revelador]''}. (b) \textbf{P2 --- Automatización}: \emph{``Aprendí que automatizar procesos exige [hallazgo], no solo [reducción a la idea]''}. (c) \textbf{P3 --- Emprendimiento}: \emph{``Aprendí que emprender es [hallazgo], y que mi proyecto [estado actual + futuro]''}. (d) \textbf{Compromiso futuro}: \emph{``Me llevo del grado 11 [aprendizaje meta]. Me comprometo a [acción concreta en el próximo año de vida]''}. Firma con nombre completo + fecha.}
+\milcpaso{4}{milcMagenta}{Algoritmo final: (1) actualizar deck; (2) preparar demo con plan B; (3) redactar manifiesto; (4) ensayar; (5) sustentar; (6) responder con honestidad; (7) entregar el manifiesto firmado al docente; (8) reservar 5 minutos después para reflexión personal: \emph{¿qué hice bien?, ¿qué haría distinto?, ¿qué me llevo de la audiencia?}.}
 
 \begin{drawbox}{milcMagenta}{Checklist antes de sustentar}
 \checkbox Deck de S6 actualizado con hallazgos de S7-S9. \\[1mm] \checkbox Demo en vivo probada (conexión, plan B). \\[1mm] \checkbox Manifiesto final de 1 página redactado y firmado. \\[1mm] \checkbox Sustentación ensayada al menos 2 veces cronometradas. \\[1mm] \checkbox 7 preguntas duras con respuesta preparada. \\[1mm] \checkbox Voz firme, mirada al público, no leer slides. \\[1mm] \checkbox Manifiesto entregado al docente al finalizar.
@@ -359,9 +406,7 @@ Algoritmo de armado & Algoritmo final: (1) actualizar deck; (2) preparar demo co
 
 \puente{Lo que sigue resume \emph{qué} entregas hoy: sustentación pública ejecutada + manifiesto final firmado entregado. El criterio principal: que un miembro de la audiencia que no te conoce, al salir de tu sustentación, pueda decir \emph{``este estudiante aprendió un oficio y está listo para llevarlo al mundo''}.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Sustentación pública ejecutada + manifiesto final firmado y entregado}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) Deck actualizado con hallazgos de S7-S9 integrados. (2) Demo en vivo del MVP versión final. (3) Manifiesto final de 1 página con 4 párrafos. (4) Sustentación cronometrada dentro de los 15 minutos. (5) Respuestas honestas en preguntas duras (no evasión). (6) Manifiesto firmado entregado al docente.
@@ -369,9 +414,7 @@ Producto de la sesión
 
 \puente{Antes de cerrar, mira la sustentación desde las cinco dimensiones humanas. Defender el oficio aprendido en público es respeto por el viaje entero; pasar la sustentación sin honestidad es traicionar al estudiante que fuiste durante los 3 periodos.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -397,12 +440,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Y para terminar, tres voces sobre la graduación y el oficio. Dussel sobre el aprendiz que regresa al pueblo con un saber, Marco Aurelio sobre la prueba pública como espejo del carácter, Floridi sobre el ciudadano digital que sale al mundo con responsabilidad asumida.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{``El aprendiz que regresa al pueblo con saber asumido es el que cierra el ciclo de la liberación pedagógica.''}
+\textit{El aprendiz que regresa al pueblo con saber asumido es el que cierra el ciclo de la liberación pedagógica.}
 
 La sustentación pública te transforma de \emph{estudiante que recibe} en \emph{aprendiz que devuelve}. Cuando defiendes el oficio aprendido ante tu comunidad (compañeros, docentes, padres), no solo cierras un periodo: devuelves a tu comunidad lo que aprendiste, asumido y firmado. La filosofía de la liberación pide ese acto: el saber asumido es saber liberado; el saber sin asumir es ornamento. Tu manifiesto es el acto de devolución a quienes te formaron.
 
@@ -412,7 +453,7 @@ La sustentación pública te transforma de \emph{estudiante que recibe} en \emph
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
-\textit{``La prueba pública es el único espejo verdadero del carácter; lo demás son ensayos.''}
+\textit{La prueba pública es el único espejo verdadero del carácter; lo demás son ensayos.}
 
 Es tentador querer pasar la sustentación sin riesgo. La disciplina estoica recomienda lo opuesto: \emph{abraza la prueba pública como ejercicio del carácter, no como obstáculo}. La audiencia te mostrará en 25 minutos algo que ningún examen escrito mostraría: cómo respondes bajo presión, si dices la verdad cuando incomoda, si reconoces lo que no resolviste. Esa es la información más valiosa que el grado 11 te puede dar.
 
@@ -422,7 +463,7 @@ Es tentador querer pasar la sustentación sin riesgo. La disciplina estoica reco
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{``Salir al mundo digital con responsabilidad asumida es el primer acto del ciudadano de la infosfera.''}
+\textit{Salir al mundo digital con responsabilidad asumida es el primer acto del ciudadano de la infosfera.}
 
 Después de la sustentación, sales del bachillerato técnico como \emph{ciudadano de la infosfera}: alguien capaz de operar herramientas digitales asumiendo responsabilidad por sus efectos. Las habilidades técnicas que aprendiste (marca, automatización, emprendimiento) son poder; el manifiesto firmado es el acto de asumir que ese poder vendrá acompañado de responsabilidad. La ética digital contemporánea exige esa coherencia entre capacidad y responsabilidad asumida.
 
@@ -431,21 +472,24 @@ Después de la sustentación, sales del bachillerato técnico como \emph{ciudada
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

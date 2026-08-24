@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 6};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 6};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont ¿Qué es un\\procesador de\\texto? ---\\mi primera\\página digital}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 22-6-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 3 · Procesador de texto e Internet}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 3 · Procesador de texto e Internet}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont ¿Qué es un\\procesador de\\texto? ---\\mi primera\\página digital}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 22-6-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} Un \textbf{documento digital titulado ``Mi primer texto digital''} con \textbf{3 párrafos} (introducción, desarrollo, cierre) sobre un tema personal que tú escojas (tu pueblo, tu materia favorita, tu mascota, lo que quieras). El documento se guarda en la carpeta correcta (siguiendo lo aprendido en G6·P2·S7), tiene nombre claro siguiendo las 5 reglas, y se imprime o se muestra en pantalla al profe. En el cuaderno: \textbf{captura impresa o boceto} del documento + \textbf{pasos que seguiste} numerados.};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Un \textbf{documento digital titulado ``Mi primer texto digital''} con \textbf{3 párrafos} (introducción, desarrollo, cierre) sobre un tema personal que tú escojas (tu pueblo, tu materia favorita, tu mascota, lo que quieras). El documento se guarda en la carpeta correcta (siguiendo lo aprendido en G6·P2·S7), tiene nombre claro siguiendo las 5 reglas, y se imprime o se muestra en pantalla al profe. En el cuaderno: \textbf{captura impresa o boceto} del documento + \textbf{pasos que seguiste} numerados.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: ¿Qué es un procesador de texto? --- mi primera página escrita en digital}
@@ -258,30 +322,27 @@ Producto final & Un \textbf{documento digital titulado ``Mi primer texto digital
 
 \puente{Hoy haces 4 cosas: comparas los 3 procesadores, aprendes los 5 pasos para escribir y guardar, escoges tu tema, y creas tu documento real.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Empezamos comparando Word, Google Docs y LibreOffice en 4 puntos.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- Comparar los 3 procesadores} (10 min · individual). En el cuaderno, dibuja una tabla de \textbf{3 columnas y 4 filas}. Columnas: \emph{Microsoft Word}, \emph{Google Docs}, \emph{LibreOffice Writer}. Filas: \emph{(a) ¿Es gratis o cuesta?}, \emph{(b) ¿Se usa con internet o sin internet?}, \emph{(c) ¿Dónde guarda los archivos?}, \emph{(d) ¿Qué pasa si lo abro en otro computador?}. Llena las 12 casillas con tu intuición. Si no sabes alguna, escribe \emph{``no sé''}. Después comparas con la sistematización.
 \end{softbox}
 
-\checkbox Dibujé la tabla 3x4 en el cuaderno.\\
-\checkbox Llené las 12 casillas con mi intuición.\\
-\checkbox No miré la siguiente actividad ni busqué en internet.
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Dibujé la tabla 3x4 en el cuaderno.}
+\milccheckrow{Llené las 12 casillas con mi intuición.}
+\milccheckrow{No miré la siguiente actividad ni busqué en internet.}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Después aprendes los 5 pasos fundamentales: crear, escribir, guardar, nombrar, ubicar.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Ahora compara tu tabla con la realidad. Vas a descubrir que cada procesador tiene ventajas distintas, y eso te ayuda a decidir cuál usar según la situación.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & \textbf{Microsoft Word.} \emph{Costo:} cuesta (parte de Office 365), pero los colegios tienen licencia gratis para estudiantes. \emph{Internet:} se usa SIN internet. \emph{Guardado:} en tu disco duro (o en OneDrive si lo conectas). \emph{Otros equipos:} si llevas tu archivo en USB y abres en otro Word, todo se ve igual. \emph{Cuándo conviene:} para trabajos formales, tareas serias del colegio, cuando necesitas formato sofisticado.\\
-2. Reconocimiento de patrones & \textbf{Google Docs.} \emph{Costo:} gratis (solo necesitas cuenta de Google). \emph{Internet:} se usa CON internet (también funciona algo sin internet, pero limitado). \emph{Guardado:} en la nube (Google Drive); puedes verlo desde cualquier dispositivo con tu cuenta. \emph{Otros equipos:} entras a docs.google.com en cualquier computador, te abre tu archivo. \emph{Cuándo conviene:} para trabajos en grupo (varios escribiendo a la vez), para no perder archivos al cambiar de computador, para colegio.\\
-3. Abstracción & \textbf{LibreOffice Writer.} \emph{Costo:} gratis (descarga la suite). \emph{Internet:} se usa SIN internet. \emph{Guardado:} en tu disco. \emph{Otros equipos:} si la persona también tiene LibreOffice, se ve igual. Si la abren en Word, casi siempre se ve bien pero puede haber detalles distintos. \emph{Cuándo conviene:} si no tienes Word y no quieres pagar; en computadores Linux; en casa donde nadie tiene Office.\\
-4. Algoritmo conceptual & \textbf{Los 5 pasos universales para crear y guardar un documento.} \textbf{(1) Crear:} abrir el programa (Word, Docs, etc.). \textbf{(2) Escribir:} el contenido en orden (título, párrafos). \textbf{(3) Guardar:} pulsar \texttt{Ctrl+G} (Guardar) o \texttt{Ctrl+S} en inglés (de \emph{Save}). \textbf{(4) Nombrar bien:} aplicar las 5 reglas que aprendiste en S7 (sin espacios, sin acentos, claro, con fecha si aplica). \textbf{(5) Ubicar en carpeta:} guardar en la carpeta correcta de tu árbol (no en el escritorio amontonado).\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{\textbf{Microsoft Word.} \emph{Costo:} cuesta (parte de Office 365), pero los colegios tienen licencia gratis para estudiantes. \emph{Internet:} se usa SIN internet. \emph{Guardado:} en tu disco duro (o en OneDrive si lo conectas). \emph{Otros equipos:} si llevas tu archivo en USB y abres en otro Word, todo se ve igual. \emph{Cuándo conviene:} para trabajos formales, tareas serias del colegio, cuando necesitas formato sofisticado.}
+\milcpaso{2}{milcTurquesa}{\textbf{Google Docs.} \emph{Costo:} gratis (solo necesitas cuenta de Google). \emph{Internet:} se usa CON internet (también funciona algo sin internet, pero limitado). \emph{Guardado:} en la nube (Google Drive); puedes verlo desde cualquier dispositivo con tu cuenta. \emph{Otros equipos:} entras a docs.google.com en cualquier computador, te abre tu archivo. \emph{Cuándo conviene:} para trabajos en grupo (varios escribiendo a la vez), para no perder archivos al cambiar de computador, para colegio.}
+\milcpaso{3}{milcTurquesa}{\textbf{LibreOffice Writer.} \emph{Costo:} gratis (descarga la suite). \emph{Internet:} se usa SIN internet. \emph{Guardado:} en tu disco. \emph{Otros equipos:} si la persona también tiene LibreOffice, se ve igual. Si la abren en Word, casi siempre se ve bien pero puede haber detalles distintos. \emph{Cuándo conviene:} si no tienes Word y no quieres pagar; en computadores Linux; en casa donde nadie tiene Office.}
+\milcpaso{4}{milcTurquesa}{\textbf{Los 5 pasos universales para crear y guardar un documento.} \textbf{(1) Crear:} abrir el programa (Word, Docs, etc.). \textbf{(2) Escribir:} el contenido en orden (título, párrafos). \textbf{(3) Guardar:} pulsar \texttt{Ctrl+G} (Guardar) o \texttt{Ctrl+S} en inglés (de \emph{Save}). \textbf{(4) Nombrar bien:} aplicar las 5 reglas que aprendiste en S7 (sin espacios, sin acentos, claro, con fecha si aplica). \textbf{(5) Ubicar en carpeta:} guardar en la carpeta correcta de tu árbol (no en el escritorio amontonado).}
 
 \begin{drawbox}{milcTurquesa}{3 procesadores + 5 pasos universales}
 \textbf{Procesadores:} Word (cuesta, sin internet) · Docs (gratis, con internet, en nube) · LibreOffice (gratis, sin internet). \\[1mm]
@@ -326,23 +380,18 @@ Ahora compara tu tabla con la realidad. Vas a descubrir que cada procesador tien
 
 \puente{Con los pasos claros, eliges tu tema y produces tu documento digital de 3 párrafos.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · APLICA --- Tu primer documento digital de 3 párrafos} (30 min · individual). Vas a crear tu \textbf{primer documento digital}. Si tienes computador en clase, lo haces ahí. Si no, lo planificas en el cuaderno y lo creas en casa esta semana. Tema libre: pueblo, tradición familiar, mascota, equipo de fútbol, materia favorita, lo que tú quieras.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & \textbf{Paso 1 --- Decide el tema y el procesador.} En el cuaderno escribe: \emph{``Tema: ...''} y \emph{``Procesador que voy a usar: Word / Docs / LibreOffice''}. Si en el colegio hay Word, úsalo. Si tienes cuenta Google, Docs también funciona.\\
-Patrones & \textbf{Paso 2 --- Planifica los 3 párrafos en el cuaderno PRIMERO.} \textbf{Doña Mercedes lo dice}: \emph{antes de escribir, pensar}. En 3 líneas anota la idea principal de cada párrafo. Ejemplo: \emph{``Párrafo 1 (introducción): voy a hablar de mi gato Murcio. Párrafo 2 (desarrollo): cuento sus 3 características raras y una anécdota. Párrafo 3 (cierre): qué he aprendido de él.''}.\\
-Abstracción & \textbf{Paso 3 --- Crea el documento.} Abre el procesador. Aparece una página en blanco. Escribe el título arriba (centrado): \emph{``Mi primer texto digital --- [tu tema]''}. Salta 2 líneas (presiona Enter 2 veces).\\
-Algoritmo de armado & \textbf{Paso 4 --- Escribe los 3 párrafos.} Cada párrafo debe tener entre 3 y 5 líneas. \textbf{No copies de internet}: doña Mercedes te diría que la voz que vale es la tuya, no la de un sitio web. Si necesitas datos, los pones después con tus palabras. Escribe sin parar mucho; después revisas.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{\textbf{Paso 1 --- Decide el tema y el procesador.} En el cuaderno escribe: \emph{``Tema: ...''} y \emph{``Procesador que voy a usar: Word / Docs / LibreOffice''}. Si en el colegio hay Word, úsalo. Si tienes cuenta Google, Docs también funciona.}
+\milcpaso{2}{milcMagenta}{\textbf{Paso 2 --- Planifica los 3 párrafos en el cuaderno PRIMERO.} \textbf{Doña Mercedes lo dice}: \emph{antes de escribir, pensar}. En 3 líneas anota la idea principal de cada párrafo. Ejemplo: \emph{``Párrafo 1 (introducción): voy a hablar de mi gato Murcio. Párrafo 2 (desarrollo): cuento sus 3 características raras y una anécdota. Párrafo 3 (cierre): qué he aprendido de él.''}.}
+\milcpaso{3}{milcMagenta}{\textbf{Paso 3 --- Crea el documento.} Abre el procesador. Aparece una página en blanco. Escribe el título arriba (centrado): \emph{``Mi primer texto digital --- [tu tema]''}. Salta 2 líneas (presiona Enter 2 veces).}
+\milcpaso{4}{milcMagenta}{\textbf{Paso 4 --- Escribe los 3 párrafos.} Cada párrafo debe tener entre 3 y 5 líneas. \textbf{No copies de internet}: doña Mercedes te diría que la voz que vale es la tuya, no la de un sitio web. Si necesitas datos, los pones después con tus palabras. Escribe sin parar mucho; después revisas.}
+\milcpaso{5}{milcMagenta}{\textbf{Paso 5 --- Guarda con criterio.} Pulsa \texttt{Ctrl+G} (Word) o \texttt{Ctrl+S}. Aparece un cuadro pidiendo nombre y carpeta. \textbf{Nombre:} aplica las 5 reglas (ejemplo: \emph{``2026-mi-primer-texto-gato.docx''}). \textbf{Carpeta:} la de tu árbol --- \texttt{Mis-documentos/Colegio/Tecnologia/Periodo-3} (si la tienes; si no, crea la carpeta aquí mismo).}
+\milcpaso{6}{milcMagenta}{\textbf{Paso 6 --- Verifica y registra.} Cierra el documento. Búscalo en su carpeta y vuelve a abrirlo: si abre y se ve bien, está OK. En el cuaderno escribe (con dibujo o lista): \emph{``(a) Tema escogido: ..., (b) Procesador usado: ..., (c) Ruta donde guardé: ..., (d) Tamaño del archivo: ...''}. Esto deja constancia en tu cuaderno físico de que cumpliste.}
 
 \begin{drawbox}{milcMagenta}{Antes de mostrar el documento al profe}
 \checkbox El tema lo escogí yo, no me lo impuso nadie. \\[1mm]
@@ -365,9 +414,7 @@ Algoritmo de armado & \textbf{Paso 4 --- Escribe los 3 párrafos.} Cada párrafo
 
 \puente{El producto es ese documento guardado + el resumen en cuaderno.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Mi primer documento digital de 3 párrafos · guardado correctamente}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) El tema lo escogió el estudiante. (2) Hay 3 párrafos con sentido (introducción, desarrollo, cierre). (3) El nombre del archivo sigue las 5 reglas (sin espacios, sin acentos, claro, fecha). (4) Está en la carpeta correcta del árbol de organización. (5) El estudiante puede mostrar el archivo abriéndolo en clase o en casa.
@@ -375,9 +422,7 @@ Producto de la sesión
 
 \puente{Antes de salir, verificas que tu documento abre cuando lo das clic, que tiene 3 párrafos y que está en la carpeta correcta.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -403,12 +448,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Cerramos con 3 voces que te ayudan a entender por qué escribir bien sigue siendo un acto de respeto al lector.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{````Escribir con tu voz, no con voz prestada. Esa es la primera disciplina del que aprende.''''}
+\textit{``Escribir con tu voz, no con voz prestada. Esa es la primera disciplina del que aprende.''}
 
 Cuando empiezas a escribir digital, la tentación más grande es \textbf{copiar de internet}: hay millones de textos disponibles. Pero \emph{copiar no te enseña a escribir}. Doña Mercedes lo sabía: el alumno que copia se siente seguro hoy y queda sin voz mañana. El alumno que escribe lo suyo (aunque tenga errores) está construyendo su propia voz. La voz propia es lo único que de verdad importa al final.
 
@@ -418,7 +461,7 @@ Cuando empiezas a escribir digital, la tentación más grande es \textbf{copiar 
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
-\textit{````Escribir es pensar despacio. Hablar es pensar rápido. Los dos son necesarios; el lento construye más.''''}
+\textit{``Escribir es pensar despacio. Hablar es pensar rápido. Los dos son necesarios; el lento construye más.''}
 
 Hablamos todo el día sin pensar mucho. \textbf{Escribir obliga a frenar}: a elegir palabra exacta, a ordenar la idea, a corregir. Por eso escribir te hace mejor pensador, aunque al principio sea difícil. \emph{Marco Aurelio escribió sus reflexiones más profundas en cartas y diarios}. Tú con un documento de 3 párrafos estás haciendo lo mismo: pensar despacio. Ese hábito te acompañará.
 
@@ -428,7 +471,7 @@ Hablamos todo el día sin pensar mucho. \textbf{Escribir obliga a frenar}: a ele
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{````El procesador de texto no cambia qué es escribir. Cambia el ritmo, la facilidad de revisar, la capacidad de compartir. Lo demás es lo mismo de siempre.''''}
+\textit{``El procesador de texto no cambia qué es escribir. Cambia el ritmo, la facilidad de revisar, la capacidad de compartir. Lo demás es lo mismo de siempre.''}
 
 Algunas personas creen que \textbf{escribir digital es ``moderno'' y escribir en cuaderno es ``viejo''}. Falso. \emph{Son herramientas distintas para el mismo oficio}. El cuaderno es íntimo y lento. El procesador es público y rápido. Los dos sirven, dependiendo de qué quieres escribir. La maestra rural del campo y la programadora de Silicon Valley hacen lo mismo: escribir para ser entendidas.
 
@@ -437,21 +480,24 @@ Algunas personas creen que \textbf{escribir digital es ``moderno'' y escribir en
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

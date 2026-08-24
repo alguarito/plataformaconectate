@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 9};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 9};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Tablas y registros ---\\la columna como tipo,\\la fila como caso}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 22-9-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 3 · Datos --- del registro al insight}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 3 · Datos --- del registro al insight}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Tablas y registros ---\\la columna como tipo,\\la fila como caso}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 22-9-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} Tabla limpia en hoja de cálculo con 3 columnas tipadas (texto, número, fecha) y 15 filas reales, sin celdas vacías ni datos repetidos};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Tabla limpia en hoja de cálculo con 3 columnas tipadas (texto, número, fecha) y 15 filas reales, sin celdas vacías ni datos repetidos
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Tablas y registros --- la columna como tipo, la fila como caso}
@@ -258,30 +322,27 @@ Producto final & Tabla limpia en hoja de cálculo con 3 columnas tipadas (texto,
 
 \puente{Antes de empezar, mira el viaje completo. La sesión 1 te dio el principio (pregunta antes que dato); hoy bajas al primer principio operativo: cómo estructurar lo que recogiste en una tabla que sí permita análisis posterior.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Antes de teorizar, vas a auditar tablas reales (la del tendero, la de la parroquia, la de un sitio web). Verás patrones que separan las útiles de las inútiles.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- 3 tablas reales bajo la lupa} (15 min · individual). Encuentra \textbf{3 tablas} en tu entorno: (a) una \emph{tabla profesional} (estadística DANE, datos abiertos del gobierno, ficha técnica de un producto), (b) una \emph{tabla cotidiana} (lista de cumpleaños de tu salón, inventario del kiosko, programación del curso), (c) una \emph{tabla mal estructurada} (puede ser una propia, una de un grupo de WhatsApp, una de redes). Para cada una: ¿cumple las 3 reglas innegociables?
 \end{softbox}
 
-\checkbox Encontré 3 tablas reales (1 profesional, 1 cotidiana, 1 mal estructurada).\\
-\checkbox Identifiqué en cada una el tipo de cada columna (texto, número, fecha, sí/no).\\
-\checkbox Detecté errores estructurales en la mal estructurada (mezcla de tipos, celdas vacías, encabezados inconsistentes).
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Encontré 3 tablas reales (1 profesional, 1 cotidiana, 1 mal estructurada).}
+\milccheckrow{Identifiqué en cada una el tipo de cada columna (texto, número, fecha, sí/no).}
+\milccheckrow{Detecté errores estructurales en la mal estructurada (mezcla de tipos, celdas vacías, encabezados inconsistentes).}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Ya viste tablas reales. Ahora vamos a entender las \textbf{3 reglas innegociables} de la tabla profesional: columnas tipadas, filas completas, encabezados consistentes. Sin estas 3, ninguna fórmula posterior funciona.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Toda tabla profesional cumple 3 reglas innegociables. Vamos a descomponerlas con los pilares del pensamiento computacional para que tu tabla no fabrique cuentos.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & Las 3 reglas se descomponen así: (1) \textbf{columnas tipadas} --- cada columna almacena un solo tipo (texto / número / fecha / sí-no / moneda); romperlo impide que las fórmulas funcionen, (2) \textbf{filas completas} --- cada fila representa UN caso con todos sus campos; las celdas vacías son cáncer de las tablas, (3) \textbf{encabezados consistentes} --- nombres cortos, sin espacios al inicio, sin acentos extraños, sin mayúsculas inconsistentes; eso permite que las fórmulas referencien sin error.\\
-2. Reconocimiento de patrones & Toda tabla sigue el patrón \textbf{``cada fila un hecho''}: una fila no puede contener 3 cosas distintas. Si tu fila ``Juan'' tiene la columna ``Compras'' con ``leche, pan, mantequilla'', estás mezclando 3 hechos. La forma correcta es 3 filas separadas (Juan-leche, Juan-pan, Juan-mantequilla) o una columna distinta por producto. Eso es ``forma larga'' versus ``forma ancha'' de los datos.\\
-3. Abstracción & Lo esencial de una tabla cabe en una pregunta: \emph{¿un compañero puede abrir mi archivo y entender la estructura sin que yo le explique?}. Si la respuesta es no, hay algo mal estructurado.\\
-4. Algoritmo conceptual & Pasos para limpiar una tabla: (1) revisar encabezados (cortos, consistentes, sin acentos raros); (2) verificar que cada columna tenga UN tipo; (3) eliminar filas con celdas vacías o completar; (4) revisar duplicados exactos; (5) verificar que la primera columna sea un identificador único.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{Las 3 reglas se descomponen así: (1) \textbf{columnas tipadas} --- cada columna almacena un solo tipo (texto / número / fecha / sí-no / moneda); romperlo impide que las fórmulas funcionen, (2) \textbf{filas completas} --- cada fila representa UN caso con todos sus campos; las celdas vacías son cáncer de las tablas, (3) \textbf{encabezados consistentes} --- nombres cortos, sin espacios al inicio, sin acentos extraños, sin mayúsculas inconsistentes; eso permite que las fórmulas referencien sin error.}
+\milcpaso{2}{milcTurquesa}{Toda tabla sigue el patrón \textbf{``cada fila un hecho''}: una fila no puede contener 3 cosas distintas. Si tu fila ``Juan'' tiene la columna ``Compras'' con ``leche, pan, mantequilla'', estás mezclando 3 hechos. La forma correcta es 3 filas separadas (Juan-leche, Juan-pan, Juan-mantequilla) o una columna distinta por producto. Eso es ``forma larga'' versus ``forma ancha'' de los datos.}
+\milcpaso{3}{milcTurquesa}{Lo esencial de una tabla cabe en una pregunta: \emph{¿un compañero puede abrir mi archivo y entender la estructura sin que yo le explique?}. Si la respuesta es no, hay algo mal estructurado.}
+\milcpaso{4}{milcTurquesa}{Pasos para limpiar una tabla: (1) revisar encabezados (cortos, consistentes, sin acentos raros); (2) verificar que cada columna tenga UN tipo; (3) eliminar filas con celdas vacías o completar; (4) revisar duplicados exactos; (5) verificar que la primera columna sea un identificador único.}
 
 \begin{drawbox}{milcTurquesa}{Anatomía de una tabla profesional}
 \textbf{Primera fila:} encabezados cortos, sin espacios al inicio. \\[1mm] \textbf{Primera columna:} suele ser ID único o nombre. \\[1mm] \textbf{Tipos:} cada columna con su tipo declarado (texto / número / fecha / moneda). \\[1mm] \textbf{Sin combinar celdas:} las celdas combinadas rompen toda fórmula posterior. \\[1mm] \textbf{Sin filas vacías intermedias:} romperían el rango de selección. \\[1mm] \textbf{Sin colores como dato:} el color es decoración, no información.
@@ -325,23 +379,16 @@ Toda tabla profesional cumple 3 reglas innegociables. Vamos a descomponerlas con
 
 \puente{Tienes el método. Toca aplicarlo: tomar tu propia tabla de la sesión 1, limpiarla, tiparla, y dejarla lista para que las fórmulas de la sesión 3 funcionen.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · APLICA --- Limpia tu tabla a forma profesional} (30 min · individual). Hora de aplicar. Toma la tabla de 20 datos que recogiste en la sesión 1 (o crea una nueva si no la tienes) y aplícale las 3 reglas innegociables. El resultado: una tabla de mínimo 15 filas, columnas tipadas, lista para que las fórmulas de la sesión 3 funcionen.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & Tu limpieza se descompone en 5 pasos: (1) revisar encabezados (cortos, sin acentos raros, consistentes), (2) declarar tipos en cada columna (Sheets/Excel: Formato $\rightarrow$ Número/Texto/Fecha), (3) eliminar filas con celdas vacías o completar lo que falta, (4) revisar duplicados exactos y decidir si quitar, (5) verificar que la primera columna identifique cada fila de forma única.\\
-Patrones & Sigue el patrón \textbf{``documentar antes de borrar''}: si vas a eliminar filas o columnas, anota en una hoja aparte (o en un comentario) qué quitaste y por qué. Esa bitácora hace tu trabajo reproducible y profesional.\\
-Abstracción & Cada columna expresa una sola variable. Si tienes una columna ``Edad-Género'' (mezclada), pártela. Si tienes una columna ``Frutas favoritas'' con varios valores separados por comas, considera si necesitas 3 columnas (Fruta 1, Fruta 2, Fruta 3) o una tabla en ``forma larga''.\\
-Algoritmo de armado & Algoritmo: (1) abre tu tabla de Sesión 1; (2) limpia encabezados; (3) tipa columnas; (4) elimina/completa filas vacías; (5) revisa duplicados; (6) verifica que tengas mínimo 15 filas reales; (7) guarda como ``tabla-limpia-{tu-nombre}.xlsx''.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{Tu limpieza se descompone en 5 pasos: (1) revisar encabezados (cortos, sin acentos raros, consistentes), (2) declarar tipos en cada columna (Sheets/Excel: Formato $\rightarrow$ Número/Texto/Fecha), (3) eliminar filas con celdas vacías o completar lo que falta, (4) revisar duplicados exactos y decidir si quitar, (5) verificar que la primera columna identifique cada fila de forma única.}
+\milcpaso{2}{milcMagenta}{Sigue el patrón \textbf{``documentar antes de borrar''}: si vas a eliminar filas o columnas, anota en una hoja aparte (o en un comentario) qué quitaste y por qué. Esa bitácora hace tu trabajo reproducible y profesional.}
+\milcpaso{3}{milcMagenta}{Cada columna expresa una sola variable. Si tienes una columna ``Edad-Género'' (mezclada), pártela. Si tienes una columna ``Frutas favoritas'' con varios valores separados por comas, considera si necesitas 3 columnas (Fruta 1, Fruta 2, Fruta 3) o una tabla en ``forma larga''.}
+\milcpaso{4}{milcMagenta}{Algoritmo: (1) abre tu tabla de Sesión 1; (2) limpia encabezados; (3) tipa columnas; (4) elimina/completa filas vacías; (5) revisa duplicados; (6) verifica que tengas mínimo 15 filas reales; (7) guarda como ``tabla-limpia-{tu-nombre}.xlsx''.}
 
 \begin{drawbox}{milcMagenta}{Checklist antes de cerrar la tabla limpia}
 \checkbox Encabezados cortos, consistentes, sin acentos raros ni espacios al inicio. \\[1mm] \checkbox 3 columnas con tipos declarados (al menos texto, número, fecha). \\[1mm] \checkbox 15+ filas reales sin celdas vacías. \\[1mm] \checkbox Cero celdas combinadas. \\[1mm] \checkbox Ninguna columna mezcla tipos distintos. \\[1mm] \checkbox Primera columna es ID o identificador único.
@@ -359,9 +406,7 @@ Algoritmo de armado & Algoritmo: (1) abre tu tabla de Sesión 1; (2) limpia enca
 
 \puente{Lo que sigue resume \emph{qué} entregas hoy: tabla limpia de 15 filas. El criterio principal: que un compañero abra tu archivo y entienda la estructura sin que tú expliques.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Tabla limpia de 15 filas con 3 columnas tipadas y bitácora de limpieza}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) Encabezados cortos y consistentes. (2) 3+ columnas con tipos declarados (texto, número, fecha al menos). (3) 15+ filas reales sin celdas vacías. (4) Cero celdas combinadas. (5) Bitácora de limpieza con cambios documentados. (6) Archivo se puede abrir y entender sin explicación oral.
@@ -369,9 +414,7 @@ Producto de la sesión
 
 \puente{Antes de cerrar, mira la estructura de la tabla desde las cinco dimensiones humanas. Estructurar bien es respeto a quien va a leer la tabla después --- a ti mismo en una semana, a un compañero, a un profesor.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -397,12 +440,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Y para terminar, tres voces sobre la estructura. Dussel sobre la memoria que sobrevive cuando está bien guardada, Marco Aurelio sobre el cuidado del detalle pequeño, Floridi sobre la calidad informacional como respeto al receptor.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{``La memoria del pueblo se mantiene cuando se estructura con disciplina --- las estructuras también son políticas.''}
+\textit{La memoria del pueblo se mantiene cuando se estructura con disciplina --- las estructuras también son políticas.}
 
 Durante siglos, las tablas oficiales del Estado colombiano no incluyeron columnas para registrar identidad afro o indígena con criterios propios. Esa ausencia estructural invisibilizaba comunidades enteras. Hoy, la pregunta de qué columnas crear en cualquier tabla --- desde un censo hasta una hoja de Excel del colegio --- decide qué se ve y qué se invisibiliza. Estructurar bien es respeto al lector; estructurar con criterio inclusivo es también respeto a quien aparece.
 
@@ -412,7 +453,7 @@ Durante siglos, las tablas oficiales del Estado colombiano no incluyeron columna
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
-\textit{``El cuidado paciente del encabezado, del tipo, de la fila completa --- esa virtud invisible sostiene todo el análisis posterior.''}
+\textit{El cuidado paciente del encabezado, del tipo, de la fila completa --- esa virtud invisible sostiene todo el análisis posterior.}
 
 Estructurar bien una tabla puede tomar 30 minutos extra. Pero esos 30 minutos son la diferencia entre que las fórmulas de la próxima sesión funcionen al primer intento o que pases una hora depurando errores invisibles. La disciplina estoica recomienda: \emph{invertir tiempo en la estructura ahorra tiempo en el caos}.
 
@@ -422,7 +463,7 @@ Estructurar bien una tabla puede tomar 30 minutos extra. Pero esos 30 minutos so
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{``Una tabla bien estructurada es regalo informacional a quien la recibe --- una mal estructurada es ruido egoísta.''}
+\textit{Una tabla bien estructurada es regalo informacional a quien la recibe --- una mal estructurada es ruido egoísta.}
 
 Cuando compartes una tabla con un compañero o profesor, le estás regalando o cargando. Una tabla limpia: regalo. Una con celdas combinadas, tipos mezclados y encabezados raros: carga. La calidad informacional de una hoja de cálculo es ética profesional aplicada a la herramienta más cotidiana del trabajo digital.
 
@@ -431,21 +472,24 @@ Cuando compartes una tabla con un compañero o profesor, le estás regalando o c
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

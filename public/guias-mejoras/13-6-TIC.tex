@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 6};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 6};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont El gabinete\\por dentro ---\\conocer las\\piezas como\\el relojero}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 13-6-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 2 · Hardware y software}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 2 · Hardware y software}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont El gabinete\\por dentro ---\\conocer las\\piezas como\\el relojero}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 13-6-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} Un \textbf{plano del interior del gabinete del computador} dibujado en una hoja completa del cuaderno. El plano incluye \textbf{6 piezas ubicadas correctamente} (tarjeta madre, CPU con disipador, RAM, disco duro, fuente de poder, tarjeta gráfica), cada una con \textbf{una etiqueta} y \textbf{una frase de qué hace}. Más \textbf{una tabla comparativa} de CPU vs RAM vs disco duro: en qué se parecen, en qué se diferencian, cuál es ``cerebro'', cuál es ``memoria corta'' y cuál es ``memoria larga''.};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Un \textbf{plano del interior del gabinete del computador} dibujado en una hoja completa del cuaderno. El plano incluye \textbf{6 piezas ubicadas correctamente} (tarjeta madre, CPU con disipador, RAM, disco duro, fuente de poder, tarjeta gráfica), cada una con \textbf{una etiqueta} y \textbf{una frase de qué hace}. Más \textbf{una tabla comparativa} de CPU vs RAM vs disco duro: en qué se parecen, en qué se diferencian, cuál es ``cerebro'', cuál es ``memoria corta'' y cuál es ``memoria larga''.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: El gabinete por dentro --- conocer las piezas como las conoce el relojero}
@@ -258,30 +322,27 @@ Producto final & Un \textbf{plano del interior del gabinete del computador} dibu
 
 \puente{Hoy haces 4 cosas: identificas 6 piezas con sus nombres, aprendes qué hace cada una, distingues CPU/RAM/disco, y dibujas el plano del gabinete.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Empezamos jugando a adivinar nombres con 6 imágenes mentales.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- 6 imágenes mentales} (10 min · individual). En el cuaderno, escribe la \textbf{lista de 6 piezas} que se mencionaron en la introducción: tarjeta madre, CPU, RAM, disco duro, tarjeta gráfica, fuente de poder. Al lado de cada una, \textbf{en una sola línea}, escribe \emph{qué crees que hace} con tus palabras --- sin haber leído nada todavía. Es tu intuición. \textbf{Tip:} si no tienes idea, escribe lo que \emph{te suena} por el nombre. Después comparas con lo que vas a aprender. No se vale ver la siguiente actividad.
 \end{softbox}
 
-\checkbox Escribí las 6 piezas en orden.\\
-\checkbox Al lado de cada una, escribí mi intuición de qué hace.\\
-\checkbox No miré la siguiente actividad ni internet.
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Escribí las 6 piezas en orden.}
+\milccheckrow{Al lado de cada una, escribí mi intuición de qué hace.}
+\milccheckrow{No miré la siguiente actividad ni internet.}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Después del juego, conoces cada pieza con su función y un dato fácil de recordar.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Ahora compara tus 6 intuiciones con la realidad. Vas a ver que algunas las acertaste (los nombres dicen mucho) y otras te sorprenden. Lo importante es \textbf{quedarte con el dato fácil de recordar de cada pieza}.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & \textbf{Pieza 1 --- Tarjeta madre (motherboard).} Es la \textbf{placa grande verde} (a veces negra) donde se conectan TODAS las demás piezas. Sin tarjeta madre no hay computador, porque es como la \emph{calle principal del barrio} que conecta todas las casas. \emph{Dato fácil:} se llama ``madre'' porque sostiene y conecta a todas las otras piezas, como una madre con sus hijos. \textbf{Pieza 2 --- CPU (procesador).} Es el \textbf{cerebro} del computador. Un chip cuadrado pequeño (3-5 cm), pegado a la tarjeta madre. Lleva un \emph{disipador} (un ventilador encima) porque trabaja tanto que se calienta. \emph{Dato fácil:} CPU = ``Central Processing Unit'' = ``el que piensa''.\\
-2. Reconocimiento de patrones & \textbf{Pieza 3 --- RAM (memoria de trabajo).} Son \textbf{tarjetas alargadas y delgadas}, como reglitas paradas, conectadas a la tarjeta madre. \emph{Sirven como la mesa de trabajo}: la CPU pone ahí lo que está usando AHORA. Más RAM = más mesa = más cosas puedes hacer al mismo tiempo. \emph{Dato fácil:} se borra al apagar el computador. \textbf{Pieza 4 --- Disco duro (HDD o SSD).} Es donde se \textbf{guardan tus archivos para siempre}. HDD = \emph{disco mecánico} (lento, barato, suena cuando gira). SSD = \emph{disco de estado sólido} (rápido, caro, silencioso). \emph{Dato fácil:} aunque apagues el equipo, los archivos quedan acá.\\
-3. Abstracción & \textbf{Pieza 5 --- Tarjeta gráfica (GPU).} Es \textbf{otra placa con su propio chip}, especializada en gráficos y videos. Los juegos pesados (Roblox, Minecraft, Fortnite) la necesitan. En computadores básicos no hay una separada; está incluida dentro de la CPU. \emph{Dato fácil:} GPU = ``Graphics Processing Unit'' = ``cerebro para los gráficos''. \textbf{Pieza 6 --- Fuente de poder (PSU).} Es la \textbf{caja metálica grande con cables saliendo}, generalmente en una esquina del gabinete. \emph{Convierte la electricidad de la pared (110V) en electricidad para las piezas}. \emph{Dato fácil:} si la fuente falla, NADA enciende. Es como el corazón que bombea sangre.\\
-4. Algoritmo conceptual & \textbf{Comparación rápida CPU vs RAM vs Disco duro.} (1) \textbf{CPU} es \emph{cerebro}: piensa, calcula, decide. (2) \textbf{RAM} es \emph{mesa de trabajo}: guarda lo de AHORA, se borra al apagar. (3) \textbf{Disco duro} es \emph{archivo del cuaderno}: guarda los archivos para siempre, no se borra. \textbf{Analogía completa:} estudiar es como usar el computador. Tu \emph{cerebro} (CPU) piensa. Pones los apuntes que necesitas en tu \emph{mesa} (RAM). Tus \emph{cuadernos archivados} en el cajón (disco duro). Cuando terminas el día, recoges la mesa (la RAM se borra) pero los cuadernos quedan (el disco duro guarda).\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{\textbf{Pieza 1 --- Tarjeta madre (motherboard).} Es la \textbf{placa grande verde} (a veces negra) donde se conectan TODAS las demás piezas. Sin tarjeta madre no hay computador, porque es como la \emph{calle principal del barrio} que conecta todas las casas. \emph{Dato fácil:} se llama ``madre'' porque sostiene y conecta a todas las otras piezas, como una madre con sus hijos. \textbf{Pieza 2 --- CPU (procesador).} Es el \textbf{cerebro} del computador. Un chip cuadrado pequeño (3-5 cm), pegado a la tarjeta madre. Lleva un \emph{disipador} (un ventilador encima) porque trabaja tanto que se calienta. \emph{Dato fácil:} CPU = ``Central Processing Unit'' = ``el que piensa''.}
+\milcpaso{2}{milcTurquesa}{\textbf{Pieza 3 --- RAM (memoria de trabajo).} Son \textbf{tarjetas alargadas y delgadas}, como reglitas paradas, conectadas a la tarjeta madre. \emph{Sirven como la mesa de trabajo}: la CPU pone ahí lo que está usando AHORA. Más RAM = más mesa = más cosas puedes hacer al mismo tiempo. \emph{Dato fácil:} se borra al apagar el computador. \textbf{Pieza 4 --- Disco duro (HDD o SSD).} Es donde se \textbf{guardan tus archivos para siempre}. HDD = \emph{disco mecánico} (lento, barato, suena cuando gira). SSD = \emph{disco de estado sólido} (rápido, caro, silencioso). \emph{Dato fácil:} aunque apagues el equipo, los archivos quedan acá.}
+\milcpaso{3}{milcTurquesa}{\textbf{Pieza 5 --- Tarjeta gráfica (GPU).} Es \textbf{otra placa con su propio chip}, especializada en gráficos y videos. Los juegos pesados (Roblox, Minecraft, Fortnite) la necesitan. En computadores básicos no hay una separada; está incluida dentro de la CPU. \emph{Dato fácil:} GPU = ``Graphics Processing Unit'' = ``cerebro para los gráficos''. \textbf{Pieza 6 --- Fuente de poder (PSU).} Es la \textbf{caja metálica grande con cables saliendo}, generalmente en una esquina del gabinete. \emph{Convierte la electricidad de la pared (110V) en electricidad para las piezas}. \emph{Dato fácil:} si la fuente falla, NADA enciende. Es como el corazón que bombea sangre.}
+\milcpaso{4}{milcTurquesa}{\textbf{Comparación rápida CPU vs RAM vs Disco duro.} (1) \textbf{CPU} es \emph{cerebro}: piensa, calcula, decide. (2) \textbf{RAM} es \emph{mesa de trabajo}: guarda lo de AHORA, se borra al apagar. (3) \textbf{Disco duro} es \emph{archivo del cuaderno}: guarda los archivos para siempre, no se borra. \textbf{Analogía completa:} estudiar es como usar el computador. Tu \emph{cerebro} (CPU) piensa. Pones los apuntes que necesitas en tu \emph{mesa} (RAM). Tus \emph{cuadernos archivados} en el cajón (disco duro). Cuando terminas el día, recoges la mesa (la RAM se borra) pero los cuadernos quedan (el disco duro guarda).}
 
 \begin{drawbox}{milcTurquesa}{Las 6 piezas del gabinete + 3 piezas estrella}
 \textbf{1. Tarjeta madre} --- la calle principal que conecta todo. \\[1mm]
@@ -331,23 +385,18 @@ Ahora compara tus 6 intuiciones con la realidad. Vas a ver que algunas las acert
 
 \puente{Con las 6 piezas claras, dibujas el plano del gabinete y haces la tabla comparativa.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · CREA --- Tu plano del gabinete + tabla comparativa} (30 min · individual). Vas a hacer 2 cosas en una hoja completa del cuaderno. \textbf{Arriba (3/4 de la hoja):} el plano del interior del gabinete con las 6 piezas dibujadas y etiquetadas. \textbf{Abajo (1/4 de la hoja):} la tabla comparativa de CPU vs RAM vs disco duro.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & \textbf{Paso 1 --- Título y marco.} En la parte superior escribe: \textbf{``Plano del gabinete''} y debajo: \emph{``[Tu nombre], grado 6[tu letra], año 2026''}. Subraya el título. Dibuja un \textbf{rectángulo grande vertical} que ocupe los 3/4 superiores de la hoja --- ese es el gabinete visto desde un lado abierto.\\
-Patrones & \textbf{Paso 2 --- Ubica la tarjeta madre.} En el centro del rectángulo dibuja una \textbf{placa rectangular grande} (de color verde si tienes lápices de color, si no, solo el contorno). Etiqueta: \emph{``1. Tarjeta madre''}. Esta es la base sobre la que van las demás.\\
-Abstracción & \textbf{Paso 3 --- CPU + disipador.} Encima de la tarjeta madre dibuja un \textbf{cuadrado pequeño con un cuadrado más grande encima} (el cuadrado de encima es el disipador con su ventilador). Etiqueta: \emph{``2. CPU --- cerebro''}. La CPU está casi en el centro de la tarjeta madre.\\
-Algoritmo de armado & \textbf{Paso 4 --- RAM.} A la derecha de la CPU dibuja \textbf{2 reglitas paradas} (2 ó 4 módulos de RAM). Etiqueta: \emph{``3. RAM --- mesa de trabajo''}. La RAM siempre va a un lado de la CPU, conectadas por ranuras de la tarjeta madre.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{\textbf{Paso 1 --- Título y marco.} En la parte superior escribe: \textbf{``Plano del gabinete''} y debajo: \emph{``[Tu nombre], grado 6[tu letra], año 2026''}. Subraya el título. Dibuja un \textbf{rectángulo grande vertical} que ocupe los 3/4 superiores de la hoja --- ese es el gabinete visto desde un lado abierto.}
+\milcpaso{2}{milcMagenta}{\textbf{Paso 2 --- Ubica la tarjeta madre.} En el centro del rectángulo dibuja una \textbf{placa rectangular grande} (de color verde si tienes lápices de color, si no, solo el contorno). Etiqueta: \emph{``1. Tarjeta madre''}. Esta es la base sobre la que van las demás.}
+\milcpaso{3}{milcMagenta}{\textbf{Paso 3 --- CPU + disipador.} Encima de la tarjeta madre dibuja un \textbf{cuadrado pequeño con un cuadrado más grande encima} (el cuadrado de encima es el disipador con su ventilador). Etiqueta: \emph{``2. CPU --- cerebro''}. La CPU está casi en el centro de la tarjeta madre.}
+\milcpaso{4}{milcMagenta}{\textbf{Paso 4 --- RAM.} A la derecha de la CPU dibuja \textbf{2 reglitas paradas} (2 ó 4 módulos de RAM). Etiqueta: \emph{``3. RAM --- mesa de trabajo''}. La RAM siempre va a un lado de la CPU, conectadas por ranuras de la tarjeta madre.}
+\milcpaso{5}{milcMagenta}{\textbf{Paso 5 --- Disco duro, tarjeta gráfica y fuente.} Abajo a la izquierda del gabinete dibuja un \textbf{cubo} (el disco duro): \emph{``4. Disco duro --- archivo''}. En la parte inferior, una placa horizontal: \emph{``5. Tarjeta gráfica''}. En la esquina inferior derecha del rectángulo, un \textbf{rectángulo con cables saliendo}: \emph{``6. Fuente de poder''}.}
+\milcpaso{6}{milcMagenta}{\textbf{Paso 6 --- Tabla comparativa CPU vs RAM vs disco duro.} Debajo del plano (en el 1/4 inferior de la hoja) dibuja una tabla de \textbf{3 columnas} y \textbf{4 filas}. Columnas: CPU / RAM / Disco duro. Filas: \emph{(a) ¿Qué hace?}, \emph{(b) ¿Memoria corta o larga?}, \emph{(c) ¿Se borra al apagar?}, \emph{(d) ¿Cómo lo recuerdo?}. Llena la tabla con tus palabras. Firma el plano en la esquina inferior derecha con nombre y fecha.}
 
 \begin{drawbox}{milcMagenta}{Antes de mostrar tu plano}
 \checkbox El plano ocupa los 3/4 superiores de la hoja. \\[1mm]
@@ -370,9 +419,7 @@ Algoritmo de armado & \textbf{Paso 4 --- RAM.} A la derecha de la CPU dibuja \te
 
 \puente{El producto es el plano firmado + la tabla CPU vs RAM vs disco.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Plano del gabinete con 6 piezas + tabla CPU vs RAM vs disco · firmado}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) El plano contiene las 6 piezas dibujadas con etiqueta. (2) La tarjeta madre está como base y las demás conectadas a ella. (3) Cada pieza tiene una frase breve de qué hace. (4) La tabla comparativa distingue claramente cerebro, memoria corta y memoria larga. (5) Está firmado con nombre y fecha.
@@ -380,9 +427,7 @@ Producto de la sesión
 
 \puente{Antes de salir, verificas que tu plano tiene las 6 piezas y que la tabla aclara cuál es cerebro, memoria corta y memoria larga.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -408,12 +453,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Cerramos con 3 voces que te ayudan a entender por qué conocer las piezas te da poder.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{````Conocer el nombre de algo es el primer paso para perderle el miedo.''''}
+\textit{``Conocer el nombre de algo es el primer paso para perderle el miedo.''}
 
 Antes de hoy, el interior del computador era un misterio. \textbf{Ahora ya conoces el nombre de las 6 piezas más importantes}. Eso no es teoría: es poder. La próxima vez que un técnico te diga \emph{``el problema es la fuente de poder''}, ya no te suena chino: sabes qué es y por qué importa. \textbf{Los nombres son llaves}: cada nombre que aprendes te abre una puerta.
 
@@ -423,7 +466,7 @@ Antes de hoy, el interior del computador era un misterio. \textbf{Ahora ya conoc
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Epicteto · cuidado interior}
-\textit{````Lo que se entiende, se domina. Lo que no se entiende, te domina a ti.''''}
+\textit{``Lo que se entiende, se domina. Lo que no se entiende, te domina a ti.''}
 
 Cuando no entiendes cómo funciona algo, ese algo te genera ansiedad: \emph{``¿y si se daña?''}, \emph{``¿qué hago si no funciona?''}. Cuando lo entiendes, te calmas. \textbf{No es magia: es comprensión}. Saber qué hace cada pieza del gabinete te quita esa ansiedad. Si algo falla, ahora tienes vocabulario para preguntar y mapa para buscar.
 
@@ -433,7 +476,7 @@ Cuando no entiendes cómo funciona algo, ese algo te genera ansiedad: \emph{``¿
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{````Saber el nombre de las cosas técnicas es la primera forma de ciudadanía en una sociedad de máquinas.''''}
+\textit{``Saber el nombre de las cosas técnicas es la primera forma de ciudadanía en una sociedad de máquinas.''}
 
 Vivimos rodeados de máquinas. Pero \textbf{la mayoría de las personas no sabe cómo funcionan por dentro}. Eso las hace dependientes: dependen del técnico, del youtuber, del vendedor que les dice qué comprar. Cuando tú aprendes los nombres y las funciones, dejas de depender. Eres un \emph{ciudadano técnicamente alfabetizado}: una de las personas que entienden el mundo donde viven.
 
@@ -442,21 +485,24 @@ Vivimos rodeados de máquinas. Pero \textbf{la mayoría de las personas no sabe 
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

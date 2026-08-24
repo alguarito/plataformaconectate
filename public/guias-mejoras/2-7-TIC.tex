@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 7};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 7};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Microsoft\\365 ---\\las herramientas\\del taller\\digital}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 2-7-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 1 · Trabajo colaborativo en la nube}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 1 · Trabajo colaborativo en la nube}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Microsoft\\365 ---\\las herramientas\\del taller\\digital}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 2-7-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} Un \textbf{mapa de las 8 aplicaciones principales de Microsoft 365} dibujado en una hoja del cuaderno, organizadas en \textbf{3 grupos}: \emph{(a) Documentos} (Word, Excel, PowerPoint, OneNote); \emph{(b) Comunicación} (Outlook, Teams); \emph{(c) Almacenamiento + más} (OneDrive, Forms). Cada app: \textbf{ícono dibujado, nombre, qué hace en 1 línea, ejemplo concreto de uso}. Más \textbf{una tabla comparativa} Microsoft 365 vs Google Workspace (Drive, Docs, Gmail, Meet) en 5 puntos.};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Un \textbf{mapa de las 8 aplicaciones principales de Microsoft 365} dibujado en una hoja del cuaderno, organizadas en \textbf{3 grupos}: \emph{(a) Documentos} (Word, Excel, PowerPoint, OneNote); \emph{(b) Comunicación} (Outlook, Teams); \emph{(c) Almacenamiento + más} (OneDrive, Forms). Cada app: \textbf{ícono dibujado, nombre, qué hace en 1 línea, ejemplo concreto de uso}. Más \textbf{una tabla comparativa} Microsoft 365 vs Google Workspace (Drive, Docs, Gmail, Meet) en 5 puntos.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Microsoft 365 --- conocer las herramientas del taller digital}
@@ -258,30 +322,27 @@ Producto final & Un \textbf{mapa de las 8 aplicaciones principales de Microsoft 
 
 \puente{Hoy haces 4 cosas: identificas las 8 apps, las agrupas en 3 familias, comparas con Google Workspace, y armas tu mapa visual.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Empezamos con un test: ¿qué app usarías para 6 tareas distintas?}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- ¿Qué app usarías?} (10 min · individual). En el cuaderno, lee estas 6 tareas y escribe qué aplicación usarías para cada una (puedes adivinar; no se vale ver la sistematización). \textbf{Tarea 1:} Escribir un ensayo de 3 páginas sobre la independencia. \textbf{Tarea 2:} Crear una hoja con calificaciones de 30 estudiantes y calcular el promedio. \textbf{Tarea 3:} Hacer 20 diapositivas para una presentación oral. \textbf{Tarea 4:} Mandar correo formal al coordinador. \textbf{Tarea 5:} Reunión virtual con 5 compañeros para hacer trabajo en grupo. \textbf{Tarea 6:} Encuesta a toda la clase sobre cuál es la materia favorita.
 \end{softbox}
 
-\checkbox Leí las 6 tareas con calma.\\
-\checkbox Escribí mi intuición de qué app usar en cada una.\\
-\checkbox No me ayudé del compañero ni vi la sistematización.
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Leí las 6 tareas con calma.}
+\milccheckrow{Escribí mi intuición de qué app usar en cada una.}
+\milccheckrow{No me ayudé del compañero ni vi la sistematización.}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Después aprendes el nombre y función de las 8 apps, agrupadas en 3 familias.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Tu intuición te dio una idea. Ahora aprende las \textbf{8 aplicaciones principales} con sus familias, sus funciones y sus ejemplos exactos. Después podrás corregir tu primera Actividad si te equivocaste.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & \textbf{Familia 1 --- Documentos (4 apps).} \textbf{Word}: escribir textos largos (ensayos, informes, cartas). Es el que ya conoces. \emph{Ícono: una W azul.} \textbf{Excel}: hacer cálculos y tablas con números. Ideal para presupuestos, calificaciones, listas con datos. \emph{Ícono: una X verde.} \textbf{PowerPoint}: hacer presentaciones con diapositivas. Útil para exponer un tema con apoyo visual. \emph{Ícono: una P naranja.} \textbf{OneNote}: cuaderno digital. Te permite tomar apuntes con texto, dibujos, imágenes, audios, todo en un solo lugar. \emph{Ícono: una N morada.}\\
-2. Reconocimiento de patrones & \textbf{Familia 2 --- Comunicación (2 apps).} \textbf{Outlook}: correo electrónico institucional. Lo usas para enviar mensajes formales a profesores, coordinadores, padres. Tiene calendario integrado. \emph{Ícono: un sobre azul.} \textbf{Teams}: comunicación en tiempo real. Combina chat (como WhatsApp pero profesional), llamadas, videollamadas, reuniones de grupo, compartir pantalla. Si tu equipo va a hacer reunión virtual, usa Teams. \emph{Ícono: una T azul-morada.}\\
-3. Abstracción & \textbf{Familia 3 --- Almacenamiento + más (2 apps).} \textbf{OneDrive}: la nube donde se guardan TODOS tus archivos. Cuando creas un Word o Excel en línea, va directo a OneDrive. Lo aprenderás en S3. \emph{Ícono: una nube azul.} \textbf{Forms}: para crear encuestas y quizzes. Recoge las respuestas automáticamente. Útil para investigaciones de aula. \emph{Ícono: un cuadro con líneas verdes/grises.}\\
-4. Algoritmo conceptual & \textbf{Comparación Microsoft 365 vs Google Workspace.} Google también tiene su paquete: \emph{Docs} (= Word), \emph{Sheets} (= Excel), \emph{Slides} (= PowerPoint), \emph{Gmail} (= Outlook), \emph{Meet} (= Teams), \emph{Drive} (= OneDrive), \emph{Forms} (igual). \textbf{Diferencias:} \emph{Microsoft 365} suele tener \emph{más funciones profesionales}; \emph{Google Workspace} es \emph{más simple e intuitivo}, ideal para empezar. Ambos funcionan en la nube y permiten coautoría. \textbf{Pista:} aprender uno te facilita el otro, los conceptos son los mismos.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{\textbf{Familia 1 --- Documentos (4 apps).} \textbf{Word}: escribir textos largos (ensayos, informes, cartas). Es el que ya conoces. \emph{Ícono: una W azul.} \textbf{Excel}: hacer cálculos y tablas con números. Ideal para presupuestos, calificaciones, listas con datos. \emph{Ícono: una X verde.} \textbf{PowerPoint}: hacer presentaciones con diapositivas. Útil para exponer un tema con apoyo visual. \emph{Ícono: una P naranja.} \textbf{OneNote}: cuaderno digital. Te permite tomar apuntes con texto, dibujos, imágenes, audios, todo en un solo lugar. \emph{Ícono: una N morada.}}
+\milcpaso{2}{milcTurquesa}{\textbf{Familia 2 --- Comunicación (2 apps).} \textbf{Outlook}: correo electrónico institucional. Lo usas para enviar mensajes formales a profesores, coordinadores, padres. Tiene calendario integrado. \emph{Ícono: un sobre azul.} \textbf{Teams}: comunicación en tiempo real. Combina chat (como WhatsApp pero profesional), llamadas, videollamadas, reuniones de grupo, compartir pantalla. Si tu equipo va a hacer reunión virtual, usa Teams. \emph{Ícono: una T azul-morada.}}
+\milcpaso{3}{milcTurquesa}{\textbf{Familia 3 --- Almacenamiento + más (2 apps).} \textbf{OneDrive}: la nube donde se guardan TODOS tus archivos. Cuando creas un Word o Excel en línea, va directo a OneDrive. Lo aprenderás en S3. \emph{Ícono: una nube azul.} \textbf{Forms}: para crear encuestas y quizzes. Recoge las respuestas automáticamente. Útil para investigaciones de aula. \emph{Ícono: un cuadro con líneas verdes/grises.}}
+\milcpaso{4}{milcTurquesa}{\textbf{Comparación Microsoft 365 vs Google Workspace.} Google también tiene su paquete: \emph{Docs} (= Word), \emph{Sheets} (= Excel), \emph{Slides} (= PowerPoint), \emph{Gmail} (= Outlook), \emph{Meet} (= Teams), \emph{Drive} (= OneDrive), \emph{Forms} (igual). \textbf{Diferencias:} \emph{Microsoft 365} suele tener \emph{más funciones profesionales}; \emph{Google Workspace} es \emph{más simple e intuitivo}, ideal para empezar. Ambos funcionan en la nube y permiten coautoría. \textbf{Pista:} aprender uno te facilita el otro, los conceptos son los mismos.}
 
 \begin{drawbox}{milcTurquesa}{8 apps en 3 familias + atajos Google}
 \textbf{Familia 1 (Documentos):} Word · Excel · PowerPoint · OneNote. \\[1mm]
@@ -328,23 +382,18 @@ Tu intuición te dio una idea. Ahora aprende las \textbf{8 aplicaciones principa
 
 \puente{Con todo claro, dibujas tu mapa de las 8 apps y la tabla comparativa.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · CREA --- Mapa de Microsoft 365 + comparación con Google} (28 min · individual). Vas a hacer en una hoja del cuaderno un \textbf{mapa visual} de las 8 apps en 3 familias, más una \textbf{tabla comparativa} de Microsoft 365 vs Google Workspace.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & \textbf{Paso 1 --- Título y formato.} En la parte superior escribe: \textbf{``Mi mapa de Microsoft 365''}. Subraya. Pon la hoja en formato apaisado (horizontal) si puedes, para tener más espacio lateral.\\
-Patrones & \textbf{Paso 2 --- Las 3 familias dibujadas.} Divide la hoja en \textbf{3 columnas verticales}. Encabezados: \emph{(1) DOCUMENTOS}, \emph{(2) COMUNICACIÓN}, \emph{(3) ALMACENAMIENTO + MÁS}. En la columna 1 dibuja 4 íconos (Word, Excel, PowerPoint, OneNote) en columna; en la 2 dibuja 2 íconos (Outlook, Teams); en la 3 dibuja 2 íconos (OneDrive, Forms).\\
-Abstracción & \textbf{Paso 3 --- Para cada app, 3 datos.} Debajo o al lado de cada ícono escribe: \emph{nombre} (Word, etc.), \emph{qué hace en 1 línea}, \emph{1 ejemplo de uso} (\emph{``Escribir tarea de historia''}, \emph{``Calificaciones de 30''}, etc.). Sé conciso: no narres, solo datos.\\
-Algoritmo de armado & \textbf{Paso 4 --- Tabla comparativa Microsoft 365 vs Google Workspace.} En la parte inferior de la hoja (o en otra hoja si te queda poco espacio), dibuja una tabla de \textbf{5 filas y 3 columnas}. Columnas: \emph{Función}, \emph{Microsoft 365}, \emph{Google Workspace}. Filas: \emph{(1) Escribir documentos --- Word vs Docs}; \emph{(2) Cálculos en tabla --- Excel vs Sheets}; \emph{(3) Presentaciones --- PowerPoint vs Slides}; \emph{(4) Correo --- Outlook vs Gmail}; \emph{(5) Reuniones virtuales --- Teams vs Meet}.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{\textbf{Paso 1 --- Título y formato.} En la parte superior escribe: \textbf{``Mi mapa de Microsoft 365''}. Subraya. Pon la hoja en formato apaisado (horizontal) si puedes, para tener más espacio lateral.}
+\milcpaso{2}{milcMagenta}{\textbf{Paso 2 --- Las 3 familias dibujadas.} Divide la hoja en \textbf{3 columnas verticales}. Encabezados: \emph{(1) DOCUMENTOS}, \emph{(2) COMUNICACIÓN}, \emph{(3) ALMACENAMIENTO + MÁS}. En la columna 1 dibuja 4 íconos (Word, Excel, PowerPoint, OneNote) en columna; en la 2 dibuja 2 íconos (Outlook, Teams); en la 3 dibuja 2 íconos (OneDrive, Forms).}
+\milcpaso{3}{milcMagenta}{\textbf{Paso 3 --- Para cada app, 3 datos.} Debajo o al lado de cada ícono escribe: \emph{nombre} (Word, etc.), \emph{qué hace en 1 línea}, \emph{1 ejemplo de uso} (\emph{``Escribir tarea de historia''}, \emph{``Calificaciones de 30''}, etc.). Sé conciso: no narres, solo datos.}
+\milcpaso{4}{milcMagenta}{\textbf{Paso 4 --- Tabla comparativa Microsoft 365 vs Google Workspace.} En la parte inferior de la hoja (o en otra hoja si te queda poco espacio), dibuja una tabla de \textbf{5 filas y 3 columnas}. Columnas: \emph{Función}, \emph{Microsoft 365}, \emph{Google Workspace}. Filas: \emph{(1) Escribir documentos --- Word vs Docs}; \emph{(2) Cálculos en tabla --- Excel vs Sheets}; \emph{(3) Presentaciones --- PowerPoint vs Slides}; \emph{(4) Correo --- Outlook vs Gmail}; \emph{(5) Reuniones virtuales --- Teams vs Meet}.}
+\milcpaso{5}{milcMagenta}{\textbf{Paso 5 --- Correcciones a la Actividad 1.} Vuelve a tu lista de Actividad 1 (las 6 tareas). Ahora con la sistematización en mente, corrige las que hayas adivinado mal. \textbf{Respuestas correctas:} 1=Word, 2=Excel, 3=PowerPoint, 4=Outlook, 5=Teams, 6=Forms. Marca con palomita las que tenías bien y con corrección las que tenías mal. Aprender de los errores te entrena.}
+\milcpaso{6}{milcMagenta}{\textbf{Paso 6 --- Reflexión y firma.} En la parte inferior, escribe en 2 líneas: \emph{``La app que más voy a usar este año es \_\_\_ porque \_\_\_''}. Firma con nombre y fecha. La hoja del mapa la guardas pegada en el cuaderno o como anexo, te servirá toda la vida.}
 
 \begin{drawbox}{milcMagenta}{Antes de mostrar tu mapa}
 \checkbox El mapa tiene las 3 familias en columnas. \\[1mm]
@@ -367,9 +416,7 @@ Algoritmo de armado & \textbf{Paso 4 --- Tabla comparativa Microsoft 365 vs Goog
 
 \puente{El producto es ese mapa + tabla comparativa firmados.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Mapa de Microsoft 365 con 3 familias + tabla vs Google · firmado}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) El mapa tiene las 8 apps en 3 familias correctamente agrupadas. (2) Cada app tiene ícono, nombre, función y ejemplo. (3) La tabla comparativa Microsoft 365 vs Google está completa. (4) Las correcciones de la Actividad 1 están hechas. (5) El mapa está firmado.
@@ -377,9 +424,7 @@ Producto de la sesión
 
 \puente{Antes de salir, verifica que cada app tiene su ícono, nombre, función y ejemplo.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -405,12 +450,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Cerramos con 3 voces que te ayudan a entender por qué conocer las herramientas es la primera ventaja.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{````Quien conoce las herramientas, manda; quien no las conoce, obedece a quien sí.''''}
+\textit{``Quien conoce las herramientas, manda; quien no las conoce, obedece a quien sí.''}
 
 Hoy hay personas que viven en el siglo XXI \textbf{sin conocer las herramientas digitales básicas}. Hacen su trabajo a mano, mandan documentos en papel, hacen reuniones presenciales para todo. \emph{No están mal, pero pierden tiempo}. Aprender las 8 apps de Microsoft 365 (o sus equivalentes Google) te coloca en el grupo de los que \emph{eligen} sus herramientas, no de los que dependen de que alguien más decida. Es alfabetización del siglo XXI.
 
@@ -420,7 +463,7 @@ Hoy hay personas que viven en el siglo XXI \textbf{sin conocer las herramientas 
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
-\textit{````Cada herramienta tiene su uso. Forzarla a otro le quita eficacia y dignidad. Conoce primero su naturaleza.''''}
+\textit{``Cada herramienta tiene su uso. Forzarla a otro le quita eficacia y dignidad. Conoce primero su naturaleza.''}
 
 Usar Word para hacer una tabla con cálculos es como usar un martillo para apretar tornillos: funciona mal y daña la herramienta. Cada app de Microsoft 365 tiene un uso para el que está diseñada. \textbf{Aprender ese uso es respetar la herramienta}, y a la vez ahorrarse problemas. Es disciplina de profesional, no perfeccionismo.
 
@@ -430,7 +473,7 @@ Usar Word para hacer una tabla con cálculos es como usar un martillo para apret
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{````El paquete de herramientas que dominas define qué decisiones puedes tomar. Más herramientas, más libertad.''''}
+\textit{``El paquete de herramientas que dominas define qué decisiones puedes tomar. Más herramientas, más libertad.''}
 
 Si solo conoces Word, vas a hacer todo en Word. Si conoces las 8 apps, \textbf{eliges la mejor para cada situación}. Esa elección te da \emph{ventaja sobre quien no las conoce}: más rápido, mejor resultado, menos esfuerzo. \emph{Más herramientas en tu caja = más libertad para escoger}. Por eso vale la pena la inversión inicial de aprender las 8.
 
@@ -439,21 +482,24 @@ Si solo conoces Word, vas a hacer todo en Word. Si conoces las 8 apps, \textbf{e
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

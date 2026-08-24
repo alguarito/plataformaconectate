@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,51 +229,65 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont MOMENTO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont BEBRAS · PENSAR COMO UNA MÁQUINA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont MOMENTO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont BEBRAS · PENSAR COMO UNA MÁQUINA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 7};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 7};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
   
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Grafos y optimización --- nodos,\\conexiones, el camino más corto}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Bebras · Momento 7}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Curso «Pensar como una máquina» · Pensamiento computacional}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Curso «Pensar como una máquina» · Pensamiento computacional}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Grafos y optimización --- nodos,\\conexiones, el camino más corto}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Bebras · Momento 7}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} Tu grafo de la red de rutas desde tu casa (con nodos, conexiones y tiempos) más la evaluación de dos rutas con criterios propios y el simulacro de tres retos estilo Bebras resueltos y justificados.};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Tu grafo de la red de rutas desde tu casa (con nodos, conexiones y tiempos) más la evaluación de dos rutas con criterios propios y el simulacro de tres retos estilo Bebras resueltos y justificados.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Grafos y optimización: nodos, conexiones, el camino más corto}
@@ -257,30 +321,27 @@ Producto final & Tu grafo de la red de rutas desde tu casa (con nodos, conexione
 
 \puente{Ya sabes que los ríos del Pacífico forman una red de puntos y caminos. Ahora mira el mapa de la sesión: vas a recorrer ese mismo principio --- desde los conceptos hasta los retos --- paso a paso.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Antes de nombrar los conceptos, conviene ver la red en tu propio entorno. Empieza por observar los caminos que ya recorres cada día: la red ya existe, solo falta dibujarla.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Observa los caminos que recorres cada día} --- desde tu casa hasta el colegio, la tienda, el parque o la casa de algún familiar cercano. Fíjate en los \emph{puntos de decisión}: los cruces donde puedes ir por una calle o por otra, las paradas donde tomas o cambias de bus. ¿Cuántos lugares distintos visitas en una semana? ¿Entre cuáles hay camino directo y entre cuáles tienes que pasar por un tercero? Sin saberlo, tu rutina diaria ya dibuja un grafo.
 \end{softbox}
 
-\checkbox Identificaste al menos tres lugares distintos que visitas con frecuencia (nodos).\\
-\checkbox Señalaste al menos dos caminos directos entre esos lugares (conexiones).\\
-\checkbox Reconociste un punto de decisión donde puedes ir por más de una ruta posible.
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Identificaste al menos tres lugares distintos que visitas con frecuencia (nodos).}
+\milccheckrow{Señalaste al menos dos caminos directos entre esos lugares (conexiones).}
+\milccheckrow{Reconociste un punto de decisión donde puedes ir por más de una ruta posible.}
 
 \begin{infoband}{milcVerde}
 
@@ -290,23 +351,16 @@ Fase 1 · Escucha
 
 \puente{Dibujaste tu propia red. Ahora vamos a nombrar las cuatro piezas de un grafo para poder hablar de ellas con precisión, porque con ese vocabulario vas a resolver todo lo que sigue.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Un grafo es una herramienta matemática que representa redes: desde los ríos del Pacífico hasta internet. No necesitas programar para usarlo; necesitas cuatro conceptos que, juntos, te permiten modelar cualquier red y encontrar el mejor camino en ella.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & \textbf{Nodo:} un punto de la red. Puede ser una ciudad, una vereda, una parada de bus, una persona o un sitio web. En el grafo del Pacífico, cada caserío es un nodo; en el mapa de Cartago, cada parada de bus.\\
-2. Reconocimiento de patrones & \textbf{Conexión (arista):} una línea que une dos nodos. Puede tener un \emph{peso} --- tiempo, distancia, costo --- o no. El tramo de río entre dos caseríos es una conexión con peso (tiempo en canoa); una amistad en redes sociales es una conexión sin peso.\\
-3. Abstracción & \textbf{Camino:} una secuencia de nodos unidos por conexiones. Entre dos nodos puede haber varios caminos distintos; la tarea es encontrar el más conveniente según el criterio que importa --- el más corto, el más barato, el más rápido.\\
-4. Algoritmo conceptual & \textbf{Optimizar:} elegir la mejor opción según un criterio claro. Optimizar no es adivinar: es comparar los caminos posibles y argumentar cuál gana. En Bebras, casi siempre se pide el camino de \emph{menor peso total}.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{\textbf{Nodo:} un punto de la red. Puede ser una ciudad, una vereda, una parada de bus, una persona o un sitio web. En el grafo del Pacífico, cada caserío es un nodo; en el mapa de Cartago, cada parada de bus.}
+\milcpaso{2}{milcTurquesa}{\textbf{Conexión (arista):} una línea que une dos nodos. Puede tener un \emph{peso} --- tiempo, distancia, costo --- o no. El tramo de río entre dos caseríos es una conexión con peso (tiempo en canoa); una amistad en redes sociales es una conexión sin peso.}
+\milcpaso{3}{milcTurquesa}{\textbf{Camino:} una secuencia de nodos unidos por conexiones. Entre dos nodos puede haber varios caminos distintos; la tarea es encontrar el más conveniente según el criterio que importa --- el más corto, el más barato, el más rápido.}
+\milcpaso{4}{milcTurquesa}{\textbf{Optimizar:} elegir la mejor opción según un criterio claro. Optimizar no es adivinar: es comparar los caminos posibles y argumentar cuál gana. En Bebras, casi siempre se pide el camino de \emph{menor peso total}.}
 
 \begin{drawbox}{milcTurquesa}{Cómo se analiza un reto de grafos}
 \textbf{1. Identifica} los nodos: ¿cuáles son los puntos de la red? \\[1mm] \textbf{2. Dibuja} las conexiones con sus pesos (si los hay). \\[1mm] \textbf{3. Lista} todos los caminos posibles entre el origen y el destino. \\[1mm] \textbf{4. Suma} el peso de cada camino. \\[1mm] \textbf{5. Compara} y elige el de menor peso total. \\[1mm] En Bebras no gana quien calcula más rápido, sino quien \emph{modela con más claridad}.
@@ -324,23 +378,16 @@ Un grafo es una herramienta matemática que representa redes: desde los ríos de
 
 \puente{Ya tienes el vocabulario y lo verificaste. Es hora de usarlo: vas a resolver retos estilo Bebras aplicando el razonamiento de grafos a propósito.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 Las cuatro piezas no son adorno: se usan para resolver retos reales. Vas a enfrentar tres retos estilo Bebras sobre grafos y optimización. Lee con calma, dibuja si necesitas y razona paso a paso --- la respuesta siempre se puede verificar.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & \textbf{Identifica los nodos y conexiones:} nombra cada punto de la red y cada camino que existe entre ellos.\\
-Patrones & \textbf{Anota los pesos:} escribe el número de cada conexión (tiempo, distancia u otro). Sin los pesos no puedes comparar.\\
-Abstracción & \textbf{Lista todos los caminos posibles} entre origen y destino, sin saltarte ninguno.\\
-Algoritmo de armado & \textbf{Suma y compara:} calcula el peso total de cada camino y elige el de menor suma. Ese es el camino óptimo.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{\textbf{Identifica los nodos y conexiones:} nombra cada punto de la red y cada camino que existe entre ellos.}
+\milcpaso{2}{milcMagenta}{\textbf{Anota los pesos:} escribe el número de cada conexión (tiempo, distancia u otro). Sin los pesos no puedes comparar.}
+\milcpaso{3}{milcMagenta}{\textbf{Lista todos los caminos posibles} entre origen y destino, sin saltarte ninguno.}
+\milcpaso{4}{milcMagenta}{\textbf{Suma y compara:} calcula el peso total de cada camino y elige el de menor suma. Ese es el camino óptimo.}
 
 \begin{drawbox}{milcMagenta}{El reto: las veredas del Pacífico en círculo}
 \checkbox \textbf{Reto (Nivel C).} Cinco veredas del Pacífico están conectadas en círculo: 1--2--3--4--5--1. Cada tramo de río entre veredas vecinas tarda exactamente \textbf{1 hora} en canoa. ¿Cuál es el camino \textbf{más corto} de la vereda 1 a la vereda 4, y cuánto tarda? \\[2mm]
@@ -360,9 +407,7 @@ Algoritmo de armado & \textbf{Suma y compara:} calcula el peso total de cada cam
 
 \puente{Resolviste los retos. Ahora deja tu evidencia: el grafo de tu red, la evaluación de rutas y los retos del simulacro, para mostrar que sabes optimizar caminos.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Grafo de mi red de rutas (con nodos y pesos) --- evaluación de dos rutas con criterios propios --- y los tres retos del simulacro resueltos y justificados}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) Tu grafo tiene al menos 4 nodos identificados con nombre y conexiones con tiempos escritos. (2) Comparaste al menos una ruta donde había dos opciones y argumentaste cuál es más corta con sumas concretas. (3) Tu evaluación de rutas usa dos criterios que tú mismo definiste (no los mismos del enunciado) y concluye con un veredicto justificado. (4) Resolviste el reto del simulacro y marcaste la respuesta correcta (1$\to$5$\to$4, 2 horas). (5) Tu trabajo muestra que distingues nodo, conexión, camino y optimización sin confundirlos.
@@ -370,9 +415,7 @@ Producto de la sesión
 
 \puente{Terminaste el producto. Detente a mirar qué cambió en ti --- no la nota, sino tu manera de ver las redes que te rodean.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -398,12 +441,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Cerramos pensando en grande: tres voces para entender qué significa, para ti y para tu comunidad, aprender a leer el mundo como una red de conexiones.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{``El saber popular no es inferior al saber académico: es otro modo de conocer, nacido de otra experiencia del mundo.''}
+\textit{El saber popular no es inferior al saber académico: es otro modo de conocer, nacido de otra experiencia del mundo.}
 
 El navegante del Pacífico lleva en la cabeza una teoría de grafos sin haber estudiado matemáticas. Su saber no es ``intuitivo'' a secas: es conocimiento técnico nacido de la experiencia, transmitido de generación en generación. Aprender grafos no es importar un saber de afuera; es ponerle nombre a lo que tu comunidad ya hacía.
 
@@ -413,7 +454,7 @@ El navegante del Pacífico lleva en la cabeza una teoría de grafos sin haber es
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Epicteto · cuidado interior}
-\textit{``No te exijas el camino más corto a toda costa: a veces el desvío te enseña más que la llegada.''}
+\textit{No te exijas el camino más corto a toda costa: a veces el desvío te enseña más que la llegada.}
 
 En los grafos, el camino óptimo depende del criterio: a veces es el más rápido, otras el más seguro, otras el que pasa por lugares que importan. Buscar siempre la ruta más corta puede hacerte perder lo que está en el trayecto. Elegir bien requiere saber qué criterio importa --- y eso no lo da ningún algoritmo.
 
@@ -423,7 +464,7 @@ En los grafos, el camino óptimo depende del criterio: a veces es el más rápid
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{``Las redes sociales son grafos: cada perfil es un nodo y cada amistad es una arista. Quien controla la estructura de la red, controla el flujo de información.''}
+\textit{Las redes sociales son grafos: cada perfil es un nodo y cada amistad es una arista. Quien controla la estructura de la red, controla el flujo de información.}
 
 Internet, las redes sociales y los motores de búsqueda son grafos gigantes. Los algoritmos que deciden qué conexiones ves primero en tu feed están optimizando --- pero según los criterios de quien los diseñó, no los tuyos. Entender la estructura de un grafo es entender quién tiene el poder de trazar --- o borrar --- conexiones.
 
@@ -432,21 +473,24 @@ Internet, las redes sociales y los motores de búsqueda son grafos gigantes. Los
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

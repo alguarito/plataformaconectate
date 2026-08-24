@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 6};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 6};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont El sistema\\operativo ---\\el gerente\\que coordina\\todo}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 16-6-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 2 · Hardware y software}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 2 · Hardware y software}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont El sistema\\operativo ---\\el gerente\\que coordina\\todo}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 16-6-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} Un \textbf{tour anotado del sistema operativo} en una hoja del cuaderno con: \textbf{(a) dibujo de un escritorio típico de Windows} con 5 elementos clave etiquetados (escritorio, ventana abierta, barra de tareas, menú inicio, papelera), \textbf{(b) tabla de 5 funciones del SO} (coordinar hardware, gestionar archivos, ejecutar programas, manejar usuarios, controlar memoria), y \textbf{(c) tu opinión escrita} de cuál es el SO que más usas y por qué (Windows / Linux / Android / iOS / ChromeOS).};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Un \textbf{tour anotado del sistema operativo} en una hoja del cuaderno con: \textbf{(a) dibujo de un escritorio típico de Windows} con 5 elementos clave etiquetados (escritorio, ventana abierta, barra de tareas, menú inicio, papelera), \textbf{(b) tabla de 5 funciones del SO} (coordinar hardware, gestionar archivos, ejecutar programas, manejar usuarios, controlar memoria), y \textbf{(c) tu opinión escrita} de cuál es el SO que más usas y por qué (Windows / Linux / Android / iOS / ChromeOS).
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: El sistema operativo --- el gerente que coordina toda la máquina}
@@ -258,30 +322,27 @@ Producto final & Un \textbf{tour anotado del sistema operativo} en una hoja del 
 
 \puente{Hoy haces 4 cosas: reconoces los 5 elementos del escritorio, aprendes las 5 funciones del SO, recorres un computador real (o lo dibujas), y firmas tu trabajo con opinión.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Empezamos identificando 5 elementos del escritorio de Windows que ya has visto antes.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- Reconoce 5 elementos del escritorio} (10 min · individual). Imagina que prendes un computador con Windows y aparece la pantalla principal. En el cuaderno, escribe el \textbf{nombre de 5 cosas} que aparecen ahí y describe cada una en 1 línea con tus palabras. Pista: hay 1 zona grande de fondo (\emph{el escritorio}), una barra abajo (\emph{barra de tareas}), un botón a la izquierda abajo (\emph{menú inicio}), un ícono de papelera, e \emph{íconos de programas o archivos}. Si no sabes el nombre técnico, describe lo que ves. Esta actividad recoge tu conocimiento previo --- no se vale ver la siguiente.
 \end{softbox}
 
-\checkbox Imaginé un escritorio de Windows.\\
-\checkbox Listé 5 elementos diferentes con descripción propia.\\
-\checkbox No miré la siguiente actividad ni busqué imágenes.
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Imaginé un escritorio de Windows.}
+\milccheckrow{Listé 5 elementos diferentes con descripción propia.}
+\milccheckrow{No miré la siguiente actividad ni busqué imágenes.}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Después del reconocimiento, aprendes qué hace el SO (las 5 funciones del gerente).}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Lo que acabaste de listar son \textbf{los 5 elementos principales} del escritorio de un sistema operativo. Casi todos los SO de escritorio (Windows, macOS, Linux) tienen los mismos 5 elementos --- cambia el estilo, no la idea. Ahora vas a ponerles nombre técnico y entender qué hace cada uno.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & \textbf{Elemento 1 --- El escritorio (\emph{desktop}).} Es el \textbf{fondo grande} que ves al encender. Como una mesa de trabajo: ahí puedes poner íconos de acceso rápido a los programas o archivos que usas a menudo. \emph{Función:} darte un lugar central donde dejar lo que necesitas a la mano. \textbf{Elemento 2 --- La barra de tareas (\emph{taskbar}).} La \textbf{tira horizontal abajo} (en Mac está arriba). Muestra las apps que tienes abiertas en este momento y te deja saltar entre ellas. \emph{Función:} ser el ``índice'' de los programas vivos. \textbf{Elemento 3 --- El menú inicio (\emph{start menu}).} El \textbf{botón Windows abajo-izquierda}. Te muestra todas las apps instaladas, el botón de apagar, búsqueda. \emph{Función:} ser la \emph{puerta principal} para encontrar cualquier cosa en tu computador.\\
-2. Reconocimiento de patrones & \textbf{Elemento 4 --- Las ventanas.} Cuando abres un programa, aparece en un \textbf{rectángulo con barra arriba} que puedes mover, redimensionar, minimizar (esconder), maximizar (pantalla completa) o cerrar (X roja). \emph{Función:} permitir tener varios programas a la vez sin que se mezclen. \textbf{Elemento 5 --- La papelera de reciclaje.} El \textbf{ícono de papelera} en el escritorio. Cuando borras un archivo, va ahí primero (no se borra para siempre). Si te arrepientes, lo recuperas. Si vacías la papelera, ahí sí se pierde. \emph{Función:} darte una segunda oportunidad ante errores de borrado.\\
-3. Abstracción & \textbf{Las 5 funciones del sistema operativo (lo que hace el gerente).} (1) \textbf{Coordina el hardware}: hace que el teclado, ratón, monitor y altavoces hablen con los programas. (2) \textbf{Gestiona archivos}: organiza dónde se guardan tus documentos y los encuentra cuando los necesitas. (3) \textbf{Ejecuta programas}: arranca, mantiene y cierra Word, Chrome, Roblox. (4) \textbf{Maneja usuarios}: si en tu casa varios usan el mismo PC, el SO separa los archivos de cada uno por cuenta. (5) \textbf{Controla la memoria}: decide cuánta RAM le da a cada programa abierto (más a Chrome, menos a la calculadora, por ejemplo).\\
-4. Algoritmo conceptual & \textbf{Los 5 SO más importantes que vas a encontrar.} (1) \textbf{Windows} (Microsoft): el más común en colegios y casas, fácil de usar. (2) \textbf{macOS} (Apple): elegante, caro, viene en MacBook. (3) \textbf{Linux} (gratuito): muchas versiones, usado en programadores y servidores; \emph{Ubuntu} es la más amigable. (4) \textbf{Android} (Google): el SO de la mayoría de celulares en Colombia. (5) \textbf{iOS} (Apple): el SO del iPhone. \emph{Pista:} no hay un SO ``mejor''. Hay el que te enseñaron a usar y el que pruebas nuevo. Cambiar de SO es como cambiar de barrio: al principio te confundes, después te acomodas.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{\textbf{Elemento 1 --- El escritorio (\emph{desktop}).} Es el \textbf{fondo grande} que ves al encender. Como una mesa de trabajo: ahí puedes poner íconos de acceso rápido a los programas o archivos que usas a menudo. \emph{Función:} darte un lugar central donde dejar lo que necesitas a la mano. \textbf{Elemento 2 --- La barra de tareas (\emph{taskbar}).} La \textbf{tira horizontal abajo} (en Mac está arriba). Muestra las apps que tienes abiertas en este momento y te deja saltar entre ellas. \emph{Función:} ser el ``índice'' de los programas vivos. \textbf{Elemento 3 --- El menú inicio (\emph{start menu}).} El \textbf{botón Windows abajo-izquierda}. Te muestra todas las apps instaladas, el botón de apagar, búsqueda. \emph{Función:} ser la \emph{puerta principal} para encontrar cualquier cosa en tu computador.}
+\milcpaso{2}{milcTurquesa}{\textbf{Elemento 4 --- Las ventanas.} Cuando abres un programa, aparece en un \textbf{rectángulo con barra arriba} que puedes mover, redimensionar, minimizar (esconder), maximizar (pantalla completa) o cerrar (X roja). \emph{Función:} permitir tener varios programas a la vez sin que se mezclen. \textbf{Elemento 5 --- La papelera de reciclaje.} El \textbf{ícono de papelera} en el escritorio. Cuando borras un archivo, va ahí primero (no se borra para siempre). Si te arrepientes, lo recuperas. Si vacías la papelera, ahí sí se pierde. \emph{Función:} darte una segunda oportunidad ante errores de borrado.}
+\milcpaso{3}{milcTurquesa}{\textbf{Las 5 funciones del sistema operativo (lo que hace el gerente).} (1) \textbf{Coordina el hardware}: hace que el teclado, ratón, monitor y altavoces hablen con los programas. (2) \textbf{Gestiona archivos}: organiza dónde se guardan tus documentos y los encuentra cuando los necesitas. (3) \textbf{Ejecuta programas}: arranca, mantiene y cierra Word, Chrome, Roblox. (4) \textbf{Maneja usuarios}: si en tu casa varios usan el mismo PC, el SO separa los archivos de cada uno por cuenta. (5) \textbf{Controla la memoria}: decide cuánta RAM le da a cada programa abierto (más a Chrome, menos a la calculadora, por ejemplo).}
+\milcpaso{4}{milcTurquesa}{\textbf{Los 5 SO más importantes que vas a encontrar.} (1) \textbf{Windows} (Microsoft): el más común en colegios y casas, fácil de usar. (2) \textbf{macOS} (Apple): elegante, caro, viene en MacBook. (3) \textbf{Linux} (gratuito): muchas versiones, usado en programadores y servidores; \emph{Ubuntu} es la más amigable. (4) \textbf{Android} (Google): el SO de la mayoría de celulares en Colombia. (5) \textbf{iOS} (Apple): el SO del iPhone. \emph{Pista:} no hay un SO ``mejor''. Hay el que te enseñaron a usar y el que pruebas nuevo. Cambiar de SO es como cambiar de barrio: al principio te confundes, después te acomodas.}
 
 \begin{drawbox}{milcTurquesa}{5 elementos del escritorio + 5 funciones del SO}
 \textbf{Los 5 elementos visuales:} \\[1mm]
@@ -328,23 +382,18 @@ coordina hardware · gestiona archivos · ejecuta programas · maneja usuarios �
 
 \puente{Con todo claro, haces el tour anotado y das tu opinión sobre el SO que usas.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · APLICA --- Tour anotado del SO + opinión personal} (30 min · individual o en parejas). Vas a hacer 3 cosas en una hoja completa del cuaderno: \textbf{(a)} dibujo del escritorio de Windows con los 5 elementos etiquetados; \textbf{(b)} tabla de 5 funciones del SO con ejemplos tuyos; \textbf{(c)} opinión escrita sobre el SO que más usas tú.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & \textbf{Paso 1 --- Dibuja el escritorio (mitad superior).} Pon la hoja vertical. En la mitad superior dibuja un \textbf{rectángulo grande} (que ocupa casi toda la mitad) representando la pantalla del computador. Adentro dibuja: un \emph{fondo} con algún detalle (un sol, una montaña, un patrón --- como un wallpaper), \emph{3 íconos} de programas en el escritorio (Word, Chrome, una carpeta), \emph{una barra horizontal abajo} (barra de tareas) con 4 íconos más, \emph{un botón Windows} a la izquierda abajo, y un \emph{ícono de papelera} arriba a la derecha.\\
-Patrones & \textbf{Paso 2 --- Etiquetas con flechas.} Desde fuera del rectángulo, traza \textbf{5 flechas} apuntando a los 5 elementos del escritorio. Al final de cada flecha escribe el nombre técnico: \emph{``1. Escritorio (desktop)''}, \emph{``2. Íconos''}, \emph{``3. Barra de tareas''}, \emph{``4. Menú inicio (Windows)''}, \emph{``5. Papelera''}. Si quieres agregar una ventana abierta de un programa, también está bien (sería el elemento extra).\\
-Abstracción & \textbf{Paso 3 --- Tabla de las 5 funciones (mitad inferior izquierda).} En la mitad inferior izquierda dibuja una tabla de \textbf{5 filas y 2 columnas}. Columna 1: nombre de la función. Columna 2: ejemplo concreto tuyo. Por ejemplo: \emph{``Coordina hardware --- Cuando muevo el ratón, el cursor se mueve en la pantalla.''}, \emph{``Gestiona archivos --- Cuando guardo el Word, va a la carpeta Documentos.''}, etc. Llena las 5 filas.\\
-Algoritmo de armado & \textbf{Paso 4 --- Opinión personal (mitad inferior derecha).} En la mitad inferior derecha escribe un \textbf{párrafo de 5-6 líneas} respondiendo: \emph{``¿Cuál SO uso más yo? (Windows / Android / iOS / Linux / otro). ¿Qué me gusta? ¿Qué me cuesta? ¿He probado otro? Si pudiera probar uno nuevo, ¿cuál sería y por qué?''}. Sé honesto. Esta opinión es tuya, no hay respuesta correcta.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{\textbf{Paso 1 --- Dibuja el escritorio (mitad superior).} Pon la hoja vertical. En la mitad superior dibuja un \textbf{rectángulo grande} (que ocupa casi toda la mitad) representando la pantalla del computador. Adentro dibuja: un \emph{fondo} con algún detalle (un sol, una montaña, un patrón --- como un wallpaper), \emph{3 íconos} de programas en el escritorio (Word, Chrome, una carpeta), \emph{una barra horizontal abajo} (barra de tareas) con 4 íconos más, \emph{un botón Windows} a la izquierda abajo, y un \emph{ícono de papelera} arriba a la derecha.}
+\milcpaso{2}{milcMagenta}{\textbf{Paso 2 --- Etiquetas con flechas.} Desde fuera del rectángulo, traza \textbf{5 flechas} apuntando a los 5 elementos del escritorio. Al final de cada flecha escribe el nombre técnico: \emph{``1. Escritorio (desktop)''}, \emph{``2. Íconos''}, \emph{``3. Barra de tareas''}, \emph{``4. Menú inicio (Windows)''}, \emph{``5. Papelera''}. Si quieres agregar una ventana abierta de un programa, también está bien (sería el elemento extra).}
+\milcpaso{3}{milcMagenta}{\textbf{Paso 3 --- Tabla de las 5 funciones (mitad inferior izquierda).} En la mitad inferior izquierda dibuja una tabla de \textbf{5 filas y 2 columnas}. Columna 1: nombre de la función. Columna 2: ejemplo concreto tuyo. Por ejemplo: \emph{``Coordina hardware --- Cuando muevo el ratón, el cursor se mueve en la pantalla.''}, \emph{``Gestiona archivos --- Cuando guardo el Word, va a la carpeta Documentos.''}, etc. Llena las 5 filas.}
+\milcpaso{4}{milcMagenta}{\textbf{Paso 4 --- Opinión personal (mitad inferior derecha).} En la mitad inferior derecha escribe un \textbf{párrafo de 5-6 líneas} respondiendo: \emph{``¿Cuál SO uso más yo? (Windows / Android / iOS / Linux / otro). ¿Qué me gusta? ¿Qué me cuesta? ¿He probado otro? Si pudiera probar uno nuevo, ¿cuál sería y por qué?''}. Sé honesto. Esta opinión es tuya, no hay respuesta correcta.}
+\milcpaso{5}{milcMagenta}{\textbf{Paso 5 --- Tour real (si tienes computador disponible).} Si en clase tienes acceso a un computador, abre Windows y verifica que sí están los 5 elementos donde dibujaste. Mueve una ventana, abrir y cerrar el menú inicio, abrir la papelera. Esto te confirma lo aprendido. Si no tienes computador hoy, hazlo en casa esta semana.}
+\milcpaso{6}{milcMagenta}{\textbf{Paso 6 --- Firma y cierre.} En la esquina inferior derecha firma con nombre completo y fecha. Escribe debajo: \emph{``Ahora sé qué hace el gerente invisible de mi computador.''}. Subraya esa frase.}
 
 \begin{drawbox}{milcMagenta}{Antes de mostrar tu trabajo}
 \checkbox La mitad superior tiene el dibujo del escritorio con sus 5 elementos etiquetados. \\[1mm]
@@ -367,9 +416,7 @@ Algoritmo de armado & \textbf{Paso 4 --- Opinión personal (mitad inferior derec
 
 \puente{El producto es el dibujo del escritorio + tabla + opinión, firmado.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Tour anotado del SO con 5 elementos + 5 funciones + opinión personal · firmado}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) El dibujo del escritorio tiene los 5 elementos etiquetados con flechas. (2) La tabla de 5 funciones tiene ejemplos tuyos. (3) La opinión personal responde las 4 preguntas con honestidad. (4) El tour está firmado con nombre y fecha. (5) La frase de cierre está visible.
@@ -377,9 +424,7 @@ Producto de la sesión
 
 \puente{Antes de salir, miras tu hoja: ¿podría un primo entender qué es un SO solo leyéndola?}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -405,12 +450,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Cerramos con 3 voces que te ayudan a entender por qué saber quién coordina la máquina te hace usuario libre.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{````Cuando entiendes quién coordina, entiendes quién manda. Cuando entiendes quién manda, decides si lo aceptas.''''}
+\textit{``Cuando entiendes quién coordina, entiendes quién manda. Cuando entiendes quién manda, decides si lo aceptas.''}
 
 El sistema operativo \emph{decide} cómo se ve tu pantalla, qué apps puedes usar, cómo se organizan los archivos. Cuando lo entiendes, te das cuenta de que \textbf{Windows no es la única forma}: hay Linux (gratis, abierto, donde tú decides), hay otros mundos. Conocer al gerente te permite preguntar: \emph{``¿qué gerente quiero que coordine mi máquina?''}. Esa pregunta es ejercicio de libertad.
 
@@ -420,7 +463,7 @@ El sistema operativo \emph{decide} cómo se ve tu pantalla, qué apps puedes usa
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
-\textit{````Lo invisible es lo más importante. Lo que no se ve sostiene lo que se ve.''''}
+\textit{``Lo invisible es lo más importante. Lo que no se ve sostiene lo que se ve.''}
 
 El sistema operativo es \textbf{invisible la mayor parte del tiempo}. No le ponemos atención porque funciona en silencio. Solo lo notamos cuando falla. \emph{Esto es como la salud, el aire, la familia que está atrás}: tan importantes que no se ven hasta que faltan. Aprender a notar lo invisible te entrena en gratitud y atención. El SO te lo enseña en pequeño.
 
@@ -430,7 +473,7 @@ El sistema operativo es \textbf{invisible la mayor parte del tiempo}. No le pone
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{````Los sistemas operativos no son neutros: cada uno propone un modo de habitar el mundo digital.''''}
+\textit{``Los sistemas operativos no son neutros: cada uno propone un modo de habitar el mundo digital.''}
 
 Cuando usas Windows, vives en un mundo que Microsoft ha diseñado: ese fondo, esa barra, esa lógica de archivos. Cuando usas Android, vives en otro mundo (de Google). Cuando usas iOS, en otro (de Apple). \textbf{Cada SO trae una filosofía}: cómo organizar las cosas, qué te ofrece de regalo y qué te cobra. Aprender a leer esas filosofías te hace ciudadano digital con criterio.
 
@@ -439,21 +482,24 @@ Cuando usas Windows, vives en un mundo que Microsoft ha diseñado: ese fondo, es
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

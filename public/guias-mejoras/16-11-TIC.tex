@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 11};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 11};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont IA en mensajería ---\\clasificar\\con criterio}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 16-11-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 2 · Automatización y procesos}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 2 · Automatización y procesos}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont IA en mensajería ---\\clasificar\\con criterio}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 16-11-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} 1 sistema de clasificación de mensajes (mínimo 20 mensajes reales o simulados) con prompt afinado que separa los mensajes en 3 categorías (urgente / útil / ignorar) con justificación de cada decisión y métrica de aciertos del modelo};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+1 sistema de clasificación de mensajes (mínimo 20 mensajes reales o simulados) con prompt afinado que separa los mensajes en 3 categorías (urgente / útil / ignorar) con justificación de cada decisión y métrica de aciertos del modelo
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: IA en mensajería --- clasificar y responder con criterio}
@@ -258,30 +322,27 @@ Producto final & 1 sistema de clasificación de mensajes (mínimo 20 mensajes re
 
 \puente{Antes de empezar, mira el viaje completo. En la sesión 5 automatizaste un trigger simple (\emph{``si X, haz Y''}). Hoy das el salto cualitativo: no solo \emph{detectar} un evento, sino \emph{interpretarlo} con IA para decidir qué hacer. La diferencia entre regla rígida y criterio aprendido es lo que distingue automatización clásica de IA aplicada.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Antes de teorizar, vas a clasificar 10 mensajes reales (o simulados con bandeja de entrada típica) a mano, sin IA. Esa línea base es la referencia con la que evaluarás al modelo después. Sin línea base humana, no se puede medir si la IA es buena o mala.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- Clasifica 10 mensajes a mano} (15 min · individual). El docente entrega 10 mensajes reales o simulados de una bandeja típica (chat de WhatsApp de negocio, correo de atención al cliente, comentarios de redes). Clasifica cada uno en una de 3 categorías: \emph{urgente} (requiere acción en menos de 2 horas), \emph{útil} (acción en el día), \emph{ignorar} (no aporta o es spam). Para cada uno, anota 1 frase de justificación. Esta es tu línea base humana, sin IA.
 \end{softbox}
 
-\checkbox Clasifiqué los 10 mensajes en una de las 3 categorías.\\
-\checkbox Cada mensaje tiene justificación de 1 frase.\\
-\checkbox Anoté qué mensajes me costaron más decidir (zona gris).
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Clasifiqué los 10 mensajes en una de las 3 categorías.}
+\milccheckrow{Cada mensaje tiene justificación de 1 frase.}
+\milccheckrow{Anoté qué mensajes me costaron más decidir (zona gris).}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Ya tienes tu clasificación humana. Ahora vas a entender la \textbf{anatomía} del prompt afinado: los 5 elementos que separan un prompt amateur de uno profesional, los errores típicos que producen alucinaciones o clasificaciones inconsistentes, los principios éticos no negociables (\emph{transparencia, supervisión, derecho a corrección}).}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Un prompt amateur produce clasificaciones inconsistentes. Un prompt afinado produce clasificaciones reproducibles. Vamos a descomponer los 5 elementos con los pilares del pensamiento computacional para que tu prompt tenga rigor profesional.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & El prompt afinado se descompone en 5 elementos: (1) \textbf{Rol}: \emph{``Eres un clasificador de mensajes de atención al cliente de una panadería del barrio''}; (2) \textbf{Categorías}: exhaustivas (cubren todos los casos) y excluyentes (cada mensaje cae en una sola). \emph{urgente / útil / ignorar}; (3) \textbf{Criterios con ejemplos}: para cada categoría, 2-3 ejemplos reales: \emph{urgente: ``llegué y la panadería está cerrada''; útil: ``¿hacen sin azúcar?''; ignorar: ``Hola \emph{emoji}''}; (4) \textbf{Formato de salida}: estructurado y máquina-legible (\emph{``responde solo en JSON: \texttt{\{categoria: ``...'', justificacion: ``...''\}}''}); (5) \textbf{Borde de duda}: qué hacer cuando el modelo no está seguro (\emph{``si dudas entre urgente y útil, marca útil y agrega flag\_revision: true''}).\\
-2. Reconocimiento de patrones & Todo prompt sigue el patrón \textbf{``categorías exhaustivas + criterios precisos + ejemplos + borde de duda''}: si falta alguno, el modelo improvisa. Categorías incompletas producen mensajes \emph{``perdidos''}; criterios vagos producen inconsistencia; falta de ejemplos produce alucinaciones; falta de borde de duda produce sobreconfianza falsa.\\
-3. Abstracción & Lo esencial cabe en una regla: \emph{el modelo nunca clasifica mejor de lo que el humano define}. Si tu prompt es ambiguo, las salidas serán ambiguas. Si tu prompt es ético, las salidas pueden ser éticas (pero hay que supervisar). Si tu prompt es discriminatorio, las salidas serán discriminatorias. La responsabilidad ética nunca se delega al modelo.\\
-4. Algoritmo conceptual & Algoritmo para afinar un prompt: (1) escribe primera versión con los 5 elementos; (2) pásalo por el modelo con 10 mensajes; (3) compara con tu línea base humana; (4) identifica los errores (falsos urgentes, falsos ignorables); (5) ajusta criterios y ejemplos del prompt; (6) repite hasta lograr 80\%+ de acierto en la muestra; (7) documenta la versión final con número de iteración.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{El prompt afinado se descompone en 5 elementos: (1) \textbf{Rol}: \emph{``Eres un clasificador de mensajes de atención al cliente de una panadería del barrio''}; (2) \textbf{Categorías}: exhaustivas (cubren todos los casos) y excluyentes (cada mensaje cae en una sola). \emph{urgente / útil / ignorar}; (3) \textbf{Criterios con ejemplos}: para cada categoría, 2-3 ejemplos reales: \emph{urgente: ``llegué y la panadería está cerrada''; útil: ``¿hacen sin azúcar?''; ignorar: ``Hola \emph{emoji}''}; (4) \textbf{Formato de salida}: estructurado y máquina-legible (\emph{``responde solo en JSON: \texttt{\{categoria: ``...'', justificacion: ``...''\}}''}); (5) \textbf{Borde de duda}: qué hacer cuando el modelo no está seguro (\emph{``si dudas entre urgente y útil, marca útil y agrega flag\_revision: true''}).}
+\milcpaso{2}{milcTurquesa}{Todo prompt sigue el patrón \textbf{``categorías exhaustivas + criterios precisos + ejemplos + borde de duda''}: si falta alguno, el modelo improvisa. Categorías incompletas producen mensajes \emph{``perdidos''}; criterios vagos producen inconsistencia; falta de ejemplos produce alucinaciones; falta de borde de duda produce sobreconfianza falsa.}
+\milcpaso{3}{milcTurquesa}{Lo esencial cabe en una regla: \emph{el modelo nunca clasifica mejor de lo que el humano define}. Si tu prompt es ambiguo, las salidas serán ambiguas. Si tu prompt es ético, las salidas pueden ser éticas (pero hay que supervisar). Si tu prompt es discriminatorio, las salidas serán discriminatorias. La responsabilidad ética nunca se delega al modelo.}
+\milcpaso{4}{milcTurquesa}{Algoritmo para afinar un prompt: (1) escribe primera versión con los 5 elementos; (2) pásalo por el modelo con 10 mensajes; (3) compara con tu línea base humana; (4) identifica los errores (falsos urgentes, falsos ignorables); (5) ajusta criterios y ejemplos del prompt; (6) repite hasta lograr 80\%+ de acierto en la muestra; (7) documenta la versión final con número de iteración.}
 
 \begin{drawbox}{milcTurquesa}{Anatomía de un prompt afinado para clasificación}
 \textbf{Rol:} contexto + autoridad del modelo. \\[1mm] \textbf{Categorías:} exhaustivas y excluyentes, con definición operativa. \\[1mm] \textbf{Criterios con ejemplos:} 2-3 ejemplos por categoría. \\[1mm] \textbf{Formato de salida:} estructurado (JSON o etiqueta+justificación). \\[1mm] \textbf{Borde de duda:} qué hacer cuando el modelo no está seguro. \\[1mm] \textbf{Restricciones éticas:} qué NO clasificar (datos sensibles, no estereotipar). \\[1mm] \textbf{Versión:} fecha + iteración del prompt.
@@ -325,23 +379,16 @@ Un prompt amateur produce clasificaciones inconsistentes. Un prompt afinado prod
 
 \puente{Tienes el método. Toca aplicarlo: redactar un prompt afinado para clasificar 20+ mensajes, ejecutarlo (ChatGPT / Claude / Gemini gratuito o en Apps Script), comparar con tu clasificación manual, medir la tasa de acierto y proponer 2 ajustes al prompt.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · APLICA + EVALÚA --- Sistema de clasificación con métrica} (30 min · individual). Hora de aplicar. Redacta el prompt afinado, ejecútalo sobre 20+ mensajes reales, compara con tu línea base humana, calcula la tasa de acierto y propón 2 ajustes al prompt.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & Tu sistema se descompone en 5 piezas: (1) 20+ mensajes reales o simulados de tu contexto; (2) clasificación humana hecha por ti (línea base); (3) prompt afinado con los 5 elementos; (4) clasificación del modelo aplicada al mismo lote; (5) tabla comparativa con métrica de acierto + 2 ajustes propuestos.\\
-Patrones & Sigue el patrón \textbf{``mide antes de creer''}: nunca asumas que el modelo clasifica bien sin medir. La tasa de acierto sobre línea base humana es el único dato confiable para decidir si el sistema sirve. Sin métrica, todo es opinión.\\
-Abstracción & Cada ajuste al prompt se valida con re-ejecución: cambias el prompt, vuelves a ejecutar, re-mides. Si la métrica sube, el ajuste sirvió; si baja, revierte. La afinación es iterativa, no creativa: \emph{ciclo prompt $\to$ ejecutar $\to$ medir $\to$ ajustar}.\\
-Algoritmo de armado & Algoritmo: (1) prepara tabla con 20+ mensajes; (2) clasifica a mano (línea base); (3) escribe el prompt v1; (4) pásalo por el modelo (ChatGPT, Claude, Gemini --- en chat o vía API); (5) compara y calcula \% de acierto; (6) identifica los errores; (7) ajusta prompt (v2); (8) re-ejecuta y re-mide; (9) escribe 2 propuestas concretas de mejora.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{Tu sistema se descompone en 5 piezas: (1) 20+ mensajes reales o simulados de tu contexto; (2) clasificación humana hecha por ti (línea base); (3) prompt afinado con los 5 elementos; (4) clasificación del modelo aplicada al mismo lote; (5) tabla comparativa con métrica de acierto + 2 ajustes propuestos.}
+\milcpaso{2}{milcMagenta}{Sigue el patrón \textbf{``mide antes de creer''}: nunca asumas que el modelo clasifica bien sin medir. La tasa de acierto sobre línea base humana es el único dato confiable para decidir si el sistema sirve. Sin métrica, todo es opinión.}
+\milcpaso{3}{milcMagenta}{Cada ajuste al prompt se valida con re-ejecución: cambias el prompt, vuelves a ejecutar, re-mides. Si la métrica sube, el ajuste sirvió; si baja, revierte. La afinación es iterativa, no creativa: \emph{ciclo prompt $\to$ ejecutar $\to$ medir $\to$ ajustar}.}
+\milcpaso{4}{milcMagenta}{Algoritmo: (1) prepara tabla con 20+ mensajes; (2) clasifica a mano (línea base); (3) escribe el prompt v1; (4) pásalo por el modelo (ChatGPT, Claude, Gemini --- en chat o vía API); (5) compara y calcula \% de acierto; (6) identifica los errores; (7) ajusta prompt (v2); (8) re-ejecuta y re-mide; (9) escribe 2 propuestas concretas de mejora.}
 
 \begin{drawbox}{milcMagenta}{Checklist antes de entregar el sistema}
 \checkbox 20+ mensajes reales o simulados en tabla. \\[1mm] \checkbox Línea base humana completa con justificación. \\[1mm] \checkbox Prompt con los 5 elementos del oficio. \\[1mm] \checkbox Clasificación del modelo capturada. \\[1mm] \checkbox Métrica de acierto calculada (\% sobre línea base). \\[1mm] \checkbox 2 ajustes concretos al prompt con razón. \\[1mm] \checkbox Riesgo ético principal identificado y nombrado.
@@ -359,9 +406,7 @@ Algoritmo de armado & Algoritmo: (1) prepara tabla con 20+ mensajes; (2) clasifi
 
 \puente{Lo que sigue resume \emph{qué} entregas hoy: 1 prompt afinado + 1 hoja con 20+ mensajes clasificados por humano y por IA + métrica de aciertos + 2 ajustes propuestos. El criterio principal: que la métrica permita \textbf{decidir} si el sistema sirve para producción o no.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{1 sistema de clasificación con prompt afinado + métrica de acierto}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) 20+ mensajes con clasificación humana (línea base). (2) Prompt con los 5 elementos. (3) Clasificación del modelo aplicada al mismo lote. (4) Métrica de acierto calculada. (5) 2 ajustes concretos propuestos con razón.
@@ -369,9 +414,7 @@ Producto de la sesión
 
 \puente{Antes de cerrar, mira el sistema desde las cinco dimensiones humanas. Clasificar bien con IA libera tiempo humano; clasificar mal a escala produce daño silencioso a personas reales que nunca verás.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -397,12 +440,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Y para terminar, tres voces sobre la IA en mensajería. Dussel sobre los mensajes invisibilizados por categorías, Séneca sobre la prudencia del juicio, Floridi sobre la IA como infraestructura ética de la comunicación digital.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{``Toda categoría automatizada decide qué personas y qué mensajes son visibles para la institución.''}
+\textit{Toda categoría automatizada decide qué personas y qué mensajes son visibles para la institución.}
 
 Una IA que clasifica reclamos como \emph{``ignorar''} en cierta jerga puede silenciar a las víctimas que no escriben con el lenguaje formal esperado. Una IA que marca como \emph{``urgente''} solo lo que viene de cierto código postal puede priorizar barrios ricos sin querer. La phronesis del clasificador exige preguntar: \emph{¿qué tipo de mensaje y qué tipo de persona queda invisibilizado por mi categoría ``ignorar''?}. La responsabilidad ética es del humano que define el prompt, no del modelo que lo ejecuta.
 
@@ -412,7 +453,7 @@ Una IA que clasifica reclamos como \emph{``ignorar''} en cierta jerga puede sile
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Séneca · cuidado interior}
-\textit{``El juicio prudente exige tiempo --- la IA solo simula prudencia.''}
+\textit{El juicio prudente exige tiempo --- la IA solo simula prudencia.}
 
 La IA clasifica en milisegundos, lo cual es útil para escalar pero peligroso para casos de matiz. La sabiduría estoica recomienda \emph{escalar la velocidad solo donde la velocidad no daña}. Para mensajes con matiz emocional, contexto cultural o ambigüedad, la IA debe \emph{escalar al humano} en lugar de decidir. El borde de duda en el prompt es la traducción técnica de la prudencia.
 
@@ -422,7 +463,7 @@ La IA clasifica en milisegundos, lo cual es útil para escalar pero peligroso pa
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{``La IA aplicada a la mensajería es infraestructura ética de la comunicación digital contemporánea.''}
+\textit{La IA aplicada a la mensajería es infraestructura ética de la comunicación digital contemporánea.}
 
 Bancos, hospitales, gobiernos, plataformas usan IA para filtrar millones de mensajes diarios. Las decisiones de qué categoría asignar afectan a personas reales: deniegan créditos, retrasan diagnósticos, archivan reclamos. Aprender a diseñar estos sistemas con ética a los 16 años es alfabetización cívica decisiva: el lenguaje con el que se ejerce el poder digital sobre millones de personas.
 
@@ -431,21 +472,24 @@ Bancos, hospitales, gobiernos, plataformas usan IA para filtrar millones de mens
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

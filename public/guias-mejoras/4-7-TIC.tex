@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 7};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 7};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Word, Excel\\y PowerPoint\\en línea ---\\las 3 estrellas\\del paquete}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 4-7-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 1 · Trabajo colaborativo en la nube}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 1 · Trabajo colaborativo en la nube}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Word, Excel\\y PowerPoint\\en línea ---\\las 3 estrellas\\del paquete}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 4-7-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} Tres archivos nuevos en tu OneDrive: \textbf{(a) Word en línea} con un texto de 1 página sobre la minga digital (continuación del tema de la S1); \textbf{(b) Excel en línea} con una tabla de 5 columnas y 10 filas de calificaciones inventadas + fórmula \texttt{=PROMEDIO()} aplicada; \textbf{(c) PowerPoint en línea} con 5 diapositivas presentando \emph{``Mis 3 apps favoritas de Microsoft 365''}. Cada archivo guardado en \texttt{Mis-documentos/Colegio/Tecnologia/Periodo-1}. Más \textbf{en el cuaderno}: tabla comparativa de las 3 apps (Word/Excel/PowerPoint) con 5 criterios.};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Tres archivos nuevos en tu OneDrive: \textbf{(a) Word en línea} con un texto de 1 página sobre la minga digital (continuación del tema de la S1); \textbf{(b) Excel en línea} con una tabla de 5 columnas y 10 filas de calificaciones inventadas + fórmula \texttt{=PROMEDIO()} aplicada; \textbf{(c) PowerPoint en línea} con 5 diapositivas presentando \emph{``Mis 3 apps favoritas de Microsoft 365''}. Cada archivo guardado en \texttt{Mis-documentos/Colegio/Tecnologia/Periodo-1}. Más \textbf{en el cuaderno}: tabla comparativa de las 3 apps (Word/Excel/PowerPoint) con 5 criterios.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Word, Excel y PowerPoint en línea --- las 3 herramientas estrella}
@@ -258,30 +322,27 @@ Producto final & Tres archivos nuevos en tu OneDrive: \textbf{(a) Word en línea
 
 \puente{Hoy haces 4 cosas: distingues Word vs Excel vs PowerPoint, abres cada una en línea, creas un archivo en cada una, guardas todo en OneDrive.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Empezamos con un test de 9 situaciones: ¿Word, Excel o PowerPoint?}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- 9 situaciones, 3 apps} (10 min · individual). En el cuaderno, escribe esta lista del 1 al 9. Para cada situación, escribe \textbf{W (Word)}, \textbf{E (Excel)} o \textbf{P (PowerPoint)} según cuál usarías. \emph{(1) Escribir un cuento de 2 páginas. (2) Llevar las notas de los 30 compañeros de la clase con promedios. (3) Hacer una presentación oral con 12 diapositivas sobre los animales del Valle. (4) Redactar una carta formal al rector. (5) Hacer un cuadro de gastos del mes. (6) Crear una invitación a un cumpleaños con diseño bonito. (7) Escribir un poema sobre Cartago. (8) Llevar un control de las horas que estudias cada día. (9) Mostrar a tu clase los resultados de una encuesta con gráficos.}
 \end{softbox}
 
-\checkbox Listé las 9 situaciones numeradas.\\
-\checkbox Marqué W, E o P al lado de cada una.\\
-\checkbox Pensé qué hace especial a cada app antes de decidir.
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Listé las 9 situaciones numeradas.}
+\milccheckrow{Marqué W, E o P al lado de cada una.}
+\milccheckrow{Pensé qué hace especial a cada app antes de decidir.}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Después aprendes qué hace cada app y dónde están sus funciones esenciales.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Tu intuición se afila ahora con la sistematización. Aprende qué hace cada app y dónde están sus 5 funciones esenciales. Las respuestas correctas de la Actividad 1: \emph{1=W, 2=E, 3=P, 4=W, 5=E, 6=P (puede ser W con diseño), 7=W, 8=E, 9=P (con datos de Excel)}.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & \textbf{Word Online --- el lápiz digital.} \textbf{Para qué sirve:} escribir textos. Ensayos, cartas, cuentos, informes, poemas, cualquier cosa con palabras. \textbf{5 funciones esenciales (ya las conoces de G6·P3):} (1) Formato de texto (negrita, alineación, color). (2) Listas con viñetas y numeradas. (3) Tablas. (4) Insertar imagen. (5) Encabezado y pie de página. \textbf{Cómo abrir:} \texttt{office.com} → ícono Word (W azul). Crea documento en blanco. \textbf{Guardado:} automático en OneDrive cada pocos segundos.\\
-2. Reconocimiento de patrones & \textbf{Excel Online --- la calculadora maestra.} \textbf{Para qué sirve:} todo lo que tiene \emph{números organizados en tabla} (calificaciones, presupuestos, listas con conteos, estadísticas). \textbf{5 funciones esenciales:} (1) Celdas (cada cuadrito es una celda; se identifican A1, B2, C3...). (2) Fórmulas: empiezan con \texttt{=}, ejemplo \texttt{=A1+B1} suma. (3) Función \texttt{=PROMEDIO(rango)} calcula promedio. (4) Gráficos automáticos: seleccionas datos → Insertar → Gráfico. (5) Formato condicional: las celdas se pintan de color según el valor. \textbf{Cómo abrir:} \texttt{office.com} → Excel (X verde).\\
-3. Abstracción & \textbf{PowerPoint Online --- el mostrador de ideas.} \textbf{Para qué sirve:} hacer presentaciones con diapositivas que se proyectan. Cada diapositiva es como una página visual: con título, texto corto, imágenes. \textbf{5 funciones esenciales:} (1) Nueva diapositiva (insertar más): se hace con un clic. (2) Plantillas (\emph{Diseño → Temas}): cambian colores y fuentes en bloque. (3) Insertar imagen, video, ícono. (4) Transiciones entre diapositivas (animaciones). (5) Modo presentador (F5): ves notas del orador mientras la audiencia ve solo las diapositivas. \textbf{Cómo abrir:} \texttt{office.com} → PowerPoint (P naranja).\\
-4. Algoritmo conceptual & \textbf{Regla maestra para escoger app.} Hazte 3 preguntas. \textbf{(1) ¿La información son palabras corridas?} → Word. \textbf{(2) ¿La información son números o datos en tabla?} → Excel. \textbf{(3) ¿La información se va a presentar a otros visualmente?} → PowerPoint. Si la respuesta es \emph{``más de una''}, escoge la principal. Ejemplo: \emph{``encuesta con gráficos a presentar''} → datos en Excel, gráficos en PowerPoint, ambos colaborando.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{\textbf{Word Online --- el lápiz digital.} \textbf{Para qué sirve:} escribir textos. Ensayos, cartas, cuentos, informes, poemas, cualquier cosa con palabras. \textbf{5 funciones esenciales (ya las conoces de G6·P3):} (1) Formato de texto (negrita, alineación, color). (2) Listas con viñetas y numeradas. (3) Tablas. (4) Insertar imagen. (5) Encabezado y pie de página. \textbf{Cómo abrir:} \texttt{office.com} → ícono Word (W azul). Crea documento en blanco. \textbf{Guardado:} automático en OneDrive cada pocos segundos.}
+\milcpaso{2}{milcTurquesa}{\textbf{Excel Online --- la calculadora maestra.} \textbf{Para qué sirve:} todo lo que tiene \emph{números organizados en tabla} (calificaciones, presupuestos, listas con conteos, estadísticas). \textbf{5 funciones esenciales:} (1) Celdas (cada cuadrito es una celda; se identifican A1, B2, C3...). (2) Fórmulas: empiezan con \texttt{=}, ejemplo \texttt{=A1+B1} suma. (3) Función \texttt{=PROMEDIO(rango)} calcula promedio. (4) Gráficos automáticos: seleccionas datos → Insertar → Gráfico. (5) Formato condicional: las celdas se pintan de color según el valor. \textbf{Cómo abrir:} \texttt{office.com} → Excel (X verde).}
+\milcpaso{3}{milcTurquesa}{\textbf{PowerPoint Online --- el mostrador de ideas.} \textbf{Para qué sirve:} hacer presentaciones con diapositivas que se proyectan. Cada diapositiva es como una página visual: con título, texto corto, imágenes. \textbf{5 funciones esenciales:} (1) Nueva diapositiva (insertar más): se hace con un clic. (2) Plantillas (\emph{Diseño → Temas}): cambian colores y fuentes en bloque. (3) Insertar imagen, video, ícono. (4) Transiciones entre diapositivas (animaciones). (5) Modo presentador (F5): ves notas del orador mientras la audiencia ve solo las diapositivas. \textbf{Cómo abrir:} \texttt{office.com} → PowerPoint (P naranja).}
+\milcpaso{4}{milcTurquesa}{\textbf{Regla maestra para escoger app.} Hazte 3 preguntas. \textbf{(1) ¿La información son palabras corridas?} → Word. \textbf{(2) ¿La información son números o datos en tabla?} → Excel. \textbf{(3) ¿La información se va a presentar a otros visualmente?} → PowerPoint. Si la respuesta es \emph{``más de una''}, escoge la principal. Ejemplo: \emph{``encuesta con gráficos a presentar''} → datos en Excel, gráficos en PowerPoint, ambos colaborando.}
 
 \begin{drawbox}{milcTurquesa}{3 apps + reglas de elección}
 \textbf{Word:} para palabras (textos largos). \\[1mm]
@@ -328,23 +382,18 @@ Tu intuición se afila ahora con la sistematización. Aprende qué hace cada app
 
 \puente{Con todo claro, creas 1 Word + 1 Excel + 1 PowerPoint y los guardas correctamente.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · CREA --- 1 Word + 1 Excel + 1 PowerPoint reales} (32 min · individual). Vas a crear los 3 archivos en línea y dejarlos guardados en tu OneDrive en la carpeta correcta. Si no tienes computador en clase, planificas el contenido en el cuaderno y los creas en casa.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & \textbf{Paso 1 --- Abre office.com.} En el navegador, inicia sesión con tu cuenta institucional. Verás la página principal de Microsoft 365 con todas las apps. Ahora vas a crear 3 archivos seguidos en esta sesión.\\
-Patrones & \textbf{Paso 2 --- Word en línea (10 min).} Haz clic en el ícono Word (W azul). Crea \emph{Documento en blanco}. En la parte superior izquierda, donde dice \emph{``Documento1''}, haz clic y renómbralo: \texttt{2026-mi-vision-de-la-minga-digital}. Escribe \textbf{1 página} sobre cómo entiendes el trabajo colaborativo en la nube después de las primeras 3 sesiones. 4 párrafos cortos: \emph{(1) ¿qué es la minga?}, \emph{(2) ¿cómo se parece a Microsoft 365?}, \emph{(3) ¿qué he activado y aprendido?}, \emph{(4) ¿qué espero del periodo?}. Aplica formato (justificado, negrita en ideas importantes, sangría). Cuando termines, ve a la pestaña \emph{Mover a} y mueve el archivo a tu carpeta \texttt{Mis-documentos/Colegio/Tecnologia/Periodo-1}.\\
-Abstracción & \textbf{Paso 3 --- Excel en línea (10 min).} Vuelve a office.com, ahora Excel (X verde). Crea \emph{Libro en blanco}. Renombra: \texttt{2026-calificaciones-prueba}. Crea una tabla con \textbf{5 columnas} (encabezados: Nombre, Sociales, Mate, Tecnología, Promedio) y \textbf{10 filas} de estudiantes inventados con notas inventadas (1-5). En la columna \emph{Promedio}, en la celda E2, escribe \texttt{=PROMEDIO(B2:D2)} y presiona Enter. Aparece el promedio de la primera fila. \emph{Truco mágico:} agarra el cuadrito de la esquina inferior derecha de E2 y arrástralo hacia abajo hasta E11: la fórmula se copia y calcula los promedios de todos. Muévelo a la misma carpeta.\\
-Algoritmo de armado & \textbf{Paso 4 --- PowerPoint en línea (12 min).} office.com → PowerPoint (P naranja) → \emph{Presentación en blanco}. Renombra: \texttt{2026-mis-3-apps-favoritas}. Crea \textbf{5 diapositivas}: \emph{(D1) Portada}: título + tu nombre + grado. \emph{(D2) Word}: dile a la audiencia por qué te gusta Word. \emph{(D3) Excel}: lo mismo con Excel. \emph{(D4) PowerPoint}: lo mismo con PowerPoint. \emph{(D5) Cierre}: \emph{``¿Y tú cuál usarás más?''}. Aplica un tema bonito en \emph{Diseño}. Inserta al menos 1 imagen libre de Pixabay. Muévelo a la misma carpeta.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{\textbf{Paso 1 --- Abre office.com.} En el navegador, inicia sesión con tu cuenta institucional. Verás la página principal de Microsoft 365 con todas las apps. Ahora vas a crear 3 archivos seguidos en esta sesión.}
+\milcpaso{2}{milcMagenta}{\textbf{Paso 2 --- Word en línea (10 min).} Haz clic en el ícono Word (W azul). Crea \emph{Documento en blanco}. En la parte superior izquierda, donde dice \emph{``Documento1''}, haz clic y renómbralo: \texttt{2026-mi-vision-de-la-minga-digital}. Escribe \textbf{1 página} sobre cómo entiendes el trabajo colaborativo en la nube después de las primeras 3 sesiones. 4 párrafos cortos: \emph{(1) ¿qué es la minga?}, \emph{(2) ¿cómo se parece a Microsoft 365?}, \emph{(3) ¿qué he activado y aprendido?}, \emph{(4) ¿qué espero del periodo?}. Aplica formato (justificado, negrita en ideas importantes, sangría). Cuando termines, ve a la pestaña \emph{Mover a} y mueve el archivo a tu carpeta \texttt{Mis-documentos/Colegio/Tecnologia/Periodo-1}.}
+\milcpaso{3}{milcMagenta}{\textbf{Paso 3 --- Excel en línea (10 min).} Vuelve a office.com, ahora Excel (X verde). Crea \emph{Libro en blanco}. Renombra: \texttt{2026-calificaciones-prueba}. Crea una tabla con \textbf{5 columnas} (encabezados: Nombre, Sociales, Mate, Tecnología, Promedio) y \textbf{10 filas} de estudiantes inventados con notas inventadas (1-5). En la columna \emph{Promedio}, en la celda E2, escribe \texttt{=PROMEDIO(B2:D2)} y presiona Enter. Aparece el promedio de la primera fila. \emph{Truco mágico:} agarra el cuadrito de la esquina inferior derecha de E2 y arrástralo hacia abajo hasta E11: la fórmula se copia y calcula los promedios de todos. Muévelo a la misma carpeta.}
+\milcpaso{4}{milcMagenta}{\textbf{Paso 4 --- PowerPoint en línea (12 min).} office.com → PowerPoint (P naranja) → \emph{Presentación en blanco}. Renombra: \texttt{2026-mis-3-apps-favoritas}. Crea \textbf{5 diapositivas}: \emph{(D1) Portada}: título + tu nombre + grado. \emph{(D2) Word}: dile a la audiencia por qué te gusta Word. \emph{(D3) Excel}: lo mismo con Excel. \emph{(D4) PowerPoint}: lo mismo con PowerPoint. \emph{(D5) Cierre}: \emph{``¿Y tú cuál usarás más?''}. Aplica un tema bonito en \emph{Diseño}. Inserta al menos 1 imagen libre de Pixabay. Muévelo a la misma carpeta.}
+\milcpaso{5}{milcMagenta}{\textbf{Paso 5 --- Verifica los 3 archivos.} Vuelve a OneDrive (clic en el ícono nube azul desde office.com). Entra a \texttt{Mis-documentos/Colegio/Tecnologia/Periodo-1}. Deberías ver los 3 archivos ahí. Si los ves, ¡lograste el oficio del día!}
+\milcpaso{6}{milcMagenta}{\textbf{Paso 6 --- Registro en el cuaderno + firma.} En el cuaderno (sesión 4) escribe (boceto): \emph{``Mis 3 archivos en OneDrive: (1) Word: \_\_\_, (2) Excel: \_\_\_, (3) PowerPoint: \_\_\_''}. Anota lo que más te sorprendió de cada app. Firma con nombre y fecha. Esta sesión te entrenó en las 3 herramientas estrella.}
 
 \begin{drawbox}{milcMagenta}{Antes de cerrar la S4}
 \checkbox Tengo 1 archivo Word en línea con texto de 1 página formateado. \\[1mm]
@@ -367,9 +416,7 @@ Algoritmo de armado & \textbf{Paso 4 --- PowerPoint en línea (12 min).} office.
 
 \puente{El producto son los 3 archivos en OneDrive + tabla comparativa en cuaderno.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{3 archivos creados (Word + Excel + PowerPoint) en OneDrive · organizados}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) El Word tiene 1 página con 4 párrafos sobre la minga digital, formateado. (2) El Excel tiene tabla 5x10 con fórmula PROMEDIO aplicada y propagada. (3) El PowerPoint tiene 5 diapositivas con diseño temático + 1 imagen libre. (4) Los 3 archivos están en la carpeta correcta del OneDrive. (5) Los nombres siguen las 5 reglas (sin espacios, sin acentos, con fecha).
@@ -377,9 +424,7 @@ Producto de la sesión
 
 \puente{Antes de salir, verifica que los 3 archivos abren desde otro dispositivo (sincronización OK).}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -405,12 +450,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Cerramos con 3 voces que te ayudan a entender por qué dominar pocas herramientas a fondo vale más que muchas a medias.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{````Dominar 3 herramientas a fondo te hace artesano. Saber 10 a medias te hace turista.''''}
+\textit{``Dominar 3 herramientas a fondo te hace artesano. Saber 10 a medias te hace turista.''}
 
 Hay personas que se jactan de \emph{``conocer todo Microsoft 365''} pero en realidad no dominan ninguna app a fondo. Don Lucho prefería que sus aprendices \textbf{dominaran 3 herramientas estrella} antes de querer aprender 10. Esa disciplina antigua aplica a Microsoft 365: \emph{Word, Excel, PowerPoint} bien aprendidos te dan más poder real que las 8 a medias.
 
@@ -420,7 +463,7 @@ Hay personas que se jactan de \emph{``conocer todo Microsoft 365''} pero en real
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
-\textit{````Pocas armas bien usadas ganan más batallas que muchas mal manejadas.''''}
+\textit{``Pocas armas bien usadas ganan más batallas que muchas mal manejadas.''}
 
 Marco Aurelio dirigía un ejército. Sabía que \textbf{soldados bien entrenados en pocas armas son más letales que mediocres con muchas}. Tu vida adulta es batalla constante (en sentido amplio): tareas, trabajos, decisiones. \emph{Dominar Word, Excel y PowerPoint a fondo te da ventaja sobre el 80\% de tus pares que las usan a medias}. Vale la pena la inversión inicial.
 
@@ -430,7 +473,7 @@ Marco Aurelio dirigía un ejército. Sabía que \textbf{soldados bien entrenados
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{````El que aprende Word, Excel y PowerPoint en serio se ahorra años de improvisación profesional.''''}
+\textit{``El que aprende Word, Excel y PowerPoint en serio se ahorra años de improvisación profesional.''}
 
 En el trabajo y la universidad, \textbf{las 3 apps se exigen sin enseñar}: se asume que las sabes. Los que las aprendieron en colegio (como tú) avanzan sin pena. Los que llegan sin saberlas pasan meses sufriendo. \emph{Hoy aprendiste lo que el 60\% de adultos colombianos no sabe}. Eso es ventaja real. Aprovéchala.
 
@@ -439,21 +482,24 @@ En el trabajo y la universidad, \textbf{las 3 apps se exigen sin enseñar}: se a
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

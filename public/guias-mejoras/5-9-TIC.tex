@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 9};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 9};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Revolución industrial ---\\máquinas que\\cambiaron el trabajo}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 5-9-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 1 · Historia de la técnica}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 1 · Historia de la técnica}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Revolución industrial ---\\máquinas que\\cambiaron el trabajo}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 5-9-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} Mapa visual de oficios ganados y perdidos entre el siglo XVIII y hoy, con 3 oficios sustituidos por la máquina y 3 oficios creados por ella};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Mapa visual de oficios ganados y perdidos entre el siglo XVIII y hoy, con 3 oficios sustituidos por la máquina y 3 oficios creados por ella
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Revolución industrial --- máquinas que cambiaron el trabajo}
@@ -258,30 +322,27 @@ Producto final & Mapa visual de oficios ganados y perdidos entre el siglo XVIII 
 
 \puente{Antes de empezar, mira el viaje completo. Las sesiones 1-4 te dieron lentes para entender la técnica como historia. Hoy aterrizas esa historia en algo muy concreto: ¿qué pasa con los trabajos humanos cuando llegan las máquinas?}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Antes de teorizar sobre la revolución industrial, vamos a entrevistar la memoria viva. La conversación con un familiar mayor sobre oficios que ya no existen revela más que cualquier libro de historia.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- Entrevista a un mayor sobre oficios perdidos} (15 min · individual). Llama o habla con un familiar mayor de 40 años (papá, mamá, tío, abuelo). Pregúntale: ``¿qué oficio había en tu juventud que ya no existe?'' y ``¿qué oficio existe hoy que no existía cuando eras joven?''. Anota su respuesta literal --- la memoria viva da información que ningún libro tiene.
 \end{softbox}
 
-\checkbox Conseguí hablar con un familiar mayor de 40 años.\\
-\checkbox Le pregunté por al menos 1 oficio perdido y 1 oficio creado.\\
-\checkbox Anoté sus respuestas literales (sin paráfrasis).
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Conseguí hablar con un familiar mayor de 40 años.}
+\milccheckrow{Le pregunté por al menos 1 oficio perdido y 1 oficio creado.}
+\milccheckrow{Anoté sus respuestas literales (sin paráfrasis).}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Ya tienes datos vivos. Ahora vamos a entender los \textbf{4 patrones} de lo que pasa con un oficio cuando llega una máquina: sustituido, transformado, complementado, creado. Distinguirlos te da un mapa para leer cualquier cambio tecnológico --- el del XIX y el de hoy.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Toda revolución técnica deja un mapa de oficios en 4 estados. Vamos a descomponer ese mapa con los pilares del pensamiento computacional para que puedas leer cualquier cambio --- el del XIX y el de hoy.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & Los oficios frente a la máquina se descomponen en 4 estados: (1) \textbf{sustituidos} (la máquina los reemplaza por completo: telefonista, lechero, despertador humano), (2) \textbf{transformados} (siguen existiendo pero cambian de forma: cajero bancario, secretaria, periodista), (3) \textbf{complementados} (la máquina los hace más productivos sin sustituirlos: médico con escáner, abogado con buscadores), (4) \textbf{creados} (no existían antes de la máquina: programador, community manager, científico de datos).\\
-2. Reconocimiento de patrones & Toda revolución sigue el patrón \textbf{``no todos pierden lo mismo''}: los oficios que requieren juicio humano, creatividad o relación cara a cara suelen sobrevivir. Los oficios repetitivos y predecibles son los primeros que la máquina toma. Pero el reparto de beneficios no es justo: quien tiene capital y educación se reinventa, quien no, se queda atrás.\\
-3. Abstracción & Lo esencial de la mirada sobre revoluciones técnicas cabe en una pregunta: \emph{¿quién está pagando el costo de esta revolución y quién está cobrando los beneficios?}. Sin esa pregunta, la historia de la técnica se vuelve ingenua.\\
-4. Algoritmo conceptual & Pasos para analizar cualquier revolución técnica: (1) ¿qué máquina o tecnología es el motor del cambio?; (2) ¿qué oficios sustituye, transforma, complementa y crea?; (3) ¿quién gana económicamente?; (4) ¿quién paga el costo en vidas reales?.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{Los oficios frente a la máquina se descomponen en 4 estados: (1) \textbf{sustituidos} (la máquina los reemplaza por completo: telefonista, lechero, despertador humano), (2) \textbf{transformados} (siguen existiendo pero cambian de forma: cajero bancario, secretaria, periodista), (3) \textbf{complementados} (la máquina los hace más productivos sin sustituirlos: médico con escáner, abogado con buscadores), (4) \textbf{creados} (no existían antes de la máquina: programador, community manager, científico de datos).}
+\milcpaso{2}{milcTurquesa}{Toda revolución sigue el patrón \textbf{``no todos pierden lo mismo''}: los oficios que requieren juicio humano, creatividad o relación cara a cara suelen sobrevivir. Los oficios repetitivos y predecibles son los primeros que la máquina toma. Pero el reparto de beneficios no es justo: quien tiene capital y educación se reinventa, quien no, se queda atrás.}
+\milcpaso{3}{milcTurquesa}{Lo esencial de la mirada sobre revoluciones técnicas cabe en una pregunta: \emph{¿quién está pagando el costo de esta revolución y quién está cobrando los beneficios?}. Sin esa pregunta, la historia de la técnica se vuelve ingenua.}
+\milcpaso{4}{milcTurquesa}{Pasos para analizar cualquier revolución técnica: (1) ¿qué máquina o tecnología es el motor del cambio?; (2) ¿qué oficios sustituye, transforma, complementa y crea?; (3) ¿quién gana económicamente?; (4) ¿quién paga el costo en vidas reales?.}
 
 \begin{drawbox}{milcTurquesa}{Anatomía de una revolución técnica}
 \textbf{Motor técnico:} qué máquina o tecnología desata el cambio (vapor, electricidad, computador, IA). \\[1mm] \textbf{Oficios sustituidos:} los que la máquina reemplaza por completo. \\[1mm] \textbf{Oficios transformados:} los que cambian de forma pero subsisten. \\[1mm] \textbf{Oficios creados:} los que no existían antes. \\[1mm] \textbf{Distribución de costos y beneficios:} quién gana, quién paga.
@@ -325,23 +379,16 @@ Toda revolución técnica deja un mapa de oficios en 4 estados. Vamos a descompo
 
 \puente{Tienes el método. Toca hacer un mapa visual de oficios ganados y perdidos en tu región. No abstracto: con nombres reales de oficios que viste o que tu familia conoció.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · CREA --- Mapa de oficios ganados y perdidos} (30 min · individual). Hora de mapear. Vas a hacer un mapa visual de oficios ganados y perdidos en tu propia región (Valle, Cartago, tu barrio o pueblo), con 3 oficios sustituidos por máquinas + 3 oficios creados por máquinas.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & Tu mapa se descompone en 4 zonas: (1) el centro --- una pregunta clara: ``¿Qué cambió en mi región?''; (2) la izquierda --- 3 oficios perdidos con flecha al motor técnico que los sustituyó; (3) la derecha --- 3 oficios creados con flecha a la tecnología que los hizo posibles; (4) abajo --- un cuadro con tu observación sobre el reparto de beneficios.\\
-Patrones & Sigue el patrón \textbf{``específico vence a genérico''}: no escribas ``muchos oficios desaparecieron''. Escribe ``el lechero pasaba por mi calle hasta 1985, lo reemplazó la pasteurización industrial''. Lo concreto convence.\\
-Abstracción & Cada oficio expresa una sola idea. Si tu ficha de ``programador'' dice tres especialidades distintas (web, móvil, IA), elige una. Mejor 6 fichas claras que 12 confusas.\\
-Algoritmo de armado & Algoritmo: (1) lista 10 candidatos; (2) elige los 3 más fuertes de cada lado; (3) dibuja el mapa en hoja A4 horizontal; (4) escribe el cuadro de observación abajo; (5) usa el aporte de tu familia (Actividad 1) en al menos UN oficio.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{Tu mapa se descompone en 4 zonas: (1) el centro --- una pregunta clara: ``¿Qué cambió en mi región?''; (2) la izquierda --- 3 oficios perdidos con flecha al motor técnico que los sustituyó; (3) la derecha --- 3 oficios creados con flecha a la tecnología que los hizo posibles; (4) abajo --- un cuadro con tu observación sobre el reparto de beneficios.}
+\milcpaso{2}{milcMagenta}{Sigue el patrón \textbf{``específico vence a genérico''}: no escribas ``muchos oficios desaparecieron''. Escribe ``el lechero pasaba por mi calle hasta 1985, lo reemplazó la pasteurización industrial''. Lo concreto convence.}
+\milcpaso{3}{milcMagenta}{Cada oficio expresa una sola idea. Si tu ficha de ``programador'' dice tres especialidades distintas (web, móvil, IA), elige una. Mejor 6 fichas claras que 12 confusas.}
+\milcpaso{4}{milcMagenta}{Algoritmo: (1) lista 10 candidatos; (2) elige los 3 más fuertes de cada lado; (3) dibuja el mapa en hoja A4 horizontal; (4) escribe el cuadro de observación abajo; (5) usa el aporte de tu familia (Actividad 1) en al menos UN oficio.}
 
 \begin{drawbox}{milcMagenta}{Checklist antes de cerrar el mapa}
 \checkbox 3 oficios perdidos a la izquierda, con motor técnico que los sustituyó. \\[1mm] \checkbox 3 oficios creados a la derecha, con tecnología que los hizo posibles. \\[1mm] \checkbox Al menos UN oficio (perdido o creado) viene del aporte de tu familia. \\[1mm] \checkbox Cada oficio tiene fecha aproximada (década) y un lugar (mi barrio, mi región). \\[1mm] \checkbox Cuadro de observación abajo nombra a quién benefició la revolución y a quién no.
@@ -359,9 +406,7 @@ Algoritmo de armado & Algoritmo: (1) lista 10 candidatos; (2) elige los 3 más f
 
 \puente{Lo que sigue resume \emph{qué} entregas hoy: 1 mapa visual + 3 oficios perdidos + 3 oficios creados. El criterio principal: que cada uno sea real y específico, no genérico.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Mapa visual de oficios ganados y perdidos en mi región}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) 3 oficios perdidos + 3 oficios creados, todos con nombre concreto. (2) Al menos UN oficio viene del aporte de un mayor de tu familia. (3) Cada oficio tiene fecha aproximada y lugar local. (4) El cuadro de observación nombra a quién benefició la revolución y a quién no. (5) El mapa se entiende sin explicación oral.
@@ -369,9 +414,7 @@ Producto de la sesión
 
 \puente{Antes de cerrar, mira la revolución industrial desde las cinco dimensiones humanas. Esta no es solo historia económica: es vidas concretas, decisiones familiares, herencias. Vale la pena nombrar a quién benefició y a quién dejó atrás.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -397,12 +440,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Y para terminar, tres voces sobre el cambio técnico y el trabajo. Dussel sobre quién gana y quién pierde en cada revolución, Marco Aurelio sobre lo que sí depende de ti cuando el mundo cambia, Floridi sobre los empleos de la infoesfera.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{``Toda revolución técnica reparte beneficios y costos según una geografía de poder previa.''}
+\textit{Toda revolución técnica reparte beneficios y costos según una geografía de poder previa.}
 
 La revolución industrial inglesa se hizo posible con algodón colombiano, caucho del Amazonas, café del Valle. Los beneficios quedaron en Manchester y Liverpool; los costos en el campesino latinoamericano. La 4ª revolución industrial repite el patrón: los algoritmos se entrenan con datos del sur global, los beneficios quedan en Silicon Valley. Reconocer eso es el primer acto de soberanía técnica.
 
@@ -412,7 +453,7 @@ La revolución industrial inglesa se hizo posible con algodón colombiano, cauch
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
-\textit{``No te angusties por lo que cambiará; concéntrate en lo que de tu trabajo no depende de la máquina.''}
+\textit{No te angusties por lo que cambiará; concéntrate en lo que de tu trabajo no depende de la máquina.}
 
 La angustia por ``la IA va a quitar mi trabajo'' es legítima --- pero no es estrategia. La estrategia estoica pregunta: ¿qué de tu habilidad humana NO depende de algoritmos? Curiosidad genuina, juicio en situaciones nuevas, cuidado de personas reales, creatividad no derivativa. Cultivar eso es seguro de empleo a largo plazo.
 
@@ -422,7 +463,7 @@ La angustia por ``la IA va a quitar mi trabajo'' es legítima --- pero no es est
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{``La 4ª revolución industrial reconfigura no solo el trabajo, sino la naturaleza misma de la agencia humana.''}
+\textit{La 4ª revolución industrial reconfigura no solo el trabajo, sino la naturaleza misma de la agencia humana.}
 
 En revoluciones anteriores, las máquinas hacían trabajo físico. En la 4ª, las máquinas hacen trabajo cognitivo: deciden, recomiendan, escriben. Floridi llama esto \emph{re-ontologización del trabajo}: cambia lo que ``trabajar'' significa. Quien entienda eso temprano podrá rediseñar su lugar; quien lo ignore, será rediseñado por otros.
 
@@ -431,21 +472,24 @@ En revoluciones anteriores, las máquinas hacían trabajo físico. En la 4ª, la
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

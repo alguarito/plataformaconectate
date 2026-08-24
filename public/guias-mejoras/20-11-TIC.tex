@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 11};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 11};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Caso real ---\\automatizar\\un proceso real}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 20-11-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 2 · Automatización y procesos}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 2 · Automatización y procesos}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Caso real ---\\automatizar\\un proceso real}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 20-11-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} 1 proceso real automatizado de principio a fin (en el colegio, la casa o un microemprendimiento del barrio), con evidencia antes/después documentada (KPIs medidos antes y después, capturas de pantalla del antes vs después, retroalimentación de al menos 2 usuarios reales), bitácora del ciclo completo (mapa → BPMN → Form → hoja → trigger → IA → bot → KPIs → mejora) y video de 2-3 minutos sustentando el caso};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+1 proceso real automatizado de principio a fin (en el colegio, la casa o un microemprendimiento del barrio), con evidencia antes/después documentada (KPIs medidos antes y después, capturas de pantalla del antes vs después, retroalimentación de al menos 2 usuarios reales), bitácora del ciclo completo (mapa → BPMN → Form → hoja → trigger → IA → bot → KPIs → mejora) y video de 2-3 minutos sustentando el caso
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Caso real --- automatizar un proceso del colegio o la casa}
@@ -258,30 +322,27 @@ Producto final & 1 proceso real automatizado de principio a fin (en el colegio, 
 
 \puente{Antes de empezar, mira el viaje completo. Has aprendido 9 piezas a lo largo del periodo: mapeo, BPMN, formularios, hojas-base, triggers, IA, chatbots, KPIs, Kaizen. Hoy las integras en \textbf{un solo caso real} con evidencia. Es el capstone --- y la prueba de que el oficio digital, como el del relojero, se mide por la pieza terminada que funciona en manos del usuario.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Antes de teorizar, vas a hacer una \emph{auditoría rápida} de procesos reales cercanos para elegir uno: tu casa, el colegio, un microemprendimiento del barrio. Vas a anotar 3 candidatos y a evaluar cuál duele más a alguien real, cuál tiene KPI medible y cuál puedes implementar en una semana.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- 3 candidatos a capstone} (15 min · individual). Sin filtrar todavía por viabilidad, anota 3 procesos reales cercanos que duelan: en tu casa (recordatorios de medicación, control de gastos, asignación de tareas), en el colegio (registro de asistencia, encuesta a padres, comunicación con grado), en el barrio (pedidos del tendero, reservas de un peluquero, agendamiento de mototaxis). Para cada candidato anota: \emph{¿a quién duele?, ¿qué KPI se puede medir antes?, ¿puedo implementar en 1 semana?}. Elige uno como capstone con justificación de 1 frase.
 \end{softbox}
 
-\checkbox Anoté 3 candidatos sin censurarlos por dificultad.\\
-\checkbox Evalué cada candidato en 3 dimensiones (dolor, KPI, viabilidad).\\
-\checkbox Elegí uno con justificación de 1 frase.
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Anoté 3 candidatos sin censurarlos por dificultad.}
+\milccheckrow{Evalué cada candidato en 3 dimensiones (dolor, KPI, viabilidad).}
+\milccheckrow{Elegí uno con justificación de 1 frase.}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Ya tienes candidato. Ahora vas a entender la \textbf{anatomía} del caso real completo: los 7 entregables mínimos del capstone, los errores típicos (caso ficticio, sin medición antes/después, sin usuarios reales, sin video), y la regla de oro de la evidencia profesional.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 El capstone parece complejo porque integra todo, pero su anatomía es ordenada. Vamos a descomponer los 7 entregables mínimos con los pilares del pensamiento computacional para que tu caso pase la prueba profesional.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & El capstone se descompone en 7 entregables: (1) \textbf{Caso elegido}: proceso real + dueño + dolor concreto. (2) \textbf{Mapa BPMN}: estado actual diagramado (S2 del periodo). (3) \textbf{Implementación}: Form, hoja, trigger, IA o bot --- al menos 3 de las 6 piezas integradas. (4) \textbf{KPIs antes/después}: mismos 3-5 KPIs medidos en ambos momentos. (5) \textbf{2 usuarios reales validando}: testimonios escritos o en video. (6) \textbf{Bitácora del proceso}: qué se hizo cada día, qué falló, qué se ajustó. (7) \textbf{Video de sustentación 2-3 min}: caso, antes/después, decisión propuesta.\\
-2. Reconocimiento de patrones & Todo capstone sigue el patrón \textbf{``proceso real $\to$ dolor real $\to$ usuario real $\to$ evidencia real''}: si una pieza es ficticia, todo el capstone es ficticio. La diferencia entre un proyecto académico y un trabajo profesional es la realidad de las 4 piezas. La phronesis del oficio exige resistir la tentación del \emph{``como si''}: \emph{``como si tuviera clientes''}, \emph{``como si midiera''}, \emph{``como si funcionara''}.\\
-3. Abstracción & Lo esencial cabe en una pregunta: \emph{¿el caso le mejoró la vida a alguien real?}. Si la respuesta es no, el capstone está incompleto aunque las 7 piezas técnicas estén. La evidencia humana (los 2 usuarios) es lo que separa el ejercicio del oficio.\\
-4. Algoritmo conceptual & Algoritmo: (1) elige el caso; (2) mapea el estado actual; (3) mide KPIs antes; (4) implementa al menos 3 piezas; (5) pide a 2 usuarios reales que usen el proceso nuevo; (6) mide KPIs después; (7) escribe la bitácora; (8) graba el video; (9) entrega al dueño del proceso (no solo al docente).\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{El capstone se descompone en 7 entregables: (1) \textbf{Caso elegido}: proceso real + dueño + dolor concreto. (2) \textbf{Mapa BPMN}: estado actual diagramado (S2 del periodo). (3) \textbf{Implementación}: Form, hoja, trigger, IA o bot --- al menos 3 de las 6 piezas integradas. (4) \textbf{KPIs antes/después}: mismos 3-5 KPIs medidos en ambos momentos. (5) \textbf{2 usuarios reales validando}: testimonios escritos o en video. (6) \textbf{Bitácora del proceso}: qué se hizo cada día, qué falló, qué se ajustó. (7) \textbf{Video de sustentación 2-3 min}: caso, antes/después, decisión propuesta.}
+\milcpaso{2}{milcTurquesa}{Todo capstone sigue el patrón \textbf{``proceso real $\to$ dolor real $\to$ usuario real $\to$ evidencia real''}: si una pieza es ficticia, todo el capstone es ficticio. La diferencia entre un proyecto académico y un trabajo profesional es la realidad de las 4 piezas. La phronesis del oficio exige resistir la tentación del \emph{``como si''}: \emph{``como si tuviera clientes''}, \emph{``como si midiera''}, \emph{``como si funcionara''}.}
+\milcpaso{3}{milcTurquesa}{Lo esencial cabe en una pregunta: \emph{¿el caso le mejoró la vida a alguien real?}. Si la respuesta es no, el capstone está incompleto aunque las 7 piezas técnicas estén. La evidencia humana (los 2 usuarios) es lo que separa el ejercicio del oficio.}
+\milcpaso{4}{milcTurquesa}{Algoritmo: (1) elige el caso; (2) mapea el estado actual; (3) mide KPIs antes; (4) implementa al menos 3 piezas; (5) pide a 2 usuarios reales que usen el proceso nuevo; (6) mide KPIs después; (7) escribe la bitácora; (8) graba el video; (9) entrega al dueño del proceso (no solo al docente).}
 
 \begin{drawbox}{milcTurquesa}{Anatomía del capstone bien hecho}
 \textbf{Caso:} dueño + dolor + KPI inicial. \\[1mm] \textbf{Mapa BPMN:} estado actual diagramado. \\[1mm] \textbf{Implementación:} 3+ piezas técnicas integradas. \\[1mm] \textbf{Evidencia antes/después:} mismos KPIs comparados. \\[1mm] \textbf{Usuarios reales:} 2 testimonios escritos o filmados. \\[1mm] \textbf{Bitácora:} cronograma + fallos + ajustes. \\[1mm] \textbf{Video:} 2-3 minutos con caso, antes/después y propuesta.
@@ -325,23 +379,16 @@ El capstone parece complejo porque integra todo, pero su anatomía es ordenada. 
 
 \puente{Tienes el método. Toca implementarlo: 9 piezas del periodo integradas en un proceso real, KPIs antes y después medidos, 2 usuarios reales validando, bitácora del ciclo completo, video de 2-3 min. Es trabajo de varios días --- la sesión de hoy abre el camino y deja la planificación.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · CREA + EVALÚA --- Plan completo del capstone} (30 min · individual). Hora de planificar. La implementación dura una o dos semanas; hoy dejas el plan con cronograma realista, los KPIs antes ya medidos, la entrevista a los 2 usuarios agendada, y la estructura del video definida.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & Tu plan se descompone en 5 piezas: (1) caso elegido con dueño/dolor/KPI; (2) cronograma diario de 5-7 días con qué tarea hacer cada día; (3) KPIs antes ya medidos con los datos reales actuales; (4) agenda de las 2 entrevistas con usuarios; (5) guion del video de 2-3 minutos (qué decir en cada minuto).\\
-Patrones & Sigue el patrón \textbf{``medir antes ANTES de intervenir''}: nunca cambies nada del proceso actual hasta haber medido los 3-5 KPIs base. Sin ese antes, no podrás demostrar ningún después. Esa disciplina inicial vale por tres horas de trabajo posterior.\\
-Abstracción & El guion del video se estructura en 3 actos: (1) \textbf{Caso} (30 seg): \emph{``este es el proceso de X, lo sostiene Y, dolía porque Z''}; (2) \textbf{Antes/Después} (60-90 seg): mostrar los KPIs comparados + capturas; (3) \textbf{Propuesta} (30 seg): \emph{``a este caso le sigue Z''}.\\
-Algoritmo de armado & Algoritmo: (1) escribe el caso en 3 líneas; (2) construye cronograma de 5-7 días; (3) mide KPIs antes hoy; (4) agenda usuarios; (5) escribe guion del video; (6) prepara el ambiente de implementación (cuentas Zapier, Sheets, ManyChat, etc.); (7) entrega el plan al docente para retroalimentación temprana.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{Tu plan se descompone en 5 piezas: (1) caso elegido con dueño/dolor/KPI; (2) cronograma diario de 5-7 días con qué tarea hacer cada día; (3) KPIs antes ya medidos con los datos reales actuales; (4) agenda de las 2 entrevistas con usuarios; (5) guion del video de 2-3 minutos (qué decir en cada minuto).}
+\milcpaso{2}{milcMagenta}{Sigue el patrón \textbf{``medir antes ANTES de intervenir''}: nunca cambies nada del proceso actual hasta haber medido los 3-5 KPIs base. Sin ese antes, no podrás demostrar ningún después. Esa disciplina inicial vale por tres horas de trabajo posterior.}
+\milcpaso{3}{milcMagenta}{El guion del video se estructura en 3 actos: (1) \textbf{Caso} (30 seg): \emph{``este es el proceso de X, lo sostiene Y, dolía porque Z''}; (2) \textbf{Antes/Después} (60-90 seg): mostrar los KPIs comparados + capturas; (3) \textbf{Propuesta} (30 seg): \emph{``a este caso le sigue Z''}.}
+\milcpaso{4}{milcMagenta}{Algoritmo: (1) escribe el caso en 3 líneas; (2) construye cronograma de 5-7 días; (3) mide KPIs antes hoy; (4) agenda usuarios; (5) escribe guion del video; (6) prepara el ambiente de implementación (cuentas Zapier, Sheets, ManyChat, etc.); (7) entrega el plan al docente para retroalimentación temprana.}
 
 \begin{drawbox}{milcMagenta}{Checklist antes de entregar el plan}
 \checkbox Caso elegido con dueño/dolor/KPI claro. \\[1mm] \checkbox Cronograma de 5-7 días con tareas concretas por día. \\[1mm] \checkbox KPIs antes medidos hoy con datos reales. \\[1mm] \checkbox 2 usuarios reales agendados para validar después. \\[1mm] \checkbox Guion del video estructurado en 3 actos. \\[1mm] \checkbox Bitácora abierta (cuaderno o hoja) para ir registrando avance. \\[1mm] \checkbox Cuentas y herramientas listas (ManyChat, Zapier, Sheets, etc.).
@@ -359,9 +406,7 @@ Algoritmo de armado & Algoritmo: (1) escribe el caso en 3 líneas; (2) construye
 
 \puente{Lo que sigue resume \emph{qué} entregas al final del periodo: 1 proceso automatizado con evidencia antes/después + bitácora + video. El criterio principal: que un emprendedor o docente real, viendo el video, pueda decir \emph{``este caso me sirve''} y pedir el contacto del estudiante para conversar.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Plan completo del capstone + KPIs antes medidos + cronograma}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) Caso real con dueño, dolor y KPI claros. (2) Cronograma de 5-7 días con tareas concretas. (3) KPIs antes ya medidos con datos reales. (4) 2 usuarios agendados. (5) Guion del video en 3 actos. (6) Herramientas y cuentas listas para implementar.
@@ -369,9 +414,7 @@ Producto de la sesión
 
 \puente{Antes de cerrar, mira el capstone desde las cinco dimensiones humanas. Cerrar bien es respeto por el oficio entero; entregar sin evidencia es desprecio por quienes confiaron en ti.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -397,12 +440,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Y para terminar, tres voces sobre el reparador y el capstone. Dussel sobre los procesos que liberan o sobrecargan, Epicteto sobre la honestidad de declarar lo que no funcionó, Floridi sobre la entrega con evidencia como ética profesional contemporánea.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{``Toda automatización decide si libera al trabajador o lo reemplaza, si cuida al usuario o lo descarga.''}
+\textit{Toda automatización decide si libera al trabajador o lo reemplaza, si cuida al usuario o lo descarga.}
 
 Tu capstone es una toma de posición ética. Cuando automatizas un proceso, decides quién se beneficia: el dueño que ahorra tiempo, el operador que pierde su tarea, o el usuario que recibe mejor servicio. La phronesis del cierre exige declarar en el video, con honestidad, \emph{a quién benefició el cambio} y \emph{a quién (si a alguien) le agregó trabajo o le quitó algo}. Esa transparencia es la diferencia entre el oficio profesional y el truco técnico.
 
@@ -412,7 +453,7 @@ Tu capstone es una toma de posición ética. Cuando automatizas un proceso, deci
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Epicteto · cuidado interior}
-\textit{``La honestidad de reportar lo que no funcionó es la prueba final del oficio.''}
+\textit{La honestidad de reportar lo que no funcionó es la prueba final del oficio.}
 
 Es tentador presentar el capstone solo con sus triunfos. La sabiduría estoica recomienda lo contrario: \emph{declara también lo que falló, lo que ajustaste, lo que aún no resolviste}. Esa honestidad es ética profesional. El emprendedor o docente que recibe tu caso valorará mucho más la verdad incompleta que el éxito decorado. La transparencia es virtud técnica.
 
@@ -422,7 +463,7 @@ Es tentador presentar el capstone solo con sus triunfos. La sabiduría estoica r
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{``La entrega con evidencia es la ética profesional del oficio digital contemporáneo.''}
+\textit{La entrega con evidencia es la ética profesional del oficio digital contemporáneo.}
 
 Una entrega sin evidencia (sin KPIs antes/después, sin usuarios reales, sin bitácora) es declaración de fe, no oficio profesional. La cultura digital contemporánea exige evidencia reproducible: lo que no se mide ni se muestra, no existe. Cerrar el periodo con un capstone con evidencia te entrena en esa ética que rige toda profesión técnica del XXI.
 
@@ -431,21 +472,24 @@ Una entrega sin evidencia (sin KPIs antes/después, sin usuarios reales, sin bit
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

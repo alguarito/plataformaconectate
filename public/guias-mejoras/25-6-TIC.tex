@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 6};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 6};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Tablas e\\imágenes ---\\mostrar datos\\y agregar\\voz visual}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 25-6-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 3 · Procesador de texto e Internet}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 3 · Procesador de texto e Internet}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Tablas e\\imágenes ---\\mostrar datos\\y agregar\\voz visual}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 25-6-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} Un \textbf{documento} con: \textbf{(a) una tabla} de 5 filas × 4 columnas que muestre datos reales (ejemplo: \emph{horario semanal del colegio} con materia, día, hora, salón); \textbf{(b) 2 imágenes} insertadas con \emph{ajuste de texto alrededor} (una a la izquierda, otra a la derecha), cada una con \emph{pie de imagen} debajo; \textbf{(c) 2 párrafos de texto} relacionados con las imágenes que fluyen alrededor de ellas. Más \textbf{en el cuaderno}: dibujo del documento + 5 reglas de uso de imágenes que aprendiste.};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Un \textbf{documento} con: \textbf{(a) una tabla} de 5 filas × 4 columnas que muestre datos reales (ejemplo: \emph{horario semanal del colegio} con materia, día, hora, salón); \textbf{(b) 2 imágenes} insertadas con \emph{ajuste de texto alrededor} (una a la izquierda, otra a la derecha), cada una con \emph{pie de imagen} debajo; \textbf{(c) 2 párrafos de texto} relacionados con las imágenes que fluyen alrededor de ellas. Más \textbf{en el cuaderno}: dibujo del documento + 5 reglas de uso de imágenes que aprendiste.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Tablas e imágenes --- mostrar datos y agregar voz visual}
@@ -258,30 +322,27 @@ Producto final & Un \textbf{documento} con: \textbf{(a) una tabla} de 5 filas ×
 
 \puente{Hoy haces 4 cosas: decides cuándo conviene tabla vs imagen, aprendes a insertar y ajustar ambos, aplicas el ajuste de texto alrededor, y armas tu documento mixto.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Empezamos con 6 situaciones para decidir: ¿texto, tabla o imagen?}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- 6 situaciones para clasificar} (10 min · individual). En el cuaderno, dibuja 3 columnas: \emph{TEXTO}, \emph{TABLA}, \emph{IMAGEN}. Lee estas 6 situaciones y clasifica cada una en la columna que mejor corresponde. \textbf{(1)} Explicar las 4 estaciones del año con sus características. \textbf{(2)} Mostrar paso a paso cómo armar un caballero de Lego. \textbf{(3)} Comparar 5 países por población, capital, idioma y moneda. \textbf{(4)} Contar la historia de tu fin de semana. \textbf{(5)} Mostrar cómo se ve por dentro un volcán. \textbf{(6)} Listar los presidentes de Colombia con año de mandato. \emph{Tip:} algunas podrían ir en 2 columnas; escoge la PRINCIPAL.
 \end{softbox}
 
-\checkbox Dibujé las 3 columnas en el cuaderno.\\
-\checkbox Clasifiqué las 6 situaciones, una por columna.\\
-\checkbox Pensé cuál es la herramienta principal para cada caso.
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Dibujé las 3 columnas en el cuaderno.}
+\milccheckrow{Clasifiqué las 6 situaciones, una por columna.}
+\milccheckrow{Pensé cuál es la herramienta principal para cada caso.}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Después aprendes a insertar tablas y a manejar las imágenes con ajuste de texto.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Ya intuiste cuándo conviene cada elemento. Ahora aprendes las \textbf{reglas técnicas} para insertarlos y ajustarlos bien.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & \textbf{Cuándo usar TABLA.} Cuando tienes \emph{datos comparables} en categorías. Ejemplo clásico: \emph{lista de 5 ríos con 4 datos cada uno = 5 filas × 4 columnas}. \textbf{En Word:} \texttt{Insertar → Tabla → elegir tamaño}. Aparece la cuadrícula. Llenas las celdas. La fila de encabezado se pone en \textbf{negrita} y con \emph{fondo gris claro}. \textbf{Cuándo usar IMAGEN.} Cuando algo se ve mejor que se explica: un mapa, un esquema, una foto que ilustra, un diagrama. \textbf{En Word:} \texttt{Insertar → Imágenes → seleccionar archivo}. Por defecto la imagen llega \emph{enorme} y desplaza todo el texto.\\
-2. Reconocimiento de patrones & \textbf{Ajuste de texto alrededor de la imagen.} El truco profesional: \textbf{haz que el texto fluya al lado de la imagen} en vez de empujarla. En Word: clic en la imagen → aparece el ícono \emph{Opciones de diseño} (una arquetilla) → escoge \texttt{Cuadrado} (texto rodea la imagen) o \texttt{Estrecho} (más pegado). Después arrastras la imagen donde la quieres. Tamaño ajustado: clic en imagen → arrastrar de las esquinas (no de los lados, deforma).\\
-3. Abstracción & \textbf{Las 5 reglas de uso de imágenes.} (1) \textbf{Resolución suficiente:} no uses imágenes pequeñas que se ven borrosas al ampliar. (2) \textbf{Pie de imagen:} debajo de la imagen, escribe en \emph{tamaño 10, cursiva}, una línea que diga qué muestra (\emph{``Figura 1: mapa de Colombia''}). (3) \textbf{Derechos de autor:} no uses cualquier imagen de Google. Usa \emph{Unsplash}, \emph{Pixabay}, \emph{Pexels} (gratuitas y de uso libre). (4) \textbf{Tamaño moderado:} máximo 1/3 del ancho de la página, dejando espacio para texto al lado. (5) \textbf{Relevancia:} cada imagen debe \emph{aportar algo}; si es decoración pura, mejor no la pongas.\\
-4. Algoritmo conceptual & \textbf{Errores frecuentes que se evitan.} (1) \emph{Insertar imagen y dejarla bloqueando todo el ancho} cuando solo necesitabas 1/3 de espacio. (2) \emph{Tabla sin encabezado en negrita} --- los lectores no saben qué es cada columna. (3) \emph{Imagen sin pie} --- después no se sabe qué muestra. (4) \emph{Tabla con muchas celdas vacías} --- mejor usar otra cosa. (5) \emph{Imagen con marca de agua o copyright} --- se ve poco profesional y puede ser ilegal usarla.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{\textbf{Cuándo usar TABLA.} Cuando tienes \emph{datos comparables} en categorías. Ejemplo clásico: \emph{lista de 5 ríos con 4 datos cada uno = 5 filas × 4 columnas}. \textbf{En Word:} \texttt{Insertar → Tabla → elegir tamaño}. Aparece la cuadrícula. Llenas las celdas. La fila de encabezado se pone en \textbf{negrita} y con \emph{fondo gris claro}. \textbf{Cuándo usar IMAGEN.} Cuando algo se ve mejor que se explica: un mapa, un esquema, una foto que ilustra, un diagrama. \textbf{En Word:} \texttt{Insertar → Imágenes → seleccionar archivo}. Por defecto la imagen llega \emph{enorme} y desplaza todo el texto.}
+\milcpaso{2}{milcTurquesa}{\textbf{Ajuste de texto alrededor de la imagen.} El truco profesional: \textbf{haz que el texto fluya al lado de la imagen} en vez de empujarla. En Word: clic en la imagen → aparece el ícono \emph{Opciones de diseño} (una arquetilla) → escoge \texttt{Cuadrado} (texto rodea la imagen) o \texttt{Estrecho} (más pegado). Después arrastras la imagen donde la quieres. Tamaño ajustado: clic en imagen → arrastrar de las esquinas (no de los lados, deforma).}
+\milcpaso{3}{milcTurquesa}{\textbf{Las 5 reglas de uso de imágenes.} (1) \textbf{Resolución suficiente:} no uses imágenes pequeñas que se ven borrosas al ampliar. (2) \textbf{Pie de imagen:} debajo de la imagen, escribe en \emph{tamaño 10, cursiva}, una línea que diga qué muestra (\emph{``Figura 1: mapa de Colombia''}). (3) \textbf{Derechos de autor:} no uses cualquier imagen de Google. Usa \emph{Unsplash}, \emph{Pixabay}, \emph{Pexels} (gratuitas y de uso libre). (4) \textbf{Tamaño moderado:} máximo 1/3 del ancho de la página, dejando espacio para texto al lado. (5) \textbf{Relevancia:} cada imagen debe \emph{aportar algo}; si es decoración pura, mejor no la pongas.}
+\milcpaso{4}{milcTurquesa}{\textbf{Errores frecuentes que se evitan.} (1) \emph{Insertar imagen y dejarla bloqueando todo el ancho} cuando solo necesitabas 1/3 de espacio. (2) \emph{Tabla sin encabezado en negrita} --- los lectores no saben qué es cada columna. (3) \emph{Imagen sin pie} --- después no se sabe qué muestra. (4) \emph{Tabla con muchas celdas vacías} --- mejor usar otra cosa. (5) \emph{Imagen con marca de agua o copyright} --- se ve poco profesional y puede ser ilegal usarla.}
 
 \begin{drawbox}{milcTurquesa}{Cuándo + cómo + 5 reglas}
 \textbf{TABLA:} datos comparables. Insertar → Tabla → elegir filas y columnas. Encabezado en negrita. \\[1mm]
@@ -327,23 +381,18 @@ Ya intuiste cuándo conviene cada elemento. Ahora aprendes las \textbf{reglas t�
 
 \puente{Con todo claro, creas tu documento con los 3 elementos integrados.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · CREA --- Documento mixto con tabla + imágenes + texto} (32 min · individual). Vas a crear un documento que demuestra los 3 elementos integrados. \emph{Tema sugerido}: \emph{``Mi colegio''} o \emph{``Mi cuadra''}. Tú escoges.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & \textbf{Paso 1 --- Documento nuevo + título.} Abre Word o Docs. Título centrado en negrita azul oscuro tamaño 18: \emph{``Mi colegio --- texto, tabla e imágenes''}.\\
-Patrones & \textbf{Paso 2 --- Inserta la tabla del horario.} Escribe un subtítulo: \textbf{``Mi horario semanal''}. Debajo, inserta una tabla de \textbf{5 filas × 4 columnas} (\texttt{Insertar → Tabla → 5 × 4}). Encabezado de columnas: \emph{Materia | Día | Hora | Salón}. Llena las 4 filas restantes con 4 materias reales tuyas y sus datos. Pon el encabezado en \textbf{negrita}.\\
-Abstracción & \textbf{Paso 3 --- Inserta primera imagen + pie.} Salta una línea. Escribe un subtítulo: \textbf{``Vista del colegio''}. Inserta una imagen (\texttt{Insertar → Imágenes}). Si no tienes foto del colegio, busca en \emph{Pixabay} una imagen genérica de \emph{escuela} (gratis). Selecciónala. Clic en ella → \emph{Opciones de diseño} → \textbf{Cuadrado}. Arrastra la imagen al \emph{lado izquierdo} y ajusta tamaño a 1/3 del ancho. Debajo de la imagen, en cursiva tamaño 10: \emph{``Figura 1: el colegio desde el patio.''}.\\
-Algoritmo de armado & \textbf{Paso 4 --- Escribe 2 párrafos junto a la primera imagen.} A la derecha de la imagen, escribe 2 párrafos cortos (3-4 líneas cada uno) sobre tu colegio: en qué barrio queda, cuántos estudiantes hay, qué te gusta. El texto debe \emph{fluir alrededor} de la imagen (eso se logra con el ajuste \emph{Cuadrado} que aplicaste).\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{\textbf{Paso 1 --- Documento nuevo + título.} Abre Word o Docs. Título centrado en negrita azul oscuro tamaño 18: \emph{``Mi colegio --- texto, tabla e imágenes''}.}
+\milcpaso{2}{milcMagenta}{\textbf{Paso 2 --- Inserta la tabla del horario.} Escribe un subtítulo: \textbf{``Mi horario semanal''}. Debajo, inserta una tabla de \textbf{5 filas × 4 columnas} (\texttt{Insertar → Tabla → 5 × 4}). Encabezado de columnas: \emph{Materia | Día | Hora | Salón}. Llena las 4 filas restantes con 4 materias reales tuyas y sus datos. Pon el encabezado en \textbf{negrita}.}
+\milcpaso{3}{milcMagenta}{\textbf{Paso 3 --- Inserta primera imagen + pie.} Salta una línea. Escribe un subtítulo: \textbf{``Vista del colegio''}. Inserta una imagen (\texttt{Insertar → Imágenes}). Si no tienes foto del colegio, busca en \emph{Pixabay} una imagen genérica de \emph{escuela} (gratis). Selecciónala. Clic en ella → \emph{Opciones de diseño} → \textbf{Cuadrado}. Arrastra la imagen al \emph{lado izquierdo} y ajusta tamaño a 1/3 del ancho. Debajo de la imagen, en cursiva tamaño 10: \emph{``Figura 1: el colegio desde el patio.''}.}
+\milcpaso{4}{milcMagenta}{\textbf{Paso 4 --- Escribe 2 párrafos junto a la primera imagen.} A la derecha de la imagen, escribe 2 párrafos cortos (3-4 líneas cada uno) sobre tu colegio: en qué barrio queda, cuántos estudiantes hay, qué te gusta. El texto debe \emph{fluir alrededor} de la imagen (eso se logra con el ajuste \emph{Cuadrado} que aplicaste).}
+\milcpaso{5}{milcMagenta}{\textbf{Paso 5 --- Inserta segunda imagen + pie + texto.} Salta una línea. Inserta otra imagen (puede ser de \emph{Pixabay}: un patio de escuela, una clase, lo que quieras). Ajuste \emph{Cuadrado}, esta vez \textbf{al lado derecho}. Pie de imagen en cursiva tamaño 10: \emph{``Figura 2: ...''}. Escribe 1 párrafo más a la izquierda relacionado con la imagen.}
+\milcpaso{6}{milcMagenta}{\textbf{Paso 6 --- Guarda y reflexiona.} Guarda como \texttt{2026-mi-colegio-mixto.docx} en \emph{Tecnologia/Periodo-3}. En el cuaderno escribe (boceto del documento): muestra dónde quedó la tabla, dónde la imagen izquierda con texto a la derecha, dónde la imagen derecha con texto a la izquierda. Lista las 5 reglas que usaste.}
 
 \begin{drawbox}{milcMagenta}{Antes de mostrar tu documento mixto}
 \checkbox Tiene título principal formateado. \\[1mm]
@@ -366,9 +415,7 @@ Algoritmo de armado & \textbf{Paso 4 --- Escribe 2 párrafos junto a la primera 
 
 \puente{El producto es ese documento + las 5 reglas de imágenes en el cuaderno.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Documento mixto con tabla 5x4 + 2 imágenes con texto fluyendo}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) La tabla tiene 5 filas, 4 columnas y encabezado en negrita. (2) Hay 2 imágenes con ajuste cuadrado (texto alrededor). (3) Cada imagen tiene pie en cursiva tamaño 10. (4) Las imágenes son de fuente libre (no copyright). (5) El documento está guardado con nombre correcto.
@@ -376,9 +423,7 @@ Producto de la sesión
 
 \puente{Antes de salir, verificas que la tabla y las imágenes están bien insertadas con el texto fluyendo.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -404,12 +449,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Cerramos con 3 voces que te ayudan a entender por qué mostrar es a veces más que decir.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{````Hay verdades que se dicen con palabras, otras se muestran con imágenes, otras se ordenan en filas. Saber cuándo usar cada una es saber comunicar.''''}
+\textit{``Hay verdades que se dicen con palabras, otras se muestran con imágenes, otras se ordenan en filas. Saber cuándo usar cada una es saber comunicar.''}
 
 Doña Mercedes sabía que enseñar a una niña qué es un río era distinto a enseñarle qué es una vaca: \emph{un río se muestra con mapa; una vaca con foto; los ríos del país en una tabla}. La sabiduría está en \textbf{saber qué herramienta para qué verdad}. Hoy con procesadores tienes todas a tu disposición. Saber cuándo usar tabla, cuándo imagen, cuándo solo texto, eso es \emph{maestría comunicativa}.
 
@@ -419,7 +462,7 @@ Doña Mercedes sabía que enseñar a una niña qué es un río era distinto a en
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
-\textit{````Una tabla bien hecha vale lo que dos páginas de palabras. Eso es economía de pensamiento.''''}
+\textit{``Una tabla bien hecha vale lo que dos páginas de palabras. Eso es economía de pensamiento.''}
 
 Hay gente que escribe largo cuando podría escribir corto. \textbf{La tabla obliga a la economía:} cabeceras claras, datos justos, sin relleno. \emph{Pensar en tablas te entrena en pensar conciso.} En el futuro, cuando escribas informes, ensayos, reportes, esta habilidad te ahorra horas a ti y a quienes te leen.
 
@@ -429,7 +472,7 @@ Hay gente que escribe largo cuando podría escribir corto. \textbf{La tabla obli
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{````La imagen sin contexto es ruido. La tabla sin encabezado es caos. La integración es lo que hace al documento profesional.''''}
+\textit{``La imagen sin contexto es ruido. La tabla sin encabezado es caos. La integración es lo que hace al documento profesional.''}
 
 Una imagen suelta sin pie de foto NO comunica: el lector se pregunta \emph{``¿qué es esto?''}. Una tabla sin encabezado tampoco: \emph{``¿qué significa esta columna?''}. \textbf{Lo profesional es integrar:} texto que conecta, tabla con cabeceras, imagen con pie. Cuando todo está integrado, el documento se lee como pieza única, no como collage.
 
@@ -438,21 +481,24 @@ Una imagen suelta sin pie de foto NO comunica: el lector se pregunta \emph{``¿q
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

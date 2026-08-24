@@ -231,8 +231,11 @@ def cargar_guia(clave: str) -> dict | None:
 
 # El circulito de grado (°) que acompaña al número grande de la portada.
 CIRCULO_GRADO = (
-    "\\draw[milcGradeText,line width=1.7pt]\n"
-    "    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);"
+    # Se ancla al nodo `gradonum` de la portada (el numero grande), no a
+    # coordenadas absolutas de pagina: asi el circulito sigue al numero si
+    # la portada se re-maqueta.
+    "\\draw[milcGradeText,line width=1.6pt]\n"
+    "    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);"
 )
 
 EXT_IMAGEN = {".png", ".jpg", ".jpeg", ".pdf"}
@@ -302,6 +305,18 @@ def recursos_a_tex(guia: dict, sesion_global: int, grado: int) -> dict[str, str]
 # Mapeo YAML → placeholders del template LaTeX
 # ─────────────────────────────────────────────────────────────────────────────
 
+def pilares_a_pasocards(pilares, color: str) -> str:
+    """Convierte la lista de pilares/pasos del YAML en tarjetas numeradas.
+
+    Antes el template tenia cuatro celdas fijas (PILAR_1..4 en una tabla) y el
+    builder indexaba pilares[0..3]. Las guias con 6 pasos perdian los pasos 5 y
+    6 en el PDF, en silencio (67 guias afectadas). Ahora se emiten todos.
+    """
+    return "\n".join(
+        "\\milcpaso{%d}{%s}{%s}" % (i, color, texto)
+        for i, texto in enumerate(pilares, start=1)
+    )
+
 def yaml_a_placeholders(guia: dict) -> dict[str, str]:
     """Aplana el dict YAML a las claves uppercase que espera el template."""
     periodo = guia["periodo"]
@@ -368,10 +383,7 @@ def yaml_a_placeholders(guia: dict) -> dict[str, str]:
 
         # Sistematización
         "SISTEMATIZACION_INTRO": sist["intro"],
-        "PILAR_1_SIST": sist["pilares"][0],
-        "PILAR_2_SIST": sist["pilares"][1],
-        "PILAR_3_SIST": sist["pilares"][2],
-        "PILAR_4_SIST": sist["pilares"][3],
+        "SIST_PILARES": pilares_a_pasocards(sist["pilares"], "milcTurquesa"),
         "ANATOMIA_TITULO": sist["anatomia"]["titulo"],
         "ANATOMIA_BODY": sist["anatomia"]["body"],
         "ERRORES_COMUNES": sist["errores_comunes"],
@@ -379,10 +391,7 @@ def yaml_a_placeholders(guia: dict) -> dict[str, str]:
 
         # Praxis
         "PRAXIS_INTRO": prax["intro"],
-        "PILAR_1_PRAX": prax["pilares"][0],
-        "PILAR_2_PRAX": prax["pilares"][1],
-        "PILAR_3_PRAX": prax["pilares"][2],
-        "PILAR_4_PRAX": prax["pilares"][3],
+        "PRAXIS_PASOS": pilares_a_pasocards(prax["pilares"], "milcMagenta"),
         "CHECKLIST_TITULO": prax["checklist"]["titulo"],
         "CHECKLIST_ITEMS": prax["checklist"]["items"],
         "PLANTILLA_GUION": prax["plantilla_guion"],

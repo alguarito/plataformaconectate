@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 6};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 6};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Buscar bien\\en internet ---\\encontrar lo\\que necesito\\en segundos}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 28-6-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 3 · Procesador de texto e Internet}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 3 · Procesador de texto e Internet}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Buscar bien\\en internet ---\\encontrar lo\\que necesito\\en segundos}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 28-6-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} Un \textbf{laboratorio de búsquedas} en el cuaderno con \textbf{10 búsquedas reales mejoradas}: para cada una anotas la \emph{búsqueda mala} (la primera que se te ocurre, típicamente vaga), \emph{los problemas} que tendría (resultados irrelevantes, demasiados, en otro idioma), \emph{la búsqueda mejorada} (con operadores), y \emph{cuántos resultados realmente útiles} salieron. Más \textbf{una tabla de 6 operadores de búsqueda} con ejemplo de uso.};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Un \textbf{laboratorio de búsquedas} en el cuaderno con \textbf{10 búsquedas reales mejoradas}: para cada una anotas la \emph{búsqueda mala} (la primera que se te ocurre, típicamente vaga), \emph{los problemas} que tendría (resultados irrelevantes, demasiados, en otro idioma), \emph{la búsqueda mejorada} (con operadores), y \emph{cuántos resultados realmente útiles} salieron. Más \textbf{una tabla de 6 operadores de búsqueda} con ejemplo de uso.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Buscar bien en internet --- encontrar lo que necesito en segundos}
@@ -258,30 +322,27 @@ Producto final & Un \textbf{laboratorio de búsquedas} en el cuaderno con \textb
 
 \puente{Hoy haces 4 cosas: identificas el problema de buscar mal, aprendes los 6 operadores, mejoras 10 búsquedas tuyas, y registras todo en el cuaderno.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Empezamos con 5 búsquedas malas para entender qué falla.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · ANALIZA --- 5 búsquedas malas y por qué fallan} (12 min · individual). Lee estas 5 búsquedas y \textbf{escribe en el cuaderno qué problema tiene cada una}. \textbf{Búsqueda 1:} ``\texttt{tarea}''. \textbf{Búsqueda 2:} ``\texttt{Colombia}''. \textbf{Búsqueda 3:} ``\texttt{cómo hacer una tarea sobre Bolívar para 6\textsuperscript{o} grado en historia con bibliografía}''. \textbf{Búsqueda 4:} ``\texttt{volcán Galera}'' (con ``e'' en vez de ``a'' en Galeras). \textbf{Búsqueda 5:} ``\texttt{Mexico history}'' (en inglés). \emph{Tip:} las búsquedas pueden ser demasiado vagas, demasiado específicas, con errores ortográficos, en otro idioma, o muy ambiguas.
 \end{softbox}
 
-\checkbox Leí las 5 búsquedas con calma.\\
-\checkbox Identifiqué el problema de cada una.\\
-\checkbox Pensé qué tipo de error es (vaga, ambigua, error, idioma, larga).
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Leí las 5 búsquedas con calma.}
+\milccheckrow{Identifiqué el problema de cada una.}
+\milccheckrow{Pensé qué tipo de error es (vaga, ambigua, error, idioma, larga).}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Después aprendes los 6 operadores universales con ejemplos.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Ahora aprendes los \textbf{6 operadores de oro} que transforman búsquedas malas en búsquedas excelentes. Aprenderlos te toma 15 minutos; \textbf{te ahorra horas} el resto de tu vida.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & \textbf{Operador 1 --- Comillas: para buscar frase exacta.} Si escribes \texttt{``volcán Galeras''} entre comillas, Google busca esas 2 palabras \emph{juntas y en ese orden}. Sin comillas, busca cualquier página que tenga las 2 palabras dispersas. \emph{Ejemplo:} buscar \texttt{``parque del bolívar Cartago''} te da el parque de Cartago. Buscar \emph{parque bolívar Cartago} sin comillas te da parques de varios países. \textbf{Operador 2 --- site: para buscar dentro de un sitio.} Si quieres resultados solo de Wikipedia, escribes \texttt{site:es.wikipedia.org volcán Galeras}. Si quieres solo del Ministerio de Educación, \texttt{site:mineducacion.gov.co cómo es el grado 6}. Te filtra por dominio.\\
-2. Reconocimiento de patrones & \textbf{Operador 3 --- filetype: para tipo de archivo.} Si necesitas un PDF, escribes \texttt{filetype:pdf el código colombia infantil}. Te muestra solo PDFs. Útil para tareas que necesitan documentos formales. Otros: \texttt{filetype:doc}, \texttt{filetype:ppt}, \texttt{filetype:xls}. \textbf{Operador 4 --- guion (-) para excluir.} Si buscas \emph{``películas dragones''} pero NO quieres las de Disney, escribes \texttt{películas dragones -Disney}. El guion delante de una palabra la excluye. Útil cuando hay un tema que se mezcla con otro que no te interesa.\\
-3. Abstracción & \textbf{Operador 5 --- OR para alternativas.} Si quieres páginas que mencionen Cartago O Pereira (cualquiera de las 2), escribes \texttt{cultura Cartago OR Pereira}. \emph{OR} en mayúsculas. Útil para comparar o cuando no sabes en cuál de varios lugares está el dato. \textbf{Operador 6 --- rango (..) para fechas o números.} Si buscas eventos entre 1950 y 1960, escribes \texttt{eventos Colombia 1950..1960}. Para precios de un producto entre 100 y 500 mil pesos: \texttt{computador \$100000..\$500000}. Los dos puntos (\texttt{..}) le dicen al buscador que busque un rango.\\
-4. Algoritmo conceptual & \textbf{Filtros visuales adicionales (los que la gente no usa pero ayudan mucho).} En Google, \emph{después} de buscar, aparecen pestañas: \textbf{Imágenes} (solo imágenes), \textbf{Noticias} (solo notas recientes), \textbf{Videos} (solo videos), \textbf{Mapas}, \textbf{Compras}. Y arriba, \textbf{Herramientas}: te deja filtrar por tiempo (\emph{última semana, último mes, este año}). Estos filtros, combinados con los 6 operadores, te dan superpoderes de búsqueda. \textbf{Pista:} para buscar texto reciente sobre un tema, usa siempre el filtro de tiempo. Los datos viejos pueden estar desactualizados.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{\textbf{Operador 1 --- Comillas: para buscar frase exacta.} Si escribes \texttt{``volcán Galeras''} entre comillas, Google busca esas 2 palabras \emph{juntas y en ese orden}. Sin comillas, busca cualquier página que tenga las 2 palabras dispersas. \emph{Ejemplo:} buscar \texttt{``parque del bolívar Cartago''} te da el parque de Cartago. Buscar \emph{parque bolívar Cartago} sin comillas te da parques de varios países. \textbf{Operador 2 --- site: para buscar dentro de un sitio.} Si quieres resultados solo de Wikipedia, escribes \texttt{site:es.wikipedia.org volcán Galeras}. Si quieres solo del Ministerio de Educación, \texttt{site:mineducacion.gov.co cómo es el grado 6}. Te filtra por dominio.}
+\milcpaso{2}{milcTurquesa}{\textbf{Operador 3 --- filetype: para tipo de archivo.} Si necesitas un PDF, escribes \texttt{filetype:pdf el código colombia infantil}. Te muestra solo PDFs. Útil para tareas que necesitan documentos formales. Otros: \texttt{filetype:doc}, \texttt{filetype:ppt}, \texttt{filetype:xls}. \textbf{Operador 4 --- guion (-) para excluir.} Si buscas \emph{``películas dragones''} pero NO quieres las de Disney, escribes \texttt{películas dragones -Disney}. El guion delante de una palabra la excluye. Útil cuando hay un tema que se mezcla con otro que no te interesa.}
+\milcpaso{3}{milcTurquesa}{\textbf{Operador 5 --- OR para alternativas.} Si quieres páginas que mencionen Cartago O Pereira (cualquiera de las 2), escribes \texttt{cultura Cartago OR Pereira}. \emph{OR} en mayúsculas. Útil para comparar o cuando no sabes en cuál de varios lugares está el dato. \textbf{Operador 6 --- rango (..) para fechas o números.} Si buscas eventos entre 1950 y 1960, escribes \texttt{eventos Colombia 1950..1960}. Para precios de un producto entre 100 y 500 mil pesos: \texttt{computador \$100000..\$500000}. Los dos puntos (\texttt{..}) le dicen al buscador que busque un rango.}
+\milcpaso{4}{milcTurquesa}{\textbf{Filtros visuales adicionales (los que la gente no usa pero ayudan mucho).} En Google, \emph{después} de buscar, aparecen pestañas: \textbf{Imágenes} (solo imágenes), \textbf{Noticias} (solo notas recientes), \textbf{Videos} (solo videos), \textbf{Mapas}, \textbf{Compras}. Y arriba, \textbf{Herramientas}: te deja filtrar por tiempo (\emph{última semana, último mes, este año}). Estos filtros, combinados con los 6 operadores, te dan superpoderes de búsqueda. \textbf{Pista:} para buscar texto reciente sobre un tema, usa siempre el filtro de tiempo. Los datos viejos pueden estar desactualizados.}
 
 \begin{drawbox}{milcTurquesa}{6 operadores + filtros}
 \textbf{Op 1.} ``Frase exacta'' (entre comillas). \\[1mm]
@@ -331,23 +385,18 @@ Ahora aprendes los \textbf{6 operadores de oro} que transforman búsquedas malas
 
 \puente{Con los operadores claros, mejoras 10 búsquedas tuyas (reales) y las pruebas.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · APLICA --- Laboratorio de 10 búsquedas mejoradas} (28 min · individual). Vas a tomar \textbf{10 cosas reales} que tú podrías querer buscar en internet, y para cada una vas a anotar: la búsqueda mala (la primera que se te ocurre) y la búsqueda mejorada con operadores. Si tienes computador disponible, prueba ambas y compara cuántos resultados útiles salen.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & \textbf{Paso 1 --- Encabezado y tabla.} En una hoja del cuaderno, título: \textbf{``Mi laboratorio de búsquedas''}. Dibuja una tabla de \textbf{10 filas y 4 columnas}. Encabezados: \emph{(a) Lo que quiero buscar} · \emph{(b) Búsqueda mala} · \emph{(c) Búsqueda mejorada (con operador)} · \emph{(d) ¿Funcionó mejor?}.\\
-Patrones & \textbf{Paso 2 --- Las 10 búsquedas.} Llena las 10 filas. Para inspiración: \emph{(1) Tarea de historia sobre Bolívar; (2) Cómo se prepara la mazamorra de Cartago; (3) Significado de la palabra ``efímero''; (4) Mejor canal de YouTube para aprender mate; (5) PDF del himno nacional con notas; (6) Foto del volcán Galeras de noche; (7) Documental de la Selección Colombia 1990 (no 2010 ni 2014); (8) Mapa de Cartago con calles; (9) Receta de arepas paisas (NO venezolanas); (10) Resultados de partido Colombia vs Argentina 1993}.\\
-Abstracción & \textbf{Paso 3 --- Búsqueda mala (col b).} Escribe lo que escribirías si NO supieras de operadores. Ejemplo para (1): \emph{``Bolívar''} o \emph{``tarea Bolívar''}. Es vago: hay miles de Bolívar (la persona, ciudad, departamento, moneda, equipo de fútbol).\\
-Algoritmo de armado & \textbf{Paso 4 --- Búsqueda mejorada (col c).} Aplica al menos UN operador en cada fila. Ejemplo para (1): \texttt{``Simón Bolívar'' biografía site:colombiaaprende.edu.co filetype:pdf}. Para (5): \texttt{``himno nacional Colombia'' notas musicales filetype:pdf}. Para (9): \texttt{arepas paisas -venezolanas receta}. Sé creativo: cada búsqueda usa un operador distinto.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{\textbf{Paso 1 --- Encabezado y tabla.} En una hoja del cuaderno, título: \textbf{``Mi laboratorio de búsquedas''}. Dibuja una tabla de \textbf{10 filas y 4 columnas}. Encabezados: \emph{(a) Lo que quiero buscar} · \emph{(b) Búsqueda mala} · \emph{(c) Búsqueda mejorada (con operador)} · \emph{(d) ¿Funcionó mejor?}.}
+\milcpaso{2}{milcMagenta}{\textbf{Paso 2 --- Las 10 búsquedas.} Llena las 10 filas. Para inspiración: \emph{(1) Tarea de historia sobre Bolívar; (2) Cómo se prepara la mazamorra de Cartago; (3) Significado de la palabra ``efímero''; (4) Mejor canal de YouTube para aprender mate; (5) PDF del himno nacional con notas; (6) Foto del volcán Galeras de noche; (7) Documental de la Selección Colombia 1990 (no 2010 ni 2014); (8) Mapa de Cartago con calles; (9) Receta de arepas paisas (NO venezolanas); (10) Resultados de partido Colombia vs Argentina 1993}.}
+\milcpaso{3}{milcMagenta}{\textbf{Paso 3 --- Búsqueda mala (col b).} Escribe lo que escribirías si NO supieras de operadores. Ejemplo para (1): \emph{``Bolívar''} o \emph{``tarea Bolívar''}. Es vago: hay miles de Bolívar (la persona, ciudad, departamento, moneda, equipo de fútbol).}
+\milcpaso{4}{milcMagenta}{\textbf{Paso 4 --- Búsqueda mejorada (col c).} Aplica al menos UN operador en cada fila. Ejemplo para (1): \texttt{``Simón Bolívar'' biografía site:colombiaaprende.edu.co filetype:pdf}. Para (5): \texttt{``himno nacional Colombia'' notas musicales filetype:pdf}. Para (9): \texttt{arepas paisas -venezolanas receta}. Sé creativo: cada búsqueda usa un operador distinto.}
+\milcpaso{5}{milcMagenta}{\textbf{Paso 5 --- Prueba (si hay computador).} Si tienes acceso a un computador en clase, prueba las 10 búsquedas mejoradas en Google. En la columna (d) anota: \emph{``Sí, mejor''} o \emph{``No, igual''} o \emph{``Mejor en imágenes con el filtro Imágenes''}. Si no tienes computador hoy, las pruebas en casa esta semana.}
+\milcpaso{6}{milcMagenta}{\textbf{Paso 6 --- Reflexión final.} Debajo de la tabla, escribe en 3 líneas: \emph{``Aprendí que (a)..., (b)..., (c)...''}. Firma con nombre y fecha. La idea es interiorizar que \emph{buscar bien es habilidad}, no don.}
 
 \begin{drawbox}{milcMagenta}{Antes de mostrar tu laboratorio}
 \checkbox La tabla tiene 10 filas con sus 4 columnas. \\[1mm]
@@ -370,9 +419,7 @@ Algoritmo de armado & \textbf{Paso 4 --- Búsqueda mejorada (col c).} Aplica al 
 
 \puente{El producto es la tabla de 10 búsquedas mejoradas + la tabla de 6 operadores.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Laboratorio de 10 búsquedas mejoradas + 6 operadores aplicados}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) La tabla tiene 10 filas completas. (2) Cada búsqueda mejorada usa al menos un operador. (3) Los 6 operadores aparecen al menos 1 vez en el laboratorio. (4) Hay reflexión final con 3 aprendizajes. (5) Está firmado con nombre y fecha.
@@ -380,9 +427,7 @@ Producto de la sesión
 
 \puente{Antes de salir, comparas resultados: ¿cuánto cambió la calidad después de mejorar la búsqueda?}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -408,12 +453,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Cerramos con 3 voces que te ayudan a entender por qué buscar bien es saber preguntar bien.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{````Quien sabe preguntar, sabe encontrar. Quien no, depende de lo que le sirvan.''''}
+\textit{``Quien sabe preguntar, sabe encontrar. Quien no, depende de lo que le sirvan.''}
 
 Doña Mercedes preguntaba a la persona correcta porque sabía que \textbf{una buena pregunta encuentra una buena respuesta}. Hoy es lo mismo: \emph{Google es el oráculo más grande del mundo, pero solo responde bien cuando preguntas bien}. Buscar mal te da basura aunque la información buena exista. Buscar bien te abre acceso a un universo. \emph{Saber buscar es saber pensar críticamente sobre la pregunta antes de la respuesta}.
 
@@ -423,7 +466,7 @@ Doña Mercedes preguntaba a la persona correcta porque sabía que \textbf{una bu
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
-\textit{````Lo que cuesta 30 segundos pensar antes, ahorra 30 minutos buscar después.''''}
+\textit{``Lo que cuesta 30 segundos pensar antes, ahorra 30 minutos buscar después.''}
 
 Mucha gente \emph{pierde el tiempo} buscando en Google: navegando entre 50 resultados malos, leyendo páginas que no responden lo que necesitaban. \textbf{El truco no es velocidad: es pausa}. Pensar 30 segundos qué exactamente quieres y qué operador te puede ayudar. Esa pausa convierte 30 minutos de búsqueda en 30 segundos de hallazgo.
 
@@ -433,7 +476,7 @@ Mucha gente \emph{pierde el tiempo} buscando en Google: navegando entre 50 resul
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{````En la era de internet, la habilidad escasa ya no es el acceso a la información, es saber filtrarla.''''}
+\textit{``En la era de internet, la habilidad escasa ya no es el acceso a la información, es saber filtrarla.''}
 
 Tu abuela, para encontrar información sobre algo, tenía que ir a la \emph{biblioteca municipal} de Cartago, buscar el libro, leer. \emph{Acceso difícil, filtrado fácil} (solo había unos libros). Tú vives al revés: \textbf{acceso fácil, filtrado difícil} (hay miles de millones de páginas). \emph{Tu habilidad clave del siglo XXI es filtrar}. Aprender operadores es la primera dimensión de esa habilidad.
 
@@ -442,21 +485,24 @@ Tu abuela, para encontrar información sobre algo, tenía que ir a la \emph{bibl
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

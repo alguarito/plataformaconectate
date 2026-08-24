@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 8};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 8};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Ciberbullying ---\\prevención\\y Línea 141}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 26-8-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 3 · Multimedia, narrativa y ciberseguridad}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 3 · Multimedia, narrativa y ciberseguridad}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Ciberbullying ---\\prevención\\y Línea 141}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 26-8-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} 3 entregables sobre convivencia digital (a) mapa visual del flujo del ciberbullying en 4 fases (primeras señales, escalada, impacto, denuncia y apoyo) hecho como infografía simple, (b) plan personal de respuesta en 5 pasos que tú harías si fueras víctima o testigo, (c) cartel para el aula que comunique la Línea 141 del ICBF y otros canales de denuncia con jerarquía visual clara (sesión 1) + ficha de 5 líneas declarando 1 compromiso personal con la convivencia digital del grupo};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+3 entregables sobre convivencia digital (a) mapa visual del flujo del ciberbullying en 4 fases (primeras señales, escalada, impacto, denuncia y apoyo) hecho como infografía simple, (b) plan personal de respuesta en 5 pasos que tú harías si fueras víctima o testigo, (c) cartel para el aula que comunique la Línea 141 del ICBF y otros canales de denuncia con jerarquía visual clara (sesión 1) + ficha de 5 líneas declarando 1 compromiso personal con la convivencia digital del grupo
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Ciberbullying --- prevención y Línea 141}
@@ -258,30 +322,27 @@ Producto final & 3 entregables sobre convivencia digital (a) mapa visual del flu
 
 \puente{Antes de empezar, mira el viaje completo. Aprendiste a producir imagen, narrativa y audio (S1-S5). Hoy esas habilidades se ponen al servicio de la \textbf{convivencia digital}: las herramientas multimedia que dominas pueden ser usadas para construir comunidad o para herirla. La sesión 7 abordará grooming y sexting; la 8 la estética de la liberación; el periodo cierra con proyecto integrador.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Antes de teorizar, vas a hacer una \emph{reflexión silenciosa}: sin compartir con nadie, anota mentalmente (o en papel privado que después romperás) si alguna vez has sido testigo o víctima de algo que ahora reconocerías como ciberbullying. La regla: este ejercicio es para ti, no se entrega.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- Las 5 propiedades del ciberbullying} (15 min · individual o grupos pequeños). Tu docente proyecta o entrega 3 situaciones de conflicto digital (ejemplos hipotéticos, no de tu grupo). Para cada una, evalúa si cumple las 5 propiedades del ciberbullying: (1) \textbf{Repetición}: ¿pasa varias veces o una sola? (2) \textbf{Desbalance de poder}: ¿el agresor tiene ventaja (grupo, audiencia, autoridad)? (3) \textbf{Intención de daño}: ¿busca hacer sufrir? (4) \textbf{Espacio digital}: ¿es por redes, chats, juegos? (5) \textbf{Permanencia}: ¿queda registro público o semipúblico? Solo si cumple las 5, es ciberbullying en sentido estricto.
 \end{softbox}
 
-\checkbox Evalué 3 situaciones con las 5 propiedades.\\
-\checkbox Distinguí ciberbullying de conflicto cotidiano.\\
-\checkbox Identifiqué cuáles propiedades hacen el daño más grave.
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Evalué 3 situaciones con las 5 propiedades.}
+\milccheckrow{Distinguí ciberbullying de conflicto cotidiano.}
+\milccheckrow{Identifiqué cuáles propiedades hacen el daño más grave.}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Ya tienes la reflexión personal. Ahora vas a entender la \textbf{anatomía del ciberbullying}: las 5 propiedades que lo distinguen, las 4 fases en que se desarrolla, los canales oficiales de denuncia en Colombia (Línea 141, Te Protejo, Policía, protocolo escolar).}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Las 5 propiedades te enseñan a distinguir. Ahora necesitas la \textbf{anatomía profesional} de las 4 fases en que se desarrolla y los canales oficiales de denuncia en Colombia.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & Las \textbf{4 fases del ciberbullying} se descomponen así: (1) \textbf{Primeras señales} (semana 1-2): un comentario aislado, una broma cargada, un emoji burlón. Aquí es donde la intervención temprana evita lo demás. (2) \textbf{Escalada} (semana 2-4): el comportamiento se vuelve repetido. La víctima empieza a evitar redes o el aula. (3) \textbf{Impacto} (semana 4+): la víctima muestra señales emocionales (aislamiento, irritabilidad, bajón académico, problemas de sueño). Hay riesgo serio. (4) \textbf{Denuncia y apoyo}: activación de los canales oficiales. Cuanto antes se llegue aquí, mejor.\\
-2. Reconocimiento de patrones & Los \textbf{canales oficiales de denuncia} en Colombia: (a) \textbf{Línea 141 del ICBF}: número gratuito 24/7. Para menores en situación de riesgo. La atiende profesional capacitado, escucha, orienta, deriva. \textbf{No requiere ser víctima directa}: testigos, amigos y familiares pueden llamar. (b) \textbf{Te Protejo}: teprotejo.org, plataforma del ICBF para denunciar contenido en línea contra menores (videos, fotos, mensajes). Anónima si se quiere. (c) \textbf{Policía Nacional}: 123 o CAI cercano para situaciones que requieren intervención inmediata. (d) \textbf{Protocolo escolar}: el colegio tiene un protocolo según Ley 1620 de 2013; el primer contacto suele ser docente o coordinador.\\
-3. Abstracción & Lo esencial cabe en una pregunta: \emph{¿yo qué haría si pasara mañana en mi grupo?}. La phronesis del cuidado colectivo consiste en \textbf{no esperar a saber qué hacer cuando ya está pasando}, sino conocer los canales antes. La sesión de hoy es ese ejercicio: pensar el plan en frío para que esté listo cuando se necesite.\\
-4. Algoritmo conceptual & Algoritmo: (1) reconocer las primeras señales en uno mismo o en otros. (2) hablar con alguien de confianza (familiar, docente). (3) guardar evidencia (capturas de pantalla, fechas, horas) por si se necesita denuncia formal. (4) llamar a Línea 141 o usar Te Protejo si la situación lo requiere. (5) acompañar a la víctima sin presionarla.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{Las \textbf{4 fases del ciberbullying} se descomponen así: (1) \textbf{Primeras señales} (semana 1-2): un comentario aislado, una broma cargada, un emoji burlón. Aquí es donde la intervención temprana evita lo demás. (2) \textbf{Escalada} (semana 2-4): el comportamiento se vuelve repetido. La víctima empieza a evitar redes o el aula. (3) \textbf{Impacto} (semana 4+): la víctima muestra señales emocionales (aislamiento, irritabilidad, bajón académico, problemas de sueño). Hay riesgo serio. (4) \textbf{Denuncia y apoyo}: activación de los canales oficiales. Cuanto antes se llegue aquí, mejor.}
+\milcpaso{2}{milcTurquesa}{Los \textbf{canales oficiales de denuncia} en Colombia: (a) \textbf{Línea 141 del ICBF}: número gratuito 24/7. Para menores en situación de riesgo. La atiende profesional capacitado, escucha, orienta, deriva. \textbf{No requiere ser víctima directa}: testigos, amigos y familiares pueden llamar. (b) \textbf{Te Protejo}: teprotejo.org, plataforma del ICBF para denunciar contenido en línea contra menores (videos, fotos, mensajes). Anónima si se quiere. (c) \textbf{Policía Nacional}: 123 o CAI cercano para situaciones que requieren intervención inmediata. (d) \textbf{Protocolo escolar}: el colegio tiene un protocolo según Ley 1620 de 2013; el primer contacto suele ser docente o coordinador.}
+\milcpaso{3}{milcTurquesa}{Lo esencial cabe en una pregunta: \emph{¿yo qué haría si pasara mañana en mi grupo?}. La phronesis del cuidado colectivo consiste en \textbf{no esperar a saber qué hacer cuando ya está pasando}, sino conocer los canales antes. La sesión de hoy es ese ejercicio: pensar el plan en frío para que esté listo cuando se necesite.}
+\milcpaso{4}{milcTurquesa}{Algoritmo: (1) reconocer las primeras señales en uno mismo o en otros. (2) hablar con alguien de confianza (familiar, docente). (3) guardar evidencia (capturas de pantalla, fechas, horas) por si se necesita denuncia formal. (4) llamar a Línea 141 o usar Te Protejo si la situación lo requiere. (5) acompañar a la víctima sin presionarla.}
 
 \begin{drawbox}{milcTurquesa}{Anatomía del ciberbullying y la denuncia}
 \textbf{5 propiedades:} repetición + poder + intención + digital + permanencia. \\[1mm] \textbf{4 fases:} señales / escalada / impacto / denuncia. \\[1mm] \textbf{Canales:} Línea 141 / Te Protejo / Policía / Protocolo escolar. \\[1mm] \textbf{Regla:} testigo también puede denunciar.
@@ -325,23 +379,16 @@ Las 5 propiedades te enseñan a distinguir. Ahora necesitas la \textbf{anatomía
 
 \puente{Tienes el método. Toca aplicarlo: construir 3 entregables que sirvan a tu grupo y a ti: mapa del flujo, plan personal de respuesta, cartel para el aula con Línea 141.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · EVALÚA + CREA --- 3 entregables comunicativos} (40 min · individual o parejas). Hora de aplicar. Construyes mapa del flujo, plan personal y cartel para el aula con los canales de denuncia.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & Los 3 entregables se construyen en orden: (1) \textbf{Mapa visual del flujo}: infografía simple con las 4 fases (señales → escalada → impacto → denuncia), una caja por fase con 2-3 ejemplos concretos en cada una. Hecho en Canva, papel, o herramienta libre. (2) \textbf{Plan personal de respuesta}: 5 pasos que tú harías como víctima o testigo (\emph{``1. guardo captura, 2. hablo con mi tío Pedro, 3. llamo a Línea 141 si escala, 4. acompaño a la víctima, 5. no comparto el contenido''}). Específico para tu red de apoyo real. (3) \textbf{Cartel para el aula}: pieza visual con jerarquía clara (S1) que comunique los canales: Línea 141 destacada, Te Protejo, protocolo escolar, número de coordinador o psicólogo del colegio si aplica.\\
-Patrones & Sigue el patrón \textbf{``específico sobre genérico''}: el plan personal vale solo si nombra personas reales (mi tía Lucía, mi profesor Carlos), no \emph{``alguien de confianza''}. La phronesis del cuidado consiste en \textbf{decidir hoy a quién llamarías mañana}, no improvisar en el momento de crisis.\\
-Abstracción & La ficha de compromiso personal es la pieza ética final: 5 líneas declarando qué te comprometes a hacer (o no hacer) en tu grupo. Ejemplos: \emph{``Me comprometo a no compartir capturas burlescas de compañeros''}, \emph{``Me comprometo a hablar con quien parezca aislado''}, \emph{``Me comprometo a denunciar si veo ciberbullying contra cualquier compañero''}.\\
-Algoritmo de armado & Algoritmo: (1) construir mapa del flujo. (2) escribir plan personal con nombres reales. (3) diseñar cartel con jerarquía visual de S1. (4) escribir compromiso personal. (5) revisar con un compañero (¿se entiende el cartel?, ¿el plan tiene nombres concretos?).\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{Los 3 entregables se construyen en orden: (1) \textbf{Mapa visual del flujo}: infografía simple con las 4 fases (señales → escalada → impacto → denuncia), una caja por fase con 2-3 ejemplos concretos en cada una. Hecho en Canva, papel, o herramienta libre. (2) \textbf{Plan personal de respuesta}: 5 pasos que tú harías como víctima o testigo (\emph{``1. guardo captura, 2. hablo con mi tío Pedro, 3. llamo a Línea 141 si escala, 4. acompaño a la víctima, 5. no comparto el contenido''}). Específico para tu red de apoyo real. (3) \textbf{Cartel para el aula}: pieza visual con jerarquía clara (S1) que comunique los canales: Línea 141 destacada, Te Protejo, protocolo escolar, número de coordinador o psicólogo del colegio si aplica.}
+\milcpaso{2}{milcMagenta}{Sigue el patrón \textbf{``específico sobre genérico''}: el plan personal vale solo si nombra personas reales (mi tía Lucía, mi profesor Carlos), no \emph{``alguien de confianza''}. La phronesis del cuidado consiste en \textbf{decidir hoy a quién llamarías mañana}, no improvisar en el momento de crisis.}
+\milcpaso{3}{milcMagenta}{La ficha de compromiso personal es la pieza ética final: 5 líneas declarando qué te comprometes a hacer (o no hacer) en tu grupo. Ejemplos: \emph{``Me comprometo a no compartir capturas burlescas de compañeros''}, \emph{``Me comprometo a hablar con quien parezca aislado''}, \emph{``Me comprometo a denunciar si veo ciberbullying contra cualquier compañero''}.}
+\milcpaso{4}{milcMagenta}{Algoritmo: (1) construir mapa del flujo. (2) escribir plan personal con nombres reales. (3) diseñar cartel con jerarquía visual de S1. (4) escribir compromiso personal. (5) revisar con un compañero (¿se entiende el cartel?, ¿el plan tiene nombres concretos?).}
 
 \begin{drawbox}{milcMagenta}{Checklist antes de entregar}
 \checkbox Mapa del flujo con las 4 fases. \\[1mm] \checkbox Plan personal con 5 pasos y nombres reales. \\[1mm] \checkbox Cartel para el aula con jerarquía visual clara. \\[1mm] \checkbox Línea 141 destacada en el cartel. \\[1mm] \checkbox Te Protejo y protocolo escolar mencionados. \\[1mm] \checkbox Compromiso personal de 5 líneas. \\[1mm] \checkbox Cartel listo para colgar en el aula.
@@ -359,9 +406,7 @@ Algoritmo de armado & Algoritmo: (1) construir mapa del flujo. (2) escribir plan
 
 \puente{Lo que sigue resume \emph{qué} entregas hoy: 3 piezas comunicativas + 1 compromiso personal. El criterio principal: que el cartel del aula, colgado mañana, sea claro suficiente para que cualquier estudiante sepa qué hacer si necesita ayuda.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Mapa del flujo + plan personal + cartel Línea 141 + compromiso}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) Mapa con 4 fases y ejemplos. (2) Plan personal con nombres reales. (3) Cartel con jerarquía visual y Línea 141 destacada. (4) 4 canales de denuncia mencionados. (5) Compromiso personal específico.
@@ -369,9 +414,7 @@ Producto de la sesión
 
 \puente{Antes de cerrar, mira la convivencia digital desde las cinco dimensiones humanas. Conocer los canales de denuncia es respeto por uno mismo y por los compañeros; ignorarlos es dejar solos a quienes pueden necesitar ayuda.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -397,12 +440,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Y para terminar, tres voces sobre el cuidado colectivo. Dussel sobre la comunidad que protege a sus vulnerables, Séneca sobre la responsabilidad del testigo, Floridi sobre la infosfera como espacio ético compartido.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{``La comunidad que protege a sus vulnerables es liberadora; la que los abandona reproduce la violencia del sistema mediante el silencio.''}
+\textit{La comunidad que protege a sus vulnerables es liberadora; la que los abandona reproduce la violencia del sistema mediante el silencio.}
 
 El ciberbullying se sostiene en el silencio de los testigos. La filosofía de la liberación pide ese acto: \textbf{no callar cuando ves que alguien sufre}. Las comunidades ancestrales intervenían en las primeras señales; las redes sociales contemporáneas suelen permitir que el sufrimiento escale sin freno. La phronesis del oficio digital consiste en \textbf{ser testigo activo, no espectador pasivo}.
 
@@ -412,7 +453,7 @@ El ciberbullying se sostiene en el silencio de los testigos. La filosofía de la
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Séneca · cuidado interior}
-\textit{``El silencio del testigo es complicidad disfrazada de neutralidad.''}
+\textit{El silencio del testigo es complicidad disfrazada de neutralidad.}
 
 Es tentador pensar \emph{``no es mi problema, mejor no meterme''}. La sabiduría estoica recomienda lo opuesto: \emph{el silencio del testigo sostiene el daño}. Tu plan personal de hoy te entrena para no quedarte en silencio cuando importe. No tienes que ser héroe ni intervenir físicamente: basta con llamar a Línea 141, hablar con un docente, acompañar a la víctima.
 
@@ -422,7 +463,7 @@ Es tentador pensar \emph{``no es mi problema, mejor no meterme''}. La sabiduría
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{``La infosfera es espacio ético compartido; cada usuario es responsable de lo que sostiene en ella.''}
+\textit{La infosfera es espacio ético compartido; cada usuario es responsable de lo que sostiene en ella.}
 
 La infosfera (entorno informacional compartido) no es neutral: lo que cada usuario sostiene allí afecta a otros. Publicar una captura burlesca contribuye al ciberbullying. Compartir contenido humillante lo amplifica. La ética digital exige conciencia de esa responsabilidad. Tu compromiso personal de hoy es entrenamiento para esa ciudadanía digital.
 
@@ -431,21 +472,24 @@ La infosfera (entorno informacional compartido) no es neutral: lo que cada usuar
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

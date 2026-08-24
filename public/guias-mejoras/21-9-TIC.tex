@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 9};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 9};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont ¿Qué es un dato? ---\\recolección\\con propósito}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 21-9-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 3 · Datos --- del registro al insight}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 3 · Datos --- del registro al insight}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont ¿Qué es un dato? ---\\recolección\\con propósito}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 21-9-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} 1 hoja de cálculo con 20 datos reales recolectados por el estudiante + una pregunta concreta que esos datos van a responder};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+1 hoja de cálculo con 20 datos reales recolectados por el estudiante + una pregunta concreta que esos datos van a responder
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: ¿Qué es un dato? --- recolección con propósito}
@@ -258,30 +322,27 @@ Producto final & 1 hoja de cálculo con 20 datos reales recolectados por el estu
 
 \puente{Antes de empezar, mira el viaje completo del Periodo 3. En 10 sesiones vas a recorrer el ciclo del dato completo: recolección $\rightarrow$ tablas $\rightarrow$ fórmulas $\rightarrow$ filtros $\rightarrow$ tablas dinámicas $\rightarrow$ gráficos $\rightarrow$ limpieza $\rightarrow$ honestidad visual $\rightarrow$ insights $\rightarrow$ sustentación de un mini-estudio. Hoy empiezas por la base: \emph{¿qué dato vale recolectar y para qué?}.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Antes de teorizar, vas a auditar tu propia relación con los datos: cuántos datos tuyos están recogiendo ya las apps, cuántos recoges tú, con qué propósito. Esa auditoría te muestra que vives rodeado de datos sin pregunta.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- Tu propia huella de datos} (15 min · individual). Abre tu celular y haz inventario: (a) ¿qué \emph{apps} recogen datos tuyos (ubicación, tiempo de uso, contactos)?; (b) ¿qué \emph{datos cotidianos} registras tú (notas en cuaderno, lista de gastos, plan semanal)?; (c) ¿qué \emph{datos te falta} registrar de tu propia vida que mejorarían una decisión?. Anota cada lista con honestidad.
 \end{softbox}
 
-\checkbox Identifiqué 5+ apps que recogen datos míos sin que yo decida.\\
-\checkbox Identifiqué 3 prácticas de registro propio (lista de compras, notas, agenda).\\
-\checkbox Reconocí al menos 1 dato que NO registro y me serviría para mejorar una decisión.
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Identifiqué 5+ apps que recogen datos míos sin que yo decida.}
+\milccheckrow{Identifiqué 3 prácticas de registro propio (lista de compras, notas, agenda).}
+\milccheckrow{Reconocí al menos 1 dato que NO registro y me serviría para mejorar una decisión.}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Ya viste tu propia situación. Ahora vamos a entender los \textbf{4 elementos} de toda recolección de datos seria: pregunta acotada, instrumento honesto, muestra adecuada, registro estructurado. Sin alguno, los datos recolectados son ruido.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Toda recolección de datos seria cumple 4 condiciones. Vamos a descomponerlas con los pilares del pensamiento computacional para que tu primera tabla no sea improvisada.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & Una recolección honesta se descompone en 4 elementos: (1) \textbf{pregunta acotada} (qué quieres responder con esos datos, en una frase corta), (2) \textbf{instrumento honesto} (encuesta, observación o registro que no induzca respuesta), (3) \textbf{muestra adecuada} (a quién mides y cuántos: ni 3 amigos, ni todo el colegio sin saber por qué), (4) \textbf{registro estructurado} (tabla con columnas tipadas, no notas sueltas).\\
-2. Reconocimiento de patrones & Toda recolección sigue el patrón \textbf{``pregunta primero, dato después''}: cuando alguien dice ``vamos a recoger datos del curso'' sin pregunta clara, lo que se recoge es ruido. Con pregunta acotada (``¿cuánto tiempo le dedican a leer fuera del colegio?''), cada dato encuentra su lugar en la tabla y su uso en el análisis.\\
-3. Abstracción & Lo esencial cabe en una pregunta: \emph{¿esta recolección la podré usar la próxima semana para decidir algo concreto?}. Si la respuesta es no, todavía no es recolección --- es curiosidad sin método.\\
-4. Algoritmo conceptual & Pasos para recolectar bien: (1) escribe la pregunta en 1 frase; (2) decide instrumento (encuesta/observación/registro); (3) elige muestra (a quién y cuántos); (4) diseña tabla con columnas tipadas; (5) recoge sin trampa; (6) revisa que cada fila esté completa antes de cerrar.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{Una recolección honesta se descompone en 4 elementos: (1) \textbf{pregunta acotada} (qué quieres responder con esos datos, en una frase corta), (2) \textbf{instrumento honesto} (encuesta, observación o registro que no induzca respuesta), (3) \textbf{muestra adecuada} (a quién mides y cuántos: ni 3 amigos, ni todo el colegio sin saber por qué), (4) \textbf{registro estructurado} (tabla con columnas tipadas, no notas sueltas).}
+\milcpaso{2}{milcTurquesa}{Toda recolección sigue el patrón \textbf{``pregunta primero, dato después''}: cuando alguien dice ``vamos a recoger datos del curso'' sin pregunta clara, lo que se recoge es ruido. Con pregunta acotada (``¿cuánto tiempo le dedican a leer fuera del colegio?''), cada dato encuentra su lugar en la tabla y su uso en el análisis.}
+\milcpaso{3}{milcTurquesa}{Lo esencial cabe en una pregunta: \emph{¿esta recolección la podré usar la próxima semana para decidir algo concreto?}. Si la respuesta es no, todavía no es recolección --- es curiosidad sin método.}
+\milcpaso{4}{milcTurquesa}{Pasos para recolectar bien: (1) escribe la pregunta en 1 frase; (2) decide instrumento (encuesta/observación/registro); (3) elige muestra (a quién y cuántos); (4) diseña tabla con columnas tipadas; (5) recoge sin trampa; (6) revisa que cada fila esté completa antes de cerrar.}
 
 \begin{drawbox}{milcTurquesa}{Anatomía de una recolección honesta}
 \textbf{Pregunta:} 1 frase clara que responde la recolección. \\[1mm] \textbf{Instrumento:} cómo vas a recoger (encuesta, observación, registro propio). \\[1mm] \textbf{Muestra:} a quién mides (cuántos, qué grupo). \\[1mm] \textbf{Tabla:} columnas tipadas (texto, número, fecha, sí/no). \\[1mm] \textbf{Registro:} llenado completo, sin filas vacías. \\[1mm] \textbf{Uso previsto:} qué vas a decidir con esos datos.
@@ -325,23 +379,16 @@ Toda recolección de datos seria cumple 4 condiciones. Vamos a descomponerlas co
 
 \puente{Tienes el método. Toca producir: una hoja con 20 datos reales recolectados, instrumento documentado, pregunta acotada al inicio. Es la base de todo el periodo.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · CREA --- Tu primera tabla con 20 datos reales} (30 min · individual o pareja). Hora de recolectar. Elige UNA pregunta acotada y recoge 20 filas de datos reales en una hoja de cálculo (Google Sheets, Excel o cuaderno digital). Cada fila debe responder a la pregunta.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & Tu recolección se descompone en 5 pasos: (1) escribir la pregunta en 1 frase, (2) decidir instrumento (encuesta breve a 20 compañeros, observación de 20 hechos, registro propio de 20 días), (3) crear tabla con 3-5 columnas tipadas, (4) recoger los 20 datos sin saltarse columnas, (5) verificar que cada fila esté completa.\\
-Patrones & Sigue el patrón \textbf{``ejemplo concreto vence a categoría abstracta''}: tu pregunta debe ser específica. Mal: ``¿cómo usan el celular?''. Bien: ``¿cuántos minutos diarios pasan mis compañeros en TikTok los lunes?''. La especificidad permite responder.\\
-Abstracción & Cada columna expresa un solo tipo de dato. Si una columna mezcla números con texto, divídela en dos columnas distintas. La pureza tipográfica es base del análisis.\\
-Algoritmo de armado & Algoritmo: (1) elige tema; (2) escribe pregunta acotada; (3) diseña 3-5 columnas con su tipo; (4) recoge 20 filas reales; (5) revisa que ninguna fila esté incompleta; (6) guarda el archivo con nombre claro.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{Tu recolección se descompone en 5 pasos: (1) escribir la pregunta en 1 frase, (2) decidir instrumento (encuesta breve a 20 compañeros, observación de 20 hechos, registro propio de 20 días), (3) crear tabla con 3-5 columnas tipadas, (4) recoger los 20 datos sin saltarse columnas, (5) verificar que cada fila esté completa.}
+\milcpaso{2}{milcMagenta}{Sigue el patrón \textbf{``ejemplo concreto vence a categoría abstracta''}: tu pregunta debe ser específica. Mal: ``¿cómo usan el celular?''. Bien: ``¿cuántos minutos diarios pasan mis compañeros en TikTok los lunes?''. La especificidad permite responder.}
+\milcpaso{3}{milcMagenta}{Cada columna expresa un solo tipo de dato. Si una columna mezcla números con texto, divídela en dos columnas distintas. La pureza tipográfica es base del análisis.}
+\milcpaso{4}{milcMagenta}{Algoritmo: (1) elige tema; (2) escribe pregunta acotada; (3) diseña 3-5 columnas con su tipo; (4) recoge 20 filas reales; (5) revisa que ninguna fila esté incompleta; (6) guarda el archivo con nombre claro.}
 
 \begin{drawbox}{milcMagenta}{Checklist antes de cerrar la tabla}
 \checkbox Pregunta acotada en 1 frase escrita arriba de la tabla. \\[1mm] \checkbox 3-5 columnas con tipos declarados (texto, número, fecha, sí/no). \\[1mm] \checkbox 20 filas reales recolectadas (no inventadas). \\[1mm] \checkbox Cero filas con celdas vacías. \\[1mm] \checkbox Archivo guardado con nombre que incluye tu nombre + pregunta corta. \\[1mm] \checkbox Puedes explicar qué vas a decidir con esos 20 datos.
@@ -359,9 +406,7 @@ Algoritmo de armado & Algoritmo: (1) elige tema; (2) escribe pregunta acotada; (
 
 \puente{Lo que sigue resume \emph{qué} entregas hoy. El criterio principal: que cada uno de los 20 datos sirva a la pregunta que te planteaste, y que la pregunta sea concreta (no ``cómo es el curso'').}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Tabla de 20 datos reales recolectados con pregunta acotada y uso previsto}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) Pregunta acotada en 1 frase clara. (2) 20 filas de datos reales (no inventadas). (3) 3-5 columnas tipadas correctamente. (4) Cero filas incompletas. (5) Uso previsto declarado. (6) El archivo se puede abrir y leer sin explicación oral.
@@ -369,9 +414,7 @@ Producto de la sesión
 
 \puente{Antes de cerrar, mira tu recolección desde las cinco dimensiones humanas. Decidir qué datos recoger es decisión política sutil: quién aparece, quién queda fuera, qué cuenta y qué no.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -397,12 +440,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Y para terminar, tres voces sobre los datos. Dussel sobre los datos invisibilizados, Marco Aurelio sobre la phronesis del registro, Floridi sobre el dato como acto informacional.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{``Lo que no se cuenta no existe en la decisión pública --- contar es ya un acto político.''}
+\textit{Lo que no se cuenta no existe en la decisión pública --- contar es ya un acto político.}
 
 En Colombia, durante décadas, los pueblos indígenas no fueron ``contados'' en censos oficiales con criterios propios. El conteo del Estado los volvía invisibles. Hoy, en redes sociales, los algoritmos cuentan lo que les conviene contar de tus comportamientos. La pregunta es siempre la misma: \emph{¿quién decide qué se cuenta y para qué?}. Asumir tú la pregunta antes que ellos es ejercicio de soberanía digital.
 
@@ -412,7 +453,7 @@ En Colombia, durante décadas, los pueblos indígenas no fueron ``contados'' en 
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
-\textit{``La phronesis empieza por la pregunta antes que por la respuesta.''}
+\textit{La phronesis empieza por la pregunta antes que por la respuesta.}
 
 Recolectar datos sin pregunta es la versión moderna del que junta cosas en su casa ``por si acaso''. La sabiduría estoica recomienda lo contrario: antes de recoger, pregúntate qué decisión quieres mejorar. Sin esa disciplina previa, la recolección se vuelve acumulación, y la acumulación se vuelve carga, no virtud.
 
@@ -422,7 +463,7 @@ Recolectar datos sin pregunta es la versión moderna del que junta cosas en su c
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{``Cada dato registrado es un acto informacional que modifica la infoesfera personal y colectiva.''}
+\textit{Cada dato registrado es un acto informacional que modifica la infoesfera personal y colectiva.}
 
 No existe ``recolectar datos neutralmente''. Cada dato que registras hace existir algo que antes no estaba en tu universo de decisión. Cada dato que NO registras deja una zona ciega. Aprender a recolectar con phronesis es aprender a diseñar tu propia infoesfera --- no padecerla.
 
@@ -431,21 +472,24 @@ No existe ``recolectar datos neutralmente''. Cada dato que registras hace existi
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

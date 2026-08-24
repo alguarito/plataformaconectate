@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 7};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 7};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Prompting\\avanzado ---\\técnicas que\\diferencian\\al experto}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 27-7-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 3 · Inteligencia Artificial}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 3 · Inteligencia Artificial}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Prompting\\avanzado ---\\técnicas que\\diferencian\\al experto}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 27-7-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} En el cuaderno: \textbf{(a) tabla de las 4 técnicas avanzadas} con definición, cuándo usarla, ejemplo; \textbf{(b) 5 prompts complejos} aplicando técnicas combinadas (mínimo 2 técnicas por prompt); \textbf{(c) prueba real} de los 5 prompts en un LLM con la respuesta obtenida; \textbf{(d) tu evaluación} de cuál técnica fue más útil. Firma + reflexión personal.};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+En el cuaderno: \textbf{(a) tabla de las 4 técnicas avanzadas} con definición, cuándo usarla, ejemplo; \textbf{(b) 5 prompts complejos} aplicando técnicas combinadas (mínimo 2 técnicas por prompt); \textbf{(c) prueba real} de los 5 prompts en un LLM con la respuesta obtenida; \textbf{(d) tu evaluación} de cuál técnica fue más útil. Firma + reflexión personal.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Prompting avanzado --- técnicas que diferencian al usuario experto}
@@ -258,30 +322,27 @@ Producto final & En el cuaderno: \textbf{(a) tabla de las 4 técnicas avanzadas}
 
 \puente{Hoy haces 4 cosas: descubres 4 técnicas avanzadas, las aplicas a ejemplos, las combinas, las pruebas.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Empezamos viendo cómo cambia la respuesta del LLM con técnica vs sin técnica.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · ANALIZA --- Compara 2 versiones de un prompt} (10 min · individual). Lee estos 2 prompts y en el cuaderno responde \emph{¿cuál crees que dará mejor respuesta? ¿Por qué?}. \textbf{Versión A (CTRF básico):} \emph{``Soy estudiante de 7°. Resuelve este problema: si Pedro tiene 24 manzanas y reparte la cuarta parte a 4 amigos, ¿cuántas le quedan? Hazlo paso a paso''}. \textbf{Versión B (con técnicas avanzadas):} \emph{``Actúa como un profesor paciente de matemáticas de secundaria (role). Resuelve este problema mostrando TODOS los pasos de tu razonamiento, como si lo estuvieras enseñando a un niño que no entiende muy bien (chain-of-thought): si Pedro tiene 24 manzanas y reparte la cuarta parte a 4 amigos, ¿cuántas le quedan? Después de resolverlo, explícame también qué propiedad matemática usé y dame un ejercicio parecido para practicar (iteración explícita)''}.
 \end{softbox}
 
-\checkbox Leí las 2 versiones con calma.\\
-\checkbox Identifiqué cuál tiene técnicas avanzadas.\\
-\checkbox Predigo que B dará mejor respuesta porque es más completa.
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Leí las 2 versiones con calma.}
+\milccheckrow{Identifiqué cuál tiene técnicas avanzadas.}
+\milccheckrow{Predigo que B dará mejor respuesta porque es más completa.}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Después aprendes las 4 técnicas con ejemplos detallados.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 La versión B sería mejor porque combina 3 técnicas. Ahora aprende las \textbf{4 técnicas avanzadas} a fondo y cuándo usar cada una.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & \textbf{Técnica 1 --- Role Prompting (asignar un rol).} Le dices a la IA que actúe como X experto. \emph{Ejemplos:} \emph{``Actúa como un médico explicando a un paciente''}, \emph{``Actúa como un poeta del siglo XIX''}, \emph{``Actúa como un programador de Python''}. \textbf{¿Por qué funciona?} El LLM ajusta tono, vocabulario y profundidad según el rol. \emph{Útil para}: explicaciones técnicas, escritura creativa, simulaciones. \emph{Cuidado}: no le pidas que actúe como persona real (puede inventar datos atribuidos a esa persona).\\
-2. Reconocimiento de patrones & \textbf{Técnica 2 --- Few-shot (dar ejemplos).} Le muestras 1-3 ejemplos de cómo quieres que responda, después le pides que haga uno nuevo siguiendo el patrón. \emph{Ejemplo}: \emph{``Te muestro 2 ejemplos de cómo quiero que clasifiques canciones. Ejemplo 1: 'La gota fría' = vallenato. Ejemplo 2: 'Despacito' = reggaetón. Ahora clasifica: 'La vida es un carnaval'''}. \textbf{¿Por qué funciona?} El LLM aprende el patrón de los ejemplos y lo aplica. \emph{Útil para}: tareas con formato específico, clasificaciones, traducciones especiales.\\
-3. Abstracción & \textbf{Técnica 3 --- Chain-of-Thought (pensar en voz alta).} Le pides que muestre el razonamiento paso a paso, no solo la respuesta final. \emph{Ejemplo}: \emph{``Resuelve este problema mostrando TODOS los pasos de tu razonamiento, como si me estuvieras enseñando''}. \textbf{¿Por qué funciona?} El LLM se ``obliga'' a pensar antes de responder. Las respuestas son más precisas (especialmente en matemáticas, lógica, análisis). \emph{Útil para}: problemas de matemáticas, ejercicios de lógica, análisis complejos.\\
-4. Algoritmo conceptual & \textbf{Técnica 4 --- Iteración explícita (pedir mejoras).} En lugar de aceptar la primera respuesta, le pides al LLM que se autocritique y mejore. \emph{Ejemplo}: \emph{``Primero respóndeme. Después dime cuáles son los 3 puntos débiles de tu respuesta. Después dame una versión mejorada que aborde esos puntos''}. \textbf{¿Por qué funciona?} El LLM hace ``autoevaluación'' y produce versión más sólida. Genera respuestas que normalmente requerirían 3-4 mensajes en 1 solo. \emph{Útil para}: ensayos, decisiones importantes, planes complejos. \textbf{Combinaciones poderosas:} \emph{Role + Chain-of-Thought}: experto pensando en voz alta. \emph{Few-shot + Iteración}: ejemplos + autocrítica. \emph{Role + Few-shot}: experto siguiendo formato específico.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{\textbf{Técnica 1 --- Role Prompting (asignar un rol).} Le dices a la IA que actúe como X experto. \emph{Ejemplos:} \emph{``Actúa como un médico explicando a un paciente''}, \emph{``Actúa como un poeta del siglo XIX''}, \emph{``Actúa como un programador de Python''}. \textbf{¿Por qué funciona?} El LLM ajusta tono, vocabulario y profundidad según el rol. \emph{Útil para}: explicaciones técnicas, escritura creativa, simulaciones. \emph{Cuidado}: no le pidas que actúe como persona real (puede inventar datos atribuidos a esa persona).}
+\milcpaso{2}{milcTurquesa}{\textbf{Técnica 2 --- Few-shot (dar ejemplos).} Le muestras 1-3 ejemplos de cómo quieres que responda, después le pides que haga uno nuevo siguiendo el patrón. \emph{Ejemplo}: \emph{``Te muestro 2 ejemplos de cómo quiero que clasifiques canciones. Ejemplo 1: 'La gota fría' = vallenato. Ejemplo 2: 'Despacito' = reggaetón. Ahora clasifica: 'La vida es un carnaval'''}. \textbf{¿Por qué funciona?} El LLM aprende el patrón de los ejemplos y lo aplica. \emph{Útil para}: tareas con formato específico, clasificaciones, traducciones especiales.}
+\milcpaso{3}{milcTurquesa}{\textbf{Técnica 3 --- Chain-of-Thought (pensar en voz alta).} Le pides que muestre el razonamiento paso a paso, no solo la respuesta final. \emph{Ejemplo}: \emph{``Resuelve este problema mostrando TODOS los pasos de tu razonamiento, como si me estuvieras enseñando''}. \textbf{¿Por qué funciona?} El LLM se ``obliga'' a pensar antes de responder. Las respuestas son más precisas (especialmente en matemáticas, lógica, análisis). \emph{Útil para}: problemas de matemáticas, ejercicios de lógica, análisis complejos.}
+\milcpaso{4}{milcTurquesa}{\textbf{Técnica 4 --- Iteración explícita (pedir mejoras).} En lugar de aceptar la primera respuesta, le pides al LLM que se autocritique y mejore. \emph{Ejemplo}: \emph{``Primero respóndeme. Después dime cuáles son los 3 puntos débiles de tu respuesta. Después dame una versión mejorada que aborde esos puntos''}. \textbf{¿Por qué funciona?} El LLM hace ``autoevaluación'' y produce versión más sólida. Genera respuestas que normalmente requerirían 3-4 mensajes en 1 solo. \emph{Útil para}: ensayos, decisiones importantes, planes complejos. \textbf{Combinaciones poderosas:} \emph{Role + Chain-of-Thought}: experto pensando en voz alta. \emph{Few-shot + Iteración}: ejemplos + autocrítica. \emph{Role + Few-shot}: experto siguiendo formato específico.}
 
 \begin{drawbox}{milcTurquesa}{4 técnicas avanzadas + combinaciones}
 \textbf{4 técnicas:} \\[1mm]
@@ -330,23 +384,18 @@ La versión B sería mejor porque combina 3 técnicas. Ahora aprende las \textbf
 
 \puente{Con todo claro, creas 5 prompts complejos y los pruebas.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · APLICA --- 5 prompts complejos con técnicas combinadas} (32 min · individual). Vas a crear 5 prompts complejos aplicando 2+ técnicas y probarlos con un LLM real.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & \textbf{Paso 1 --- Plan de los 5 prompts.} En el cuaderno escribe 5 temas (cosas reales que quieras consultar). Sugerencias: \emph{(1) Resolver un problema de mate con explicación}; \emph{(2) Pedir consejo sobre cómo estudiar para examen}; \emph{(3) Recibir crítica constructiva sobre algo que escribiste}; \emph{(4) Aprender un concepto científico desde 2 ángulos}; \emph{(5) Planear una sorpresa para alguien}.\\
-Patrones & \textbf{Paso 2 --- Diseña los 5 prompts combinando técnicas.} Para cada uno, escribe el prompt completo con CTRF + 2 técnicas avanzadas. \emph{Ejemplo para Prompt 1}: \emph{``Soy estudiante de 7° en Colombia (C). Actúa como un profesor paciente de matemáticas (Role) y resuelve este problema mostrando TODOS los pasos del razonamiento (Chain-of-Thought): [problema]. Después del razonamiento, dame 2 errores típicos que los estudiantes cometen al resolver problemas así (R + F)''}. Aplica creatividad.\\
-Abstracción & \textbf{Paso 3 --- Tabla en el cuaderno.} Tabla de \textbf{5 filas y 4 columnas}: \emph{(1) Tema del prompt}, \emph{(2) Prompt completo}, \emph{(3) Técnicas usadas}, \emph{(4) Resultado obtenido (resumen)}. Llena las columnas 1, 2 y 3.\\
-Algoritmo de armado & \textbf{Paso 4 --- Prueba los 5 prompts en un LLM.} Abre el LLM (Claude, ChatGPT, Gemini). Copia cada prompt completo. Lee la respuesta. Anota en columna 4 un resumen de lo que el LLM produjo.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{\textbf{Paso 1 --- Plan de los 5 prompts.} En el cuaderno escribe 5 temas (cosas reales que quieras consultar). Sugerencias: \emph{(1) Resolver un problema de mate con explicación}; \emph{(2) Pedir consejo sobre cómo estudiar para examen}; \emph{(3) Recibir crítica constructiva sobre algo que escribiste}; \emph{(4) Aprender un concepto científico desde 2 ángulos}; \emph{(5) Planear una sorpresa para alguien}.}
+\milcpaso{2}{milcMagenta}{\textbf{Paso 2 --- Diseña los 5 prompts combinando técnicas.} Para cada uno, escribe el prompt completo con CTRF + 2 técnicas avanzadas. \emph{Ejemplo para Prompt 1}: \emph{``Soy estudiante de 7° en Colombia (C). Actúa como un profesor paciente de matemáticas (Role) y resuelve este problema mostrando TODOS los pasos del razonamiento (Chain-of-Thought): [problema]. Después del razonamiento, dame 2 errores típicos que los estudiantes cometen al resolver problemas así (R + F)''}. Aplica creatividad.}
+\milcpaso{3}{milcMagenta}{\textbf{Paso 3 --- Tabla en el cuaderno.} Tabla de \textbf{5 filas y 4 columnas}: \emph{(1) Tema del prompt}, \emph{(2) Prompt completo}, \emph{(3) Técnicas usadas}, \emph{(4) Resultado obtenido (resumen)}. Llena las columnas 1, 2 y 3.}
+\milcpaso{4}{milcMagenta}{\textbf{Paso 4 --- Prueba los 5 prompts en un LLM.} Abre el LLM (Claude, ChatGPT, Gemini). Copia cada prompt completo. Lee la respuesta. Anota en columna 4 un resumen de lo que el LLM produjo.}
+\milcpaso{5}{milcMagenta}{\textbf{Paso 5 --- Evalúa cuál técnica fue más útil.} Debajo de la tabla, escribe: \emph{``La técnica que más me sirvió fue \_\_\_ porque \_\_\_. La que menos me convenció fue \_\_\_ porque \_\_\_. La combinación que más me gustó fue \_\_\_''}. Sé honesto, no copies.}
+\milcpaso{6}{milcMagenta}{\textbf{Paso 6 --- Reflexión final + firma.} Escribe: \emph{``Lo que diferencia mis prompts de antes (S6) y los de hoy es \_\_\_. Si tuviera que enseñarle prompting a un amigo, le diría que empiece por \_\_\_''}. Firma con nombre y fecha.}
 
 \begin{drawbox}{milcMagenta}{Antes de cerrar la S7}
 \checkbox La tabla tiene 5 prompts complejos completos. \\[1mm]
@@ -369,9 +418,7 @@ Algoritmo de armado & \textbf{Paso 4 --- Prueba los 5 prompts en un LLM.} Abre e
 
 \puente{El producto son los 5 prompts probados + tabla + evaluación.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{5 prompts complejos con técnicas combinadas · probados con LLM · evaluados · firmado}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) Hay 5 prompts complejos completos. (2) Cada prompt aplica mínimo 2 técnicas avanzadas. (3) Los 5 fueron probados con un LLM real. (4) Hay evaluación de cuál técnica fue más útil. (5) Hay reflexión final personal firmada.
@@ -379,9 +426,7 @@ Producto de la sesión
 
 \puente{Antes de salir, evalúa cuál técnica funcionó mejor para qué tipo de tarea.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -407,12 +452,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Cerramos con 3 voces sobre por qué el prompting es habilidad nueva clave.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{````El que pasa de aficionado a artesano lo hace combinando técnicas. La calidad nace de la combinación, no de la adición.''''}
+\textit{``El que pasa de aficionado a artesano lo hace combinando técnicas. La calidad nace de la combinación, no de la adición.''}
 
 Don Lucho el relojero no era bueno solo por usar herramientas: era bueno por \textbf{combinarlas con criterio}. Lupa + paciencia + delicadeza + experiencia. \emph{Lo mismo con prompting: las técnicas individuales son herramientas; la combinación con criterio es oficio}. Hoy diste el paso de aficionado (CTRF básico) a aprendiz de artesano (combinación de técnicas). El oficio sigue por años más, pero ya entraste al taller.
 
@@ -422,7 +465,7 @@ Don Lucho el relojero no era bueno solo por usar herramientas: era bueno por \te
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
-\textit{````El sabio no se conforma con saber lo básico. Profundiza hasta dominar las sutilezas. Ahí está la diferencia con los demás.''''}
+\textit{``El sabio no se conforma con saber lo básico. Profundiza hasta dominar las sutilezas. Ahí está la diferencia con los demás.''}
 
 Mucha gente aprende solo CTRF básico (la S6) y se conforma. \textbf{Tú aprendes técnicas avanzadas (S7)}: te coloca en grupo más pequeño de personas que dominan prompting. \emph{Esa profundización en lo que aprendes es disciplina antigua}: \emph{no satisfacerse con lo básico cuando hay más por aprender}. La sutileza es donde está la maestría.
 
@@ -432,7 +475,7 @@ Mucha gente aprende solo CTRF básico (la S6) y se conforma. \textbf{Tú aprende
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{````Las habilidades que valen oro en 2030 son las que pocos dominan en 2026. El prompting avanzado es una de ellas.''''}
+\textit{``Las habilidades que valen oro en 2030 son las que pocos dominan en 2026. El prompting avanzado es una de ellas.''}
 
 \textbf{En 2030, las personas que dominen prompting avanzado tendrán ventaja en universidad y trabajo}. Hoy son pocos los que saben combinar Role + Chain-of-Thought con criterio. Tú lo aprendiste en grado 7. \emph{Esa diferencia se acumula con los años}. Mientras tus pares descubren CTRF básico a los 20, tú ya estarás en niveles más avanzados.
 
@@ -441,21 +484,24 @@ Mucha gente aprende solo CTRF básico (la S6) y se conforma. \textbf{Tú aprende
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

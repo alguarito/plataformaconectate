@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 10};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 10};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Estructura editorial ---\\arco narrativo,\\ritmo y capítulos}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 5-10-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 1 · Escritura abierta con IA}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 1 · Escritura abierta con IA}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Estructura editorial ---\\arco narrativo,\\ritmo y capítulos}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 5-10-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} Mapa estructural completo de tu libro de 80 páginas con (a) arco narrativo dividido en 3 actos (planteamiento ~25 por ciento, desarrollo ~50 por ciento, cierre ~25 por ciento), (b) 8-12 capítulos numerados con título definitivo y resumen de 2 líneas cada uno, (c) ritmo de páginas asignado por capítulo de manera coherente (no todos iguales: hay capítulos cortos y largos según función), (d) identificación de 3 capítulos pivote (apertura, mitad, cierre) que merecen más cuidado};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Mapa estructural completo de tu libro de 80 páginas con (a) arco narrativo dividido en 3 actos (planteamiento ~25 por ciento, desarrollo ~50 por ciento, cierre ~25 por ciento), (b) 8-12 capítulos numerados con título definitivo y resumen de 2 líneas cada uno, (c) ritmo de páginas asignado por capítulo de manera coherente (no todos iguales: hay capítulos cortos y largos según función), (d) identificación de 3 capítulos pivote (apertura, mitad, cierre) que merecen más cuidado
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Estructura editorial --- arco narrativo, ritmo y capítulos}
@@ -258,30 +322,27 @@ Producto final & Mapa estructural completo de tu libro de 80 páginas con (a) ar
 
 \puente{Antes de empezar, mira el viaje completo. En la sesión 2 hiciste escaleta preliminar; en la 3 escribiste prompts; en la 4 iteraste el capítulo 1. Hoy \emph{cierras la estructura completa}. Las próximas 5 sesiones (derechos, portada, diagramación, producción, sustentación) asumen que tu estructura está definida. Sin estructura clara hoy, los próximos capítulos serán improvisación.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Antes de teorizar, vas a hacer una \emph{auditoría rápida} de tu escaleta de la sesión 2. Cuenta cuántas páginas suman tus capítulos planteamiento, cuántas el desarrollo, cuántas el cierre. ¿Se parece a 25-50-25 por ciento? Si no, hay desbalance.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · ANALIZA --- Auditoría rápida de tu escaleta} (15 min · individual). Toma la escaleta de 8-12 capítulos que hiciste en la sesión 2 y asigna a cada capítulo una de 3 etiquetas: \textbf{P} (planteamiento), \textbf{D} (desarrollo) o \textbf{C} (cierre). Suma las páginas estimadas de cada grupo. Compara con el arco ideal: planteamiento 25 por ciento (~20 pp), desarrollo 50 por ciento (~40 pp), cierre 25 por ciento (~20 pp). Calcula si tu escaleta está balanceada o tiene desproporciones. Anota qué descubriste.
 \end{softbox}
 
-\checkbox Etiqueté cada capítulo como P, D o C.\\
-\checkbox Sumé las páginas estimadas por grupo.\\
-\checkbox Comparé con el arco ideal y detecté desproporciones.
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Etiqueté cada capítulo como P, D o C.}
+\milccheckrow{Sumé las páginas estimadas por grupo.}
+\milccheckrow{Comparé con el arco ideal y detecté desproporciones.}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Ya hiciste la auditoría. Ahora vas a entender la \textbf{anatomía de la estructura editorial}: los 3 actos con sus porcentajes, los 3 capítulos pivote, los 6 errores típicos del libro mal estructurado.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Tu auditoría te muestra si la escaleta está balanceada o no. Ahora necesitas la \textbf{anatomía profesional} de la estructura: arco completo, ritmo, capítulos pivote, errores típicos.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & El \textbf{arco narrativo en 3 actos} se descompone así para un libro de 80 páginas: (1) \textbf{Acto 1 Planteamiento (20 pp aprox)}: 2-3 capítulos. Presenta tema, personajes/conceptos, conflicto/pregunta central. Función: \emph{enganchar al lector y dejar claro de qué trata el libro}. (2) \textbf{Acto 2 Desarrollo (40 pp aprox)}: 4-6 capítulos. Profundiza, complica, explora, propone. Función: \emph{sostener el interés con material sustancioso}. (3) \textbf{Acto 3 Cierre (20 pp aprox)}: 2-3 capítulos. Resuelve, concluye, abre futuro. Función: \emph{dejar al lector con algo de valor}. Este arco aplica a novela, manual, divulgación, ensayo: cambian los contenidos pero la estructura funciona.\\
-2. Reconocimiento de patrones & Los \textbf{3 capítulos pivote} se descomponen así: (a) \textbf{Capítulo 1 (apertura)}: en los primeros 5 minutos de lectura, el lector decide si seguir o no. Si la apertura falla, los 79 capítulos restantes no importan. (b) \textbf{Capítulo del medio (~capítulo 5 o 6)}: punto donde muchos lectores abandonan. Aquí debe haber un giro, un dato fuerte, un cambio de ritmo. (c) \textbf{Capítulo final}: cierra o deja sabor a inconforme. Debe tener mejor calidad que el promedio del libro. Estos 3 capítulos merecen escribirse primero o reescribirse más veces.\\
-3. Abstracción & El \textbf{ritmo de páginas} no es uniforme. Capítulos cortos (4-6 pp) sirven para transiciones, ganchos, cierres impactantes. Capítulos largos (10-12 pp) sirven para desarrollo profundo, conceptos complejos, escenas extensas. La regla profesional: \textbf{varía el ritmo para sostener atención}. Si todos los capítulos tienen 8 páginas exactas, el libro se siente monótono.\\
-4. Algoritmo conceptual & Algoritmo: (1) revisar escaleta y balancear hacia 25-50-25. (2) numerar capítulos definitivos. (3) asignar páginas por capítulo con variación intencional. (4) marcar los 3 pivotes (primero, medio, último). (5) verificar que cada capítulo tenga función clara en el arco. (6) escribir mapa estructural en 1 página.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{El \textbf{arco narrativo en 3 actos} se descompone así para un libro de 80 páginas: (1) \textbf{Acto 1 Planteamiento (20 pp aprox)}: 2-3 capítulos. Presenta tema, personajes/conceptos, conflicto/pregunta central. Función: \emph{enganchar al lector y dejar claro de qué trata el libro}. (2) \textbf{Acto 2 Desarrollo (40 pp aprox)}: 4-6 capítulos. Profundiza, complica, explora, propone. Función: \emph{sostener el interés con material sustancioso}. (3) \textbf{Acto 3 Cierre (20 pp aprox)}: 2-3 capítulos. Resuelve, concluye, abre futuro. Función: \emph{dejar al lector con algo de valor}. Este arco aplica a novela, manual, divulgación, ensayo: cambian los contenidos pero la estructura funciona.}
+\milcpaso{2}{milcTurquesa}{Los \textbf{3 capítulos pivote} se descomponen así: (a) \textbf{Capítulo 1 (apertura)}: en los primeros 5 minutos de lectura, el lector decide si seguir o no. Si la apertura falla, los 79 capítulos restantes no importan. (b) \textbf{Capítulo del medio (~capítulo 5 o 6)}: punto donde muchos lectores abandonan. Aquí debe haber un giro, un dato fuerte, un cambio de ritmo. (c) \textbf{Capítulo final}: cierra o deja sabor a inconforme. Debe tener mejor calidad que el promedio del libro. Estos 3 capítulos merecen escribirse primero o reescribirse más veces.}
+\milcpaso{3}{milcTurquesa}{El \textbf{ritmo de páginas} no es uniforme. Capítulos cortos (4-6 pp) sirven para transiciones, ganchos, cierres impactantes. Capítulos largos (10-12 pp) sirven para desarrollo profundo, conceptos complejos, escenas extensas. La regla profesional: \textbf{varía el ritmo para sostener atención}. Si todos los capítulos tienen 8 páginas exactas, el libro se siente monótono.}
+\milcpaso{4}{milcTurquesa}{Algoritmo: (1) revisar escaleta y balancear hacia 25-50-25. (2) numerar capítulos definitivos. (3) asignar páginas por capítulo con variación intencional. (4) marcar los 3 pivotes (primero, medio, último). (5) verificar que cada capítulo tenga función clara en el arco. (6) escribir mapa estructural en 1 página.}
 
 \begin{drawbox}{milcTurquesa}{Anatomía de la estructura editorial}
 \textbf{Acto 1 Planteamiento:} 25 por ciento, 2-3 caps. \\[1mm] \textbf{Acto 2 Desarrollo:} 50 por ciento, 4-6 caps. \\[1mm] \textbf{Acto 3 Cierre:} 25 por ciento, 2-3 caps. \\[1mm] \textbf{Pivotes:} primero, medio, último. \\[1mm] \textbf{Ritmo:} varía páginas con función.
@@ -325,23 +379,16 @@ Tu auditoría te muestra si la escaleta está balanceada o no. Ahora necesitas l
 
 \puente{Tienes el método. Toca aplicarlo: ajustas tu escaleta al arco de 3 actos, asignas ritmo de páginas por capítulo, identificas tus 3 pivotes, escribes el mapa estructural completo.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · CREA + EVALÚA --- Mapa estructural completo} (35 min · individual). Hora de aplicar. Ajustas escaleta al arco, asignas páginas con variación, marcas pivotes, escribes mapa estructural definitivo de 1 página.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & Tu mapa estructural se construye en 5 pasos: (1) tomar escaleta de la sesión 2 con los ajustes que ya quieras hacer. (2) reorganizar capítulos según el arco 25-50-25. (3) asignar páginas por capítulo con variación intencional (algunos cortos, otros largos, según función). (4) identificar y marcar con asterisco los 3 capítulos pivote. (5) escribir el mapa estructural en 1 página: lista de capítulos con título + función en el arco + páginas + indicación si es pivote + resumen de 2 líneas.\\
-Patrones & Sigue el patrón \textbf{``función antes que extensión''}: cada capítulo debe tener una función clara en el arco (enganchar, profundizar, contrastar, dar giro, cerrar). Si no puedes nombrar la función de un capítulo en 1 frase, ese capítulo necesita repensarse o eliminarse. La phronesis del editor consiste en \textbf{no incluir capítulos solo porque \emph{``hace falta llenar páginas''}}.\\
-Abstracción & Los 3 pivotes merecen estrategia específica: (a) \textbf{Capítulo 1}: dedica más tiempo a la apertura. Vale la pena escribir 3 versiones y elegir la mejor. (b) \textbf{Capítulo del medio}: aquí va el dato más fuerte, el giro narrativo, el ejemplo más memorable. No lo desperdicies en información obvia. (c) \textbf{Capítulo final}: debe cerrar con algo que el lector se lleve. Mejor calidad que el promedio.\\
-Algoritmo de armado & Algoritmo: (1) reorganizar escaleta al arco. (2) asignar páginas con variación. (3) marcar pivotes. (4) escribir mapa de 1 página. (5) leerlo en voz alta: ¿se entiende el viaje del lector?, ¿hay capítulos sin función?\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{Tu mapa estructural se construye en 5 pasos: (1) tomar escaleta de la sesión 2 con los ajustes que ya quieras hacer. (2) reorganizar capítulos según el arco 25-50-25. (3) asignar páginas por capítulo con variación intencional (algunos cortos, otros largos, según función). (4) identificar y marcar con asterisco los 3 capítulos pivote. (5) escribir el mapa estructural en 1 página: lista de capítulos con título + función en el arco + páginas + indicación si es pivote + resumen de 2 líneas.}
+\milcpaso{2}{milcMagenta}{Sigue el patrón \textbf{``función antes que extensión''}: cada capítulo debe tener una función clara en el arco (enganchar, profundizar, contrastar, dar giro, cerrar). Si no puedes nombrar la función de un capítulo en 1 frase, ese capítulo necesita repensarse o eliminarse. La phronesis del editor consiste en \textbf{no incluir capítulos solo porque \emph{``hace falta llenar páginas''}}.}
+\milcpaso{3}{milcMagenta}{Los 3 pivotes merecen estrategia específica: (a) \textbf{Capítulo 1}: dedica más tiempo a la apertura. Vale la pena escribir 3 versiones y elegir la mejor. (b) \textbf{Capítulo del medio}: aquí va el dato más fuerte, el giro narrativo, el ejemplo más memorable. No lo desperdicies en información obvia. (c) \textbf{Capítulo final}: debe cerrar con algo que el lector se lleve. Mejor calidad que el promedio.}
+\milcpaso{4}{milcMagenta}{Algoritmo: (1) reorganizar escaleta al arco. (2) asignar páginas con variación. (3) marcar pivotes. (4) escribir mapa de 1 página. (5) leerlo en voz alta: ¿se entiende el viaje del lector?, ¿hay capítulos sin función?}
 
 \begin{drawbox}{milcMagenta}{Checklist antes de entregar}
 \checkbox Arco en 3 actos respetado (25-50-25). \\[1mm] \checkbox 8-12 capítulos numerados con título definitivo. \\[1mm] \checkbox Resumen de 2 líneas por capítulo. \\[1mm] \checkbox Páginas asignadas con variación intencional. \\[1mm] \checkbox 3 pivotes identificados (primero, medio, último). \\[1mm] \checkbox Cada capítulo con función clara en el arco. \\[1mm] \checkbox Mapa estructural cabe en 1 página legible.
@@ -359,9 +406,7 @@ Algoritmo de armado & Algoritmo: (1) reorganizar escaleta al arco. (2) asignar p
 
 \puente{Lo que sigue resume \emph{qué} entregas hoy: mapa estructural completo con arco + capítulos + ritmo + pivotes. El criterio principal: que alguien viendo tu mapa pueda decir \emph{``sí, este libro está bien planeado''}, sin haber leído ningún capítulo.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Mapa estructural con arco + capítulos + ritmo + 3 pivotes}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) Arco 25-50-25 respetado. (2) 8-12 capítulos con título y función. (3) Resumen de 2 líneas por capítulo. (4) Páginas con variación intencional. (5) 3 pivotes marcados. (6) Mapa cabe en 1 página legible.
@@ -369,9 +414,7 @@ Producto de la sesión
 
 \puente{Antes de cerrar, mira la estructura desde las cinco dimensiones humanas. Estructurar antes de escribir es respeto por el lector futuro; improvisar es desperdicio del periodo entero.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -397,12 +440,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Y para terminar, tres voces sobre el plano antes del ladrillo. Dussel sobre los libros que ordenan o desordenan el pensamiento del lector, Marco Aurelio sobre la disciplina del plan previo, Floridi sobre la estructura como ética del editor.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{``Un libro bien estructurado ordena el pensamiento del lector; uno mal estructurado lo desordena y desperdicia su atención.''}
+\textit{Un libro bien estructurado ordena el pensamiento del lector; uno mal estructurado lo desordena y desperdicia su atención.}
 
 La estructura editorial no es trámite: es \textbf{respeto cognitivo por el lector}. Cuando el libro tiene arco claro, el lector camina seguro por el contenido. Cuando es desordenado, el lector se cansa y abandona. La filosofía de la liberación pide ese cuidado: no desordenar al lector con improvisación editorial. La phronesis del editor consiste en \textbf{cargar tú el peso de la estructura para que el lector solo cargue el del contenido}.
 
@@ -412,7 +453,7 @@ La estructura editorial no es trámite: es \textbf{respeto cognitivo por el lect
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
-\textit{``El plan previo es disciplina; la improvisación editorial es vanidad disfrazada de espontaneidad.''}
+\textit{El plan previo es disciplina; la improvisación editorial es vanidad disfrazada de espontaneidad.}
 
 Es tentador empezar a escribir capítulos sin haber cerrado la estructura, con el argumento de \emph{``ya iré viendo''}. La sabiduría estoica recomienda lo opuesto: \emph{cierra el plano antes de los ladrillos}. La estructura previa parece lenta pero es lo único que produce libros coherentes. Los libros improvisados se notan en el desorden.
 
@@ -422,7 +463,7 @@ Es tentador empezar a escribir capítulos sin haber cerrado la estructura, con e
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{``La estructura clara es ética del editor en la era del contenido infinito.''}
+\textit{La estructura clara es ética del editor en la era del contenido infinito.}
 
 En la era de la información, los lectores tienen miles de libros disponibles. La ética editorial pide estructurar para que el libro merezca el tiempo del lector. Quien publica libros mal estructurados desperdicia atención humana. Tu mapa estructural de hoy te entrena en esa práctica que rige toda producción editorial profesional: \textbf{respetar el tiempo del lector con estructura clara}.
 
@@ -431,21 +472,24 @@ En la era de la información, los lectores tienen miles de libros disponibles. L
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

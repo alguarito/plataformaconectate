@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 11};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 11};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Pitch ---\\contar la historia\\de tu proyecto}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 26-11-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 3 · Proyecto final emprendedor}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 3 · Proyecto final emprendedor}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Pitch ---\\contar la historia\\de tu proyecto}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 26-11-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} Pitch deck de 7 slides estructurado (problema, afectados, solución, MVP, datos, modelo, llamada) + guion escrito de 3 minutos con tiempos por slide + grabación de ensayo de 3 minutos exactos hecha con celular, escuchada y autocorregida al menos 2 veces};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Pitch deck de 7 slides estructurado (problema, afectados, solución, MVP, datos, modelo, llamada) + guion escrito de 3 minutos con tiempos por slide + grabación de ensayo de 3 minutos exactos hecha con celular, escuchada y autocorregida al menos 2 veces
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Pitch --- contar la historia de tu proyecto}
@@ -258,30 +322,27 @@ Producto final & Pitch deck de 7 slides estructurado (problema, afectados, soluc
 
 \puente{Antes de empezar, mira el viaje completo. Llevas 5 sesiones de trabajo silencioso: problema (S1), validación (S2), modelo (S3), MVP (S4), datos (S5). Hoy todo eso \textbf{se convierte en historia} de 3 minutos. La sesión 7 trabajará marca, la 8 finanzas; pero el pitch de hoy es la primera vez que el proyecto se vuelve público. Las próximas sesiones afinan; esta sesión define el tono narrativo del cierre.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Antes de teorizar, vas a hacer una \emph{destilación}: en 3 minutos personales, cuéntale a un compañero o a ti mismo en voz alta lo que has hecho en las sesiones 1-5. Sin guion, sin slides, sin filtros. Esa primera versión cruda revela qué partes naturalmente recuerdas como importantes y qué partes están floja o ausente.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- Cuento crudo de mi proyecto en 3 minutos} (15 min · individual). Sin slides, sin guion escrito, sin filtros: cuéntate a ti mismo (en voz alta, frente al cuaderno o a un espejo, o grabándote con el celular sin editar) lo que has hecho en las sesiones 1 a 5. Reglas: (1) máximo 3 minutos cronometrados; (2) cuenta como si le hablaras a un familiar o amigo, no a un profesor; (3) no leas de la guía: \emph{recuerda}. Al terminar, anota: ¿qué naturalmente recordé primero?, ¿qué olvidé?, ¿qué parte sonó floja o vacía? Esta primera versión cruda es la materia prima del pitch.
 \end{softbox}
 
-\checkbox Conté el proyecto en voz alta sin leer guion.\\
-\checkbox Me ajusté a 3 minutos cronometrados.\\
-\checkbox Anoté qué recordé primero, qué olvidé, qué sonó flojo.
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Conté el proyecto en voz alta sin leer guion.}
+\milccheckrow{Me ajusté a 3 minutos cronometrados.}
+\milccheckrow{Anoté qué recordé primero, qué olvidé, qué sonó flojo.}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Ya tienes la versión cruda. Ahora vas a entender la \textbf{anatomía del pitch profesional}: los 7 slides estándar con su contenido específico, la regla de tiempo (1 slide ≈ 25-30 segundos), los 6 errores típicos del pitch novato (slide repleta de texto, hablar de uno y no del usuario, datos sin baseline, sin pedido al final, voz monótona, exceso de detalle técnico).}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Un pitch novato es 20 slides desordenadas. Un pitch profesional es 7 slides con arquitectura narrativa. Para que el tuyo sea del segundo tipo necesitas la anatomía estándar del Y Combinator y los errores típicos que matan la atención del oyente en el segundo 20.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & El pitch profesional se descompone en 7 slides: (1) \textbf{Problema} (25 seg): el dolor real, con persona concreta y dato (sesión 1-2). (2) \textbf{Afectados} (20 seg): cuántas personas viven este dolor y dónde están. (3) \textbf{Solución} (25 seg): qué propones, en 1 frase con verbo de cambio. (4) \textbf{MVP/Producto} (30 seg): imagen del MVP de la sesión 4 + las 3 piezas (captura, valor, respuesta). (5) \textbf{Datos/Tracción} (30 seg): los 3 hallazgos numéricos de la sesión 5 con honestidad de muestra. (6) \textbf{Modelo} (25 seg): cómo gana plata el proyecto (Canvas reducido a 1 línea). (7) \textbf{Llamada/Pedido} (25 seg): qué le pides al oyente concretamente (alianza, retroalimentación, contacto, inversión, voto, contratación).\\
-2. Reconocimiento de patrones & La \textbf{regla de tiempo} es ley de oficio: 7 slides × 25-30 segundos = 3 a 3,5 minutos. Si una slide te toma 1 minuto, otras dos quedaron sin tiempo. La phronesis del pitch consiste en \textbf{distribuir el tiempo equitativamente}, con 5 segundos extra solo para la slide de datos (la más importante junto con el problema). El cronómetro es tu mejor crítico.\\
-3. Abstracción & Lo esencial cabe en una pregunta: \emph{¿el oyente se interesará por el problema antes del segundo 20?}. Si la respuesta es no, perdiste el pitch entero. La slide 1 (problema) es la más importante: tiene que enganchar con imagen concreta, persona real, dato medible, no con generalidades. Los pitch que arrancan con \emph{``en Colombia hay X millones de…''} pierden a la audiencia antes de la primera idea.\\
-4. Algoritmo conceptual & Algoritmo: (1) escribe el guion de 3 minutos en prosa antes de hacer las slides (el guion manda, las slides ilustran); (2) descompón el guion en 7 párrafos correspondientes a los 7 slides; (3) reduce cada slide a \emph{1 idea visual + máximo 7 palabras} (regla 7×7 invertida: no más de 7 palabras por slide); (4) diseña con consistencia visual mínima (1 tipografía, 2-3 colores, espacios respirables); (5) ensaya en voz alta sin público; (6) graba con celular y escúchate; (7) corrige 2 debilidades concretas (verbosidad, voz monótona, rigidez, miedo, falta de evidencia).\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{El pitch profesional se descompone en 7 slides: (1) \textbf{Problema} (25 seg): el dolor real, con persona concreta y dato (sesión 1-2). (2) \textbf{Afectados} (20 seg): cuántas personas viven este dolor y dónde están. (3) \textbf{Solución} (25 seg): qué propones, en 1 frase con verbo de cambio. (4) \textbf{MVP/Producto} (30 seg): imagen del MVP de la sesión 4 + las 3 piezas (captura, valor, respuesta). (5) \textbf{Datos/Tracción} (30 seg): los 3 hallazgos numéricos de la sesión 5 con honestidad de muestra. (6) \textbf{Modelo} (25 seg): cómo gana plata el proyecto (Canvas reducido a 1 línea). (7) \textbf{Llamada/Pedido} (25 seg): qué le pides al oyente concretamente (alianza, retroalimentación, contacto, inversión, voto, contratación).}
+\milcpaso{2}{milcTurquesa}{La \textbf{regla de tiempo} es ley de oficio: 7 slides × 25-30 segundos = 3 a 3,5 minutos. Si una slide te toma 1 minuto, otras dos quedaron sin tiempo. La phronesis del pitch consiste en \textbf{distribuir el tiempo equitativamente}, con 5 segundos extra solo para la slide de datos (la más importante junto con el problema). El cronómetro es tu mejor crítico.}
+\milcpaso{3}{milcTurquesa}{Lo esencial cabe en una pregunta: \emph{¿el oyente se interesará por el problema antes del segundo 20?}. Si la respuesta es no, perdiste el pitch entero. La slide 1 (problema) es la más importante: tiene que enganchar con imagen concreta, persona real, dato medible, no con generalidades. Los pitch que arrancan con \emph{``en Colombia hay X millones de…''} pierden a la audiencia antes de la primera idea.}
+\milcpaso{4}{milcTurquesa}{Algoritmo: (1) escribe el guion de 3 minutos en prosa antes de hacer las slides (el guion manda, las slides ilustran); (2) descompón el guion en 7 párrafos correspondientes a los 7 slides; (3) reduce cada slide a \emph{1 idea visual + máximo 7 palabras} (regla 7×7 invertida: no más de 7 palabras por slide); (4) diseña con consistencia visual mínima (1 tipografía, 2-3 colores, espacios respirables); (5) ensaya en voz alta sin público; (6) graba con celular y escúchate; (7) corrige 2 debilidades concretas (verbosidad, voz monótona, rigidez, miedo, falta de evidencia).}
 
 \begin{drawbox}{milcTurquesa}{Anatomía del pitch de 7 slides}
 \textbf{1. Problema (25 seg):} dolor con persona y dato. \\[1mm] \textbf{2. Afectados (20 seg):} cuántos y dónde. \\[1mm] \textbf{3. Solución (25 seg):} qué propones en 1 frase. \\[1mm] \textbf{4. MVP (30 seg):} imagen + 3 piezas. \\[1mm] \textbf{5. Datos (30 seg):} 3 hallazgos numéricos. \\[1mm] \textbf{6. Modelo (25 seg):} cómo gana plata. \\[1mm] \textbf{7. Pedido (25 seg):} qué le pides al oyente.
@@ -325,23 +379,16 @@ Un pitch novato es 20 slides desordenadas. Un pitch profesional es 7 slides con 
 
 \puente{Tienes el método. Toca aplicarlo: construir las 7 slides con frases cortas y 1 idea visual por slide, escribir el guion hablado de 3 minutos, ensayar en voz alta sin público, grabarte con el celular, escucharte 2 veces y corregir 2 debilidades.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · CREA + EVALÚA --- Pitch deck + grabación + autocrítica} (45 min en sesión, 1-2 horas de ensayo en casa · individual). Hora de armar. Construyes el deck de 7 slides en Canva, Google Slides o Keynote; escribes el guion de 3 minutos en prosa; ensayas frente al espejo; grabas con celular; te escuchas 2 veces; identificas 3 debilidades; corriges 2.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & Tu pitch deck se construye en 6 pasos: (1) escribir el guion completo en prosa (700-800 palabras = 3 minutos hablados); (2) dividir en 7 párrafos correspondientes a slides; (3) diseñar cada slide con la regla de 7 palabras o menos + 1 imagen o gráfico; (4) usar plantilla mínima consistente (1 tipografía, 2-3 colores, espacios respirables); (5) ensayar 3 veces en voz alta sin grabar para que el cuerpo aprenda; (6) grabar con celular en horizontal, escucharse completo, corregir.\\
-Patrones & Sigue el patrón \textbf{``palabra hablada sobre slide leída''}: las slides son apoyo visual, no transcripción. Si el oyente puede leer tu slide y entender, no necesita escucharte. La phronesis del pitch consiste en que la slide diga lo mínimo y tu voz diga lo importante. Steve Jobs llamó a esto \emph{``demand attention, not divide it''}.\\
-Abstracción & La autocrítica al escuchar la grabación se estructura en 4 dimensiones: (a) \textbf{Tiempo}: ¿pasé de 3,5 min? ¿alguna slide se llevó demasiado tiempo? (b) \textbf{Voz}: ¿soné monótono o vivo? ¿leí o conté? (c) \textbf{Estructura}: ¿el oyente entendió el problema antes del segundo 20? ¿hice el pedido al final? (d) \textbf{Evidencia}: ¿los 3 hallazgos numéricos quedaron claros con contexto?\\
-Algoritmo de armado & Algoritmo: (1) escribe el guion; (2) construye las slides; (3) ensaya 3 veces sin grabar; (4) graba; (5) escúchate completo sin pausar; (6) escúchate de nuevo anotando las 3 debilidades; (7) corrige las 2 más graves antes de la próxima sesión; (8) opcional: pide a un familiar que vea el pitch y te diga si entendió el problema.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{Tu pitch deck se construye en 6 pasos: (1) escribir el guion completo en prosa (700-800 palabras = 3 minutos hablados); (2) dividir en 7 párrafos correspondientes a slides; (3) diseñar cada slide con la regla de 7 palabras o menos + 1 imagen o gráfico; (4) usar plantilla mínima consistente (1 tipografía, 2-3 colores, espacios respirables); (5) ensayar 3 veces en voz alta sin grabar para que el cuerpo aprenda; (6) grabar con celular en horizontal, escucharse completo, corregir.}
+\milcpaso{2}{milcMagenta}{Sigue el patrón \textbf{``palabra hablada sobre slide leída''}: las slides son apoyo visual, no transcripción. Si el oyente puede leer tu slide y entender, no necesita escucharte. La phronesis del pitch consiste en que la slide diga lo mínimo y tu voz diga lo importante. Steve Jobs llamó a esto \emph{``demand attention, not divide it''}.}
+\milcpaso{3}{milcMagenta}{La autocrítica al escuchar la grabación se estructura en 4 dimensiones: (a) \textbf{Tiempo}: ¿pasé de 3,5 min? ¿alguna slide se llevó demasiado tiempo? (b) \textbf{Voz}: ¿soné monótono o vivo? ¿leí o conté? (c) \textbf{Estructura}: ¿el oyente entendió el problema antes del segundo 20? ¿hice el pedido al final? (d) \textbf{Evidencia}: ¿los 3 hallazgos numéricos quedaron claros con contexto?}
+\milcpaso{4}{milcMagenta}{Algoritmo: (1) escribe el guion; (2) construye las slides; (3) ensaya 3 veces sin grabar; (4) graba; (5) escúchate completo sin pausar; (6) escúchate de nuevo anotando las 3 debilidades; (7) corrige las 2 más graves antes de la próxima sesión; (8) opcional: pide a un familiar que vea el pitch y te diga si entendió el problema.}
 
 \begin{drawbox}{milcMagenta}{Checklist antes de entregar el pitch}
 \checkbox 7 slides construidas con título y máximo 7 palabras de texto. \\[1mm] \checkbox Guion escrito en prosa de 700-800 palabras. \\[1mm] \checkbox Estructura: Problema, Afectados, Solución, MVP, Datos, Modelo, Pedido. \\[1mm] \checkbox Ensayado 3 veces en voz alta sin grabar. \\[1mm] \checkbox Grabación de 3 minutos exactos hecha con celular. \\[1mm] \checkbox Escucharon la grabación al menos 2 veces. \\[1mm] \checkbox 3 debilidades identificadas, 2 corregidas.
@@ -359,9 +406,7 @@ Algoritmo de armado & Algoritmo: (1) escribe el guion; (2) construye las slides;
 
 \puente{Lo que sigue resume \emph{qué} entregas hoy: pitch deck de 7 slides + guion escrito + grabación de ensayo de 3 minutos. El criterio principal: que un familiar que no conoce tu proyecto, después de ver tu pitch, pueda contarlo en sus propias palabras a otra persona en 1 minuto. Si no puede, el pitch falló su misión.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Pitch deck de 7 slides + guion escrito + grabación de ensayo de 3 min}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) Estructura de 7 slides estándar respetada. (2) Cada slide con máximo 7 palabras + 1 elemento visual. (3) Guion escrito en prosa de 700-800 palabras. (4) Grabación de 3 minutos exactos hecha con celular. (5) Autocrítica con 3 debilidades identificadas. (6) Al menos 2 debilidades corregidas antes de cerrar.
@@ -369,9 +414,7 @@ Producto de la sesión
 
 \puente{Antes de cerrar, mira el pitch desde las cinco dimensiones humanas. Contar tu proyecto con honestidad narrativa es respeto por la audiencia entera; inflar los datos para impresionar es traición al oficio.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -397,12 +440,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Y para terminar, tres voces sobre la palabra y la verdad. Dussel sobre el pitch que da voz al afectado o se la quita, Séneca sobre la sobriedad narrativa, Floridi sobre la ética de comunicar evidencia en la era de la atención escasa.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{``Todo pitch decide si da voz al afectado o se la quita; no hay narrativa neutra.''}
+\textit{Todo pitch decide si da voz al afectado o se la quita; no hay narrativa neutra.}
 
 Tu pitch puede tener al afectado en el centro (\emph{``María, la tendera del barrio Obrero, pierde 30 mil pesos a la semana porque…''}) o puede tenerse a sí mismo en el centro (\emph{``mi idea es genial porque…''}). La filosofía de la liberación pide lo primero: que la persona que sufre el problema aparezca con nombre, oficio y voz en la slide 1. Sin afectado nombrado, el pitch es propaganda. Con afectado nombrado, el pitch es honesto.
 
@@ -412,7 +453,7 @@ Tu pitch puede tener al afectado en el centro (\emph{``María, la tendera del ba
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Séneca · cuidado interior}
-\textit{``Habla sobrio o no hables; el discurso inflado revela carácter inflado.''}
+\textit{Habla sobrio o no hables; el discurso inflado revela carácter inflado.}
 
 Es tentador inflar los datos (\emph{``500 visitas''} cuando fueron 50), exagerar el impacto (\emph{``revolucionario''} cuando es solo útil), prometer escala (\emph{``escalable a millones''} cuando aún no tienes 10 usuarios). La sobriedad estoica recomienda lo contrario: \emph{di lo que es, ni más grande ni más pequeño}. El oyente experimentado detecta la inflación en el segundo 30 y deja de escuchar. La sobriedad es la mayor demostración de seguridad profesional.
 
@@ -422,7 +463,7 @@ Es tentador inflar los datos (\emph{``500 visitas''} cuando fueron 50), exagerar
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{``Comunicar evidencia con honestidad es la nueva ética profesional en la era de la atención escasa.''}
+\textit{Comunicar evidencia con honestidad es la nueva ética profesional en la era de la atención escasa.}
 
 La era de la información compite por atención: cada oyente tiene 100 pitches por mes pidiendo sus 3 minutos. La ética digital contemporánea exige no engañar para retener atención. Pitches que inflan, exageran o ocultan limitaciones erosionan la confianza colectiva en el ecosistema emprendedor. Tu pitch, aunque sea escolar, es entrenamiento ético: si te acostumbras a inflar hoy, lo harás cuando los montos sean reales.
 
@@ -431,21 +472,24 @@ La era de la información compite por atención: cada oyente tiene 100 pitches p
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

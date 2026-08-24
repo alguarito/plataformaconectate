@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 8};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 8};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Tablas de verdad ---\\AND, OR, NOT\\como reglas universales}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 12-8-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 2 · Lógica, algoritmos y computación física}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 2 · Lógica, algoritmos y computación física}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Tablas de verdad ---\\AND, OR, NOT\\como reglas universales}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 12-8-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} Tabla de verdad completa de los 3 operadores básicos (AND, OR, NOT) + 3 situaciones reales del colegio modeladas con tablas de verdad propias (sistema de aprobación de materia, permiso de salida temprana, descuento en tienda escolar) + análisis escrito de 1 error lógico común detectado en una situación real (publicidad engañosa, requisito ambiguo, regla de un juego)};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Tabla de verdad completa de los 3 operadores básicos (AND, OR, NOT) + 3 situaciones reales del colegio modeladas con tablas de verdad propias (sistema de aprobación de materia, permiso de salida temprana, descuento en tienda escolar) + análisis escrito de 1 error lógico común detectado en una situación real (publicidad engañosa, requisito ambiguo, regla de un juego)
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Tablas de verdad --- AND, OR, NOT como reglas universales}
@@ -258,30 +322,27 @@ Producto final & Tabla de verdad completa de los 3 operadores básicos (AND, OR,
 
 \puente{Antes de empezar, mira el viaje completo. En la sesión 1 aprendiste a usar AND, OR y NOT en algoritmos. Hoy aprendes a \emph{verificarlos formalmente} con tablas de verdad. Las próximas sesiones (pseudocódigo, micro:bit) usarán esta habilidad: cualquier programa con varias condiciones se verifica con tabla de verdad antes de ejecutarse.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Antes de teorizar, vas a hacer un \emph{experimento del juez}: lees 3 reglas reales que existen en tu colegio (\emph{``para perder la materia hay que tener menos de 3 Y haber faltado más de 10 veces''}, etc.) y vas a verificar con tabla de verdad si la regla cubre todos los casos justamente.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- El experimento del juez (15 min · individual)}. Toma 1 regla real de tu colegio (\emph{``para reprobar el periodo hay que tener menos de 3 Y haber faltado más de 10 veces''}, o cualquier otra con 2 condiciones combinadas). Construye una tabla con 4 filas: (V,V), (V,F), (F,V), (F,F). Para cada combinación, anota qué dice la regla (¿reprobado o aprobado?). ¿Hay alguna combinación que la regla no cubre claramente? Esa es la grieta lógica del enunciado real.
 \end{softbox}
 
-\checkbox Elegí una regla real del colegio.\\
-\checkbox Construí tabla de 4 filas con las combinaciones.\\
-\checkbox Detecté si la regla cubre o no todas las combinaciones.
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Elegí una regla real del colegio.}
+\milccheckrow{Construí tabla de 4 filas con las combinaciones.}
+\milccheckrow{Detecté si la regla cubre o no todas las combinaciones.}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Ya hiciste el experimento. Ahora vas a entender la \textbf{anatomía de las tablas de verdad}: las 4 filas obligatorias para 2 condiciones, las 8 filas para 3, los 5 errores típicos del análisis lógico (olvidar una fila, mezclar AND con OR, no nombrar las columnas, contradicciones, casos imposibles).}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Las tablas son herramienta de verificación. Ahora necesitas la \textbf{anatomía completa de los 3 operadores básicos} y la regla para construir tablas con más condiciones.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & Las tablas de verdad de los 3 operadores básicos son fijas y universales: (1) \textbf{AND} (V solo si ambos V): \texttt{V,V→V}; \texttt{V,F→F}; \texttt{F,V→F}; \texttt{F,F→F}. Solo 1 caso verdadero. (2) \textbf{OR} (V si al menos uno V): \texttt{V,V→V}; \texttt{V,F→V}; \texttt{F,V→V}; \texttt{F,F→F}. Solo 1 caso falso. (3) \textbf{NOT} (invierte): \texttt{V→F}; \texttt{F→V}. Estas tablas son ley del pensamiento computacional: nunca cambian, sirven para cualquier lenguaje, cualquier sistema.\\
-2. Reconocimiento de patrones & La regla del \textbf{número de combinaciones}: con n condiciones binarias hay $2^n$ combinaciones posibles. Con 2 condiciones: 4 filas. Con 3: 8 filas. Con 4: 16 filas. Cuanto más complejo el algoritmo, más filas. Por eso los programadores profesionales prefieren descomponer reglas grandes en pequeñas: una tabla de 16 filas es difícil de verificar a ojo; dos tablas de 4 conectadas son manejables.\\
-3. Abstracción & Lo esencial cabe en una pregunta: \emph{¿mi regla produce una respuesta clara para cada combinación posible?}. Si una combinación queda sin respuesta o con respuesta ambigua, la regla tiene una grieta. La phronesis del oficio computacional consiste en \textbf{cerrar todas las grietas con casos explícitos antes de ejecutar el algoritmo}.\\
-4. Algoritmo conceptual & Algoritmo para verificar una regla con tabla de verdad: (1) identifica las condiciones simples (variables booleanas). (2) cuenta cuántas filas necesita la tabla ($2^n$). (3) llena las combinaciones de entrada de manera ordenada (V,V; V,F; F,V; F,F para 2). (4) aplica la regla a cada combinación y anota el resultado. (5) busca filas con resultado ambiguo o contradictorio. (6) si hay grietas, ajusta la regla.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{Las tablas de verdad de los 3 operadores básicos son fijas y universales: (1) \textbf{AND} (V solo si ambos V): \texttt{V,V→V}; \texttt{V,F→F}; \texttt{F,V→F}; \texttt{F,F→F}. Solo 1 caso verdadero. (2) \textbf{OR} (V si al menos uno V): \texttt{V,V→V}; \texttt{V,F→V}; \texttt{F,V→V}; \texttt{F,F→F}. Solo 1 caso falso. (3) \textbf{NOT} (invierte): \texttt{V→F}; \texttt{F→V}. Estas tablas son ley del pensamiento computacional: nunca cambian, sirven para cualquier lenguaje, cualquier sistema.}
+\milcpaso{2}{milcTurquesa}{La regla del \textbf{número de combinaciones}: con n condiciones binarias hay $2^n$ combinaciones posibles. Con 2 condiciones: 4 filas. Con 3: 8 filas. Con 4: 16 filas. Cuanto más complejo el algoritmo, más filas. Por eso los programadores profesionales prefieren descomponer reglas grandes en pequeñas: una tabla de 16 filas es difícil de verificar a ojo; dos tablas de 4 conectadas son manejables.}
+\milcpaso{3}{milcTurquesa}{Lo esencial cabe en una pregunta: \emph{¿mi regla produce una respuesta clara para cada combinación posible?}. Si una combinación queda sin respuesta o con respuesta ambigua, la regla tiene una grieta. La phronesis del oficio computacional consiste en \textbf{cerrar todas las grietas con casos explícitos antes de ejecutar el algoritmo}.}
+\milcpaso{4}{milcTurquesa}{Algoritmo para verificar una regla con tabla de verdad: (1) identifica las condiciones simples (variables booleanas). (2) cuenta cuántas filas necesita la tabla ($2^n$). (3) llena las combinaciones de entrada de manera ordenada (V,V; V,F; F,V; F,F para 2). (4) aplica la regla a cada combinación y anota el resultado. (5) busca filas con resultado ambiguo o contradictorio. (6) si hay grietas, ajusta la regla.}
 
 \begin{drawbox}{milcTurquesa}{Anatomía de las tablas de verdad}
 \textbf{AND:} solo V,V $\to$ V. \\[1mm] \textbf{OR:} solo F,F $\to$ F. \\[1mm] \textbf{NOT:} invierte. \\[1mm] \textbf{Filas:} $2^n$ con n condiciones. \\[1mm] \textbf{Grieta:} combinación sin respuesta clara.
@@ -325,23 +379,16 @@ Las tablas son herramienta de verificación. Ahora necesitas la \textbf{anatomí
 
 \puente{Tienes el método. Toca aplicarlo: armas las tablas de verdad de los 3 operadores básicos, modelas 3 situaciones del colegio con tablas propias, y analizas 1 error lógico común detectándolo con tabla de verdad.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · ANALIZA + EVALÚA --- 3 tablas reales + 1 error analizado} (35 min · individual). Hora de aplicar. Construyes tablas de verdad para 3 situaciones reales del colegio y analizas 1 error lógico común que encontrarás en publicidad, reglas o juegos.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & Las 3 situaciones reales del colegio sugeridas: (1) \textbf{Aprobación de materia}: condiciones (nota>=3 AND asistencia>=80\%). Tabla de 4 filas. (2) \textbf{Permiso de salida temprana}: condiciones (autorización\_padre OR cita\_médica) AND firma\_coordinador. Tabla con 3 condiciones = 8 filas. (3) \textbf{Descuento en tienda escolar}: condiciones (es\_miércoles\_de\_la\_promo AND compra>=5000) OR (cliente\_frecuente AND NO\_es\_temporada\_alta). Tabla con 4 condiciones = 16 filas. Para cada una, identifica la combinación que produciría la decisión final.\\
-Patrones & El análisis del error lógico común tiene estructura simple: (a) elige una publicidad, un juego, una regla real que tenga combinación de condiciones. (b) construye su tabla de verdad. (c) busca: ¿hay alguna combinación contradictoria?, ¿alguna que la regla no aclara qué pasa?, ¿alguna que el anunciante esconde? Documenta el hallazgo en 1 párrafo.\\
-Abstracción & Sigue el patrón \textbf{``verificar antes de creer''}: cuando alguien te presenta una regla con varias condiciones (\emph{``Si compras X y Y, recibes Z''}), construye su tabla de verdad antes de aceptarla. Muchas veces la regla esconde que la combinación favorable es muy poco probable. La phronesis del consumidor consiste en \textbf{tabular antes de confiar}.\\
-Algoritmo de armado & Algoritmo: (1) para cada situación, identifica condiciones. (2) construye tabla con $2^n$ filas. (3) aplica la regla a cada fila. (4) detecta grietas o contradicciones. (5) elige 1 error lógico real para analizar. (6) escribe párrafo de hallazgo.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{Las 3 situaciones reales del colegio sugeridas: (1) \textbf{Aprobación de materia}: condiciones (nota>=3 AND asistencia>=80\%). Tabla de 4 filas. (2) \textbf{Permiso de salida temprana}: condiciones (autorización\_padre OR cita\_médica) AND firma\_coordinador. Tabla con 3 condiciones = 8 filas. (3) \textbf{Descuento en tienda escolar}: condiciones (es\_miércoles\_de\_la\_promo AND compra>=5000) OR (cliente\_frecuente AND NO\_es\_temporada\_alta). Tabla con 4 condiciones = 16 filas. Para cada una, identifica la combinación que produciría la decisión final.}
+\milcpaso{2}{milcMagenta}{El análisis del error lógico común tiene estructura simple: (a) elige una publicidad, un juego, una regla real que tenga combinación de condiciones. (b) construye su tabla de verdad. (c) busca: ¿hay alguna combinación contradictoria?, ¿alguna que la regla no aclara qué pasa?, ¿alguna que el anunciante esconde? Documenta el hallazgo en 1 párrafo.}
+\milcpaso{3}{milcMagenta}{Sigue el patrón \textbf{``verificar antes de creer''}: cuando alguien te presenta una regla con varias condiciones (\emph{``Si compras X y Y, recibes Z''}), construye su tabla de verdad antes de aceptarla. Muchas veces la regla esconde que la combinación favorable es muy poco probable. La phronesis del consumidor consiste en \textbf{tabular antes de confiar}.}
+\milcpaso{4}{milcMagenta}{Algoritmo: (1) para cada situación, identifica condiciones. (2) construye tabla con $2^n$ filas. (3) aplica la regla a cada fila. (4) detecta grietas o contradicciones. (5) elige 1 error lógico real para analizar. (6) escribe párrafo de hallazgo.}
 
 \begin{drawbox}{milcMagenta}{Checklist antes de entregar}
 \checkbox 3 tablas de verdad universales (AND, OR, NOT) completadas. \\[1mm] \checkbox Tabla de aprobación de materia armada. \\[1mm] \checkbox Tabla de permiso de salida temprana armada. \\[1mm] \checkbox Tabla de descuento en tienda armada. \\[1mm] \checkbox Cada tabla con columnas nombradas (no solo A, B). \\[1mm] \checkbox 1 error lógico real analizado en párrafo de hallazgo. \\[1mm] \checkbox Grietas o contradicciones detectadas declaradas.
@@ -359,9 +406,7 @@ Algoritmo de armado & Algoritmo: (1) para cada situación, identifica condicione
 
 \puente{Lo que sigue resume \emph{qué} entregas hoy: 3 tablas de verdad básicas + 3 tablas de situaciones reales + análisis de 1 error lógico. El criterio principal: que cualquier compañero, viendo tus tablas, pueda confirmar o cuestionar cada combinación.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{3 tablas universales + 3 tablas reales + análisis de error lógico}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) Tablas de verdad de AND, OR, NOT completas. (2) 3 tablas de situaciones reales del colegio. (3) Columnas con nombres descriptivos. (4) 1 error lógico real analizado. (5) Grietas o contradicciones declaradas. (6) Tablas con número correcto de filas ($2^n$).
@@ -369,9 +414,7 @@ Producto de la sesión
 
 \puente{Antes de cerrar, mira las tablas desde las cinco dimensiones humanas. Verificar todas las combinaciones es respeto por la justicia del juez del cabildo; saltarse algunas es repetir errores que la sabiduría comunitaria evitó durante siglos.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -397,12 +440,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Y para terminar, tres voces sobre la verdad formal. Dussel sobre las reglas que excluyen sin tabla de verdad, Marco Aurelio sobre la claridad del pensamiento, Floridi sobre la lógica formal como ética del oficio digital.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{``Una regla que no cubre todos los casos repite la lógica del sistema que excluye a quien queda en la grieta.''}
+\textit{Una regla que no cubre todos los casos repite la lógica del sistema que excluye a quien queda en la grieta.}
 
 Cuando un sistema de aprobación, permiso o beneficio tiene grietas en su tabla de verdad, alguien quedará sin respuesta del sistema. Si la regla del descuento dice \emph{``cliente frecuente Y compra mayor a X''} y no aclara qué pasa cuando un cliente frecuente compra menos, hay grieta que excluye sin justificación. La filosofía de la liberación pide cerrar esas grietas: no dejar a nadie sin respuesta. La phronesis del oficio consiste en \textbf{tabular para que nadie quede afuera por descuido}.
 
@@ -412,7 +453,7 @@ Cuando un sistema de aprobación, permiso o beneficio tiene grietas en su tabla 
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
-\textit{``Verificar antes de aceptar es virtud; aceptar reglas sin tabular es debilidad disfrazada de confianza.''}
+\textit{Verificar antes de aceptar es virtud; aceptar reglas sin tabular es debilidad disfrazada de confianza.}
 
 Es tentador aceptar reglas presentadas con seguridad sin verificar. La disciplina estoica recomienda lo opuesto: \emph{tabula antes de aceptar}. Una regla publicitaria que parece favorable puede esconder, al tabular, que la combinación ganadora es casi imposible. Esa verificación lógica es virtud profesional del pensamiento computacional.
 
@@ -422,7 +463,7 @@ Es tentador aceptar reglas presentadas con seguridad sin verificar. La disciplin
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{``La lógica formal explícita es la nueva ética del oficio en la era de los algoritmos invisibles.''}
+\textit{La lógica formal explícita es la nueva ética del oficio en la era de los algoritmos invisibles.}
 
 Los algoritmos toman decisiones invisibles sobre nuestras vidas: créditos, recomendaciones, accesos. La ética digital exige que esas decisiones sean revisables con lógica formal. Tu habilidad de tabla de verdad te entrena para auditar algoritmos del mundo real. Sin tabular, los algoritmos parecen mágicos; tabulando, se revelan como reglas que se pueden discutir.
 
@@ -431,21 +472,24 @@ Los algoritmos toman decisiones invisibles sobre nuestras vidas: créditos, reco
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

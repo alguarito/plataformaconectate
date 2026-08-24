@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 7};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 7};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Condicionales ---\\el si...\\entonces\\de los\\algoritmos}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 16-7-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 2 · Algoritmia y pensamiento computacional}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 2 · Algoritmia y pensamiento computacional}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Condicionales ---\\el si...\\entonces\\de los\\algoritmos}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 16-7-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} Un \textbf{algoritmo en lenguaje natural} que usa al menos \textbf{3 condicionales} (estructura si-entonces-si no). Tema escogido por ti: \emph{``algoritmo del paraguas''}, \emph{``algoritmo de la calificación''}, \emph{``algoritmo del semáforo''}, etc. Más \textbf{su diagrama de flujo} (aplicando S4: rombos con SÍ/NO etiquetados). Más \textbf{tabla de los 6 operadores de comparación} en el cuaderno.};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Un \textbf{algoritmo en lenguaje natural} que usa al menos \textbf{3 condicionales} (estructura si-entonces-si no). Tema escogido por ti: \emph{``algoritmo del paraguas''}, \emph{``algoritmo de la calificación''}, \emph{``algoritmo del semáforo''}, etc. Más \textbf{su diagrama de flujo} (aplicando S4: rombos con SÍ/NO etiquetados). Más \textbf{tabla de los 6 operadores de comparación} en el cuaderno.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Condicionales --- el si... entonces de los algoritmos}
@@ -258,30 +322,27 @@ Producto final & Un \textbf{algoritmo en lenguaje natural} que usa al menos \tex
 
 \puente{Hoy haces 4 cosas: identificas decisiones en situaciones reales, aprendes la estructura + operadores, escribes algoritmo con 3 condicionales, dibujas el diagrama.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Empezamos identificando decisiones que ya tomas hoy.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- Decisiones de tu día} (10 min · individual). En el cuaderno, anota \textbf{6 decisiones} que tomas en un día normal (desde que te despiertas hasta que duermes). Para cada una, escríbela en formato condicional: \emph{``SI [condición], ENTONCES [acción 1]; SI NO, [acción 2]''}. Ejemplos: \emph{``SI llueve, ENTONCES llevo paraguas; SI NO, no lo llevo''}. \emph{``SI hay desayuno en la mesa, ENTONCES desayuno; SI NO, voy directo al colegio''}. \emph{``SI termino la tarea, ENTONCES puedo jugar; SI NO, sigo trabajando''}. Lista 6 reales tuyas.
 \end{softbox}
 
-\checkbox Pensé en mi día normal.\\
-\checkbox Anoté 6 decisiones reales.\\
-\checkbox Las formulé en estructura SI-ENTONCES-SI NO.
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Pensé en mi día normal.}
+\milccheckrow{Anoté 6 decisiones reales.}
+\milccheckrow{Las formulé en estructura SI-ENTONCES-SI NO.}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Después aprendes la estructura formal + los 6 operadores.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Lo que hiciste son \textbf{condicionales de la vida real}. Tomas más de 100 decisiones así al día sin darte cuenta. Ahora aprende la estructura formal + los 6 operadores que se usan para comparar.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & \textbf{La estructura del condicional simple.} En lenguaje natural: \emph{SI [condición] ENTONCES [acción]}. Si la condición no se cumple, simplemente no se ejecuta la acción. Ejemplo: \emph{``SI llueve, ENTONCES llevo paraguas''}. \textbf{Estructura del condicional doble (si-no):} \emph{SI [condición] ENTONCES [acción 1] SI NO [acción 2]}. Aquí siempre se ejecuta alguna de las 2 acciones, según la condición. Ejemplo: \emph{``SI llueve, ENTONCES llevo paraguas; SI NO, no lo llevo''}.\\
-2. Reconocimiento de patrones & \textbf{Los 6 operadores de comparación.} Para escribir condiciones, usamos estos símbolos: \textbf{(1) = igual a:} \texttt{edad = 13} ¿es la edad exactamente 13? \textbf{(2) $\neq$ distinto a:} \texttt{nombre $\neq$ ``Pedro''} ¿el nombre no es Pedro? \textbf{(3) > mayor que:} \texttt{precio > 100} ¿el precio es mayor que 100? \textbf{(4) < menor que:} \texttt{altura < 1.50} ¿la altura es menor que 1.50? \textbf{(5) $\geq$ mayor o igual:} \texttt{nota $\geq$ 3.5} ¿la nota es mayor o igual a 3.5 (es decir, aprueba)? \textbf{(6) $\leq$ menor o igual:} \texttt{edad $\leq$ 12} ¿la edad es menor o igual a 12 (es decir, niño)?.\\
-3. Abstracción & \textbf{Condicionales anidados (uno dentro de otro).} Cuando una decisión depende de la anterior, se anidan. Ejemplo del semáforo: \emph{SI luz = ``verde'' ENTONCES seguir. SI NO SI luz = ``amarillo'' ENTONCES disminuir velocidad. SI NO ENTONCES detenerse}. Esto se escribe escalonado para mayor claridad. \textbf{Pista:} no anides más de 3 condicionales seguidos --- se vuelve enredado. Si necesitas más, probablemente es mejor descomponer en sub-algoritmos.\\
-4. Algoritmo conceptual & \textbf{Conexión con diagramas de flujo (S4).} Cada condicional en el algoritmo se representa con un \textbf{rombo de decisión}: adentro va la condición (pregunta), dos flechas salen con SÍ y NO. \textbf{Cómo dibujarlo:} (a) rombo con la pregunta dentro; (b) flecha SÍ que lleva al rectángulo de la acción 1; (c) flecha NO que lleva al rectángulo de la acción 2; (d) ambas flechas convergen al siguiente paso común. Si tienes 3 condicionales en tu algoritmo, tu diagrama tendrá 3 rombos.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{\textbf{La estructura del condicional simple.} En lenguaje natural: \emph{SI [condición] ENTONCES [acción]}. Si la condición no se cumple, simplemente no se ejecuta la acción. Ejemplo: \emph{``SI llueve, ENTONCES llevo paraguas''}. \textbf{Estructura del condicional doble (si-no):} \emph{SI [condición] ENTONCES [acción 1] SI NO [acción 2]}. Aquí siempre se ejecuta alguna de las 2 acciones, según la condición. Ejemplo: \emph{``SI llueve, ENTONCES llevo paraguas; SI NO, no lo llevo''}.}
+\milcpaso{2}{milcTurquesa}{\textbf{Los 6 operadores de comparación.} Para escribir condiciones, usamos estos símbolos: \textbf{(1) = igual a:} \texttt{edad = 13} ¿es la edad exactamente 13? \textbf{(2) $\neq$ distinto a:} \texttt{nombre $\neq$ ``Pedro''} ¿el nombre no es Pedro? \textbf{(3) > mayor que:} \texttt{precio > 100} ¿el precio es mayor que 100? \textbf{(4) < menor que:} \texttt{altura < 1.50} ¿la altura es menor que 1.50? \textbf{(5) $\geq$ mayor o igual:} \texttt{nota $\geq$ 3.5} ¿la nota es mayor o igual a 3.5 (es decir, aprueba)? \textbf{(6) $\leq$ menor o igual:} \texttt{edad $\leq$ 12} ¿la edad es menor o igual a 12 (es decir, niño)?.}
+\milcpaso{3}{milcTurquesa}{\textbf{Condicionales anidados (uno dentro de otro).} Cuando una decisión depende de la anterior, se anidan. Ejemplo del semáforo: \emph{SI luz = ``verde'' ENTONCES seguir. SI NO SI luz = ``amarillo'' ENTONCES disminuir velocidad. SI NO ENTONCES detenerse}. Esto se escribe escalonado para mayor claridad. \textbf{Pista:} no anides más de 3 condicionales seguidos --- se vuelve enredado. Si necesitas más, probablemente es mejor descomponer en sub-algoritmos.}
+\milcpaso{4}{milcTurquesa}{\textbf{Conexión con diagramas de flujo (S4).} Cada condicional en el algoritmo se representa con un \textbf{rombo de decisión}: adentro va la condición (pregunta), dos flechas salen con SÍ y NO. \textbf{Cómo dibujarlo:} (a) rombo con la pregunta dentro; (b) flecha SÍ que lleva al rectángulo de la acción 1; (c) flecha NO que lleva al rectángulo de la acción 2; (d) ambas flechas convergen al siguiente paso común. Si tienes 3 condicionales en tu algoritmo, tu diagrama tendrá 3 rombos.}
 
 \begin{drawbox}{milcTurquesa}{Condicionales + 6 operadores}
 \textbf{Estructura simple:} SI [condición] ENTONCES [acción]. \\[1mm]
@@ -329,23 +383,18 @@ Lo que hiciste son \textbf{condicionales de la vida real}. Tomas más de 100 dec
 
 \puente{Con todo claro, escribes algoritmo + diagrama de flujo.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · APLICA --- Algoritmo con 3 condicionales + diagrama} (30 min · individual). Vas a escribir un algoritmo de tu vida que use al menos 3 condicionales, y dibujarlo en diagrama de flujo.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & \textbf{Paso 1 --- Escoge el tema del algoritmo.} En el cuaderno escribe: \emph{``Mi algoritmo: \_\_\_\_\_''}. Tiene que ser algo que requiera al menos 3 decisiones. Sugerencias: \emph{``Algoritmo del paraguas''} (¿llueve? ¿hace frío? ¿voy a salir mucho?), \emph{``Algoritmo de la calificación''} (¿saca más de 4.5? excelente; ¿más de 3.5? aprueba; ¿menos? falla), \emph{``Algoritmo del fin de semana''} (¿es viernes? ¿es sábado? ¿hay tareas pendientes?), \emph{``Algoritmo de qué ropa ponerme''} (¿es para colegio? ¿hace frío? ¿llueve?).\\
-Patrones & \textbf{Paso 2 --- Lista las variables que necesitas.} Si tu algoritmo usa información que cambia, son variables (S5). Ejemplo del paraguas: \texttt{estaLloviendo} (booleano), \texttt{vaASalir} (booleano), \texttt{horasFuera} (número). Lista las variables al inicio del algoritmo.\\
-Abstracción & \textbf{Paso 3 --- Escribe el algoritmo en lenguaje natural.} Estructura: \emph{INICIO. (entrada de variables). PASO 1 con un condicional. PASO 2 con condicional. PASO 3 con condicional. SALIDA. FIN}. Ejemplo del paraguas: \emph{``INICIO. Variables: estaLloviendo, vaASalir, horasFuera. PASO 1: SI estaLloviendo = verdadero ENTONCES llevarParaguas = verdadero. SI NO, llevarParaguas = falso. PASO 2: SI vaASalir = falso ENTONCES llevarParaguas = falso (no necesito si no salgo). PASO 3: SI horasFuera > 5 ENTONCES llevarParaguasGrande = verdadero. SI NO, llevarParaguasGrande = falso. SALIDA: Decisión final. FIN.''}.\\
-Algoritmo de armado & \textbf{Paso 4 --- Dibuja el diagrama de flujo.} Aplica lo aprendido en S4: óvalo INICIO → procesos → rombos para cada condicional → óvalo FIN. Tu diagrama tendrá \textbf{3 rombos} (uno por condicional). Cada rombo con sus 2 flechas etiquetadas SÍ/NO.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{\textbf{Paso 1 --- Escoge el tema del algoritmo.} En el cuaderno escribe: \emph{``Mi algoritmo: \_\_\_\_\_''}. Tiene que ser algo que requiera al menos 3 decisiones. Sugerencias: \emph{``Algoritmo del paraguas''} (¿llueve? ¿hace frío? ¿voy a salir mucho?), \emph{``Algoritmo de la calificación''} (¿saca más de 4.5? excelente; ¿más de 3.5? aprueba; ¿menos? falla), \emph{``Algoritmo del fin de semana''} (¿es viernes? ¿es sábado? ¿hay tareas pendientes?), \emph{``Algoritmo de qué ropa ponerme''} (¿es para colegio? ¿hace frío? ¿llueve?).}
+\milcpaso{2}{milcMagenta}{\textbf{Paso 2 --- Lista las variables que necesitas.} Si tu algoritmo usa información que cambia, son variables (S5). Ejemplo del paraguas: \texttt{estaLloviendo} (booleano), \texttt{vaASalir} (booleano), \texttt{horasFuera} (número). Lista las variables al inicio del algoritmo.}
+\milcpaso{3}{milcMagenta}{\textbf{Paso 3 --- Escribe el algoritmo en lenguaje natural.} Estructura: \emph{INICIO. (entrada de variables). PASO 1 con un condicional. PASO 2 con condicional. PASO 3 con condicional. SALIDA. FIN}. Ejemplo del paraguas: \emph{``INICIO. Variables: estaLloviendo, vaASalir, horasFuera. PASO 1: SI estaLloviendo = verdadero ENTONCES llevarParaguas = verdadero. SI NO, llevarParaguas = falso. PASO 2: SI vaASalir = falso ENTONCES llevarParaguas = falso (no necesito si no salgo). PASO 3: SI horasFuera > 5 ENTONCES llevarParaguasGrande = verdadero. SI NO, llevarParaguasGrande = falso. SALIDA: Decisión final. FIN.''}.}
+\milcpaso{4}{milcMagenta}{\textbf{Paso 4 --- Dibuja el diagrama de flujo.} Aplica lo aprendido en S4: óvalo INICIO → procesos → rombos para cada condicional → óvalo FIN. Tu diagrama tendrá \textbf{3 rombos} (uno por condicional). Cada rombo con sus 2 flechas etiquetadas SÍ/NO.}
+\milcpaso{5}{milcMagenta}{\textbf{Paso 5 --- Tabla de operadores.} En una esquina del cuaderno, dibuja una tabla con los 6 operadores: =, ≠, >, <, ≥, ≤. Al lado de cada uno, el significado en español. Marca cuáles usaste en tu algoritmo.}
+\milcpaso{6}{milcMagenta}{\textbf{Paso 6 --- Prueba mental + reflexión.} Imagina 2 valores distintos para tus variables (\emph{caso 1: lloviendo y voy a salir; caso 2: soleado y no salgo}). Ejecuta el algoritmo mentalmente para los 2 casos y verifica que da resultados correctos. Al final escribe: \emph{``El condicional que más me costó escribir fue \_\_\_. El operador que más usé fue \_\_\_''}. Firma con nombre y fecha.}
 
 \begin{drawbox}{milcMagenta}{Antes de cerrar la S6}
 \checkbox Mi algoritmo tiene tema claro y útil. \\[1mm]
@@ -368,9 +417,7 @@ Algoritmo de armado & \textbf{Paso 4 --- Dibuja el diagrama de flujo.} Aplica lo
 
 \puente{El producto es algoritmo + diagrama + tabla de operadores.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Algoritmo con 3 condicionales + diagrama de flujo · 6 operadores aplicados}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) El algoritmo tiene mínimo 3 condicionales con estructura completa. (2) Las variables están listadas al inicio. (3) El diagrama de flujo tiene 3 rombos con SÍ/NO etiquetados. (4) La tabla de operadores está completa. (5) Se hizo prueba mental con valores distintos.
@@ -378,9 +425,7 @@ Producto de la sesión
 
 \puente{Antes de salir, verifica que cada condicional tiene su SI NO.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -406,12 +451,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Cerramos con 3 voces sobre por qué tomar decisiones con criterio es virtud universal.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{````Toda decisión es un condicional. SI quiero ser justo, ENTONCES debo escuchar. La vida ética es algoritmo aplicado.''''}
+\textit{``Toda decisión es un condicional. SI quiero ser justo, ENTONCES debo escuchar. La vida ética es algoritmo aplicado.''}
 
 Las decisiones éticas también son condicionales: \emph{``SI mi amigo necesita ayuda, ENTONCES la ofrezco''}, \emph{``SI veo una injusticia, ENTONCES no callo''}. Aprender a pensar en condicionales no es solo programación: \textbf{es aprender a estructurar tu vida moral}. Las abuelas cocineras tomaban decisiones técnicas (ingredientes) y éticas (¿alcanza para los vecinos?) con la misma estructura mental. \emph{El condicional es la forma básica del pensamiento responsable}.
 
@@ -421,7 +464,7 @@ Las decisiones éticas también son condicionales: \emph{``SI mi amigo necesita 
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
-\textit{````El sabio no decide por impulso. Pregunta: SI hago esto, ¿qué pasa? SI no, ¿qué pasa? Y elige con criterio.''''}
+\textit{``El sabio no decide por impulso. Pregunta: SI hago esto, ¿qué pasa? SI no, ¿qué pasa? Y elige con criterio.''}
 
 Marco Aurelio gobernaba un imperio. \textbf{Cada decisión la pensaba como condicional}: \emph{``SI envío estas tropas a Galia, ENTONCES protejo el norte pero debilito el sur. SI NO, conservo el balance''}. La habilidad de \emph{pensar en condicionales} antes de actuar es lo que separa al estoico del impulsivo. Tú con tus algoritmos entrenas esa virtud antigua en lenguaje moderno.
 
@@ -431,7 +474,7 @@ Marco Aurelio gobernaba un imperio. \textbf{Cada decisión la pensaba como condi
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{````Los algoritmos modernos toman decisiones por nosotros: qué video ver, qué amigo recomendar. Entender los condicionales es entender cómo deciden esos algoritmos.''''}
+\textit{``Los algoritmos modernos toman decisiones por nosotros: qué video ver, qué amigo recomendar. Entender los condicionales es entender cómo deciden esos algoritmos.''}
 
 Cuando TikTok te recomienda un video, está ejecutando algoritmos con \textbf{millones de condicionales} (SI le gustaron videos similares, ENTONCES recomendar este). Cuando un banco aprueba un crédito, también: condicionales sobre tu historial. \emph{Entender qué son los condicionales te abre la caja negra de los algoritmos que rigen tu vida}. No para programar a Big Tech, sino para no ser sujeto pasivo.
 
@@ -440,21 +483,24 @@ Cuando TikTok te recomienda un video, está ejecutando algoritmos con \textbf{mi
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

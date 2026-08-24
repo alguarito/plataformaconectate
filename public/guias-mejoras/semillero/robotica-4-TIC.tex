@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,51 +229,65 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont MÓDULO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SEMILLERO DE INVESTIGACIÓN · CONECTATE};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont MÓDULO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SEMILLERO DE INVESTIGACIÓN · CONECTATE};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 4};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 4};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
   
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Probar, medir, mejorar ---\\de la espiral del\\tiempo Misak\\al prototipo que evoluciona}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Robótica y sistemas embebidos}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Módulo 4 · Fase MILC: Evaluación liberadora · 3 h de clase}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Módulo 4 · Fase MILC: Evaluación liberadora · 3 h de clase}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Probar, medir, mejorar ---\\de la espiral del\\tiempo Misak\\al prototipo que evoluciona}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Robótica y sistemas embebidos}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} Tu \textbf{prototipo evolucionado, con su historia documentada}: el \textbf{registro de pruebas, fallas y depuración} (qué falló, por qué, qué cambiaste); una \textbf{versión mejorada} con una \textbf{iteración sostenida en evidencia} (mediste antes y después); y una \textbf{nota honesta de límites}: qué NO hace tu aparato, y \textbf{a quién le sirve y a quién no}. Con esto cierras tu segundo proyecto de investigación completo ---y abres la pregunta del siguiente.};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Tu \textbf{prototipo evolucionado, con su historia documentada}: el \textbf{registro de pruebas, fallas y depuración} (qué falló, por qué, qué cambiaste); una \textbf{versión mejorada} con una \textbf{iteración sostenida en evidencia} (mediste antes y después); y una \textbf{nota honesta de límites}: qué NO hace tu aparato, y \textbf{a quién le sirve y a quién no}. Con esto cierras tu segundo proyecto de investigación completo ---y abres la pregunta del siguiente.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Probar, medir, mejorar --- de la espiral del tiempo Misak al prototipo que evoluciona}
@@ -257,30 +321,27 @@ Producto final & Tu \textbf{prototipo evolucionado, con su historia documentada}
 
 \puente{Escuchaste (módulo 1), diseñaste (módulo 2) y construiste (módulo 3). Hoy \textbf{cierras la espiral}: evalúas tu prototipo de frente, lo haces mejor con evidencia, y reconoces con honestidad qué hace y qué no.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Antes de mejorar, mira atrás como el Misak: saca tu prototipo del módulo 3 y sus 5 pruebas. Ahí está lo que hay que entender para avanzar.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- Mirar atrás las fallas} (40 min · individual + grupo). \textbf{Momento A (10 min) --- La espiral Misak.} El profe presenta el tiempo en espiral de los Misak (mirar atrás para avanzar) y pregunta: \emph{¿por qué mejorar mirando lo hecho lleva más lejos que empezar de cero cada vez?}. \textbf{Momento B (15 min) --- Autopsia de mi prototipo.} Cada quien saca su prototipo del módulo 3 y su tabla de 5 escenarios, y hace su \textbf{autopsia}: ¿cuáles pasó y cuáles no? Para cada falla, escribe el \textbf{síntoma} (\emph{qué hizo mal}) y \textbf{una causa probable} (\emph{umbral muy bajo, regla incompleta, sensor contaminado}). \textbf{Momento C (15 min) --- ¿A quién sirve, a quién no?} En parejas, cada uno le cuenta al otro para quién hizo su aparato, y juntos buscan \textbf{a quién NO le serviría} o en qué caso \textbf{fallaría de forma peligrosa}. \textbf{En el cuaderno:} tus fallas con síntoma y causa probable + una nota inicial de a quién sirve y a quién no.
 \end{softbox}
 
-\checkbox Puedo explicar por qué mejorar mirando lo hecho supera empezar de cero.\\
-\checkbox Hice la autopsia de mi prototipo, con cada falla en su síntoma y causa probable.\\
-\checkbox Escribí a quién le sirve mi aparato y a quién no (o dónde fallaría).
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Puedo explicar por qué mejorar mirando lo hecho supera empezar de cero.}
+\milccheckrow{Hice la autopsia de mi prototipo, con cada falla en su síntoma y causa probable.}
+\milccheckrow{Escribí a quién le sirve mi aparato y a quién no (o dónde fallaría).}
 
 \begin{infoband}{milcVerde}
 
@@ -290,23 +351,16 @@ Fase 1 · Escucha
 
 \puente{Ya viste tus fallas. Ahora aprende el oficio de mejorar: depurar buscando la causa, el ciclo de una mejora por vuelta, evaluar con evidencia y reconocer límites.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 \textbf{Actividad 2 · EXPLICA --- El oficio de mejorar} (55 min · grupo + individual). Ya viste tus fallas. Ahora aprende a convertirlas en una mejor versión: \textbf{depurar} buscando la causa, girar el \textbf{ciclo de mejora}, evaluar con \textbf{evidencia}, y reconocer \textbf{límites y ética}.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & \textbf{Pilar 1 --- Depurar es buscar la causa, no adivinar.} Cuando algo falla, el principiante cambia cosas al azar hasta que «funcione» ---y nunca sabe por qué. El investigador \textbf{sigue el agua hasta la gotera}: lee el \textbf{síntoma} (\emph{en el escenario 3 mostró sol estando oscuro}), plantea \textbf{una hipótesis} de causa (\emph{el umbral está muy bajo}), la \textbf{pone a prueba} (sube el umbral y vuelve al escenario 3), y si no era, plantea otra. \textbf{Una causa a la vez.} Depurar así no solo arregla el aparato: te \emph{enseña} cómo funciona. La falla, mirada de frente, es la mejor maestra.\\
-2. Reconocimiento de patrones & \textbf{Pilar 2 --- El ciclo de mejora: una cosa por vuelta.} Mejorar es girar un lazo: \textbf{probar → observar dónde falla → cambiar UNA cosa → volver a probar}. La regla de oro está en el centro: \textbf{una sola cosa por vuelta}. Si cambias el umbral \emph{y} la regla \emph{y} el ícono a la vez y mejora, no sabrás cuál lo arregló ---ni podrás repetirlo. Cambia una, comprueba, anota; luego la siguiente. Es la espiral Misak hecha método: cada vuelta vuelve al aparato con \textbf{una} cosa aprendida, y sube un poco. \emph{Rehacer todo es tentador y casi siempre peor: pierdes lo que ya servía.}\\
-3. Abstracción & \textbf{Pilar 3 --- Evaluar con evidencia: mide antes y después.} «Quedó mejor» no es una evaluación: es una opinión. Evaluar es \textbf{poner un número}. Elige un \textbf{criterio} claro ---\emph{¿cuántos de los 5 escenarios pasa? ¿en cuántos de 10 intentos acierta?}--- y mídelo \textbf{antes} de tu mejora y \textbf{después}. \emph{``Pasaba 3 de 5; cambié el umbral; ahora pasa 5 de 5''}: eso es una mejora \textbf{demostrada}, no sentida. Y si tras el cambio empeoró en otro escenario, la evidencia también te lo dirá ---y eso es oro, porque las mejoras a veces rompen lo que ya andaba. \textbf{Medir antes y después es lo que separa mejorar de creer que mejoraste.}\\
-4. Algoritmo conceptual & \textbf{Pilar 4 --- Límites y ética: qué no hace y a quién sirve.} Ningún aparato lo hace todo, y decirlo es de investigador maduro. Reconoce sus \textbf{límites}: qué condiciones no maneja (\emph{con poca luz se confunde}), qué tan probado está (\emph{solo 5 escenarios, un lugar}). Y su \textbf{ética}: \textbf{a quién sirve} (la abuela que oirá el timbre) y \textbf{a quién no} ---o dónde fallar sería \textbf{peligroso}. Una alarma \emph{ayuda} a vigilar, pero \textbf{no reemplaza} el cuidado humano; presentarla como una garantía sería engañar a quien confía en ella. \emph{Un aparato honesto dice, junto a lo que hace, lo que no hace ---sobre todo cuando alguien podría confiarle algo importante.}\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{\textbf{Pilar 1 --- Depurar es buscar la causa, no adivinar.} Cuando algo falla, el principiante cambia cosas al azar hasta que «funcione» ---y nunca sabe por qué. El investigador \textbf{sigue el agua hasta la gotera}: lee el \textbf{síntoma} (\emph{en el escenario 3 mostró sol estando oscuro}), plantea \textbf{una hipótesis} de causa (\emph{el umbral está muy bajo}), la \textbf{pone a prueba} (sube el umbral y vuelve al escenario 3), y si no era, plantea otra. \textbf{Una causa a la vez.} Depurar así no solo arregla el aparato: te \emph{enseña} cómo funciona. La falla, mirada de frente, es la mejor maestra.}
+\milcpaso{2}{milcTurquesa}{\textbf{Pilar 2 --- El ciclo de mejora: una cosa por vuelta.} Mejorar es girar un lazo: \textbf{probar → observar dónde falla → cambiar UNA cosa → volver a probar}. La regla de oro está en el centro: \textbf{una sola cosa por vuelta}. Si cambias el umbral \emph{y} la regla \emph{y} el ícono a la vez y mejora, no sabrás cuál lo arregló ---ni podrás repetirlo. Cambia una, comprueba, anota; luego la siguiente. Es la espiral Misak hecha método: cada vuelta vuelve al aparato con \textbf{una} cosa aprendida, y sube un poco. \emph{Rehacer todo es tentador y casi siempre peor: pierdes lo que ya servía.}}
+\milcpaso{3}{milcTurquesa}{\textbf{Pilar 3 --- Evaluar con evidencia: mide antes y después.} «Quedó mejor» no es una evaluación: es una opinión. Evaluar es \textbf{poner un número}. Elige un \textbf{criterio} claro ---\emph{¿cuántos de los 5 escenarios pasa? ¿en cuántos de 10 intentos acierta?}--- y mídelo \textbf{antes} de tu mejora y \textbf{después}. \emph{``Pasaba 3 de 5; cambié el umbral; ahora pasa 5 de 5''}: eso es una mejora \textbf{demostrada}, no sentida. Y si tras el cambio empeoró en otro escenario, la evidencia también te lo dirá ---y eso es oro, porque las mejoras a veces rompen lo que ya andaba. \textbf{Medir antes y después es lo que separa mejorar de creer que mejoraste.}}
+\milcpaso{4}{milcTurquesa}{\textbf{Pilar 4 --- Límites y ética: qué no hace y a quién sirve.} Ningún aparato lo hace todo, y decirlo es de investigador maduro. Reconoce sus \textbf{límites}: qué condiciones no maneja (\emph{con poca luz se confunde}), qué tan probado está (\emph{solo 5 escenarios, un lugar}). Y su \textbf{ética}: \textbf{a quién sirve} (la abuela que oirá el timbre) y \textbf{a quién no} ---o dónde fallar sería \textbf{peligroso}. Una alarma \emph{ayuda} a vigilar, pero \textbf{no reemplaza} el cuidado humano; presentarla como una garantía sería engañar a quien confía en ella. \emph{Un aparato honesto dice, junto a lo que hace, lo que no hace ---sobre todo cuando alguien podría confiarle algo importante.}}
 
 \begin{drawbox}{milcTurquesa}{Depurar + ciclo de mejora + evidencia + límites}
 \textbf{Depurar:} síntoma → una hipótesis de causa → probarla → si no, otra. Una causa a la vez. \\[1mm]
@@ -327,23 +381,18 @@ Fase 2 · Sistematización con pensamiento computacional
 
 \puente{Ya tienes las herramientas. Es hora de dar la vuelta de la espiral: iterar una mejora real, medir que sirvió, y escribir con honestidad los límites de tu aparato.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · EVALÚA + CREA --- Da la vuelta de la espiral} (75 min · individual o parejas). Hora de mejorar de verdad. Vas a \textbf{depurar} una falla, \textbf{iterar} una mejora midiendo antes y después, y escribir la \textbf{nota honesta de límites} de tu aparato ---para cerrar la línea con un prototipo que evolucionó.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & \textbf{Paso 1 --- Elige una falla y su causa (10 min).} De tu autopsia, elige \textbf{la falla que más importe} (la que rompe un escenario clave o la más peligrosa). Escribe su \textbf{síntoma} y \textbf{una hipótesis} de causa, concreta y comprobable: \emph{``en penumbra muestra sol; creo que el umbral está muy bajo''}. No dos hipótesis: una.\\
-Patrones & \textbf{Paso 2 --- Mide el «antes» (10 min).} Antes de tocar nada, define tu \textbf{criterio} y mide el estado actual: \emph{``de 5 escenarios paso 3''}, o \emph{``de 10 intentos acierta 6''}. Anótalo. \textbf{Sin este número, no podrás demostrar que mejoraste} ---solo creerlo.\\
-Abstracción & \textbf{Paso 3 --- Cambia UNA cosa y vuelve a probar (20 min).} Aplica \textbf{un solo} cambio guiado por tu hipótesis (sube el umbral, completa la regla). Corre otra vez los escenarios y mide el \textbf{«después»}: \emph{``ahora paso 5 de 5''}. \textbf{¿Mejoró? ¿empeoró algo más?} Anota el resultado. Si no mejoró, tu hipótesis no era ---vuelve al Paso 1 con otra causa. Así gira la espiral.\\
-Algoritmo de armado & \textbf{Paso 4 --- Documenta la iteración (10 min).} Escribe tu mejora como \textbf{historia con evidencia}: \emph{``Falla: en penumbra mostraba sol. Causa: umbral en 20, muy bajo. Cambio: subí el umbral a 40. Antes: 3/5. Después: 5/5''}. Esa frase ---con números antes y después--- es la joya del módulo: prueba que mejoraste \textbf{con evidencia}, no con suerte.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{\textbf{Paso 1 --- Elige una falla y su causa (10 min).} De tu autopsia, elige \textbf{la falla que más importe} (la que rompe un escenario clave o la más peligrosa). Escribe su \textbf{síntoma} y \textbf{una hipótesis} de causa, concreta y comprobable: \emph{``en penumbra muestra sol; creo que el umbral está muy bajo''}. No dos hipótesis: una.}
+\milcpaso{2}{milcMagenta}{\textbf{Paso 2 --- Mide el «antes» (10 min).} Antes de tocar nada, define tu \textbf{criterio} y mide el estado actual: \emph{``de 5 escenarios paso 3''}, o \emph{``de 10 intentos acierta 6''}. Anótalo. \textbf{Sin este número, no podrás demostrar que mejoraste} ---solo creerlo.}
+\milcpaso{3}{milcMagenta}{\textbf{Paso 3 --- Cambia UNA cosa y vuelve a probar (20 min).} Aplica \textbf{un solo} cambio guiado por tu hipótesis (sube el umbral, completa la regla). Corre otra vez los escenarios y mide el \textbf{«después»}: \emph{``ahora paso 5 de 5''}. \textbf{¿Mejoró? ¿empeoró algo más?} Anota el resultado. Si no mejoró, tu hipótesis no era ---vuelve al Paso 1 con otra causa. Así gira la espiral.}
+\milcpaso{4}{milcMagenta}{\textbf{Paso 4 --- Documenta la iteración (10 min).} Escribe tu mejora como \textbf{historia con evidencia}: \emph{``Falla: en penumbra mostraba sol. Causa: umbral en 20, muy bajo. Cambio: subí el umbral a 40. Antes: 3/5. Después: 5/5''}. Esa frase ---con números antes y después--- es la joya del módulo: prueba que mejoraste \textbf{con evidencia}, no con suerte.}
+\milcpaso{5}{milcMagenta}{\textbf{Paso 5 --- Escribe la nota de límites y ética (15 min).} En un recuadro aparte: \textbf{Qué NO hace} mi aparato (condiciones que no maneja, qué tan probado está). \textbf{A quién le sirve} (la persona concreta) y \textbf{a quién NO le basta} (dónde haría falta algo más). \textbf{Dónde fallar sería grave} (si aplica) y por eso \textbf{no debe usarse como garantía}. \emph{Escribir esto no debilita tu trabajo: lo vuelve confiable y honesto, digno de la palabra caminada.}}
+\milcpaso{6}{milcMagenta}{\textbf{Paso 6 --- Cierra la línea de Robótica (10 min).} Cierra tu cuaderno con la \textbf{evaluación liberadora} de toda la línea: \emph{¿Qué aprendí escuchando, diseñando, construyendo y mejorando? ¿Qué error me enseñó más? ¿A quién le sirve lo que hice? ¿Qué nueva pregunta me llevo?}. \emph{Esa pregunta nueva es el centro de tu próxima espiral} ---el arranque de otro itinerario, en robótica o en cualquier línea del semillero.}
 
 \begin{drawbox}{milcMagenta}{Antes de cerrar tu prototipo evolucionado}
 \checkbox Elegí una falla con una hipótesis de causa concreta y comprobable. \\[1mm]
@@ -368,9 +417,7 @@ Algoritmo de armado & \textbf{Paso 4 --- Documenta la iteración (10 min).} Escr
 
 \puente{El producto no es un aparato «perfecto»: es uno \textbf{evaluado y mejorado con evidencia}, con sus límites a la vista. Eso vale más que uno que nunca falló porque nunca se probó.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Prototipo evolucionado — iteración con evidencia + nota de límites y ética}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) La depuración parte de un síntoma y una hipótesis de causa comprobable. (2) Se cambió una sola cosa por iteración (no varias a la vez). (3) La mejora está demostrada con un criterio medido antes y después (números). (4) Hay una nota de límites que declara qué no hace el aparato y a quién sirve y a quién no. (5) Cierra con una evaluación liberadora de la línea y una pregunta nueva.
@@ -378,9 +425,7 @@ Producto de la sesión
 
 \puente{Antes de cerrar, mírate como investigador de toda la línea: ¿qué aprendiste construyendo?, ¿qué error te enseñó más?, ¿a quién le sirve lo que hiciste?}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -406,12 +451,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Cerramos con 3 voces que te ayudan a entender por qué corregirse, reconocer los límites y cuidar a quien usa tu aparato es la parte más madura de investigar.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{``Analéctico quiere indicar el hecho real humano por el que todo hombre, todo grupo o pueblo se sitúa siempre más allá (aná-) del horizonte de la totalidad.''}
+\textit{Analéctico quiere indicar el hecho real humano por el que todo hombre, todo grupo o pueblo se sitúa siempre más allá (aná-) del horizonte de la totalidad.}
 
 Dussel dice que siempre hay realidad \emph{más allá} de mi horizonte. Tu prototipo es una totalidad pequeña: probaste 5 escenarios, en un lugar, unos días. \textbf{Reconocer sus límites es admitir que hay muchísimos casos afuera de tu horizonte} ---los que no probaste, las personas a quienes no les basta. Por eso decir «a quién NO le sirve» no es rebajar tu aparato: es honrar lo que queda por fuera. \textbf{Un investigador honesto no confunde su totalidad con todo el mundo.}
 
@@ -421,7 +464,7 @@ Dussel dice que siempre hay realidad \emph{más allá} de mi horizonte. Tu proto
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · Meditaciones VI, 21 (c. 175 d.C.) · cuidado interior}
-\textit{``Si alguien puede refutarme y probar de modo concluyente que pienso o actúo incorrectamente, de buen grado cambiaré de proceder. Pues persigo la verdad, que no dañó nunca a nadie; en cambio, sí se daña el que persiste en su propio engaño e ignorancia.''}
+\textit{Si alguien puede refutarme y probar de modo concluyente que pienso o actúo incorrectamente, de buen grado cambiaré de proceder. Pues persigo la verdad, que no dañó nunca a nadie; en cambio, sí se daña el que persiste en su propio engaño e ignorancia.}
 
 Marco Aurelio pone la verdad por encima de tener razón. Toda esta fase es eso: cuando un escenario \textbf{te refuta} ---muestra que tu aparato falla---, la respuesta madura no es defenderlo, es \textbf{cambiar de buen grado}. Persistir en un prototipo que falla «porque me costó hacerlo» es aferrarse al propio engaño. \textbf{Iterar es la forma técnica de amar la verdad más que el orgullo}: dejas que la prueba te corrija, y por eso tu aparato mejora.
 
@@ -431,7 +474,7 @@ Marco Aurelio pone la verdad por encima de tener razón. Toda esta fase es eso: 
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{``El florecimiento de las entidades informacionales y de toda la infoesfera debe promoverse preservando, cultivando y enriqueciendo sus propiedades.''}
+\textit{El florecimiento de las entidades informacionales y de toda la infoesfera debe promoverse preservando, cultivando y enriqueciendo sus propiedades.}
 
 Floridi pide cuidar el entorno común de la información, como se cuida un río. Tu aparato entra al mundo de otras personas: si prometes que una alarma «garantiza» algo que no garantiza, \textbf{contaminas} la confianza de quien la usa ---y el daño puede ser real. Decir con honestidad a quién sirve y a quién no, qué hace y qué no, \textbf{enriquece} ese entorno común en vez de ensuciarlo. \textbf{Cuidar a quien usará tu aparato es parte de construirlo bien.}
 
@@ -440,21 +483,24 @@ Floridi pide cuidar el entorno común de la información, como se cuida un río.
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

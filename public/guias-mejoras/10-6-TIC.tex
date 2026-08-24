@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 6};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 6};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Mi presentación\\digital ---\\2 minutos\\para mostrar\\lo aprendido}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 10-6-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 1 · Comunicación e identidad digital}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 1 · Comunicación e identidad digital}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Mi presentación\\digital ---\\2 minutos\\para mostrar\\lo aprendido}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 10-6-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} Una \textbf{mini presentación de 2 minutos} que tú expones de pie ante el grupo. La presentación tiene 4 partes: \textbf{(1) quién soy --- tarjeta de identidad digital (15 seg)}, \textbf{(2) cómo cuido mi correo y mi privacidad (45 seg)}, \textbf{(3) cómo me protejo de riesgos y comunico bien (45 seg)}, \textbf{(4) un compromiso firmado para el resto del año (15 seg)}. Apoyo en \textbf{una sola hoja del cuaderno} con los puntos clave (sin leerla, solo como soporte). Te calificas tú y te califica un compañero usando la rúbrica de la guía.};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Una \textbf{mini presentación de 2 minutos} que tú expones de pie ante el grupo. La presentación tiene 4 partes: \textbf{(1) quién soy --- tarjeta de identidad digital (15 seg)}, \textbf{(2) cómo cuido mi correo y mi privacidad (45 seg)}, \textbf{(3) cómo me protejo de riesgos y comunico bien (45 seg)}, \textbf{(4) un compromiso firmado para el resto del año (15 seg)}. Apoyo en \textbf{una sola hoja del cuaderno} con los puntos clave (sin leerla, solo como soporte). Te calificas tú y te califica un compañero usando la rúbrica de la guía.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Mi presentación digital --- 2 minutos para mostrar lo que aprendí}
@@ -258,30 +322,27 @@ Producto final & Una \textbf{mini presentación de 2 minutos} que tú expones de
 
 \puente{Hoy haces 4 cosas: aprendes la estructura del pitch, escribes tu guion, ensayas con un compañero, y presentas al grupo.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Empezamos identificando los 4 momentos que toda presentación buena tiene.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- Los 4 momentos del pitch} (10 min · individual). Imagina que un youtuber famoso visita el colegio y te dice: \emph{``Tienes 2 minutos para contarme qué eres como persona digital y qué aprendiste este periodo. Empieza''}. En el cuaderno escribe \textbf{los 4 momentos} que TÚ usarías para organizar esos 2 minutos. Sin copiar de la guía. Pon: \emph{Momento 1 (15 seg): ...}, \emph{Momento 2 (45 seg): ...}, etc. Después compara con los 4 que vas a aprender en la siguiente actividad.
 \end{softbox}
 
-\checkbox Imaginé al youtuber y los 2 minutos.\\
-\checkbox Escribí los 4 momentos con mi propio orden.\\
-\checkbox Respeté los tiempos (15-45-45-15 segundos).
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Imaginé al youtuber y los 2 minutos.}
+\milccheckrow{Escribí los 4 momentos con mi propio orden.}
+\milccheckrow{Respeté los tiempos (15-45-45-15 segundos).}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Después de la estructura, aprendes las 3 reglas de hablar bien en público (postura, voz, mirada).}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Compara tu propuesta con los 4 momentos que se usan en cualquier pitch de 2 minutos. Es probable que tengas 2 o 3 igual de lo que vas a leer --- esa coincidencia es buena, significa que ya pensabas bien.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & \textbf{Momento 1 --- ABRO con quién soy (15 segundos).} Como en una carta: te presentas. Nombre, grado, una frase corta tuya. \textbf{No leas} la tarjeta de identidad digital --- usa una frase corta basada en ella. Ejemplo: \emph{``Soy Lara, de sexto B. En internet me cuido como me cuidaría mi abuela: con criterio.''}.\\
-2. Reconocimiento de patrones & \textbf{Momento 2 --- CUIDO mis datos y mi privacidad (45 segundos).} Cuenta 3 cosas concretas: (a) cómo configuras tu correo institucional, (b) qué app reconfiguraste en privacidad esta semana, (c) un permiso que le quitaste a una app y por qué. \textbf{No es teoría}, son ejemplos tuyos.\\
-3. Abstracción & \textbf{Momento 3 --- ME PROTEJO y comunico bien (45 segundos).} Cuenta 3 cosas: (a) las 5 señales de alerta que aprendiste a reconocer, (b) cuáles son tus 3 adultos de confianza (sin dar los nombres si no quieres), (c) los 3 filtros que pasas antes de publicar. Hablas con seguridad porque ya escribiste todo eso en tu cuaderno.\\
-4. Algoritmo conceptual & \textbf{Momento 4 --- CIERRO con compromiso (15 segundos).} Termina con tu compromiso firmado: \emph{``Yo me comprometo a [acción concreta] durante el resto del año. Esa es mi promesa.''}. La acción concreta puede ser \emph{``revisar la privacidad de mis apps cada primer sábado del mes''} o \emph{``pasar por mis 3 filtros antes de publicar''}. Lo que tú decidas.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{\textbf{Momento 1 --- ABRO con quién soy (15 segundos).} Como en una carta: te presentas. Nombre, grado, una frase corta tuya. \textbf{No leas} la tarjeta de identidad digital --- usa una frase corta basada en ella. Ejemplo: \emph{``Soy Lara, de sexto B. En internet me cuido como me cuidaría mi abuela: con criterio.''}.}
+\milcpaso{2}{milcTurquesa}{\textbf{Momento 2 --- CUIDO mis datos y mi privacidad (45 segundos).} Cuenta 3 cosas concretas: (a) cómo configuras tu correo institucional, (b) qué app reconfiguraste en privacidad esta semana, (c) un permiso que le quitaste a una app y por qué. \textbf{No es teoría}, son ejemplos tuyos.}
+\milcpaso{3}{milcTurquesa}{\textbf{Momento 3 --- ME PROTEJO y comunico bien (45 segundos).} Cuenta 3 cosas: (a) las 5 señales de alerta que aprendiste a reconocer, (b) cuáles son tus 3 adultos de confianza (sin dar los nombres si no quieres), (c) los 3 filtros que pasas antes de publicar. Hablas con seguridad porque ya escribiste todo eso en tu cuaderno.}
+\milcpaso{4}{milcTurquesa}{\textbf{Momento 4 --- CIERRO con compromiso (15 segundos).} Termina con tu compromiso firmado: \emph{``Yo me comprometo a [acción concreta] durante el resto del año. Esa es mi promesa.''}. La acción concreta puede ser \emph{``revisar la privacidad de mis apps cada primer sábado del mes''} o \emph{``pasar por mis 3 filtros antes de publicar''}. Lo que tú decidas.}
 
 \begin{drawbox}{milcTurquesa}{Estructura del pitch de 2 minutos}
 \textbf{0:00-0:15} · ABRO --- quién soy en 1 frase. \\[1mm]
@@ -329,23 +383,18 @@ Compara tu propuesta con los 4 momentos que se usan en cualquier pitch de 2 minu
 
 \puente{Con la estructura y las reglas, escribes tu guion de 1 hoja y ensayas con un compañero.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · APLICA --- Tu guion + ensayo + presentación} (35 min en total: 15 min guion, 5 min ensayo, 15 min presentaciones del grupo). Vas a hacer 3 cosas en orden. Primero escribes tu \textbf{guion en 1 hoja} con los 4 momentos en frases cortas. Después \textbf{ensayas} 1 vez con un compañero (él te escucha, tú lo escuchas a él). Después \textbf{presentas} ante el grupo, 2 minutos.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & \textbf{Paso 1 --- Hoja de soporte (no guion completo).} En una hoja del cuaderno escribe los 4 momentos en bloques separados. Para cada momento NO escribas el texto completo --- escribe \textbf{las palabras clave} (4-5 por momento). Ejemplo, Momento 2: \emph{``configurar correo / quitar GPS a TikTok / privado por defecto''}. Esas palabras clave te recuerdan qué decir sin que tengas que leer.\\
-Patrones & \textbf{Paso 2 --- Practica las 3 reglas de hablar en público.} \emph{Regla 1 (postura):} de pie, pies firmes, manos relajadas (no en los bolsillos). \emph{Regla 2 (voz):} habla un poco más fuerte de lo normal, con pausas. \emph{Regla 3 (mirada):} no mires el piso, mira a 3 compañeros distintos durante los 2 minutos --- 30 segundos cada uno aproximadamente.\\
-Abstracción & \textbf{Paso 3 --- Ensayo en parejas.} Tú le presentas a un compañero (él toma tiempo con el celular). Después él te presenta a ti. \textbf{No corrijan el contenido}; solo díganse 1 cosa que estuvo bien y 1 cosa para mejorar. Ejemplo: \emph{``Buena tu voz, pero me miraste solo a mí. Trata de mirar a 2 más.''}.\\
-Algoritmo de armado & \textbf{Paso 4 --- Presentación ante el grupo.} Cuando te toque, vas al frente, te paras tranquilo, respiras una vez, y empiezas con el Momento 1 (quién eres). El profe lleva el tiempo. Si te equivocas en una palabra, no pares: sigues. Si te ríes o te pones nervioso, está bien --- eso le pasa a todos la primera vez.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{\textbf{Paso 1 --- Hoja de soporte (no guion completo).} En una hoja del cuaderno escribe los 4 momentos en bloques separados. Para cada momento NO escribas el texto completo --- escribe \textbf{las palabras clave} (4-5 por momento). Ejemplo, Momento 2: \emph{``configurar correo / quitar GPS a TikTok / privado por defecto''}. Esas palabras clave te recuerdan qué decir sin que tengas que leer.}
+\milcpaso{2}{milcMagenta}{\textbf{Paso 2 --- Practica las 3 reglas de hablar en público.} \emph{Regla 1 (postura):} de pie, pies firmes, manos relajadas (no en los bolsillos). \emph{Regla 2 (voz):} habla un poco más fuerte de lo normal, con pausas. \emph{Regla 3 (mirada):} no mires el piso, mira a 3 compañeros distintos durante los 2 minutos --- 30 segundos cada uno aproximadamente.}
+\milcpaso{3}{milcMagenta}{\textbf{Paso 3 --- Ensayo en parejas.} Tú le presentas a un compañero (él toma tiempo con el celular). Después él te presenta a ti. \textbf{No corrijan el contenido}; solo díganse 1 cosa que estuvo bien y 1 cosa para mejorar. Ejemplo: \emph{``Buena tu voz, pero me miraste solo a mí. Trata de mirar a 2 más.''}.}
+\milcpaso{4}{milcMagenta}{\textbf{Paso 4 --- Presentación ante el grupo.} Cuando te toque, vas al frente, te paras tranquilo, respiras una vez, y empiezas con el Momento 1 (quién eres). El profe lleva el tiempo. Si te equivocas en una palabra, no pares: sigues. Si te ríes o te pones nervioso, está bien --- eso le pasa a todos la primera vez.}
+\milcpaso{5}{milcMagenta}{\textbf{Paso 5 --- Mientras escuchas a otros, evalúa.} Cuando estés sentado oyendo presentaciones de compañeros, evalúa \textbf{a 2 de ellos} con la rúbrica de la próxima actividad. No es para criticar; es para entrenarte a oír con criterio. La evaluación es honesta y amable.}
+\milcpaso{6}{milcMagenta}{\textbf{Paso 6 --- Autoevaluación al final.} Después de tu presentación, en el cuaderno escribe: \emph{``Lo que me salió bien: ...''}, \emph{``Lo que mejoraría la próxima vez: ...''}. Una frase para cada cosa. Esto es metacognición --- pensar sobre tu propio aprendizaje.}
 
 \begin{drawbox}{milcMagenta}{Antes de pararte al frente}
 \checkbox Tengo la hoja de soporte con los 4 momentos. \\[1mm]
@@ -368,9 +417,7 @@ Algoritmo de armado & \textbf{Paso 4 --- Presentación ante el grupo.} Cuando te
 
 \puente{El producto es la presentación de 2 minutos ante el grupo + la hoja de soporte.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Pitch de 2 minutos + hoja de soporte + autoevaluación}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) El pitch dura entre 1:45 y 2:15 minutos (cerca de los 2 minutos). (2) Hace los 4 momentos en orden (abro, cuido, protejo, cierro). (3) Usa ejemplos concretos suyos (no teoría). (4) Aplica las 3 reglas (postura, voz, mirada a 3 personas). (5) Cierra con un compromiso concreto y firmado.
@@ -378,9 +425,7 @@ Producto de la sesión
 
 \puente{Te autoevalúas y otro compañero te evalúa con la misma rúbrica de 5 criterios.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -406,12 +451,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Cerramos con 3 voces que te ayudan a entender por qué saber hablar de lo que sabes te abre puertas.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{````Saber sin decirlo, no es saber. Decirlo con tu voz lo termina de hacer tuyo.''''}
+\textit{``Saber sin decirlo, no es saber. Decirlo con tu voz lo termina de hacer tuyo.''}
 
 Hay personas que saben muchas cosas pero no las pueden contar. Esa sabiduría está incompleta. \textbf{Lo que aprendiste este periodo solo se vuelve realmente tuyo cuando lo cuentas con tu voz}, frente a otros. Por eso este pitch no es \emph{``otra tarea''}: es la cosecha. Las plantas crecen en el patio, pero la cosecha se trae a la mesa.
 
@@ -421,7 +464,7 @@ Hay personas que saben muchas cosas pero no las pueden contar. Esa sabiduría es
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
-\textit{````Habla más de lo que has hecho que de lo que vas a hacer. Lo hecho ya te respalda.''''}
+\textit{``Habla más de lo que has hecho que de lo que vas a hacer. Lo hecho ya te respalda.''}
 
 En tu pitch no estás \textbf{prometiendo} cosas: estás \textbf{contando lo que ya hiciste}. Hiciste la tarjeta. Configuraste el correo. Auditaste apps. Escribiste el decálogo. \textbf{Eso ya está hecho}. Cuando hablas de cosas ya hechas, hablas con seguridad, porque la prueba es tu cuaderno. La voz se afirma cuando lo dicho ya está respaldado.
 
@@ -431,7 +474,7 @@ En tu pitch no estás \textbf{prometiendo} cosas: estás \textbf{contando lo que
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{````En 2 minutos no se puede decir todo. Se puede decir lo más importante. La habilidad es escoger.''''}
+\textit{``En 2 minutos no se puede decir todo. Se puede decir lo más importante. La habilidad es escoger.''}
 
 Aprendiste mucho este periodo --- mucho más de lo que cabe en 2 minutos. \textbf{La habilidad valiosa no es saber todo: es saber escoger qué decir cuando el tiempo es corto}. Esa habilidad la vas a necesitar siempre: para una entrevista, para presentar un proyecto, para defender una idea. Hoy fue tu primer pitch. Vendrán muchos más.
 
@@ -440,21 +483,24 @@ Aprendiste mucho este periodo --- mucho más de lo que cabe en 2 minutos. \textb
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

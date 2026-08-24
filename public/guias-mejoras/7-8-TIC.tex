@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,16 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -157,6 +169,44 @@
 \end{tcolorbox}
 }
 
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
@@ -179,52 +229,66 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont GRADO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont GRADO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SERIE GUÍAS · TECNOLOGÍA E INFORMÁTICA};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 8};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 8};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
-  \draw[milcGradeText,line width=1.7pt]
-    ([xshift=4.52cm,yshift=-11.68cm]current page.north west) circle (.13cm);
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  \draw[milcGradeText,line width=1.6pt]
+    ([xshift=2.0mm,yshift=-4.5mm]gradonum.north east) circle (.15cm);
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=12.3cm,align=left] at ([xshift=6.5cm,yshift=-6.6cm]current page.north west)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Gráficos básicos ---\\barras, líneas y circulares\\con honestidad visual}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Guía 7-8-TIC}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Período 1 · Análisis de datos con phronesis}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Período 1 · Análisis de datos con phronesis}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont Gráficos básicos ---\\barras, líneas y circulares\\con honestidad visual}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Guía 7-8-TIC}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Pensamiento computacional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} Hoja Excel con (a) 3 gráficos distintos (barras, líneas, circular) hechos sobre el mismo conjunto de datos, (b) análisis escrito de cuál de los 3 comunica mejor según el propósito (comparar valores, mostrar tendencia en el tiempo, mostrar proporciones del total), (c) crítica de 1 gráfico engañoso real (sacado de prensa, redes sociales o publicidad) explicando cuál es el truco visual usado y cómo se debería corregir};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Hoja Excel con (a) 3 gráficos distintos (barras, líneas, circular) hechos sobre el mismo conjunto de datos, (b) análisis escrito de cuál de los 3 comunica mejor según el propósito (comparar valores, mostrar tendencia en el tiempo, mostrar proporciones del total), (c) crítica de 1 gráfico engañoso real (sacado de prensa, redes sociales o publicidad) explicando cuál es el truco visual usado y cómo se debería corregir
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
 \newpage
 
 \section*{Apertura: Gráficos básicos --- barras, líneas y circulares con honestidad visual}
@@ -258,30 +322,27 @@ Producto final & Hoja Excel con (a) 3 gráficos distintos (barras, líneas, circ
 
 \puente{Antes de empezar, mira el viaje completo. En las sesiones 4-6 aprendiste a calcular con honestidad. Hoy aprendes a \emph{comunicar} esos cálculos con honestidad visual. Las sesiones 8 (formato condicional), 9 (mini-estudio) y 10 (sustentación) usarán esta habilidad de comunicar visualmente lo que dicen los datos.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
-\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pensamiento computacional.} &
-\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
-\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
 \end{tabularx}
 
 
 \puente{Antes de teorizar, vas a hacer una \emph{auditoría rápida} de gráficos: tu docente proyecta 3 gráficos distintos (uno honesto, uno con eje truncado, uno con 3D engañoso) y tú anotas qué te llama la atención de cada uno. Es ejercicio de mirada crítica antes de aprender a construir.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- Auditoría de 3 gráficos} (15 min · individual). Tu docente proyecta o entrega 3 gráficos sobre los mismos datos: (a) un gráfico de barras con eje Y que empieza en cero (honesto), (b) un gráfico de barras con eje Y que empieza en un valor alto (parece exagerar diferencias), (c) un gráfico circular en 3D con 8 categorías (difícil de leer). Sin todavía calcular nada, anota: (1) ¿cuál entiendes mejor a primera vista?, (2) ¿alguno parece exagerar las diferencias?, (3) ¿alguno parece confundir más que aclarar?. La regla: \textbf{si un gráfico te confunde a primera vista, probablemente está manipulado}.
 \end{softbox}
 
-\checkbox Miré los 3 gráficos sin leer la explicación.\\
-\checkbox Identifiqué cuál es el más claro y cuál confunde.\\
-\checkbox Detecté al menos 1 trampa visual.
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Miré los 3 gráficos sin leer la explicación.}
+\milccheckrow{Identifiqué cuál es el más claro y cuál confunde.}
+\milccheckrow{Detecté al menos 1 trampa visual.}
 
 \begin{infoband}{milcVerde}
 
@@ -291,23 +352,16 @@ Fase 1 · Escucha
 
 \puente{Ya viste los 3 ejemplos. Ahora vas a entender la \textbf{anatomía de los 3 tipos básicos}: cuándo usar cada uno, las 6 trampas visuales más comunes, los 5 principios de honestidad visual.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
 
-\begin{softbox}{milcTurquesa}{milcGris}{Cuatro pilares aplicados al tema}
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
 Auditar gráficos sin teoría es intuición; auditar con teoría es oficio profesional. Para que tu mirada crítica tenga base necesitas la \textbf{anatomía de los 3 tipos básicos} y las trampas visuales más usadas.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcTurquesa!90}\color{white}Pilar & \color{white}\bfseries Aplicación al tema\\
-1. Descomposición & Los 3 tipos básicos se descomponen así: (1) \textbf{Barras}: comparar valores entre categorías (ventas por día, notas por estudiante, gastos por mes). Las barras horizontales o verticales muestran cuál es más grande visualmente. (2) \textbf{Líneas}: mostrar evolución de un valor en el tiempo (temperatura por día, ventas por mes, tasa de aprobación por año). Las líneas conectan puntos en orden cronológico. (3) \textbf{Circular} (pastel): mostrar proporción del total (qué \% del presupuesto va a cada categoría). Solo funciona con pocas categorías (3-6) y cuando la suma tiene sentido conceptual.\\
-2. Reconocimiento de patrones & Las 6 trampas visuales más comunes son: (a) \textbf{Eje Y truncado}: empezar el eje en un valor distinto de cero exagera diferencias pequeñas (2 barras que difieren en 2\% parecen diferir en 50\%). (b) \textbf{Escala manipulada}: usar escalas distintas en gráficos comparativos. (c) \textbf{3D engañoso}: el efecto 3D distorsiona las proporciones reales. (d) \textbf{Demasiadas categorías}: un gráfico circular con 10 categorías es ilegible. (e) \textbf{Colores manipulativos}: rojo para lo malo y verde para lo bueno cuando los datos son neutros. (f) \textbf{Sin título ni etiquetas}: el gráfico se interpreta a voluntad del lector.\\
-3. Abstracción & Los 5 principios de honestidad visual: (1) \textbf{Eje Y desde cero} en gráficos de barras (salvo justificación explícita). (2) \textbf{Título descriptivo} que diga qué muestra el gráfico. (3) \textbf{Etiquetas de ejes claras} con unidades. (4) \textbf{Tipo correcto según el propósito} (no usar circular para comparar valores absolutos). (5) \textbf{Fuente declarada} de los datos. Estos 5 principios son la pesa de Cartago aplicada al gráfico digital.\\
-4. Algoritmo conceptual & Algoritmo: (1) define qué pregunta quieres responder con el gráfico (comparar, mostrar tendencia, mostrar proporción). (2) elige el tipo correcto. (3) inserta el gráfico en Excel (Insertar → Gráficos). (4) verifica eje Y desde cero. (5) agrega título descriptivo y etiquetas claras. (6) lee el gráfico en voz alta para verificar que se entiende sin tu explicación.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcTurquesa}{Los 3 tipos básicos se descomponen así: (1) \textbf{Barras}: comparar valores entre categorías (ventas por día, notas por estudiante, gastos por mes). Las barras horizontales o verticales muestran cuál es más grande visualmente. (2) \textbf{Líneas}: mostrar evolución de un valor en el tiempo (temperatura por día, ventas por mes, tasa de aprobación por año). Las líneas conectan puntos en orden cronológico. (3) \textbf{Circular} (pastel): mostrar proporción del total (qué \% del presupuesto va a cada categoría). Solo funciona con pocas categorías (3-6) y cuando la suma tiene sentido conceptual.}
+\milcpaso{2}{milcTurquesa}{Las 6 trampas visuales más comunes son: (a) \textbf{Eje Y truncado}: empezar el eje en un valor distinto de cero exagera diferencias pequeñas (2 barras que difieren en 2\% parecen diferir en 50\%). (b) \textbf{Escala manipulada}: usar escalas distintas en gráficos comparativos. (c) \textbf{3D engañoso}: el efecto 3D distorsiona las proporciones reales. (d) \textbf{Demasiadas categorías}: un gráfico circular con 10 categorías es ilegible. (e) \textbf{Colores manipulativos}: rojo para lo malo y verde para lo bueno cuando los datos son neutros. (f) \textbf{Sin título ni etiquetas}: el gráfico se interpreta a voluntad del lector.}
+\milcpaso{3}{milcTurquesa}{Los 5 principios de honestidad visual: (1) \textbf{Eje Y desde cero} en gráficos de barras (salvo justificación explícita). (2) \textbf{Título descriptivo} que diga qué muestra el gráfico. (3) \textbf{Etiquetas de ejes claras} con unidades. (4) \textbf{Tipo correcto según el propósito} (no usar circular para comparar valores absolutos). (5) \textbf{Fuente declarada} de los datos. Estos 5 principios son la pesa de Cartago aplicada al gráfico digital.}
+\milcpaso{4}{milcTurquesa}{Algoritmo: (1) define qué pregunta quieres responder con el gráfico (comparar, mostrar tendencia, mostrar proporción). (2) elige el tipo correcto. (3) inserta el gráfico en Excel (Insertar → Gráficos). (4) verifica eje Y desde cero. (5) agrega título descriptivo y etiquetas claras. (6) lee el gráfico en voz alta para verificar que se entiende sin tu explicación.}
 
 \begin{drawbox}{milcTurquesa}{Anatomía de los 3 tipos}
 \textbf{Barras:} comparar valores entre categorías. \\[1mm] \textbf{Líneas:} mostrar evolución en el tiempo. \\[1mm] \textbf{Circular:} mostrar proporciones (máx. 6 categorías). \\[1mm] \textbf{Honestidad:} eje Y desde cero, título claro, sin 3D engañoso.
@@ -325,23 +379,16 @@ Auditar gráficos sin teoría es intuición; auditar con teoría es oficio profe
 
 \puente{Tienes el método. Toca aplicarlo: construyes 3 gráficos distintos del mismo conjunto (notas, gastos, asistencia), analizas cuál comunica mejor según la pregunta, y al final criticas un gráfico engañoso real que encuentres en prensa o redes.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis con pensamiento computacional
-\end{titlebox}
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
 
-\begin{softbox}{milcMagenta}{milcGris}{Construyendo el producto con los cuatro pilares}
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
 \textbf{Actividad 3 · CREA + EVALÚA --- 3 gráficos honestos + crítica de 1 engañoso} (35 min · individual). Hora de construir y criticar. Eliges un conjunto de datos (la tabla limpia de la sesión 3 sirve, o uno nuevo), construyes 3 gráficos distintos del mismo conjunto, analizas cuál comunica mejor para una pregunta, y cierras criticando 1 gráfico engañoso real.
 \end{softbox}
 
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.6cm}Y}
-\rowcolor{milcMagenta!90}\color{white}Pilar & \color{white}\bfseries Aplicación al producto\\
-Descomposición & Tu entrega se construye en 4 pasos: (1) elegir un conjunto de datos del entorno escolar (notas semanales, ventas de tienda, asistencia). (2) construir 3 gráficos: uno de barras, uno de líneas, uno circular. (3) escribir 1 párrafo por gráfico explicando qué pregunta responde mejor y por qué. (4) buscar 1 gráfico engañoso (prensa, redes, publicidad), pegarlo a tu informe, identificar el truco y proponer cómo corregirlo.\\
-Patrones & Sigue el patrón \textbf{``tipo según pregunta''}: si la pregunta es \emph{``¿quién vendió más?''} = barras. Si es \emph{``¿cómo cambió en el tiempo?''} = líneas. Si es \emph{``¿qué proporción del total?''} = circular. Forzar el tipo equivocado (usar líneas para datos sin orden temporal, circular para muchas categorías) produce comunicación opaca.\\
-Abstracción & La crítica del gráfico engañoso se estructura en 3 piezas: (a) \textbf{Trampa identificada}: cuál de las 6 trampas usa. (b) \textbf{Por qué engaña}: qué impresión falsa genera al lector. (c) \textbf{Cómo corregirlo}: qué cambio simple lo haría honesto (eje desde cero, quitar 3D, agregar título, etc.).\\
-Algoritmo de armado & Algoritmo: (1) preparar datos. (2) seleccionar el rango y Insertar → Gráfico. (3) elegir el tipo. (4) configurar eje Y desde cero. (5) agregar título descriptivo. (6) probar la lectura en voz alta. (7) repetir para los 3 tipos. (8) buscar gráfico engañoso en prensa. (9) analizar trampa. (10) escribir crítica.\\
-\end{tabularx}
-\normalsize
+\milcpaso{1}{milcMagenta}{Tu entrega se construye en 4 pasos: (1) elegir un conjunto de datos del entorno escolar (notas semanales, ventas de tienda, asistencia). (2) construir 3 gráficos: uno de barras, uno de líneas, uno circular. (3) escribir 1 párrafo por gráfico explicando qué pregunta responde mejor y por qué. (4) buscar 1 gráfico engañoso (prensa, redes, publicidad), pegarlo a tu informe, identificar el truco y proponer cómo corregirlo.}
+\milcpaso{2}{milcMagenta}{Sigue el patrón \textbf{``tipo según pregunta''}: si la pregunta es \emph{``¿quién vendió más?''} = barras. Si es \emph{``¿cómo cambió en el tiempo?''} = líneas. Si es \emph{``¿qué proporción del total?''} = circular. Forzar el tipo equivocado (usar líneas para datos sin orden temporal, circular para muchas categorías) produce comunicación opaca.}
+\milcpaso{3}{milcMagenta}{La crítica del gráfico engañoso se estructura en 3 piezas: (a) \textbf{Trampa identificada}: cuál de las 6 trampas usa. (b) \textbf{Por qué engaña}: qué impresión falsa genera al lector. (c) \textbf{Cómo corregirlo}: qué cambio simple lo haría honesto (eje desde cero, quitar 3D, agregar título, etc.).}
+\milcpaso{4}{milcMagenta}{Algoritmo: (1) preparar datos. (2) seleccionar el rango y Insertar → Gráfico. (3) elegir el tipo. (4) configurar eje Y desde cero. (5) agregar título descriptivo. (6) probar la lectura en voz alta. (7) repetir para los 3 tipos. (8) buscar gráfico engañoso en prensa. (9) analizar trampa. (10) escribir crítica.}
 
 \begin{drawbox}{milcMagenta}{Checklist antes de entregar}
 \checkbox 3 gráficos creados sobre el mismo conjunto. \\[1mm] \checkbox Cada gráfico con título descriptivo y ejes etiquetados. \\[1mm] \checkbox Eje Y desde cero en barras y líneas. \\[1mm] \checkbox Gráfico circular con máximo 6 categorías. \\[1mm] \checkbox Sin efecto 3D que distorsione. \\[1mm] \checkbox Párrafo por gráfico justificando el tipo. \\[1mm] \checkbox 1 gráfico engañoso analizado con trampa, impacto y corrección.
@@ -359,9 +406,7 @@ Algoritmo de armado & Algoritmo: (1) preparar datos. (2) seleccionar el rango y 
 
 \puente{Lo que sigue resume \emph{qué} entregas hoy: 3 gráficos honestos + análisis de cuál comunica mejor + crítica de 1 gráfico engañoso. El criterio principal: que tus gráficos sean tan honestos que el lector pueda leer la cifra sin tu explicación.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{3 gráficos honestos + análisis + crítica de 1 engañoso}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) 3 gráficos del mismo conjunto (barras, líneas, circular). (2) Eje Y desde cero en barras y líneas. (3) Títulos y etiquetas claras. (4) Tipo correcto según la pregunta. (5) Crítica de 1 gráfico engañoso con trampa identificada. (6) Propuesta de corrección al gráfico engañoso.
@@ -369,9 +414,7 @@ Producto de la sesión
 
 \puente{Antes de cerrar, mira los gráficos desde las cinco dimensiones humanas. Mostrar la pesa es respeto por el lector; manipular la escala es engaño con apariencia técnica.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -397,12 +440,10 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Y para terminar, tres voces sobre la honestidad visual. Dussel sobre los gráficos que engañan a quien menos puede verificarlos, Marco Aurelio sobre mostrar las cosas como son, Floridi sobre la ética de la información visualizada.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
-\textit{``El gráfico engañoso aprovecha a quien menos puede verificarlo; mostrar la pesa visible es ética con quien no tiene tiempo de calcular.''}
+\textit{El gráfico engañoso aprovecha a quien menos puede verificarlo; mostrar la pesa visible es ética con quien no tiene tiempo de calcular.}
 
 Cuando un periódico publica un gráfico engañoso, las víctimas son los lectores que no tienen tiempo de revisar los ejes. La filosofía de la liberación pide ese tipo de cuidado: hacer gráficos que el lector más apurado pueda leer correctamente. La pesa visible del mercado de Cartago tenía esa función social: democratizar la verificación. Tu gráfico honesto también: hacer que cualquiera, sin entrenamiento, pueda leer la verdad de los datos.
 
@@ -412,7 +453,7 @@ Cuando un periódico publica un gráfico engañoso, las víctimas son los lector
 \linead{\linewidth}
 
 \begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · cuidado interior}
-\textit{``Muestra las cosas como son; el gráfico engañoso es vanidad disfrazada de comunicación.''}
+\textit{Muestra las cosas como son; el gráfico engañoso es vanidad disfrazada de comunicación.}
 
 Es tentador hacer gráficos espectaculares que exageren las diferencias \emph{``para que se note el efecto''}. La disciplina estoica recomienda lo opuesto: \emph{muestra las cosas como son}. Si la diferencia es pequeña, el gráfico debe mostrarla pequeña. Si es grande, el gráfico la mostrará grande sin trampas. La virtud técnica está en la fidelidad, no en la dramatización.
 
@@ -422,7 +463,7 @@ Es tentador hacer gráficos espectaculares que exageren las diferencias \emph{``
 \linead{\linewidth}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
-\textit{``La visualización honesta de datos es la nueva ética del oficio digital en la era de la información veloz.''}
+\textit{La visualización honesta de datos es la nueva ética del oficio digital en la era de la información veloz.}
 
 En la era de la información, los gráficos circulan más rápido que los datos crudos. La gente comparte gráficos sin verificar los ejes. La ética digital contemporánea exige que quien produce gráficos respete esa velocidad de circulación: producir gráficos que sigan siendo honestos aunque se compartan sin contexto. Tu hoja de hoy te entrena en esa práctica.
 
@@ -431,21 +472,24 @@ En la era de la información, los gráficos circulan más rápido que los datos 
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Pensamiento computacional & Apliqué los 4 pilares al diseñar mi producto. & Apliqué algunos pilares. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

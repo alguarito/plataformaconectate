@@ -1,56 +1,72 @@
 ---
+/**
+ * Mapa de ruta de la sesión — las estaciones que se van a recorrer.
+ *
+ * El contrato de datos guarda los iconos como emoji (`e.iconos`), y se
+ * pintaban tal cual, a 24 px. Aquí el emoji sigue siendo la clave y se dibuja
+ * como trazo, igual que en el resto de la guía.
+ */
 import type { EstacionMapa } from '../data/guiasContenido/_schema';
+import { colorGrado } from '../data/coloresGrado';
+import IconoMILC from './IconoMILC.astro';
 
 interface Props {
   estaciones: EstacionMapa[];
+  grado?: number;
 }
 
-const { estaciones } = Astro.props;
+const { estaciones, grado = 6 } = Astro.props;
+const c = colorGrado(grado);
 const totalMin = estaciones.reduce((sum, e) => sum + e.duracionMin, 0);
 ---
 
-<section
-  class="bento-card mb-6"
-  aria-labelledby="mapa-ruta-titulo"
->
-  <div class="flex items-center gap-3 mb-3">
-    <span class="chip-bento">🗺 Tu ruta hoy</span>
-    <span class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">
-      {estaciones.length} estaciones · ~{totalMin} min
+<section class="bento-card mb-6" aria-labelledby="mapa-ruta-titulo">
+  <div class="flex items-center gap-2.5 mb-3" style={`color: ${c.dark};`}>
+    <IconoMILC nombre="mapa" size={18} />
+    <span class="text-[11px] font-black uppercase tracking-[0.14em]">
+      Tu ruta hoy · {estaciones.length} estaciones · ~{totalMin} min
     </span>
   </div>
 
-  <h2 id="mapa-ruta-titulo" class="heading-huge leading-tight mb-5">
+  <h2 id="mapa-ruta-titulo" class="text-2xl md:text-3xl font-black tracking-tight leading-[1.1] mb-5">
     Esto vas a recorrer hoy.
   </h2>
 
-  <ol class="space-y-3">
+  <ol class="flex flex-col gap-2.5">
     {estaciones.map((e) => (
-      <li class="flex items-start gap-4 p-4 rounded-bento-sm border-2" style="border-color: var(--border);">
-        <div class="w-10 h-10 rounded-full bg-bento-blue text-white flex items-center justify-center text-base font-black shrink-0">
+      <li
+        class="flex items-center gap-4 p-4 rounded-bento-sm"
+        style="background: var(--bg); border: 1px solid var(--border);"
+      >
+        <div
+          class="w-9 h-9 rounded-full flex items-center justify-center text-base font-black shrink-0"
+          style={`background: ${c.primary}; color: #FFFFFF;`}
+        >
           {e.numero}
         </div>
-        <div class="flex-1 min-w-0">
-          <div class="flex items-baseline gap-2 flex-wrap mb-1">
-            <span class="text-2xl leading-none" aria-hidden="true">
-              {e.iconos.join(' ')}
-            </span>
-            <h3 class="font-black text-base md:text-lg leading-tight">
-              {e.titulo}
-            </h3>
-          </div>
+
+        <div class="flex items-center gap-2 shrink-0" style="color: var(--fg-muted);">
+          {e.iconos.map((i) => <IconoMILC nombre={i} size={17} />)}
         </div>
-        <span class="text-sm font-bold shrink-0 px-3 py-1 rounded-full" style="background: var(--bg); color: var(--fg-muted);">
+
+        <h3 class="font-bold text-base md:text-lg leading-tight flex-1 min-w-0">
+          {e.titulo}
+        </h3>
+
+        <span
+          class="text-sm font-bold shrink-0 px-3 py-1 rounded-full"
+          style="background: var(--bg-card); border: 1px solid var(--border); color: var(--fg-muted);"
+        >
           {e.duracionMin} min
         </span>
       </li>
     ))}
   </ol>
 
-  <p class="text-xs mt-5 leading-relaxed" style="color: var(--fg-muted);">
-    📓 <strong style="color: var(--fg);">Cuaderno:</strong>
-    Empieza en página nueva con este encabezado: Guía · Tema · Fecha. Solo lo que aparezca
-    en bloques ✏️ <strong>ACTIVIDAD</strong> y los apartados 🌱 y 💭 va al cuaderno —
-    el resto es para leer y entender.
+  <p class="text-sm mt-5 leading-relaxed" style="color: var(--fg-muted);">
+    <strong style="color: var(--fg);">Cuaderno:</strong>
+    empieza en página nueva con este encabezado —Guía · Tema · Fecha—. Solo lo que
+    aparezca en los bloques de actividad y en los de saber ancestral y triángulo va al
+    cuaderno; el resto es para leer y entender.
   </p>
 </section>

@@ -237,7 +237,7 @@ def yaml_a_placeholders(guia: dict, slug: str, avisos: list[str]) -> dict[str, s
     modulo = guia["modulo"]
 
     titulo_portada_raw = guia.get("titulo_portada", guia["titulo"])
-    titulo_portada_tex = titulo_portada_raw.rstrip("\n").replace("\n", "\\\\")
+    titulo_portada_tex = titulo_portada_raw.rstrip("\n").replace("\n", "\\\\[4pt]")
 
     apertura = guia["apertura"]
     puentes = guia["puentes"]

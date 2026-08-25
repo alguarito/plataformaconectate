@@ -325,7 +325,12 @@ def yaml_a_placeholders(guia: dict) -> dict[str, str]:
 
     # Título de portada: YAML usa saltos de línea reales; LaTeX necesita "\\".
     titulo_portada_raw = guia.get("titulo_portada", guia["titulo"])
-    titulo_portada_tex = titulo_portada_raw.replace("\n", "\\\\")
+    # Salto con espacio explicito: dentro de un nodo TikZ con text width,
+    # un «\\\\» pelado deja que TeX decida la separacion segun los
+    # descendentes de cada renglon, y una linea sin descendentes («la
+    # receta») se come casi la mitad del interlineado y la siguiente se le
+    # monta encima. El [4pt] garantiza un minimo.
+    titulo_portada_tex = titulo_portada_raw.replace("\n", "\\\\[4pt]")
 
     apertura = guia["apertura"]
     puentes = guia["puentes"]

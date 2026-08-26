@@ -1,0 +1,69 @@
+---
+/**
+ * Icono de bloque MILC dibujado como SVG.
+ *
+ * El contrato de datos (`IconoBloque` en `_schema.ts`) usa emoji como
+ * identificador de bloque, y hasta ahora esos emoji se pintaban tal cual. Un
+ * emoji se dibuja distinto en cada sistema, no hereda el color del texto y no
+ * escala como el resto de la tipografía. Aquí el emoji sigue siendo la CLAVE
+ * —el dato no cambia— pero el render es un trazo consistente.
+ */
+import type { IconoBloque } from '../data/guiasContenido/_schema';
+
+interface Props {
+  nombre: IconoBloque | string;
+  size?: number;
+  class?: string;
+}
+
+const { nombre, size = 20, class: clase = '' } = Astro.props;
+
+// Trazos sobre rejilla de 24, para que todos pesen lo mismo a cualquier tamaño.
+const TRAZOS: Record<string, string> = {
+  '🌱': '<path d="M12 21v-7"/><path d="M12 14c0-3-2-5-5-5 0 3 2 5 5 5z"/><path d="M12 14c0-4 2-6 5-6 0 4-2 6-5 6z"/>',
+  '📖': '<path d="M12 6C10 4.5 7.5 4 5 4v13c2.5 0 5 .5 7 2 2-1.5 4.5-2 7-2V4c-2.5 0-5 .5-7 2z"/><path d="M12 6v13"/>',
+  '✏️': '<path d="M4 20h4l10-10a2.8 2.8 0 0 0-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/>',
+  '👁': '<path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6-10-6-10-6z"/><circle cx="12" cy="12" r="2.6"/>',
+  '✅': '<circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.8 2.8L16 10"/>',
+  '🔎': '<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.4-4.4"/>',
+  '💭': '<path d="M6 15a4 4 0 0 1 .6-7.9A5 5 0 0 1 16.5 7 3.8 3.8 0 0 1 18 15z"/><circle cx="7" cy="19" r="1.4"/><circle cx="11" cy="21" r="1"/>',
+  // Claves con nombre, para piezas que no vienen del contrato de datos.
+  'reloj': '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  'individual': '<circle cx="12" cy="8" r="3.2"/><path d="M5 20c0-3.6 3.1-5.5 7-5.5s7 1.9 7 5.5"/>',
+  'parejas': '<circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><path d="M2 20c0-3.2 2.7-4.8 6-4.8M22 20c0-3.2-2.7-4.8-6-4.8"/>',
+  'equipo': '<circle cx="9" cy="8" r="2.8"/><path d="M3 20c0-3.2 2.7-4.8 6-4.8s6 1.6 6 4.8"/><path d="M17 6.5a3 3 0 0 1 0 5.6"/><path d="M19.5 20c0-2.3-.8-3.9-2.2-4.6"/>',
+  'lista': '<path d="M9 6h11M9 12h11M9 18h7"/><path d="M4 6h.01M4 12h.01M4 18h.01"/>',
+  'cuaderno': '<path d="M5 4h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5z"/><path d="M9 3v18"/>',
+  'mapa': '<path d="M9 4L3 6.5v13L9 17l6 3 6-2.5v-13L15 7z"/><path d="M9 4v13M15 7v13"/>',
+  'brujula': '<circle cx="12" cy="12" r="9"/><path d="M15.6 8.4l-2 5.2-5.2 2 2-5.2z"/>',
+  'corazon': '<path d="M12 20s-7-4.4-7-9.2A3.9 3.9 0 0 1 12 8a3.9 3.9 0 0 1 7 2.8C19 15.6 12 20 12 20z"/>',
+  'ciudad': '<path d="M3 21h18"/><path d="M5 21V9l7-5 7 5v12"/><path d="M10 21v-5h4v5"/>',
+  'mundo': '<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.6 2.5 15 0 18-2.5-3-2.5-15.4 0-18z"/>',
+  'descarga': '<path d="M12 4v11"/><path d="M7.5 10.5L12 15l4.5-4.5"/><path d="M4 19h16"/>',
+  'enlace': '<path d="M14 4h6v6"/><path d="M20 4l-8.5 8.5"/><path d="M18 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h5"/>',
+  'carpeta': '<path d="M3 7a2 2 0 0 1 2-2h4l2 2.5h8a2 2 0 0 1 2 2V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+  'idea': '<path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.4.3.5.7.5 1.1h6c0-.4.1-.8.5-1.1A6 6 0 0 0 12 3z"/>',
+  'motor': '<path d="M12 3s5 4 5 8.5A5 5 0 0 1 7 11.5C7 7 12 3 12 3z"/><path d="M12 20c-1.7 0-3-1.2-3-2.8 0-1.6 3-3.2 3-3.2s3 1.6 3 3.2c0 1.6-1.3 2.8-3 2.8z"/>',
+  'libros': '<path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H9v16H5.5A1.5 1.5 0 0 1 4 18.5z"/><path d="M9 4h4.5A1.5 1.5 0 0 1 15 5.5v13A1.5 1.5 0 0 1 13.5 20H9z"/><path d="M17 5l3 .8-3 14.2"/>',
+  'lab': '<path d="M10 3v6.5L4.8 18A2 2 0 0 0 6.5 21h11a2 2 0 0 0 1.7-3L14 9.5V3"/><path d="M9 3h6"/><path d="M7.5 15h9"/>',
+  'nota': '<path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M15 3v5h5"/><path d="M9 13h6M9 17h4"/>',
+  'espejo': '<ellipse cx="12" cy="9" rx="6" ry="7"/><path d="M12 16v5"/><path d="M8.5 21h7"/>',
+  'mayor': '<circle cx="12" cy="7" r="3"/><path d="M6 21c0-4 2.7-6.5 6-6.5s6 2.5 6 6.5"/><path d="M17 12l2.5 2.5"/>',
+};
+
+const trazo = TRAZOS[nombre] ?? TRAZOS['✅'];
+---
+
+<svg
+  class={clase}
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  set:html={trazo}
+/>

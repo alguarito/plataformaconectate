@@ -1,47 +1,60 @@
 ---
+/**
+ * Bloque de saber ancestral — apertura de la guía.
+ *
+ * Antes: tarjeta morada fija con un 🌱 de 48 px, igual en los seis grados y
+ * distinta del PDF. Ahora toma el color de su grado (misma paleta que la
+ * portada impresa), el icono es un trazo y la pregunta-puente se separa en su
+ * propia banda, como en el papel.
+ */
 import type { SaberAncestral } from '../data/guiasContenido/_schema';
+import { colorGrado } from '../data/coloresGrado';
+import IconoMILC from './IconoMILC.astro';
 
 interface Props {
   data: SaberAncestral;
-  /** Etiqueta superior. Por defecto la de Salomé; otros programas la sobrescriben. */
+  /** Grado al que pertenece la guía; define el color del bloque. */
+  grado?: number;
   etiqueta?: string;
 }
 
-const { data, etiqueta = 'Estación 1 · Saber ancestral' } = Astro.props;
+const { data, grado = 6, etiqueta = 'Saber ancestral' } = Astro.props;
+const c = colorGrado(grado);
 ---
 
-<section
-  class="bento-card-color bg-bento-purple text-white mb-6"
-  aria-labelledby="saber-ancestral-titulo"
->
-  <div class="flex items-start gap-4">
-    <div class="text-5xl shrink-0" aria-hidden="true">🌱</div>
-    <div class="flex-1">
-      <span class="text-xs font-bold uppercase tracking-widest opacity-80">
-        {etiqueta}
+<section class="mb-6" aria-labelledby="saber-ancestral-titulo">
+  <div
+    class="rounded-bento-lg p-6 md:p-8"
+    style={`background: var(--bg-card); border: 1px solid var(--border); border-left: 6px solid ${c.primary};`}
+  >
+    <div class="flex items-center gap-2.5 mb-3" style={`color: ${c.dark};`}>
+      <IconoMILC nombre="🌱" size={18} />
+      <span class="text-[11px] font-black uppercase tracking-[0.14em]">
+        {etiqueta}{data.fuente ? ` · ${data.fuente}` : ''}
       </span>
-      <h2 id="saber-ancestral-titulo" class="text-2xl md:text-3xl font-black tracking-tight leading-tight mt-1 mb-4">
-        Antes de la tecnología, este saber.
-      </h2>
-
-      <p class="text-base md:text-lg leading-relaxed mb-3">
-        {data.saber}
-      </p>
-
-      {data.fuente && (
-        <p class="text-xs font-semibold uppercase tracking-widest opacity-75 mb-5">
-          Origen del saber: {data.fuente}
-        </p>
-      )}
-
-      <div class="border-t border-white/20 pt-4 mt-4">
-        <span class="text-xs font-bold uppercase tracking-widest opacity-80">
-          Pregunta-puente
-        </span>
-        <p class="font-black text-lg md:text-xl mt-1 leading-snug">
-          "{data.preguntaPuente}"
-        </p>
-      </div>
     </div>
+
+    <h2
+      id="saber-ancestral-titulo"
+      class="text-2xl md:text-3xl font-black tracking-tight leading-[1.1] mb-4"
+    >
+      Antes de la tecnología, este saber.
+    </h2>
+
+    <p class="text-base md:text-lg leading-relaxed" style="color: var(--fg);">
+      {data.saber}
+    </p>
+  </div>
+
+  <div
+    class="rounded-bento-lg p-5 md:p-6 mt-3"
+    style="background: #FFF6D6; border-left: 6px solid #E5B400;"
+  >
+    <span class="text-[11px] font-black uppercase tracking-[0.14em]" style="color: #8A6A00;">
+      Pregunta puente
+    </span>
+    <p class="font-bold text-lg md:text-xl leading-snug mt-1.5" style="color: #241816;">
+      {data.preguntaPuente}
+    </p>
   </div>
 </section>

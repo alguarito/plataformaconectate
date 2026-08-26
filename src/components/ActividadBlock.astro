@@ -1,5 +1,15 @@
 ---
+/**
+ * Bloque de actividad — la unidad de trabajo de la sesión.
+ *
+ * Antes: seis emoji sueltos como iconos (✏️ 🧑 👯 🤝 📋 📓 ⏱ ✅) y un borde
+ * naranja fijo. Ahora los iconos son trazos, el número de actividad va en un
+ * círculo —como las tarjetas de paso del PDF— y las tres partes (qué hacer,
+ * qué va al cuaderno, cómo sabes que terminaste) se distinguen por jerarquía,
+ * no por color.
+ */
 import type { Actividad } from '../data/guiasContenido/_schema';
+import IconoMILC from './IconoMILC.astro';
 
 interface Props {
   data: Actividad;
@@ -15,26 +25,28 @@ const modalidadLabel =
       : `equipo${data.equipoTamano ? ` de ${data.equipoTamano}` : ''}`;
 
 const modalidadIcono =
-  data.modalidad === 'individual' ? '🧑' : data.modalidad === 'parejas' ? '👯' : '🤝';
+  data.modalidad === 'individual' ? 'individual' : data.modalidad === 'parejas' ? 'parejas' : 'equipo';
+
+const ACENTO = '#E6007E';
 ---
 
 <section
-  class="bento-card mb-6 border-l-8"
-  style="border-left-color: #FF6B35;"
+  class="bento-card mb-6"
+  style={`border-left: 6px solid ${ACENTO};`}
   aria-labelledby={`actividad-${data.numero}-titulo`}
 >
-  <!-- Cabecera: icono + número + verbo -->
-  <div class="flex items-center gap-3 mb-2 flex-wrap">
-    <span class="text-3xl leading-none" aria-hidden="true">✏️</span>
-    <span class="text-xs font-black uppercase tracking-widest" style="color: var(--fg-muted);">
-      Actividad {data.numero}
+  <div class="flex items-center gap-3 mb-3 flex-wrap">
+    <span
+      class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-black shrink-0"
+      style={`background: ${ACENTO}; color: #FFFFFF;`}
+    >
+      {data.numero}
     </span>
-    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-bento-orange text-white">
-      {data.verbo}
+    <span class="text-[11px] font-black uppercase tracking-[0.14em]" style="color: var(--fg-muted);">
+      Actividad {data.numero} · {data.verbo}
     </span>
   </div>
 
-  <!-- Título -->
   <h3
     id={`actividad-${data.numero}-titulo`}
     class="text-xl md:text-2xl font-black tracking-tight leading-tight mb-3"
@@ -42,32 +54,31 @@ const modalidadIcono =
     {data.titulo}
   </h3>
 
-  <!-- Meta: tiempo + modalidad -->
-  <div class="flex flex-wrap gap-2 mb-5">
-    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-bento-blue text-white">
-      ⏱ {data.tiempoMin} min
+  <div class="flex flex-wrap gap-2 mb-5" style="color: var(--fg-muted);">
+    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold"
+          style="background: var(--bg); border: 1px solid var(--border);">
+      <IconoMILC nombre="reloj" size={14} /> {data.tiempoMin} min
     </span>
-    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold" style="background: var(--bg); border: 1px solid var(--border); color: var(--fg);">
-      {modalidadIcono} {modalidadLabel}
+    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold"
+          style="background: var(--bg); border: 1px solid var(--border);">
+      <IconoMILC nombre={modalidadIcono} size={14} /> {modalidadLabel}
     </span>
   </div>
 
-  <!-- Qué vas a hacer -->
   <div class="mb-5">
-    <span class="text-xs font-bold uppercase tracking-widest mb-2 inline-block" style="color: var(--fg-muted);">
-      📋 Qué vas a hacer
+    <span class="inline-flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.14em] mb-2"
+          style="color: var(--fg-muted);">
+      <IconoMILC nombre="lista" size={15} /> Qué vas a hacer
     </span>
     <ol class="space-y-1.5 list-decimal list-inside text-sm md:text-base leading-relaxed mt-1">
-      {data.pasos.map((p) => (
-        <li>{p}</li>
-      ))}
+      {data.pasos.map((p) => <li>{p}</li>)}
     </ol>
   </div>
 
-  <!-- En tu cuaderno escribe -->
-  <div class="mb-5 p-4 rounded-bento-sm" style="background: var(--bg);">
-    <span class="text-xs font-bold uppercase tracking-widest mb-2 inline-block" style="color: var(--fg-muted);">
-      📓 En tu cuaderno escribe
+  <div class="mb-5 p-4 rounded-bento-sm" style="background: var(--bg); border: 1px solid var(--border);">
+    <span class="inline-flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.14em] mb-2"
+          style="color: var(--fg);">
+      <IconoMILC nombre="cuaderno" size={15} /> Esto va en tu cuaderno
     </span>
     <dl class="text-sm md:text-base leading-relaxed mt-1 space-y-1">
       <div class="flex gap-2">
@@ -85,15 +96,17 @@ const modalidadIcono =
     </dl>
   </div>
 
-  <!-- Sabes que terminaste cuando -->
   <div>
-    <span class="text-xs font-bold uppercase tracking-widest mb-2 inline-block" style="color: var(--fg-muted);">
-      ✅ Sabes que terminaste cuando
+    <span class="inline-flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.14em] mb-2"
+          style="color: var(--fg-muted);">
+      <IconoMILC nombre="✅" size={15} /> Sabes que terminaste cuando
     </span>
-    <ul class="space-y-1 text-sm md:text-base leading-relaxed mt-1">
+    <ul class="space-y-1.5 text-sm md:text-base leading-relaxed mt-1">
       {data.criterios.map((c) => (
-        <li class="flex gap-2">
-          <span class="text-bento-lime font-black shrink-0" aria-hidden="true">•</span>
+        <li class="flex gap-2.5 items-start">
+          <span class="shrink-0 mt-0.5" style={`color: ${ACENTO};`}>
+            <IconoMILC nombre="✅" size={15} />
+          </span>
           <span>{c}</span>
         </li>
       ))}

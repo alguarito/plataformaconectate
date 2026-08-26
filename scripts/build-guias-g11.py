@@ -24,6 +24,7 @@ Convenciones:
 """
 from __future__ import annotations
 
+import concurrent.futures
 import re
 import subprocess
 import sys
@@ -317,6 +318,20 @@ def pilares_a_pasocards(pilares, color: str) -> str:
         for i, texto in enumerate(pilares, start=1)
     )
 
+def sin_comillas(texto: str) -> str:
+    """Quita las comillas que rodean la formulacion del triangulo.
+
+    Los YAML guardan la frase ya entrecomillada (``...''), asi que aunque la
+    plantilla dejo de anadir su propio par, seguia imprimiendose como cita
+    textual: justo lo que la nota al docente dice que NO es. Se quita aqui, al
+    emitir el .tex; el YAML queda intacto.
+    """
+    t = texto.strip()
+    for ini, fin in (("``", "''"), ("\u201c", "\u201d"), ('"', '"'), ("\u00ab", "\u00bb")):
+        if t.startswith(ini) and t.endswith(fin):
+            t = t[len(ini):-len(fin)].strip()
+    return t
+
 def yaml_a_placeholders(guia: dict) -> dict[str, str]:
     """Aplana el dict YAML a las claves uppercase que espera el template."""
     periodo = guia["periodo"]
@@ -405,14 +420,14 @@ def yaml_a_placeholders(guia: dict) -> dict[str, str]:
         "CRITERIOS_LISTA": criterios_str,
 
         # Triángulo
-        "DUSSEL_CITA": triangulo["dussel"]["cita"],
+        "DUSSEL_CITA": sin_comillas(triangulo["dussel"]["cita"]),
         "DUSSEL_APLICACION": triangulo["dussel"]["aplicacion"],
         "DUSSEL_PREGUNTA": triangulo["dussel"]["pregunta_espejo"],
         "ESTOICISMO_AUTOR": triangulo["estoico"]["autor"],
-        "ESTOICISMO_CITA": triangulo["estoico"]["cita"],
+        "ESTOICISMO_CITA": sin_comillas(triangulo["estoico"]["cita"]),
         "ESTOICISMO_APLICACION": triangulo["estoico"]["aplicacion"],
         "ESTOICISMO_PREGUNTA": triangulo["estoico"]["pregunta_espejo"],
-        "FLORIDI_CITA": triangulo["floridi"]["cita"],
+        "FLORIDI_CITA": sin_comillas(triangulo["floridi"]["cita"]),
         "FLORIDI_APLICACION": triangulo["floridi"]["aplicacion"],
         "FLORIDI_PREGUNTA": triangulo["floridi"]["pregunta_espejo"],
 
@@ -470,6 +485,23 @@ def compilar_guia(guia: dict, template_text: str) -> tuple[bool, str]:
 # Main
 # ─────────────────────────────────────────────────────────────────────────────
 
+def _compilar_una(args: tuple) -> tuple:
+    """Envoltorio para el pool: recibe y devuelve solo datos serializables."""
+    clave, guia, template_text = args
+    try:
+        ok, msg = compilar_guia(guia, template_text)
+    except Exception as exc:                      # noqa: BLE001
+        ok, msg = False, f"excepción: {exc}"
+    return clave, ok, msg
+
+
+def _jobs() -> int:
+    """Procesos en paralelo. `JOBS=1` fuerza el modo serie de siempre."""
+    if os.environ.get("JOBS"):
+        return max(1, int(os.environ["JOBS"]))
+    return max(1, min(8, (os.cpu_count() or 2) - 1))
+
+
 def main(argv: list[str]) -> int:
     if not TEMPLATE.exists():
         print(f"ERROR: no encuentro el template {TEMPLATE}")
@@ -492,10 +524,11 @@ def main(argv: list[str]) -> int:
         seleccion = sorted(guias.keys(), key=lambda k: tuple(map(int, k.split("-"))))
 
     completas, pendientes, errores = [], [], []
+    porCompilar, lineas = [], {}
 
     for clave in seleccion:
         if clave not in guias:
-            print(f"  ?  {clave} — no existe en {CONTENT_DIR}")
+            lineas[clave] = f"  ?  {clave} — no existe en {CONTENT_DIR}"
             errores.append(clave)
             continue
         guia = guias[clave]
@@ -504,17 +537,40 @@ def main(argv: list[str]) -> int:
         titulo_corto = guia["titulo"][:55] + ("…" if len(guia["titulo"]) > 55 else "")
 
         if not guia.get("completo"):
-            print(f"  ·  {clave}  (G{global_n:02d})  PENDIENTE   {titulo_corto}")
+            lineas[clave] = f"  ·  {clave}  (G{global_n:02d})  PENDIENTE   {titulo_corto}"
             pendientes.append(clave)
             continue
 
-        ok, msg = compilar_guia(guia, template_text)
+        porCompilar.append((clave, guia, template_text))
+
+    # Cada guía es independiente —su propio .tex, .pdf y auxiliares—, así que
+    # se pueden compilar a la vez. En serie el catálogo tarda ~7 s por
+    # documento; con el pool, el reloj lo marca el núcleo más lento.
+    jobs = _jobs()
+    resultados = {}
+    if porCompilar:
+        if jobs == 1:
+            for tarea in porCompilar:
+                clave, ok, msg = _compilar_una(tarea)
+                resultados[clave] = (ok, msg)
+        else:
+            with concurrent.futures.ProcessPoolExecutor(max_workers=jobs) as pool:
+                for clave, ok, msg in pool.map(_compilar_una, porCompilar):
+                    resultados[clave] = (ok, msg)
+
+    for clave, guia, _ in porCompilar:
+        ok, msg = resultados[clave]
+        global_n = (guia["periodo"] - 1) * 10 + guia["sesion"]
         if ok:
-            print(f"  ✓  {clave}  (G{global_n:02d})  OK          {msg}")
+            lineas[clave] = f"  ✓  {clave}  (G{global_n:02d})  OK          {msg}"
             completas.append(clave)
         else:
-            print(f"  ✗  {clave}  (G{global_n:02d})  ERROR       {msg}")
+            lineas[clave] = f"  ✗  {clave}  (G{global_n:02d})  ERROR       {msg}"
             errores.append(clave)
+
+    for clave in seleccion:
+        if clave in lineas:
+            print(lineas[clave])
 
     total = len(seleccion)
     print()

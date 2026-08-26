@@ -1,5 +1,17 @@
 ---
+/**
+ * Triángulo de pensamiento — cierre filosófico de la guía.
+ *
+ * Dos cambios respecto de la versión anterior:
+ *  · Las tres formulaciones ya NO van entre comillas. En los YAML no están
+ *    verificadas contra fuente, así que presentarlas como cita textual
+ *    atribuía a Dussel, Marco Aurelio y Floridi frases que quizá no
+ *    escribieron. Van como síntesis, con una nota al docente.
+ *  · Riel de color a la izquierda en lugar de tres tarjetas macizas, para que
+ *    la página respire igual que la página 8 del PDF.
+ */
 import type { Triangulo, VozTriangulo } from '../data/guiasContenido/_schema';
+import IconoMILC from './IconoMILC.astro';
 
 interface Props {
   data: Triangulo;
@@ -7,11 +19,22 @@ interface Props {
 
 const { data } = Astro.props;
 
-// Colores institucionales del Triángulo (definidos en alvaro-milc-pedagogy)
+/**
+ * Quita las comillas que rodean la frase en los datos.
+ *
+ * 60 archivos de contenido guardan la formulación ya entrecomillada, así que
+ * aunque este componente no añada comillas, la frase seguía leyéndose como
+ * cita textual — justo lo que la nota al docente dice que NO es. Se quitan
+ * aquí, en la presentación: el dato queda intacto.
+ */
+function sinComillas(t: string): string {
+  return t.trim().replace(/^["\u201C\u00AB\u2018']+/, '').replace(/["\u201D\u00BB\u2019']+$/, '').trim();
+}
+
 const COLORES = {
-  dussel:   { bg: '#5A0038', fg: '#FFFFFF', etiqueta: 'milcVino' },
-  estoico:  { bg: '#E5B400', fg: '#1A1A1A', etiqueta: 'milcMostaza' },
-  floridi:  { bg: '#0093A5', fg: '#FFFFFF', etiqueta: 'milcTurquesa' },
+  dussel:  { color: '#5A0038', texto: '#5A0038' },
+  estoico: { color: '#E5B400', texto: '#8A6A00' },
+  floridi: { color: '#0093A5', texto: '#00707E' },
 } as const;
 
 type VozKey = keyof typeof COLORES;
@@ -23,48 +46,58 @@ const voces: Array<{ key: VozKey; voz: VozTriangulo }> = [
 ---
 
 <section class="mb-10" aria-labelledby="triangulo-titulo">
-  <div class="text-center mb-6">
-    <span class="chip-bento mb-3">💭 Triángulo de pensamiento</span>
-    <h2 id="triangulo-titulo" class="heading-huge leading-tight mt-2">
-      Tres voces para cerrar.
-    </h2>
-    <p class="text-sm md:text-base leading-relaxed max-w-2xl mx-auto mt-3" style="color: var(--fg-muted);">
-      No es decoración: son tres lentes que te acompañan toda la secundaria.
-      Léelas con calma — al final, responde la pregunta-espejo en tu cuaderno.
-    </p>
+  <div class="flex items-center gap-2.5 mb-3" style="color: var(--fg-muted);">
+    <IconoMILC nombre="💭" size={18} />
+    <span class="text-[11px] font-black uppercase tracking-[0.14em]">
+      Triángulo de pensamiento
+    </span>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+  <h2 id="triangulo-titulo" class="text-2xl md:text-3xl font-black tracking-tight leading-[1.1] mb-3">
+    Tres voces para cerrar.
+  </h2>
+
+  <p class="text-base leading-relaxed max-w-2xl mb-7" style="color: var(--fg-muted);">
+    No es decoración: son tres lentes que te acompañan toda la secundaria. Lee con calma
+    y responde la pregunta-espejo en tu cuaderno.
+  </p>
+
+  <div class="flex flex-col gap-6">
     {voces.map(({ key, voz }) => {
       const c = COLORES[key];
       return (
-        <article
-          class="rounded-bento-lg p-6 md:p-7 flex flex-col"
-          style={`background: ${c.bg}; color: ${c.fg};`}
-        >
-          <header class="mb-4">
-            <span class="text-[10px] font-black uppercase tracking-widest opacity-80">
-              {voz.lente}
-            </span>
-            <h3 class="text-xl md:text-2xl font-black tracking-tight mt-1 leading-tight">
+        <article class="pl-5 md:pl-6" style={`border-left: 6px solid ${c.color};`}>
+          <div class="flex items-baseline gap-3 flex-wrap mb-2.5">
+            <h3 class="text-xl md:text-2xl font-black tracking-tight" style={`color: ${c.texto};`}>
               {voz.autor}
             </h3>
-          </header>
-
-          <blockquote class="text-sm md:text-base leading-relaxed italic mb-5 border-l-2 pl-3" style={`border-color: ${c.fg}40;`}>
-            "{voz.cita}"
-          </blockquote>
-
-          <div class="mt-auto pt-4 border-t" style={`border-color: ${c.fg}25;`}>
-            <span class="text-[10px] font-black uppercase tracking-widest opacity-80">
-              Pregunta-espejo
+            <span class="text-xs font-bold" style="color: var(--fg-muted);">
+              {voz.lente}
             </span>
-            <p class="font-bold text-sm md:text-base leading-snug mt-1">
-              {voz.preguntaEspejo}
-            </p>
           </div>
+
+          <p class="text-base leading-relaxed mb-3" style="color: var(--fg);">
+            {sinComillas(voz.cita)}
+          </p>
+
+          <p class="text-sm md:text-base leading-relaxed mb-3" style="color: var(--fg-muted);">
+            {voz.aplicacion}
+          </p>
+
+          <p class="font-bold text-base md:text-lg leading-snug" style={`color: ${c.texto};`}>
+            Pregunta-espejo: {voz.preguntaEspejo}
+          </p>
         </article>
       );
     })}
   </div>
+
+  <p
+    class="text-sm leading-relaxed mt-7 p-4 rounded-bento-sm"
+    style="background: var(--bg); color: var(--fg-muted);"
+  >
+    <strong style="color: var(--fg);">Nota para el docente.</strong>
+    Estas tres formulaciones son la síntesis del autor de la guía, no citas textuales
+    de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+  </p>
 </section>

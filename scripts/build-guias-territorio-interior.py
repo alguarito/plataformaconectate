@@ -126,6 +126,20 @@ def pilares_a_pasocards(pilares, color: str) -> str:
         for i, texto in enumerate(pilares, start=1)
     )
 
+def sin_comillas(texto: str) -> str:
+    """Quita las comillas que rodean la formulacion del triangulo.
+
+    Los YAML guardan la frase ya entrecomillada (``...''), asi que aunque la
+    plantilla dejo de anadir su propio par, seguia imprimiendose como cita
+    textual: justo lo que la nota al docente dice que NO es. Se quita aqui, al
+    emitir el .tex; el YAML queda intacto.
+    """
+    t = texto.strip()
+    for ini, fin in (("``", "''"), ("\u201c", "\u201d"), ('"', '"'), ("\u00ab", "\u00bb")):
+        if t.startswith(ini) and t.endswith(fin):
+            t = t[len(ini):-len(fin)].strip()
+    return t
+
 def yaml_a_placeholders(guia: dict) -> dict[str, str]:
     """Aplana el YAML a las claves <<<UPPER>>> que espera el template.
 
@@ -238,14 +252,14 @@ def yaml_a_placeholders(guia: dict) -> dict[str, str]:
         "CRITERIOS_LISTA": criterios_str,
 
         # Triángulo de pensamiento
-        "DUSSEL_CITA": triangulo["dussel"]["cita"],
+        "DUSSEL_CITA": sin_comillas(triangulo["dussel"]["cita"]),
         "DUSSEL_APLICACION": triangulo["dussel"]["aplicacion"],
         "DUSSEL_PREGUNTA": triangulo["dussel"]["pregunta_espejo"],
         "ESTOICISMO_AUTOR": triangulo["estoico"]["autor"],
-        "ESTOICISMO_CITA": triangulo["estoico"]["cita"],
+        "ESTOICISMO_CITA": sin_comillas(triangulo["estoico"]["cita"]),
         "ESTOICISMO_APLICACION": triangulo["estoico"]["aplicacion"],
         "ESTOICISMO_PREGUNTA": triangulo["estoico"]["pregunta_espejo"],
-        "FLORIDI_CITA": triangulo["floridi"]["cita"],
+        "FLORIDI_CITA": sin_comillas(triangulo["floridi"]["cita"]),
         "FLORIDI_APLICACION": triangulo["floridi"]["aplicacion"],
         "FLORIDI_PREGUNTA": triangulo["floridi"]["pregunta_espejo"],
 

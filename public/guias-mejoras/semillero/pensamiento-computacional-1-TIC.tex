@@ -1,0 +1,529 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra UNICA de las guias MILC v3.
+%
+% La usan las tres familias de guias, cada una con su driver:
+%   · Grados 6-11  -> scripts/build-guias-g11.py
+%   · Bebras       -> scripts/build-guias-bebras.py
+%   · Semillero    -> scripts/build-guias-semillero.py
+%
+% Antes habia tres copias casi identicas (~400 lineas iguales, 6 distintas):
+% cada mejora habia que aplicarla tres veces, y en la practica no se hacia
+% (el motor de recursos vivia solo en dos de ellas). Lo que varia entre
+% familias esta parametrizado en 6 placeholders que cada driver llena
+% (se nombran aqui SIN su sintaxis real: el builder reemplaza por texto plano,
+% tambien dentro de los comentarios, y un valor multilinea rompe el preambulo):
+%
+%   HEADER_IZQ        encabezado izquierdo de pagina
+%   HEADER_DER        encabezado derecho de pagina
+%   PORTADA_ETIQUETA  rotulo sobre el numero grande (GRADO/MOMENTO/MODULO)
+%   PORTADA_SERIE     linea de serie de la portada
+%   PORTADA_ID        identificador de la guia en la portada
+%   PORTADA_CIRCULO   el circulito de grado (°), o vacio si no aplica
+%
+% El resto de claves las documenta content/guias/_SCHEMA.md. El script valida
+% que no queden placeholders sin reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+% Librerías TikZ para los diagramas de las guías (bloque `recursos:`):
+%  · babel  → babel en español vuelve activos caracteres como «>», y TikZ los usa
+%             en sus opciones (>=stealth, ->). Sin esta librería, cualquier
+%             diagrama con flechas revienta con «\language@active@arg> has an
+%             extra }». Debe ir ANTES de que se dibuje nada.
+%  · positioning        → sintaxis «below left=2pt and 3pt».
+%  · decorations.pathreplacing → llaves ({brace}) para señalar rangos.
+\usetikzlibrary{babel,positioning,decorations.pathreplacing}
+\usepackage{graphicx}
+% Circuitos: el trabajo de electrónica se hace hoy con micro:bit y sus sensores
+% integrados (MakeCode, sin cableado), así que no se necesitan esquemáticos.
+% Si algún día entran montajes con protoboard, basta descomentar esta línea:
+% los diagramas .tex/.tikz declarados en `recursos:` ya se incrustan solos.
+% \usepackage{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
+\usepackage{enumitem}
+\usepackage{microtype}
+
+% Helvetica Neue no trae la flecha U+2192, asi que cada «→» escrito literalmente
+% en el YAML se compilaba a NADA, en silencio (462 flechas en 61 guias: rutas del
+% tipo «paleta → tipografia → lockup» salian rotas). Mapeamos el caracter a su
+% version matematica, que si tiene glifo. Asi el autor puede seguir escribiendo
+% «→» comodamente en el YAML.
+\usepackage{newunicodechar}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{84CC16}
+\definecolor{milcGradeDark}{HTML}{4D7C0F}
+\definecolor{milcGradeSoft}{HTML}{ECFCCB}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Semillero de Investigación · Pensamiento computacional y algoritmia}
+\rhead{\small Módulo 1 · Escucha · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+% La flecha va en modo matematico a proposito: Helvetica Neue NO tiene el glifo
+% U+2192, asi que \textrightarrow se compilaba a NADA («Missing character: There
+% is no → in font Helvetica Neue») y el puente salia sin flecha. En modo
+% matematico la flecha viene de la fuente matematica y si se dibuja.
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{$\rightarrow$}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
+% ── Recursos visuales de la guía ──────────────────────────────────────
+% Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
+% \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
+% \guiaDiagrama → fuente TikZ/circuitikz (.tex) incrustada como vector:
+%                 es la vía para circuitos y esquemáticos editables.
+% #1 = ruta relativa al .tex · #2 = pie (puede ir vacío)
+\newcommand{\guiaFigura}[2]{%
+\begin{center}
+\includegraphics[width=0.88\linewidth,height=0.38\textheight,keepaspectratio]{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\newcommand{\guiaDiagrama}[2]{%
+\begin{center}
+\input{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\begin{document}
+\thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
+\begin{tikzpicture}[remember picture,overlay]
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont MÓDULO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SEMILLERO DE INVESTIGACIÓN · CONECTATE};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
+
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 1};
+  % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
+  % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  
+
+  \node[anchor=west,text=milcGradeText,text width=11.4cm,align=left] at ([xshift=1.5cm,yshift=0.5cm]gradonum.east)
+    {
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Módulo 1 · Fase MILC: Escucha · 3 h de clase}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont\setlength{\baselineskip}{27pt}Problemas que\\[4pt]piden lógica ---\\[4pt]de la caladora\\[4pt]que cuenta hilos\\[4pt]al problema que\\[4pt]se deja descomponer}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Pensamiento computacional y algoritmia}
+    };
+\end{tikzpicture}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Tu \textbf{colección de problemas reformulados}: al menos \textbf{6 problemas cotidianos} de tu casa, tu escuela o tu vereda, cada uno marcado como \emph{problema que pide lógica} o \emph{problema que pide otra cosa}, con la razón. Más \textbf{un problema elegido y descompuesto}: escrito en el formato \textbf{DADO --- SE QUIERE --- TAL QUE}, y abierto en un \textbf{árbol de subproblemas} donde cada rama se pueda resolver por separado. Esa descomposición es la semilla del algoritmo que escribirás en el módulo 2.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
+\newpage
+
+\section*{Apertura: Problemas que piden lógica --- de la caladora que cuenta hilos al problema que se deja descomponer}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+\textbf{En Cartago, el calado no se empieza bordando: se empieza contando.} La caladora tensa el lino en el tambor, marca un cuadro sacando \emph{dos hilos horizontales y dos verticales}, y desde ahí retira la urdimbre y la trama \textbf{de uno en uno} ---nunca de a dos---: \emph{``si tratas de deshilar dos hilos a la vez, ellos no te dejan, se pegan entre sí''} (Olivia, caladora de 65 años, en Pérez-Bustos, 2019). Lo que queda no es un hueco: es una \textbf{rejilla regular}, y esa rejilla ---no la tela--- es la base de todo el diseño posterior. Solo entonces la puntada teje hilos nuevos dentro de los agujeros y \emph{repara} lo que se destruyó con cuidado. La señora Elsa, de 80 años, les advirtió a unos ingenieros que fueron a aprender en tres días: lo básico del calado era \textbf{un asunto muy complejo} ---y pasaron cuatro horas en el primer deshilado (Pérez-Bustos, 2019). \textbf{Mira lo que hace su cabeza mientras cuenta:} parte un problema grande en unidades mínimas (hilo por hilo), descubre el patrón que se repite, se queda con la rejilla y suelta el resto, y ejecuta los pasos \emph{en un orden que no se puede alterar}. Eso, con otro nombre, es lo que hoy vas a aprender.
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+\textbf{Pensamiento computacional} es formular un problema de modo que su solución se pueda ejecutar \emph{paso a paso}, por una persona, por una máquina o por las dos (Wing, 2006). \textbf{No es programar}: es lo que se piensa \emph{antes} de tocar un teclado ---por eso los retos \textbf{Bebras}, creados por Valentina Dagienė en Lituania, se resuelven con lápiz y papel. Tiene \textbf{cuatro pilares}, y la caladora los usa todos: \textbf{descomposición} (partir el problema en pedazos que se resuelvan solos: el hilo de uno en uno); \textbf{patrones} (ver lo que se repite, para no reinventar cada celda); \textbf{abstracción} (quedarse con lo que decide ---la rejilla--- y soltar el detalle que no decide: el color del lino); \textbf{algoritmo} (una secuencia ordenada, finita y sin ambigüedad, donde \emph{cambiar el orden arruina la pieza}). Y hay algo más que la caladora sabe y el principiante no: \textbf{reconocer cuándo un daño ya no tiene remiendo}. Cuando faltan demasiados hilos, no hay arreglo posible (Pérez-Bustos, 2019). Saber qué problema \emph{sí} se deja resolver ---y cuál no--- también es pensamiento computacional.
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{La caladora no empieza cortando: empieza \textbf{contando hilos} hasta que el problema se vuelve una rejilla que puede trabajar; \textbf{¿qué problema de tu casa, tu escuela o tu vereda podrías «contar hilo por hilo»} hasta volverlo un reto que se resuelve por pasos\ldots y cuál, por más que cuentes, pide otra cosa?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar la sesión: (1) podrás \textbf{identificar} problemas de tu entorno que se dejan abordar con pensamiento computacional, y distinguirlos de los que piden otra cosa; (2) sabrás \textbf{explicar} los cuatro pilares ---descomposición, patrones, abstracción, algoritmo--- con un ejemplo propio de cada uno; (3) podrás \textbf{aplicar} el formato DADO --- SE QUIERE --- TAL QUE para reformular un problema cotidiano como reto computacional; (4) habrás \textbf{descompuesto} ese problema en subproblemas que se resuelven por separado.
+\end{softbox}
+
+
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Formula preguntas investigables, produce evidencia con método y comunica hallazgos reconociendo sus límites (investigación estudiantil STEM, transversal 6°--11°)\\
+Referentes & Valentina Dagienė (Bebras) · Jeannette Wing (pensamiento computacional)\\
+Producto final & Tu \textbf{colección de problemas reformulados}: al menos \textbf{6 problemas cotidianos} de tu casa, tu escuela o tu vereda, cada uno marcado como \emph{problema que pide lógica} o \emph{problema que pide otra cosa}, con la razón. Más \textbf{un problema elegido y descompuesto}: escrito en el formato \textbf{DADO --- SE QUIERE --- TAL QUE}, y abierto en un \textbf{árbol de subproblemas} donde cada rama se pueda resolver por separado. Esa descomposición es la semilla del algoritmo que escribirás en el módulo 2.\\
+\end{tabularx}
+\normalsize
+
+\puente{Arranca la línea de Pensamiento computacional. Hoy no vas a programar nada ---ni siquiera vas a encender el computador---: vas a aprender lo que la caladora hace antes de la primera puntada, \textbf{mirar un problema hasta que se deja partir}.}
+
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
+\end{tabularx}
+
+
+\puente{Antes de resolver, hay que \emph{ver}. Los problemas de tu entorno ya están ahí: la mayoría los pasamos por alto porque nos acostumbramos a que sean así.}
+
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- Cazador de problemas} (40 min · individual + grupo). \textbf{Momento A (10 min) --- El caso de la caladora.} El profe cuenta cómo se hace un calado en Cartago: marcar el cuadro, sacar los hilos de uno en uno, contar para que la rejilla salga simétrica, remendar el error. Pregunta abierta: \emph{¿qué está haciendo su cabeza mientras cuenta?}. \textbf{Momento B (15 min) --- Safari de problemas.} Cada quien recorre con la mente su casa, su escuela y su vereda buscando \textbf{cosas que se repiten mal, se pierden, se demoran o se enredan}: \emph{``nunca sabemos de quién es el turno de lavar''}, \emph{``se pierde media hora repartiendo los grupos''}, \emph{``la ruta al colegio se llena y no sé cuándo salir''}, \emph{``mi mamá pierde el recibo entre veinte papeles''}. Anota \textbf{mínimo 6}. \textbf{Momento C (15 min) --- ¿Pide lógica o pide otra cosa?} En grupo, separen los problemas que tienen \textbf{datos, reglas y una forma de saber si quedó bien} de los que piden plata, fuerza, permiso o una conversación difícil. \textbf{En el cuaderno:} tus 6+ problemas + la marca de cuáles piden lógica y por qué.
+\end{softbox}
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Puedo explicar qué hace la cabeza de la caladora mientras cuenta hilos.}
+\milccheckrow{Anoté al menos 6 problemas reales de mi entorno.}
+\milccheckrow{Separé los que piden lógica de los que piden otra cosa, y sé decir por qué.}
+
+\begin{infoband}{milcVerde}
+
+
+\textbf{Lo que va al cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1 --- Cazador de problemas». \textbf{Formato:} lista de 6+ problemas + a quién le pasa cada uno + la marca «pide lógica / pide otra cosa» con una razón de una línea. \textbf{Extensión:} 12 líneas. \textbf{Sabes que terminaste cuando} puedes señalar \textbf{un problema con datos, reglas y un modo de verificar si quedó bien resuelto}.
+\end{infoband}
+
+\puente{Ya tienes problemas cazados. Ahora aprende los cuatro hilos con que se trabajan: descomponer, ver patrones, abstraer y ordenar en un algoritmo.}
+
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
+\textbf{Actividad 2 · EXPLICA --- Los cuatro hilos} (65 min · grupo + individual). Ya tienes problemas cazados. Ahora aprende las cuatro herramientas con que se trabajan, viéndolas primero donde llevan siglos funcionando: en las manos de una caladora de Cartago.
+\end{softbox}
+
+\milcpaso{1}{milcTurquesa}{\textbf{Pilar 1 --- Descomposición: el hilo de uno en uno.} Un problema grande no se resuelve; se \textbf{parte}. La caladora no arranca un puñado de tela: retira \emph{un hilo a la vez}, porque de a dos \emph{``se pegan entre sí''} y se rompen (Pérez-Bustos, 2019). Descomponer es exactamente eso: cortar el problema por donde \textbf{se deja cortar}, hasta que cada pedazo se pueda resolver \emph{sin mirar a los otros}. Prueba de que cortaste bien: puedes darle un pedazo a un compañero, explicárselo en una frase, y él lo resuelve solo. Si para resolver el pedazo A hay que saber cómo quedó el B, todavía están pegados: \textbf{sigue partiendo}. \emph{Casi todo problema que parece imposible es un montón de problemas fáciles que nadie ha separado.}}
+\milcpaso{2}{milcTurquesa}{\textbf{Pilar 2 --- Patrones: lo que se repite no se piensa dos veces.} Cuando la rejilla está lista, la caladora \textbf{no inventa una puntada distinta para cada agujero}: repite la misma forma ---el Punto Espíritu, por ejemplo--- celda tras celda. Reconocer un patrón es descubrir que \textbf{varios pedazos del problema son el mismo pedazo con otro nombre}. Si el turno del lavado, el turno del tablero y el turno del aseo se resuelven con la misma regla de rotación, no tienes tres problemas: tienes \textbf{uno, tres veces}. Buscar patrones ahorra trabajo, sí, pero sobre todo \textbf{revela la estructura}: te dice cuál es de verdad la pieza que hay que resolver. \emph{Quien no ve el patrón termina bordando cuatro horas lo que se resolvía en veinte minutos.}}
+\milcpaso{3}{milcTurquesa}{\textbf{Pilar 3 --- Abstracción: quedarse con lo que decide.} La caladora trabaja sobre la \textbf{rejilla}, no sobre la tela: el color del lino, la marca del hilo y el tamaño del tambor no cambian el diseño ---y por eso los suelta. Abstraer es \textbf{quitar todo el detalle que no decide} y quedarse con la estructura que sí. En el problema del turno del lavado: los nombres importan, el orden importa, quién cocinó ayer importa; el color de la loza no. Nombra las \textbf{variables} (lo que cambia), las \textbf{reglas} (lo que siempre se cumple) y el \textbf{criterio de éxito} (cómo sabes que quedó bien). \emph{Abstraer da miedo porque se parece a perder información; en realidad es dejar de cargar la que no sirve.}}
+\milcpaso{4}{milcTurquesa}{\textbf{Pilar 4 --- Algoritmo: el orden manda.} Un algoritmo es una \textbf{secuencia ordenada, finita y sin ambigüedad} de pasos que lleva del punto de partida al resultado. El calado tiene el suyo, y es inflexible: marcar el cuadro → sacar dos y dos → deshilar de uno en uno → remendar y bordar. \textbf{Cambia el orden y arruinas la pieza:} bordar antes de deshilar no es «otra manera», es un error irreversible. Un buen algoritmo cumple tres pruebas: cada paso dice \emph{qué} hacer sin dejar dudas, los pasos \textbf{terminan} (no dan vueltas para siempre), y \textbf{otra persona} lo puede ejecutar sin preguntarte nada. Hoy no lo escribes todavía ---eso es el módulo 2---; hoy reconoces que tu problema \textbf{admite} uno.}
+
+\begin{drawbox}{milcTurquesa}{Los cuatro pilares, y el quinto criterio que decide si vale la pena}
+\textbf{Descomponer:} partir hasta que cada pedazo se resuelva solo (el hilo de uno en uno). \\[1mm]
+\textbf{Patrones:} lo que se repite se resuelve una vez y se reutiliza (la misma puntada en cada celda). \\[1mm]
+\textbf{Abstracción:} quedarse con lo que decide ---variables, reglas, criterio de éxito--- y soltar el resto (la rejilla, no el color del lino). \\[1mm]
+\textbf{Algoritmo:} pasos ordenados, finitos y sin ambigüedad; cambiar el orden arruina la pieza. \\[1mm]
+\textbf{Y antes de todo:} ¿el problema tiene datos, reglas y forma de verificar? Si no, no pide lógica: pide otra cosa.
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{Errores al plantear un problema (y cómo evitarlos).} (1) \emph{Saltar a la solución} --- «hagamos una app»; todavía no sabes cuál es el problema, y la app es solo la primera idea que se te ocurrió. (2) \emph{Subproblemas pegados} --- si para resolver A necesitas el resultado de B y viceversa, no partiste: \textbf{sigue cortando}. (3) \emph{Criterio de éxito invisible} --- «que quede mejor» no es verificable; escribe \textbf{cómo sabrás} que quedó bien. (4) \emph{Confundir difícil con grande} --- casi siempre es grande, no difícil; pártelo. (5) \emph{Abstraer de más} --- si quitas un dato que \emph{sí} decide, tu solución resolverá otro problema. (6) \emph{Empeñarse en lo que no tiene remiendo} --- hay problemas que piden plata, permiso o una conversación; reconocerlo a tiempo es \textbf{criterio}, no rendirse.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+\guiaDiagrama{assets/pensamiento-computacional-1/rejilla-calado.tex}{Los cuatro pilares no son teoría: son lo que hacen las manos de una caladora de Cartago. Descomponer la tela hilo por hilo deja ver el patrón; quedarse con la rejilla es abstraer; y el orden de los pasos no se puede alterar sin arruinar la pieza. Técnica documentada por Pérez-Bustos (2019).}
+
+\textbf{Lo que va al cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2 --- Los cuatro hilos». \textbf{Formato:} 4 bloques, uno por pilar. En cada uno: qué es en tus palabras (2 líneas), cómo lo hace la caladora (1 línea) y \textbf{un ejemplo tuyo} sacado de la Actividad 1 (1 línea). \textbf{Extensión:} 1 hoja. \textbf{Sabes que terminaste cuando} podrías explicarle a alguien \textbf{por qué cambiar el orden de un algoritmo no es «otra manera», sino un error}.
+\end{infoband}
+
+\puente{Ya sabes los cuatro pilares. Es hora de \textbf{reformular} un problema tuyo en lenguaje preciso y \textbf{descomponerlo} hasta que cada pedazo se pueda resolver solo.}
+
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
+
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
+\textbf{Actividad 3 · APLICA --- Reformula y descompone} (45 min · individual + parejas). Hora de trabajar tu propio problema. Vas a escribirlo en \textbf{lenguaje preciso} y a abrirlo en un \textbf{árbol de subproblemas}, hasta que cada rama se sostenga sola.
+\end{softbox}
+
+\milcpaso{1}{milcMagenta}{\textbf{Paso 1 --- Elige y reformula (12 min).} De tus problemas que \emph{piden lógica}, escoge el que le importe a una persona concreta. Escríbelo en el \textbf{formato del planteamiento}: \emph{``\textbf{DADO} \_\_\_\_ (los datos y las condiciones que ya existen), \textbf{SE QUIERE} \_\_\_\_ (el resultado, en una sola frase), \textbf{TAL QUE} \_\_\_\_ (las reglas que hay que respetar y cómo sabré que quedó bien)''}. Ejemplo: \emph{``Dado que somos 5 en la casa y cada día hay que lavar, se quiere un turno justo, tal que nadie lave dos días seguidos y todos laven igual número de veces al mes''}.}
+\milcpaso{2}{milcMagenta}{\textbf{Paso 2 --- Parte hasta que se suelten (15 min).} Dibuja un \textbf{árbol}: arriba tu problema, y debajo los subproblemas en que se parte. Sigue abriendo ramas mientras la respuesta a \emph{``¿este pedazo se puede resolver sin mirar los otros?''} sea \textbf{no}. Para el turno del lavado: (a) llevar el registro de quién lavó, (b) definir la regla de rotación, (c) resolver los días que alguien no está, (d) avisarle a cada quien su turno. \textbf{Mínimo 3 ramas, y al menos una abierta en dos niveles.}}
+\milcpaso{3}{milcMagenta}{\textbf{Paso 3 --- Aplica el «test de la caladora» (10 min).} Rama por rama, pregúntate tres cosas: \emph{¿está sola} (se resuelve sin mirar a las otras)\emph{?}; \emph{¿se puede verificar} (sé cómo comprobar que quedó bien)\emph{?}; \emph{¿tiene remiendo} (o pide plata, permiso o una conversación que no me toca a mí)\emph{?}. Marca cada rama con \textbf{LISTA}, \textbf{PARTIR} (\emph{hay que abrirla más}) o \textbf{SIN REMIENDO} (\emph{esta no se arregla por lógica}). \textbf{No borres las SIN REMIENDO:} nombrar lo que no se puede resolver es parte del trabajo, igual que la caladora que reconoce el daño sin remiendo.}
+\milcpaso{4}{milcMagenta}{\textbf{Paso 4 --- Busca el patrón y nómbralo (8 min).} Mira tus ramas y las de tu pareja: \emph{¿hay dos que sean el mismo problema con otro nombre?}. Si «avisarle a cada quien su turno de lavado» y «avisar quién expone el viernes» se resuelven igual, escríbelo: \textbf{«mismo patrón: rotación con aviso»}. \emph{Ese hallazgo es oro: un patrón resuelto una vez sirve muchas veces ---y es justo lo que harás explícito en el módulo 2.}}
+
+\begin{drawbox}{milcMagenta}{Antes de cerrar tu planteamiento}
+\checkbox Mi problema está escrito en formato DADO --- SE QUIERE --- TAL QUE. \\[1mm]
+\checkbox El criterio de éxito es verificable (sé cómo comprobar que quedó bien). \\[1mm]
+\checkbox Mi árbol tiene al menos 3 ramas y una abierta en dos niveles. \\[1mm]
+\checkbox Cada rama pasó el test: está sola, se verifica, tiene remiendo. \\[1mm]
+\checkbox Marqué SIN REMIENDO lo que no se resuelve por lógica, y no lo borré. \\[1mm]
+\checkbox Nombré al menos un patrón que se repite entre ramas.
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Plantilla del planteamiento.} \textit{DADO} \_\_\_\_ (datos y condiciones que ya existen). \textit{SE QUIERE} \_\_\_\_ (resultado, una sola frase). \textit{TAL QUE} \_\_\_\_ (reglas + cómo verifico). \\[1mm]
+\textit{Árbol:} problema → subproblema 1 · subproblema 2 · subproblema 3 (abre en dos niveles el que lo necesite). \\[1mm]
+\textit{Marca por rama:} LISTA (se sostiene sola) · PARTIR (hay que abrirla más) · SIN REMIENDO (no se resuelve por lógica). \\[1mm]
+\textit{Patrón hallado:} «\_\_\_\_ y \_\_\_\_ son el mismo problema: \_\_\_\_».
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+
+
+\textbf{Lo que va al cuaderno (Actividad 3 · APLICA).} Título: «Actividad 3 --- Mi problema, partido». \textbf{Formato:} el planteamiento DADO/SE QUIERE/TAL QUE + el árbol de subproblemas dibujado + la marca LISTA / PARTIR / SIN REMIENDO de cada rama + el patrón hallado. \textbf{Extensión:} 1 hoja. \textbf{Sabes que terminaste cuando} podrías entregarle \textbf{una rama} a un compañero y él la resolvería sin preguntarte nada más.
+\end{infoband}
+
+\puente{El producto no es una solución todavía: es un \textbf{problema bien planteado y bien partido}. La caladora que cuenta mal la rejilla borda cuatro horas para nada.}
+
+\milcestacion{milcMostaza}{Producto de la sesión}
+\textbf{Colección de problemas reformulados + un problema descompuesto en árbol (semilla del algoritmo)}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) Hay 6+ problemas del entorno, marcados como «pide lógica» o «pide otra cosa» con su razón. (2) El problema elegido está escrito en formato DADO --- SE QUIERE --- TAL QUE, con criterio verificable. (3) El árbol tiene al menos 3 ramas y una abierta en dos niveles. (4) Cada rama está marcada (LISTA / PARTIR / SIN REMIENDO) y las SIN REMIENDO siguen visibles, no borradas. (5) Se nombra al menos un patrón que se repite entre subproblemas.
+\end{softbox}
+
+\puente{Antes de cerrar, revisa tu descomposición: ¿cada subproblema se resuelve sin mirar a los otros, o todavía están pegados como los hilos que salen de a dos?}
+
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con 3 voces que explican por qué plantear bien un problema ---y saber cuál no tiene arreglo--- es la parte difícil, no la fácil.}
+
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{Aquel que es capaz de escuchar silenciosamente al Otro como otro es el que puede constituir una comunidad y no una mera sociedad totalizada.}
+
+Los ingenieros que fueron a Cartago creían que en tres días entenderían «lo básico» del calado, y pasaron cuatro horas sin terminar el primer deshilado (Pérez-Bustos, 2019). \textbf{La caladora sabía algo que ellos no}, y solo escuchándola en silencio ---contando hilos con las manos adoloridas--- pudieron aprenderlo. Frente a un problema pasa igual: quien lo vive sabe cosas que tú no. \textbf{Escuchar antes de plantear no es cortesía: es el único modo de plantear bien.}
+
+\textbf{¿Escuché a quien vive el problema, o lo planteé desde lo que yo creo que le pasa?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Epicteto · Enquiridión, 1 (c. 125 d.C.; trad. desde E. Carter) · cuidado interior}
+\textit{Algunas cosas están en nuestro poder y otras no. Están en nuestro poder la opinión, el impulso, el deseo, el rechazo; en una palabra, todo aquello que es obra nuestra.}
+
+Epicteto empieza su manual con la operación que hoy practicaste: \textbf{separar lo que depende de ti de lo que no}. Descomponer un problema es eso mismo, con lápiz: esta rama la resuelvo, esta pide plata, esta pide una conversación que no me toca. \textbf{Marcar una rama «sin remiendo» no es rendirse ---es dejar de gastar fuerza donde no hay arreglo}, para ponerla toda donde sí. El que no separa termina agotado y sin resolver nada.
+
+\textbf{De todo lo que me molesta de este problema, ¿qué parte está de verdad en mi poder resolver?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{Los pequeños patrones solo pueden ser significativos si se agregan correctamente, se comparan y se procesan a tiempo.}
+
+Floridi advierte que un patrón suelto no dice nada: adquiere sentido cuando se \textbf{junta con otros, se compara y llega a tiempo}. Una puntada aislada no es un calado; la misma puntada repetida en la rejilla \emph{sí} es un diseño. Por eso el paso 4 de hoy ---\textbf{buscar qué ramas son el mismo problema con otro nombre}--- no es un adorno: es lo que convierte tu montón de subproblemas en una estructura que puede resolverse una vez y reutilizarse muchas.
+
+\textbf{¿Qué patrón se repite entre mis subproblemas, y qué me ahorraría resolverlo una sola vez bien?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
+
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
+
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Dos cosas. \textbf{(1) Levanta el algoritmo de un oficio:} busca a alguien de tu casa o tu barrio que haga algo con pasos ---calar o bordar, amasar el pan, arreglar una bicicleta, preparar el sancocho, cuadrar una caja--- y pídele que te lo explique mientras lo hace. Escríbelo en \textbf{6 a 10 pasos numerados} y luego pregúntale: \emph{¿qué pasa si se cambia el orden de estos dos?}. Anota su respuesta \textbf{tal como la diga}: ahí está la diferencia entre un paso que se puede mover y uno que no. \textbf{(2) Valida tu planteamiento con su dueño:} muéstrale a la persona a quien le importa tu problema el formato DADO --- SE QUIERE --- TAL QUE y pregúntale si eso \emph{es} su problema. Si te corrige, ganaste. \textbf{Trae:} el algoritmo del oficio y tu planteamiento corregido. \emph{En el módulo 2 vas a convertir tu árbol en patrones y en un algoritmo escrito ---diagrama de flujo y pseudocódigo---, y en el 3 lo pondrás a prueba contra los retos Bebras. La caladora ya te enseñó lo más difícil: contar antes de cortar.}
+\end{infoband}
+
+\end{document}

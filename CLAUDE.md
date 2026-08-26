@@ -1,6 +1,8 @@
 # Plataforma Conéctate — Contexto para Claude Code
 
-Plataforma educativa de Tecnología e Informática (I.E. Sor María Juliana, Cartago, Valle del Cauca). Aloja **150 guías + 15 proyectos integradores** para grados 6° a 10°. Construida con **Astro + Tailwind + TypeScript** y opera offline-first (Service Worker).
+Plataforma educativa de Tecnología e Informática (I.E. Sor María Juliana, Cartago, Valle del Cauca). Aloja **180 guías, 18 exámenes y 18 proyectos integradores** para grados **6° a 11°**, más cuatro apartados propios: **Semillero de Investigación**, **Territorio Interior** (educación socioemocional 6°–11°), **Bebras** y el hub **Explora**. Construida con **Astro 6 + Tailwind + TypeScript**, opera offline-first (Service Worker) y tiene backend en **Supabase** (cuentas, consentimiento del acudiente, progreso e informes).
+
+El contenido es **YAML como fuente única**: cada guía, examen o proyecto vive en `content/**.yaml`, y los builders de `scripts/` producen desde ahí tanto el PDF (XeLaTeX, plantilla MILC v3) como el TypeScript de la web. Nunca se edita el `.tex` ni el `.ts` generado a mano. `make help` lista el pipeline completo.
 
 Docente y propietario: **PhD. Álvaro Cárdenas Orozco**.
 
@@ -239,7 +241,17 @@ Si la intención es ambigua, **preguntar** antes de decidir. Pero por defecto, `
 
 ## Arquitectura del generador de guías PDF
 
-> Esta sección describe la **single source of truth** para generar guías. Aplica a las guías de grado 11° (y se extenderá a los demás grados con el mismo patrón).
+> Esta sección describe la **single source of truth** para generar guías. El patrón ya rige **todo el contenido**: los seis grados (6°–11°), los exámenes, los proyectos, el plan de área y los apartados propios, cada uno con su driver paralelo y el mismo esquema YAML.
+
+| Familia | Driver | Salida |
+|---|---|---|
+| Guías de grado (6°–11°) | `scripts/build-guias-g11.py` | `public/guias-mejoras/{sesionGlobal}-{grado}-TIC.pdf` |
+| Semillero | `scripts/build-guias-semillero.py` | `public/guias-mejoras/semillero/{linea}-{modulo}-TIC.pdf` |
+| Territorio Interior | `scripts/build-guias-territorio-interior.py` | `public/guias-mejoras/territorio-interior/` |
+| Bebras | `scripts/build-guias-bebras.py` | `public/guias-mejoras/bebras/` |
+| Exámenes · Proyectos · Plan de área | `build-examenes.py` · `build-proyectos.py` · `build-plan-area.py` | `public/examenes-mejoras/` · `PROYECTOS/pdf/` · `public/plan-de-area/` |
+
+Todos comparten la plantilla `scripts/generadores/template-milc-v3.tex` (parametrizada por portada y encabezado) y el esquema de `content/guias/_SCHEMA.md`.
 
 ### Single source of truth: archivos YAML
 
@@ -252,7 +264,7 @@ content/guias/11/11-1-2.yaml  ◀────────  fuente única editabl
 build-guias-g11.py
         │
         ├──▶  public/guias-mejoras/2-11-TIC.pdf  (vía xelatex)
-        └──▶  src/data/guiasContenido/11-1-2.ts  (vía generador TS · próxima pieza)
+        └──▶  src/data/guiasContenido/11-1-2.ts  (vía `make guia-web`)
 ```
 
 **Regla de oro:** nunca edites `.tex` ni `.ts` generados; siempre edita el YAML.
@@ -272,7 +284,16 @@ make guia-lint CLAVE=1-2           # valida solo G11·P1·S2
 make guia-lint-strict              # warnings cuentan como errores
 make guia-assets                   # lista assets (imágenes, diagramas) de todas las guías
 make guia-assets CLAVE=1-2         # solo G11·P1·S2
+make guia-web                      # genera el TS de la web desde el YAML
+make examen-build / examen-lint    # exámenes: compilar y validar
+make proyecto-build / proyecto-web # proyectos: PDF y contenido web
+make plan-area-build               # Plan de Área 2026 (LaTeX, 112 págs)
+make sw-bump                       # sube la versión del Service Worker (ver regla)
 ```
+
+> **Service Worker:** si el trabajo de la sesión **regeneró PDFs o imágenes de `public/`**,
+> hay que correr `make sw-bump` antes de cerrar. Los PDFs se sirven *cache-first*: sin el
+> bump, los estudiantes que ya abrieron la guía seguirán viendo la copia anterior.
 
 > **Assets:** las imágenes y diagramas de cada guía viven en `public/guias-mejoras/assets/{sesionGlobal}-{grado}/`. Se referencian desde el YAML en la sección opcional `recursos.imagenes` y `recursos.diagramas`. Ver [public/guias-mejoras/assets/README.md](public/guias-mejoras/assets/README.md) para la convención completa.
 
@@ -301,7 +322,8 @@ Documentación completa en [content/guias/_SCHEMA.md](content/guias/_SCHEMA.md).
 | 4. Validador `make guia-lint` | ✅ |
 | 5. Asset management | ✅ |
 | 6. Workflow de sesión (modos) | ✅ |
-| 7. Status `make guia-status` | ⏳ |
+| 7. Status `make guia-status` | ✅ |
+| 8. Generador web `make guia-web` | ✅ |
 
 ## Reglas operativas para Claude
 

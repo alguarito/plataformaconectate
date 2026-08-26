@@ -346,9 +346,15 @@ export const planEstudios: PlanLinea[] = [
       {
         fase: 'Escucha',
         titulo: 'Problemas que piden lógica',
-        rae: 'Reconoce, en su entorno, problemas que pueden abordarse con pensamiento computacional.',
-        productos: ['Colección de problemas cotidianos reformulados como retos computacionales'],
-        indicador: 'Descompone un problema en subproblemas resolubles.',
+        rae: 'Reconoce, en su entorno, problemas que pueden abordarse con pensamiento computacional, y distingue los que piden otra cosa.',
+        productos: [
+          'Colección de 6+ problemas cotidianos marcados como «pide lógica» o «pide otra cosa», con su razón',
+          'Un problema reformulado en formato DADO --- SE QUIERE --- TAL QUE, con criterio de éxito verificable',
+          'Árbol de subproblemas con cada rama marcada (LISTA / PARTIR / SIN REMIENDO) y un patrón nombrado',
+        ],
+        indicador: 'Descompone un problema en subproblemas resolubles: cada rama se sostiene sola y su criterio de éxito se puede verificar.',
+        guia: 'pensamiento-computacional-1',
+        duracionMin: 180,
       },
       {
         fase: 'Sistematización',

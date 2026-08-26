@@ -154,7 +154,13 @@ const grado8: Nivel = {
     { numero: 1, slug: 'momento-1', nombre: 'La necesidad de pertenecer', foco: 'Por qué el grupo pesa tanto a esta edad, y qué se paga por entrar.', ancla:a('Las Cuadrillas del Carnaval de Riosucio y la cuadrilla de recolección', 'verificada'), estado: 'proximamente' },
     { numero: 2, slug: 'momento-2', nombre: 'Decir que no', foco: 'Presión de grupo: negarse sin perder el lugar.', ancla:a('El Nu Nakchak misak, los shures y las shuras, y la Misak Ley', 'verificada'), estado: 'proximamente' },
     { numero: 3, slug: 'momento-3', nombre: 'El que mira', foco: 'El papel del espectador: mirar también es participar.', ancla:a('El conciliador en equidad y el juez de paz que la comunidad elige', 'verificada'), estado: 'proximamente' },
-    { numero: 4, slug: 'momento-4', nombre: 'Rumor y reputación', foco: 'Cómo se fabrica la fama de alguien y cuánto cuesta deshacerla.', ancla:a('Sin ancla: no hay pregonero documentado en Cartago ni el Norte del Valle', 'por-documentar', 'Cero evidencia local de la figura. Sustituto propuesto por documentar: la reputación en el taller de bordado.'), estado: 'proximamente' },
+    // Cerrada con el sustituto que proponía la nota anterior (el taller de bordado),
+    // ahora con fuente: la etnografía del calado cartagüeño de Pérez-Bustos (2019,
+    // Papel de Colgadura n.º 18). El error se remienda para que no se vea —«no quieres
+    // que se vea remendada», dice Olivia, caladora— y cuando el daño es demasiado
+    // grande, ya no hay remiendo posible. Esa es, exactamente, la economía de una
+    // reputación: se sostiene en lo que no se nota, y tiene un punto sin retorno.
+    { numero: 4, slug: 'momento-4', nombre: 'Rumor y reputación', foco: 'Cómo se fabrica la fama de alguien y cuánto cuesta deshacerla.', ancla:a('El remiendo invisible del calado cartagüeño: reparar el error para que no se vea, y el daño que ya no tiene remiendo (Pérez-Bustos, 2019)', 'verificada'), estado: 'proximamente' },
     { numero: 5, slug: 'momento-5', nombre: 'La ruta cuando algo pasa', foco: 'Ley 1620 de 2013: tipologías de situación y a quién se avisa.', ancla:a('La asamblea de cabildos del norte del Cauca y la sentencia T-523 de 1997', 'verificada'), estado: 'proximamente' },
     { numero: 6, slug: 'momento-6', nombre: 'Identidad prestada', foco: 'Marca, moda y pertenencia comprada: la economía de la atención en el aula.', ancla:a('La Feria de Cartago y las Fiestas del Calado y el Bordado de Ansermanuevo', 'verificada'), estado: 'proximamente' },
     { numero: 7, slug: 'momento-7', nombre: 'El cuerpo comparado', foco: 'Imagen corporal, burla y la vara con que se mide.', ancla:a('Cómo Colombia aprendió a mirar cuerpos: cartillas escolares y la revista Cromos', 'verificada'), estado: 'proximamente' },
@@ -197,7 +203,16 @@ const grado10: Nivel = {
     'Salud mental y riesgo: ansiedad, duelo, anestesias, rumor y desastre. Aquí la ruta de atención deja de ser tema y se vuelve directorio.',
   bgClass: 'bg-bento-teal',
   momentos: [
-    { numero: 1, slug: 'momento-1', nombre: 'Ansiedad: qué es y qué no', foco: 'Normalizar sin banalizar: la ansiedad que avisa y la que incapacita.', ancla:a('Sin ancla: el sereno está documentado en Bogotá, no en el Norte del Valle', 'por-documentar', 'La figura solo aparece en fuentes divulgativas y fuera de la región.'), estado: 'proximamente' },
+    // Sustituye al sereno (bogotano y solo en fuentes divulgativas) por un saber del
+    // propio Valle: la «enfermedad de los nervios», nombre popular con que las
+    // comunidades rurales del suroccidente nombran el sufrimiento que mezcla cuerpo y
+    // emoción —pesadillas, temblor, llanto, miedo, cambios de peso—. Etnografía en
+    // Sevilla y Barragán (Tuluá), Valle del Cauca, y Descansé (Cauca), 2018-2019:
+    // Piedrahita Forero y Tabares (2021), Jangwa Pana, 20(2), 225-258.
+    // CUIDADO AL ESCRIBIR LA GUÍA: el síndrome está documentado como consecuencia de
+    // las violencias del conflicto armado. Se nombra ese origen; no se folcloriza ni
+    // se diluye en «así le dicen aquí a la ansiedad».
+    { numero: 1, slug: 'momento-1', nombre: 'Ansiedad: qué es y qué no', foco: 'Normalizar sin banalizar: la ansiedad que avisa y la que incapacita.', ancla:a('La «enfermedad de los nervios»: cómo el campo del Valle nombra el sufrimiento que se siente en el cuerpo (Piedrahita Forero y Tabares, 2021)', 'verificada'), estado: 'proximamente' },
     { numero: 2, slug: 'momento-2', nombre: 'Lo que controlo y lo que no', foco: 'La dicotomía del control aplicada a lo que de verdad quita el sueño.', ancla:a('La roya y la cosecha: lo que sí dependía de una decisión', 'verificada'), estado: 'proximamente' },
     { numero: 3, slug: 'momento-3', nombre: 'Tristeza, depresión y ayuda', foco: 'Desestigmatizar y usar la ruta real: Ley 1616 de 2013, orientación escolar, EPS.', ancla:a('Los médicos tradicionales y el «refrescar»', 'verificada'), estado: 'proximamente' },
     { numero: 4, slug: 'momento-4', nombre: 'Si alguien me lo dice', foco: 'Qué hacer ante autolesión o ideación suicida: protocolo de aviso, nunca diagnóstico.', ancla:a('La Guardia Indígena del Cauca: avisar sin armas y sin resolver solo', 'verificada'), estado: 'proximamente' },

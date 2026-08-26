@@ -1,0 +1,607 @@
+---
+/**
+ * /conectividad · Censo de conectividad de la I.E. Sor María Juliana.
+ *
+ * Página pública (no requiere sesión): la responde el estudiante o su acudiente
+ * desde cualquier teléfono. Sirve para saber, después del sismo, quién quedó sin
+ * internet, sin dispositivo, sin vivienda o en albergue — y así decidir a quién
+ * hay que llevarle guía impresa.
+ *
+ * Todo el acceso a datos pasa por las tres RPC de src/lib/conectividad.ts. Aquí
+ * no se toca ninguna tabla directamente.
+ *
+ * Flujo: curso → estudiante → últimos 4 dígitos del documento → 8 preguntas.
+ * La identidad la verifica el servidor, no esta página.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const OPCIONES_INTERNET = ['Fijo', 'Datos móviles', 'Ninguno'];
+const OPCIONES_ESTABILIDAD = ['Estable', 'Intermitente', 'Sin servicio'];
+const OPCIONES_DISPOSITIVO = ['Computador', 'Tablet', 'Celular', 'Ninguno'];
+const OPCIONES_USO = ['Exclusivo', 'Compartido'];
+const SI_NO = ['Sí', 'No'];
+
+/** Pinta un grupo de opciones como botones-radio grandes (targets ≥ 44 px). */
+const grupoRadio = (
+  nombre: string,
+  opciones: string[],
+  ayuda?: Record<string, string>
+) => ({ nombre, opciones, ayuda: ayuda ?? {} });
+
+const preguntas = [
+  {
+    ...grupoRadio('internet', OPCIONES_INTERNET, {
+      Fijo: 'Wifi de la casa, por cable o antena',
+      'Datos móviles': 'Solo el plan del celular',
+      Ninguno: 'No hay internet en la casa',
+    }),
+    titulo: '¿Cómo se conecta a internet en la casa?',
+  },
+  {
+    ...grupoRadio('estabilidad', OPCIONES_ESTABILIDAD, {
+      Estable: 'Casi siempre funciona',
+      Intermitente: 'Se va y vuelve',
+      'Sin servicio': 'No hay servicio ahora',
+    }),
+    titulo: '¿Cómo funciona esa conexión?',
+  },
+  {
+    ...grupoRadio('dispositivo', OPCIONES_DISPOSITIVO),
+    titulo: '¿Con qué aparato estudia?',
+  },
+  {
+    ...grupoRadio('uso', OPCIONES_USO, {
+      Exclusivo: 'Es solo suyo',
+      Compartido: 'Lo comparte con otras personas',
+    }),
+    titulo: '¿El aparato es solo suyo o lo comparte?',
+  },
+  {
+    ...grupoRadio('vivienda', SI_NO),
+    titulo: '¿La vivienda resultó afectada por el sismo?',
+  },
+  {
+    ...grupoRadio('albergue', SI_NO),
+    titulo: '¿Está viviendo en un albergue temporal?',
+  },
+];
+---
+
+<BaseLayout
+  title="Censo de conectividad · I.E. Sor María Juliana"
+  description="Cuéntanos cómo estás estudiando después del sismo: con qué conexión, con qué aparato y en qué condiciones. Toma dos minutos."
+>
+  <main class="max-w-2xl mx-auto px-4 py-8 md:py-12">
+    <!-- ─── Encabezado ─────────────────────────────────────────────── -->
+    <header class="mb-8">
+      <span class="inline-block text-[11px] font-black uppercase tracking-[0.14em] text-bento-blue mb-3">
+        I.E. Sor María Juliana · Cartago
+      </span>
+      <h1 class="text-4xl md:text-5xl font-black tracking-tight leading-[1.05] mb-4">
+        ¿Cómo estás estudiando ahora?
+      </h1>
+      <p data-intro class="text-base md:text-lg leading-relaxed text-neutral-700 dark:text-neutral-300">
+        Después del sismo, el colegio necesita saber quién tiene internet, quién tiene con qué
+        estudiar y quién no. Con eso decidimos a quién llevarle las guías impresas y a quién
+        buscar de otra manera. <strong>Toma dos minutos</strong> y lo puede responder el estudiante
+        o un acudiente.
+      </p>
+    </header>
+
+    <!-- ─── Estado de carga / error ────────────────────────────────── -->
+    <div data-cargando class="rounded-bento bg-neutral-100 dark:bg-neutral-800 p-6 text-center">
+      <p class="text-sm font-semibold text-neutral-600 dark:text-neutral-400">Cargando los cursos…</p>
+    </div>
+
+    <div data-error-carga class="hidden rounded-bento bg-bento-pink/10 border border-bento-pink/30 p-6">
+      <p class="font-bold text-bento-pink mb-1">No pudimos cargar la lista de cursos</p>
+      <p class="text-sm text-neutral-700 dark:text-neutral-300">
+        Revisa tu conexión y recarga la página. Si sigue sin funcionar, avísale a tu docente.
+      </p>
+    </div>
+
+    <!-- ─── PASO 1 · curso ─────────────────────────────────────────── -->
+    <section data-paso="curso" class="hidden">
+      <div class="rounded-bento bg-white dark:bg-neutral-900 shadow-bento p-5 md:p-7 space-y-5">
+        <div class="flex items-baseline gap-2">
+          <span class="text-[11px] font-black uppercase tracking-[0.14em] text-neutral-500">Paso 1 de 3</span>
+          <h2 class="text-xl font-black tracking-tight">¿En qué curso está?</h2>
+        </div>
+
+        <div>
+          <label for="sel-sede" class="block text-sm font-bold mb-2">Sede</label>
+          <select id="sel-sede" data-sel="sede" class="w-full min-h-[48px] px-4 py-3 rounded-bento-sm border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/40"></select>
+        </div>
+
+        <div>
+          <label for="sel-jornada" class="block text-sm font-bold mb-2">Jornada</label>
+          <select id="sel-jornada" data-sel="jornada" class="w-full min-h-[48px] px-4 py-3 rounded-bento-sm border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/40"></select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label for="sel-grado" class="block text-sm font-bold mb-2">Grado</label>
+            <select id="sel-grado" data-sel="grado" class="w-full min-h-[48px] px-4 py-3 rounded-bento-sm border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/40"></select>
+          </div>
+          <div>
+            <label for="sel-grupo" class="block text-sm font-bold mb-2">Grupo</label>
+            <select id="sel-grupo" data-sel="grupo" class="w-full min-h-[48px] px-4 py-3 rounded-bento-sm border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/40"></select>
+          </div>
+        </div>
+
+        <p data-avance-grupo class="text-sm text-neutral-600 dark:text-neutral-400"></p>
+
+        <button type="button" data-btn-curso class="w-full min-h-[48px] px-5 py-3 rounded-bento-sm bg-bento-blue text-white font-bold hover:scale-[1.01] transition-transform motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/40">
+          Continuar
+        </button>
+      </div>
+    </section>
+
+    <!-- ─── PASO 2 · estudiante + documento ────────────────────────── -->
+    <section data-paso="estudiante" class="hidden">
+      <div class="rounded-bento bg-white dark:bg-neutral-900 shadow-bento p-5 md:p-7 space-y-5">
+        <div class="flex items-baseline gap-2">
+          <span class="text-[11px] font-black uppercase tracking-[0.14em] text-neutral-500">Paso 2 de 3</span>
+          <h2 class="text-xl font-black tracking-tight">¿Quién es el estudiante?</h2>
+        </div>
+
+        <p data-curso-resumen class="text-sm font-semibold text-bento-blue"></p>
+
+        <div>
+          <label for="inp-buscar" class="block text-sm font-bold mb-2">Escribe el nombre o el apellido</label>
+          <input
+            id="inp-buscar"
+            type="text"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="Ej: Martínez"
+            class="w-full min-h-[48px] px-4 py-3 rounded-bento-sm border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/40"
+          />
+          <p class="text-xs text-neutral-500 mt-1">Escribe al menos 3 letras para ver la lista.</p>
+        </div>
+
+        <div data-lista-estudiantes class="space-y-2 max-h-72 overflow-y-auto"></div>
+
+        <div data-doc class="hidden space-y-3 pt-2 border-t border-neutral-200 dark:border-neutral-800">
+          <p class="text-sm">
+            Estudiante: <strong data-estudiante-nombre></strong>
+          </p>
+          <div>
+            <label for="inp-doc4" class="block text-sm font-bold mb-2">
+              Últimos 4 dígitos del documento del estudiante
+            </label>
+            <input
+              id="inp-doc4"
+              type="text"
+              inputmode="numeric"
+              maxlength="4"
+              autocomplete="off"
+              placeholder="0000"
+              class="w-full min-h-[48px] px-4 py-3 rounded-bento-sm border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 font-mono font-bold text-center text-xl tracking-[0.3em] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/40"
+            />
+            <p class="text-xs text-neutral-500 mt-1">
+              Sirve para confirmar que es el estudiante correcto. No guardamos el documento completo.
+            </p>
+          </div>
+          <button type="button" data-btn-estudiante class="w-full min-h-[48px] px-5 py-3 rounded-bento-sm bg-bento-blue text-white font-bold hover:scale-[1.01] transition-transform motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/40">
+            Continuar
+          </button>
+        </div>
+
+        <button type="button" data-volver-curso class="text-sm font-semibold text-neutral-500 hover:text-bento-blue underline underline-offset-4">
+          ← Cambiar de curso
+        </button>
+      </div>
+    </section>
+
+    <!-- ─── PASO 3 · el formulario ─────────────────────────────────── -->
+    <section data-paso="formulario" class="hidden">
+      <form data-form-censo class="rounded-bento bg-white dark:bg-neutral-900 shadow-bento p-5 md:p-7 space-y-7">
+        <div class="flex items-baseline gap-2">
+          <span class="text-[11px] font-black uppercase tracking-[0.14em] text-neutral-500">Paso 3 de 3</span>
+          <h2 class="text-xl font-black tracking-tight">Cuéntanos cómo están las cosas</h2>
+        </div>
+
+        <p data-resumen-final class="text-sm font-semibold text-bento-blue"></p>
+
+        {preguntas.map((p) => (
+          <fieldset data-pregunta={p.nombre}>
+            <legend class="text-base font-bold mb-3">{p.titulo}</legend>
+            <div class="grid gap-2">
+              {p.opciones.map((op) => (
+                <label class="flex items-start gap-3 min-h-[48px] px-4 py-3 rounded-bento-sm border border-neutral-300 dark:border-neutral-700 cursor-pointer hover:border-bento-blue has-[:checked]:border-bento-blue has-[:checked]:bg-bento-blue/5">
+                  <input type="radio" name={p.nombre} value={op} class="mt-1 accent-bento-blue w-5 h-5" required />
+                  <span>
+                    <span class="font-semibold block">{op}</span>
+                    {p.ayuda[op] && (
+                      <span class="text-xs text-neutral-500">{p.ayuda[op]}</span>
+                    )}
+                  </span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        ))}
+
+        <!-- Condicional: solo si el aparato es compartido -->
+        <div data-campo-comparte class="hidden">
+          <label for="inp-comparte" class="block text-base font-bold mb-2">
+            ¿Con cuántas personas lo comparte?
+          </label>
+          <input
+            id="inp-comparte"
+            name="comparte_n"
+            type="number"
+            min="1"
+            max="20"
+            inputmode="numeric"
+            class="w-full min-h-[48px] px-4 py-3 rounded-bento-sm border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/40"
+          />
+        </div>
+
+        <div>
+          <label for="inp-telefono" class="block text-base font-bold mb-2">
+            Teléfono de contacto <span class="font-normal text-neutral-500 text-sm">(opcional)</span>
+          </label>
+          <input
+            id="inp-telefono"
+            name="telefono"
+            type="tel"
+            inputmode="tel"
+            maxlength="15"
+            placeholder="3001234567"
+            class="w-full min-h-[48px] px-4 py-3 rounded-bento-sm border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/40"
+          />
+          <p class="text-xs text-neutral-500 mt-1">Por si el colegio necesita comunicarse con la familia.</p>
+        </div>
+
+        <div>
+          <label for="inp-observaciones" class="block text-base font-bold mb-2">
+            ¿Algo más que el colegio deba saber? <span class="font-normal text-neutral-500 text-sm">(opcional)</span>
+          </label>
+          <textarea
+            id="inp-observaciones"
+            name="observaciones"
+            rows="3"
+            maxlength="600"
+            placeholder="Cualquier cosa que nos ayude a entender su situación."
+            class="w-full px-4 py-3 rounded-bento-sm border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/40"
+          ></textarea>
+        </div>
+
+        <div data-error-guardar class="hidden rounded-bento-sm bg-bento-pink/10 border border-bento-pink/30 p-3">
+          <p class="text-sm font-semibold text-bento-pink" data-error-guardar-msg></p>
+        </div>
+
+        <button type="submit" data-btn-guardar class="w-full min-h-[52px] px-5 py-3 rounded-bento-sm bg-bento-blue text-white font-bold text-lg hover:scale-[1.01] transition-transform motion-reduce:transition-none disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/40">
+          Enviar
+        </button>
+
+        <button type="button" data-volver-estudiante class="text-sm font-semibold text-neutral-500 hover:text-bento-blue underline underline-offset-4">
+          ← Cambiar de estudiante
+        </button>
+      </form>
+    </section>
+
+    <!-- ─── Listo ──────────────────────────────────────────────────── -->
+    <section data-paso="listo" class="hidden">
+      <div class="rounded-bento bg-bento-lime/15 border border-bento-lime p-6 md:p-8 text-center">
+        <p class="text-5xl mb-3" aria-hidden="true">✓</p>
+        <h2 class="text-2xl font-black tracking-tight mb-2">Quedó registrado</h2>
+        <p class="text-base text-neutral-800 dark:text-neutral-200 mb-6" data-listo-msg></p>
+        <button type="button" data-btn-otro class="min-h-[48px] px-6 py-3 rounded-bento-sm bg-bento-blue text-white font-bold focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/40">
+          Responder por otro estudiante
+        </button>
+      </div>
+    </section>
+
+    <!-- ─── Avance del censo ───────────────────────────────────────── -->
+    <section data-avance class="hidden mt-10">
+      <h2 class="text-lg font-black tracking-tight mb-4">Cómo va el censo</h2>
+      <div data-avance-lista class="space-y-3"></div>
+      <p class="text-xs text-neutral-500 mt-4">
+        El avance se actualiza cada vez que alguien responde. Si un curso va muy atrasado, es
+        señal de que a esas familias hay que buscarlas por otro camino.
+      </p>
+    </section>
+
+    <p class="text-xs text-neutral-500 mt-10 leading-relaxed">
+      Esta información la usa la I.E. Sor María Juliana solo para organizar el acompañamiento
+      académico después del sismo. No se comparte con terceros.
+    </p>
+  </main>
+</BaseLayout>
+
+<script>
+  import {
+    cargarGrupos,
+    cargarEstudiantes,
+    guardarRespuesta,
+    etiquetaGrado,
+    etiquetaGrupo,
+    cajaTitulo,
+    avancePorSede,
+    porcentaje,
+    type GrupoCenso,
+    type EstudianteCenso,
+    type RespuestaCenso,
+  } from '../../lib/conectividad';
+
+  // ─── Estado ────────────────────────────────────────────────────────
+  let grupos: GrupoCenso[] = [];
+  let estudiantes: EstudianteCenso[] = [];
+  let sel = { sede: '', jornada: '', grado: '', grupo: '' };
+  let estudianteId: number | null = null;
+  let estudianteNombre = '';
+  let doc4 = '';
+
+  const $ = <T extends HTMLElement>(s: string) => document.querySelector<T>(s);
+  const $$ = <T extends HTMLElement>(s: string) => Array.from(document.querySelectorAll<T>(s));
+
+  function mostrarPaso(paso: 'curso' | 'estudiante' | 'formulario' | 'listo') {
+    $$<HTMLElement>('[data-paso]').forEach((el) => {
+      el.classList.toggle('hidden', el.dataset.paso !== paso);
+    });
+    // La explicación larga solo hace falta la primera vez: en un teléfono de
+    // 360 px obliga a bajar media pantalla antes de cada pregunta.
+    $('[data-intro]')?.classList.toggle('hidden', paso !== 'curso');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /** Rellena un <select> y conserva la selección si sigue siendo válida. */
+  function llenarSelect(campo: keyof typeof sel, valores: string[], etiquetar: (v: string) => string) {
+    const el = $<HTMLSelectElement>(`[data-sel="${campo}"]`);
+    if (!el) return;
+    const previo = sel[campo];
+    el.innerHTML = '';
+    for (const v of valores) {
+      const op = document.createElement('option');
+      op.value = v;
+      op.textContent = etiquetar(v);
+      el.appendChild(op);
+    }
+    sel[campo] = valores.includes(previo) ? previo : (valores[0] ?? '');
+    el.value = sel[campo];
+  }
+
+  const unicos = (xs: string[]) => [...new Set(xs)];
+
+  /** Recalcula las opciones en cascada: sede → jornada → grado → grupo. */
+  function refrescarCascada() {
+    llenarSelect('sede', unicos(grupos.map((g) => g.sede)), cajaTitulo);
+
+    const deSede = grupos.filter((g) => g.sede === sel.sede);
+    llenarSelect('jornada', unicos(deSede.map((g) => g.jornada)), cajaTitulo);
+
+    const deJornada = deSede.filter((g) => g.jornada === sel.jornada);
+    llenarSelect('grado', unicos(deJornada.map((g) => g.grado)), etiquetaGrado);
+
+    const deGrado = deJornada.filter((g) => g.grado === sel.grado);
+    llenarSelect('grupo', unicos(deGrado.map((g) => g.grupo)), etiquetaGrupo);
+
+    const g = deGrado.find((x) => x.grupo === sel.grupo);
+    const avance = $<HTMLElement>('[data-avance-grupo]');
+    if (avance) {
+      avance.textContent = g
+        ? `Este curso tiene ${g.total} estudiantes y ya respondieron ${g.respondidos}.`
+        : '';
+    }
+  }
+
+  // ─── Carga inicial ─────────────────────────────────────────────────
+  (async () => {
+    grupos = await cargarGrupos();
+    $('[data-cargando]')?.classList.add('hidden');
+
+    if (!grupos.length) {
+      $('[data-error-carga]')?.classList.remove('hidden');
+      return;
+    }
+
+    refrescarCascada();
+    mostrarPaso('curso');
+    pintarAvance();
+    $('[data-avance]')?.classList.remove('hidden');
+  })();
+
+  // ─── Cascada ───────────────────────────────────────────────────────
+  $$<HTMLSelectElement>('[data-sel]').forEach((el) => {
+    el.addEventListener('change', () => {
+      const campo = el.dataset.sel as keyof typeof sel;
+      sel[campo] = el.value;
+      refrescarCascada();
+    });
+  });
+
+  // ─── Paso 1 → 2 ────────────────────────────────────────────────────
+  $('[data-btn-curso]')?.addEventListener('click', async () => {
+    const btn = $<HTMLButtonElement>('[data-btn-curso]')!;
+    btn.disabled = true;
+    btn.textContent = 'Buscando el curso…';
+
+    estudiantes = await cargarEstudiantes(sel);
+
+    btn.disabled = false;
+    btn.textContent = 'Continuar';
+
+    const resumen = `${cajaTitulo(sel.sede)} · ${cajaTitulo(sel.jornada)} · ${etiquetaGrado(sel.grado)} · ${etiquetaGrupo(sel.grupo)}`;
+    const r1 = $<HTMLElement>('[data-curso-resumen]');
+    if (r1) r1.textContent = resumen;
+    const r2 = $<HTMLElement>('[data-resumen-final]');
+    if (r2) r2.textContent = resumen;
+
+    $<HTMLInputElement>('#inp-buscar')!.value = '';
+    pintarEstudiantes('');
+    $('[data-doc]')?.classList.add('hidden');
+    mostrarPaso('estudiante');
+  });
+
+  // ─── Búsqueda de estudiante ────────────────────────────────────────
+  //
+  // La lista no se muestra completa a propósito: son nombres de menores de edad,
+  // y quien responde ya sabe a quién busca. Con 3 letras basta para encontrarlo
+  // sin dejar el curso entero a la vista de cualquiera.
+  function normalizar(s: string) {
+    return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  }
+
+  function pintarEstudiantes(filtro: string) {
+    const cont = $<HTMLElement>('[data-lista-estudiantes]');
+    if (!cont) return;
+    cont.innerHTML = '';
+
+    const q = normalizar(filtro.trim());
+    if (q.length < 3) {
+      cont.innerHTML =
+        '<p class="text-sm text-neutral-500">Escribe al menos 3 letras del nombre o del apellido.</p>';
+      return;
+    }
+
+    const encontrados = estudiantes.filter((e) => normalizar(e.nombre).includes(q));
+    if (!encontrados.length) {
+      cont.innerHTML =
+        '<p class="text-sm text-neutral-500">Nadie con ese nombre en este curso. Revisa la sede, la jornada y el grupo.</p>';
+      return;
+    }
+
+    for (const e of encontrados.slice(0, 40)) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className =
+        'w-full text-left min-h-[48px] px-4 py-3 rounded-bento-sm border border-neutral-300 dark:border-neutral-700 hover:border-bento-blue focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bento-blue/40';
+      btn.innerHTML = `<span class="font-semibold">${cajaTitulo(e.nombre)}</span>${
+        e.respondido
+          ? '<span class="block text-xs text-bento-lime font-bold">ya respondió — puedes actualizar la respuesta</span>'
+          : ''
+      }`;
+      btn.addEventListener('click', () => elegirEstudiante(e));
+      cont.appendChild(btn);
+    }
+  }
+
+  $<HTMLInputElement>('#inp-buscar')?.addEventListener('input', (e) => {
+    pintarEstudiantes((e.target as HTMLInputElement).value);
+  });
+
+  function elegirEstudiante(e: EstudianteCenso) {
+    estudianteId = e.id;
+    estudianteNombre = cajaTitulo(e.nombre);
+    const n = $<HTMLElement>('[data-estudiante-nombre]');
+    if (n) n.textContent = estudianteNombre;
+    $('[data-doc]')?.classList.remove('hidden');
+    $<HTMLInputElement>('#inp-doc4')?.focus();
+  }
+
+  // ─── Paso 2 → 3 ────────────────────────────────────────────────────
+  $('[data-btn-estudiante]')?.addEventListener('click', () => {
+    const input = $<HTMLInputElement>('#inp-doc4')!;
+    const valor = input.value.replace(/\D/g, '');
+    if (valor.length !== 4) {
+      input.focus();
+      input.setCustomValidity('Escribe los 4 últimos dígitos del documento.');
+      input.reportValidity();
+      return;
+    }
+    input.setCustomValidity('');
+    doc4 = valor;
+    mostrarPaso('formulario');
+  });
+
+  // ─── Campo condicional ─────────────────────────────────────────────
+  $$<HTMLInputElement>('input[name="uso"]').forEach((r) => {
+    r.addEventListener('change', () => {
+      const compartido = r.value === 'Compartido' && r.checked;
+      const campo = $<HTMLElement>('[data-campo-comparte]');
+      campo?.classList.toggle('hidden', !compartido);
+      const n = $<HTMLInputElement>('#inp-comparte');
+      if (n) n.required = compartido;
+    });
+  });
+
+  // ─── Envío ─────────────────────────────────────────────────────────
+  $<HTMLFormElement>('[data-form-censo]')?.addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    if (estudianteId === null) return;
+
+    const btn = $<HTMLButtonElement>('[data-btn-guardar]')!;
+    const errorEl = $<HTMLElement>('[data-error-guardar]')!;
+    const errorMsg = $<HTMLElement>('[data-error-guardar-msg]')!;
+    errorEl.classList.add('hidden');
+    btn.disabled = true;
+    btn.textContent = 'Enviando…';
+
+    const datos = new FormData(ev.target as HTMLFormElement);
+    const uso = String(datos.get('uso') ?? '');
+    const respuesta = {
+      internet: String(datos.get('internet') ?? ''),
+      estabilidad: String(datos.get('estabilidad') ?? ''),
+      dispositivo: String(datos.get('dispositivo') ?? ''),
+      uso,
+      comparte_n: uso === 'Compartido' ? Number(datos.get('comparte_n') ?? 0) : 0,
+      vivienda: String(datos.get('vivienda') ?? ''),
+      albergue: String(datos.get('albergue') ?? ''),
+      telefono: String(datos.get('telefono') ?? '').trim() || undefined,
+      observaciones: String(datos.get('observaciones') ?? '').trim() || undefined,
+    } as RespuestaCenso;
+
+    const res = await guardarRespuesta(estudianteId, doc4, respuesta);
+
+    btn.disabled = false;
+    btn.textContent = 'Enviar';
+
+    if (!res.ok) {
+      errorMsg.textContent = res.mensaje;
+      errorEl.classList.remove('hidden');
+      errorEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    const msg = $<HTMLElement>('[data-listo-msg]');
+    if (msg) {
+      msg.textContent = `Gracias. La respuesta de ${res.nombre ? cajaTitulo(res.nombre) : estudianteNombre} quedó guardada. Si algo cambia, puedes volver y responder otra vez.`;
+    }
+
+    // Refrescar el avance con el dato nuevo
+    grupos = await cargarGrupos();
+    pintarAvance();
+    refrescarCascada();
+
+    mostrarPaso('listo');
+  });
+
+  // ─── Navegación hacia atrás ────────────────────────────────────────
+  $('[data-volver-curso]')?.addEventListener('click', () => mostrarPaso('curso'));
+  $('[data-volver-estudiante]')?.addEventListener('click', () => mostrarPaso('estudiante'));
+  $('[data-btn-otro]')?.addEventListener('click', () => {
+    estudianteId = null;
+    doc4 = '';
+    $<HTMLFormElement>('[data-form-censo]')?.reset();
+    $('[data-campo-comparte]')?.classList.add('hidden');
+    $('[data-doc]')?.classList.add('hidden');
+    $<HTMLInputElement>('#inp-buscar')!.value = '';
+    pintarEstudiantes('');
+    mostrarPaso('estudiante');
+  });
+
+  // ─── Avance ────────────────────────────────────────────────────────
+  function pintarAvance() {
+    const cont = $<HTMLElement>('[data-avance-lista]');
+    if (!cont) return;
+    cont.innerHTML = '';
+
+    for (const s of avancePorSede(grupos)) {
+      const pct = porcentaje(s.respondidos, s.total);
+      const fila = document.createElement('div');
+      fila.className = 'rounded-bento-sm bg-white dark:bg-neutral-900 shadow-bento p-4';
+      fila.innerHTML = `
+        <div class="flex items-baseline justify-between gap-3 mb-2">
+          <span class="font-bold text-sm">${cajaTitulo(s.sede)}</span>
+          <span class="text-sm text-neutral-500 tabular-nums">${s.respondidos} / ${s.total}</span>
+        </div>
+        <div class="h-2 rounded-full bg-neutral-200 dark:bg-neutral-800 overflow-hidden">
+          <div class="h-full bg-bento-blue" style="width: ${pct}%"></div>
+        </div>`;
+      cont.appendChild(fila);
+    }
+  }
+</script>

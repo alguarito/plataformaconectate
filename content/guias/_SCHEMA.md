@@ -189,10 +189,11 @@ open public/guias-mejoras/13-11-TIC.pdf
 
 | Pieza del sistema | Estado |
 |---|---|
-| 1. YAML como source de cada guía | ✅ Esta PR |
+| 1. YAML como source de cada guía | ✅ |
 | 2. Schema declarativo | ✅ Este documento |
-| 3. Pipeline `make guia-build` | ⏳ Pieza siguiente |
-| 4. Validador `make guia-lint` | ⏳ Pieza siguiente |
-| 5. Asset management | ⏳ Pieza siguiente |
-| 6. Workflow de sesión (modos) | ⏳ Pieza siguiente |
-| 7. Status `make guia-status` | ⏳ Pieza siguiente |
+| 3. Pipeline `make guia-build` | ✅ |
+| 4. Validador `make guia-lint` | ✅ |
+| 5. Asset management | ✅ |
+| 6. Workflow de sesión (modos) | ✅ |
+| 7. Status `make guia-status` | ✅ |
+| 8. Generador web `make guia-web` | ✅ |

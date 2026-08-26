@@ -64,6 +64,10 @@ LINEAS = {
     },
     "pensamiento-computacional": {
         "nombre": "Pensamiento computacional y algoritmia",
+        # El encabezado corre en una sola linea: el nombre completo mas la fase
+        # mas larga ("Evaluacion liberadora") se tocan. Solo esta linea lo
+        # necesita; las demas caben con su nombre completo.
+        "nombre_encabezado": "Pensamiento computacional",
         "colores": {
             "COLOR_PORTADA_PRIMARY": "84CC16",  # bg-bento-lime
             "COLOR_PORTADA_DARK": "4D7C0F",
@@ -285,7 +289,7 @@ def yaml_a_placeholders(guia: dict, slug: str, avisos: list[str]) -> dict[str, s
         **recursos_a_tex(guia, slug, avisos),
         "REFERENTES": linea_meta["referentes"],
         # Identidad de esta familia en el template unificado.
-        "HEADER_IZQ": f"Semillero de Investigación · {linea_meta['nombre']}",
+        "HEADER_IZQ": f"Semillero de Investigación · {linea_meta.get('nombre_encabezado', linea_meta['nombre'])}",
         "HEADER_DER": f"Módulo {modulo} · {guia['fase']} · MILC v3",
         "PORTADA_ETIQUETA": "MÓDULO",
         "PORTADA_SERIE": "SEMILLERO DE INVESTIGACIÓN · CONECTATE",

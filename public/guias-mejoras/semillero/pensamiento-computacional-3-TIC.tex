@@ -1,0 +1,529 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra UNICA de las guias MILC v3.
+%
+% La usan las tres familias de guias, cada una con su driver:
+%   · Grados 6-11  -> scripts/build-guias-g11.py
+%   · Bebras       -> scripts/build-guias-bebras.py
+%   · Semillero    -> scripts/build-guias-semillero.py
+%
+% Antes habia tres copias casi identicas (~400 lineas iguales, 6 distintas):
+% cada mejora habia que aplicarla tres veces, y en la practica no se hacia
+% (el motor de recursos vivia solo en dos de ellas). Lo que varia entre
+% familias esta parametrizado en 6 placeholders que cada driver llena
+% (se nombran aqui SIN su sintaxis real: el builder reemplaza por texto plano,
+% tambien dentro de los comentarios, y un valor multilinea rompe el preambulo):
+%
+%   HEADER_IZQ        encabezado izquierdo de pagina
+%   HEADER_DER        encabezado derecho de pagina
+%   PORTADA_ETIQUETA  rotulo sobre el numero grande (GRADO/MOMENTO/MODULO)
+%   PORTADA_SERIE     linea de serie de la portada
+%   PORTADA_ID        identificador de la guia en la portada
+%   PORTADA_CIRCULO   el circulito de grado (°), o vacio si no aplica
+%
+% El resto de claves las documenta content/guias/_SCHEMA.md. El script valida
+% que no queden placeholders sin reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+% Librerías TikZ para los diagramas de las guías (bloque `recursos:`):
+%  · babel  → babel en español vuelve activos caracteres como «>», y TikZ los usa
+%             en sus opciones (>=stealth, ->). Sin esta librería, cualquier
+%             diagrama con flechas revienta con «\language@active@arg> has an
+%             extra }». Debe ir ANTES de que se dibuje nada.
+%  · positioning        → sintaxis «below left=2pt and 3pt».
+%  · decorations.pathreplacing → llaves ({brace}) para señalar rangos.
+\usetikzlibrary{babel,positioning,decorations.pathreplacing}
+\usepackage{graphicx}
+% Circuitos: el trabajo de electrónica se hace hoy con micro:bit y sus sensores
+% integrados (MakeCode, sin cableado), así que no se necesitan esquemáticos.
+% Si algún día entran montajes con protoboard, basta descomentar esta línea:
+% los diagramas .tex/.tikz declarados en `recursos:` ya se incrustan solos.
+% \usepackage{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
+\usepackage{enumitem}
+\usepackage{microtype}
+
+% Helvetica Neue no trae la flecha U+2192, asi que cada «→» escrito literalmente
+% en el YAML se compilaba a NADA, en silencio (462 flechas en 61 guias: rutas del
+% tipo «paleta → tipografia → lockup» salian rotas). Mapeamos el caracter a su
+% version matematica, que si tiene glifo. Asi el autor puede seguir escribiendo
+% «→» comodamente en el YAML.
+\usepackage{newunicodechar}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{84CC16}
+\definecolor{milcGradeDark}{HTML}{4D7C0F}
+\definecolor{milcGradeSoft}{HTML}{ECFCCB}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Semillero de Investigación · Pensamiento computacional}
+\rhead{\small Módulo 3 · Praxis · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+% La flecha va en modo matematico a proposito: Helvetica Neue NO tiene el glifo
+% U+2192, asi que \textrightarrow se compilaba a NADA («Missing character: There
+% is no → in font Helvetica Neue») y el puente salia sin flecha. En modo
+% matematico la flecha viene de la fuente matematica y si se dibuja.
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{$\rightarrow$}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
+% ── Recursos visuales de la guía ──────────────────────────────────────
+% Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
+% \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
+% \guiaDiagrama → fuente TikZ/circuitikz (.tex) incrustada como vector:
+%                 es la vía para circuitos y esquemáticos editables.
+% #1 = ruta relativa al .tex · #2 = pie (puede ir vacío)
+\newcommand{\guiaFigura}[2]{%
+\begin{center}
+\includegraphics[width=0.88\linewidth,height=0.38\textheight,keepaspectratio]{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\newcommand{\guiaDiagrama}[2]{%
+\begin{center}
+\input{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\begin{document}
+\thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
+\begin{tikzpicture}[remember picture,overlay]
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont MÓDULO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SEMILLERO DE INVESTIGACIÓN · CONECTATE};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
+
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 3};
+  % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
+  % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  
+
+  \node[anchor=west,text=milcGradeText,text width=11.4cm,align=left] at ([xshift=1.5cm,yshift=0.5cm]gradonum.east)
+    {
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Módulo 3 · Fase MILC: Praxis · 3 h de clase}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont\setlength{\baselineskip}{27pt}Resolver contra\\[4pt]el reto ---\\[4pt]del tejo que se\\[4pt]calibra tiro a tiro\\[4pt]al problema que\\[4pt]nunca habías visto}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Pensamiento computacional y algoritmia}
+    };
+\end{tikzpicture}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Tu \textbf{bitácora de resolución}: al menos \textbf{5 retos tipo Bebras} resueltos, y de cada uno ---esto es lo que se califica--- \textbf{cómo llegaste}: la regla exacta que entendiste, el caso pequeño con el que probaste, el intento que falló y qué aprendiste de él, y la respuesta con su razón. Más \textbf{un reto nuevo resuelto delante de tu grupo}, explicando la estrategia en voz alta mientras la usas. \emph{Una respuesta correcta sin razonamiento no cuenta: en esta guía se evalúa el camino, no el resultado.}
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
+\newpage
+
+\section*{Apertura: Resolver contra el reto --- del tejo que se calibra tiro a tiro al problema que nunca habías visto}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+\textbf{El tejo no se gana con fuerza. Se gana calibrando.} El \textbf{turmequé} lo jugaban los muiscas del altiplano cundiboyacense hace más de 500 años, en sus fiestas ceremoniales; hoy la \textbf{Ley 613 de 2000} lo declara deporte nacional de Colombia y la \textbf{Ley 1947 de 2019} lo reconoce como patrimonio cultural inmaterial de la nación, con Turmequé (Boyacá) como su cuna. \emph{Es un ancla nacional, no del Norte del Valle: se dice, no se disfraza.} Las reglas son exactas y no se negocian: una cancha de arcilla, \textbf{17,5 metros}, un bocín ---un aro de unos cinco centímetros--- y las mechas; gana quien llegue primero a 27 puntos. \textbf{Y ahí está lo interesante.} Nadie embocina en el primer tiro. El jugador lanza, mira dónde cayó, y \textbf{el tiro le devuelve información}: se fue largo, se abrió a la derecha, la arcilla está más blanda de este lado. Entonces ajusta \textbf{una sola cosa} y vuelve a lanzar. Tiro a tiro, el error deja de ser error y se vuelve dato. \textbf{Eso ---leer las reglas exactas, probar, aprender del fallo, ajustar una variable--- es exactamente lo que vas a hacer hoy} frente a problemas que no se parecen a nada que hayas visto.
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+Los retos \textbf{Bebras} ---«castor» en lituano--- son una iniciativa internacional nacida en \textbf{Lituania en 2004}, creada por \textbf{Valentina Dagienė}, y hoy presente en más de 50 países. Son problemas cortos de pensamiento computacional que \textbf{se resuelven con lápiz y papel}: no piden programar ni saber un lenguaje; piden \textbf{razonar}. Un reto Bebras casi nunca se parece a otro, y por eso no sirve memorizar: sirve tener \textbf{estrategia}. Hay cinco que funcionan casi siempre. \textbf{Leer las reglas dos veces} ---la mayoría de los errores son de lectura, no de lógica---. \textbf{Probar con un caso pequeño}: si el reto habla de 8 castores, resuélvelo primero con 2, luego con 3, y mira qué se repite. \textbf{Buscar lo que no cambia} ---el invariante---: si algo se mantiene igual pase lo que pase, ahí está la llave. \textbf{Descartar por imposibilidad}: a veces es más fácil demostrar que una opción \emph{no puede} ser que encontrar la que sí. Y \textbf{explicar en voz alta}: al narrar el razonamiento aparecen los huecos, como cuando otra persona ejecuta tu pseudocódigo y pregunta. \emph{En Bebras, como en el tejo, el primer tiro casi nunca emboca; el que gana es el que aprende del tiro anterior.}
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{El tejolero no repite el mismo lanzamiento esperando otro resultado: cambia \textbf{una sola cosa} y vuelve a tirar; \textbf{¿qué haces tú cuando un problema no te sale a la primera}\ldots vuelves a intentar igual, o te detienes a leer qué te dijo el intento que falló?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar la sesión: (1) podrás \textbf{aplicar} las cinco estrategias ---leer dos veces, caso pequeño, invariante, descarte, explicar en voz alta--- a un reto que nunca habías visto; (2) sabrás \textbf{explicar} tu razonamiento paso a paso ante tu grupo, no solo dar la respuesta; (3) podrás \textbf{analizar} un intento fallido y decir qué información te dejó; (4) habrás \textbf{identificado} cuál de las cinco estrategias es tu punto fuerte y cuál te falta entrenar.
+\end{softbox}
+
+
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Formula preguntas investigables, produce evidencia con método y comunica hallazgos reconociendo sus límites (investigación estudiantil STEM, transversal 6°--11°)\\
+Referentes & Valentina Dagienė (Bebras) · Jeannette Wing (pensamiento computacional)\\
+Producto final & Tu \textbf{bitácora de resolución}: al menos \textbf{5 retos tipo Bebras} resueltos, y de cada uno ---esto es lo que se califica--- \textbf{cómo llegaste}: la regla exacta que entendiste, el caso pequeño con el que probaste, el intento que falló y qué aprendiste de él, y la respuesta con su razón. Más \textbf{un reto nuevo resuelto delante de tu grupo}, explicando la estrategia en voz alta mientras la usas. \emph{Una respuesta correcta sin razonamiento no cuenta: en esta guía se evalúa el camino, no el resultado.}\\
+\end{tabularx}
+\normalsize
+
+\puente{En el módulo 2 escribiste un algoritmo para un problema \emph{tuyo}, que ya entendías. Hoy es al revés: problemas \textbf{ajenos y desconocidos}, con reglas raras, para medir si la estrategia sirve cuando no sabes de qué se trata.}
+
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
+\end{tabularx}
+
+
+\puente{Primero mira cómo se calibra un tiro de tejo. La escena parece deporte y es método: leer, probar, ajustar una cosa, volver.}
+
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · APLICA --- Calibrar como en la cancha} (35 min · grupo). \textbf{Momento A (10 min) --- El tiro que enseña.} El profe cuenta el tejo: la cancha de 17,5 metros, el bocín de cinco centímetros, los 27 puntos, y la pregunta clave: \emph{¿qué hace un buen jugador después de un tiro que se fue largo?}. \textbf{Momento B (12 min) --- El reto de calentamiento.} El profe pone \textbf{un solo reto} tipo Bebras en el tablero. Nadie responde todavía: primero, en grupo, contesten \emph{¿cuáles son exactamente las reglas de este problema?} y escríbanlas con sus palabras. \textbf{Momento C (13 min) --- El caso pequeño.} Ahora resuélvanlo, pero \textbf{empezando por la versión más chiquita posible} (si habla de 8, empiecen con 2). Al terminar, comparen: ¿quién lo resolvió antes, el que se lanzó de una o el que probó con 2? \textbf{En el cuaderno:} las reglas del reto con tus palabras y lo que pasó al empezar pequeño.
+\end{softbox}
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Escribí las reglas del reto con mis palabras antes de intentar resolverlo.}
+\milccheckrow{Probé primero con la versión más pequeña del problema.}
+\milccheckrow{Puedo decir qué información deja un intento que falla.}
+
+\begin{infoband}{milcVerde}
+\guiaDiagrama{assets/pensamiento-computacional-3/calibrar-tiro-a-tiro.tex}{Nadie emboca en el primer tiro. Cada intento devuelve información y el siguiente cambia una sola cosa: si se cambian dos, no se sabe cuál funcionó. Frente a un reto Bebras el método es idéntico. El tejo o turmequé es deporte nacional por la Ley 613 de 2000 y patrimonio cultural inmaterial por la Ley 1947 de 2019.}
+
+\textbf{Lo que va al cuaderno (Actividad 1 · APLICA).} Título: «Actividad 1 --- Calibrar como en la cancha». \textbf{Formato:} las reglas del reto de calentamiento escritas con tus palabras (3-4 líneas) + qué pasó al resolverlo primero con el caso pequeño + una frase sobre qué le dice al jugador un tiro que se fue largo. \textbf{Extensión:} 8 líneas. \textbf{Sabes que terminaste cuando} puedes explicar por qué \textbf{empezar pequeño no es hacer trampa}, sino método.
+\end{infoband}
+
+\puente{Ya viste el método en la cancha. Ahora nómbralo: cinco estrategias que sirven cuando el problema no se parece a nada.}
+
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
+\textbf{Actividad 2 · EXPLICA --- Las cinco que casi siempre sirven} (55 min · individual + parejas). Ya viste el método en la cancha y lo probaste una vez. Ahora nómbralo: cinco estrategias, cada una con su momento de usarla, para cuando el problema no se parece a nada.
+\end{softbox}
+
+\milcpaso{1}{milcTurquesa}{\textbf{Estrategia 1 --- Leer las reglas dos veces.} La mayoría de los retos fallados no se fallan por lógica: se fallan por \textbf{lectura}. El enunciado dice «cada castor puede cruzar \emph{una} vez» y uno lee «puede cruzar». Método: primera lectura para entender de qué va; segunda lectura \textbf{con lápiz}, subrayando cada palabra que impone una regla (\emph{solo, una vez, siempre, nunca, al menos, distinto}). Luego escribe las reglas con tus palabras, en lista. \emph{Si no puedes escribir las reglas, no entendiste el problema todavía ---y todo lo que hagas desde ahí es adivinar rápido.}}
+\milcpaso{2}{milcTurquesa}{\textbf{Estrategia 2 --- Empezar por el caso pequeño.} Si el reto habla de 8 castores, 12 fichas o 20 casillas, \textbf{no empieces por ahí}. Resuélvelo con 2. Después con 3. Anota los resultados en una tabla y mira qué cambia y qué se repite. Casi siempre el patrón aparece entre el caso 2 y el 4, y desde ahí el caso grande sale solo. \textbf{Es la misma idea del módulo 2:} no adivinas la solución completa, la construyes desde una versión que sí puedes verificar a mano. \emph{Y tiene un beneficio extra: en el caso pequeño puedes comprobar si entendiste las reglas.}}
+\milcpaso{3}{milcTurquesa}{\textbf{Estrategia 3 --- Buscar lo que no cambia.} En muchos retos hay algo que \textbf{se mantiene igual pase lo que pase}: la suma siempre es par, el color del final siempre es el mismo, la cantidad total nunca sube. A eso se le dice \textbf{invariante}, y cuando lo encuentras, el problema se derrumba: si algo no puede cambiar, todas las respuestas que exigirían cambiarlo quedan descartadas de una vez. Método: haz dos o tres movimientos permitidos y pregúntate \emph{``¿qué siguió igual?''}. \emph{Es el patrón del módulo 1, pero mirando al revés: no lo que se repite, sino lo que resiste.}}
+\milcpaso{4}{milcTurquesa}{\textbf{Estrategia 4 --- Descartar por imposibilidad.} A veces demostrar que una opción \textbf{no puede ser} es más fácil que encontrar la que sí. Si las cuatro opciones son A, B, C y D, y puedes probar que B, C y D violan una regla, ya tienes la respuesta \textbf{sin haberla construido}. Método: toma cada opción y busca la regla que rompe. \textbf{Ojo:} descartar exige una razón, no una corazonada; «esa se ve rara» no descarta nada. \emph{Y si descartas las cuatro, no descartaste: leíste mal una regla. Vuelve a la estrategia 1.}}
+\milcpaso{5}{milcTurquesa}{\textbf{Estrategia 5 --- Explicarlo en voz alta mientras lo haces.} Narra tu razonamiento a alguien ---o a la pared--- mientras resuelves. Los huecos aparecen solos: en el momento en que dices \emph{``y entonces, obviamente\ldots''}, casi siempre hay un paso que no está. Es el mismo hallazgo del módulo 2, cuando tu pareja preguntó \emph{``¿y aquí qué hago?''}. \textbf{En esta guía es obligatorio}, porque lo que se evalúa es el camino. \emph{Un investigador que no puede contar cómo llegó no puede defender adónde llegó.}}
+
+\begin{drawbox}{milcTurquesa}{Las cinco estrategias y cuándo usar cada una}
+\textbf{1. Leer dos veces} --- siempre, antes de todo. Subraya \emph{solo, una vez, siempre, nunca, al menos}. \\[1mm]
+\textbf{2. Caso pequeño} --- cuando el reto habla de muchos: empieza con 2, luego 3, y busca el patrón. \\[1mm]
+\textbf{3. Invariante} --- cuando hay movimientos permitidos: pregunta qué siguió igual. \\[1mm]
+\textbf{4. Descarte} --- cuando hay opciones cerradas: busca qué regla rompe cada una. \\[1mm]
+\textbf{5. Voz alta} --- todo el tiempo: donde dices «obviamente», falta un paso.
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{Errores al enfrentar un reto (y cómo evitarlos).} (1) \emph{Lanzarse de una} --- resolver antes de escribir las reglas es tirar sin mirar la cancha. (2) \emph{Repetir el mismo intento} --- si falló, cambia \textbf{una cosa}; repetir igual no es persistencia, es no haber leído el tiro anterior. (3) \emph{Cambiar tres cosas a la vez} --- si funciona, no sabrás cuál lo arregló. (4) \emph{Descartar por corazonada} --- «esa se ve rara» no es una razón; nombra la regla que rompe. (5) \emph{Quedarse callado} --- el razonamiento que no se dice no se puede revisar, ni por ti ni por nadie. (6) \emph{Copiar la respuesta} --- en esta guía la respuesta sin camino vale cero, y con razón: el camino es lo único que sirve en el reto siguiente.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+
+
+\textbf{Lo que va al cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2 --- Las cinco que casi siempre sirven». \textbf{Formato:} las 5 estrategias, cada una en 2 líneas: qué es y \textbf{cuándo se usa}. Debajo, una frase por estrategia diciendo si ya la usaste hoy o no. \textbf{Extensión:} 1 hoja. \textbf{Sabes que terminaste cuando} puedes decir, mirando un reto nuevo, \textbf{con cuál de las cinco empezarías}.
+\end{infoband}
+
+\puente{Ya las tienes. Es hora de usarlas contra retos de verdad ---y de escribir cómo llegaste, que es lo que hoy se califica.}
+
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
+
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
+\textbf{Actividad 3 · ANALIZA --- Cinco retos y la bitácora del camino} (60 min · individual + grupo). Ahora se juega. Cinco retos, y de cada uno se registra \textbf{cómo llegaste}. La respuesta sola no vale: lo que se califica es el razonamiento.
+\end{softbox}
+
+\milcpaso{1}{milcMagenta}{\textbf{Paso 1 --- Los cinco retos (30 min, individual).} El profe entrega cinco retos tipo Bebras de dificultad creciente. Para cada uno, en la bitácora: \emph{(a) las reglas con tus palabras}; \emph{(b) el caso pequeño con el que probaste}; \emph{(c) el intento que falló y qué te dijo}; \emph{(d) la respuesta y su razón}. \textbf{El punto (c) no es opcional.} Si un reto te salió a la primera, escribe cuál estrategia te lo ahorró.}
+\milcpaso{2}{milcMagenta}{\textbf{Paso 2 --- El reto en voz alta (15 min, en grupo).} Cada quien toma \textbf{un reto nuevo} ---uno que no estaba en los cinco--- y lo resuelve \textbf{narrando} su razonamiento ante dos o tres compañeros. Ellos no ayudan: solo anotan en qué momento apareció un \emph{``obviamente''}. Al final te dicen dónde estaba el hueco. \emph{Duele tres segundos y enseña un semestre.}}
+\milcpaso{3}{milcMagenta}{\textbf{Paso 3 --- La tabla de estrategias (8 min).} Haz una tabla: cinco filas (tus cinco retos) y cinco columnas (las cinco estrategias). Marca cuál usaste en cada uno. \textbf{Mira las columnas vacías:} esa es la estrategia que no estás usando nunca, y casi siempre es la que te falta para los retos que se te atoran.}
+\milcpaso{4}{milcMagenta}{\textbf{Paso 4 --- El reto que no saliste (7 min).} Elige el que \textbf{no} lograste. No lo resuelvas: \textbf{descríbelo}. ¿En qué punto exacto te quedaste? ¿Qué regla no lograbas usar? ¿Qué habrías necesitado saber? \emph{Un reto sin resolver, bien descrito, vale más que tres resueltos sin explicación: el primero se puede retomar; los otros no dejaron nada.}}
+
+\begin{drawbox}{milcMagenta}{Antes de cerrar tu bitácora}
+\checkbox Cada reto tiene sus reglas escritas con mis palabras. \\[1mm]
+\checkbox En cada uno anoté el caso pequeño con el que probé. \\[1mm]
+\checkbox Está el intento que falló y qué información me dejó. \\[1mm]
+\checkbox Cada respuesta tiene su razón, no solo la letra. \\[1mm]
+\checkbox Resolví un reto nuevo en voz alta y anoté dónde dije «obviamente». \\[1mm]
+\checkbox La tabla muestra qué estrategia no uso nunca, y el reto que no me salió está descrito.
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Plantilla de la bitácora (una por reto).} \textit{Reto n.º \_\_\_\_ · Reglas con mis palabras:} \_\_\_\_ · \textit{Caso pequeño que probé:} \_\_\_\_ · \textit{Intento que falló y qué me dijo:} \_\_\_\_ · \textit{Respuesta y razón:} \_\_\_\_ \\[1mm]
+\textbf{Tabla de estrategias.} \textit{Filas:} retos 1 a 5. \textit{Columnas:} leer dos veces · caso pequeño · invariante · descarte · voz alta. \\[1mm]
+\textit{La estrategia que no usé nunca es \_\_\_\_.} \textit{El reto que no me salió se me atoró en \_\_\_\_.}
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+
+
+\textbf{Lo que va al cuaderno (Actividad 3 · ANALIZA).} Título: «Actividad 3 --- Bitácora de resolución». \textbf{Formato:} una entrada por reto con las cuatro partes (reglas, caso pequeño, intento fallido, respuesta con razón) + la tabla de estrategias + la descripción del reto que no salió. \textbf{Extensión:} 2 hojas. \textbf{Sabes que terminaste cuando} alguien puede leer una entrada tuya y \textbf{reconstruir tu razonamiento sin ver el reto}.
+\end{infoband}
+
+\puente{El producto no es la respuesta correcta: es la \textbf{bitácora del camino}. En esta guía, acertar sin poder explicar cómo no cuenta.}
+
+\milcestacion{milcMostaza}{Producto de la sesión}
+\textbf{Bitácora de 5 retos con el camino documentado + un reto nuevo resuelto en voz alta}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) Cada reto tiene las reglas escritas con palabras propias antes de la solución. (2) Está documentado el caso pequeño usado para probar, con su tabla o su dibujo. (3) Hay al menos un intento fallido por reto, con lo que ese intento enseñó. (4) Cada respuesta va con su razón; ninguna aparece sola. (5) La tabla de estrategias identifica cuál no se usó nunca, y el reto no resuelto está descrito con precisión.
+\end{softbox}
+
+\puente{Antes de cerrar, mira tus cinco retos juntos: ¿qué estrategia usaste siempre y cuál no usaste nunca? Ahí está lo que te falta entrenar.}
+
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con 3 voces sobre por qué el reto nuevo exige salir de lo conocido, por qué la filosofía enseña a obrar y no a hablar, y qué se entrena de verdad cuando resuelves lógica.}
+
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{Analéctico quiere indicar el hecho real humano por el que todo hombre, todo grupo o pueblo se sitúa siempre más allá (aná-) del horizonte de la totalidad.}
+
+\emph{Totalidad} es todo lo que ya sabes: los problemas que se parecen a los que has visto, los métodos que te han funcionado. Un reto Bebras está hecho para \textbf{no caber ahí}. Y esa incomodidad de los primeros minutos ---«esto no se parece a nada»--- no es señal de que no sirvas: \textbf{es la señal de que estás en el borde de tu horizonte}, que es el único lugar donde se aprende algo nuevo. Quien solo resuelve lo que ya sabe resolver, no está investigando: está repasando.
+
+\textbf{Cuando un problema no se parece a nada que haya visto, ¿me retiro o entiendo que ahí empieza lo interesante?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Séneca · Cartas a Lucilio, 20 (c. 64 d.C.) · cuidado interior}
+\textit{La filosofía enseña a obrar, no a hablar; quiere que cada uno viva a la manera que prescribe, que estén en armonía nuestras palabras con nuestras acciones.}
+
+Esta es la fase de \textbf{praxis}, y Séneca la define mejor que cualquier manual: lo que se sabe se demuestra \textbf{haciéndolo}. En los módulos 1 y 2 hablaste de descomponer, de patrones, de algoritmos. Hoy no hay dónde esconderse: o las estrategias funcionan contra un problema que no habías visto, o eran palabras bonitas. \textbf{Y al revés también:} narrar el razonamiento en voz alta es poner las palabras en armonía con lo que las manos están haciendo.
+
+\textbf{Lo que dije que sabía hacer, ¿me funcionó hoy contra un problema de verdad?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{Somos organismos informacionales ---inforgs--- que compartimos un entorno global hecho, en última instancia, de información: la infoesfera.}
+
+Si el entorno que habitamos está hecho de información, entonces \textbf{saber leer reglas, detectar patrones y descartar imposibles no es un juego}: es la destreza básica para no ser arrastrado por ese entorno. Un reto Bebras entrena exactamente lo que hace falta frente a un contrato, un reglamento, un algoritmo que decide algo sobre ti o un mensaje que quiere apurarte. \emph{El castor lituano y el tejolero boyacense enseñan lo mismo: primero lee la cancha, después lanza.}
+
+\textbf{¿Dónde, fuera de esta clase, me sirvió esta semana leer las reglas antes de actuar?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
+
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
+
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Dos cosas. \textbf{(1) Inscríbete y entrena para Bebras:} el profe abre el reto de práctica del programa Bebras de la plataforma; resuelve al menos \textbf{tres retos más} en casa, con bitácora ---reglas, caso pequeño, intento fallido, razón---. \textbf{Trae la estrategia que te faltaba} usada al menos una vez a propósito. \textbf{(2) Fabrica un reto:} inventa \textbf{un} problema tipo Bebras para tus compañeros. Requisitos: se resuelve sin computador, cabe en media hoja, tiene una sola respuesta correcta y \textbf{se puede verificar}. Escribe aparte la solución con su razón. \emph{Fabricar un reto es la prueba más dura de que entendiste: hay que pensar por adelantado en todos los caminos por los que alguien podría llegar, y en los que podría perderse. En el módulo 4 vas a mirar hacia atrás ---qué tan buena era realmente tu solución, dónde falla, a quién afecta--- y a proponer una mejora fundamentada.}
+\end{infoband}
+
+\end{document}

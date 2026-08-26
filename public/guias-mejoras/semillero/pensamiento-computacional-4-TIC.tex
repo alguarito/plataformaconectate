@@ -1,0 +1,528 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra UNICA de las guias MILC v3.
+%
+% La usan las tres familias de guias, cada una con su driver:
+%   · Grados 6-11  -> scripts/build-guias-g11.py
+%   · Bebras       -> scripts/build-guias-bebras.py
+%   · Semillero    -> scripts/build-guias-semillero.py
+%
+% Antes habia tres copias casi identicas (~400 lineas iguales, 6 distintas):
+% cada mejora habia que aplicarla tres veces, y en la practica no se hacia
+% (el motor de recursos vivia solo en dos de ellas). Lo que varia entre
+% familias esta parametrizado en 6 placeholders que cada driver llena
+% (se nombran aqui SIN su sintaxis real: el builder reemplaza por texto plano,
+% tambien dentro de los comentarios, y un valor multilinea rompe el preambulo):
+%
+%   HEADER_IZQ        encabezado izquierdo de pagina
+%   HEADER_DER        encabezado derecho de pagina
+%   PORTADA_ETIQUETA  rotulo sobre el numero grande (GRADO/MOMENTO/MODULO)
+%   PORTADA_SERIE     linea de serie de la portada
+%   PORTADA_ID        identificador de la guia en la portada
+%   PORTADA_CIRCULO   el circulito de grado (°), o vacio si no aplica
+%
+% El resto de claves las documenta content/guias/_SCHEMA.md. El script valida
+% que no queden placeholders sin reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+% Librerías TikZ para los diagramas de las guías (bloque `recursos:`):
+%  · babel  → babel en español vuelve activos caracteres como «>», y TikZ los usa
+%             en sus opciones (>=stealth, ->). Sin esta librería, cualquier
+%             diagrama con flechas revienta con «\language@active@arg> has an
+%             extra }». Debe ir ANTES de que se dibuje nada.
+%  · positioning        → sintaxis «below left=2pt and 3pt».
+%  · decorations.pathreplacing → llaves ({brace}) para señalar rangos.
+\usetikzlibrary{babel,positioning,decorations.pathreplacing}
+\usepackage{graphicx}
+% Circuitos: el trabajo de electrónica se hace hoy con micro:bit y sus sensores
+% integrados (MakeCode, sin cableado), así que no se necesitan esquemáticos.
+% Si algún día entran montajes con protoboard, basta descomentar esta línea:
+% los diagramas .tex/.tikz declarados en `recursos:` ya se incrustan solos.
+% \usepackage{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
+\usepackage{enumitem}
+\usepackage{microtype}
+
+% Helvetica Neue no trae la flecha U+2192, asi que cada «→» escrito literalmente
+% en el YAML se compilaba a NADA, en silencio (462 flechas en 61 guias: rutas del
+% tipo «paleta → tipografia → lockup» salian rotas). Mapeamos el caracter a su
+% version matematica, que si tiene glifo. Asi el autor puede seguir escribiendo
+% «→» comodamente en el YAML.
+\usepackage{newunicodechar}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{84CC16}
+\definecolor{milcGradeDark}{HTML}{4D7C0F}
+\definecolor{milcGradeSoft}{HTML}{ECFCCB}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Semillero de Investigación · Pensamiento computacional}
+\rhead{\small Módulo 4 · Evaluación liberadora · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+% La flecha va en modo matematico a proposito: Helvetica Neue NO tiene el glifo
+% U+2192, asi que \textrightarrow se compilaba a NADA («Missing character: There
+% is no → in font Helvetica Neue») y el puente salia sin flecha. En modo
+% matematico la flecha viene de la fuente matematica y si se dibuja.
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{$\rightarrow$}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
+% ── Recursos visuales de la guía ──────────────────────────────────────
+% Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
+% \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
+% \guiaDiagrama → fuente TikZ/circuitikz (.tex) incrustada como vector:
+%                 es la vía para circuitos y esquemáticos editables.
+% #1 = ruta relativa al .tex · #2 = pie (puede ir vacío)
+\newcommand{\guiaFigura}[2]{%
+\begin{center}
+\includegraphics[width=0.88\linewidth,height=0.38\textheight,keepaspectratio]{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\newcommand{\guiaDiagrama}[2]{%
+\begin{center}
+\input{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\begin{document}
+\thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
+\begin{tikzpicture}[remember picture,overlay]
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont MÓDULO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SEMILLERO DE INVESTIGACIÓN · CONECTATE};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
+
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 4};
+  % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
+  % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  
+
+  \node[anchor=west,text=milcGradeText,text width=11.4cm,align=left] at ([xshift=1.5cm,yshift=0.5cm]gradonum.east)
+    {
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Módulo 4 · Fase MILC: Evaluación liberadora · 3 h de clase}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont\setlength{\baselineskip}{27pt}Pensar sobre\\[4pt]el propio pensar ---\\[4pt]de la variedad\\[4pt]sembrada antes\\[4pt]de la plaga\\[4pt]a la solución que\\[4pt]se evalúa mientras\\[4pt]funciona}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Pensamiento computacional y algoritmia}
+    };
+\end{tikzpicture}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Tu \textbf{informe de evaluación} de la solución que construiste en esta línea: (1) \textbf{cuánto cuesta} ---la cuenta de pasos en el peor caso---; (2) \textbf{dónde se rompe} ---al menos dos casos límite, uno hallado por ti y otro por un compañero---; (3) \textbf{a quién sirve y a quién no}, dicho con nombres, no en abstracto; (4) \textbf{qué pasa cuando cambien las condiciones}, la pregunta que Cenicafé se hizo antes de que llegara la roya. Y cierra con una \textbf{propuesta de mejora fundamentada}: un solo cambio, con la razón por la que lo eliges y \textbf{cómo sabrás si mejoró}.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
+\newpage
+
+\section*{Apertura: Pensar sobre el propio pensar --- de la variedad que se sembró antes de la plaga a la solución que se evalúa mientras funciona}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+\textbf{La roya del cafeto llegó a Colombia en 1983, y no pasó lo que todo el mundo temía.} No porque tuviéramos suerte: porque alguien había hecho la pregunta correcta \textbf{años antes}. Mientras los cafetales del país producían bien y nadie veía un problema, \textbf{Cenicafé} ---el centro de investigación de la Federación Nacional de Cafeteros--- ya venía cruzando la variedad Caturra con el Híbrido de Timor buscando resistencia a una enfermedad que \emph{todavía no había llegado}. El mismo año en que la roya se identificó en el país, Cenicafé liberó la \textbf{variedad Colombia}, la primera con resistencia completa. Después vinieron \textbf{Castillo} ---que empezó a sembrarse en 2005---, Tabi y Cenicafé 1. \textbf{Fíjate en el momento en que se hizo la pregunta:} no cuando el cafetal se estaba muriendo, sino cuando estaba sano. Y fíjate en la forma de la respuesta: no una variedad milagrosa, sino \textbf{varias}, apoyadas en diversidad genética, porque una solución que depende de una sola cosa se rompe el día en que aparece una raza nueva del hongo. \emph{Evaluar mientras funciona, y no depender de una sola carta:} eso es exactamente lo que hoy vas a hacer con tu propia solución.
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+\textbf{Metacognición} es pensar sobre el propio pensar: mirar tu solución desde afuera, como si fuera de otro. Y evaluar en serio no es preguntar \emph{``¿funciona?''} ---eso ya lo sabes---, sino cuatro preguntas más incómodas. \textbf{¿Cuánto cuesta?}: la cuenta de pasos en el peor caso, del módulo 2. \textbf{¿Dónde se rompe?}: los \emph{casos límite}, esas entradas raras que nadie previó ---la lista vacía, el empate, el número negativo, la persona que faltó--- y que en el mundo real llegan siempre. \textbf{¿A quién sirve y a quién no?}: toda solución reparte beneficios y costos, y decir \emph{``a todos''} es no haber mirado. \textbf{¿Qué pasa cuando cambien las condiciones?}: lo que hoy funciona con 5 personas, ¿aguanta 50? ¿y si cambia la regla? Ninguna de las cuatro se responde con opinión: se responden con \textbf{evidencia} ---una cuenta, una prueba, un caso concreto, un nombre---. Y hay una quinta que cierra el círculo: \textbf{¿cuál es el único cambio que más mejoraría esto?}. Uno solo, como en el tejo. Porque si cambias tres cosas a la vez y mejora, no sabrás cuál lo arregló.
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{Cenicafé se preguntó dónde iba a fallar el cafetal \textbf{cuando el cafetal estaba sano}; \textbf{¿qué le preguntarías hoy a tu propia solución} ---esa que ya te funciona--- para descubrir por dónde se va a romper antes de que se rompa?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar la sesión: (1) podrás \textbf{analizar} tu propia solución midiendo su costo en el peor caso y hallando sus casos límite; (2) sabrás \textbf{evaluar} sus límites e implicaciones respondiendo con evidencia a quién sirve, a quién no y qué pasa si cambian las condiciones; (3) habrás \textbf{creado} una propuesta de mejora fundamentada, con un solo cambio y su criterio de verificación; (4) podrás \textbf{explicar} qué aprendiste sobre tu propia manera de resolver, no solo sobre el problema.
+\end{softbox}
+
+
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Formula preguntas investigables, produce evidencia con método y comunica hallazgos reconociendo sus límites (investigación estudiantil STEM, transversal 6°--11°)\\
+Referentes & Valentina Dagienė (Bebras) · Jeannette Wing (pensamiento computacional)\\
+Producto final & Tu \textbf{informe de evaluación} de la solución que construiste en esta línea: (1) \textbf{cuánto cuesta} ---la cuenta de pasos en el peor caso---; (2) \textbf{dónde se rompe} ---al menos dos casos límite, uno hallado por ti y otro por un compañero---; (3) \textbf{a quién sirve y a quién no}, dicho con nombres, no en abstracto; (4) \textbf{qué pasa cuando cambien las condiciones}, la pregunta que Cenicafé se hizo antes de que llegara la roya. Y cierra con una \textbf{propuesta de mejora fundamentada}: un solo cambio, con la razón por la que lo eliges y \textbf{cómo sabrás si mejoró}.\\
+\end{tabularx}
+\normalsize
+
+\puente{Cierra la línea. En el módulo 1 partiste un problema, en el 2 lo volviste algoritmo, en el 3 lo pusiste a prueba contra retos ajenos. Hoy \textbf{te miras resolviendo} y decides qué cambiar.}
+
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
+\end{tabularx}
+
+
+\puente{Primero mira una evaluación hecha a tiempo: la de un cafetal sano frente a una plaga que todavía no llegaba.}
+
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · ANALIZA --- La pregunta que se hizo a tiempo} (40 min · grupo + individual). \textbf{Momento A (12 min) --- El caso.} El profe cuenta la historia: la roya identificada en Colombia en 1983, Cenicafé cruzando Caturra con Híbrido de Timor \emph{desde antes}, la variedad Colombia liberada ese mismo año, y después Castillo, Tabi y Cenicafé 1. Pregunta al grupo: \emph{¿en qué momento se hizo la pregunta, y qué habría pasado si se hace cinco años después?}. \textbf{Momento B (13 min) --- Por qué varias y no una.} Discutan: \emph{¿por qué no bastaba con una sola variedad resistente?}. Lleguen ustedes a la idea de que una solución que depende de una sola cosa se cae cuando esa cosa falla. \textbf{Momento C (15 min) --- Tu turno, en frío.} Saca tu algoritmo del módulo 2 y escribe, sin arreglarlo todavía, \textbf{tres preguntas incómodas} que le harías si fuera de otra persona. \textbf{En el cuaderno:} el caso resumido, la razón de las varias variedades y tus tres preguntas incómodas.
+\end{softbox}
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Puedo explicar por qué la pregunta de Cenicafé se hizo en el momento correcto.}
+\milccheckrow{Entiendo por qué una sola variedad resistente no bastaba.}
+\milccheckrow{Escribí tres preguntas incómodas para mi propia solución.}
+
+\begin{infoband}{milcVerde}
+\guiaDiagrama{assets/pensamiento-computacional-4/evaluar-mientras-funciona.tex}{La evaluación que sirve no llega cuando algo falla: llega cuando todavía funciona y alguien pregunta por dónde se va a romper. Y la respuesta no fue una sola variedad, sino varias: lo que depende de una sola cosa se cae el día en que esa cosa falla.}
+
+\textbf{Lo que va al cuaderno (Actividad 1 · ANALIZA).} Título: «Actividad 1 --- La pregunta que se hizo a tiempo». \textbf{Formato:} el caso de la roya en 5 líneas + una frase que explique por qué se necesitaban varias variedades y no una + tus 3 preguntas incómodas para tu solución. \textbf{Extensión:} 10 líneas. \textbf{Sabes que terminaste cuando} tus tres preguntas son \textbf{incómodas de verdad}: si las tres tienen respuesta fácil, todavía no estás evaluando.
+\end{infoband}
+
+\puente{Ya viste el momento correcto de preguntar. Ahora aprende las cuatro preguntas de una evaluación seria, y con qué evidencia se responde cada una.}
+
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
+\textbf{Actividad 2 · EVALÚA --- Las cuatro preguntas y su evidencia} (60 min · individual + parejas). Evaluar no es opinar sobre lo propio. Cada pregunta se responde con una evidencia distinta, y por eso hay que saber cuál va con cuál.
+\end{softbox}
+
+\milcpaso{1}{milcTurquesa}{\textbf{Pregunta 1 --- ¿Cuánto cuesta? Se responde con una cuenta.} Toma tu algoritmo y cuenta los pasos en el \textbf{peor caso}, como en el módulo 2. Después pregúntate lo que casi nadie pregunta: \emph{¿y si el problema crece?}. Si con 5 elementos hace 5 pasos y con 10 hace 10, crece \textbf{parejo}. Si con 5 hace 25 y con 10 hace 100, crece \textbf{al cuadrado}, y eso significa que con 100 elementos se vuelve inservible. \textbf{No hace falta fórmula:} arma una tabla con 2, 4 y 8 elementos, cuenta, y mira cómo sube la columna. \emph{La evidencia aquí es un número, no una impresión.}}
+\milcpaso{2}{milcTurquesa}{\textbf{Pregunta 2 --- ¿Dónde se rompe? Se responde con casos límite.} Un caso límite es la entrada rara que nadie previó porque nadie la imaginó: la \textbf{lista vacía}, el \textbf{empate}, el número \textbf{negativo} o el \textbf{cero}, el elemento \textbf{repetido}, la persona que \textbf{no está}, el primero y el último de la fila. Método: recorre esa lista contra tu algoritmo y anota qué haría en cada caso. \textbf{Casi siempre hay al menos uno donde tu algoritmo se queda mudo.} Y el que encuentra otra persona vale doble, porque tú tienes un punto ciego con lo tuyo. \emph{La evidencia aquí es un caso concreto, escrito, no un «creo que aguanta».}}
+\milcpaso{3}{milcTurquesa}{\textbf{Pregunta 3 --- ¿A quién sirve y a quién no? Se responde con nombres.} Toda solución reparte beneficios y costos. El turno «justo» de la casa puede ser injusto con quien llega tarde del trabajo; la ruta más corta puede pasar por donde alguien no puede caminar de noche; la regla de rotación puede castigar siempre al mismo si nunca se revisa. \textbf{Método:} escribe dos listas ---\emph{a quién beneficia} y \emph{a quién le cuesta}--- con \textbf{personas concretas}, no con categorías. \emph{Decir «a todos les sirve» es la respuesta de quien no miró.} Y si alguien queda en la segunda lista, no significa que la solución sea mala: significa que ahora lo sabes y puedes decidir con los ojos abiertos.}
+\milcpaso{4}{milcTurquesa}{\textbf{Pregunta 4 --- ¿Y cuando cambien las condiciones? Se responde con un escenario.} Cenicafé no preguntó \emph{``¿el cafetal está bien?''} sino \emph{``¿qué lo va a tumbar?''}. Hazlo tú: escribe \textbf{un escenario futuro concreto} ---llegan 20 personas más, cambia la regla, se acaba el recurso, alguien hace trampa--- y \textbf{ejecuta tu algoritmo dentro de ese escenario}. Anota en qué paso exacto deja de servir. \textbf{Y aplica la lección de las variedades:} mira si toda tu solución depende de una sola cosa ---una persona, un dato, un supuesto---. Si es así, ese es tu punto frágil, y ya lo sabes antes de que falle.}
+
+\begin{drawbox}{milcTurquesa}{Las cuatro preguntas, y con qué se responde cada una}
+\textbf{¿Cuánto cuesta?} → con una \textbf{cuenta}: pasos en el peor caso, y cómo suben con 2, 4 y 8 elementos. \\[1mm]
+\textbf{¿Dónde se rompe?} → con \textbf{casos límite}: vacío, empate, cero, repetido, el que falta. \\[1mm]
+\textbf{¿A quién sirve y a quién no?} → con \textbf{nombres}, en dos listas. «A todos» no es respuesta. \\[1mm]
+\textbf{¿Y si cambian las condiciones?} → con un \textbf{escenario} ejecutado hasta el paso donde falla. \\[1mm]
+\textbf{Y la que cierra:} ¿cuál es el \textbf{único} cambio que más mejoraría esto, y cómo sabré si mejoró?
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{Errores al evaluar lo propio (y cómo evitarlos).} (1) \emph{La felicitación disfrazada} --- un informe que solo dice que todo salió bien no evaluó nada. (2) \emph{Evaluar solo si funciona} --- funcionar es el mínimo, no el resultado; falta cuánto cuesta, dónde se rompe y a quién afecta. (3) \emph{«A todos les sirve»} --- respuesta de quien no miró; busca a quién le cuesta. (4) \emph{Confundir defecto con límite} --- un defecto se arregla; un límite es lo que tu solución no puede hacer aunque esté perfecta, y nombrarlo es honestidad, no derrota. (5) \emph{Proponer cinco mejoras} --- cambia una, o no sabrás cuál sirvió. (6) \emph{Mejora sin criterio} --- «que quede mejor» no se verifica; escribe \textbf{cómo sabrás} que mejoró, con qué medida.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+
+
+\textbf{Lo que va al cuaderno (Actividad 2 · EVALÚA).} Título: «Actividad 2 --- Las cuatro preguntas». \textbf{Formato:} 4 bloques, uno por pregunta, con \textbf{la evidencia que le corresponde} (la cuenta, los casos límite, las dos listas con nombres, el escenario). \textbf{Extensión:} 1 hoja y media. \textbf{Sabes que terminaste cuando} ninguna de las cuatro está respondida con una opinión.
+\end{infoband}
+
+\puente{Ya las tienes. Es hora de aplicárselas a lo tuyo ---que es más difícil, porque juzgar lo propio incomoda--- y proponer un solo cambio.}
+
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
+
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
+\textbf{Actividad 3 · CREA --- El informe y el único cambio} (50 min · individual + parejas). Ahora se junta todo: tu solución evaluada con las cuatro preguntas, y \textbf{una} mejora que puedas defender.
+\end{softbox}
+
+\milcpaso{1}{milcMagenta}{\textbf{Paso 1 --- Aplica las cuatro a lo tuyo (18 min).} Toma tu algoritmo del módulo 2 y respóndele las cuatro preguntas con su evidencia: la tabla de 2, 4 y 8; los casos límite recorridos uno por uno; las dos listas de personas; el escenario futuro ejecutado hasta donde falla. \emph{Escribe también lo que descubras y no te guste: eso es justamente lo que vale.}}
+\milcpaso{2}{milcMagenta}{\textbf{Paso 2 --- El punto ciego de otro (10 min).} Intercambia con tu pareja. Cada quien busca en la solución del otro \textbf{un caso límite que no está en la lista} y \textbf{una persona que quedó fuera}. Anota los dos hallazgos en tu informe, con el nombre de quien los encontró. \emph{Nadie ve sus propios puntos ciegos: para eso existe la comunidad de investigación.}}
+\milcpaso{3}{milcMagenta}{\textbf{Paso 3 --- El único cambio (12 min).} De todo lo que apareció, elige \textbf{un solo cambio}. Escríbelo así: \emph{``Cambio \_\_\_\_ por \_\_\_\_, porque \_\_\_\_ (la evidencia que lo justifica), y sabré que mejoró si \_\_\_\_ (la medida concreta)''}. \textbf{Prohibido:} proponer varios a la vez, y proponer uno sin evidencia que lo respalde. \emph{La mejora que no se puede verificar no es una mejora: es un deseo.}}
+\milcpaso{4}{milcMagenta}{\textbf{Paso 4 --- La línea completa (10 min).} Cierra mirando los cuatro módulos. Escribe media página: \emph{¿qué hacía yo antes cuando un problema no me salía, y qué hago ahora?}; \emph{¿cuál de las cinco estrategias del módulo 3 se me volvió costumbre?}; \emph{¿qué me sigue costando?}. \textbf{Esto no es relleno:} es lo único de la línea que se transfiere a cualquier problema que enfrentes después, tenga que ver con computación o no.}
+
+\begin{drawbox}{milcMagenta}{Antes de cerrar tu informe}
+\checkbox Respondí las cuatro preguntas, cada una con su evidencia y no con opinión. \\[1mm]
+\checkbox Tengo la tabla de costo con 2, 4 y 8 elementos y sé cómo sube. \\[1mm]
+\checkbox Hay al menos dos casos límite, y uno lo encontró otra persona. \\[1mm]
+\checkbox Las dos listas tienen nombres concretos, y la de «a quién le cuesta» no está vacía. \\[1mm]
+\checkbox Mi propuesta es un solo cambio, con su razón y su forma de verificarlo. \\[1mm]
+\checkbox Escribí qué cambió en mi manera de resolver desde el módulo 1.
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Plantilla del informe.} \textit{1. Cuesta:} \_\_\_\_ pasos en el peor caso; con 2, 4 y 8 elementos sube así: \_\_\_\_. \textit{2. Se rompe cuando:} \_\_\_\_ (hallado por mí) y \_\_\_\_ (hallado por \_\_\_\_). \textit{3. Le sirve a:} \_\_\_\_. \textit{Le cuesta a:} \_\_\_\_. \textit{4. Si \_\_\_\_ (escenario), deja de servir en el paso \_\_\_\_.} \\[1mm]
+\textbf{Plantilla de la mejora.} \textit{Cambio \_\_\_\_ por \_\_\_\_, porque \_\_\_\_, y sabré que mejoró si \_\_\_\_.} \\[1mm]
+\textbf{Cierre de la línea.} \textit{Antes, cuando un problema no me salía, yo \_\_\_\_. Ahora \_\_\_\_. Me sigue costando \_\_\_\_.}
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+
+
+\textbf{Lo que va al cuaderno (Actividad 3 · CREA).} Título: «Actividad 3 --- Informe de evaluación y mejora». \textbf{Formato:} las cuatro preguntas respondidas con su evidencia + los dos hallazgos del punto ciego + la propuesta de un solo cambio con su verificación + la media página de cierre de la línea. \textbf{Extensión:} 2 hojas. \textbf{Sabes que terminaste cuando} tu informe contiene \textbf{al menos una cosa que preferirías que no estuviera ahí}.
+\end{infoband}
+
+\puente{El producto es un informe honesto y una mejora fundamentada. \emph{Un informe que solo dice que todo salió bien no es una evaluación: es una felicitación.}}
+
+\milcestacion{milcMostaza}{Producto de la sesión}
+\textbf{Informe de evaluación con las cuatro preguntas + propuesta de un solo cambio fundamentado}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) Las cuatro preguntas están respondidas con su evidencia propia (cuenta, casos, nombres, escenario). (2) La tabla de costo muestra cómo crece la solución con 2, 4 y 8 elementos. (3) Hay al menos dos casos límite y uno fue hallado por otra persona, con su nombre. (4) La lista de «a quién le cuesta» tiene personas concretas y no está vacía. (5) La propuesta es un único cambio, con la evidencia que lo justifica y la medida que lo verificará.
+\end{softbox}
+
+\puente{Antes de cerrar, mira la línea completa: qué sabías en el módulo 1 y qué sabes ahora sobre \textbf{tu manera} de resolver problemas.}
+
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con 3 voces sobre a costa de quién es eficiente una solución, cómo se mira uno desde afuera, y qué significa cuidar el entorno de información en el que vivimos.}
+
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{El otro se revela realmente como otro\ldots como el pobre, el oprimido; el que, a la vera del camino, fuera del sistema, muestra su rostro sufriente y sin embargo desafiante: «¡Tengo hambre!, ¡tengo derecho a comer!»}
+
+La pregunta 3 de hoy ---\emph{¿a quién le cuesta?}--- es esta cita hecha método. Una solución eficiente lo es \textbf{para alguien}, y casi siempre a costa de alguien más: el que llega tarde, el que no tiene datos, el que no estaba cuando se decidió la regla. \textbf{Dussel dice que ese alguien está «fuera del sistema»}, y por eso no aparece en tus cuentas a menos que lo busques a propósito. \emph{Una evaluación que no encuentra a nadie en la lista de costos no es una buena solución: es una mirada corta.}
+
+\textbf{¿Quién queda por fuera de mi solución, y qué pasaría si esa persona escribiera la regla?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · Meditaciones VII, 47 (c. 175 d.C.) · cuidado interior}
+\textit{Contempla las evoluciones de los astros y piensa al mismo tiempo que evolucionas con ellos; y reflexiona continuamente cómo los elementos cambian unos en otros.}
+
+Marco Aurelio pide dos cosas a la vez: \textbf{mirar desde lejos} y \textbf{recordar que estás adentro de lo que miras}. Eso es la metacognición del paso 4: no solo evaluar tu algoritmo, sino \textbf{evaluarte resolviendo}. Y la segunda parte ---\emph{cómo los elementos cambian unos en otros}--- es la pregunta 4: nada se queda quieto, las condiciones cambian, y la solución que hoy calza mañana estorba. \emph{Cenicafé miró su cafetal sano y vio la plaga que venía; eso es contemplar de lejos sin salirse del mundo que se contempla.}
+
+\textbf{Si me viera resolver desde afuera, como a un compañero, ¿qué le diría que cambie?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{El florecimiento de las entidades informacionales y de toda la infoesfera debe promoverse preservando, cultivando y enriqueciendo sus propiedades.}
+
+Floridi propone un criterio para juzgar lo que hacemos con la información: \emph{¿esto empobrece o enriquece el entorno que compartimos?}. Aplicado a tu solución: un algoritmo que reparte turnos puede \textbf{enriquecer} ---hace visible lo que antes era discusión--- o \textbf{empobrecer} ---congela una injusticia y le da apariencia de regla neutral---. \textbf{Cultivar}, dice, no solo preservar: dejar la solución mejor de como la encontraste, y dejar dicho lo que no alcanzaste, para que el siguiente empiece más arriba.
+
+\textbf{Mi solución, ¿enriquece lo que compartimos, o solo congela como estaban las cosas y les pone cara de regla?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
+
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
+
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para cerrar la línea.} Dos cosas, y la segunda es la que importa. \textbf{(1) Aplica tu único cambio y mídelo:} durante dos semanas usa la solución mejorada y \textbf{verifica con la medida que escribiste}. Anota el resultado, mejore o no. \emph{Una mejora que no se midió es una opinión con más pasos.} \textbf{(2) Deja el relevo escrito:} redacta media hoja dirigida a quien retome esto ---un compañero, tú mismo el año entrante--- con tres cosas: qué quedó funcionando, \textbf{qué límite no alcanzaste a resolver} y cuál sería el siguiente paso que tú darías. \emph{Cenicafé no dejó una variedad: dejó un método para seguir haciendo variedades cuando aparezcan razas nuevas del hongo. Esa es la diferencia entre resolver un problema y dejar capacidad instalada.} \textbf{Trae:} la medición de tu cambio y el relevo escrito. Con eso, terminas el itinerario de Pensamiento computacional: cuatro módulos, de partir un problema a evaluar tu propia manera de partirlo.
+\end{infoband}
+
+\end{document}

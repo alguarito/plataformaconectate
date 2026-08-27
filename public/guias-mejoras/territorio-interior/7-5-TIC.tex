@@ -1,0 +1,555 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra UNICA de las guias MILC v3.
+%
+% La usan las tres familias de guias, cada una con su driver:
+%   · Grados 6-11  -> scripts/build-guias-g11.py
+%   · Bebras       -> scripts/build-guias-bebras.py
+%   · Semillero    -> scripts/build-guias-semillero.py
+%
+% Antes habia tres copias casi identicas (~400 lineas iguales, 6 distintas):
+% cada mejora habia que aplicarla tres veces, y en la practica no se hacia
+% (el motor de recursos vivia solo en dos de ellas). Lo que varia entre
+% familias esta parametrizado en 6 placeholders que cada driver llena
+% (se nombran aqui SIN su sintaxis real: el builder reemplaza por texto plano,
+% tambien dentro de los comentarios, y un valor multilinea rompe el preambulo):
+%
+%   HEADER_IZQ        encabezado izquierdo de pagina
+%   HEADER_DER        encabezado derecho de pagina
+%   PORTADA_ETIQUETA  rotulo sobre el numero grande (GRADO/MOMENTO/MODULO)
+%   PORTADA_SERIE     linea de serie de la portada
+%   PORTADA_ID        identificador de la guia en la portada
+%   PORTADA_CIRCULO   el circulito de grado (°), o vacio si no aplica
+%
+% El resto de claves las documenta content/guias/_SCHEMA.md. El script valida
+% que no queden placeholders sin reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+% Librerías TikZ para los diagramas de las guías (bloque `recursos:`):
+%  · babel  → babel en español vuelve activos caracteres como «>», y TikZ los usa
+%             en sus opciones (>=stealth, ->). Sin esta librería, cualquier
+%             diagrama con flechas revienta con «\language@active@arg> has an
+%             extra }». Debe ir ANTES de que se dibuje nada.
+%  · positioning        → sintaxis «below left=2pt and 3pt».
+%  · decorations.pathreplacing → llaves ({brace}) para señalar rangos.
+\usetikzlibrary{babel,positioning,decorations.pathreplacing}
+\usepackage{graphicx}
+% Circuitos: el trabajo de electrónica se hace hoy con micro:bit y sus sensores
+% integrados (MakeCode, sin cableado), así que no se necesitan esquemáticos.
+% Si algún día entran montajes con protoboard, basta descomentar esta línea:
+% los diagramas .tex/.tikz declarados en `recursos:` ya se incrustan solos.
+% \usepackage{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
+\usepackage{enumitem}
+\usepackage{microtype}
+
+% Helvetica Neue no trae la flecha U+2192, asi que cada «→» escrito literalmente
+% en el YAML se compilaba a NADA, en silencio (462 flechas en 61 guias: rutas del
+% tipo «paleta → tipografia → lockup» salian rotas). Mapeamos el caracter a su
+% version matematica, que si tiene glifo. Asi el autor puede seguir escribiendo
+% «→» comodamente en el YAML.
+\usepackage{newunicodechar}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0D9488}
+\definecolor{milcGradeDark}{HTML}{115E59}
+\definecolor{milcGradeSoft}{HTML}{CCFBF1}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Territorio interior · Educación socioemocional}
+\rhead{\small Grado 7° · Momento 5 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+% La flecha va en modo matematico a proposito: Helvetica Neue NO tiene el glifo
+% U+2192, asi que \textrightarrow se compilaba a NADA («Missing character: There
+% is no → in font Helvetica Neue») y el puente salia sin flecha. En modo
+% matematico la flecha viene de la fuente matematica y si se dibuja.
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{$\rightarrow$}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+% ─── Listas aireadas para las guías socioemocionales ────────────────────
+% Componer las verificaciones como «\checkbox texto\\» deja el texto que salta
+% de línea debajo del cuadrito y apelmaza el bloque. Estos entornos alinean la
+% continuación y airean los ítems. Los usa Territorio Interior; cualquier
+% familia puede hacerlo.
+\newlist{checklista}{itemize}{1}
+\setlist[checklista]{
+  label=\textcolor{milcGradeDark}{\fbox{\phantom{x}}},
+  leftmargin=9mm, labelsep=3.2mm, itemsep=2.4mm,
+  topsep=2.5mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+\newlist{pasoslista}{enumerate}{1}
+\setlist[pasoslista]{
+  label=\textcolor{milcGradeDark}{\sffamily\bfseries\arabic*.},
+  leftmargin=8mm, labelsep=3mm, itemsep=2.8mm,
+  topsep=1mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
+% ── Recursos visuales de la guía ──────────────────────────────────────
+% Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
+% \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
+% \guiaDiagrama → fuente TikZ/circuitikz (.tex) incrustada como vector:
+%                 es la vía para circuitos y esquemáticos editables.
+% #1 = ruta relativa al .tex · #2 = pie (puede ir vacío)
+\newcommand{\guiaFigura}[2]{%
+\begin{center}
+\includegraphics[width=0.88\linewidth,height=0.38\textheight,keepaspectratio]{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\newcommand{\guiaDiagrama}[2]{%
+\begin{center}
+\input{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\begin{document}
+\thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
+\begin{tikzpicture}[remember picture,overlay]
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont MOMENTO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont TERRITORIO INTERIOR · SOCIOEMOCIONAL};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
+
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 5};
+  % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
+  % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  
+
+  \node[anchor=west,text=milcGradeText,text width=11.4cm,align=left] at ([xshift=1.5cm,yshift=0.5cm]gradonum.east)
+    {
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Territorio interior · Socioemocional}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont\setlength{\baselineskip}{27pt}El conflicto\\[4pt]no es violencia\\[4pt]la palabra como oficio}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Grado 7° · Momento 5}
+    };
+\end{tikzpicture}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Tu protocolo de conflicto: un conflicto real tuyo separado en hechos, interpretación y necesidad; la escalera de escalada con el escalón donde se te sube a ti; y el guion de las tres frases con que se abre una conversación difícil, ensayado.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · Apertura ancestral · Conflicto y palabra · Triángulo Dussel-Estoicismo-Floridi}}
+
+\newpage
+
+\section*{Apertura: El conflicto no es violencia: la palabra como oficio}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+Entre el pueblo \textbf{wayuu}, en La Guajira, cuando una familia ofende a otra \textbf{no se responde con los puños: se manda a llamar la palabra}. El encargado es el \textbf{pütchipü'üi} ---en español, el \textbf{palabrero}---: un especialista en resolver conflictos entre clanes, que va y viene llevando la palabra de una familia a la otra hasta que se acuerda una \textbf{compensación}. El sistema completo ---sus principios, procedimientos y ritos--- está \textbf{inspirado en la reparación y la compensación}, y es tan sólido que la UNESCO lo inscribió en 2010 como \textbf{Patrimonio Cultural Inmaterial de la Humanidad}: el primer reconocimiento de ese tipo para las comunidades indígenas de Colombia. Las compensaciones se pagan con collares de piedras preciosas, con reses, ovejas o chivos, y \textbf{hasta las ofensas graves pueden compensarse} mediante ceremonias que restauran la armonía. \textbf{Fíjate en lo que este sistema da por hecho:} que va a haber conflictos ---no intenta evitarlos--- y que el conflicto es \emph{asunto de palabra}, no de fuerza. \emph{Y fíjate en quién gana: nadie. Lo que se busca no es un ganador, es que las dos familias puedan volver a vivir en el mismo territorio.}
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+Hay una confusión que hace mucho daño a los trece años: creer que \textbf{tener un conflicto} y \textbf{pelear} son lo mismo. No lo son. Un \textbf{conflicto} es que dos personas quieran cosas distintas o entiendan distinto lo que pasó: eso es \textbf{normal, inevitable y hasta útil}, porque señala algo que hay que hablar. La \textbf{violencia} ---el golpe, el insulto, la humillación, el aislamiento organizado--- es \textbf{una de las respuestas posibles} al conflicto, y es una \textbf{elección}. \emph{Confundirlas tiene dos consecuencias feas:} el que huye de todo conflicto termina tragándose cosas hasta que estallan, y el que cree que todo conflicto termina en pelea se prepara para pelear desde el primer minuto. \textbf{Lo que sí existe es la escalada:} un conflicto sube de escalón cuando se mete el público, cuando se responde a la interpretación en vez de al hecho, cuando entra el orgullo y ya no se puede retroceder sin «quedar mal». \emph{Casi ninguna pelea empieza en el golpe: empieza tres escalones antes, y ahí es donde todavía se puede hacer algo.}
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{Los wayuu no le piden a nadie que no tenga conflictos: le ponen un oficio a la palabra para que el conflicto no se vuelva sangre. \textbf{¿Y si el problema de tus peleas no fuera tenerlas}\ldots sino que nadie te enseñó qué hacer en los tres escalones anteriores?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar podrás: (1) \textbf{identificar} en un conflicto tuyo la diferencia entre lo que \emph{pasó} y lo que \emph{entendiste} que pasó; (2) \textbf{explicar} por qué el conflicto no es violencia y cómo funciona una escalada; (3) \textbf{analizar} en qué escalón concreto se te suben a ti los conflictos y qué los alimenta; (4) \textbf{crear} el guion de las tres frases con que se abre una conversación difícil, y ensayarlo antes de necesitarlo.
+\end{softbox}
+
+
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Comprende los fenómenos que afectan a su territorio, regula sus emociones ante ellos y acompaña a otros con empatía (transversal 6°--11°, articulado con la política «Escuela, territorio de vida» del MEN, Resolución 006519 de 2025, y la Ley 1620 de 2013)\\
+Referentes & Primera ayuda psicológica (OMS, 2011/2012) · Directrices IASC (2007) · USGS y Servicio Geológico Colombiano · Pueblo nasa y la minga (CRIC) · Dussel · Estoicismo · Floridi\\
+Producto final & Tu protocolo de conflicto: un conflicto real tuyo separado en hechos, interpretación y necesidad; la escalera de escalada con el escalón donde se te sube a ti; y el guion de las tres frases con que se abre una conversación difícil, ensayado.\\
+\end{tabularx}
+\normalsize
+
+\puente{Ya trabajaste el escuchar, los celos, la empatía y la palabra que hiere. Hoy vas al momento en que dos personas chocan de frente: \textbf{el conflicto}, y lo que decide si termina en conversación o en pelea.}
+
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Distingo y desescalo.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Primero un conflicto tuyo, en privado, separado en dos columnas. Vas a ver algo incómodo: cuánto de lo que «pasó» en realidad lo pusiste tú.}
+
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- Dos columnas.} \textbf{Nadie va a leer esta página.} Elige \textbf{un conflicto real} de este año ---con un compañero, un hermano, alguien de la casa--- que todavía te dé algo de rabia al recordarlo. \textbf{Traza dos columnas.} En la izquierda, \textbf{solo hechos}: lo que una cámara habría grabado. «Me dijo \emph{tal cosa}»; «no me contestó el mensaje»; «se rió cuando yo hablaba». En la derecha, \textbf{lo que tú entendiste}: «le caigo mal»; «me quiere humillar»; «lo hizo a propósito». \textbf{Regla estricta:} si una frase incluye una intención del otro ---\emph{a propósito}, \emph{porque quiere}, \emph{me tiene bronca}---, va a la derecha. \emph{Casi todo el mundo descubre que la columna izquierda es cortísima y la derecha larguísima.} \textbf{Y una última línea:} debajo de todo, escribe qué necesitabas tú en ese momento y no dijiste ---que te tuvieran en cuenta, que te pidieran perdón, que no te dejaran por fuera, que te creyeran---.
+\end{softbox}
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Tu columna izquierda contiene solo lo que una cámara habría grabado.}
+\milccheckrow{Toda frase con una intención del otro quedó en la columna derecha.}
+\milccheckrow{Escribiste qué necesitabas en ese momento y no dijiste.}
+
+\begin{infoband}{milcVerde}
+
+
+\textbf{En tu cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1. Hechos e interpretación». \textbf{Formato:} las dos columnas y, debajo, la línea de la necesidad. \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} la columna izquierda es \textbf{más corta} que la derecha y no te queda ninguna intención colada en ella. Esta página es tuya: \textbf{nadie más tiene que leerla si tú no quieres}.
+\end{infoband}
+
+\puente{Ya lo separaste. Ahora entiende la diferencia entre conflicto y violencia, y cómo funciona la escalera que lleva de uno a la otra.}
+
+\milcestacion{milcTurquesa}{Fase 2 · Sistematización: entender el conflicto}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro claves para que un conflicto no se vuelva violencia}
+Cuatro claves para que un choque de intereses no termine convertido en un problema de honor ---que es lo que casi siempre pasa---.
+\end{softbox}
+
+\milcpaso{1}{milcTurquesa}{\textbf{El conflicto es normal; la violencia es una elección.} Tener un conflicto significa que dos personas quieren cosas distintas o entienden distinto lo mismo: pasa en toda familia, todo curso y todo país. \textbf{No es una falla de convivencia: es la convivencia.} La violencia ---el golpe, el insulto, la humillación pública, dejar a alguien por fuera de forma organizada--- \textbf{es una de las salidas posibles}, y es una decisión que alguien toma. \emph{Por eso «es que me sacó la piedra» no explica nada:} miles de personas se sacan la piedra todos los días y no pegan. \textbf{La emoción llegó; la salida se eligió} ---exactamente como viste en sexto---.}
+\milcpaso{2}{milcTurquesa}{\textbf{La escalera: casi ninguna pelea empieza en el golpe.} Los escalones suelen ser estos. \textbf{Uno:} pasa algo (un hecho). \textbf{Dos:} lo interpretas ---«lo hizo a propósito»--- y respondes a la interpretación, no al hecho. \textbf{Tres:} el otro responde a tu respuesta, y ahora ya no se discute lo que pasó sino cómo se lo dijiste. \textbf{Cuatro:} aparece \emph{público} ---gente mirando, un grupo de chat, capturas de pantalla---, y con el público entra el orgullo. \textbf{Cinco:} ya nadie puede retroceder sin «quedar mal», y ahí es donde se pega. \emph{La buena noticia es que en los escalones uno y dos todavía se puede preguntar en vez de suponer, y en el tres todavía se puede pedir hablar aparte.}}
+\milcpaso{3}{milcTurquesa}{\textbf{El tercero que lleva la palabra.} El palabrero no es un juez: \textbf{no decide quién tiene la razón}. Va y viene entre las dos familias llevando lo que cada una dice, hasta que se puede acordar algo. \emph{Fíjate en la genialidad del método: al no hablar directamente en caliente, se le quita al conflicto el escalón cuatro} ---el público, el orgullo, la respuesta inmediata---. \textbf{En tu curso el equivalente existe:} un compañero que ambos respeten, un docente, la coordinadora, orientación escolar. \textbf{Pedir un tercero no es acusar ni «sapear»:} es lo que hace un pueblo entero que lleva siglos resolviendo así.}
+\milcpaso{4}{milcTurquesa}{\textbf{El objetivo no es ganar: es poder seguir viviendo en el mismo territorio.} El sistema wayuu busca \textbf{reparación y compensación}, no castigo: se acuerda qué se da para que el daño quede saldado y las familias puedan volver a convivir. \emph{Traducción a tu salón:} tú y esa persona van a seguir viéndose cinco días a la semana durante años. \textbf{Ganar la discusión y quedarte con un enemigo permanente no es ganar}, es cambiar una satisfacción de dos minutos por un año incómodo. \emph{La pregunta útil no es «¿quién tiene la razón?» sino «¿qué hace falta para que esto quede saldado?».}}
+
+\begin{drawbox}{milcTurquesa}{Las tres frases con que se abre una conversación difícil}
+\begin{pasoslista}
+\item \textbf{El hecho, sin adjetivos.} «El viernes te fuiste sin avisarme». \emph{Nada de «siempre me dejas tirado»: eso es interpretación con público.}
+\item \textbf{Lo que sentiste, en primera persona.} «Me sentí por fuera». \emph{Nadie puede discutirte lo que sentiste; en cambio, todo el mundo puede discutirte una acusación.}
+\item \textbf{Lo que necesitas, concreto.} «Me gustaría que me avisen aunque yo no pueda ir». \emph{Sin esto, la conversación se queda en el reclamo y no cambia nada.}
+\item \textbf{Y una regla de lugar:} esta conversación se tiene \textbf{en privado}. Con público, el otro tiene que defender su imagen antes que atender lo que le dices.
+\end{pasoslista}
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{Confundir conflicto con pelea:} evitar todo conflicto solo aplaza y acumula. \textbf{Responder a la interpretación:} discutes con lo que supusiste, no con lo que pasó. \textbf{Hablar en público:} con gente mirando, el otro defiende su imagen y no puede ceder. \textbf{Buscar quién tiene la razón:} casi nunca hay una sola, y el que gana la discusión suele perder la relación. \textbf{Sumar historia vieja:} traer lo de hace tres meses convierte un tema resoluble en un juicio imposible. \textbf{Creer que pedir un tercero es de sapos:} es lo que hace un sistema de justicia entero que la UNESCO reconoció como patrimonio.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+
+
+\textbf{En tu cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2. La escalera». \textbf{Formato:} los cinco escalones aplicados a \textbf{tu} conflicto de la Actividad 1 ---qué pasó en cada uno--- y una marca en el escalón donde se te subió. Debajo, dos líneas: qué habrías podido hacer un escalón antes. \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} puedes señalar \textbf{el escalón exacto} en que dejó de tratarse del hecho y pasó a tratarse del orgullo.
+\end{infoband}
+
+\puente{Ya conoces la escalera. Es hora de preparar la conversación: las tres frases con que se abre, escritas y dichas en voz alta.}
+
+\milcestacion{milcMagenta}{Fase 3 · Praxis: armar el protocolo}
+
+\begin{softbox}{milcMagenta}{milcGris}{Cómo se prepara una conversación difícil}
+El palabrero no improvisa: prepara lo que va a decir antes de llegar. Hoy preparas tú la conversación que has estado aplazando ---o la que vas a necesitar en un mes---.
+\end{softbox}
+
+\milcpaso{1}{milcMagenta}{\textbf{Separar hechos (ya lo hiciste, ahora revísalo).} Vuelve a tus dos columnas y \textbf{tacha de la izquierda todo lo que se te haya colado} con intención adentro. \emph{Lo que quede en la izquierda es lo único que puedes poner sobre la mesa sin que el otro pueda negarlo}, y por eso es lo que sirve para empezar.}
+\milcpaso{2}{milcMagenta}{\textbf{Encontrar la necesidad (10 min).} Debajo de casi toda rabia hay una necesidad que no se dijo: que me tengan en cuenta, que me crean, que me respeten delante de otros, que cumplan lo que prometieron. \textbf{Escríbela en una frase corta.} \emph{Este paso es el que más cuesta y el que más cambia la conversación:} sin la necesidad, uno solo puede reclamar; con ella, puede pedir.}
+\milcpaso{3}{milcMagenta}{\textbf{Las tres frases (12 min).} Escribe tu guion completo: \emph{hecho} + \emph{lo que sentí} + \emph{lo que necesito}. Cortas y sin adjetivos. \textbf{Prohibido:} «siempre», «nunca», «tú eres», y cualquier frase que empiece describiendo al otro. \emph{Y agrega una cuarta línea, la que casi nadie prepara:} qué vas a hacer si el otro responde mal ---porque puede pasar, y ahí no se improvisa---.}
+\milcpaso{4}{milcMagenta}{\textbf{El ensayo, y el palabrero de a dos (13 min).} En tríos: uno dice su guion, otro hace de la persona con la que tiene el conflicto ---responde como esa persona respondería, incluso mal---, y el tercero hace de \textbf{palabrero}: observa, y al final dice \emph{en qué escalón estuvo la conversación} y qué frase la subió o la bajó. \textbf{Roten los tres papeles.} \emph{El papel del palabrero es el que más enseña: se ve clarísimo desde afuera lo que no se ve desde adentro.}}
+
+\begin{drawbox}{milcMagenta}{Antes de cerrar tu protocolo}
+\begin{checklista}
+\item Tu columna de hechos no tiene ninguna intención del otro colada.
+\item Escribiste la necesidad que había debajo de la rabia, en una frase.
+\item Tu guion tiene las tres frases y \textbf{ninguna} empieza describiendo al otro.
+\item No aparecen «siempre», «nunca» ni historia vieja de otros meses.
+\item Preparaste qué harás si el otro responde mal.
+\item Decidiste \textbf{dónde} y \textbf{cuándo} tendrías esa conversación, y es en privado.
+\end{checklista}
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Plantilla del protocolo.} \emph{Hecho:} «\_\_\_\_ (lo que grabaría una cámara)». \emph{Sentí:} «Me sentí \_\_\_\_». \emph{Necesito:} «Me gustaría \_\_\_\_». \emph{Si responde mal:} «\_\_\_\_ (qué hago: bajar la voz, proponer hablar después, retirarme sin portazo, buscar un tercero)». \\[1mm]
+\textbf{Dónde y cuándo:} \emph{«\_\_\_\_, en privado, el \_\_\_\_».} \\[1mm]
+\textbf{Mi escalón:} \emph{«Los conflictos se me suben en el escalón \_\_\_\_, y lo que los sube es \_\_\_\_».}
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+
+
+\textbf{En tu cuaderno (Actividad 3 · CREA).} Título: «Actividad 3. Mi protocolo de conflicto». \textbf{Formato:} las dos columnas depuradas + la necesidad + el guion de tres frases + el plan por si responde mal + dónde y cuándo. \textbf{Extensión:} una página. \textbf{Sabes que terminaste cuando} le leíste el guion a tu trío y \textbf{el que hizo de palabrero} te dijo que ninguna frase subía el conflicto.
+\end{infoband}
+
+\puente{El producto es ese protocolo. \emph{Nadie improvisa bien una conversación difícil: se prepara, como el palabrero prepara lo que va a decir antes de llegar.}}
+
+\milcestacion{milcMostaza}{Producto de la sesión}
+\textbf{Protocolo de conflicto: hechos separados, necesidad nombrada, guion de tres frases y plan por si responde mal}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) La columna de hechos contiene solo lo observable, sin intenciones atribuidas. (2) Está escrita la necesidad que había debajo de la emoción, en una frase clara. (3) El guion tiene hecho, sentimiento y petición, sin «siempre», «nunca» ni acusaciones. (4) Hay un plan concreto para el caso de que la otra persona responda mal. (5) Se identificó el escalón propio de escalada y qué lo alimenta.
+\end{softbox}
+
+\puente{Antes de cerrar, revisa si tu guion busca reparar o busca ganar. Se nota en la primera frase.}
+
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con tres voces: el que escucha en silencio, lo que está en tu poder cuando el otro no colabora, y qué le hace al mundo compartido una pelea que se publica.}
+
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{«El otro se revela realmente como otro\ldots como el pobre, el oprimido; el que, a la vera del camino, fuera del sistema, muestra su rostro sufriente y sin embargo desafiante: «¡Tengo hambre!, ¡tengo derecho a comer!»»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Enrique Dussel · Filosofía de la liberación (1977)}
+
+En un conflicto, lo primero que desaparece es el rostro del otro: deja de ser una persona con razones y se vuelve \emph{el problema}. \textbf{El palabrero hace exactamente lo contrario:} su oficio consiste en llevar y traer la palabra hasta que cada familia vuelve a oír a la otra como \emph{otra} y no como enemiga. \emph{Y hay algo más honesto todavía en la cita:} el que reclama no siempre lo hace con buenos modos ---«sufriente y sin embargo desafiante»---. \textbf{Que alguien te reclame de mala manera no significa que no tenga razón}, y separar las dos cosas es de las habilidades más difíciles que existen.
+
+\textbf{En mi último conflicto, ¿qué parte de lo que el otro decía era cierto, aunque me lo dijera mal?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Epicteto · Enquiridión, 5 (c. 125 d.C.) · cuidado interior}
+\textit{«No son las cosas las que perturban a los hombres, sino las opiniones sobre las cosas.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Epicteto · Enquiridión, 5 (c. 125 d.C.)}
+
+Esta cita es la columna derecha de tu cuaderno. \textbf{Entre el hecho y tu rabia hay una interpretación}, y en un conflicto casi todo el daño lo hace esa interpretación, no el hecho: «no me contestó» duele poco; «me está ignorando a propósito» duele muchísimo, y ni siquiera sabes si es cierto. \emph{Epicteto no pide que te dé igual lo que pasa: pide que revises la opinión antes de responderle a ella.} \textbf{Preguntar «¿por qué no me contestaste?» cuesta menos que tres días de frío}, y suele acabarse ahí.
+
+\textbf{De lo que me molestó esta semana, ¿cuánto fue el hecho y cuánto lo que yo decidí que significaba?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{«Las tecnologías digitales están re-ontologizando la naturaleza misma de la infoesfera.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Luciano Floridi · La cuarta revolución (2014; trad.)}
+
+Un conflicto que antes cabía entre dos personas en un pasillo hoy ocurre con \textbf{público permanente}: capturas de pantalla, grupos, audios que se reenvían, cosas que quedan escritas para siempre. \textbf{Eso no es un detalle: cambia el conflicto entero}, porque mete el escalón cuatro ---el público--- desde el primer minuto y hace casi imposible retroceder sin «quedar mal». \emph{Por eso una de las decisiones más inteligentes que puedes tomar a los trece años es sencilla: las cosas difíciles no se hablan por chat.} En privado y en persona, donde todavía se puede ceder sin perder la cara.
+
+\textbf{¿Qué conversación difícil estoy teniendo por chat que debería tener en persona?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres son citas textuales y llevan su referencia debajo. Puedes remitir a la obra en clase.
+\end{infoband}
+
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
+
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Manejo del conflicto & \milcopcion{Separo hechos de interpretación y sé en qué escalón se me sube el conflicto.} & \milcopcion{Distingo conflicto de violencia, pero mezclo hechos con lo que supongo.} & \milcopcion{Todavía creo que tener un conflicto ya es pelear.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Dos cosas. \textbf{Primero, ten la conversación} ---o, si esa persona ya no está o no es prudente, ten \emph{una} conversación pendiente aunque sea más pequeña---. Anota qué pasó: si te salió el guion, en qué escalón estuvo, si tuviste que usar el plan de «si responde mal». \emph{Y si decides no tenerla, escribe por qué: eso también es una decisión, siempre que sea decisión y no evasión.} \textbf{Segundo, busca un palabrero de tu vida:} pregúntale a alguien mayor de tu familia \textbf{quién arreglaba los problemas} en su casa o en su vereda cuando había un pleito ---entre vecinos, entre hermanos, por un lindero, por una deuda--- y cómo lo hacía. \textbf{Trae:} cómo te fue con tu conversación y quién era esa persona en la historia de tu familia. \emph{Casi todas las comunidades tuvieron alguien así, y casi nunca era el más fuerte: era el que sabía hablar.}
+\end{infoband}
+
+\end{document}

@@ -2,11 +2,19 @@
 /**
  * Triángulo de pensamiento — cierre filosófico de la guía.
  *
- * Dos cambios respecto de la versión anterior:
- *  · Las tres formulaciones ya NO van entre comillas. En los YAML no están
- *    verificadas contra fuente, así que presentarlas como cita textual
- *    atribuía a Dussel, Marco Aurelio y Floridi frases que quizá no
- *    escribieron. Van como síntesis, con una nota al docente.
+ * Cada voz se presenta según lo que de verdad es, y eso lo decide el campo
+ * `autor`:
+ *  · Si nombra una obra y un año ---«Enrique Dussel · Filosofía de la
+ *    liberación (1977)»---, es una **cita textual**: va entre comillas, con su
+ *    referencia debajo.
+ *  · Si no, es una **formulación de la guía**: va sin comillas y lo dice, en el
+ *    punto donde se lee. Quitar las comillas no bastaba: una frase inventada
+ *    bajo el nombre de una persona real sigue siendo una atribución falsa,
+ *    aunque no lleve comillas.
+ *
+ * Espeja scripts/lib_triangulo.py, que hace lo mismo para el PDF. El arreglo es
+ * automático: el día en que una formulación reciba su obra, empieza a
+ * presentarse como cita sin tocar este componente.
  *  · Riel de color a la izquierda en lugar de tres tarjetas macizas, para que
  *    la página respire igual que la página 8 del PDF.
  */
@@ -31,6 +39,26 @@ function sinComillas(t: string): string {
   return t.trim().replace(/^["\u201C\u00AB\u2018']+/, '').replace(/["\u201D\u00BB\u2019']+$/, '').trim();
 }
 
+/** ¿El campo `autor` permite rastrear la frase hasta una obra concreta? */
+function tieneObra(autor: string): boolean {
+  return /\(.*\d{2,4}.*\)/.test(autor ?? '');
+}
+
+/** El nombre del pensador, sin obra y sin descriptores inventados. */
+function nombreLimpio(autor: string): string {
+  return (autor ?? '')
+    .split('·')[0]
+    .replace(/\s*\((?![^)]*\d)[^)]*\)/g, '')
+    .replace(/^[\s,;·]+|[\s,;·]+$/g, '') || 'el autor';
+}
+
+/** La línea de crédito que va debajo de la frase. */
+function atribucion(voz: VozTriangulo): string {
+  return tieneObra(voz.autor)
+    ? `— ${voz.autor}`
+    : `— formulación de esta guía, al modo de ${nombreLimpio(voz.autor)}. No es una cita textual.`;
+}
+
 const COLORES = {
   dussel:  { color: '#5A0038', texto: '#5A0038' },
   estoico: { color: '#E5B400', texto: '#8A6A00' },
@@ -43,6 +71,9 @@ const voces: Array<{ key: VozKey; voz: VozTriangulo }> = [
   { key: 'estoico', voz: data.estoico },
   { key: 'floridi', voz: data.floridi },
 ];
+
+/** Cuántas de las tres son citas textuales rastreables (0, 1, 2 o 3). */
+const textuales = voces.filter(({ voz }) => tieneObra(voz.autor)).length;
 ---
 
 <section class="mb-10" aria-labelledby="triangulo-titulo">
@@ -69,15 +100,19 @@ const voces: Array<{ key: VozKey; voz: VozTriangulo }> = [
         <article class="pl-5 md:pl-6" style={`border-left: 6px solid ${c.color};`}>
           <div class="flex items-baseline gap-3 flex-wrap mb-2.5">
             <h3 class="text-xl md:text-2xl font-black tracking-tight" style={`color: ${c.texto};`}>
-              {voz.autor}
+              {nombreLimpio(voz.autor)}
             </h3>
             <span class="text-xs font-bold" style="color: var(--fg-muted);">
               {voz.lente}
             </span>
           </div>
 
-          <p class="text-base leading-relaxed mb-3" style="color: var(--fg);">
-            {sinComillas(voz.cita)}
+          <p class="text-base leading-relaxed mb-1.5" style="color: var(--fg);">
+            {tieneObra(voz.autor) ? `«${sinComillas(voz.cita)}»` : sinComillas(voz.cita)}
+          </p>
+
+          <p class="text-xs italic leading-snug mb-3" style="color: var(--fg-muted);">
+            {atribucion(voz)}
           </p>
 
           <p class="text-sm md:text-base leading-relaxed mb-3" style="color: var(--fg-muted);">
@@ -97,7 +132,10 @@ const voces: Array<{ key: VozKey; voz: VozTriangulo }> = [
     style="background: var(--bg); color: var(--fg-muted);"
   >
     <strong style="color: var(--fg);">Nota para el docente.</strong>
-    Estas tres formulaciones son la síntesis del autor de la guía, no citas textuales
-    de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+    {textuales === 3
+      ? 'Las tres son citas textuales y llevan su referencia debajo. Puedes remitir a la obra en clase.'
+      : textuales === 0
+        ? 'Las tres formulaciones son del autor de la guía, no citas textuales de los pensadores: recogen su lente para pensar el tema, no sus palabras. Si vas a citarlos en clase, remite a la obra original.'
+        : 'En este cierre conviven citas textuales —con su referencia debajo— y formulaciones del autor de la guía, señaladas como tales. Solo las primeras se pueden citar como palabras del pensador.'}
   </p>
 </section>

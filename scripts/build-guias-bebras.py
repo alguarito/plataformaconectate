@@ -28,6 +28,10 @@ import subprocess
 import sys
 from pathlib import Path
 
+# Presentación honesta del triángulo: ver scripts/lib_triangulo.py
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from lib_triangulo import atribucion, cita_presentada, nota_docente  # noqa: E402
+
 import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -222,14 +226,18 @@ def yaml_a_placeholders(guia: dict) -> dict[str, str]:
         "CRITERIOS_LISTA": criterios_str,
 
         # Triángulo de pensamiento
-        "DUSSEL_CITA": sin_comillas(triangulo["dussel"]["cita"]),
+                "TRIANGULO_NOTA": nota_docente(triangulo),
+"DUSSEL_CITA": cita_presentada(triangulo["dussel"]),
+        "DUSSEL_ATRIBUCION": atribucion(triangulo["dussel"]),
         "DUSSEL_APLICACION": triangulo["dussel"]["aplicacion"],
         "DUSSEL_PREGUNTA": triangulo["dussel"]["pregunta_espejo"],
         "ESTOICISMO_AUTOR": triangulo["estoico"]["autor"],
-        "ESTOICISMO_CITA": sin_comillas(triangulo["estoico"]["cita"]),
+        "ESTOICISMO_CITA": cita_presentada(triangulo["estoico"]),
+        "ESTOICISMO_ATRIBUCION": atribucion(triangulo["estoico"]),
         "ESTOICISMO_APLICACION": triangulo["estoico"]["aplicacion"],
         "ESTOICISMO_PREGUNTA": triangulo["estoico"]["pregunta_espejo"],
-        "FLORIDI_CITA": sin_comillas(triangulo["floridi"]["cita"]),
+        "FLORIDI_CITA": cita_presentada(triangulo["floridi"]),
+        "FLORIDI_ATRIBUCION": atribucion(triangulo["floridi"]),
         "FLORIDI_APLICACION": triangulo["floridi"]["aplicacion"],
         "FLORIDI_PREGUNTA": triangulo["floridi"]["pregunta_espejo"],
 

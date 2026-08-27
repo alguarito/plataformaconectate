@@ -1,0 +1,555 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra UNICA de las guias MILC v3.
+%
+% La usan las tres familias de guias, cada una con su driver:
+%   · Grados 6-11  -> scripts/build-guias-g11.py
+%   · Bebras       -> scripts/build-guias-bebras.py
+%   · Semillero    -> scripts/build-guias-semillero.py
+%
+% Antes habia tres copias casi identicas (~400 lineas iguales, 6 distintas):
+% cada mejora habia que aplicarla tres veces, y en la practica no se hacia
+% (el motor de recursos vivia solo en dos de ellas). Lo que varia entre
+% familias esta parametrizado en 6 placeholders que cada driver llena
+% (se nombran aqui SIN su sintaxis real: el builder reemplaza por texto plano,
+% tambien dentro de los comentarios, y un valor multilinea rompe el preambulo):
+%
+%   HEADER_IZQ        encabezado izquierdo de pagina
+%   HEADER_DER        encabezado derecho de pagina
+%   PORTADA_ETIQUETA  rotulo sobre el numero grande (GRADO/MOMENTO/MODULO)
+%   PORTADA_SERIE     linea de serie de la portada
+%   PORTADA_ID        identificador de la guia en la portada
+%   PORTADA_CIRCULO   el circulito de grado (°), o vacio si no aplica
+%
+% El resto de claves las documenta content/guias/_SCHEMA.md. El script valida
+% que no queden placeholders sin reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+% Librerías TikZ para los diagramas de las guías (bloque `recursos:`):
+%  · babel  → babel en español vuelve activos caracteres como «>», y TikZ los usa
+%             en sus opciones (>=stealth, ->). Sin esta librería, cualquier
+%             diagrama con flechas revienta con «\language@active@arg> has an
+%             extra }». Debe ir ANTES de que se dibuje nada.
+%  · positioning        → sintaxis «below left=2pt and 3pt».
+%  · decorations.pathreplacing → llaves ({brace}) para señalar rangos.
+\usetikzlibrary{babel,positioning,decorations.pathreplacing}
+\usepackage{graphicx}
+% Circuitos: el trabajo de electrónica se hace hoy con micro:bit y sus sensores
+% integrados (MakeCode, sin cableado), así que no se necesitan esquemáticos.
+% Si algún día entran montajes con protoboard, basta descomentar esta línea:
+% los diagramas .tex/.tikz declarados en `recursos:` ya se incrustan solos.
+% \usepackage{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
+\usepackage{enumitem}
+\usepackage{microtype}
+
+% Helvetica Neue no trae la flecha U+2192, asi que cada «→» escrito literalmente
+% en el YAML se compilaba a NADA, en silencio (462 flechas en 61 guias: rutas del
+% tipo «paleta → tipografia → lockup» salian rotas). Mapeamos el caracter a su
+% version matematica, que si tiene glifo. Asi el autor puede seguir escribiendo
+% «→» comodamente en el YAML.
+\usepackage{newunicodechar}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0D9488}
+\definecolor{milcGradeDark}{HTML}{115E59}
+\definecolor{milcGradeSoft}{HTML}{CCFBF1}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Territorio interior · Educación socioemocional}
+\rhead{\small Grado 6° · Momento 4 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+% La flecha va en modo matematico a proposito: Helvetica Neue NO tiene el glifo
+% U+2192, asi que \textrightarrow se compilaba a NADA («Missing character: There
+% is no → in font Helvetica Neue») y el puente salia sin flecha. En modo
+% matematico la flecha viene de la fuente matematica y si se dibuja.
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{$\rightarrow$}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+% ─── Listas aireadas para las guías socioemocionales ────────────────────
+% Componer las verificaciones como «\checkbox texto\\» deja el texto que salta
+% de línea debajo del cuadrito y apelmaza el bloque. Estos entornos alinean la
+% continuación y airean los ítems. Los usa Territorio Interior; cualquier
+% familia puede hacerlo.
+\newlist{checklista}{itemize}{1}
+\setlist[checklista]{
+  label=\textcolor{milcGradeDark}{\fbox{\phantom{x}}},
+  leftmargin=9mm, labelsep=3.2mm, itemsep=2.4mm,
+  topsep=2.5mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+\newlist{pasoslista}{enumerate}{1}
+\setlist[pasoslista]{
+  label=\textcolor{milcGradeDark}{\sffamily\bfseries\arabic*.},
+  leftmargin=8mm, labelsep=3mm, itemsep=2.8mm,
+  topsep=1mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
+% ── Recursos visuales de la guía ──────────────────────────────────────
+% Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
+% \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
+% \guiaDiagrama → fuente TikZ/circuitikz (.tex) incrustada como vector:
+%                 es la vía para circuitos y esquemáticos editables.
+% #1 = ruta relativa al .tex · #2 = pie (puede ir vacío)
+\newcommand{\guiaFigura}[2]{%
+\begin{center}
+\includegraphics[width=0.88\linewidth,height=0.38\textheight,keepaspectratio]{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\newcommand{\guiaDiagrama}[2]{%
+\begin{center}
+\input{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\begin{document}
+\thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
+\begin{tikzpicture}[remember picture,overlay]
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont MOMENTO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont TERRITORIO INTERIOR · SOCIOEMOCIONAL};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
+
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 4};
+  % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
+  % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  
+
+  \node[anchor=west,text=milcGradeText,text width=11.4cm,align=left] at ([xshift=1.5cm,yshift=0.5cm]gradonum.east)
+    {
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Territorio interior · Socioemocional}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont\setlength{\baselineskip}{27pt}Respirar es una técnica\\[4pt]la pausa que cabe\\[4pt]en cualquier parte}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Grado 6° · Momento 4}
+    };
+\end{tikzpicture}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Tus tres anclas practicadas: una respiración lenta con la exhalación más larga que la inhalación, un anclaje de los cinco sentidos y un gesto discreto que puedas hacer en clase sin que nadie lo note — cada una con su registro de antes y después.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · Apertura ancestral · Regulación fisiológica · Triángulo Dussel-Estoicismo-Floridi}}
+
+\newpage
+
+\section*{Apertura: Respirar es una técnica: la pausa que no necesita permiso ni lugar}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+En los ríos del Pacífico colombiano ---el Atrato, el Dagua, el Patía, el Telembí--- \textbf{quien boga, canta}. Son los \textbf{cantos de boga}: los reman las comunidades afrodescendientes desde hace siglos, y se llaman así justamente por la entonación que toman \emph{mientras se rema}. No es música para el rato libre: es música \textbf{de trabajo}, que acompaña la navegación y la soledad de horas de río, y que a veces se marca golpeando el remo contra el agua. Están documentados desde la literatura del siglo XIX: en \emph{María}, la novela de Jorge Isaacs de 1867, Efraín sube el Dagua con bogas que van cantando. \textbf{Y aquí está lo que te importa hoy.} El canto no le quita peso al remo. Lo que hace es \textbf{ponerle un ritmo}: la voz, el aire y el brazo entran en el mismo compás, y entonces lo que era insoportable se vuelve sostenible durante horas. \emph{Cantar alarga la salida del aire ---no se canta inhalando---, y ese aire que sale largo y parejo es exactamente lo que hoy vas a aprender a hacer a propósito.} El boga descubrió con el cuerpo lo que la ciencia mediría mucho después.
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+Respirar pasa solo, pero \textbf{también se puede manejar}, y ahí está lo raro y lo útil: es la única función del cuerpo que hace las dos cosas. No puedes ordenarle a tu corazón que vaya más despacio; a tu respiración, sí ---y el corazón la sigue---. En 2018 un equipo dirigido por Andrea Zaccaro revisó todos los estudios serios sobre \textbf{respiración lenta} (menos de diez respiraciones por minuto) y encontró un patrón consistente: aumenta la variabilidad de la frecuencia cardíaca, cambia la actividad eléctrica del cerebro y aparecen \textbf{menos ansiedad, menos rabia y más relajación} (Zaccaro y otros, 2018). Dos precisiones que casi nadie dice y que cambian el resultado. \textbf{Primera: lo que calma es exhalar largo}, no llenarse de aire; si inhalas hondo y sueltas rápido, te agitas más. \textbf{Segunda: es lento, no profundo.} Y una tercera, que es de sentido común: \emph{esto se entrena en frío}. Nadie aprende a nadar el día que se está ahogando.
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{El boga no canta porque el río sea suave: canta \textbf{para poder} con él, poniendo su aire al ritmo del remo. \textbf{¿Qué ritmo podrías ponerle tú a tu propio aire} cuando lo que hay por delante es una exposición, una pelea o un examen\ldots y no se puede bajar del bote?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar podrás: (1) \textbf{identificar} qué le pasa a tu cuerpo cuando la alarma se enciende y cómo cambia con un minuto de respiración lenta; (2) \textbf{explicar} por qué la exhalación larga calma y por qué lento no es lo mismo que profundo; (3) \textbf{aplicar} tres anclas distintas ---la respiración del remo, los cinco sentidos y un gesto discreto--- y decir cuál sirve en cuál lugar; (4) \textbf{evaluar} tu propio antes y después con un número, no con una impresión.
+\end{softbox}
+
+
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Comprende los fenómenos que afectan a su territorio, regula sus emociones ante ellos y acompaña a otros con empatía (transversal 6°--11°, articulado con la política «Escuela, territorio de vida» del MEN, Resolución 006519 de 2025, y la Ley 1620 de 2013)\\
+Referentes & Primera ayuda psicológica (OMS, 2011/2012) · Directrices IASC (2007) · USGS y Servicio Geológico Colombiano · Pueblo nasa y la minga (CRIC) · Dussel · Estoicismo · Floridi\\
+Producto final & Tus tres anclas practicadas: una respiración lenta con la exhalación más larga que la inhalación, un anclaje de los cinco sentidos y un gesto discreto que puedas hacer en clase sin que nadie lo note — cada una con su registro de antes y después.\\
+\end{tabularx}
+\normalsize
+
+\puente{En el momento anterior armaste tu fogón: señal, pausa y frase. Hoy la pausa se vuelve \textbf{portátil}: no necesita lugar, ni permiso, ni que nadie se dé cuenta.}
+
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Comprendo y compruebo.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Primero comprueba en ti que esto funciona. Vas a medirte antes y después: sin ese número, esto es solo un consejo más.}
+
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- Antes y después, con número.} Vas a comprobarlo en tu propio cuerpo, en tres pasos. \textbf{Paso 1 (2 min).} Piensa treinta segundos en algo que te pone tenso ---una exposición, un examen, una discusión pendiente---. Sin contárselo a nadie. Ahora anota tres cosas: dónde lo sientes en el cuerpo, cuántas pulsaciones te cuentas en quince segundos con dos dedos en la muñeca o el cuello, y qué tan tenso estás \textbf{del 1 al 10}. \textbf{Paso 2 (3 min).} Respiración del remo: \textbf{inhala contando hasta 4, exhala contando hasta 6}. Por la nariz si puedes. Ni hondo ni fuerte: \textbf{lento y parejo}, como el remo que entra y sale. Tres minutos completos, aunque se te haga eterno al principio. \textbf{Paso 3 (2 min).} Vuelve a anotar las mismas tres cosas. \emph{Compara. No te sorprendas si el cambio es pequeño: es la primera vez. Lo que importa es que exista, y que lo hayas medido tú.}
+\end{softbox}
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Anotaste tus tres datos antes (dónde lo sientes, pulsaciones en quince segundos, tensión del 1 al 10).}
+\milccheckrow{Sostuviste la respiración 4-6 durante los tres minutos completos, sin acelerar el final.}
+\milccheckrow{Volviste a anotar los tres datos después y comparaste, aunque el cambio haya sido pequeño.}
+
+\begin{infoband}{milcVerde}
+
+
+\textbf{En tu cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1. Antes y después». \textbf{Formato:} dos columnas (antes · después) con las tres medidas, más una línea sobre qué te costó de los tres minutos. \textbf{Extensión:} ocho renglones. \textbf{Sabes que terminaste cuando} tienes \textbf{números} en las dos columnas, no impresiones.
+\end{infoband}
+
+\puente{Ya lo sentiste. Ahora entiende por qué pasa, porque una técnica que no se entiende se abandona a la tercera vez.}
+
+\milcestacion{milcTurquesa}{Fase 2 · Sistematización: entender por qué funciona}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro claves sobre la respiración que calma}
+Ya lo comprobaste en ti. Ahora las cuatro claves, para que sepas qué estás haciendo y no lo abandones cuando no funcione a la primera.
+\end{softbox}
+
+\milcpaso{1}{milcTurquesa}{\textbf{La exhalación es la que manda.} Cuando \textbf{inhalas}, el corazón se acelera un poco; cuando \textbf{exhalas}, se frena. Por eso la instrucción de «respira hondo» suele fallar: si te llenas de aire y lo sueltas de golpe, agitas más de lo que calmas. \textbf{La regla es que la salida sea más larga que la entrada}: 4 y 6, o 3 y 5, o 4 y 8 si te alcanza. \emph{Y por eso el canto del boga sirve: no se canta inhalando. Cantar es, sin proponérselo, exhalar largo y parejo durante horas.}}
+\milcpaso{2}{milcTurquesa}{\textbf{Lento, no profundo.} Lo que la investigación mide es la \textbf{frecuencia}: menos de diez respiraciones por minuto (Zaccaro y otros, 2018). No pide llenar los pulmones al máximo ---eso marea---. Pide bajar el ritmo. \textbf{Truco para saber si vas bien:} si te falta el aire o te sientes mareado, estás respirando \emph{de más}, no de menos: suelta un poco y alarga la salida. Un minuto bien hecho vale más que cinco haciéndolo fuerte.}
+\milcpaso{3}{milcTurquesa}{\textbf{Anclar los sentidos, cuando la cabeza no para.} Hay momentos en que respirar no alcanza porque el pensamiento va a mil. Ahí sirve el \textbf{anclaje}: obligar a la atención a volver al presente con los cinco sentidos ---\textbf{5} cosas que ves, \textbf{4} que puedes tocar, \textbf{3} que oyes, \textbf{2} que hueles, \textbf{1} que saboreas---. No es magia ni es distraerse: es darle a la cabeza una tarea concreta y \emph{de ahora}, en vez de una escena que se repite. \emph{Funciona especialmente bien cuando el problema es de anticipación: lo que todavía no pasó.}}
+\milcpaso{4}{milcTurquesa}{\textbf{Esto se entrena en frío, o no aparece en caliente.} Ninguna técnica sirve la primera vez que se usa, y la primera vez no puede ser en la mitad de una crisis. \textbf{Se practica cuando no hace falta} ---un minuto antes de dormir, uno en la fila, uno antes de una clase--- para que el cuerpo la reconozca cuando sí haga falta. Es lo mismo que el simulacro de evacuación: nadie lo hace porque le guste, sino para que el día del temblor las piernas ya sepan.}
+
+\begin{drawbox}{milcTurquesa}{Las tres anclas y cuándo usar cada una}
+\begin{pasoslista}
+\item \textbf{El remo (4-6).} Inhalas contando 4, exhalas contando 6. Un minuto mínimo. \emph{Para cuando el cuerpo está acelerado: corazón, manos, calor.}
+\item \textbf{Los cinco sentidos (5-4-3-2-1).} Cinco cosas que ves, cuatro que tocas, tres que oyes, dos que hueles, una que saboreas. \emph{Para cuando la cabeza no para y da vueltas a algo.}
+\item \textbf{El gesto discreto.} Presionar el pulgar contra el índice, apoyar los pies completos en el piso, apretar y soltar las manos bajo el pupitre, tres exhalaciones largas por la nariz. \emph{Para cuando estás en público y no puedes salir ni cerrar los ojos.}
+\item \textbf{La regla común a las tres:} exhalación más larga que la inhalación, y \textbf{sin que nadie tenga que enterarse}.
+\end{pasoslista}
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{«Respira hondo»:} llenar de aire y soltar rápido agita más; lo que calma es soltar largo. \textbf{Hacerlo solo en crisis:} la técnica que no se entrenó en frío no aparece en caliente. \textbf{Abandonar a los treinta segundos:} el efecto empieza cerca del minuto; medio minuto no alcanza. \textbf{Creer que sirve para que la emoción desaparezca:} no la borra, le baja el volumen para que quepa una decisión ---como en el momento anterior---. \textbf{Marearse y pensar que se hace mal:} el mareo es señal de estar respirando \emph{de más}, no de menos.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+
+
+\textbf{En tu cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2. Por qué funciona». \textbf{Formato:} tres líneas explicando por qué la exhalación larga calma, más la tabla de las tres anclas con \textbf{en qué situación} usarías cada una. \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} puedes explicarle a alguien de tu casa por qué «respira hondo» no es el mejor consejo.
+\end{infoband}
+
+\puente{Ya sabes por qué funciona. Es hora de practicar las tres anclas hasta que salgan sin pensarlas.}
+
+\milcestacion{milcMagenta}{Fase 3 · Praxis: practicar hasta que salga solo}
+
+\begin{softbox}{milcMagenta}{milcGris}{Las tres anclas, una por una}
+Practicar, no entender. Las tres anclas, una por una, con el profe marcando el tiempo. Y al final, tu registro: la evidencia de que las hiciste, no de que las sabes.
+\end{softbox}
+
+\milcpaso{1}{milcMagenta}{\textbf{El remo, dos minutos, todos a la vez.} El profe marca el compás en voz alta las primeras diez respiraciones ---«entra, dos, tres, cuatro\ldots sale, dos, tres, cuatro, cinco, seis»--- y después se calla. Sigan solos el resto. \emph{Si alguien se ríe al principio, es normal: respirar juntos en silencio es raro las primeras veces.} Al terminar, cada quien anota su tensión del 1 al 10.}
+\milcpaso{2}{milcMagenta}{\textbf{Los cinco sentidos, en parejas.} Uno dice en voz baja lo que va encontrando ---cinco cosas que ve, cuatro que toca\ldots--- y el otro solo escucha y lleva la cuenta. Después cambian. \textbf{Ojo:} tiene que ser lo que hay \emph{aquí}, en este salón, ahora. \emph{Nombrar lo que hay alrededor es lo que trae la atención de vuelta del futuro imaginado.}}
+\milcpaso{3}{milcMagenta}{\textbf{El gesto discreto, tres opciones, elige una.} Prueben los tres ---pulgar contra índice, pies completos en el piso, manos que aprietan y sueltan bajo el pupitre--- y quédate con \textbf{el que puedas hacer en la mitad de una clase sin que nadie lo note}. Ese es el que de verdad vas a usar: los otros dos son para la casa.}
+\milcpaso{4}{milcMagenta}{\textbf{El registro (esto es el producto).} Una tabla con cinco filas para esta semana: \emph{día · qué pasó · qué ancla usé · tensión antes (1-10) · tensión después (1-10)}. \emph{Sin el registro esto se olvida en tres días, como todos los propósitos.} Y si un día no funcionó, se anota igual: eso también es información.}
+
+\begin{drawbox}{milcMagenta}{Antes de cerrar tu práctica}
+\begin{checklista}
+\item Sostuviste el remo 4-6 durante dos minutos sin acelerar la parte final.
+\item Hiciste los cinco sentidos con lo que hay \textbf{en este salón}, no con cosas imaginadas.
+\item Elegiste \textbf{un} gesto discreto y comprobaste que nadie lo nota.
+\item Tu tabla de registro tiene las cinco filas listas, con las columnas de antes y después.
+\item Sabes cuál ancla usar cuando el cuerpo está acelerado y cuál cuando la cabeza no para.
+\item Elegiste el momento fijo del día en que vas a practicar en frío esta semana (antes de dormir, en la fila, en la ruta).
+\end{checklista}
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Plantilla del registro (cinco filas, una por día).} \emph{Día} · \emph{Qué pasó} · \emph{Ancla que usé} · \emph{Antes (1-10)} · \emph{Después (1-10)}. \\[1mm]
+\textbf{Ejemplo de fila.} \emph{Martes} · «me pusieron a exponer sin avisar» · «gesto discreto: pies en el piso y tres exhalaciones» · \emph{antes 8} · \emph{después 6}. \\[1mm]
+\textbf{Y la práctica en frío:} \emph{«Mi minuto diario va \_\_\_\_ (cuándo) en \_\_\_\_ (dónde)».}
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+
+
+\textbf{En tu cuaderno (Actividad 3 · APLICA).} Título: «Actividad 3. Mis tres anclas». \textbf{Formato:} la tabla de registro con sus cinco filas (vacías hoy, llenas la próxima semana) + cuál ancla elegiste para el salón + tu minuto diario de práctica en frío. \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} tu gesto discreto es tan discreto que \textbf{el compañero de al lado no supo cuándo lo hiciste}.
+\end{infoband}
+
+\puente{El producto no es saberse la técnica: es \textbf{haberla practicado} y tener el registro que lo demuestra.}
+
+\milcestacion{milcMostaza}{Producto de la sesión}
+\textbf{Tres anclas practicadas y el registro de la semana, con antes y después medidos}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) Las tres anclas se practicaron en clase, no solo se leyeron. (2) La respiración usada tiene la exhalación más larga que la inhalación, y se sostuvo al menos un minuto. (3) El gesto elegido es realmente discreto: se puede hacer en clase sin que se note. (4) La tabla de registro tiene las cinco filas con columnas de antes y después en números. (5) Está escrito el momento fijo de práctica en frío, con hora y lugar concretos.
+\end{softbox}
+
+\puente{Antes de cerrar, mira cuál ancla te sirvió más y en qué lugar. La mejor técnica es la que de verdad puedes hacer donde estás.}
+
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con tres voces: el cuerpo del otro también respira, lo que sí está en tu poder, y qué significa cuidar el propio cuerpo en un mundo que corre.}
+
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{«El otro se revela realmente como otro\ldots como el pobre, el oprimido; el que, a la vera del camino, fuera del sistema, muestra su rostro sufriente y sin embargo desafiante: «¡Tengo hambre!, ¡tengo derecho a comer!»»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Enrique Dussel · Filosofía de la liberación (1977)}
+
+Los cantos de boga no eran un pasatiempo: acompañaban un trabajo durísimo, y sus letras hablaban de lo que se sufría y de lo que se anhelaba. \textbf{El cuerpo cansado del otro también dice algo}, aunque no se queje. Aprender a mirar el cuerpo ---el tuyo y el de al lado--- es aprender a oír lo que todavía no llegó a palabras: el que tiembla antes de exponer, el que no come en el descanso, el que aprieta la mandíbula todo el día. \emph{Regularte a ti es el primer paso; el segundo es notar a quién le hace falta.}
+
+\textbf{¿A quién de mi curso le he visto el cuerpo tenso esta semana sin preguntarle nada?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Epicteto · Enquiridión, 1 (c. 125 d.C.; trad. desde E. Carter) · cuidado interior}
+\textit{«Algunas cosas están en nuestro poder y otras no. Están en nuestro poder la opinión, el impulso, el deseo, el rechazo; en una palabra, todo aquello que es obra nuestra.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Epicteto · Enquiridión, 1 (c. 125 d.C.; trad. desde E. Carter)}
+
+No controlas que te llamen a exponer sin avisar, ni que el examen sea hoy, ni que alguien diga algo que te duela. \textbf{Sí controlas tu aire.} Y es de las pocas cosas que están siempre, en cualquier salón, sin permiso de nadie y sin que se note. \emph{Epicteto era esclavo cuando aprendió esto: sabía perfectamente lo que es no controlar casi nada.} Tener una técnica que solo depende de ti es, en el sentido más literal, quedarse con la parte que sí es tuya.
+
+\textbf{En la última situación que no pude controlar, ¿qué era lo que sí estaba en mis manos?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{«Somos organismos informacionales ---inforgs--- que compartimos un entorno global hecho, en última instancia, de información: la infoesfera.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Luciano Floridi · La cuarta revolución (2014)}
+
+Vivimos en un entorno que empuja a ir más rápido: notificaciones, videos de quince segundos, respuestas inmediatas. \textbf{Bajar tu respiración a seis por minuto es ir en contra de ese ritmo, a propósito}, con la única parte del cuerpo que se deja mandar. Floridi dice que somos organismos hechos de información; conviene recordar que también somos organismos, y que el aire no se acelera con la conexión. \emph{Un minuto lento al día es una forma pequeña y concreta de no dejar que el entorno te ponga el compás.}
+
+\textbf{¿Cuántos minutos del día voy al ritmo que elijo yo, y cuántos al que me pone la pantalla?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres son citas textuales y llevan su referencia debajo. Puedes remitir a la obra en clase.
+\end{infoband}
+
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
+
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Uso de la técnica & \milcopcion{Practico las tres anclas y sé cuál me sirve en cada lugar.} & \milcopcion{Practico una sola, casi siempre la misma.} & \milcopcion{Todavía no logro sostener la respiración lenta un minuto.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Dos cosas. \textbf{Primero, llena tu registro:} cinco días, cinco filas, con el antes y el después en números. \emph{Si algún día no la usaste, escribe «no la usé» y por qué; eso enseña tanto como las veces que sí.} \textbf{Segundo, búscale el canto a un trabajo de tu casa:} pregúntale a alguien mayor si tararea, silba o canta mientras hace algo duro o repetitivo ---planchar, cocinar, sembrar, caminar largo, cargar---. Pregúntale si lo hace a propósito o le sale solo, y si nota que el trabajo se le hace más corto. \textbf{Trae:} tu registro lleno y lo que te contaron. \emph{El boga del Pacífico no fue el único en descubrir esto: casi todos los oficios duros del mundo inventaron su propio canto, y todos alargan la salida del aire.}
+\end{infoband}
+
+\end{document}

@@ -1,0 +1,555 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra UNICA de las guias MILC v3.
+%
+% La usan las tres familias de guias, cada una con su driver:
+%   · Grados 6-11  -> scripts/build-guias-g11.py
+%   · Bebras       -> scripts/build-guias-bebras.py
+%   · Semillero    -> scripts/build-guias-semillero.py
+%
+% Antes habia tres copias casi identicas (~400 lineas iguales, 6 distintas):
+% cada mejora habia que aplicarla tres veces, y en la practica no se hacia
+% (el motor de recursos vivia solo en dos de ellas). Lo que varia entre
+% familias esta parametrizado en 6 placeholders que cada driver llena
+% (se nombran aqui SIN su sintaxis real: el builder reemplaza por texto plano,
+% tambien dentro de los comentarios, y un valor multilinea rompe el preambulo):
+%
+%   HEADER_IZQ        encabezado izquierdo de pagina
+%   HEADER_DER        encabezado derecho de pagina
+%   PORTADA_ETIQUETA  rotulo sobre el numero grande (GRADO/MOMENTO/MODULO)
+%   PORTADA_SERIE     linea de serie de la portada
+%   PORTADA_ID        identificador de la guia en la portada
+%   PORTADA_CIRCULO   el circulito de grado (°), o vacio si no aplica
+%
+% El resto de claves las documenta content/guias/_SCHEMA.md. El script valida
+% que no queden placeholders sin reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+% Librerías TikZ para los diagramas de las guías (bloque `recursos:`):
+%  · babel  → babel en español vuelve activos caracteres como «>», y TikZ los usa
+%             en sus opciones (>=stealth, ->). Sin esta librería, cualquier
+%             diagrama con flechas revienta con «\language@active@arg> has an
+%             extra }». Debe ir ANTES de que se dibuje nada.
+%  · positioning        → sintaxis «below left=2pt and 3pt».
+%  · decorations.pathreplacing → llaves ({brace}) para señalar rangos.
+\usetikzlibrary{babel,positioning,decorations.pathreplacing}
+\usepackage{graphicx}
+% Circuitos: el trabajo de electrónica se hace hoy con micro:bit y sus sensores
+% integrados (MakeCode, sin cableado), así que no se necesitan esquemáticos.
+% Si algún día entran montajes con protoboard, basta descomentar esta línea:
+% los diagramas .tex/.tikz declarados en `recursos:` ya se incrustan solos.
+% \usepackage{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
+\usepackage{enumitem}
+\usepackage{microtype}
+
+% Helvetica Neue no trae la flecha U+2192, asi que cada «→» escrito literalmente
+% en el YAML se compilaba a NADA, en silencio (462 flechas en 61 guias: rutas del
+% tipo «paleta → tipografia → lockup» salian rotas). Mapeamos el caracter a su
+% version matematica, que si tiene glifo. Asi el autor puede seguir escribiendo
+% «→» comodamente en el YAML.
+\usepackage{newunicodechar}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0D9488}
+\definecolor{milcGradeDark}{HTML}{115E59}
+\definecolor{milcGradeSoft}{HTML}{CCFBF1}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Territorio interior · Educación socioemocional}
+\rhead{\small Grado 6° · Momento 3 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+% La flecha va en modo matematico a proposito: Helvetica Neue NO tiene el glifo
+% U+2192, asi que \textrightarrow se compilaba a NADA («Missing character: There
+% is no → in font Helvetica Neue») y el puente salia sin flecha. En modo
+% matematico la flecha viene de la fuente matematica y si se dibuja.
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{$\rightarrow$}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+% ─── Listas aireadas para las guías socioemocionales ────────────────────
+% Componer las verificaciones como «\checkbox texto\\» deja el texto que salta
+% de línea debajo del cuadrito y apelmaza el bloque. Estos entornos alinean la
+% continuación y airean los ítems. Los usa Territorio Interior; cualquier
+% familia puede hacerlo.
+\newlist{checklista}{itemize}{1}
+\setlist[checklista]{
+  label=\textcolor{milcGradeDark}{\fbox{\phantom{x}}},
+  leftmargin=9mm, labelsep=3.2mm, itemsep=2.4mm,
+  topsep=2.5mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+\newlist{pasoslista}{enumerate}{1}
+\setlist[pasoslista]{
+  label=\textcolor{milcGradeDark}{\sffamily\bfseries\arabic*.},
+  leftmargin=8mm, labelsep=3mm, itemsep=2.8mm,
+  topsep=1mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
+% ── Recursos visuales de la guía ──────────────────────────────────────
+% Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
+% \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
+% \guiaDiagrama → fuente TikZ/circuitikz (.tex) incrustada como vector:
+%                 es la vía para circuitos y esquemáticos editables.
+% #1 = ruta relativa al .tex · #2 = pie (puede ir vacío)
+\newcommand{\guiaFigura}[2]{%
+\begin{center}
+\includegraphics[width=0.88\linewidth,height=0.38\textheight,keepaspectratio]{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\newcommand{\guiaDiagrama}[2]{%
+\begin{center}
+\input{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\begin{document}
+\thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
+\begin{tikzpicture}[remember picture,overlay]
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont MOMENTO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont TERRITORIO INTERIOR · SOCIOEMOCIONAL};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
+
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 3};
+  % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
+  % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  
+
+  \node[anchor=west,text=milcGradeText,text width=11.4cm,align=left] at ([xshift=1.5cm,yshift=0.5cm]gradonum.east)
+    {
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Territorio interior · Socioemocional}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont\setlength{\baselineskip}{27pt}Sentir no es actuar\\[4pt]el espacio entre\\[4pt]sentir y hacer}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Grado 6° · Momento 3}
+    };
+\end{tikzpicture}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Tu fogón: un procedimiento propio de tres pasos para los momentos en que la emoción quiere decidir por ti — la señal que te avisa, la pausa concreta que haces y la frase que dices antes de responder.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · Apertura ancestral · Regulación emocional · Triángulo Dussel-Estoicismo-Floridi}}
+
+\newpage
+
+\section*{Apertura: Sentir no es actuar: el espacio entre lo que siento y lo que hago}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+Entre el pueblo \textbf{misak} ---en Guambía, Cauca--- la casa tiene un centro, y ese centro es la cocina: el \textbf{nak chak}. Y la cocina tiene el suyo: el \textbf{nak kuk}, el fogón. Alrededor de ese fuego se sienta la familia, se enseña y se aprende. Los mayores lo dicen de una manera que vale la pena oír despacio: \emph{«el derecho nace de las cocinas»}, porque de ahí nace y se difunde el \textbf{consejo} ---en su lengua, el \textbf{kørøsrøp}---. \textbf{Fíjate en lo que eso significa en la práctica.} Cuando pasa algo difícil, el asunto \textbf{no se resuelve donde pasó}: se lleva al fogón. Ahí se cuenta, se escucha a los mayores, se le da vueltas mientras el fuego arde. La decisión llega \textbf{después}, y llega distinta. \emph{Ese rodeo no es lentitud: es el lugar donde el consejo alcanza a nacer.} \textbf{El fogón es, literalmente, un espacio puesto entre lo que ocurre y lo que se hace.} Eso mismo es lo que hoy vas a construir por dentro: tu propio espacio entre lo que sientes y lo que haces.
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+Hay una frase que se repite mucho y que hace daño: \emph{«me hizo enojar y por eso le pegué»}. Ahí van tres cosas distintas metidas en una sola: la \textbf{emoción} (la rabia), el \textbf{impulso} (las ganas de pegar) y la \textbf{conducta} (pegar). \textbf{La emoción llega sola, el impulso también, pero la conducta se elige}: entre el impulso y la mano hay un espacio, aunque a los once años se sienta de un milímetro. Se puede ensanchar, y no con fuerza de voluntad. Con \textbf{palabras}: en 2007, un equipo dirigido por Matthew Lieberman midió con resonancia magnética qué pasa en el cerebro cuando alguien le pone nombre a lo que siente, y encontró que \textbf{ponerlo en palabras baja la actividad de la amígdala} ---la parte que dispara la alarma--- y sube la de la corteza prefrontal, la que decide (Lieberman y otros, 2007). \emph{Es decir: el muestrario que armaste en el momento anterior no era una tarea de vocabulario.} Era el freno. Nombrar lo que sientes, mientras lo sientes, es lo que abre el espacio.
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{Los misak no resuelven en el patio lo que pasó en el patio: lo llevan al fogón, y allí nace el consejo. \textbf{¿Dónde está tu fogón}\ldots ese lugar o ese momento al que puedes llevar lo que sientes antes de decidir qué hacer con ello?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar podrás: (1) \textbf{identificar}, en situaciones tuyas de verdad, la diferencia entre lo que sentiste, lo que te dieron ganas de hacer y lo que hiciste; (2) \textbf{explicar} por qué una emoción informa pero no obliga, y qué le pasa a una emoción con el tiempo si no la alimentas; (3) \textbf{crear} tu procedimiento de tres pasos ---señal, pausa y frase--- para los momentos en que la emoción quiere decidir por ti; (4) \textbf{aplicarlo} en un ensayo con un compañero, antes de necesitarlo de verdad.
+\end{softbox}
+
+
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Comprende los fenómenos que afectan a su territorio, regula sus emociones ante ellos y acompaña a otros con empatía (transversal 6°--11°, articulado con la política «Escuela, territorio de vida» del MEN, Resolución 006519 de 2025, y la Ley 1620 de 2013)\\
+Referentes & Primera ayuda psicológica (OMS, 2011/2012) · Directrices IASC (2007) · USGS y Servicio Geológico Colombiano · Pueblo nasa y la minga (CRIC) · Dussel · Estoicismo · Floridi\\
+Producto final & Tu fogón: un procedimiento propio de tres pasos para los momentos en que la emoción quiere decidir por ti — la señal que te avisa, la pausa concreta que haces y la frase que dices antes de responder.\\
+\end{tabularx}
+\normalsize
+
+\puente{En el momento anterior aprendiste a nombrar lo que sientes con precisión. Hoy vas a usar esas palabras para algo concreto: \textbf{frenar}. Mira la ruta: primero tus propios casos, después cómo funciona el espacio, y al final tu fogón.}
+
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Distingo y comprendo.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Antes de entender nada, mira tus últimos días. No para juzgarte: para ver de qué tamaño es hoy tu espacio entre sentir y hacer.}
+
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- Tres casillas, tres veces.} \textbf{Nadie va a leer esta página.} Piensa en \textbf{tres momentos} de las últimas dos semanas en que reaccionaste de una manera que después no te gustó: un grito, un mensaje enviado con rabia, una salida de la mesa dando un portazo, un comentario que hirió, un silencio con el que castigaste a alguien. Para cada uno, tres casillas: \textbf{qué sentí} (usa tu muestrario del momento anterior, la palabra exacta), \textbf{qué me dieron ganas de hacer} y \textbf{qué hice}. Al final, una línea más: \emph{¿cuánto tiempo pasó entre lo segundo y lo tercero?} Segundos, minutos, nada. \emph{Ese número es el tamaño actual de tu espacio, y es lo que vamos a agrandar.}
+\end{softbox}
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Escribiste tres situaciones reales de las últimas dos semanas, con la palabra exacta de lo que sentiste.}
+\milccheckrow{Separaste en cada una lo que te dieron ganas de hacer de lo que efectivamente hiciste.}
+\milccheckrow{Calculaste cuánto tiempo pasó entre el impulso y la acción, aunque haya sido «nada».}
+
+\begin{infoband}{milcVerde}
+
+
+\textbf{En tu cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1. Tres casillas, tres veces». \textbf{Formato:} tres filas con tres columnas (sentí · me dieron ganas de · hice) más el tiempo que pasó. \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} en alguna fila las columnas 2 y 3 son \textbf{distintas} ---ahí ya usaste el espacio, aunque no te dieras cuenta---. Esta página es tuya: \textbf{nadie más tiene que leerla si tú no quieres}.
+\end{infoband}
+
+\puente{Ya viste tus casos. Ahora las cuatro claves: qué es cada cosa, qué le pasa a una emoción con el tiempo, por qué nombrar frena, y qué hace realmente un fogón.}
+
+\milcestacion{milcTurquesa}{Fase 2 · Sistematización: entender el espacio}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro claves sobre el espacio entre sentir y hacer}
+Cuatro claves para entender por qué ese espacio existe, por qué a veces se cierra del todo y qué se puede hacer para que no se cierre.
+\end{softbox}
+
+\milcpaso{1}{milcTurquesa}{\textbf{Emoción, impulso y conducta son tres cosas, y solo una se elige.} La \textbf{emoción} llega sin permiso: no se discute ni se prohíbe, y no hay emociones malas. El \textbf{impulso} también llega solo: es lo que la emoción \emph{propone} ---la rabia propone golpear o gritar, el miedo propone huir o esconderse, la vergüenza propone desaparecer---. Y la \textbf{conducta} es lo que finalmente haces. \textbf{Solo la tercera se elige}, y por eso solo de la tercera te pueden pedir cuentas. \emph{Decir «me hizo enojar y por eso le pegué» junta las tres para que la última parezca inevitable. No lo es.}}
+\milcpaso{2}{milcTurquesa}{\textbf{Una emoción sube, llega a un tope y baja ---si no la alimentas.} Ninguna rabia se queda en el máximo para siempre: sube rápido, se sostiene un rato y va bajando sola. Lo que la mantiene arriba es lo que \emph{haces} con ella: repetirte la escena, buscar a alguien que te dé la razón, releer el mensaje veinte veces, quedarte mirando la conversación. \textbf{A eso se le llama rumiar, y es echarle leña.} La consecuencia práctica es enorme: si aguantas sin actuar mientras la ola baja, \textbf{decides desde otro lugar}, y casi siempre decides mejor.}
+\milcpaso{3}{milcTurquesa}{\textbf{Nombrar es frenar, y eso se puede medir.} No es un consejo bonito: cuando alguien le pone palabras a lo que siente, \textbf{baja la actividad de la amígdala} ---la que dispara la alarma--- y \textbf{sube la de la corteza prefrontal}, la parte que decide (Lieberman y otros, 2007). Por eso el muestrario del momento anterior es una herramienta y no una lista: decir por dentro \emph{«esto es rabia, y va como en 8»} hace en tu cabeza algo distinto que decir \emph{«estoy que exploto»}. \emph{Ponerle nombre no apaga la emoción: le baja el volumen lo suficiente para que quepa una decisión.}}
+\milcpaso{4}{milcTurquesa}{\textbf{Un fogón es un espacio, no un sermón.} Lo que hace el nak chak misak no es dar la respuesta: es \textbf{obligar a un rodeo}. Lo que pasó en el camino se cuenta junto al fuego, se escucha a los mayores, y solo entonces se decide. Tu fogón funciona igual: no es un lugar donde te calmes por arte de magia, es \textbf{un rodeo obligatorio} entre el impulso y la acción. Puede ser un lugar (el patio, la escalera, la ventana), un gesto (respirar contando, tomar agua, salir a caminar) o una persona. \emph{Lo único que no puede ser es «pensar antes de actuar»: eso no es un fogón, es un deseo.}}
+
+\begin{drawbox}{milcTurquesa}{Qué pasa en esos segundos, paso a paso}
+\begin{pasoslista}
+\item \textbf{Pasa algo.} No lo elegiste: un comentario, una nota, un mensaje, una mirada.
+\item \textbf{Llega la emoción.} Tampoco la elegiste, y llegó por algo. El cuerpo avisa primero: pecho, cara, manos.
+\item \textbf{Aparece el impulso.} La emoción propone una salida rápida. \emph{Proponer no es ordenar.}
+\item \textbf{Aquí está el espacio.} Nombras lo que sientes, haces tu pausa, dices tu frase. Dura segundos, y es todo lo que hace falta.
+\item \textbf{Eliges la conducta.} La misma emoción, otra salida. \emph{Esta parte sí lleva tu firma.}
+\end{pasoslista}
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{«Es que soy así»:} el temperamento explica la velocidad de tu ola, no lo que haces con ella. \textbf{Confundir aguantarse con regular:} tragarse todo no ensancha el espacio, lo aplaza ---y suele estallar con quien menos tiene que ver---. \textbf{Creer que la pausa es dejarse:} no responder \emph{ya} no es perder; es decidir cuándo. \textbf{Pausas imposibles:} «respiro veinte minutos» no sirve en la mitad de una clase; que quepa en el lugar real. \textbf{Rumiar creyendo que estás pensando:} repetirte la escena no es analizarla, es echarle leña.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+
+
+\textbf{En tu cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2. El espacio entre sentir y hacer». \textbf{Formato:} los cinco pasos del recuadro aplicados a \textbf{una} de tus tres situaciones de la Actividad 1, y debajo dos líneas sobre qué le echó leña a esa emoción. \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} puedes decir en voz alta, sobre tu propio caso, \textbf{cuál fue el impulso y cuál fue la decisión} ---y que no eran lo mismo---.
+\end{infoband}
+
+\puente{Ya entiendes el mecanismo. Es hora de construir el tuyo, porque en la mitad de la rabia nadie se acuerda de la teoría: se acuerda de un procedimiento ensayado.}
+
+\milcestacion{milcMagenta}{Fase 3 · Praxis: construir tu fogón}
+
+\begin{softbox}{milcMagenta}{milcGris}{Cómo se arma un procedimiento que funcione cuando estás alterado}
+En la mitad de la rabia nadie se acuerda de lo que aprendió: se acuerda de lo que \textbf{ensayó}. Por eso el producto de hoy es un procedimiento corto, tuyo, escrito y practicado antes de necesitarlo. Tres pasos y un ensayo.
+\end{softbox}
+
+\milcpaso{1}{milcMagenta}{\textbf{La señal (qué te avisa a ti).} Cada persona tiene un aviso propio y físico, y casi siempre llega \textbf{antes} que el pensamiento: la mandíbula apretada, el calor en la cara, las manos frías, la voz que sube, el estómago cerrado, las ganas de llorar. Escribe \textbf{la tuya}, en concreto. \emph{Si no reconoces la señal, el procedimiento arranca tarde ---y tarde es después del portazo---.}}
+\milcpaso{2}{milcMagenta}{\textbf{La pausa (qué haces exactamente).} Tiene que ser \textbf{corta, posible y del tamaño del lugar}: respirar contando hasta cuatro y soltar en seis, tomar agua, pedir permiso para salir un minuto, apretar las manos bajo el pupitre, dejar el celular boca abajo y no responder. \textbf{Escribe una para el salón y otra para la casa}, porque no son el mismo lugar ni tienen las mismas reglas.}
+\milcpaso{3}{milcMagenta}{\textbf{La frase (qué te dices, por dentro).} Corta, tuya y creíble. \emph{«Esto es rabia y va en 8; en diez minutos va en 4»}. \emph{«No tengo que responder ya»}. \emph{«Si contesto ahora, mañana me toca arreglarlo»}. Evita las que no te crees: «no pasa nada» es mentira cuando sí pasa, y tu cabeza lo sabe.}
+\milcpaso{4}{milcMagenta}{\textbf{El ensayo (en frío, con un compañero).} Uno describe una situación cotidiana que le suele dar rabia ---sin contar nada privado--- y el otro practica los tres pasos \textbf{en voz alta}: nombra la emoción, dice qué pausa haría, dice su frase. Luego cambian. \emph{Ensayarlo en frío es lo que hace que aparezca en caliente:} el procedimiento que no se dijo nunca en voz alta no llega cuando hace falta.}
+
+\begin{drawbox}{milcMagenta}{Antes de cerrar tu fogón}
+\begin{checklista}
+\item Tu señal está escrita en concreto y es \textbf{física}, no un pensamiento («me dan ganas de gritar» no es la señal; «la mandíbula apretada» sí).
+\item Tienes \textbf{dos pausas}: una que cabe en el salón y otra para la casa.
+\item Tu frase es corta y te la crees. La leíste en voz alta y no te sonó falsa.
+\item Ensayaste los tres pasos con un compañero, en frío y en voz alta.
+\item Sabes cuál es tu «leña»: eso que haces y que mantiene la emoción arriba (releer, contarlo cinco veces, buscar quién te dé la razón).
+\item Escribiste qué vas a hacer cuando el procedimiento \textbf{falle}, porque va a fallar alguna vez. Fallar no lo invalida: se vuelve a usar.
+\end{checklista}
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Plantilla del fogón (cabe en una tarjeta).} \emph{Mi señal:} \_\_\_\_ · \emph{Mi pausa en el salón:} \_\_\_\_ · \emph{Mi pausa en la casa:} \_\_\_\_ · \emph{Mi frase:} «\_\_\_\_» · \emph{Mi leña (lo que no debo hacer):} \_\_\_\_ \\[1mm]
+\textbf{Ejemplo.} \emph{Señal:} «se me calienta la cara y hablo más duro». \emph{Pausa en el salón:} «bajo la mirada al cuaderno y respiro cuatro veces contando». \emph{Pausa en la casa:} «salgo al patio dos minutos». \emph{Frase:} «no tengo que responder ya». \emph{Leña:} «releer el mensaje una y otra vez».
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+
+
+\textbf{En tu cuaderno (Actividad 3 · CREA).} Título: «Actividad 3. Mi fogón». \textbf{Formato:} la tarjeta de cinco campos + una línea sobre cómo te fue en el ensayo. \textbf{Extensión:} media página, y cópiala también en una hoja pequeña que puedas cargar. \textbf{Sabes que terminaste cuando} podrías ejecutar los tres pasos \textbf{sin leer la tarjeta}, porque ya los dijiste en voz alta.
+\end{infoband}
+
+\puente{El producto es ese procedimiento. \emph{Un plan que no se ensayó no existe: existe la intención de tenerlo.}}
+
+\milcestacion{milcMostaza}{Producto de la sesión}
+\textbf{Mi fogón: señal, pausa y frase, ensayadas antes de necesitarlas}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) La señal es física y concreta, y la reconocerías en el momento en que aparece. (2) Hay dos pausas distintas, una posible en el salón y otra en la casa, ambas cortas. (3) La frase es propia, corta y creíble; no es una consigna copiada del tablero. (4) El procedimiento se ensayó en voz alta con un compañero, en frío. (5) Está identificada la «leña» propia y escrito qué hacer cuando el procedimiento falle.
+\end{softbox}
+
+\puente{Antes de cerrar, revisa si tu pausa es de verdad posible en el salón, en la casa y en la calle. Si solo sirve en un lugar, todavía no está listo.}
+
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con tres voces: lo que el impulso no deja ver, por qué la demora es el mejor remedio de la ira, y qué le hace al mundo compartido lo que decides en ese segundo.}
+
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{«Analéctico quiere indicar el hecho real humano por el que todo hombre, todo grupo o pueblo se sitúa siempre más allá (aná-) del horizonte de la totalidad.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Enrique Dussel · Filosofía de la liberación (1977), §2.4}
+
+El impulso tiene una trampa: hace que la situación parezca completa, cerrada, sin más salidas que la que él propone. «O respondo, o me dejo». \textbf{Ese horizonte cerrado es lo que Dussel llama totalidad}, y la pausa sirve exactamente para asomarse más allá de él: casi siempre hay una tercera salida que la rabia no dejaba ver, y con frecuencia aparece cuando entra en cuenta alguien más ---qué le pasa al otro, qué no sé de él---. \emph{El fogón misak hace eso: mete otras voces antes de la decisión.}
+
+\textbf{Cuando siento que solo hay una salida, ¿a quién podría escuchar antes de decidir que efectivamente no hay otra?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Séneca · Sobre la ira, libro II (c. 45 d.C.) · cuidado interior}
+\textit{«El mayor remedio para la ira es la demora.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Séneca · Sobre la ira, libro II (c. 45 d.C.)}
+
+Séneca no dice que la ira esté mal ni que haya que tragársela. Dice algo mucho más práctico, y hace dos mil años: \textbf{lo que la desarma es el tiempo}. Tu pausa es exactamente esa demora, en versión de once años y de cuatro respiraciones. No es cobardía ni es dejarse: es negarle a la ira el derecho a firmar por ti. \emph{Y encaja con lo que aprendiste hoy: la ola baja sola si no le echas leña.}
+
+\textbf{¿Qué cosa de las que hice esta semana no habría hecho si hubiera esperado diez minutos?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{«El florecimiento de las entidades informacionales y de toda la infoesfera debe promoverse preservando, cultivando y enriqueciendo sus propiedades.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Luciano Floridi · La ética de la información (2013; trad.)}
+
+Lo que haces en ese segundo casi nunca se queda en ese segundo: el mensaje enviado con rabia queda escrito, se reenvía, se guarda en pantallazos y sigue existiendo cuando a ti ya se te pasó. \textbf{La emoción es tuya y dura minutos; lo que publicas con ella queda en un espacio que compartimos todos.} Por eso Floridi habla de \emph{cuidar} ese espacio: la pausa no solo te protege a ti de un lío, protege el lugar donde viven las conversaciones de tu curso.
+
+\textbf{De lo que escribí este mes cuando estaba alterado, ¿qué sigue existiendo hoy en la pantalla de alguien?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres son citas textuales y llevan su referencia debajo. Puedes remitir a la obra en clase.
+\end{infoband}
+
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
+
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Distinguir emoción y acción & \milcopcion{Separo con claridad lo que sentí, lo que me dieron ganas de hacer y lo que hice.} & \milcopcion{A veces confundo el impulso con la emoción.} & \milcopcion{Todavía digo «me hizo enojar y por eso lo hice».}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Dos cosas. \textbf{Primero, usa el fogón tres veces y anótalas} ---aunque te haya salido mal---: qué pasó, qué señal apareció, si alcanzaste a hacer la pausa y qué hiciste al final. \emph{Las veces que falla enseñan más que las que salen bien, porque muestran en qué punto exacto se te cierra el espacio.} \textbf{Segundo, pregunta en tu casa dónde queda el fogón de tu familia:} ¿en qué lugar se hablan las cosas difíciles? ¿La mesa, la cocina, el andén, el camino al colegio, el patio? Pregúntale a alguien mayor si en su casa de infancia había un lugar así y qué se decidía allí. \textbf{Trae:} tus tres registros y el lugar que te contaron. \emph{En el momento siguiente vas a trabajar la respiración, que es la pausa más portátil que existe: no necesita lugar, ni permiso, ni que nadie se dé cuenta.}
+\end{infoband}
+
+\end{document}

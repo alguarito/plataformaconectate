@@ -1,0 +1,555 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra UNICA de las guias MILC v3.
+%
+% La usan las tres familias de guias, cada una con su driver:
+%   · Grados 6-11  -> scripts/build-guias-g11.py
+%   · Bebras       -> scripts/build-guias-bebras.py
+%   · Semillero    -> scripts/build-guias-semillero.py
+%
+% Antes habia tres copias casi identicas (~400 lineas iguales, 6 distintas):
+% cada mejora habia que aplicarla tres veces, y en la practica no se hacia
+% (el motor de recursos vivia solo en dos de ellas). Lo que varia entre
+% familias esta parametrizado en 6 placeholders que cada driver llena
+% (se nombran aqui SIN su sintaxis real: el builder reemplaza por texto plano,
+% tambien dentro de los comentarios, y un valor multilinea rompe el preambulo):
+%
+%   HEADER_IZQ        encabezado izquierdo de pagina
+%   HEADER_DER        encabezado derecho de pagina
+%   PORTADA_ETIQUETA  rotulo sobre el numero grande (GRADO/MOMENTO/MODULO)
+%   PORTADA_SERIE     linea de serie de la portada
+%   PORTADA_ID        identificador de la guia en la portada
+%   PORTADA_CIRCULO   el circulito de grado (°), o vacio si no aplica
+%
+% El resto de claves las documenta content/guias/_SCHEMA.md. El script valida
+% que no queden placeholders sin reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+% Librerías TikZ para los diagramas de las guías (bloque `recursos:`):
+%  · babel  → babel en español vuelve activos caracteres como «>», y TikZ los usa
+%             en sus opciones (>=stealth, ->). Sin esta librería, cualquier
+%             diagrama con flechas revienta con «\language@active@arg> has an
+%             extra }». Debe ir ANTES de que se dibuje nada.
+%  · positioning        → sintaxis «below left=2pt and 3pt».
+%  · decorations.pathreplacing → llaves ({brace}) para señalar rangos.
+\usetikzlibrary{babel,positioning,decorations.pathreplacing}
+\usepackage{graphicx}
+% Circuitos: el trabajo de electrónica se hace hoy con micro:bit y sus sensores
+% integrados (MakeCode, sin cableado), así que no se necesitan esquemáticos.
+% Si algún día entran montajes con protoboard, basta descomentar esta línea:
+% los diagramas .tex/.tikz declarados en `recursos:` ya se incrustan solos.
+% \usepackage{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
+\usepackage{enumitem}
+\usepackage{microtype}
+
+% Helvetica Neue no trae la flecha U+2192, asi que cada «→» escrito literalmente
+% en el YAML se compilaba a NADA, en silencio (462 flechas en 61 guias: rutas del
+% tipo «paleta → tipografia → lockup» salian rotas). Mapeamos el caracter a su
+% version matematica, que si tiene glifo. Asi el autor puede seguir escribiendo
+% «→» comodamente en el YAML.
+\usepackage{newunicodechar}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0D9488}
+\definecolor{milcGradeDark}{HTML}{115E59}
+\definecolor{milcGradeSoft}{HTML}{CCFBF1}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Territorio interior · Educación socioemocional}
+\rhead{\small Grado 6° · Momento 10 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+% La flecha va en modo matematico a proposito: Helvetica Neue NO tiene el glifo
+% U+2192, asi que \textrightarrow se compilaba a NADA («Missing character: There
+% is no → in font Helvetica Neue») y el puente salia sin flecha. En modo
+% matematico la flecha viene de la fuente matematica y si se dibuja.
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{$\rightarrow$}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+% ─── Listas aireadas para las guías socioemocionales ────────────────────
+% Componer las verificaciones como «\checkbox texto\\» deja el texto que salta
+% de línea debajo del cuadrito y apelmaza el bloque. Estos entornos alinean la
+% continuación y airean los ítems. Los usa Territorio Interior; cualquier
+% familia puede hacerlo.
+\newlist{checklista}{itemize}{1}
+\setlist[checklista]{
+  label=\textcolor{milcGradeDark}{\fbox{\phantom{x}}},
+  leftmargin=9mm, labelsep=3.2mm, itemsep=2.4mm,
+  topsep=2.5mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+\newlist{pasoslista}{enumerate}{1}
+\setlist[pasoslista]{
+  label=\textcolor{milcGradeDark}{\sffamily\bfseries\arabic*.},
+  leftmargin=8mm, labelsep=3mm, itemsep=2.8mm,
+  topsep=1mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
+% ── Recursos visuales de la guía ──────────────────────────────────────
+% Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
+% \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
+% \guiaDiagrama → fuente TikZ/circuitikz (.tex) incrustada como vector:
+%                 es la vía para circuitos y esquemáticos editables.
+% #1 = ruta relativa al .tex · #2 = pie (puede ir vacío)
+\newcommand{\guiaFigura}[2]{%
+\begin{center}
+\includegraphics[width=0.88\linewidth,height=0.38\textheight,keepaspectratio]{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\newcommand{\guiaDiagrama}[2]{%
+\begin{center}
+\input{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\begin{document}
+\thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
+\begin{tikzpicture}[remember picture,overlay]
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont MOMENTO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont TERRITORIO INTERIOR · SOCIOEMOCIONAL};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
+
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 10};
+  % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
+  % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  
+
+  \node[anchor=west,text=milcGradeText,text width=11.4cm,align=left] at ([xshift=1.5cm,yshift=0.5cm]gradonum.east)
+    {
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Territorio interior · Socioemocional}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont\setlength{\baselineskip}{27pt}Pedir ayuda\\[4pt]el convite y la red\\[4pt]que se construye antes}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Grado 6° · Momento 10}
+    };
+\end{tikzpicture}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Tu convite: tres personas a las que puedes acudir —al menos dos adultas, con nombre y forma de contacto—, tres a las que puedes ayudar, las frases exactas con que se pide, y las señales que obligan a avisar el mismo día.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · Apertura ancestral · Red de apoyo · Triángulo Dussel-Estoicismo-Floridi}}
+
+\newpage
+
+\section*{Apertura: Pedir ayuda: el convite, o por qué pedir no es quedar debiendo}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+En el campo colombiano hay una palabra para esto y no es «favor»: es \textbf{convite}. Funciona así: los vecinos llegan a ayudarle a alguien a terminar un trabajo en un día ---levantar una casa, recoger una cosecha, arreglar un camino--- \textbf{con la condición de que esa ayuda se devuelva} cuando al que ayudó le toque su turno. No es caridad ni es limosna: es un \textbf{sistema recíproco}, y por eso nadie queda humillado al pedirlo. En Antioquia hubo obras enteras ---caminos, escuelas, acueductos--- que se movieron a punta de convites. \textbf{Y fíjate en el detalle que lo cambia todo:} en un convite, \textbf{el que pide no queda debiendo: queda dentro}. Entra en un ciclo donde hoy recibe y mañana devuelve. \emph{El que nunca pide tampoco entra, y creyendo que se salva de la deuda, se queda por fuera de la red.} \textbf{Y hay algo más:} el convite se organiza \textbf{antes} ---se avisa, se acuerda el día, se prepara la comida---. Nadie arma un convite en la mitad de la emergencia. \emph{Igual que tu red: se construye cuando no hace falta, para que exista el día que sí.}
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+Hay una idea muy pegada a los once años: \emph{«esto lo arreglo yo solo»}, o su versión más dura, \emph{«si pido ayuda quedo como el débil»}. La evidencia dice lo contrario, y con números grandes. Un equipo dirigido por Xiong revisó en 2022 noventa estudios con más de \textbf{77.000 participantes} sobre cómo influye el apoyo social en los síntomas de estrés que quedan después de algo duro en niños y adolescentes. \textbf{El apoyo ayuda ---y el apoyo de la familia mostró un efecto protector más fuerte que el de los amigos} (Xiong y otros, 2022). Léelo con cuidado, porque no dice que los amigos no sirvan: dice que \textbf{una red hecha solo de gente de tu edad se queda corta}. Y tiene sentido: tus amigos de sexto están aprendiendo lo mismo que tú al mismo tiempo, tienen los mismos años y los mismos permisos; \textbf{un adulto puede hacer llamadas, tomar decisiones y cargar cosas que un compañero no puede}. \emph{Por eso la tarea de hoy no es tener más amigos: es que en tu lista aparezca por lo menos un adulto con nombre.}
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{En un convite se avisa con días de anticipación, se acuerda quién viene y se prepara todo \textbf{antes} de que llegue el trabajo. \textbf{¿Quién vendría a tu convite si lo convocaras hoy}\ldots y a quién no le has avisado todavía que cuentas con él?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar podrás: (1) \textbf{identificar} a quién acudes hoy de verdad y notar si en esa lista hay algún adulto; (2) \textbf{explicar} por qué pedir ayuda no es quedar debiendo, y por qué una red de puros pares se queda corta; (3) \textbf{crear} tu convite: tres personas a las que acudir ---dos adultas--- y tres a las que puedes ayudar, con las frases exactas; (4) \textbf{reconocer} las señales que obligan a avisarle a un adulto el mismo día, sin esperar a estar seguro.
+\end{softbox}
+
+
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Comprende los fenómenos que afectan a su territorio, regula sus emociones ante ellos y acompaña a otros con empatía (transversal 6°--11°, articulado con la política «Escuela, territorio de vida» del MEN, Resolución 006519 de 2025, y la Ley 1620 de 2013)\\
+Referentes & Primera ayuda psicológica (OMS, 2011/2012) · Directrices IASC (2007) · USGS y Servicio Geológico Colombiano · Pueblo nasa y la minga (CRIC) · Dussel · Estoicismo · Floridi\\
+Producto final & Tu convite: tres personas a las que puedes acudir —al menos dos adultas, con nombre y forma de contacto—, tres a las que puedes ayudar, las frases exactas con que se pide, y las señales que obligan a avisar el mismo día.\\
+\end{tabularx}
+\normalsize
+
+\puente{Cierra el año de Territorio Interior en sexto. Ya tienes palabras, un fogón, aire, una manera de mirar el error y tu atención. Falta lo que sostiene todo eso cuando no alcanza: \textbf{la gente}.}
+
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Comprendo y decido.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Primero mira tu red real, la de hoy, sin adornarla. La pregunta no es a quién quieres: es a quién \textbf{acudiste} la última vez.}
+
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- Mi red de hoy.} \textbf{Nadie va a leer esta página.} Piensa en \textbf{tres cosas difíciles} que te hayan pasado este año ---una nota mala, una pelea, algo que se dañó, un susto, algo que te dolió--- y para cada una escribe: \textbf{¿a quién le contaste?} Si no le contaste a nadie, escríbelo también, que es un dato importantísimo. Después mira tu lista y responde tres preguntas: \emph{¿cuántas personas distintas aparecen?}; \emph{¿cuántas son adultas?}; \emph{¿alguna vive en tu casa?}. Y una última, la más incómoda: \emph{si esta noche pasara algo grave, ¿a quién llamarías, y te sabes el número?}. \emph{Casi todo el mundo descubre dos cosas: que la lista es más corta de lo que creía, y que está hecha casi toda de gente de su misma edad.}
+\end{softbox}
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Escribiste tres situaciones difíciles del año y a quién le contaste cada una.}
+\milccheckrow{Contaste cuántas personas distintas aparecen y cuántas de ellas son adultas.}
+\milccheckrow{Respondiste a quién llamarías esta noche si pasara algo grave, y si te sabes el número.}
+
+\begin{infoband}{milcVerde}
+
+
+\textbf{En tu cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1. Mi red de hoy». \textbf{Formato:} tres situaciones con a quién le contaste + el conteo (personas distintas, adultas, de la casa) + la respuesta de esta noche. \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} contestaste con honestidad la de «no le conté a nadie», si fue el caso. Esta página es tuya: \textbf{nadie más tiene que leerla si tú no quieres}.
+\end{infoband}
+
+\puente{Ya la viste. Ahora entiende por qué pedir no es deber, por qué los adultos pesan distinto y cómo se pide de una manera que funcione.}
+
+\milcestacion{milcTurquesa}{Fase 2 · Sistematización: entender la red}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro claves sobre pedir ayuda}
+Cuatro claves para que pedir ayuda deje de parecer una derrota y pase a ser lo que es: una habilidad que se aprende y se practica.
+\end{softbox}
+
+\milcpaso{1}{milcTurquesa}{\textbf{Pedir no es quedar debiendo: es entrar.} En el convite, el que recibe la ayuda \textbf{devuelve después}, y por eso nadie queda humillado ---el ciclo es la norma, no la excepción---. \emph{El que nunca pide cree que se está ahorrando una deuda, y lo que hace es quedarse por fuera del ciclo:} nadie lo llama, nadie sabe qué le pasa, y el día que se cae, no hay a quién avisarle. \textbf{Pedir ayuda es participar}, y en tu curso funciona igual que en una vereda: el que presta los apuntes hoy es al que le prestan mañana.}
+\milcpaso{2}{milcTurquesa}{\textbf{Los adultos pesan distinto, y no es un decir.} Xiong y su equipo revisaron noventa estudios con más de 77.000 participantes: el apoyo ayuda, y \textbf{el de la familia resultó más protector que el de los amigos} (Xiong y otros, 2022). No es que los amigos sobren ---son los que están todos los días---. Es que \textbf{hay cosas que un compañero de sexto no puede hacer}: llamar a alguien, pedir una cita, hablar con un profesor, sacarte de una situación. \emph{Tu red necesita las dos capas, y casi siempre la que falta es la de arriba.}}
+\milcpaso{3}{milcTurquesa}{\textbf{Pedir bien se puede aprender, porque casi siempre falla la primera frase.} No hay que contar todo ni tener claro qué pasa: se puede pedir \textbf{sin explicar}. Frases que funcionan: \emph{«¿tienes cinco minutos?»}; \emph{«no sé bien cómo decirlo, pero estoy mal»}; \emph{«no quiero que hagas nada, solo que me escuches»}; \emph{«necesito ayuda con algo y me da pena»}. \textbf{Fíjate en lo que tienen en común:} son cortas, no exigen un diagnóstico y \textbf{dicen qué esperas} de la otra persona. \emph{Lo que casi nunca funciona es el «nada» cuando te preguntan qué te pasa, y después molestarse porque no adivinaron.}}
+\milcpaso{4}{milcTurquesa}{\textbf{Hay señales que no esperan.} Casi todo se puede conversar con calma, pero hay cosas que se avisan \textbf{el mismo día}, aunque no estés seguro: si alguien se hace daño o dice que no quiere vivir; si alguien te está haciendo daño; si tienes miedo de volver a tu casa; si algo te pasó y te dijeron que no lo contaras; si llevas semanas sin poder dormir o sin querer levantarte. \textbf{No tienes que estar seguro, ni tener pruebas, ni saber qué nombre tiene:} tu tarea no es diagnosticar, es \textbf{pasar la voz}. Ruta: \textbf{orientación escolar}, un \textbf{docente} de confianza o un adulto de tu casa. \emph{Y si el primero no te escucha, se le dice al segundo. Eso no es insistir de más: es lo correcto.}}
+
+\begin{drawbox}{milcTurquesa}{Las dos capas de una red que funciona}
+\begin{pasoslista}
+\item \textbf{Capa de todos los días (pares).} Los que están al lado: te prestan los apuntes, te acompañan en el descanso, te escuchan. \emph{Imprescindibles, y no alcanzan solos.}
+\item \textbf{Capa que puede actuar (adultos).} Los que pueden llamar, decidir, hablar con alguien, acompañarte a un lugar. \emph{Al menos dos, y al menos uno que no sea del colegio.}
+\item \textbf{Lo que hace falta de cada uno:} nombre, cómo se le contacta y \textbf{cuándo está disponible} ---de noche, un domingo---.
+\item \textbf{Y el otro lado del convite:} a quién puedes ayudar tú. Una red donde solo recibes no es una red: es una fila.
+\end{pasoslista}
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{«No quiero preocupar a nadie»:} el que te quiere prefiere preocuparse a tiempo que enterarse tarde. \textbf{Esperar a estar seguro:} nadie está seguro; se avisa con la duda. \textbf{Pedir solo cuando ya no puedes más:} en la mitad del problema es más fácil ayudar. \textbf{Contar solo a gente de tu edad:} cargas a un compañero con algo que él tampoco puede resolver. \textbf{Decir «nada» y esperar que adivinen:} nadie adivina. \textbf{Guardar un secreto que te asusta:} hay secretos que no se guardan, y eso no es traicionar a nadie. \textbf{Creer que ya molestaste mucho:} en un convite nadie lleva la cuenta de quién pidió más.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+
+
+\textbf{En tu cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2. Las dos capas». \textbf{Formato:} las dos capas con qué puede hacer cada una + las cuatro frases para pedir, copiadas y \textbf{una más inventada por ti} + la lista de señales que se avisan el mismo día. \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} puedes explicar por qué contarle algo grave solo a un amigo de tu edad \textbf{no es suficiente} ---sin que suene a que los amigos no importan---.
+\end{infoband}
+
+\puente{Ya lo entiendes. Es hora de armar el convite con nombres, teléfonos y frases ---y de avisarles, porque una red que la otra persona no conoce no existe---.}
+
+\milcestacion{milcMagenta}{Fase 3 · Praxis: armar tu convite}
+
+\begin{softbox}{milcMagenta}{milcGris}{Cómo se arma una red antes de necesitarla}
+Un convite se organiza antes. Hoy armas el tuyo con nombres, contactos y frases, y ---esto es lo que casi nadie hace--- \textbf{le avisas a la gente que está en tu lista}.
+\end{softbox}
+
+\milcpaso{1}{milcMagenta}{\textbf{A quién acudo (tres, y al menos dos adultos).} Escribe \textbf{nombre completo}, cómo se le contacta y \textbf{cuándo está disponible}. Al menos uno tiene que ser un adulto que \textbf{no} sea del colegio ---mamá, papá, abuela, tía, vecina, la líder del barrio---, y al menos uno del colegio ---orientación escolar, un docente, la coordinadora---. \emph{Un nombre sin teléfono no sirve el día que hace falta.}}
+\milcpaso{2}{milcMagenta}{\textbf{A quién ayudo (tres).} La otra mitad del convite. Escribe tres personas a las que \textbf{tú} podrías ayudar y con qué, en concreto: acompañar en el descanso a alguien que anda solo, prestarle los apuntes al que faltó, ayudarle a un primo menor con tareas. \emph{Esto no es un adorno: quien tiene a quién ayudar sostiene mejor lo suyo, y además así funciona el ciclo.}}
+\milcpaso{3}{milcMagenta}{\textbf{Las frases (escríbelas, no las improvises).} Copia las cuatro y agrega \textbf{una tuya}, con tus palabras. Escoge \textbf{cuál usarías con cada persona de tu lista}, porque no se le habla igual a una abuela que a la coordinadora. \emph{El día del susto no se inventan frases: se usan las que ya están escritas.}}
+\milcpaso{4}{milcMagenta}{\textbf{El ensayo, y el aviso de verdad.} En parejas: uno pide con una de las frases, el otro solo responde \emph{«claro, cuéntame»} y escucha treinta segundos sin dar consejos. Cambian. \textbf{Y la tarea que de verdad cambia algo:} esta semana, \textbf{dile a una de las personas de tu lista que está en tu lista}. Tal cual: \emph{«si algún día estoy mal, ¿puedo hablar contigo?»}. \emph{Casi todo el mundo dice que sí y se pone contento; y desde ese momento, la red existe para los dos.}}
+
+\begin{drawbox}{milcMagenta}{Antes de cerrar tu convite}
+\begin{checklista}
+\item Tienes tres personas a las que acudir, con \textbf{nombre y forma de contacto} escritos.
+\item Al menos \textbf{dos son adultas}, y al menos una no es del colegio.
+\item Sabes cuál de ellas está disponible \textbf{de noche o un domingo}.
+\item Tienes tres personas a las que puedes ayudar, con qué en concreto.
+\item Escribiste las frases, incluida una tuya, y asignaste cuál va con cada persona.
+\item Copiaste la lista de señales que se avisan el mismo día, y sabes la ruta: orientación escolar, docente de confianza, adulto de la casa.
+\end{checklista}
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Plantilla del convite.} \emph{A quién acudo:} 1) \_\_\_\_ (contacto \_\_\_\_, disponible \_\_\_\_) · 2) \_\_\_\_ · 3) \_\_\_\_. \emph{A quién ayudo:} 1) \_\_\_\_ (con qué \_\_\_\_) · 2) \_\_\_\_ · 3) \_\_\_\_. \\[1mm]
+\textbf{Mis frases.} «¿Tienes cinco minutos?» · «No sé bien cómo decirlo, pero estoy mal» · «No quiero que hagas nada, solo que me escuches» · «Necesito ayuda con algo y me da pena» · \emph{la mía:} «\_\_\_\_». \\[1mm]
+\textbf{Aviso el mismo día si:} alguien se hace daño o dice que no quiere vivir · alguien me está haciendo daño · tengo miedo de volver a mi casa · me pasó algo y me dijeron que no lo contara · llevo semanas sin dormir o sin querer levantarme.
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+
+
+\textbf{En tu cuaderno (Actividad 3 · CREA).} Título: «Actividad 3. Mi convite». \textbf{Formato:} las dos listas con contactos, las cinco frases con su destinatario y la lista de señales. \textbf{Extensión:} una página, y cópiala también en una hoja pequeña que puedas guardar. \textbf{Sabes que terminaste cuando} \textbf{ya le avisaste a una persona} que está en tu lista ---o tienes escrito cuándo se lo vas a decir esta semana---.
+\end{infoband}
+
+\puente{El producto es esa red escrita. \emph{Una red que solo vive en tu cabeza no sirve el día del susto: ese día no se piensa bien.}}
+
+\milcestacion{milcMostaza}{Producto de la sesión}
+\textbf{Mi convite: red de dos capas con contactos, frases para pedir y señales de aviso inmediato}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) Hay tres personas a las que acudir, con nombre y forma de contacto, y al menos dos son adultas. (2) Al menos una de esas personas no pertenece al colegio, y está identificada su disponibilidad. (3) Hay tres personas a las que se puede ayudar, con la acción concreta al lado. (4) Las frases están escritas —incluida una propia— y asignadas a una persona cada una. (5) La lista de señales de aviso inmediato está copiada, con la ruta institucional del colegio.
+\end{softbox}
+
+\puente{Antes de cerrar, revisa si alguno de tus adultos está disponible \textbf{de noche o un domingo}. Las cosas difíciles rara vez pasan en horario de clase.}
+
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos el grado con tres voces: el que se atreve a decir lo que necesita, el mundo donde todo circula, y qué significa cuidar el espacio que compartimos.}
+
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{«El otro se revela realmente como otro\ldots como el pobre, el oprimido; el que, a la vera del camino, fuera del sistema, muestra su rostro sufriente y sin embargo desafiante: «¡Tengo hambre!, ¡tengo derecho a comer!»»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Enrique Dussel · Filosofía de la liberación (1977)}
+
+Todo el año has trabajado esta cita desde el lado de quien escucha. \textbf{Hoy te toca el otro lado: ser el que habla.} Fíjate en cómo lo dice Dussel: el otro no susurra una disculpa, \textbf{reclama} ---«tengo hambre», «tengo derecho»---, y en ese decir deja de ser invisible. \emph{Pedir ayuda es exactamente eso:} dejar de estar «a la vera del camino» y decir en voz alta qué te falta. \textbf{Y no es humillante: es lo contrario.} El que calla para no molestar se está borrando; el que pide se hace presente.
+
+\textbf{¿Qué es lo que llevo semanas necesitando y no he dicho en voz alta, y a quién podría decírselo esta semana?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · Meditaciones VII, 47 (c. 175 d.C.) · cuidado interior}
+\textit{«Contempla las evoluciones de los astros y piensa al mismo tiempo que evolucionas con ellos; y reflexiona continuamente cómo los elementos cambian unos en otros.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Marco Aurelio · Meditaciones VII, 47 (c. 175 d.C.)}
+
+\emph{Los elementos cambian unos en otros}: nada está quieto y nada está solo. Un convite es esa idea puesta a trabajar en una vereda ---la ayuda circula, hoy sale de esta casa y mañana entra en aquella---. \textbf{Y también vale para ti a lo largo del año:} el que hoy necesita apuntes es el que en dos meses acompaña al que llegó nuevo. \emph{Quien se piensa a sí mismo como una isla no solo se queda sin ayuda: se queda sin la parte más interesante, que es ser útil.}
+
+\textbf{En estos meses, ¿en qué momentos fui el que recibió y en cuáles el que dio? ¿Está muy desbalanceado?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{«El florecimiento de las entidades informacionales y de toda la infoesfera debe promoverse preservando, cultivando y enriqueciendo sus propiedades.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Luciano Floridi · La ética de la información (2013; trad.)}
+
+Un curso también es un entorno que se puede empobrecer o enriquecer. \textbf{Se empobrece cuando pedir ayuda se vuelve motivo de burla}, porque entonces todos aprenden a callar y cada quien carga solo lo suyo. \textbf{Se enriquece cuando pedir es normal:} el que pide encuentra, el que ayuda se siente útil, y el que mira aprende que se puede. \emph{Y esto no lo decide el profesor: lo deciden las quince veces al día en que alguien pide algo y otro responde con burla o con un «claro».}
+
+\textbf{¿Qué hago yo cuando alguien de mi curso pide ayuda delante de todos: me burlo, me quedo callado o respondo?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres son citas textuales y llevan su referencia debajo. Puedes remitir a la obra en clase.
+\end{infoband}
+
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
+
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Construcción de la red & \milcopcion{Mi red tiene adultos con nombre y contacto, y sé exactamente qué decir.} & \milcopcion{Tengo la red pero solo con compañeros de mi edad.} & \milcopcion{Todavía creo que pedir ayuda es quedar debiendo o quedar mal.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para cerrar el año en Territorio Interior.} Tres cosas. \textbf{Primero, avísale a una persona de tu lista} que está en tu lista ---la frase es tan sencilla como «si algún día estoy mal, ¿puedo hablar contigo?»--- y anota qué te respondió. \textbf{Segundo, cumple una vez el otro lado del convite:} ayuda a una de las tres personas que anotaste, en lo concreto que escribiste, sin que te lo pidan. \textbf{Tercero, pregunta en tu casa por los convites:} averigua con alguien mayor si alguna vez participó en uno ---o en una minga, o en una «mano prestada»---, para qué fue, quiénes llegaron y qué se comió ese día. \emph{Casi siempre se acuerdan de la comida antes que del trabajo, y eso también dice algo sobre para qué sirve ayudarse.} \textbf{Trae:} lo que te respondió tu persona y la historia que te contaron. \emph{Con esto cierras sexto: tienes palabras para lo que sientes, un fogón para no reaccionar de una, aire para sostenerte, un revés que mostrar, tu atención de vuelta y una red con nombres. Nada de eso te evita los días malos ---no existe eso---; lo que hace es que no te agarren solo.}
+\end{infoband}
+
+\end{document}

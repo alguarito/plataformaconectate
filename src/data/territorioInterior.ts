@@ -98,7 +98,15 @@ const grado6: Nivel = {
   bgClass: 'bg-bento-teal',
   momentos: [
     { numero: 1, slug: 'momento-1', nombre: 'El cuerpo avisa primero', foco: 'Las señales físicas de la emoción llegan antes que la palabra.', ancla:a('Sin ancla local: la partería patrimonial documentada es afro del Pacífico', 'por-documentar', 'En Cartago el parto institucional es del 99,3 % (ASIS 2025); trasplantar la partería del Pacífico sería atribuirle al Norte del Valle un saber ajeno.'), estado: 'proximamente' },
-    { numero: 2, slug: 'momento-2', nombre: 'Más de veinte palabras', foco: 'Vocabulario emocional real, más allá de «bien» y «mal».', ancla:a('El bordado cartagüeño: nombrar cada puntada', 'verificada'), estado: 'proximamente' },
+    {
+      numero: 2,
+      slug: 'momento-2',
+      nombre: 'Más de veinte palabras',
+      foco: 'Vocabulario emocional real, más allá de «bien» y «mal»: familias, intensidad y la diferencia entre lo que siento, lo que pienso y lo que hice.',
+      ancla:a('El calado cartagüeño: cada puntada tiene nombre propio ---rococó, pasado, punto de sombra, pate-cabra, punto espíritu--- y ese nombre es lo que permite pedirla, enseñarla y repararla (Pérez-Bustos, 2019)', 'verificada'),
+      estado: 'activo',
+      claveGuia: '6-2',
+    },
     { numero: 3, slug: 'momento-3', nombre: 'Sentir no es actuar', foco: 'La emoción informa, no obliga: entre sentir y hacer hay un espacio.', ancla:a('El nak chak y el nak kuk: la cocina y el fogón del pueblo misak', 'verificada'), estado: 'proximamente' },
     { numero: 4, slug: 'momento-4', nombre: 'Respirar es una técnica', foco: 'Regulación fisiológica y anclaje sensorial, practicados hasta que salgan solos.', ancla:a('Los cantos de boga de los ríos del Pacífico: cantar para aligerar el paso', 'verificada'), estado: 'proximamente' },
     { numero: 5, slug: 'momento-5', nombre: 'El miedo que protege', foco: 'Distinguir el miedo que cuida del miedo que se queda cuando ya pasó.', ancla:a('El río La Vieja y sus crecientes', 'por-documentar', 'El río y las inundaciones están verificados, pero no hay corpus documentado de señales comunitarias para leer la creciente: se cierra con entrevista, no con búsqueda.'), estado: 'proximamente' },

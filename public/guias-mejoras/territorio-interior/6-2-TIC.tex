@@ -1,0 +1,521 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra UNICA de las guias MILC v3.
+%
+% La usan las tres familias de guias, cada una con su driver:
+%   · Grados 6-11  -> scripts/build-guias-g11.py
+%   · Bebras       -> scripts/build-guias-bebras.py
+%   · Semillero    -> scripts/build-guias-semillero.py
+%
+% Antes habia tres copias casi identicas (~400 lineas iguales, 6 distintas):
+% cada mejora habia que aplicarla tres veces, y en la practica no se hacia
+% (el motor de recursos vivia solo en dos de ellas). Lo que varia entre
+% familias esta parametrizado en 6 placeholders que cada driver llena
+% (se nombran aqui SIN su sintaxis real: el builder reemplaza por texto plano,
+% tambien dentro de los comentarios, y un valor multilinea rompe el preambulo):
+%
+%   HEADER_IZQ        encabezado izquierdo de pagina
+%   HEADER_DER        encabezado derecho de pagina
+%   PORTADA_ETIQUETA  rotulo sobre el numero grande (GRADO/MOMENTO/MODULO)
+%   PORTADA_SERIE     linea de serie de la portada
+%   PORTADA_ID        identificador de la guia en la portada
+%   PORTADA_CIRCULO   el circulito de grado (°), o vacio si no aplica
+%
+% El resto de claves las documenta content/guias/_SCHEMA.md. El script valida
+% que no queden placeholders sin reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1.75cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+% Librerías TikZ para los diagramas de las guías (bloque `recursos:`):
+%  · babel  → babel en español vuelve activos caracteres como «>», y TikZ los usa
+%             en sus opciones (>=stealth, ->). Sin esta librería, cualquier
+%             diagrama con flechas revienta con «\language@active@arg> has an
+%             extra }». Debe ir ANTES de que se dibuje nada.
+%  · positioning        → sintaxis «below left=2pt and 3pt».
+%  · decorations.pathreplacing → llaves ({brace}) para señalar rangos.
+\usetikzlibrary{babel,positioning,decorations.pathreplacing}
+\usepackage{graphicx}
+% Circuitos: el trabajo de electrónica se hace hoy con micro:bit y sus sensores
+% integrados (MakeCode, sin cableado), así que no se necesitan esquemáticos.
+% Si algún día entran montajes con protoboard, basta descomentar esta línea:
+% los diagramas .tex/.tikz declarados en `recursos:` ya se incrustan solos.
+% \usepackage{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+% Helvetica Neue no trae la flecha U+2192, asi que cada «→» escrito literalmente
+% en el YAML se compilaba a NADA, en silencio (462 flechas en 61 guias: rutas del
+% tipo «paleta → tipografia → lockup» salian rotas). Mapeamos el caracter a su
+% version matematica, que si tiene glifo. Asi el autor puede seguir escribiendo
+% «→» comodamente en el YAML.
+\usepackage{newunicodechar}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\hyphenpenalty=200
+\exhyphenpenalty=200
+\pretolerance=400
+\tolerance=2000
+\setlength{\emergencystretch}{1em}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0D9488}
+\definecolor{milcGradeDark}{HTML}{115E59}
+\definecolor{milcGradeSoft}{HTML}{CCFBF1}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Territorio interior · Educación socioemocional}
+\rhead{\small Grado 6° · Momento 2 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced, breakable,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced, breakable,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced, breakable,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+% La flecha va en modo matematico a proposito: Helvetica Neue NO tiene el glifo
+% U+2192, asi que \textrightarrow se compilaba a NADA («Missing character: There
+% is no → in font Helvetica Neue») y el puente salia sin flecha. En modo
+% matematico la flecha viene de la fuente matematica y si se dibuja.
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{$\rightarrow$}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+% Tarjeta de paso numerada, para consumir el bloque que emite el builder.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,breakable,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay first={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+% ── Listas con sangría francesa (serie socioemocional) ────────────────
+% El template base compone las verificaciones como «\checkbox texto\\», de
+% modo que el texto que salta de línea queda debajo del cuadrito y el bloque
+% se ve apelmazado. Estos entornos alinean la continuación y airean los ítems.
+\newlist{checklista}{itemize}{1}
+\setlist[checklista]{
+  label=\textcolor{milcGradeDark}{\fbox{\phantom{x}}},
+  leftmargin=9mm, labelsep=3.2mm, itemsep=2.4mm,
+  topsep=2.5mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+\newlist{pasoslista}{enumerate}{1}
+\setlist[pasoslista]{
+  label=\textcolor{milcGradeDark}{\sffamily\bfseries\arabic*.},
+  leftmargin=8mm, labelsep=3mm, itemsep=2.8mm,
+  topsep=1mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+% ── Recursos visuales de la guía ──────────────────────────────────────
+% Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
+% \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
+% \guiaDiagrama → fuente TikZ/circuitikz (.tex) incrustada como vector:
+%                 es la vía para circuitos y esquemáticos editables.
+% #1 = ruta relativa al .tex · #2 = pie (puede ir vacío)
+\newcommand{\guiaFigura}[2]{%
+\begin{center}
+\includegraphics[width=0.88\linewidth,height=0.38\textheight,keepaspectratio]{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\newcommand{\guiaDiagrama}[2]{%
+\begin{center}
+\input{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\begin{document}
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[white] (current page.south west) rectangle (current page.north east);
+  \path[fill=milcGradePrimary,rounded corners=16mm]
+    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
+    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{14}{16}\selectfont MOMENTO};
+  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
+    {\sffamily\bfseries\fontsize{9}{11}\selectfont TERRITORIO INTERIOR · SOCIOEMOCIONAL};
+
+  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
+    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
+    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
+    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
+    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
+    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
+  \end{scope}
+
+  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
+    {\sffamily\bfseries\fontsize{124}{124}\selectfont 2};
+  % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
+  % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  
+
+  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+    {
+     {\sffamily\bfseries\fontsize{19}{22}\selectfont Más de veinte palabras\\[4pt]nombrar lo que siento\\[4pt]con precisión}\\[4mm]
+     {\sffamily\bfseries\fontsize{23}{26}\selectfont Grado 6° · Momento 2}\\[2mm]
+     {\sffamily\fontsize{13}{16}\selectfont Territorio interior · Socioemocional}\\[5mm]
+     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
+     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+    };
+
+  \path[fill=milcGradeSoft,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
+    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
+    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
+  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
+    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Vocabulario emocional · Triángulo Dussel-Estoicismo-Floridi\\
+    \textcolor{milcGradeDark}{\bfseries Producto:} Tu muestrario de emociones: veinte palabras propias, cada una con lo que significa para ti, dónde la sientes en el cuerpo, una situación real en que apareció y qué te ayuda cuando llega.};
+\end{tikzpicture}
+\mbox{}
+\newpage
+
+\section*{Apertura: Más de veinte palabras: nombrar lo que siento con la precisión con que se nombra una puntada}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+En los talleres de Cartago, una caladora nunca dice «le hice una puntada bonita». Dice cuál: \textbf{rococó}, \textbf{pasado}, \textbf{punto de sombra}, \textbf{pate-cabra}, \textbf{punto espíritu}. Cada una tiene nombre propio, y ese nombre no es un adorno: es lo que permite \textbf{pedirla} («hágame el borde en pasado»), \textbf{enseñarla} a quien está aprendiendo y \textbf{repararla} cuando algo salió mal. La antropóloga Tania Pérez-Bustos, que fue a Cartago a aprender la técnica, cuenta que la señora Elsa ---ochenta años--- les advirtió a un grupo de ingenieros que en tres días no iban a entender «lo básico», porque lo básico del calado es un asunto muy complejo (Pérez-Bustos, 2019). Y no se equivocó: pasaron cuatro horas en el primer paso. \textbf{Fíjate en lo que hace ese vocabulario.} Con una sola palabra ---«bonito»--- no se puede enseñar nada, ni pedir nada, ni arreglar nada. Con el nombre exacto, sí. \textbf{Lo mismo pasa por dentro:} quien solo tiene dos palabras para lo que siente ---«bien» y «mal»--- no puede pedir ayuda con precisión, ni explicarse, ni saber qué le está pasando.
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+A eso la psicología lo llama \textbf{granularidad emocional}: la capacidad de nombrar lo que sientes con detalle y precisión, en vez de meterlo todo en dos cajones. No es un asunto de vocabulario bonito. Los investigadores Todd Kashdan, Lisa Feldman Barrett y Patrick McKnight reunieron la evidencia en 2015 y encontraron algo que vale la pena saber a los once años: las personas que distinguen finamente entre sus emociones \textbf{se desbordan menos} cuando algo las angustia, y recurren mucho menos a salidas que hacen daño ---beber, responder con agresión, hacerse daño a sí mismas---. \textbf{La razón es sencilla:} «estoy mal» no le dice a tu cabeza qué hacer. «Estoy nervioso porque no entendí la tarea» sí: pedir que la expliquen otra vez. «Estoy dolido porque me dejaron por fuera del grupo» también: hablar con quien te dejó por fuera. La palabra exacta no es un lujo: \textbf{es la que trae la salida pegada}.
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{La caladora tiene un nombre distinto para cada puntada, y por eso puede pedir, enseñar y reparar. \textbf{¿Cuántas palabras tienes tú, ahora mismo, para lo que te pasa por dentro}\ldots y qué podrías pedir si tuvieras veinte?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar podrás: (1) \textbf{identificar} con cuántas palabras estás resolviendo hoy todo lo que sientes; (2) \textbf{explicar} la diferencia entre emociones de una misma familia y ajustar la intensidad con la palabra correcta; (3) \textbf{distinguir} lo que sientes de lo que piensas y de lo que hiciste; (4) \textbf{crear} tu muestrario de veinte palabras, con tu propia definición, el lugar del cuerpo donde aparece y lo que a ti te ayuda.
+\end{softbox}
+
+
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Comprende los fenómenos que afectan a su territorio, regula sus emociones ante ellos y acompaña a otros con empatía (transversal 6°--11°, articulado con la política «Escuela, territorio de vida» del MEN, Resolución 006519 de 2025, y la Ley 1620 de 2013)\\
+Referentes & Primera ayuda psicológica (OMS, 2011/2012) · Directrices IASC (2007) · USGS y Servicio Geológico Colombiano · Pueblo nasa y la minga (CRIC) · Dussel · Estoicismo · Floridi\\
+Producto final & Tu muestrario de emociones: veinte palabras propias, cada una con lo que significa para ti, dónde la sientes en el cuerpo, una situación real en que apareció y qué te ayuda cuando llega.\\
+\end{tabularx}
+\normalsize
+
+\puente{Ya viste que en Cartago cada puntada tiene su nombre y que ese nombre sirve para pedir, enseñar y reparar. Mira ahora la ruta: vas a contar con cuántas palabras andas, a aprender el repertorio y a armar el tuyo.}
+
+\begin{titlebox}{milcGradeDark}
+Ruta MILC: así vamos a aprender
+\end{titlebox}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Distingo y nombro.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Antes de aprender palabras nuevas conviene ver cuántas usas. Nadie va a leer esto: es una cuenta que te haces a ti.}
+
+\begin{titlebox}{milcVerde}
+Fase 1 · Escucha
+\end{titlebox}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- ¿Con cuántas palabras ando?} \textbf{Nadie va a leer esta página.} Piensa en los últimos siete días y escribe, en tu cuaderno, \textbf{cinco momentos} en que sentiste algo fuerte: en la casa, en el descanso, en clase, en la ruta, con el celular. Al lado de cada uno, escribe \textbf{la palabra que usaste en ese momento} ---la que dijiste o la que pensaste---, aunque haya sido «bien», «mal», «normal», «nada» o una grosería. No la corrijas: interesa la de verdad, no la que quedaría bonita. Cuando termines, cuenta cuántas palabras \textbf{distintas} te salieron en total. Casi todo el mundo descubre que anda con tres o cuatro para todo. \emph{Eso no es un defecto tuyo: es un repertorio que nadie te enseñó todavía.}
+\end{softbox}
+
+\begin{checklista}
+\item Escribiste cinco momentos reales de los últimos siete días, con la palabra que usaste de verdad en cada uno.
+\item Contaste cuántas palabras \textbf{distintas} usaste en total, sin corregirlas ni mejorarlas.
+\item Marcaste cuál de esos cinco momentos te costó más nombrar, aunque no sepas todavía cómo se llama.
+\end{checklista}
+
+\begin{infoband}{milcVerde}
+
+
+\textbf{En tu cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1. Con cuántas palabras ando». \textbf{Formato:} lista de cinco momentos, cada uno con la palabra que usaste, y al final el número de palabras distintas. \textbf{Extensión:} seis renglones. \textbf{Sabes que terminaste cuando} tienes el número escrito y sabes cuál momento te costó más nombrar. Esta página es tuya: \textbf{nadie más tiene que leerla si tú no quieres}.
+\end{infoband}
+
+\puente{Ya sabes con cuántas andas. Ahora el repertorio: familias, intensidades, y la diferencia entre lo que sientes, lo que piensas y lo que haces.}
+
+\begin{titlebox}{milcTurquesa}
+Fase 2 · Sistematización: aprender el repertorio
+\end{titlebox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro claves para nombrar bien lo que sientes}
+Un repertorio no se improvisa: se aprende, como las puntadas. Aquí van las cuatro claves para que las palabras nuevas no se te queden en la lista, sino que te sirvan cuando estés en la mitad de algo.
+\end{softbox}
+
+\milcpaso{1}{milcTurquesa}{\textbf{Las emociones vienen en familias, y dentro de cada familia hay diferencias que importan.} La familia de la \textbf{rabia}: molesto, fastidiado, indignado, furioso, resentido. La del \textbf{miedo}: intranquilo, nervioso, asustado, aterrado, inseguro. La de la \textbf{tristeza}: desanimado, decepcionado, solo, dolido, nostálgico. La de la \textbf{alegría}: contento, entusiasmado, aliviado, orgulloso, agradecido. Y la de la \textbf{vergüenza}: incómodo, apenado, avergonzado, en ridículo, culpable. Parecen sinónimos y no lo son: \emph{estar molesto} se pasa solo, \emph{estar resentido} lleva semanas guardado. Confundirlas es como pedir «una puntada» y esperar que salga la correcta.}
+\milcpaso{2}{milcTurquesa}{\textbf{La intensidad cambia la palabra.} No es lo mismo estar \emph{intranquilo} que estar \emph{aterrado}, ni \emph{fastidiado} que \emph{furioso}. Cuando usas una palabra más fuerte de lo que sientes, todo te parece una emergencia y te agotas; cuando usas una más floja, nadie entiende que necesitas ayuda ---y tú tampoco---. \textbf{Truco:} ponle número del 1 al 10 y busca la palabra que le corresponde. Si un 3 y un 9 los llamas igual, tu repertorio todavía está corto.}
+\milcpaso{3}{milcTurquesa}{\textbf{Lo que sientes no es lo que piensas ni lo que haces.} «Siento que me tienen bronca» \emph{no es} una emoción: es un pensamiento. La emoción debajo suele ser \emph{miedo} o \emph{tristeza}. Y «le grité» tampoco es una emoción: es lo que hiciste con ella. Separarlos en tres casillas ---\textbf{siento} · \textbf{pienso} · \textbf{hice}--- cambia la conversación entera, porque el pensamiento se puede revisar («¿de verdad me tienen bronca, o no me invitaron una vez?») y la acción se puede elegir distinto la próxima vez. La emoción, en cambio, no se discute: llegó, y llegó por algo.}
+\milcpaso{4}{milcTurquesa}{\textbf{Casi siempre son dos al tiempo, y está bien.} Puedes estar \emph{aliviado y culpable} el mismo día; \emph{orgulloso y asustado} antes de exponer; \emph{feliz por alguien y con envidia} a la vez. Eso no te hace falso ni malo: te hace normal. \emph{Lo que confunde no es sentir dos cosas: es tener una sola palabra para las dos.} Cuando una situación no te cabe en una palabra, escribe las dos y únelas con una «y». El muestrario también admite puntadas combinadas.}
+
+\begin{drawbox}{milcTurquesa}{Cómo pasar de «estoy mal» a algo que sirve}
+\begin{pasoslista}
+\item \textbf{Dónde lo siento.} Antes de la palabra, el cuerpo: pecho apretado, estómago revuelto, calor en la cara, piernas flojas, garganta cerrada. El cuerpo avisa primero, y casi siempre acierta.
+\item \textbf{De qué familia es.} Rabia, miedo, tristeza, alegría o vergüenza. Con acertar la familia ya avanzaste la mitad.
+\item \textbf{Qué tan fuerte, del 1 al 10.} Y cuál palabra de esa familia le corresponde a ese número.
+\item \textbf{Qué pide.} Cada emoción pide algo distinto: el miedo pide seguridad, la rabia pide que se respete un límite, la tristeza pide compañía, la vergüenza pide que no la miren un rato. \textbf{Ahí está la salida}, y por eso la palabra exacta importa.
+\end{pasoslista}
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{«Estoy bien» automático:} responder sin mirar por dentro. No es mentira: es que no hubo tiempo de buscar la palabra. \textbf{Confundir emoción con insulto:} «soy un idiota» no nombra nada, solo golpea. \textbf{Creer que hay emociones malas:} la rabia no es mala; lo que puede hacer daño es lo que se hace con ella. \textbf{Usar siempre la palabra más fuerte:} si todo es «horrible», te quedas sin palabras para lo que sí lo es. \textbf{Pensar que nombrar es quejarse:} nombrar es lo contrario, es empezar a manejarlo.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+
+
+\textbf{En tu cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2. Familias, intensidad y las tres casillas». \textbf{Formato:} las cinco familias con al menos cuatro palabras cada una, más un ejemplo tuyo separado en tres casillas (siento · pienso · hice). \textbf{Extensión:} una página. \textbf{Sabes que terminaste cuando} puedes explicarle a alguien la diferencia entre \emph{molesto} y \emph{resentido} con un ejemplo tuyo.
+\end{infoband}
+
+\puente{Ya tienes el repertorio. Es hora de hacerlo tuyo: veinte palabras con tu definición, tu cuerpo y tu ejemplo. Un muestrario, como el de la caladora.}
+
+\begin{titlebox}{milcMagenta}
+Fase 3 · Praxis: armar tu muestrario
+\end{titlebox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Cómo se arma un muestrario, puntada por puntada}
+Ahora armas el tuyo. Un muestrario de bordado es esa tela donde la aprendiz hace cada puntada una vez, con su nombre al lado, para tenerlas todas a la vista y poder volver. Esto es igual, pero de emociones: \textbf{veinte palabras}, cada una practicada una vez. Tenerlas escritas es lo que hace que aparezcan cuando las necesites.
+\end{softbox}
+
+\milcpaso{1}{milcMagenta}{\textbf{Elegir (veinte, y de todas las familias).} Toma las cinco familias y escoge al menos \textbf{cuatro palabras de cada una}. Que no sean todas de alegría ni todas de rabia: el muestrario sirve cuando está completo. Si una palabra no la entiendes, no la copies todavía; cámbiala por otra que sí.}
+\milcpaso{2}{milcMagenta}{\textbf{Definir con tus palabras.} Al lado de cada una, escribe qué significa \textbf{para ti}, en una línea, sin copiar del diccionario ni del tablero. \emph{«Fastidiado: cuando alguien repite algo que ya le pedí que no hiciera».} Esa definición tuya es la que vas a reconocer después; una prestada, no.}
+\milcpaso{3}{milcMagenta}{\textbf{Ubicar en el cuerpo.} Escribe \textbf{dónde} la sientes: pecho, estómago, garganta, cara, manos, piernas. Si no te acuerdas, déjala en blanco y vuelve cuando te pase ---el muestrario se completa con el tiempo, como el de la aprendiz---.}
+\milcpaso{4}{milcMagenta}{\textbf{Anotar qué ayuda.} La columna más importante: \textbf{qué te sirve a ti} cuando esa aparece. Respirar contando, salir a caminar, hablar con alguien, escribir, tomar agua, esperar sin decidir nada. Sé concreto: «calmarme» no es una acción; «salir al patio dos minutos» sí.}
+
+\begin{drawbox}{milcMagenta}{Antes de cerrar tu muestrario}
+\begin{checklista}
+\item Tienes \textbf{veinte palabras} y al menos cuatro de cada una de las cinco familias.
+\item Cada definición está escrita con tus palabras y podrías reconocerla si te pasa mañana.
+\item Hay al menos una \textbf{emoción mezclada} (dos unidas con «y»), porque casi siempre vienen de a dos.
+\item En la columna «qué me ayuda» pusiste \textbf{acciones concretas}, no «calmarme» ni «pensar en otra cosa».
+\item Marcaste la palabra que más te cuesta decir en voz alta. No hay que compartirla con nadie: basta con que tú sepas cuál es.
+\item Le enseñaste el muestrario a alguien de confianza, o decidiste a conciencia que este es solo tuyo. Las dos opciones valen.
+\end{checklista}
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Plantilla del muestrario (una fila por palabra).} \emph{Palabra} · \emph{Qué significa para mí} · \emph{Dónde la siento} · \emph{Una vez que me pasó} · \emph{Qué me ayuda}. \\[1mm]
+\textbf{Ejemplo de fila.} \emph{Dolido} · «cuando alguien que me importa me deja por fuera» · «pecho apretado y ganas de irme» · «cuando armaron el grupo del trabajo sin mí» · «no responder de una; contárselo a mi hermana y volver al otro día».
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+
+
+\textbf{En tu cuaderno (Actividad 3 · CREA).} Título: «Actividad 3. Mi muestrario de emociones». \textbf{Formato:} tabla de cinco columnas y veinte filas. \textbf{Extensión:} dos páginas, y déjala empezada aunque no la termines hoy. \textbf{Sabes que terminaste cuando} podrías usar tu muestrario en la mitad de una pelea o de un susto ---es decir, cuando las palabras son tuyas y no prestadas---.
+\end{infoband}
+
+\puente{El producto es ese muestrario. \emph{Una palabra copiada del tablero no sirve: la que sirve es la que puedes reconocer cuando te pasa.}}
+
+\begin{titlebox}{milcMostaza}
+Producto de la sesión
+\end{titlebox}
+\textbf{Muestrario de emociones: veinte palabras con definición propia, cuerpo, ejemplo y qué ayuda}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) Hay veinte palabras y las cinco familias están representadas con al menos cuatro cada una. (2) Cada definición está escrita con palabras propias y se entiende sin explicación adicional. (3) Al menos quince filas dicen dónde se siente esa emoción en el cuerpo. (4) La columna «qué me ayuda» tiene acciones concretas y verificables, no intenciones generales. (5) Aparece al menos una emoción mezclada y está marcada la palabra que más cuesta decir en voz alta.
+\end{softbox}
+
+\puente{Antes de cerrar, mira tu lista y busca el hueco: casi siempre falta una familia entera, y esa suele ser la que más cuesta nombrar en voz alta.}
+
+\begin{titlebox}{milcVino}
+Fase 4 · Evaluación liberadora — cinco dimensiones
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con tres voces: nombrar es la manera en que el otro se hace oír, lo que perturba no es lo que pasa sino cómo lo nombramos, y una palabra sola no dice nada hasta que se puede comparar con otras.}
+
+\begin{titlebox}{milcGradeDark}
+Triángulo de pensamiento · cierre filosófico
+\end{titlebox}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{«El otro se revela realmente como otro\ldots como el pobre, el oprimido; el que, a la vera del camino, fuera del sistema, muestra su rostro sufriente y sin embargo desafiante: «¡Tengo hambre!, ¡tengo derecho a comer!»»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Enrique Dussel · Filosofía de la liberación (1977)}
+
+Mira lo que hace el otro en esa frase de Dussel: \textbf{nombra}. No se queja en general, no dice «estoy mal»: dice qué le falta y qué necesita, y por eso se vuelve imposible de ignorar. Nombrar con precisión es la manera en que lo que te pasa por dentro se vuelve audible para alguien más. Quien solo puede decir «nada» se queda solo con eso, aunque tenga a media familia al lado.
+
+\textbf{¿Qué es lo que de verdad necesito cuando digo «nada», y a quién podría decírselo con la palabra exacta?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Epicteto · Enquiridión, 5 (c. 125 d.C.) · cuidado interior}
+\textit{«No son las cosas las que perturban a los hombres, sino las opiniones sobre las cosas.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Epicteto · Enquiridión, 5 (c. 125 d.C.)}
+
+Epicteto no dice que lo que te pasa no importe. Dice que entre \textbf{lo que ocurre} y \textbf{lo que sientes} hay algo en medio: la manera en que lo nombras. Que no te inviten a un grupo es un hecho; llamarlo «me odian» o llamarlo «me dolió que no me invitaran» produce dos días completamente distintos. \emph{Por eso la casilla del «pienso» se puede revisar y la del «siento» no}: la emoción llegó por algo, pero la interpretación se puede mirar de nuevo.
+
+\textbf{De lo que me tiene mal esta semana, ¿qué parte es lo que pasó y qué parte es lo que me dije que significaba?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{«Los pequeños patrones solo pueden ser significativos si se agregan correctamente, se comparan y se procesan a tiempo.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Luciano Floridi · Big data and their epistemological challenge (2012)}
+
+Floridi habla de datos, pero describe exactamente tu muestrario. Una palabra suelta no dice mucho; \textbf{veinte palabras que puedes comparar entre sí} sí dicen: te dejan ver que esto se parece a lo del mes pasado, que aquello no era rabia sino susto, que hay una que se repite. Con dos palabras ---«bien» y «mal»--- no hay nada que comparar, y por eso todo se siente igual de confuso. \emph{Y «a tiempo» importa: la palabra sirve cuando llega mientras te está pasando, no tres días después.}
+
+\textbf{Si miro mis últimas cinco semanas, ¿cuál palabra se me repite más, y qué me está queriendo decir?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres son citas textuales y llevan su referencia debajo. Puedes remitir a la obra en clase.
+\end{infoband}
+
+\begin{titlebox}{milcVino}
+Compromiso final
+\end{titlebox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
+Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
+Precisión al nombrar & Distingo emociones de la misma familia y ajusto la intensidad con la palabra exacta. & Uso varias palabras nuevas, pero se me mezclan la emoción y lo que hice. & Todavía resuelvo casi todo con «bien» y «mal».\\
+Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
+Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
+Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
+\end{tabularx}
+\normalsize
+
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Dos cosas. \textbf{Primero, usa el muestrario tres veces esta semana:} cuando sientas algo fuerte, párate un momento, mira tu lista y busca la palabra exacta ---no la primera, la exacta---. Anota al lado si acertaste a la primera o tuviste que buscar. \textbf{Segundo, pregúntale a alguien de tu casa o de tu barrio} qué palabra usaba su mamá o su abuela para lo que hoy llamamos «estar estresado» o «estar deprimido». Escríbela tal como te la digan, aunque sea rara o suene a chiste: \emph{«estar de mal genio», «tener la sangre pesada», «andar con la cabeza caliente», «estar aporreado del alma»}. Esas palabras también son un repertorio, y llevan más tiempo aquí que el nuestro. \textbf{Trae:} tus tres usos anotados y la palabra que te regalaron.
+\end{infoband}
+
+\end{document}

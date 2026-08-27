@@ -1,0 +1,527 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra UNICA de las guias MILC v3.
+%
+% La usan las tres familias de guias, cada una con su driver:
+%   · Grados 6-11  -> scripts/build-guias-g11.py
+%   · Bebras       -> scripts/build-guias-bebras.py
+%   · Semillero    -> scripts/build-guias-semillero.py
+%
+% Antes habia tres copias casi identicas (~400 lineas iguales, 6 distintas):
+% cada mejora habia que aplicarla tres veces, y en la practica no se hacia
+% (el motor de recursos vivia solo en dos de ellas). Lo que varia entre
+% familias esta parametrizado en 6 placeholders que cada driver llena
+% (se nombran aqui SIN su sintaxis real: el builder reemplaza por texto plano,
+% tambien dentro de los comentarios, y un valor multilinea rompe el preambulo):
+%
+%   HEADER_IZQ        encabezado izquierdo de pagina
+%   HEADER_DER        encabezado derecho de pagina
+%   PORTADA_ETIQUETA  rotulo sobre el numero grande (GRADO/MOMENTO/MODULO)
+%   PORTADA_SERIE     linea de serie de la portada
+%   PORTADA_ID        identificador de la guia en la portada
+%   PORTADA_CIRCULO   el circulito de grado (°), o vacio si no aplica
+%
+% El resto de claves las documenta content/guias/_SCHEMA.md. El script valida
+% que no queden placeholders sin reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+% Librerías TikZ para los diagramas de las guías (bloque `recursos:`):
+%  · babel  → babel en español vuelve activos caracteres como «>», y TikZ los usa
+%             en sus opciones (>=stealth, ->). Sin esta librería, cualquier
+%             diagrama con flechas revienta con «\language@active@arg> has an
+%             extra }». Debe ir ANTES de que se dibuje nada.
+%  · positioning        → sintaxis «below left=2pt and 3pt».
+%  · decorations.pathreplacing → llaves ({brace}) para señalar rangos.
+\usetikzlibrary{babel,positioning,decorations.pathreplacing}
+\usepackage{graphicx}
+% Circuitos: el trabajo de electrónica se hace hoy con micro:bit y sus sensores
+% integrados (MakeCode, sin cableado), así que no se necesitan esquemáticos.
+% Si algún día entran montajes con protoboard, basta descomentar esta línea:
+% los diagramas .tex/.tikz declarados en `recursos:` ya se incrustan solos.
+% \usepackage{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
+\usepackage{enumitem}
+\usepackage{microtype}
+
+% Helvetica Neue no trae la flecha U+2192, asi que cada «→» escrito literalmente
+% en el YAML se compilaba a NADA, en silencio (462 flechas en 61 guias: rutas del
+% tipo «paleta → tipografia → lockup» salian rotas). Mapeamos el caracter a su
+% version matematica, que si tiene glifo. Asi el autor puede seguir escribiendo
+% «→» comodamente en el YAML.
+\usepackage{newunicodechar}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{84CC16}
+\definecolor{milcGradeDark}{HTML}{4D7C0F}
+\definecolor{milcGradeSoft}{HTML}{ECFCCB}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Semillero de Investigación · Pensamiento computacional}
+\rhead{\small Módulo 2 · Sistematización · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+% La flecha va en modo matematico a proposito: Helvetica Neue NO tiene el glifo
+% U+2192, asi que \textrightarrow se compilaba a NADA («Missing character: There
+% is no → in font Helvetica Neue») y el puente salia sin flecha. En modo
+% matematico la flecha viene de la fuente matematica y si se dibuja.
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{$\rightarrow$}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
+% ── Recursos visuales de la guía ──────────────────────────────────────
+% Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
+% \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
+% \guiaDiagrama → fuente TikZ/circuitikz (.tex) incrustada como vector:
+%                 es la vía para circuitos y esquemáticos editables.
+% #1 = ruta relativa al .tex · #2 = pie (puede ir vacío)
+\newcommand{\guiaFigura}[2]{%
+\begin{center}
+\includegraphics[width=0.88\linewidth,height=0.38\textheight,keepaspectratio]{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\newcommand{\guiaDiagrama}[2]{%
+\begin{center}
+\input{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\begin{document}
+\thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
+\begin{tikzpicture}[remember picture,overlay]
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont MÓDULO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont SEMILLERO DE INVESTIGACIÓN · CONECTATE};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
+
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 2};
+  % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
+  % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  
+
+  \node[anchor=west,text=milcGradeText,text width=11.4cm,align=left] at ([xshift=1.5cm,yshift=0.5cm]gradonum.east)
+    {
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Módulo 2 · Fase MILC: Sistematización · 3 h de clase}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont\setlength{\baselineskip}{27pt}Patrones y\\[4pt]algoritmos ---\\[4pt]del punto de lavado\\[4pt]del café\\[4pt]al algoritmo que\\[4pt]decide, no solo obedece}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Pensamiento computacional y algoritmia}
+    };
+\end{tikzpicture}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Tu \textbf{algoritmo escrito dos veces}: en \textbf{pseudocódigo} y en \textbf{diagrama de flujo}, resolviendo el problema que descompusiste en el módulo 1. Tiene que incluir al menos \textbf{una decisión} (\emph{si\ldots entonces\ldots si no}) y, si el problema lo pide, \textbf{una repetición} (\emph{mientras\ldots}). Más una \textbf{tabla comparativa de dos estrategias} distintas para la misma rama, con la cuenta de pasos de cada una y \textbf{la razón por la que eliges una}. Sin esa razón, no elegiste: adivinaste.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi}}
+
+\newpage
+
+\section*{Apertura: Patrones y algoritmos --- del punto de lavado del café al algoritmo que decide, no solo obedece}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+\textbf{En las fincas de Alcalá, Ulloa y Ansermanuevo ---aquí al lado, dentro del Paisaje Cultural Cafetero que la UNESCO declaró Patrimonio de la Humanidad en 2011---, el café no se vuelve café por reloj.} El beneficio tiene un orden que no se puede alterar: \textbf{despulpar} el mismo día de la recolección, \textbf{fermentar}, \textbf{lavar}, \textbf{secar}. Cambiar el orden arruina el lote, y mezclar café de días distintos lo sobrefermenta (Cenicafé, \emph{Cartilla cafetera}, cap. 20). Hasta ahí, una secuencia. \textbf{Pero mira cómo se decide el paso siguiente.} La fermentación dura entre \emph{12 y 18 horas según la temperatura} ---en tierra fría, más---; y para saber si ya, el caficultor \textbf{no mira el reloj: hace una prueba}. Toma una muestra del tanque, la lava en una vasija y la restriega con las manos: \emph{si se siente áspera y suena a cascajo}, hay que empezar a lavar. \textbf{Esa frase es una condición}, no un tiempo. Es la diferencia entre una receta ---que obedece--- y un algoritmo ---que \emph{decide}---. El caficultor lleva siglos escribiendo algoritmos con las manos; hoy vas a escribir el tuyo en papel.
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+Un \textbf{algoritmo} es una secuencia ordenada, finita y sin ambigüedad de pasos que lleva del punto de partida al resultado. Se arma con \textbf{tres estructuras}, y no hacen falta más: \textbf{secuencia} (un paso detrás de otro: despulpar → fermentar → lavar → secar); \textbf{decisión} (\emph{si suena a cascajo, entonces lavar; si no, esperar}); y \textbf{repetición} (\emph{mientras no suene a cascajo, vuelve a probar en una hora}). Con esas tres se escribe cualquier cosa que un computador pueda hacer. Se escribe de dos maneras que dicen lo mismo: en \textbf{pseudocódigo} ---frases cortas, un paso por línea, sin lenguaje de programación--- y en \textbf{diagrama de flujo} ---óvalo para empezar y terminar, rectángulo para una acción, \textbf{rombo para una decisión} con sus dos salidas---. Y hay una pregunta que separa un algoritmo bueno de uno que apenas funciona: \textbf{¿cuántos pasos cuesta?}. Dos estrategias que llegan al mismo resultado no valen lo mismo si una tarda el doble. Esa comparación ---la \textbf{eficiencia}--- es lo que hoy vas a aprender a defender con números, no con corazonadas.
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{El caficultor no le pregunta al reloj, le pregunta al café: si suena a cascajo, es hora; \textbf{¿qué prueba tendría que hacer tu algoritmo} para saber cuándo pasar al paso siguiente\ldots en vez de suponer que ya pasó el tiempo suficiente?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar la sesión: (1) sabrás \textbf{explicar} las tres estructuras ---secuencia, decisión y repetición--- y reconocerlas en un proceso real; (2) podrás \textbf{analizar} dos estrategias para el mismo problema contando sus pasos y justificando cuál es más eficiente; (3) habrás \textbf{creado} tu algoritmo en pseudocódigo y en diagrama de flujo, con al menos una decisión; (4) podrás \textbf{identificar} un caso límite en el que tu algoritmo se rompe.
+\end{softbox}
+
+
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Formula preguntas investigables, produce evidencia con método y comunica hallazgos reconociendo sus límites (investigación estudiantil STEM, transversal 6°--11°)\\
+Referentes & Valentina Dagienė (Bebras) · Jeannette Wing (pensamiento computacional)\\
+Producto final & Tu \textbf{algoritmo escrito dos veces}: en \textbf{pseudocódigo} y en \textbf{diagrama de flujo}, resolviendo el problema que descompusiste en el módulo 1. Tiene que incluir al menos \textbf{una decisión} (\emph{si\ldots entonces\ldots si no}) y, si el problema lo pide, \textbf{una repetición} (\emph{mientras\ldots}). Más una \textbf{tabla comparativa de dos estrategias} distintas para la misma rama, con la cuenta de pasos de cada una y \textbf{la razón por la que eliges una}. Sin esa razón, no elegiste: adivinaste.\\
+\end{tabularx}
+\normalsize
+
+\puente{En el módulo 1 partiste un problema en ramas que se sostienen solas. Hoy le pones \textbf{orden y decisiones} a una de esas ramas: la conviertes en un algoritmo que otra persona podría ejecutar sin preguntarte nada.}
+
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Entender\\[-1mm]\small Sistematizo y ordeno.} &
+\phasecard{3}{milcMagenta}{milcGris}{Hacer\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Cierre\\[-1mm]\small Evalúo y reflexiono.}
+\end{tabularx}
+
+
+\puente{Primero mira un algoritmo que ya funciona y que nadie llama algoritmo: el beneficio del café. Ahí están las tres estructuras, completas.}
+
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · EXPLICA --- El algoritmo que huele a café} (40 min · grupo + individual). \textbf{Momento A (12 min) --- El proceso completo.} El profe cuenta el beneficio: despulpar el mismo día, fermentar de 12 a 18 horas según la temperatura, lavar, secar. Y cuenta la prueba: se saca una muestra, se restriega, \emph{si suena a cascajo se empieza a lavar}. \textbf{Momento B (13 min) --- Cacería de estructuras.} En grupo, marquen en ese proceso: ¿dónde hay \textbf{secuencia}? ¿dónde hay una \textbf{decisión}? ¿dónde habría que \textbf{repetir} algo hasta que se cumpla una condición? \textbf{Momento C (15 min) --- El experimento mental.} Respondan tres preguntas: \emph{¿qué pasa si lavas antes de fermentar?}; \emph{¿qué pasa si fermentas 24 horas «por si acaso»?}; \emph{¿por qué en tierra fría el tiempo es distinto y la prueba es la misma?}. \textbf{En el cuaderno:} el proceso en pasos numerados, con las tres estructuras señaladas.
+\end{softbox}
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Escribí el beneficio del café en pasos numerados y en orden.}
+\milccheckrow{Señalé dónde está la decisión y qué condición la dispara.}
+\milccheckrow{Puedo explicar por qué la prueba del cascajo vale más que el reloj.}
+
+\begin{infoband}{milcVerde}
+
+
+\textbf{Lo que va al cuaderno (Actividad 1 · EXPLICA).} Título: «Actividad 1 --- El algoritmo que huele a café». \textbf{Formato:} los pasos numerados del beneficio + al lado de cada uno, la etiqueta \emph{secuencia}, \emph{decisión} o \emph{repetición} + las respuestas a las tres preguntas del Momento C. \textbf{Extensión:} 12 líneas. \textbf{Sabes que terminaste cuando} puedes decir en una frase \textbf{qué diferencia hay entre una receta y un algoritmo}.
+\end{infoband}
+
+\puente{Ya viste las tres estructuras en el café. Ahora apréndelas con su nombre, su forma escrita y su forma dibujada ---y aprende a contar lo que cuestan.}
+
+\milcestacion{milcTurquesa}{Estación 2 de 3 · Entender}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Lo que vas a entender}
+\textbf{Actividad 2 · ANALIZA --- Escribir, dibujar y contar} (65 min · individual + parejas). Ya viste las estructuras funcionando en una finca. Ahora aprende a escribirlas, a dibujarlas y ---lo que casi nadie hace--- a \textbf{contar lo que cuestan}.
+\end{softbox}
+
+\milcpaso{1}{milcTurquesa}{\textbf{Pilar 1 --- Las tres estructuras, y no hay más.} \textbf{Secuencia:} un paso detrás de otro, en orden fijo. \textbf{Decisión:} una pregunta de sí o no que abre dos caminos ---\emph{si (condición) entonces \_\_\_\_ si no \_\_\_\_}---. \textbf{Repetición:} volver a hacer algo mientras una condición se cumpla ---\emph{mientras (condición) hacer \_\_\_\_}---. Con esas tres se escribe cualquier programa que exista; los lenguajes cambian, las estructuras no. En el café están las tres: la secuencia del proceso, la decisión del cascajo, y la repetición de volver a probar cada hora hasta que suene. \emph{Si crees que tu problema necesita una cuarta estructura, casi siempre es que todavía no lo partiste bien.}}
+\milcpaso{2}{milcTurquesa}{\textbf{Pilar 2 --- Pseudocódigo: frases cortas, un paso por línea.} El pseudocódigo es el algoritmo escrito en español, sin lenguaje de programación, pero \textbf{sin ambigüedad}. Reglas: un paso por línea; empieza cada línea con un verbo; las condiciones van entre paréntesis; lo que está dentro de un \emph{si} o de un \emph{mientras} va \textbf{sangrado}, para que se vea qué manda a qué. Así: \emph{``1. Despulpar el café del día. 2. Poner en el tanque. 3. Mientras (la muestra no suene a cascajo): 3.1 Esperar una hora. 3.2 Volver a probar. 4. Lavar. 5. Secar''}. \textbf{La prueba de que está bien escrito:} otra persona lo ejecuta sin preguntarte nada. Si tiene que preguntar, hay ambigüedad.}
+\milcpaso{3}{milcTurquesa}{\textbf{Pilar 3 --- Diagrama de flujo: el mismo algoritmo, dibujado.} Cuatro figuras y nada más: \textbf{óvalo} para \emph{Inicio} y \emph{Fin}; \textbf{rectángulo} para una acción; \textbf{rombo} para una decisión, con \emph{sí} por un lado y \emph{no} por el otro; \textbf{flechas} para el orden. La repetición se dibuja sola: es una flecha que \textbf{vuelve hacia atrás}, hacia el rombo que la controla. Dibujar obliga a lo que escribir deja pasar: \emph{cada rombo tiene que tener sus dos salidas}, y toda flecha tiene que llegar a alguna parte. \emph{Un diagrama con una flecha que no llega a nada es un algoritmo con un caso sin respuesta.}}
+\milcpaso{4}{milcTurquesa}{\textbf{Pilar 4 --- Eficiencia: cuenta los pasos, no las corazonadas.} Dos algoritmos que dan el mismo resultado no valen lo mismo. Para compararlos, \textbf{cuenta cuántos pasos hace cada uno} con la misma entrada. Ejemplo: buscar un nombre en una lista de 100 desordenada obliga a mirar hasta 100; si la lista está ordenada, puedes partirla por la mitad cada vez y con \textbf{7 miradas} basta. Es el mismo resultado con una diferencia enorme. \textbf{Regla de honestidad:} compara siempre con el \emph{peor caso}, no con el día de suerte. Y no olvides el otro costo: ordenar la lista también cuesta ---por eso ordenar vale la pena cuando vas a buscar muchas veces, y no cuando buscas una sola vez.}
+
+\begin{drawbox}{milcTurquesa}{Las tres estructuras, sus dos escrituras y la cuenta}
+\textbf{Secuencia:} pasos en orden fijo. \textbf{Decisión:} \emph{si (condición) entonces\ldots si no\ldots} \textbf{Repetición:} \emph{mientras (condición) hacer\ldots} \\[1mm]
+\textbf{Pseudocódigo:} un paso por línea, verbo al inicio, condición entre paréntesis, sangría para lo que va dentro. \\[1mm]
+\textbf{Diagrama:} óvalo = inicio/fin · rectángulo = acción · rombo = decisión (dos salidas) · flecha hacia atrás = repetición. \\[1mm]
+\textbf{Eficiencia:} cuenta los pasos en el \emph{peor caso}, e incluye lo que cuesta preparar (ordenar también cuesta).
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{Errores al escribir un algoritmo (y cómo evitarlos).} (1) \emph{Pasos que no son pasos} --- «organizar todo» no es una acción: es un problema sin partir. (2) \emph{Rombos con una sola salida} --- toda decisión tiene dos caminos; si el «no» no lleva a ningún lado, hay un caso sin respuesta. (3) \emph{Repetición sin salida} --- si nada cambia dentro del \emph{mientras}, la condición nunca deja de cumplirse y el algoritmo da vueltas para siempre. (4) \emph{Confundir tiempo con condición} --- «esperar 15 horas» no es lo mismo que «esperar hasta que suene a cascajo»; lo primero obedece, lo segundo decide. (5) \emph{Comparar con el día de suerte} --- la eficiencia se mide en el peor caso. (6) \emph{Olvidar el costo de preparar} --- ordenar para buscar rápido también cuesta pasos.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+\guiaDiagrama{assets/pensamiento-computacional-2/flujo-beneficio-cafe.tex}{Las tres estructuras que bastan para escribir cualquier algoritmo, en un proceso que lleva siglos funcionando en las fincas del Norte del Valle. El rombo es lo que separa una receta de un algoritmo: el paso siguiente no lo decide el reloj, lo decide una prueba. Proceso documentado por Cenicafé (Cartilla cafetera, cap. 20).}
+
+\textbf{Lo que va al cuaderno (Actividad 2 · ANALIZA).} Título: «Actividad 2 --- Escribir, dibujar y contar». \textbf{Formato:} 3 bloques. Bloque A: las tres estructuras con un ejemplo de una línea cada una. Bloque B: el beneficio del café en pseudocódigo (con su \emph{mientras}) y dibujado en diagrama de flujo. Bloque C: la comparación de buscar en una lista de 100 desordenada frente a una ordenada, con la cuenta de pasos de cada una. \textbf{Extensión:} 1 hoja y media. \textbf{Sabes que terminaste cuando} tu diagrama tiene \textbf{todos los rombos con sus dos salidas}.
+\end{infoband}
+
+\puente{Ya sabes escribirlas. Es hora de escribir \textbf{tu} algoritmo, compararlo con otra estrategia y defender tu elección con la cuenta de pasos.}
+
+\milcestacion{milcMagenta}{Estación 3 de 3 · Hacer}
+
+\begin{softbox}{milcMagenta}{milcGris}{Cómo vas a construir tu producto}
+\textbf{Actividad 3 · CREA --- Tu algoritmo, y la estrategia que descartaste} (45 min · individual + parejas). Toma una rama de tu árbol del módulo 1 ---la que marcaste LISTA--- y conviértela en un algoritmo que otro pueda ejecutar. Luego escribe la estrategia que \emph{no} elegiste, y sustenta por qué.
+\end{softbox}
+
+\milcpaso{1}{milcMagenta}{\textbf{Paso 1 --- Escríbelo en pseudocódigo (15 min).} Un paso por línea, verbo al inicio. \textbf{Obligatorio:} al menos \textbf{una decisión} ---y que su condición sea una \emph{prueba}, como la del cascajo, no un tiempo supuesto---. Si tu problema lo pide, agrega un \emph{mientras}. Termina con una línea que diga cómo sabes que quedó bien: el criterio de éxito del módulo 1, aquí abajo, hecho paso.}
+\milcpaso{2}{milcMagenta}{\textbf{Paso 2 --- Dibújalo (12 min).} Pasa el pseudocódigo a diagrama de flujo: óvalo, rectángulos, rombos con sus dos salidas, flechas. \emph{Si al dibujarlo aparece una flecha que no llega a ninguna parte, no es un error del dibujo: es un caso que tu algoritmo no había previsto.} Arréglalo en los dos lados.}
+\milcpaso{3}{milcMagenta}{\textbf{Paso 3 --- La estrategia que descartaste (10 min).} Escribe \textbf{otra} manera de resolver la misma rama ---aunque te parezca peor---. Haz la \textbf{tabla de dos columnas}: \emph{Estrategia A · Estrategia B}, y en las filas: \emph{cuántos pasos en el peor caso}, \emph{qué necesita preparar antes}, \emph{cuándo conviene}. Elige una y \textbf{escribe la razón}. La razón manda: sin ella, la comparación es decoración.}
+\milcpaso{4}{milcMagenta}{\textbf{Paso 4 --- Rómpelo a propósito (8 min).} Con tu pareja, intercambien algoritmos y busquen \textbf{el caso que lo rompe}: la entrada vacía, el empate, el número negativo, la persona que falta, el día que nadie lavó. Anota el caso que te encuentren. \emph{Encontrarlo hoy es barato; encontrarlo cuando el algoritmo ya está funcionando, no.}}
+
+\begin{drawbox}{milcMagenta}{Antes de cerrar tu algoritmo}
+\checkbox Mi pseudocódigo tiene un paso por línea y cada línea empieza con un verbo. \\[1mm]
+\checkbox Tiene al menos una decisión, y su condición es una prueba, no un tiempo supuesto. \\[1mm]
+\checkbox Todos los rombos del diagrama tienen sus dos salidas. \\[1mm]
+\checkbox Si hay repetición, algo cambia adentro (no da vueltas para siempre). \\[1mm]
+\checkbox La tabla compara pasos en el peor caso y dice cuándo conviene cada estrategia. \\[1mm]
+\checkbox Escribí la razón de mi elección, y un caso que rompe mi algoritmo.
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Plantilla del pseudocódigo.} \textit{1.} Verbo + qué. \textit{2.} Verbo + qué. \textit{3.} Si (condición) entonces: \textit{3.1} \ldots\ Si no: \textit{3.2} \ldots\ \textit{4.} Mientras (condición) hacer: \textit{4.1} \ldots\ \textit{5.} Terminar cuando (criterio de éxito). \\[1mm]
+\textbf{Plantilla de la tabla.} \textit{Filas:} pasos en el peor caso · qué hay que preparar antes · cuándo conviene. \textit{Columnas:} Estrategia A · Estrategia B. \\[1mm]
+\textit{Elijo \_\_\_\_ porque \_\_\_\_.} \textit{Mi algoritmo se rompe cuando \_\_\_\_.}
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+
+
+\textbf{Lo que va al cuaderno (Actividad 3 · CREA).} Título: «Actividad 3 --- Mi algoritmo, escrito y dibujado». \textbf{Formato:} el pseudocódigo numerado + el diagrama de flujo + la tabla comparativa + la frase «elijo \_\_\_\_ porque \_\_\_\_» + el caso que lo rompe. \textbf{Extensión:} 1 hoja y media. \textbf{Sabes que terminaste cuando} tu pareja ejecutó tu algoritmo \textbf{sin hacerte una sola pregunta}.
+\end{infoband}
+
+\puente{El producto es un algoritmo escrito dos veces y una comparación con razón. \emph{Un algoritmo que solo tú entiendes todavía no es un algoritmo.}}
+
+\milcestacion{milcMostaza}{Producto de la sesión}
+\textbf{Algoritmo en pseudocódigo y diagrama de flujo + tabla comparativa con la razón de la elección}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) El pseudocódigo tiene un paso por línea, sin ambigüedad, y otra persona lo ejecutó sin preguntar. (2) Incluye al menos una decisión cuya condición es una prueba verificable, no un tiempo supuesto. (3) El diagrama de flujo usa las cuatro figuras y todos los rombos tienen sus dos salidas. (4) La tabla compara las dos estrategias por pasos en el peor caso y por lo que hay que preparar. (5) Está escrita la razón de la elección y el caso que rompe el algoritmo.
+\end{softbox}
+
+\puente{Antes de cerrar, busca dónde se rompe: todo algoritmo tiene un caso que no previó, y encontrarlo tú es mejor que descubrirlo después.}
+
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con 3 voces sobre para quién se escribe un algoritmo, cómo se cambia de opinión con evidencia, y qué cambia en el mundo cuando escribes uno.}
+
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{El otro se revela realmente como otro\ldots como el pobre, el oprimido; el que, a la vera del camino, fuera del sistema, muestra su rostro sufriente y sin embargo desafiante: «¡Tengo hambre!, ¡tengo derecho a comer!»}
+
+Un algoritmo solo está terminado cuando \textbf{otro} puede ejecutarlo sin preguntarte nada. Esa exigencia técnica ---que hoy probaste con tu pareja--- es también una exigencia ética: escribir para el otro obliga a salir de la propia cabeza, donde todo se entiende porque uno ya sabía lo que quería decir. \textbf{Lo que para ti es «obvio», para el otro es un paso que falta.} Y el algoritmo que nadie más puede ejecutar no sirve a nadie más que a su autor.
+
+\textbf{¿Mi algoritmo lo puede ejecutar alguien que no estuvo cuando lo pensé?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · Meditaciones VI, 21 (c. 175 d.C.) · cuidado interior}
+\textit{Si alguien puede refutarme y probar de modo concluyente que pienso o actúo incorrectamente, de buen grado cambiaré de proceder. Pues persigo la verdad, que no dañó nunca a nadie; en cambio, sí se daña el que persiste en su propio engaño e ignorancia.}
+
+Comparar dos estrategias contando pasos es exactamente esto: \textbf{poner tu solución donde pueda ser refutada}. El paso 4 de hoy ---darle tu algoritmo a alguien para que lo rompa--- es pedir la refutación en voz alta. Duele un poco y ahorra mucho. \emph{Persistir en el propio algoritmo porque es el propio} es el error que Marco Aurelio llama daño; cambiar de proceder cuando la cuenta de pasos dice otra cosa es lo contrario de perder: es aprender barato.
+
+\textbf{Si la cuenta de pasos favorece la estrategia que descarté, ¿la cambio, o me aferro porque la mía es mía?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{Las tecnologías digitales están re-ontologizando la naturaleza misma de la infoesfera.}
+
+\emph{Re-ontologizar} suena enorme y quiere decir algo sencillo: estas tecnologías no solo \emph{describen} el mundo, lo \textbf{rehacen}. Cuando escribes el algoritmo del turno de la casa, no estás anotando cómo se reparte el turno: estás \textbf{decidiendo} cómo se va a repartir de ahora en adelante, y quién queda de último cuando hay empate. \textbf{Un algoritmo es una regla que va a mandar sobre personas.} Por eso importa quién lo escribe, con qué criterio y a quién le preguntó antes.
+
+\textbf{Mi algoritmo va a decidir algo sobre alguien: ¿le pregunté a esa persona antes de escribirlo?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres formulaciones del triángulo son la síntesis del autor de la guía, no citas textuales de los pensadores. Si vas a citarlos en clase, remite a la obra original.
+\end{infoband}
+
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
+
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Pensamiento computacional & \milcopcion{Usé los pilares al armar mi producto.} & \milcopcion{Usé algunos pilares.} & \milcopcion{Necesito releer la estación 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Dos cosas. \textbf{(1) Ejecuta tu algoritmo en la vida real:} aplícalo una semana ---el turno, la ruta, el orden de los cuadernos, lo que sea--- y \textbf{anota cada vez que tuviste que improvisar}. Cada improvisación es un caso que tu algoritmo no previó, y vale oro: son las decisiones que faltan. \textbf{(2) Busca la condición escondida:} encuentra en tu casa o tu barrio un proceso que la gente hace «por tiempo» pero que en realidad se decide por una prueba ---el pan que suena hueco, la ropa que ya no huele a húmedo, el arroz que se abre---. Escríbela en forma de condición: \emph{``si \_\_\_\_, entonces \_\_\_\_''}. \textbf{Trae:} tu algoritmo con las improvisaciones anotadas y la condición que encontraste. \emph{En el módulo 3 vas a medirte con los retos Bebras, que están hechos justamente para eso: problemas que no se parecen a nada que hayas visto y que se resuelven con estas tres estructuras y un buen rato de cabeza.}
+\end{infoband}
+
+\end{document}

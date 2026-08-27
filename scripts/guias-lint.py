@@ -221,6 +221,68 @@ def lint_triangulo(g: dict) -> list[str]:
     return errors
 
 
+# Autores antiguos: nada de lo que dijeron pudo hablar de tecnologia moderna.
+_ESTOICOS_ANTIGUOS = ("Marco Aurelio", "Séneca", "Seneca", "Epicteto")
+
+# Vocabulario imposible en su epoca. Si aparece dentro de unas comillas
+# atribuidas a ellos, la cita no puede ser textual.
+_ANACRONISMOS = re.compile(
+    r"\b(IA|inteligencia artificial|digital(es)?|algoritm[oa]s?|internet|datos|software|"
+    r"pantallas?|computador(es|a)?|robots?|c[óo]digo|chat|redes? social(es)?|siglo XXI|apps?|"
+    r"correo electr[óo]nico|videojuegos?|plataformas?|hardware|wifi|nube|smartphones?|celulares?)\b",
+    re.IGNORECASE,
+)
+
+# Una cita textual necesita de dónde salió. En el banco verificado del semillero
+# la obra va entre paréntesis: "Enrique Dussel · Filosofía de la liberación (1977)".
+_TIENE_OBRA = re.compile(r"\(.*\d{2,4}.*\)")  # "(1977)", "(c. 64 d.C.)", "(2014; trad.)"
+
+
+def lint_citas_trazables(g: dict) -> list[str]:
+    """Warnings por citas del triángulo que no se pueden rastrear hasta una obra.
+
+    El contrato obliga a que el triángulo cierre con Dussel, un estoico y Floridi.
+    Eso hace muy fácil que aparezca una frase *escrita para la ocasión* con el
+    nombre de un autor encima --- y una frase inventada en boca de una persona
+    real es una atribución falsa, no un recurso pedagógico. Dos señales:
+
+      1. El campo `autor` no nombra ninguna obra ni año, así que la cita no se
+         puede verificar. Ver el banco verificado en content/guias/semillero/.
+      2. La cita se atribuye a un estoico antiguo y contiene vocabulario que no
+         existía en su época. Ahí no hay duda posible.
+
+    Son warnings, no errores: hoy los incumplen casi todas las guías de grado, y
+    convertirlos en error dejaría el pipeline inutilizable de un día para otro.
+    Con `--strict` fallan, que es como se cierra la deuda cuando se decida.
+    """
+    warnings = []
+    tri = g.get("triangulo") or {}
+
+    for nombre in ("dussel", "estoico", "floridi"):
+        voz = tri.get(nombre) or {}
+        cita = (voz.get("cita") or "").strip()
+        autor = (voz.get("autor") or "").strip()
+        if not cita:
+            continue
+
+        if not _TIENE_OBRA.search(autor):
+            warnings.append(
+                f"triangulo.{nombre}: la cita no se puede rastrear --- "
+                f"'{autor}' no nombra obra ni año. Si es textual, cita la obra; "
+                f"si es una formulación propia, no la pongas en boca del autor."
+            )
+
+        if any(e in autor for e in _ESTOICOS_ANTIGUOS):
+            hallado = _ANACRONISMOS.search(cita)
+            if hallado:
+                warnings.append(
+                    f"triangulo.{nombre}: atribuida a {autor} pero dice "
+                    f"'{hallado.group(0)}' --- imposible en su época, no es textual."
+                )
+
+    return warnings
+
+
 def lint_200_palabras(g: dict) -> list[str]:
     """Warnings por campos de texto que exceden 200 palabras."""
     warnings = []
@@ -329,6 +391,7 @@ def lint_guia(g: dict, grado: int = 11) -> tuple[list[str], list[str]]:
 
     warnings += lint_saber_ancestral(g)
     warnings += lint_200_palabras(g)
+    warnings += lint_citas_trazables(g)
 
     return errors, warnings
 

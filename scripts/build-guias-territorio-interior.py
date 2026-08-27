@@ -36,7 +36,10 @@ from lib_triangulo import atribucion, cita_presentada, nota_docente  # noqa: E40
 import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
-TEMPLATE = ROOT / "scripts/generadores/template-milc-v3-territorio-interior.tex"
+# Una sola plantilla para todas las familias. La copia propia de esta serie
+# se quedó sin el rediseño de portadas (#265) y las guías salían con el
+# diseño viejo; los rótulos que la justificaban ahora van parametrizados.
+TEMPLATE = ROOT / "scripts/generadores/template-milc-v3.tex"
 CONTENT_DIR = ROOT / "content" / "guias" / "territorio-interior"
 OUT_DIR = ROOT / "public" / "guias-mejoras" / "territorio-interior"
 XELATEX = "/Library/TeX/texbin/xelatex"
@@ -191,6 +194,13 @@ def yaml_a_placeholders(guia: dict) -> dict[str, str]:
         "FASE2_SUBTITULO": et.get("fase2_subtitulo", "Comprendo y verifico."),
         "SIST_PILARES_TITULO": et.get("sist_pilares_titulo", "Cuatro claves aplicadas al tema"),
         "FASE3_TITULO": et.get("fase3_titulo", "Fase 3 · Praxis"),
+        # Palabras de las tarjetas de fase: esta serie las nombra por su fase
+        # MILC, no por el verbo que usan las guías de grado.
+        "FASE2_CARD": et.get("fase2_card", "Sistematización"),
+        "FASE3_CARD": et.get("fase3_card", "Praxis"),
+        "FASE3_SUBTITULO": et.get("fase3_subtitulo", "Construyo y aplico."),
+        "FASE4_CARD": et.get("fase4_card", "Evaluación"),
+        "FASE4_SUBTITULO": et.get("fase4_subtitulo", "Reflexión liberadora."),
         "PRAX_PILARES_TITULO": et.get("prax_pilares_titulo", "Construyendo el producto paso a paso"),
         **{f"ETIQUETA_{i}_SIST": v for i, v in enumerate(et_sist, start=1)},
         **{f"ETIQUETA_{i}_PRAX": v for i, v in enumerate(et_prax, start=1)},

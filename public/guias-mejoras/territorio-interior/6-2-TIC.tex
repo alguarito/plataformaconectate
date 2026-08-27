@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,21 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
 \usepackage{pifont}
 \newunicodechar{✓}{\ding{51}}
 \newunicodechar{✗}{\ding{55}}
 \newunicodechar{✔}{\ding{52}}
 \newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -108,7 +115,7 @@
 }
 
 \newtcolorbox{softbox}[3]{
-  enhanced, breakable,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
   arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
   before skip=6pt,after skip=8pt,title={#3},coltitle=white,
   colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
@@ -117,7 +124,7 @@
 }
 
 \newtcolorbox{drawbox}[2]{
-  enhanced, breakable,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
   left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
   title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
   fontupper=\RaggedRight,
@@ -126,7 +133,7 @@
 }
 
 \newtcolorbox{infoband}[1]{
-  enhanced, breakable,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
   left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
   fontupper=\small\RaggedRight
 }
@@ -151,25 +158,15 @@
   \end{puentebox}%
 }
 
-% Tarjeta de paso numerada, para consumir el bloque que emite el builder.
-\newcommand{\milcpaso}[3]{%
-\begin{tcolorbox}[enhanced,breakable,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
-  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
-  fontupper=\RaggedRight,
-  overlay first={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
-    minimum size=7.4mm,font=\sffamily\bfseries\small]
-    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
-#3
-\end{tcolorbox}}
-
 \newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
 \newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
 \newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
 
-% ── Listas con sangría francesa (serie socioemocional) ────────────────
-% El template base compone las verificaciones como «\checkbox texto\\», de
-% modo que el texto que salta de línea queda debajo del cuadrito y el bloque
-% se ve apelmazado. Estos entornos alinean la continuación y airean los ítems.
+% ─── Listas aireadas para las guías socioemocionales ────────────────────
+% Componer las verificaciones como «\checkbox texto\\» deja el texto que salta
+% de línea debajo del cuadrito y apelmaza el bloque. Estos entornos alinean la
+% continuación y airean los ítems. Los usa Territorio Interior; cualquier
+% familia puede hacerlo.
 \newlist{checklista}{itemize}{1}
 \setlist[checklista]{
   label=\textcolor{milcGradeDark}{\fbox{\phantom{x}}},
@@ -189,6 +186,44 @@
 {\sffamily\bfseries\small #4}
 \end{tcolorbox}
 }
+
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
 
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
@@ -212,51 +247,65 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont MOMENTO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont TERRITORIO INTERIOR · SOCIOEMOCIONAL};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont MOMENTO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont TERRITORIO INTERIOR · SOCIOEMOCIONAL};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 2};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 2};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
   
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=11.4cm,align=left] at ([xshift=1.5cm,yshift=0.5cm]gradonum.east)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Más de veinte palabras\\[4pt]nombrar lo que siento\\[4pt]con precisión}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Grado 6° · Momento 2}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Territorio interior · Socioemocional}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Territorio interior · Socioemocional}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont\setlength{\baselineskip}{27pt}Más de veinte palabras\\[4pt]nombrar lo que siento\\[4pt]con precisión}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Grado 6° · Momento 2}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Vocabulario emocional · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} Tu muestrario de emociones: veinte palabras propias, cada una con lo que significa para ti, dónde la sientes en el cuerpo, una situación real en que apareció y qué te ayuda cuando llega.};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Tu muestrario de emociones: veinte palabras propias, cada una con lo que significa para ti, dónde la sientes en el cuerpo, una situación real en que apareció y qué te ayuda cuando llega.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · Apertura ancestral · Vocabulario emocional · Triángulo Dussel-Estoicismo-Floridi}}
+
 \newpage
 
 \section*{Apertura: Más de veinte palabras: nombrar lo que siento con la precisión con que se nombra una puntada}
@@ -290,9 +339,7 @@ Producto final & Tu muestrario de emociones: veinte palabras propias, cada una c
 
 \puente{Ya viste que en Cartago cada puntada tiene su nombre y que ese nombre sirve para pedir, enseñar y reparar. Mira ahora la ruta: vas a contar con cuántas palabras andas, a aprender el repertorio y a armar el tuyo.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
 \phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Distingo y nombro.} &
@@ -303,19 +350,16 @@ Ruta MILC: así vamos a aprender
 
 \puente{Antes de aprender palabras nuevas conviene ver cuántas usas. Nadie va a leer esto: es una cuenta que te haces a ti.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Actividad 1 · IDENTIFICA --- ¿Con cuántas palabras ando?} \textbf{Nadie va a leer esta página.} Piensa en los últimos siete días y escribe, en tu cuaderno, \textbf{cinco momentos} en que sentiste algo fuerte: en la casa, en el descanso, en clase, en la ruta, con el celular. Al lado de cada uno, escribe \textbf{la palabra que usaste en ese momento} ---la que dijiste o la que pensaste---, aunque haya sido «bien», «mal», «normal», «nada» o una grosería. No la corrijas: interesa la de verdad, no la que quedaría bonita. Cuando termines, cuenta cuántas palabras \textbf{distintas} te salieron en total. Casi todo el mundo descubre que anda con tres o cuatro para todo. \emph{Eso no es un defecto tuyo: es un repertorio que nadie te enseñó todavía.}
 \end{softbox}
 
-\begin{checklista}
-\item Escribiste cinco momentos reales de los últimos siete días, con la palabra que usaste de verdad en cada uno.
-\item Contaste cuántas palabras \textbf{distintas} usaste en total, sin corregirlas ni mejorarlas.
-\item Marcaste cuál de esos cinco momentos te costó más nombrar, aunque no sepas todavía cómo se llama.
-\end{checklista}
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Escribiste cinco momentos reales de los últimos siete días, con la palabra que usaste de verdad en cada uno.}
+\milccheckrow{Contaste cuántas palabras \textbf{distintas} usaste en total, sin corregirlas ni mejorarlas.}
+\milccheckrow{Marcaste cuál de esos cinco momentos te costó más nombrar, aunque no sepas todavía cómo se llama.}
 
 \begin{infoband}{milcVerde}
 
@@ -325,9 +369,7 @@ Fase 1 · Escucha
 
 \puente{Ya sabes con cuántas andas. Ahora el repertorio: familias, intensidades, y la diferencia entre lo que sientes, lo que piensas y lo que haces.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización: aprender el repertorio
-\end{titlebox}
+\milcestacion{milcTurquesa}{Fase 2 · Sistematización: aprender el repertorio}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Cuatro claves para nombrar bien lo que sientes}
 Un repertorio no se improvisa: se aprende, como las puntadas. Aquí van las cuatro claves para que las palabras nuevas no se te queden en la lista, sino que te sirvan cuando estés en la mitad de algo.
@@ -359,9 +401,7 @@ Un repertorio no se improvisa: se aprende, como las puntadas. Aquí van las cuat
 
 \puente{Ya tienes el repertorio. Es hora de hacerlo tuyo: veinte palabras con tu definición, tu cuerpo y tu ejemplo. Un muestrario, como el de la caladora.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis: armar tu muestrario
-\end{titlebox}
+\milcestacion{milcMagenta}{Fase 3 · Praxis: armar tu muestrario}
 
 \begin{softbox}{milcMagenta}{milcGris}{Cómo se arma un muestrario, puntada por puntada}
 Ahora armas el tuyo. Un muestrario de bordado es esa tela donde la aprendiz hace cada puntada una vez, con su nombre al lado, para tenerlas todas a la vista y poder volver. Esto es igual, pero de emociones: \textbf{veinte palabras}, cada una practicada una vez. Tenerlas escritas es lo que hace que aparezcan cuando las necesites.
@@ -396,9 +436,7 @@ Ahora armas el tuyo. Un muestrario de bordado es esa tela donde la aprendiz hace
 
 \puente{El producto es ese muestrario. \emph{Una palabra copiada del tablero no sirve: la que sirve es la que puedes reconocer cuando te pasa.}}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Muestrario de emociones: veinte palabras con definición propia, cuerpo, ejemplo y qué ayuda}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) Hay veinte palabras y las cinco familias están representadas con al menos cuatro cada una. (2) Cada definición está escrita con palabras propias y se entiende sin explicación adicional. (3) Al menos quince filas dicen dónde se siente esa emoción en el cuerpo. (4) La columna «qué me ayuda» tiene acciones concretas y verificables, no intenciones generales. (5) Aparece al menos una emoción mezclada y está marcada la palabra que más cuesta decir en voz alta.
@@ -406,9 +444,7 @@ Producto de la sesión
 
 \puente{Antes de cerrar, mira tu lista y busca el hueco: casi siempre falta una familia entera, y esa suele ser la que más cuesta nombrar en voz alta.}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -434,9 +470,7 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Cerramos con tres voces: nombrar es la manera en que el otro se hace oír, lo que perturba no es lo que pasa sino cómo lo nombramos, y una palabra sola no dice nada hasta que se puede comparar con otras.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
 \textit{«El otro se revela realmente como otro\ldots como el pobre, el oprimido; el que, a la vera del camino, fuera del sistema, muestra su rostro sufriente y sin embargo desafiante: «¡Tengo hambre!, ¡tengo derecho a comer!»»}
@@ -478,21 +512,20 @@ Floridi habla de datos, pero describe exactamente tu muestrario. Una palabra sue
 \textbf{Nota para el docente.} Las tres son citas textuales y llevan su referencia debajo. Puedes remitir a la obra en clase.
 \end{infoband}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Precisión al nombrar & Distingo emociones de la misma familia y ajusto la intensidad con la palabra exacta. & Uso varias palabras nuevas, pero se me mezclan la emoción y lo que hice. & Todavía resuelvo casi todo con «bien» y «mal».\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Precisión al nombrar & \milcopcion{Distingo emociones de la misma familia y ajusto la intensidad con la palabra exacta.} & \milcopcion{Uso varias palabras nuevas, pero se me mezclan la emoción y lo que hice.} & \milcopcion{Todavía resuelvo casi todo con «bien» y «mal».}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
 
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

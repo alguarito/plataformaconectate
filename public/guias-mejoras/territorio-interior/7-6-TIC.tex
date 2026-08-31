@@ -1,0 +1,557 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra UNICA de las guias MILC v3.
+%
+% La usan las tres familias de guias, cada una con su driver:
+%   · Grados 6-11  -> scripts/build-guias-g11.py
+%   · Bebras       -> scripts/build-guias-bebras.py
+%   · Semillero    -> scripts/build-guias-semillero.py
+%
+% Antes habia tres copias casi identicas (~400 lineas iguales, 6 distintas):
+% cada mejora habia que aplicarla tres veces, y en la practica no se hacia
+% (el motor de recursos vivia solo en dos de ellas). Lo que varia entre
+% familias esta parametrizado en 6 placeholders que cada driver llena
+% (se nombran aqui SIN su sintaxis real: el builder reemplaza por texto plano,
+% tambien dentro de los comentarios, y un valor multilinea rompe el preambulo):
+%
+%   HEADER_IZQ        encabezado izquierdo de pagina
+%   HEADER_DER        encabezado derecho de pagina
+%   PORTADA_ETIQUETA  rotulo sobre el numero grande (GRADO/MOMENTO/MODULO)
+%   PORTADA_SERIE     linea de serie de la portada
+%   PORTADA_ID        identificador de la guia en la portada
+%   PORTADA_CIRCULO   el circulito de grado (°), o vacio si no aplica
+%
+% El resto de claves las documenta content/guias/_SCHEMA.md. El script valida
+% que no queden placeholders sin reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+% Librerías TikZ para los diagramas de las guías (bloque `recursos:`):
+%  · babel  → babel en español vuelve activos caracteres como «>», y TikZ los usa
+%             en sus opciones (>=stealth, ->). Sin esta librería, cualquier
+%             diagrama con flechas revienta con «\language@active@arg> has an
+%             extra }». Debe ir ANTES de que se dibuje nada.
+%  · positioning        → sintaxis «below left=2pt and 3pt».
+%  · decorations.pathreplacing → llaves ({brace}) para señalar rangos.
+\usetikzlibrary{babel,positioning,decorations.pathreplacing}
+\usepackage{graphicx}
+% Circuitos: el trabajo de electrónica se hace hoy con micro:bit y sus sensores
+% integrados (MakeCode, sin cableado), así que no se necesitan esquemáticos.
+% Si algún día entran montajes con protoboard, basta descomentar esta línea:
+% los diagramas .tex/.tikz declarados en `recursos:` ya se incrustan solos.
+% \usepackage{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
+\usepackage{enumitem}
+\usepackage{microtype}
+
+% Helvetica Neue no trae la flecha U+2192, asi que cada «→» escrito literalmente
+% en el YAML se compilaba a NADA, en silencio (462 flechas en 61 guias: rutas del
+% tipo «paleta → tipografia → lockup» salian rotas). Mapeamos el caracter a su
+% version matematica, que si tiene glifo. Asi el autor puede seguir escribiendo
+% «→» comodamente en el YAML.
+\usepackage{newunicodechar}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0D9488}
+\definecolor{milcGradeDark}{HTML}{115E59}
+\definecolor{milcGradeSoft}{HTML}{CCFBF1}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Territorio interior · Educación socioemocional}
+\rhead{\small Grado 7° · Momento 6 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+% La flecha va en modo matematico a proposito: Helvetica Neue NO tiene el glifo
+% U+2192, asi que \textrightarrow se compilaba a NADA («Missing character: There
+% is no → in font Helvetica Neue») y el puente salia sin flecha. En modo
+% matematico la flecha viene de la fuente matematica y si se dibuja.
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{$\rightarrow$}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+% ─── Listas aireadas para las guías socioemocionales ────────────────────
+% Componer las verificaciones como «\checkbox texto\\» deja el texto que salta
+% de línea debajo del cuadrito y apelmaza el bloque. Estos entornos alinean la
+% continuación y airean los ítems. Los usa Territorio Interior; cualquier
+% familia puede hacerlo.
+\newlist{checklista}{itemize}{1}
+\setlist[checklista]{
+  label=\textcolor{milcGradeDark}{\fbox{\phantom{x}}},
+  leftmargin=9mm, labelsep=3.2mm, itemsep=2.4mm,
+  topsep=2.5mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+\newlist{pasoslista}{enumerate}{1}
+\setlist[pasoslista]{
+  label=\textcolor{milcGradeDark}{\sffamily\bfseries\arabic*.},
+  leftmargin=8mm, labelsep=3mm, itemsep=2.8mm,
+  topsep=1mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
+% ── Recursos visuales de la guía ──────────────────────────────────────
+% Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
+% \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
+% \guiaDiagrama → fuente TikZ/circuitikz (.tex) incrustada como vector:
+%                 es la vía para circuitos y esquemáticos editables.
+% #1 = ruta relativa al .tex · #2 = pie (puede ir vacío)
+\newcommand{\guiaFigura}[2]{%
+\begin{center}
+\includegraphics[width=0.88\linewidth,height=0.38\textheight,keepaspectratio]{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\newcommand{\guiaDiagrama}[2]{%
+\begin{center}
+\input{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\begin{document}
+\thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
+\begin{tikzpicture}[remember picture,overlay]
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont MOMENTO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont TERRITORIO INTERIOR · SOCIOEMOCIONAL};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
+
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 6};
+  % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
+  % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  
+
+  \node[anchor=west,text=milcGradeText,text width=11.4cm,align=left] at ([xshift=1.5cm,yshift=0.5cm]gradonum.east)
+    {
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Territorio interior · Socioemocional}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont\setlength{\baselineskip}{27pt}Reparar y volver\\[4pt]a confiar\\[4pt]«ya, perdón» no alcanza}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Grado 7° · Momento 6}
+    };
+\end{tikzpicture}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Tu reparación: una disculpa tuya escrita con los seis elementos —sobre todo el reconocimiento y el ofrecimiento de arreglo—, el acuerdo de qué cambia de ahora en adelante, y la escala de la confianza que se vuelve a construir en pasos.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · Apertura ancestral · Reparación y confianza · Triángulo Dussel-Estoicismo-Floridi}}
+
+\newpage
+
+\section*{Apertura: Reparar y volver a confiar: por qué «ya, perdón» casi nunca alcanza}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+Entre el pueblo \textbf{nasa}, en el Cauca, cuando algo se rompe ---una pelea, una falta, un daño al territorio--- \textbf{no basta con pedir disculpas: se armoniza}. La \textbf{armonización} es una de sus prácticas permanentes para sostener el equilibrio, junto con las limpiezas, los refrescamientos, los agradecimientos y los pagamentos. \textbf{Y tiene tres rasgos que hoy nos importan.} \textbf{Primero: es un procedimiento, no un sentimiento.} Tiene pasos, tiene momentos, la conduce alguien que sabe ---el \textbf{the'wala}, el médico tradicional--- y toma tiempo; no se resuelve con una frase dicha de pasada. \textbf{Segundo: es comunitaria.} No se armoniza a solas: la comunidad participa, y por eso lo que se repara no es solo la relación entre dos, sino el aire que respiran todos. \textbf{Tercero: hay un momento en que se declara cerrado}, y desde ahí se puede volver a convivir ---incluso los bastones de las autoridades se refrescan cuando se posesionan cabildos nuevos---. \emph{Compáralo con el «ya, perdón» dicho entre dientes y sin mirar a la cara. No es que a los nasa les importe más el perdón: es que saben que reparar es un trabajo, no una palabra.}
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+¿Qué hace que una disculpa funcione? Se ha medido. En 2016, un equipo dirigido por \textbf{Roy Lewicki} probó disculpas con distintas partes y encontró que las buenas tienen \textbf{seis elementos}: expresión de arrepentimiento, explicación de por qué pasó, \textbf{reconocimiento de la responsabilidad}, declaración de que no se repetirá, \textbf{ofrecimiento de arreglo} y petición de perdón. \textbf{Y no pesan igual.} El más importante con diferencia es el \textbf{reconocimiento de la responsabilidad} ---decir que fue tu culpa, que te equivocaste, sin peros---; el segundo, el \textbf{ofrecimiento de arreglo}. El menos decisivo es, curiosamente, el que más se usa: \emph{pedir perdón}. Y cuantos más elementos tiene la disculpa, mejor funciona (Lewicki y otros, 2016). \textbf{Traducido a tu vida:} «perdón si te sentiste mal» falla porque no reconoce nada ---le pasa la culpa al que se sintió mal---; «perdón, pero es que tú\ldots» falla porque la explicación se traga el reconocimiento. \emph{Lo que repara es decir qué hiciste y qué vas a hacer al respecto.}
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{Los nasa no le piden a nadie que \emph{sienta} arrepentimiento: le piden que \textbf{haga} la armonización, con pasos y con gente. \textbf{¿Cuál de tus «ya, perdón» de este año habría necesitado un procedimiento}\ldots y qué habría tenido que incluir para que el otro volviera a confiar?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar podrás: (1) \textbf{identificar} en disculpas reales ---dadas y recibidas--- cuáles de los seis elementos aparecían y cuáles faltaban; (2) \textbf{explicar} por qué el reconocimiento de responsabilidad pesa más que la petición de perdón, y por qué perdonar no es olvidar; (3) \textbf{crear} una disculpa completa con los seis elementos y un ofrecimiento de arreglo concreto; (4) \textbf{diseñar} la escala de pasos por la que se reconstruye la confianza después.
+\end{softbox}
+
+
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Comprende los fenómenos que afectan a su territorio, regula sus emociones ante ellos y acompaña a otros con empatía (transversal 6°--11°, articulado con la política «Escuela, territorio de vida» del MEN, Resolución 006519 de 2025, y la Ley 1620 de 2013)\\
+Referentes & Primera ayuda psicológica (OMS, 2011/2012) · Directrices IASC (2007) · USGS y Servicio Geológico Colombiano · Pueblo nasa y la minga (CRIC) · Dussel · Estoicismo · Floridi\\
+Producto final & Tu reparación: una disculpa tuya escrita con los seis elementos —sobre todo el reconocimiento y el ofrecimiento de arreglo—, el acuerdo de qué cambia de ahora en adelante, y la escala de la confianza que se vuelve a construir en pasos.\\
+\end{tabularx}
+\normalsize
+
+\puente{En el momento anterior aprendiste a abrir una conversación difícil sin que escalara. Hoy vas al paso siguiente y más difícil: \textbf{cuando el que hizo el daño fuiste tú}.}
+
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Distingo y reparo.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Primero, disculpas reales: las que diste y las que te dieron. Vas a ver cuáles funcionaron y por qué, antes de que nadie te explique la teoría.}
+
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- Dos disculpas.} \textbf{Nadie va a leer esta página.} \textbf{Primera parte.} Recuerda una disculpa que \textbf{te dieron} y que \emph{sí} te sirvió: escribe qué te dijeron, lo más textual que puedas, y qué hizo esa persona \emph{después}. Luego una que te dieron y que \textbf{no} te sirvió ---o que te dejó peor---: igual, textual. \textbf{Segunda parte, la incómoda.} Recuerda una vez en que \textbf{tú} hiciste algo que dolió: qué hiciste, qué dijiste después y qué pasó con esa relación. \emph{Si tu frase fue «ya, perdón» y seguiste como si nada, escríbelo tal cual: le pasa a todo el mundo y es justamente lo que vamos a trabajar.} \textbf{Y una línea final:} ¿hay algo tuyo de este año que todavía esté sin reparar? Escríbelo, aunque no sepas cómo arreglarlo.
+\end{softbox}
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Escribiste dos disculpas que te dieron ---una que sirvió y otra que no--- con las palabras textuales.}
+\milccheckrow{Anotaste qué hizo después la persona cuya disculpa sí sirvió.}
+\milccheckrow{Escribiste una vez en que el que hizo el daño fuiste tú, sin justificarte.}
+
+\begin{infoband}{milcVerde}
+
+
+\textbf{En tu cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1. Dos disculpas». \textbf{Formato:} las dos disculpas recibidas con lo que pasó después + tu propia situación + la línea de lo que sigue sin reparar. \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} puedes decir \textbf{qué tenía la disculpa que sí sirvió} y que la otra no tenía. Esta página es tuya: \textbf{nadie más tiene que leerla si tú no quieres}.
+\end{infoband}
+
+\puente{Ya las tienes. Ahora los seis elementos, cuál pesa más y qué distingue perdonar de olvidar.}
+
+\milcestacion{milcTurquesa}{Fase 2 · Sistematización: entender la reparación}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro claves sobre reparar de verdad}
+Cuatro claves para que reparar deje de ser una frase incómoda y pase a ser algo que se sabe hacer.
+\end{softbox}
+
+\milcpaso{1}{milcTurquesa}{\textbf{Reparar es un procedimiento, y eso lo vuelve aprendible.} La armonización nasa tiene pasos, la conduce alguien que sabe, participa la comunidad y \textbf{hay un momento en que se declara cerrada}. \emph{Esa última parte es la que más falta nos hace:} sin un cierre explícito, el asunto queda dando vueltas meses ---se saludan raro, se evitan, cualquier cosa lo reabre---. \textbf{Que sea procedimiento significa que no depende de que te \emph{nazca}:} se puede hacer bien un martes, con pena y sin ganas, y aun así funciona. \emph{Esperar a «sentirlo de verdad» es la excusa más común para no reparar nunca.}}
+\milcpaso{2}{milcTurquesa}{\textbf{Los seis elementos, y cuáles pesan.} Lewicki y su equipo los midieron: \textbf{(1)} expresar arrepentimiento, \textbf{(2)} explicar qué pasó, \textbf{(3)} \textbf{reconocer la responsabilidad}, \textbf{(4)} declarar que no se repetirá, \textbf{(5)} \textbf{ofrecer un arreglo}, \textbf{(6)} pedir perdón. El más importante es el \textbf{tercero}; el segundo en importancia, el \textbf{quinto}; y el menos decisivo es el \textbf{sexto} ---el que más usamos--- (Lewicki y otros, 2016). \emph{Por eso fallan las disculpas más comunes:} «perdón \textbf{si} te sentiste mal» le pasa la culpa al otro; «perdón, \textbf{pero} es que tú\ldots» usa la explicación para borrar el reconocimiento. \textbf{Truco:} si tu disculpa tiene un «pero», casi siempre lo que va después borra lo que iba antes.}
+\milcpaso{3}{milcTurquesa}{\textbf{Perdonar no es olvidar, y no es obligatorio de inmediato.} El que recibe una reparación \textbf{no está obligado a perdonar ahí mismo}, ni a hacer como si nada hubiera pasado. Perdonar es dejar de cobrar la deuda; \textbf{no} es fingir que no existió, ni renunciar a que las cosas cambien. \emph{Y al revés, para el que se disculpa:} exigir el perdón inmediato ---«ya te pedí perdón, ¿qué más quieres?»--- convierte la disculpa en otro atropello. \textbf{Una reparación se ofrece; no se cobra.}}
+\milcpaso{4}{milcTurquesa}{\textbf{La confianza no vuelve de golpe: vuelve en pasos.} Después de un daño, la relación no regresa al punto anterior por decreto. Se reconstruye con \textbf{conductas pequeñas y repetidas}: cumplir lo que dijiste, llegar cuando dijiste, no volver a hacer lo mismo cuando nadie mira. \emph{Piénsalo como una escala de cinco escalones}, del más fácil al más difícil ---saludarse, trabajar juntos en clase, volver a contarse cosas, volver a estar solos, volver a confiar algo importante---. \textbf{El que reparó no elige la velocidad de la escala:} la elige el que fue dañado.}
+
+\begin{drawbox}{milcTurquesa}{La disculpa completa, elemento por elemento}
+\begin{pasoslista}
+\item \textbf{Reconozco:} «lo que hice fue \_\_\_\_ y estuvo mal». \emph{Sin «pero», sin «si», sin «es que».} Este es el que más pesa.
+\item \textbf{Ofrezco arreglo:} «voy a \_\_\_\_ para compensarlo». \emph{El segundo en importancia, y el que casi nadie incluye.}
+\item \textbf{Lamento:} «me duele haberte hecho eso».
+\item \textbf{Explico, corto:} «pasó porque \_\_\_\_». \emph{Una línea. Si se alarga, se vuelve excusa.}
+\item \textbf{Me comprometo:} «de ahora en adelante voy a \_\_\_\_».
+\item \textbf{Pido perdón:} «¿me perdonas?». \emph{Va de último, y sin exigir respuesta.}
+\end{pasoslista}
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{«Perdón si te sentiste mal»:} no reconoce nada y culpa al que se sintió. \textbf{El «pero»:} lo que va después borra lo que iba antes. \textbf{Explicar de más:} la explicación larga es una defensa disfrazada. \textbf{Disculparse con público:} a veces sirve, pero si el daño fue en privado, el show incomoda. \textbf{Exigir el perdón:} «ya te pedí perdón» convierte la disculpa en presión. \textbf{Reparar solo con palabras:} sin ofrecimiento de arreglo, es una frase. \textbf{Esperar a sentirlo:} reparar es un procedimiento; se hace aunque dé pena.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+
+
+\textbf{En tu cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2. Los seis elementos». \textbf{Formato:} la lista de los seis, y al frente de cada uno si estaba o no en la disculpa que \textbf{sí} te sirvió (Actividad 1) y en la que no. \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} puedes explicar por qué \textbf{pedir perdón es el elemento menos importante} de los seis.
+\end{infoband}
+
+\puente{Ya sabes qué lleva. Es hora de escribir la tuya ---la de verdad, la que has estado aplazando--- con arreglo concreto y acuerdo.}
+
+\milcestacion{milcMagenta}{Fase 3 · Praxis: hacer la reparación}
+
+\begin{softbox}{milcMagenta}{milcGris}{Cómo se arma una disculpa que sirva}
+Ahora la tuya. La de verdad: la situación que anotaste como «todavía sin reparar». Se escribe primero, se ensaya, y después se hace.
+\end{softbox}
+
+\milcpaso{1}{milcMagenta}{\textbf{Escribir los seis (15 min).} Redacta tu disculpa completa, elemento por elemento, empezando por el reconocimiento. \textbf{Prohibido:} «pero», «si te sentiste», «es que». \emph{Léela buscando esas tres trampas y táchalas: casi siempre hay al menos una.} Debe caber en menos de un minuto dicha en voz alta ---las disculpas largas suelen ser autodefensas---.}
+\milcpaso{2}{milcMagenta}{\textbf{El arreglo concreto (10 min).} El elemento que casi nadie incluye y el segundo más importante. \textbf{¿Qué vas a \emph{hacer}?} Devolver algo, corregirlo delante de los mismos que lo vieron, aclarar públicamente lo que dijiste, prestarte para lo que se dañó, dejar de hacer lo que hacías. \emph{Que sea concreto y verificable:} «voy a ser mejor amigo» no es un arreglo; «voy a decirle a los del grupo que lo que conté no era cierto» sí lo es.}
+\milcpaso{3}{milcMagenta}{\textbf{El acuerdo (8 min).} Escribe qué cambia \textbf{de ahora en adelante}, en una frase que la otra persona podría comprobar. \emph{Este es el equivalente al momento en que la armonización se declara cerrada:} sin él, el asunto queda abierto y cualquier cosa lo reabre. Y anota también cómo sabrán los dos que se cumplió.}
+\milcpaso{4}{milcMagenta}{\textbf{La escala (7 min, y ensayo en parejas).} Dibuja tus cinco escalones de confianza, del más fácil al más difícil, para \emph{esa} relación. Luego, en parejas: uno dice su disculpa en voz alta y el otro escucha y responde una sola cosa ---\textbf{si le creería o no, y por qué}---. \emph{Oírla en voz alta cambia todo: los «pero» que en el papel no se notaban, dichos suenan clarísimos.}}
+
+\begin{drawbox}{milcMagenta}{Antes de cerrar tu reparación}
+\begin{checklista}
+\item Tu disculpa empieza \textbf{reconociendo} lo que hiciste, sin «pero», sin «si» y sin «es que».
+\item Incluye un \textbf{ofrecimiento de arreglo} concreto y verificable.
+\item La explicación cabe en una línea y no se convierte en defensa.
+\item Escribiste el acuerdo de qué cambia de ahora en adelante, y cómo se comprobará.
+\item Tu escala de confianza tiene cinco escalones y \textbf{el primero no es «que todo vuelva a ser como antes»}.
+\item Entendiste que el otro puede no perdonarte todavía, y que eso no anula tu reparación.
+\end{checklista}
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Plantilla de la disculpa.} \emph{«Lo que hice fue \_\_\_\_ y estuvo mal. Voy a \_\_\_\_ para arreglarlo. Me duele haberte hecho eso. Pasó porque \_\_\_\_. De ahora en adelante voy a \_\_\_\_. ¿Me perdonas?»} \\[1mm]
+\textbf{El acuerdo.} \emph{«De aquí en adelante \_\_\_\_, y vamos a saber que se cumplió cuando \_\_\_\_».} \\[1mm]
+\textbf{La escala de la confianza.} \emph{1) \_\_\_\_ · 2) \_\_\_\_ · 3) \_\_\_\_ · 4) \_\_\_\_ · 5) \_\_\_\_} (del más fácil al más difícil; la velocidad la pone el otro).
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+
+
+\textbf{En tu cuaderno (Actividad 3 · CREA).} Título: «Actividad 3. Mi reparación». \textbf{Formato:} la disculpa completa con los seis elementos + el arreglo concreto + el acuerdo + la escala de cinco escalones. \textbf{Extensión:} una página. \textbf{Sabes que terminaste cuando} tu pareja de trabajo, después de oírla, dijo que \textbf{te creería}.
+\end{infoband}
+
+\puente{El producto es una reparación completa. \emph{Una disculpa sin ofrecimiento de arreglo es una frase; con arreglo, es una reparación.}}
+
+\milcestacion{milcMostaza}{Producto de la sesión}
+\textbf{Reparación completa: disculpa con los seis elementos, arreglo concreto, acuerdo y escala de confianza}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) La disculpa reconoce la responsabilidad de forma explícita, sin «pero», «si» ni «es que». (2) Incluye un ofrecimiento de arreglo concreto, verificable y proporcional al daño. (3) La explicación es breve y no funciona como justificación. (4) Hay un acuerdo escrito sobre qué cambia y cómo se comprobará. (5) La escala de confianza tiene cinco pasos y reconoce que la velocidad la pone quien fue dañado.
+\end{softbox}
+
+\puente{Antes de cerrar, revisa tu escala de confianza: si el primer paso es «que todo vuelva a ser como antes», está mal diseñada.}
+
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con tres voces: el rostro del que fue dañado, lo que está en tu poder cuando el otro no perdona, y qué le hace a un curso que las cosas se reparen.}
+
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{«El otro se revela realmente como otro\ldots como el pobre, el oprimido; el que, a la vera del camino, fuera del sistema, muestra su rostro sufriente y sin embargo desafiante: «¡Tengo hambre!, ¡tengo derecho a comer!»»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Enrique Dussel · Filosofía de la liberación (1977)}
+
+Cuando uno hace daño, lo primero que hace para no sentirse mal es \textbf{dejar de mirar la cara del otro}: se evita, se cambia de tema, se justifica. \emph{Reparar empieza exactamente al revés:} volver a mirar a quien dañaste y dejar que su reclamo exista, aunque te lo diga con rabia. \textbf{Y hay algo más en la cita:} el otro reclama un \emph{derecho}, no un favor. \emph{Quien fue dañado no está pidiendo tu generosidad al esperar una reparación: le corresponde.}
+
+\textbf{¿A quién he estado evitando en el colegio porque mirarlo me recuerda algo que hice?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Epicteto · Enquiridión, 1 (c. 125 d.C.; trad. desde E. Carter) · cuidado interior}
+\textit{«Algunas cosas están en nuestro poder y otras no. Están en nuestro poder la opinión, el impulso, el deseo, el rechazo; en una palabra, todo aquello que es obra nuestra.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Epicteto · Enquiridión, 1 (c. 125 d.C.; trad. desde E. Carter)}
+
+Aquí la distinción salva de una angustia muy concreta: \textbf{está en tu poder reparar; no está en tu poder que te perdonen}. Puedes hacer la disculpa completa, ofrecer el arreglo, cumplir el acuerdo ---y aun así la otra persona puede necesitar meses, o no volver---. \emph{Eso no significa que tu reparación no sirviera:} significa que hiciste lo que te correspondía. \textbf{Lo que sí sería obra tuya, y mala, es reparar solo para que te perdonen} ---y molestarte cuando no pasa---.
+
+\textbf{¿Estoy reparando para arreglar el daño, o para dejar de sentirme mal yo?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{«El florecimiento de las entidades informacionales y de toda la infoesfera debe promoverse preservando, cultivando y enriqueciendo sus propiedades.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Luciano Floridi · La ética de la información (2013; trad.)}
+
+La armonización nasa no repara solo la relación entre dos: \textbf{limpia el ambiente de toda la comunidad}, porque un daño sin resolver contamina a los que estaban alrededor ---los que tuvieron que elegir bando, los que dejaron de hablarse por solidaridad---. \emph{En un curso pasa igual, y hoy más:} lo que se dijo queda en capturas de pantalla y sigue circulando cuando los dos protagonistas ya se arreglaron. \textbf{Por eso una reparación completa incluye reparar lo público:} si el daño se hizo delante de otros, o por escrito, ahí también hay que corregirlo.
+
+\textbf{De algo que dije o reenvié y luego arreglé en privado, ¿quedó algo circulando que nunca corregí?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres son citas textuales y llevan su referencia debajo. Puedes remitir a la obra en clase.
+\end{infoband}
+
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
+
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Calidad de la reparación & \milcopcion{Mi disculpa reconoce mi responsabilidad y ofrece un arreglo concreto.} & \milcopcion{Pido perdón, pero explico tanto que parece que me justifico.} & \milcopcion{Sigo diciendo «ya, perdón» y esperando que todo vuelva a ser igual.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Dos cosas. \textbf{Primero, haz la reparación} ---dila y, sobre todo, \textbf{cumple el arreglo}---. Anota cómo fue: qué respondió, si te creyó, en qué escalón de la escala quedaron. \emph{Y si te dijo que todavía no, anótalo también sin resentimiento: es su derecho, y tu parte ya está hecha.} \textbf{Segundo, pregunta cómo se arreglaban las cosas en tu familia:} averigua con alguien mayor \textbf{qué se hacía cuando dos personas de la casa o del barrio quedaban peleadas} ---quién intervenía, si había que pedir perdón delante de alguien, si se hacía algo para cerrar el asunto, si existía una comida, una visita, un trabajo compartido---. \textbf{Trae:} cómo te fue con tu reparación y la costumbre que te contaron. \emph{Vas a encontrar que casi ninguna familia dejaba el asunto en «ya, perdón»: casi todas tenían algún gesto que servía de cierre, aunque nadie lo llamara procedimiento.}
+\end{infoband}
+
+\end{document}

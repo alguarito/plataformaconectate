@@ -23,7 +23,7 @@
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=1.75cm]{geometry}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -47,7 +47,7 @@
 \usepackage{array}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{ragged2e}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
 
@@ -58,21 +58,28 @@
 % «→» comodamente en el YAML.
 \usepackage{newunicodechar}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
 \usepackage{pifont}
 \newunicodechar{✓}{\ding{51}}
 \newunicodechar{✗}{\ding{55}}
 \newunicodechar{✔}{\ding{52}}
 \newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \setmainfont{Helvetica Neue}
 \setsansfont{Helvetica Neue}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
-\hyphenpenalty=200
-\exhyphenpenalty=200
-\pretolerance=400
-\tolerance=2000
-\setlength{\emergencystretch}{1em}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
 \renewcommand{\arraystretch}{1.25}
 \setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
@@ -108,7 +115,7 @@
 }
 
 \newtcolorbox{softbox}[3]{
-  enhanced, breakable,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
   arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
   before skip=6pt,after skip=8pt,title={#3},coltitle=white,
   colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
@@ -117,7 +124,7 @@
 }
 
 \newtcolorbox{drawbox}[2]{
-  enhanced, breakable,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
   left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
   title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
   fontupper=\RaggedRight,
@@ -126,7 +133,7 @@
 }
 
 \newtcolorbox{infoband}[1]{
-  enhanced, breakable,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
   left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
   fontupper=\small\RaggedRight
 }
@@ -151,25 +158,15 @@
   \end{puentebox}%
 }
 
-% Tarjeta de paso numerada, para consumir el bloque que emite el builder.
-\newcommand{\milcpaso}[3]{%
-\begin{tcolorbox}[enhanced,breakable,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
-  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
-  fontupper=\RaggedRight,
-  overlay first={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
-    minimum size=7.4mm,font=\sffamily\bfseries\small]
-    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
-#3
-\end{tcolorbox}}
-
 \newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
 \newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
 \newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
 
-% ── Listas con sangría francesa (serie socioemocional) ────────────────
-% El template base compone las verificaciones como «\checkbox texto\\», de
-% modo que el texto que salta de línea queda debajo del cuadrito y el bloque
-% se ve apelmazado. Estos entornos alinean la continuación y airean los ítems.
+% ─── Listas aireadas para las guías socioemocionales ────────────────────
+% Componer las verificaciones como «\checkbox texto\\» deja el texto que salta
+% de línea debajo del cuadrito y apelmaza el bloque. Estos entornos alinean la
+% continuación y airean los ítems. Los usa Territorio Interior; cualquier
+% familia puede hacerlo.
 \newlist{checklista}{itemize}{1}
 \setlist[checklista]{
   label=\textcolor{milcGradeDark}{\fbox{\phantom{x}}},
@@ -189,6 +186,44 @@
 {\sffamily\bfseries\small #4}
 \end{tcolorbox}
 }
+
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
 
 % ── Recursos visuales de la guía ──────────────────────────────────────
 % Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
@@ -212,51 +247,65 @@
 
 \begin{document}
 \thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[white] (current page.south west) rectangle (current page.north east);
-  \path[fill=milcGradePrimary,rounded corners=16mm]
-    ([xshift=.55cm,yshift=-.55cm]current page.north west) rectangle
-    ([xshift=-.55cm,yshift=3.65cm]current page.south east);
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
 
-  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{14}{16}\selectfont MOMENTO};
-  \node[anchor=north west,text=milcGradeText,opacity=.82] at ([xshift=2.0cm,yshift=-2.75cm]current page.north west)
-    {\sffamily\bfseries\fontsize{9}{11}\selectfont TERRITORIO INTERIOR · SOCIOEMOCIONAL};
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont MOMENTO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont TERRITORIO INTERIOR · SOCIOEMOCIONAL};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
 
-  \begin{scope}[shift={([xshift=-3.05cm,yshift=-2.55cm]current page.north east)}]
-    \fill[white,opacity=.80] (-.62,-.52) rectangle (.62,.52);
-    \draw[milcGradeText,line width=1pt] (-.62,-.52) rectangle (.62,.52);
-    \fill[milcGradeDark] (-.42,-.38) rectangle (-.22,.06);
-    \fill[milcGradeAccent] (-.10,-.38) rectangle (.10,.24);
-    \fill[milcGradePrimary!60!black] (.22,-.38) rectangle (.42,.38);
-  \end{scope}
-
-  \node[anchor=west,text=milcGradeText] at ([xshift=1.9cm,yshift=-12.85cm]current page.north west)
-    {\sffamily\bfseries\fontsize{124}{124}\selectfont 9};
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 9};
   % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
   % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
   
 
-  \node[anchor=west,text=milcGradeText,text width=8.7cm,align=left] at ([xshift=10.35cm,yshift=-11.6cm]current page.north west)
+  \node[anchor=west,text=milcGradeText,text width=11.4cm,align=left] at ([xshift=1.5cm,yshift=0.5cm]gradonum.east)
     {
-     {\sffamily\bfseries\fontsize{19}{22}\selectfont Prepararse sin\\[4pt]vivir con miedo}\\[4mm]
-     {\sffamily\bfseries\fontsize{23}{26}\selectfont Grado 10° · Momento 9}\\[2mm]
-     {\sffamily\fontsize{13}{16}\selectfont Territorio interior · Socioemocional}\\[5mm]
-     {\sffamily\bfseries\fontsize{11}{13}\selectfont Institución Educativa Sor María Juliana}\\[1mm]
-     {\sffamily\fontsize{10}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Territorio interior · Socioemocional}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont\setlength{\baselineskip}{27pt}Prepararse sin\\[4pt]vivir con miedo}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Grado 10° · Momento 9}
     };
-
-  \path[fill=milcGradeSoft,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \draw[milcGradeDark,line width=.65pt,rounded corners=7mm]
-    ([xshift=1.35cm,yshift=.85cm]current page.south west) rectangle
-    ([xshift=-1.35cm,yshift=4.25cm]current page.south east);
-  \node[anchor=center,text=milcNegro,text width=17.0cm,align=center] at ([yshift=2.55cm]current page.south)
-    {\sffamily\fontsize{10}{12}\selectfont Metodología MILC · Apertura ancestral · Fenómeno, probabilidad y lectura crítica · Triángulo Dussel-Estoicismo-Floridi\\
-    \textcolor{milcGradeDark}{\bfseries Producto:} Tu tablero de riesgo: el histograma de las réplicas leído con datos reales, la diferencia entre probabilidad y predicción escrita con tus palabras, y el recorrido de tu casa con las tres decisiones que sí controlas.};
 \end{tikzpicture}
-\mbox{}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Tu tablero de riesgo: el histograma de las réplicas leído con datos reales, la diferencia entre probabilidad y predicción escrita con tus palabras, y el recorrido de tu casa con las tres decisiones que sí controlas.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · Apertura ancestral · Fenómeno, probabilidad y lectura crítica · Triángulo Dussel-Estoicismo-Floridi}}
+
 \newpage
 
 \section*{Apertura: Prepararse sin vivir con miedo: la onda, el histograma y lo que sí depende de ti}
@@ -290,9 +339,7 @@ Producto final & Tu tablero de riesgo: el histograma de las réplicas leído con
 
 \puente{Ya sabes que un saber campesino de siglos resistió la prueba de un satélite. Mira ahora el mapa de la sesión: vas a mirar tu entorno, a entender la física y los números del riesgo, y a construir un plan que no dependa de adivinar nada.}
 
-\begin{titlebox}{milcGradeDark}
-Ruta MILC: así vamos a aprender
-\end{titlebox}
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
 \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
 \phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Analizo y leo datos.} &
@@ -303,19 +350,16 @@ Ruta MILC: así vamos a aprender
 
 \puente{Antes de los números conviene mirar. La preparación no empieza en un manual: empieza en el techo de tu salón, en el estante de tu cuarto y en la ruta que hay entre tú y la puerta.}
 
-\begin{titlebox}{milcVerde}
-Fase 1 · Escucha
-\end{titlebox}
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
 
 \begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
 \textbf{Haz el recorrido de la mirada}, primero en el salón y luego en tu casa. No estás buscando culpables ni imaginando catástrofes: estás inventariando hechos observables. Anota tres cosas. \textbf{Lo que cae}: estantes sin anclar, televisores en el borde, materas en repisas altas, cuadros y lámparas sobre las camas, vidrios grandes. \textbf{Lo que estorba}: cajas en pasillos, puertas que abren hacia adentro, muebles que bloquean la salida. \textbf{Lo que protege}: mesas resistentes, muros firmes, espacios despejados lejos de ventanas. Mide con los ojos, no con el susto: ¿cuántos pasos hay de tu puesto a la salida?, ¿esa ruta está libre? Vas a descubrir que la mayoría de los riesgos de tu casa \textbf{no son el sismo}: son objetos que alguien puso donde no debía.
 \end{softbox}
 
-\begin{checklista}
-\item Listaste al menos cinco objetos que podrían caer, con el lugar exacto donde están.
-\item Identificaste la ruta de salida de tu salón y contaste los pasos, señalando qué la obstruye.
-\item Señalaste al menos dos lugares que sí protegen, y explicaste por qué protegen.
-\end{checklista}
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Listaste al menos cinco objetos que podrían caer, con el lugar exacto donde están.}
+\milccheckrow{Identificaste la ruta de salida de tu salón y contaste los pasos, señalando qué la obstruye.}
+\milccheckrow{Señalaste al menos dos lugares que sí protegen, y explicaste por qué protegen.}
 
 \begin{infoband}{milcVerde}
 
@@ -325,9 +369,7 @@ Fase 1 · Escucha
 
 \puente{Ya sabes qué hay a tu alrededor. Ahora vienen la física y las matemáticas, porque el miedo se alimenta de cifras mal leídas y esta fase es, sobre todo, un entrenamiento en leer bien.}
 
-\begin{titlebox}{milcTurquesa}
-Fase 2 · Sistematización: la onda, la energía, el histograma y la probabilidad
-\end{titlebox}
+\milcestacion{milcTurquesa}{Fase 2 · Sistematización: la onda, la energía, el histograma y la probabilidad}
 
 \begin{softbox}{milcTurquesa}{milcGris}{Cuatro claves para entender el riesgo con números}
 Un sismo no es un castigo ni un misterio: es una liberación de energía que viaja en forma de ondas y deja datos que se pueden contar. Esta fase te da cuatro herramientas para leer esos datos, y la última es la más importante para vivir tranquilo: distinguir \textbf{qué tan probable} es algo de \textbf{cuándo} va a ocurrir. Todos los números que siguen son reales y llevan su fecha de corte, porque un dato de emergencia sin fecha no sirve.
@@ -359,9 +401,7 @@ Un sismo no es un castigo ni un misterio: es una liberación de energía que via
 
 \puente{Ya sabes leer el dato. Es hora de convertirlo en decisiones concretas: qué haces antes, qué haces durante los segundos de sacudida y qué haces después.}
 
-\begin{titlebox}{milcMagenta}
-Fase 3 · Praxis: protegerse antes, durante y después
-\end{titlebox}
+\milcestacion{milcMagenta}{Fase 3 · Praxis: protegerse antes, durante y después}
 
 \begin{softbox}{milcMagenta}{milcGris}{Construyendo el tablero de riesgo con las acciones de autoprotección}
 Aquí se acaba la teoría. Un plan de protección no es una lista de miedos: es un conjunto de decisiones tomadas con calma \textbf{hoy}, para no tener que tomarlas en diez segundos de sacudida. Y hay algo que este programa sostiene desde el primer momento: aquí no habrá simulacros sorpresa. Todo lo que se practique se avisa antes, se explica y se puede observar sin participar.
@@ -394,9 +434,7 @@ Aquí se acaba la teoría. Un plan de protección no es una lista de miedos: es 
 
 \puente{Practicaste el recorrido. Ahora deja tu evidencia: el tablero de riesgo, que es tu plan escrito y verificable, no una buena intención.}
 
-\begin{titlebox}{milcMostaza}
-Producto de la sesión
-\end{titlebox}
+\milcestacion{milcMostaza}{Producto de la sesión}
 \textbf{Tablero de riesgo: histograma, lectura de cifras, dicotomía del control y plan de la casa}.
 \begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
 (1) Tu histograma tiene los dos ejes rotulados, usa los datos diarios y no los acumulados, y su lectura escrita nombra la tendencia correcta. (2) Explicaste con tus palabras la diferencia entre probabilidad y predicción, usando una de las cifras reales del pronóstico. (3) Desmontaste al menos un titular o mensaje que hayas visto, señalando qué dato le falta (la fuente, la fecha de corte o el denominador). (4) Tu plan de casa tiene punto de encuentro, contacto externo y tres arreglos concretos \textbf{ya realizados}, con la fecha en que los hiciste. (5) Separaste en dos columnas lo que no depende de ti y lo que sí, con al menos cuatro entradas en cada una.
@@ -404,9 +442,7 @@ Producto de la sesión
 
 \puente{Terminaste el producto. Detente a mirar qué cambió en ti (no la nota, sino tu manera de estar frente a algo que no controlas del todo).}
 
-\begin{titlebox}{milcVino}
-Fase 4 · Evaluación liberadora — cinco dimensiones
-\end{titlebox}
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
 
 \begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
 Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
@@ -432,9 +468,7 @@ Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en
 
 \puente{Cerramos pensando en grande: tres voces para entender de quién es el saber que sirve, qué parte del miedo la pone la imaginación y cómo un gráfico también puede mentir.}
 
-\begin{titlebox}{milcGradeDark}
-Triángulo de pensamiento · cierre filosófico
-\end{titlebox}
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
 
 \begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
 \textit{El filósofo, en América latina, debe comenzar por ser discípulo del pueblo oprimido latinoamericano.}
@@ -476,21 +510,20 @@ Un gráfico también es un mensaje, y puede mentir sin decir una sola cifra fals
 \textbf{Nota para el docente.} Las tres formulaciones son del autor de la guía, no citas textuales de los pensadores: recogen su lente para pensar el tema, no sus palabras. Si vas a citarlos en clase, remite a la obra original.
 \end{infoband}
 
-\begin{titlebox}{milcVino}
-Compromiso final
-\end{titlebox}
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
 
-\small
-\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{3.0cm}YYY}
-\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\
-Comprensión del tema & Explico ideas centrales con mis palabras. & Reconozco ideas pero falta precisión. & Necesito repasar conceptos base.\\
-Lectura de datos & Leo un histograma sin confundir frecuencia con magnitud y distingo probabilidad de predicción. & Leo el gráfico, pero aún confundo el dato acumulado con el diario. & Necesito releer la fase 2.\\
-Aplicación y producto & Mi producto cumple los criterios y se puede revisar. & Producto funcional con ajustes pendientes. & Aún en construcción.\\
-Reflexión 5 dimensiones & Respondí cada dimensión con honestidad. & Respondí algunas con detalle. & Mis respuestas son muy generales.\\
-Triángulo de pensamiento & Conecté las 3 voces con mi trabajo real. & Conecté al menos una. & No relaciono las voces con mi proceso.\\
-\end{tabularx}
-\normalsize
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Lectura de datos & \milcopcion{Leo un histograma sin confundir frecuencia con magnitud y distingo probabilidad de predicción.} & \milcopcion{Leo el gráfico, pero aún confundo el dato acumulado con el diario.} & \milcopcion{Necesito releer la fase 2.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
 
+\vspace{3mm}
 \textbf{Hoy entendí que:}\\[1mm]
 \linead{\linewidth}\\[1mm]
 \linead{\linewidth}

@@ -248,6 +248,34 @@ def sin_comillas(texto: str) -> str:
             t = t[len(ini):-len(fin)].strip()
     return t
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Rótulos de la plantilla
+# ─────────────────────────────────────────────────────────────────────────────
+#
+# La plantilla trae los rótulos parametrizados para que Territorio Interior
+# ---que llama a sus fases por el nombre MILC--- pueda usar la MISMA plantilla
+# que las demás familias, en vez de una copia propia que se quedó atrás en el
+# rediseño. Estos son los valores de siempre; quien necesite otros los pasa.
+
+ROTULOS_POR_DEFECTO = {
+    "FRANJA_PORTADA": "Metodología MILC · apertura ancestral · pensamiento computacional · triángulo Dussel–estoicismo–Floridi",
+    "FASE2_CARD": "Entender",
+    "FASE2_SUBTITULO": "Sistematizo y ordeno.",
+    "FASE3_CARD": "Hacer",
+    "FASE3_SUBTITULO": "Construyo y aplico.",
+    "FASE4_CARD": "Cierre",
+    "FASE4_SUBTITULO": "Evalúo y reflexiono.",
+    "FASE2_TITULO": "Estación 2 de 3 · Entender",
+    "FASE3_TITULO": "Estación 3 de 3 · Hacer",
+    "SIST_PILARES_TITULO": "Lo que vas a entender",
+    "PRAX_PILARES_TITULO": "Cómo vas a construir tu producto",
+    "RUBRICA2_CRITERIO": "Pensamiento computacional",
+    "RUBRICA2_LOGRADO": "Usé los pilares al armar mi producto.",
+    "RUBRICA2_PROCESO": "Usé algunos pilares.",
+    "RUBRICA2_APOYO": "Necesito releer la estación 2.",
+}
+
+
 def yaml_a_placeholders(guia: dict, slug: str, avisos: list[str]) -> dict[str, str]:
     """Aplana el YAML a las claves <<<UPPER>>> que espera el template.
 
@@ -350,6 +378,7 @@ def yaml_a_placeholders(guia: dict, slug: str, avisos: list[str]) -> dict[str, s
 
         # Triángulo de pensamiento
                 "TRIANGULO_NOTA": nota_docente(triangulo),
+**ROTULOS_POR_DEFECTO,
 "DUSSEL_CITA": cita_presentada(triangulo["dussel"]),
         "DUSSEL_ATRIBUCION": atribucion(triangulo["dussel"]),
         "DUSSEL_APLICACION": triangulo["dussel"]["aplicacion"],

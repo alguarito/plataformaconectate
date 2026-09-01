@@ -1,0 +1,556 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra UNICA de las guias MILC v3.
+%
+% La usan las tres familias de guias, cada una con su driver:
+%   · Grados 6-11  -> scripts/build-guias-g11.py
+%   · Bebras       -> scripts/build-guias-bebras.py
+%   · Semillero    -> scripts/build-guias-semillero.py
+%
+% Antes habia tres copias casi identicas (~400 lineas iguales, 6 distintas):
+% cada mejora habia que aplicarla tres veces, y en la practica no se hacia
+% (el motor de recursos vivia solo en dos de ellas). Lo que varia entre
+% familias esta parametrizado en 6 placeholders que cada driver llena
+% (se nombran aqui SIN su sintaxis real: el builder reemplaza por texto plano,
+% tambien dentro de los comentarios, y un valor multilinea rompe el preambulo):
+%
+%   HEADER_IZQ        encabezado izquierdo de pagina
+%   HEADER_DER        encabezado derecho de pagina
+%   PORTADA_ETIQUETA  rotulo sobre el numero grande (GRADO/MOMENTO/MODULO)
+%   PORTADA_SERIE     linea de serie de la portada
+%   PORTADA_ID        identificador de la guia en la portada
+%   PORTADA_CIRCULO   el circulito de grado (°), o vacio si no aplica
+%
+% El resto de claves las documenta content/guias/_SCHEMA.md. El script valida
+% que no queden placeholders sin reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+% Librerías TikZ para los diagramas de las guías (bloque `recursos:`):
+%  · babel  → babel en español vuelve activos caracteres como «>», y TikZ los usa
+%             en sus opciones (>=stealth, ->). Sin esta librería, cualquier
+%             diagrama con flechas revienta con «\language@active@arg> has an
+%             extra }». Debe ir ANTES de que se dibuje nada.
+%  · positioning        → sintaxis «below left=2pt and 3pt».
+%  · decorations.pathreplacing → llaves ({brace}) para señalar rangos.
+\usetikzlibrary{babel,positioning,decorations.pathreplacing}
+\usepackage{graphicx}
+% Circuitos: el trabajo de electrónica se hace hoy con micro:bit y sus sensores
+% integrados (MakeCode, sin cableado), así que no se necesitan esquemáticos.
+% Si algún día entran montajes con protoboard, basta descomentar esta línea:
+% los diagramas .tex/.tikz declarados en `recursos:` ya se incrustan solos.
+% \usepackage{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
+\usepackage{enumitem}
+\usepackage{microtype}
+
+% Helvetica Neue no trae la flecha U+2192, asi que cada «→» escrito literalmente
+% en el YAML se compilaba a NADA, en silencio (462 flechas en 61 guias: rutas del
+% tipo «paleta → tipografia → lockup» salian rotas). Mapeamos el caracter a su
+% version matematica, que si tiene glifo. Asi el autor puede seguir escribiendo
+% «→» comodamente en el YAML.
+\usepackage{newunicodechar}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0D9488}
+\definecolor{milcGradeDark}{HTML}{115E59}
+\definecolor{milcGradeSoft}{HTML}{CCFBF1}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Territorio interior · Educación socioemocional}
+\rhead{\small Grado 7° · Momento 9 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+% La flecha va en modo matematico a proposito: Helvetica Neue NO tiene el glifo
+% U+2192, asi que \textrightarrow se compilaba a NADA («Missing character: There
+% is no → in font Helvetica Neue») y el puente salia sin flecha. En modo
+% matematico la flecha viene de la fuente matematica y si se dibuja.
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{$\rightarrow$}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+% ─── Listas aireadas para las guías socioemocionales ────────────────────
+% Componer las verificaciones como «\checkbox texto\\» deja el texto que salta
+% de línea debajo del cuadrito y apelmaza el bloque. Estos entornos alinean la
+% continuación y airean los ítems. Los usa Territorio Interior; cualquier
+% familia puede hacerlo.
+\newlist{checklista}{itemize}{1}
+\setlist[checklista]{
+  label=\textcolor{milcGradeDark}{\fbox{\phantom{x}}},
+  leftmargin=9mm, labelsep=3.2mm, itemsep=2.4mm,
+  topsep=2.5mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+\newlist{pasoslista}{enumerate}{1}
+\setlist[pasoslista]{
+  label=\textcolor{milcGradeDark}{\sffamily\bfseries\arabic*.},
+  leftmargin=8mm, labelsep=3mm, itemsep=2.8mm,
+  topsep=1mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
+% ── Recursos visuales de la guía ──────────────────────────────────────
+% Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
+% \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
+% \guiaDiagrama → fuente TikZ/circuitikz (.tex) incrustada como vector:
+%                 es la vía para circuitos y esquemáticos editables.
+% #1 = ruta relativa al .tex · #2 = pie (puede ir vacío)
+\newcommand{\guiaFigura}[2]{%
+\begin{center}
+\includegraphics[width=0.88\linewidth,height=0.38\textheight,keepaspectratio]{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\newcommand{\guiaDiagrama}[2]{%
+\begin{center}
+\input{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\begin{document}
+\thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
+\begin{tikzpicture}[remember picture,overlay]
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont MOMENTO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont TERRITORIO INTERIOR · SOCIOEMOCIONAL};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
+
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 9};
+  % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
+  % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  
+
+  \node[anchor=west,text=milcGradeText,text width=11.4cm,align=left] at ([xshift=1.5cm,yshift=0.5cm]gradonum.east)
+    {
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Territorio interior · Socioemocional}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont\setlength{\baselineskip}{27pt}Quién\\[4pt]come solo\\[4pt]la exclusión que no deja moretón}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Grado 7° · Momento 9}
+    };
+\end{tikzpicture}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Tu mapa del descanso: quién está con quién y quién está solo en los momentos sin adulto, el nombre de una persona a la que le vas a hacer una invitación concreta, y la invitación escrita —con día, hora y lugar—.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · Apertura ancestral · Exclusión y pertenencia · Triángulo Dussel-Estoicismo-Floridi}}
+
+\newpage
+
+\section*{Apertura: Quién come solo: la exclusión que no deja moretón}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+En los pueblos indígenas y campesinos de Colombia, cuando hay un trabajo que \textbf{una sola familia no puede hacer} ---levantar una casa, arreglar un camino, sacar una cosecha--- se convoca una \textbf{minga}. El CRIC la nombra como una de sus prácticas de unidad, y hoy la palabra se usa incluso para reuniones donde lo que se trabaja es el pensamiento. \textbf{Y hay tres cosas que nos importan.} \textbf{Primero: se convoca.} Alguien pasa la voz, uno por uno; \emph{nadie llega a una minga porque «se enteró»}. \textbf{Segundo: hay una tarea para cada quien.} No todos cargan lo mismo ---los mayores hacen una cosa, los niños otra, el que no puede con el peso hace la comida o lleva el agua---, \textbf{pero todos tienen puesto}. \textbf{Tercero: se come junto.} El que convoca pone la comida, y \textbf{la olla es una sola}. \emph{Ahí está el detalle que da nombre a esta guía:} en una minga sería impensable que alguien terminara comiendo solo, aparte, sin que nadie lo notara. \textbf{No porque sean más buenos: porque a la gente se la cuenta.}
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+A quedar por fuera se le suele bajar el precio: \emph{«no le hicieron nada»}. \textbf{Se midió, y resultó falso.} En 2003, \textbf{Naomi Eisenberger}, \textbf{Matthew Lieberman} y \textbf{Kipling Williams} metieron personas a un escáner cerebral y las pusieron a jugar un juego bobo: se pasaban una pelota virtual con otros dos jugadores. A la mitad del juego, \textbf{los otros dos dejaban de pasarle la pelota}. Nada más: sin insultos, sin explicaciones, sin público. \textbf{Y el cerebro respondió como si le hubieran hecho daño físico:} se activó \textbf{la corteza cingulada anterior}, una de las zonas que se enciende con el dolor del cuerpo, y \textbf{cuanto más se activaba, peor decía sentirse la persona} (Eisenberger, Lieberman y Williams, 2003). \textbf{Fíjate en el tamaño del asunto:} eran desconocidos, era un juego de computador de tres minutos, no había nada en juego \textbf{---y dolió igual---}. \emph{Ahora calcula lo que pesa que no te escojan, todos los días, durante un año, en el único descanso que tienes.}
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{En la minga \textbf{a la gente se la cuenta} y a cada quien se le da un puesto. \textbf{¿Quién de tu salón lleva semanas sin que nadie lo cuente}\ldots y cuándo fue la última vez que te diste cuenta de que estaba solo?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar podrás: (1) \textbf{identificar} en tu propio salón quién está por fuera en los momentos sin adulto, que son los que de verdad importan; (2) \textbf{explicar} por qué la exclusión duele como un golpe y por qué, sin embargo, casi nunca se denuncia; (3) \textbf{distinguir} entre estar solo por gusto y quedar solo sin escogerlo; (4) \textbf{hacer} una invitación concreta ---con día, hora y lugar--- en vez de un «cuando quieras te nos unes».
+\end{softbox}
+
+
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Comprende los fenómenos que afectan a su territorio, regula sus emociones ante ellos y acompaña a otros con empatía (transversal 6°--11°, articulado con la política «Escuela, territorio de vida» del MEN, Resolución 006519 de 2025, y la Ley 1620 de 2013)\\
+Referentes & Primera ayuda psicológica (OMS, 2011/2012) · Directrices IASC (2007) · USGS y Servicio Geológico Colombiano · Pueblo nasa y la minga (CRIC) · Dussel · Estoicismo · Floridi\\
+Producto final & Tu mapa del descanso: quién está con quién y quién está solo en los momentos sin adulto, el nombre de una persona a la que le vas a hacer una invitación concreta, y la invitación escrita —con día, hora y lugar—.\\
+\end{tabularx}
+\normalsize
+
+\puente{Ya trabajaste la palabra que hiere y lo que pasa en los grupos. \textbf{Hoy toca el daño más difícil de ver, porque no se hace diciendo nada:} se hace \textbf{no contando} a alguien.}
+
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Veo lo que no se ve.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Primero, el mapa: dónde se para cada quien en el descanso. \emph{Es más revelador que cualquier encuesta.}}
+
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- El mapa del descanso.} \textbf{Sin nombres: usa iniciales.} \textbf{Primera parte.} Dibuja, de memoria, \textbf{dónde se para la gente de tu salón en el descanso}: los grupos, quiénes son, dónde. \emph{Hazlo antes de salir a mirar; lo que uno recuerda de memoria ya dice algo.} \textbf{Segunda parte.} Marca \textbf{quiénes quedan por fuera de todos los círculos}: el que camina, el que se queda en el salón, el que está siempre con el celular, el que se pega a un grupo pero no habla. \textbf{Tercera parte.} Ahora los otros momentos sin adulto: \emph{cuando toca armar grupos de trabajo, ¿a quién escogen de último? Cuando hay que hacer parejas, ¿quién queda esperando?} \textbf{Y la incómoda:} ¿tú te has hecho el que no ve, para no quedar con esa persona? \emph{Esta página no la lee nadie: contéstala en serio.}
+\end{softbox}
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Dibujaste el mapa de memoria antes de ir a mirar.}
+\milccheckrow{Marcaste quiénes quedan por fuera de los círculos, incluidos los que se pegan pero no hablan.}
+\milccheckrow{Anotaste a quién escogen de último para grupos, y tu propia parte en eso.}
+
+\begin{infoband}{milcVerde}
+
+
+\textbf{En tu cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1. El mapa del descanso». \textbf{Formato:} el dibujo con los grupos + la lista de quienes quedan por fuera + a quién escogen de último. \textbf{Extensión:} media página, dibujo incluido. \textbf{Sabes que terminaste cuando} hay \textbf{al menos un nombre} que te sorprendió encontrar en la lista de afuera. Esta página es tuya: \textbf{nadie más tiene que leerla si tú no quieres}.
+\end{infoband}
+
+\puente{Ya lo tienes. Ahora, por qué esto duele donde duele un golpe, y por qué nadie lo denuncia: no hay a quién acusar.}
+
+\milcestacion{milcTurquesa}{Fase 2 · Sistematización: entender la exclusión}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro claves sobre quedar por fuera}
+Cuatro claves para dejar de creer que «no le hicieron nada» y empezar a ver lo que sí está pasando.
+\end{softbox}
+
+\milcpaso{1}{milcTurquesa}{\textbf{Duele donde duele un golpe, y eso no es una metáfora.} El experimento de la pelota virtual es la prueba: bastó que dos desconocidos dejaran de pasarle la pelota a alguien durante tres minutos para que se le encendiera \textbf{la corteza cingulada anterior} ---zona del dolor físico--- y para que, entre más se encendía, \textbf{peor dijera sentirse} (Eisenberger, Lieberman y Williams, 2003). \emph{Piensa en la desproporción:} un juego bobo, gente que no conocía, sin nada en juego. \textbf{Por eso «pero si no le dijeron nada» no sirve como defensa:} \emph{no hacer nada es precisamente el método}. Y por eso también duele tanto algo tan pequeño como que no te contesten en el grupo.}
+\milcpaso{2}{milcTurquesa}{\textbf{Nadie lo denuncia porque no hay a quién acusar.} Una pelea tiene autor, testigos y hora; \textbf{quedar por fuera no tiene nada de eso}. \emph{Nadie lo decidió, nadie dio la orden, nadie firmó.} Si el excluido lo dice, queda peor: parece que se queja de que no lo quieren, \emph{que es justo lo más humillante que uno puede decir en voz alta a los doce años}. \textbf{Por eso esta es la única forma de maltrato que se sostiene sola:} el que la sufre se calla por vergüenza y el que la hace no siente que esté haciendo nada. \textbf{Y aquí está la trampa que hay que romper:} para que alguien quede por fuera \textbf{no hace falta que nadie lo excluya}; basta con que a nadie se le ocurra contarlo.}
+\milcpaso{3}{milcTurquesa}{\textbf{Estar solo no es lo mismo que quedar solo.} \emph{Hay gente que quiere estar sola en el descanso, y está bien:} leer, oír música, descansar del ruido. \textbf{La diferencia no está en si está solo, sino en si puede dejar de estarlo cuando quiera.} \textbf{Prueba:} si esa persona se acercara a un grupo, \emph{¿le harían sitio?} Si la respuesta es sí, está sola porque quiere. Si es no ---o «no sé»---, no está sola: \textbf{está por fuera}. \emph{Y ojo con la señal más engañosa de todas:} el que se pega a un grupo, se ríe de los chistes y no habla nunca. \textbf{Desde afuera parece incluido. Desde adentro no lo está.}}
+\milcpaso{4}{milcTurquesa}{\textbf{Lo único que funciona es una invitación concreta.} «Cuando quieras te nos unes» \textbf{no es una invitación}: le pasa al otro todo el trabajo y todo el riesgo ---le toca acercarse sin saber si es en serio---. \emph{Una invitación de verdad tiene tres datos:} \textbf{qué, cuándo y dónde}. «¿Vamos juntos a la tienda en el descanso?» · «Siéntate acá que estamos armando el trabajo». \textbf{Y una regla de la minga que sirve tal cual:} \emph{darle a la persona una tarea}. \textbf{Se entra mucho más fácil a un grupo cuando uno tiene algo que hacer} que cuando le toca solamente estar ahí, existiendo.}
+
+\begin{drawbox}{milcTurquesa}{La invitación que sí es una invitación}
+\begin{pasoslista}
+\item \textbf{Tiene día, hora y lugar.} \emph{«Cuando quieras» no los tiene, y por eso no cuenta.}
+\item \textbf{La haces tú, no «el grupo».} Una persona invita; los grupos no invitan a nadie.
+\item \textbf{Trae una tarea:} «ayúdame con esto», «tú traes\ldots». \emph{Es más fácil entrar haciendo que estando.}
+\item \textbf{No explica por qué.} \emph{«Es que te vi solo» convierte la invitación en diagnóstico ---y nadie acepta que lo diagnostiquen---.}
+\item \textbf{Aguanta un «no».} Puede que la primera vez diga que no. \textbf{Se repite otro día; eso es lo que la vuelve real.}
+\end{pasoslista}
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{«Es que él es así»:} describe el resultado y lo llama causa. \textbf{«Si quisiera, se acercaría»:} le pide al que está por fuera el trabajo que no le toca. \textbf{«Cuando quieras te nos unes»:} la forma más amable de no invitar. \textbf{Explicar la invitación:} «te vi solito» humilla, y la persona va a decir que no. \textbf{Invitar delante de todos:} a veces sirve, pero suele volverlo un espectáculo. \textbf{La adopción:} tratar a alguien como proyecto de caridad se nota en tres días. \textbf{Rendirse con el primer no:} lo que vuelve real una invitación es que se repita.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+
+
+\textbf{En tu cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2. Solo o por fuera». \textbf{Formato:} toma tres personas de tu mapa y aplícales la prueba ---\emph{si se acercara, ¿le harían sitio?}---, con tu respuesta y por qué. \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} puedes explicar por qué \textbf{para que alguien quede por fuera no hace falta que nadie lo excluya}.
+\end{infoband}
+
+\puente{Ya sabes quién está por fuera. Es hora de hacer lo único que sirve: \textbf{una invitación con día, hora y lugar}.}
+
+\milcestacion{milcMagenta}{Fase 3 · Praxis: hacer sitio}
+
+\begin{softbox}{milcMagenta}{milcGris}{Cómo se le hace sitio a alguien sin humillarlo}
+Esto no se resuelve con una campaña ni con una cartelera. Se resuelve con una persona invitando a otra, con día y hora. Eso es todo, y por eso cuesta.
+\end{softbox}
+
+\milcpaso{1}{milcMagenta}{\textbf{El mapa, verificado (8 min).} Compara el mapa que hiciste de memoria con lo que viste en el descanso de verdad. \emph{Lo interesante está en la diferencia:} casi siempre \textbf{sobra alguien que uno creía ubicado}. \textbf{Y una pregunta para el que dibujó todo lleno:} ¿pusiste a todos los del salón en algún grupo? Cuenta cuántos son en la lista y cuántos dibujaste.}
+\milcpaso{2}{milcMagenta}{\textbf{El punto ciego (7 min).} De la lista de los que quedan por fuera, escoge \textbf{a alguien de quien no sepas casi nada}. \emph{Escribe lo que sí sabes ---nombre completo, de dónde viene, algo que se le dé bien---.} \textbf{Si no llenas tres líneas, ahí está el punto:} lleva un año a cinco metros de ti y no sabes nada de esa persona. \emph{No es culpa tuya solo. Pero sí es información.}}
+\milcpaso{3}{milcMagenta}{\textbf{La invitación concreta (10 min).} Escríbela: \textbf{qué, cuándo, dónde}, con una tarea adentro y \textbf{sin explicar por qué}. \emph{Léela buscando la trampa más común:} si suena a «te estoy haciendo un favor», está mal ---y hay que reescribirla hasta que suene a que te sirve a ti también---. \textbf{Ensáyala en parejas} y que tu compañero diga una sola cosa: \emph{si aceptaría o no}.}
+\milcpaso{4}{milcMagenta}{\textbf{La semana de prueba (fuera de clase).} Haz la invitación, \textbf{y hazla otra vez en la semana aunque la primera no funcione}. \emph{Dos veces, no una:} una invitación sola parece un accidente; dos ya es una señal. \textbf{Y algo que hay que decir sin adornos:} puede que la persona no quiera, y hay que respetarlo. \emph{Tu tarea no es lograr que acepte ---eso no está en tu poder---: es que exista la invitación, que es lo que sí lo está.}}
+
+\begin{drawbox}{milcMagenta}{Antes de cerrar tu mapa}
+\begin{checklista}
+\item Comparaste el mapa de memoria con lo que viste de verdad, y contaste cuántos quedaron sin dibujar.
+\item Aplicaste la prueba \emph{«si se acercara, ¿le harían sitio?»} a tres personas.
+\item Escogiste a alguien de quien no sabías casi nada y escribiste lo que sí sabes.
+\item Tu invitación tiene \textbf{día, hora y lugar} y una tarea adentro.
+\item Tu invitación \textbf{no explica por qué} lo estás invitando.
+\item Entendiste que puede decir que no, y que la invitación se repite igual.
+\end{checklista}
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{La prueba.} \emph{«Si \_\_\_\_ se acercara a un grupo, ¿le harían sitio?»} ---si la respuesta es no o «no sé», no está solo: está por fuera---. \\[1mm]
+\textbf{Mi invitación.} \emph{«\_\_\_\_ (qué), el \_\_\_\_ (cuándo), en \_\_\_\_ (dónde). Ayúdame con \_\_\_\_.»} \\[1mm]
+\textbf{Lo que no va.} \emph{«Es que te vi solo» · «cuando quieras te nos unes» · «pobrecito, vente».}
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+
+
+\textbf{En tu cuaderno (Actividad 3 · CREA).} Título: «Actividad 3. Mi mapa y mi invitación». \textbf{Formato:} el mapa verificado + la prueba aplicada a tres personas + lo que sabes de la persona del punto ciego + la invitación escrita + cómo salió. \textbf{Extensión:} una página. \textbf{Sabes que terminaste cuando} tu invitación \textbf{tiene día, hora y lugar} y tu pareja de trabajo dijo que la aceptaría.
+\end{infoband}
+
+\puente{El producto es una invitación hecha, no una intención. \emph{«Cuando quieras te nos unes» es la manera más amable de no invitar a nadie.}}
+
+\milcestacion{milcMostaza}{Producto de la sesión}
+\textbf{Mapa del descanso: quién queda por fuera, la prueba del sitio y una invitación concreta hecha}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) El mapa distingue a quienes están solos por gusto de quienes quedan por fuera, usando la prueba del sitio. (2) Identifica los momentos sin adulto —descanso, armado de grupos, parejas—, no solo la clase. (3) La invitación tiene día, hora y lugar, y una tarea concreta adentro. (4) La invitación no explica sus motivos ni presenta al invitado como caso. (5) Se registra qué pasó, incluido el «no» si lo hubo, y si la invitación se repitió.
+\end{softbox}
+
+\puente{Antes de cerrar, revisa lo incómodo: si tu invitación se siente como una obra de caridad, la persona lo va a notar y va a decir que no.}
+
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con tres voces: el que está a la vera del camino, la abeja y el enjambre, y qué se cultiva en un curso donde nadie sobra.}
+
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{«El otro se revela realmente como otro\ldots como el pobre, el oprimido; el que, a la vera del camino, fuera del sistema, muestra su rostro sufriente y sin embargo desafiante: «¡Tengo hambre!, ¡tengo derecho a comer!»»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Enrique Dussel · Filosofía de la liberación (1977)}
+
+Lee otra vez tres palabras: \textbf{fuera del sistema}. \emph{Dussel no habla de alguien a quien atacaron: habla de alguien que quedó por fuera,} a la orilla, mientras todo lo demás sigue funcionando perfectamente sin él. \textbf{Un salón puede andar muy bien ---buenas notas, buen ambiente, nadie se pelea--- y tener a alguien a la vera del camino.} \emph{Y fíjate en cómo termina la cita:} el otro no pide un favor, \textbf{reclama un derecho}. \textbf{Traducido:} el que está por fuera no necesita que lo adopten por lástima; \emph{le corresponde un puesto, igual que a ti}.
+
+\textbf{En mi salón, ¿quién está a la vera del camino mientras todo lo demás funciona bien?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · Meditaciones VI, 54 (c. 175 d.C.) · cuidado interior}
+\textit{«Lo que no beneficia al enjambre, tampoco beneficia a la abeja.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Marco Aurelio · Meditaciones VI, 54 (c. 175 d.C.)}
+
+Es una frase corta y hace un trabajo grande: \textbf{deshace la idea de que a uno le conviene lo que le conviene solo a él}. \emph{Un curso donde alguien come solo no es un curso al que le va bien y a una persona le va mal:} \textbf{es un curso que aprendió que se puede dejar a alguien por fuera} ---y esa lección la usa después con quien sea, incluido tú, el día que te toque---. \textbf{Es exactamente la lógica de la minga:} la casa se levanta porque nadie sobra. \emph{Y al revés: cuando el enjambre se acostumbra a que una abeja quede afuera, ninguna está segura.}
+
+\textbf{Si mañana el que quedara por fuera fuera yo, ¿quién en mi salón lo notaría?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{«Somos organismos informacionales ---inforgs--- que compartimos un entorno global hecho, en última instancia, de información: la infoesfera.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Luciano Floridi · La cuarta revolución (2014)}
+
+Hoy la exclusión tiene una capa nueva y silenciosa: \textbf{no estar en el grupo donde se avisan las cosas}. \emph{No es un insulto ni un portazo ---es no enterarse---:} que la tarea se avisó ahí, que cambiaron el salón, que quedaron de verse. \textbf{Y el efecto es doble:} el que no está \textbf{queda por fuera} y además \textbf{queda quedando mal}, porque parece descuidado. \emph{Por eso vale una regla boba y muy efectiva:} cuando armen un grupo para algo, \textbf{revisen quién falta antes de empezar a escribir}. \emph{Es el equivalente digital de contar a la gente en la minga.}
+
+\textbf{De los grupos de mi salón, ¿hay alguien del curso que no esté en ninguno?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres son citas textuales y llevan su referencia debajo. Puedes remitir a la obra en clase.
+\end{infoband}
+
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
+
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Calidad de la inclusión & \milcopcion{Hice una invitación concreta —día, hora y lugar— a alguien que estaba por fuera.} & \milcopcion{Le hablé, pero quedó en «cuando quieras te nos unes».} & \milcopcion{Sigo pensando que el que está solo es porque quiere.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Dos cosas. \textbf{Primero, haz la invitación} ---y repítela una segunda vez en la semana, aunque la primera no funcione---. Anota qué dijo, qué pasó después y \textbf{qué aprendiste de esa persona que no sabías}. \emph{Si dijo que no, anótalo sin resentimiento: tu parte era que existiera la invitación, y ya está hecha.} \textbf{Segundo, pregunta en tu casa por la minga y el convite:} averigua con alguien mayor \textbf{si en su vereda o en su barrio se hacían trabajos entre todos} ---quién avisaba, cómo se repartían las tareas, qué hacían los niños y los mayores, \textbf{quién ponía la comida y si todos comían juntos}---. \textbf{Trae:} cómo salió tu invitación y lo que te contaron. \emph{Vas a encontrar algo que hoy cuesta imaginar: en esos trabajos no había manera de que alguien quedara por fuera, porque a la gente se la contaba antes de empezar.}
+\end{infoband}
+
+\end{document}

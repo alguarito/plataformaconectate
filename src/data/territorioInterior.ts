@@ -176,7 +176,20 @@ const grado7: Nivel = {
     'El otro cercano: escuchar sin arreglar, herir con la palabra, reparar y volver a confiar. Cierra con el vínculo puesto a prueba por un hecho real.',
   bgClass: 'bg-bento-teal',
   momentos: [
-    { numero: 1, slug: 'momento-1', nombre: 'Escuchar sin arreglar', foco: 'Escucha activa: el silencio es parte de la conversación, no una falla.', ancla:a('El escuchar silencioso (Dussel)', 'verificada'), estado: 'proximamente' },
+    {
+      numero: 1,
+      slug: 'momento-1',
+      nombre: 'Escuchar sin arreglar',
+      foco: 'El silencio es parte de la conversación, no una falla. Escuchar no es esperar turno, y aconsejar demasiado pronto no acelera la solución: la aleja.',
+      // La semilla del plan («el escuchar silencioso», de Dussel) nombraba en
+      // realidad la primera voz del triángulo, no un saber situado: habría
+      // repetido a Dussel dos veces en la misma guía. Se sustituye por la
+      // práctica que sí está documentada y es del mismo orden que las demás
+      // anclas del programa.
+      ancla:a('El círculo de la palabra ---convocado hasta hoy por la ONIC y el CRIC---: en círculo y sin cabecera, la palabra circula por turnos, la conducen los mayores y no se cierra cuando aparece la respuesta, sino cuando todos hablaron', 'verificada'),
+      estado: 'activo',
+      claveGuia: '7-1',
+    },
     {
       numero: 2,
       slug: 'momento-2',
@@ -195,7 +208,15 @@ const grado7: Nivel = {
       estado: 'activo',
       claveGuia: '7-3',
     },
-    { numero: 4, slug: 'momento-4', nombre: 'La palabra que hiere', foco: 'Apodos, burla y el humor que se cobra víctimas.', ancla:a('El fiado con cuaderno y el acuerdo de palabra del cuadradero', 'verificada'), estado: 'proximamente' },
+    {
+      numero: 4,
+      slug: 'momento-4',
+      nombre: 'La palabra que hiere',
+      foco: 'Apodos, burla y el humor que se cobra víctimas. «Era chiste» no borra el daño: corre la línea de lo que el grupo permite hacerle a alguien.',
+      ancla:a('El fiado de la tienda de barrio y su libreta: crédito sin contrato, sin firma y sin intereses, sostenido solo por la palabra del cliente ---la misma boca que un día vale un mercado y otro día dice «era chiste»---', 'verificada'),
+      estado: 'activo',
+      claveGuia: '7-4',
+    },
     {
       numero: 5,
       slug: 'momento-5',
@@ -215,8 +236,24 @@ const grado7: Nivel = {
       claveGuia: '7-6',
     },
     { numero: 7, slug: 'momento-7', nombre: 'Guardar y no guardar', foco: 'Los secretos que sí se cuentan, y a quién.', ancla:a('Descartada por decisión ética', 'descartada', 'Documentarla obligaría a bordear saber restringido o a usar como ilustración justo aquello que las comunidades protegen. El dilema real del secreto es judicial y de despojo, no de madurez personal.'), estado: 'proximamente' },
-    { numero: 8, slug: 'momento-8', nombre: 'Los grupos de chat', foco: 'Cuidado en línea: capturas, grupos y lo que se reenvía.', ancla:a('El Matachín del Carnaval de Riosucio: el chisme vuelto verso firmado', 'verificada'), estado: 'proximamente' },
-    { numero: 9, slug: 'momento-9', nombre: 'Quién come solo', foco: 'La exclusión cotidiana, la que no se denuncia porque no se ve.', ancla:a('La minga: nadie sobra', 'verificada'), estado: 'proximamente' },
+    {
+      numero: 8,
+      slug: 'momento-8',
+      nombre: 'Los grupos de chat',
+      foco: 'Capturas, grupos y lo que se reenvía. Lo que suelta la mano no es el anonimato ---en un grupo todos saben quién eres---: es no tener que aguantar la cara del otro.',
+      ancla:a('El matachín del Carnaval de Riosucio (Caldas), presente desde 1915, y su decretero: la burla escrita en verso sobre los propios vecinos, pero leída con nombre, en la plaza y con fecha de cierre', 'verificada'),
+      estado: 'activo',
+      claveGuia: '7-8',
+    },
+    {
+      numero: 9,
+      slug: 'momento-9',
+      nombre: 'Quién come solo',
+      foco: 'La exclusión cotidiana, la que no se denuncia porque no hay a quién acusar. Para que alguien quede por fuera no hace falta que nadie lo excluya: basta con que a nadie se le ocurra contarlo.',
+      ancla:a('La minga ---nombrada por el CRIC como práctica de unidad---: se avisa uno por uno, hay tarea para cada quien según lo que puede hacer y se come junto de una sola olla; a la gente se la cuenta antes de empezar', 'verificada'),
+      estado: 'activo',
+      claveGuia: '7-9',
+    },
     {
       numero: 10,
       slug: 'momento-10',

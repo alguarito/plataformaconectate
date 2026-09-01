@@ -1,0 +1,555 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra UNICA de las guias MILC v3.
+%
+% La usan las tres familias de guias, cada una con su driver:
+%   · Grados 6-11  -> scripts/build-guias-g11.py
+%   · Bebras       -> scripts/build-guias-bebras.py
+%   · Semillero    -> scripts/build-guias-semillero.py
+%
+% Antes habia tres copias casi identicas (~400 lineas iguales, 6 distintas):
+% cada mejora habia que aplicarla tres veces, y en la practica no se hacia
+% (el motor de recursos vivia solo en dos de ellas). Lo que varia entre
+% familias esta parametrizado en 6 placeholders que cada driver llena
+% (se nombran aqui SIN su sintaxis real: el builder reemplaza por texto plano,
+% tambien dentro de los comentarios, y un valor multilinea rompe el preambulo):
+%
+%   HEADER_IZQ        encabezado izquierdo de pagina
+%   HEADER_DER        encabezado derecho de pagina
+%   PORTADA_ETIQUETA  rotulo sobre el numero grande (GRADO/MOMENTO/MODULO)
+%   PORTADA_SERIE     linea de serie de la portada
+%   PORTADA_ID        identificador de la guia en la portada
+%   PORTADA_CIRCULO   el circulito de grado (°), o vacio si no aplica
+%
+% El resto de claves las documenta content/guias/_SCHEMA.md. El script valida
+% que no queden placeholders sin reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+% Librerías TikZ para los diagramas de las guías (bloque `recursos:`):
+%  · babel  → babel en español vuelve activos caracteres como «>», y TikZ los usa
+%             en sus opciones (>=stealth, ->). Sin esta librería, cualquier
+%             diagrama con flechas revienta con «\language@active@arg> has an
+%             extra }». Debe ir ANTES de que se dibuje nada.
+%  · positioning        → sintaxis «below left=2pt and 3pt».
+%  · decorations.pathreplacing → llaves ({brace}) para señalar rangos.
+\usetikzlibrary{babel,positioning,decorations.pathreplacing}
+\usepackage{graphicx}
+% Circuitos: el trabajo de electrónica se hace hoy con micro:bit y sus sensores
+% integrados (MakeCode, sin cableado), así que no se necesitan esquemáticos.
+% Si algún día entran montajes con protoboard, basta descomentar esta línea:
+% los diagramas .tex/.tikz declarados en `recursos:` ya se incrustan solos.
+% \usepackage{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
+\usepackage{enumitem}
+\usepackage{microtype}
+
+% Helvetica Neue no trae la flecha U+2192, asi que cada «→» escrito literalmente
+% en el YAML se compilaba a NADA, en silencio (462 flechas en 61 guias: rutas del
+% tipo «paleta → tipografia → lockup» salian rotas). Mapeamos el caracter a su
+% version matematica, que si tiene glifo. Asi el autor puede seguir escribiendo
+% «→» comodamente en el YAML.
+\usepackage{newunicodechar}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0D9488}
+\definecolor{milcGradeDark}{HTML}{115E59}
+\definecolor{milcGradeSoft}{HTML}{CCFBF1}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Territorio interior · Educación socioemocional}
+\rhead{\small Grado 7° · Momento 4 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+% La flecha va en modo matematico a proposito: Helvetica Neue NO tiene el glifo
+% U+2192, asi que \textrightarrow se compilaba a NADA («Missing character: There
+% is no → in font Helvetica Neue») y el puente salia sin flecha. En modo
+% matematico la flecha viene de la fuente matematica y si se dibuja.
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{$\rightarrow$}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+% ─── Listas aireadas para las guías socioemocionales ────────────────────
+% Componer las verificaciones como «\checkbox texto\\» deja el texto que salta
+% de línea debajo del cuadrito y apelmaza el bloque. Estos entornos alinean la
+% continuación y airean los ítems. Los usa Territorio Interior; cualquier
+% familia puede hacerlo.
+\newlist{checklista}{itemize}{1}
+\setlist[checklista]{
+  label=\textcolor{milcGradeDark}{\fbox{\phantom{x}}},
+  leftmargin=9mm, labelsep=3.2mm, itemsep=2.4mm,
+  topsep=2.5mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+\newlist{pasoslista}{enumerate}{1}
+\setlist[pasoslista]{
+  label=\textcolor{milcGradeDark}{\sffamily\bfseries\arabic*.},
+  leftmargin=8mm, labelsep=3mm, itemsep=2.8mm,
+  topsep=1mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
+% ── Recursos visuales de la guía ──────────────────────────────────────
+% Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
+% \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
+% \guiaDiagrama → fuente TikZ/circuitikz (.tex) incrustada como vector:
+%                 es la vía para circuitos y esquemáticos editables.
+% #1 = ruta relativa al .tex · #2 = pie (puede ir vacío)
+\newcommand{\guiaFigura}[2]{%
+\begin{center}
+\includegraphics[width=0.88\linewidth,height=0.38\textheight,keepaspectratio]{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\newcommand{\guiaDiagrama}[2]{%
+\begin{center}
+\input{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\begin{document}
+\thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
+\begin{tikzpicture}[remember picture,overlay]
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont MOMENTO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont TERRITORIO INTERIOR · SOCIOEMOCIONAL};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
+
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 4};
+  % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
+  % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  
+
+  \node[anchor=west,text=milcGradeText,text width=11.4cm,align=left] at ([xshift=1.5cm,yshift=0.5cm]gradonum.east)
+    {
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Territorio interior · Socioemocional}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont\setlength{\baselineskip}{27pt}La palabra\\[4pt]que hiere\\[4pt]cuando «era chiste» es coartada}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Grado 7° · Momento 4}
+    };
+\end{tikzpicture}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Tu inventario de la palabra: los apodos que circulan en tu salón clasificados por quién los puso y quién no puede quitárselos, la prueba de las tres preguntas aplicada a tres de ellos, y una frase tuya para intervenir cuando el chiste se cobra a alguien.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · Apertura ancestral · La palabra y el daño · Triángulo Dussel-Estoicismo-Floridi}}
+
+\newpage
+
+\section*{Apertura: La palabra que hiere: cuando «era chiste» es la coartada}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+En casi cualquier esquina de Colombia hay una tienda de barrio con \textbf{una libreta sobre el mostrador}. Ahí se anota \textbf{el fiado}: mercado que se lleva hoy y se paga el viernes, o cuando salga el pago. \textbf{Y fíjate en lo que \emph{no} hay:} no hay contrato, no hay firma, no hay codeudor, no hay intereses, no hay nada que un juez pudiera cobrar. \textbf{Lo único que sostiene ese crédito es la palabra del cliente} ---y por eso el tendero fía a unos y a otros no---. Estudios sobre tiendas de barrio en Colombia encuentran que \textbf{la cercanía y la confianza} son su fortaleza principal, por encima del precio; el fiado es, de hecho, su mejor arma frente a las tiendas de descuento. \textbf{Ahora piénsalo al revés.} Ahí la palabra de una persona \textbf{pesa tanto} que puede reemplazar un contrato. Y en un salón de clase la misma persona puede decir algo que deja a alguien sin ganas de volver, y arreglarlo con dos palabras: \emph{«era chiste»}. \textbf{La misma boca, el mismo día: una palabra que vale un mercado y otra que no vale nada.} \emph{La diferencia no está en la palabra. Está en si uno responde por ella.}
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+«Era chiste» parece una manera de bajarle importancia a algo. \textbf{Hace lo contrario.} Los psicólogos \textbf{Thomas Ford} y \textbf{Mark Ferguson} explicaron por qué con lo que llamaron la \textbf{teoría de la norma prejuiciosa}: la particularidad del humor que se burla de un grupo es que \textbf{le quita seriedad a lo que se está diciendo}. Parece inofensivo, y justamente por eso pasa: en vez de discutirse, se acepta ---nadie quiere ser el amargado---. \textbf{Y lo que se acepta se vuelve norma.} Al oírlo, la gente entiende que \emph{en este grupo, con este tema, se puede}, y esa norma después \textbf{regula cómo reaccionan ante hechos de discriminación reales} (Ford y Ferguson, 2004). \textbf{Traducido a tu salón:} el chiste sobre el que es más gordo, el que habla distinto, el que llegó de otra parte o el que no entiende matemáticas \textbf{no es un chiste suelto}: es un aviso de qué está permitido hacerle a esa persona. \emph{Por eso el tercer chiste ya no da risa a nadie y sin embargo nadie lo para: para entonces ya es la costumbre del curso.}
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{En la tienda, la palabra pesa porque \textbf{quien la dice responde por ella}. \textbf{¿Cuál de tus chistes de este año no resistiría que te preguntaran, en serio, si responderías por él} delante de la persona de la que se trataba?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar podrás: (1) \textbf{identificar} los apodos y chistes que circulan en tu salón, y distinguir los que la persona eligió de los que no puede quitarse; (2) \textbf{explicar} por qué «era chiste» no borra el daño sino que corre la línea de lo que el grupo permite; (3) \textbf{crear} una frase corta y usable para cortar un chiste sin humillar a quien lo hizo; (4) \textbf{decidir} qué hacer cuando el que hizo el chiste eres tú.
+\end{softbox}
+
+
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Comprende los fenómenos que afectan a su territorio, regula sus emociones ante ellos y acompaña a otros con empatía (transversal 6°--11°, articulado con la política «Escuela, territorio de vida» del MEN, Resolución 006519 de 2025, y la Ley 1620 de 2013)\\
+Referentes & Primera ayuda psicológica (OMS, 2011/2012) · Directrices IASC (2007) · USGS y Servicio Geológico Colombiano · Pueblo nasa y la minga (CRIC) · Dussel · Estoicismo · Floridi\\
+Producto final & Tu inventario de la palabra: los apodos que circulan en tu salón clasificados por quién los puso y quién no puede quitárselos, la prueba de las tres preguntas aplicada a tres de ellos, y una frase tuya para intervenir cuando el chiste se cobra a alguien.\\
+\end{tabularx}
+\normalsize
+
+\puente{En los momentos anteriores aprendiste a escuchar y a acompañar. Hoy el asunto es lo contrario: \textbf{la palabra usada para hacer daño}, casi siempre con la cara de una broma.}
+
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Distingo y nombro.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Primero, el inventario real: los apodos que circulan en tu salón. Todos. Incluidos los que te dan risa.}
+
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- El inventario.} \textbf{Sin nombres propios: usa iniciales o «persona 1».} \textbf{Primera parte.} Haz la lista de \textbf{los apodos y chistes recurrentes que circulan en tu salón}. Todos los que te acuerdes, incluidos los que te dan risa ---sobre todo esos---. Al frente de cada uno escribe \textbf{quién lo puso}: ¿la persona misma, un amigo suyo, o alguien que ni siquiera es su amigo? \textbf{Segunda parte.} Marca cuáles \textbf{tienen que ver con algo que la persona no puede cambiar}: el cuerpo, la familia, la plata, de dónde viene, cómo habla, cómo aprende. \textbf{Tercera parte, la incómoda.} ¿Cuál de esos chistes \textbf{lo has hecho tú, o te has reído}? \emph{Escríbelo. Reírse también es participar, y esta página no la lee nadie.} \textbf{Y una línea final:} ¿hay alguien en tu salón que \textbf{ya no se sienta donde se sentaba} o que dejó de hablar tanto como antes?
+\end{softbox}
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Listaste los apodos que circulan, con quién puso cada uno.}
+\milccheckrow{Marcaste los que se refieren a algo que la persona \textbf{no puede cambiar}.}
+\milccheckrow{Anotaste los que hiciste tú o los que te dieron risa, sin justificarte.}
+
+\begin{infoband}{milcVerde}
+
+
+\textbf{En tu cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1. El inventario». \textbf{Formato:} lista de apodos con tres columnas ---quién lo puso · ¿puede cambiarlo? · ¿me he reído?--- más la línea final. \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} en tu lista hay \textbf{al menos uno que te daba risa} y que ahora ves distinto. Esta página es tuya: \textbf{nadie más tiene que leerla si tú no quieres}.
+\end{infoband}
+
+\puente{Ya los tienes. Ahora, por qué un apodo pesa distinto según quién lo puso, y qué le hace al grupo la frase «era chiste».}
+
+\milcestacion{milcTurquesa}{Fase 2 · Sistematización: entender el chiste que cobra}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro claves sobre el humor que hiere}
+Cuatro claves para dejar de discutir si alguien «se ofende por todo» y empezar a mirar lo que de verdad pasa.
+\end{softbox}
+
+\milcpaso{1}{milcTurquesa}{\textbf{Una palabra pesa cuando alguien responde por ella.} En la tienda te fían porque tu palabra vale un mercado: \emph{si no pagas, no es que se enoje el tendero, es que se acabó tu crédito}. \textbf{«Era chiste» es exactamente lo contrario:} es una manera de decir la palabra \textbf{y no responder por ella}. \emph{Y fíjate en el detalle que lo delata:} el que dice «era chiste» casi nunca lo dice en el momento del chiste ---lo dice \textbf{después}, cuando ve la cara del otro---. \textbf{Es decir: se dio cuenta.} Si de verdad hubiera sido solo un chiste, no habría necesitado coartada.}
+\milcpaso{2}{milcTurquesa}{\textbf{El apodo que uno elige y el que le ponen.} No todos los apodos son iguales, y la diferencia no está en la palabra sino en \textbf{quién la puso y quién puede quitarla}. \emph{Hay apodos de cariño}, que la persona adoptó y usa ella misma. \textbf{Y hay apodos que alguien le puso, que no se los puede quitar, y que se refieren a algo que no puede cambiar} ---el cuerpo, la plata de la casa, la manera de hablar, cómo le va aprendiendo---. \textbf{Prueba rápida:} ¿la persona lo usa para presentarse? ¿Puede pedir que dejen de decírselo y que le hagan caso? \emph{Si la respuesta a las dos es no, no es un apodo: es una etiqueta que le pusieron encima.}}
+\milcpaso{3}{milcTurquesa}{\textbf{«Era chiste» no borra: corre la línea.} Ford y Ferguson lo explicaron: el humor que se burla de alguien \textbf{le quita seriedad al asunto}, y por eso no se discute ---nadie quiere quedar de amargado---. \textbf{Pero lo que no se discute se acepta, y lo que se acepta se vuelve la norma del grupo:} de ahí en adelante todos entendieron \textbf{qué se puede hacer con esa persona} (Ford y Ferguson, 2004). \emph{Por eso el daño casi nunca lo hace un chiste:} lo hace \textbf{la costumbre} que ese chiste inauguró. \textbf{Y por eso también el primero es el que más importa parar:} después ya no hay a quién reclamarle, porque «todo el mundo lo dice».}
+\milcpaso{4}{milcTurquesa}{\textbf{El que se ríe también decide.} En un chiste que se cobra a alguien hay tres papeles, no dos: el que lo dice, el que lo recibe y \textbf{el público}. \emph{Y el público es el que decide si el chiste funciona:} sin risa, un chiste cruel es solo una frase incómoda que deja mal parado al que la dijo. \textbf{Esto es una buena noticia,} porque quiere decir que \textbf{no hace falta ser valiente para cambiar algo}: basta con no reírse. \emph{Y quien tenga ganas de hacer más, tiene la opción barata:} decir algo corto y seguir, sin sermón y sin escándalo.}
+
+\begin{drawbox}{milcTurquesa}{La prueba de las tres preguntas}
+\begin{pasoslista}
+\item \textbf{¿Se ríe también la persona de la que se trata?} \emph{Y ojo: reírse por no llorar no cuenta. Mira si se ríe antes o después de mirar a los demás.}
+\item \textbf{¿Es sobre algo que puede cambiar?} El cuerpo, la familia, la plata, el acento y cómo aprende \textbf{no} lo son.
+\item \textbf{¿Podría decirlo delante de ella, mirándola?} \emph{Si la gracia depende de que no esté, no era gracia.}
+\item \textbf{Si alguna respuesta es «no», el chiste se está cobrando a alguien.} No hace falta discutirlo: basta con no repetirlo.
+\end{pasoslista}
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{«Es que se ofende por todo»:} convierte el daño en un defecto del que lo recibe. \textbf{«Yo también tengo apodo»:} el tuyo lo elegiste o te lo puede quitar un amigo; no es el mismo caso. \textbf{«Pero si él se ríe»:} reírse es la manera más barata de que no te sigan. \textbf{El sermón:} el discurso largo hace que el grupo se ponga del lado del que hizo el chiste. \textbf{Denunciar de una:} a veces hay que hacerlo, pero para lo cotidiano suele bastar con no reírse. \textbf{Callarse porque «no es conmigo»:} el público es el que decide si el chiste funciona.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+
+
+\textbf{En tu cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2. Las tres preguntas». \textbf{Formato:} escoge \textbf{tres} apodos de tu inventario y pásalos por las tres preguntas, respondiendo cada una. \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} puedes explicar por qué «era chiste» \textbf{no es una disculpa} sino una manera de no responder por lo dicho.
+\end{infoband}
+
+\puente{Ya sabes qué pasa. Es hora de tener lista \textbf{una frase} ---corta, sin sermón--- para el momento en que ocurra.}
+
+\milcestacion{milcMagenta}{Fase 3 · Praxis: intervenir sin sermón}
+
+\begin{softbox}{milcMagenta}{milcGris}{Cómo se corta un chiste que se cobra a alguien}
+Saber que un chiste hiere no sirve de nada si en el momento uno se queda callado. Aquí se prepara la frase, y se ensaya en voz alta.
+\end{softbox}
+
+\milcpaso{1}{milcMagenta}{\textbf{El inventario, terminado (8 min).} Vuelve a tu lista y ordénala en dos grupos: \textbf{apodos que la persona eligió} y \textbf{etiquetas que le pusieron}. \emph{Vas a ver que el segundo grupo es más largo de lo que creías, y que casi todos se refieren a lo mismo:} el cuerpo, la plata y de dónde viene alguien.}
+\milcpaso{2}{milcMagenta}{\textbf{Las tres preguntas, aplicadas (8 min).} Escoge los tres casos más frecuentes del salón y pásalos por la prueba. \textbf{No para acusar a nadie:} para tener claro, antes de que pase otra vez, \textbf{cuáles se están cobrando a alguien}. \emph{Guárdalo: el momento 5 y el 6 van a trabajar sobre esta misma lista.}}
+\milcpaso{3}{milcMagenta}{\textbf{La frase corta (10 min).} Escribe \textbf{tu} frase para cortar un chiste, con tres condiciones: \textbf{cabe en menos de cinco segundos}, \textbf{no humilla al que lo hizo} y \textbf{no es un sermón}. \emph{Sirven cosas así de simples:} «ya, eso no» · «bájale» · «no le veo la gracia» · «con eso no». \textbf{Y una que sirve más de lo que parece:} cambiar de tema en voz alta, sin comentar el chiste. \emph{Escoge una que suene a ti; una frase prestada no te va a salir en el momento.}}
+\milcpaso{4}{milcMagenta}{\textbf{El ensayo incómodo (10 min, en tríos).} Uno hace un chiste inventado ---\textbf{no uno real del salón, y nunca sobre alguien presente}---, otro usa su frase y el tercero observa \textbf{qué hizo el grupo} después. Roten. \emph{Lo que se practica aquí no es la frase: es el segundo y medio que uno tarda en decidir si la dice.} \textbf{Y observen algo:} cuando alguien corta un chiste sin sermón, casi siempre hay un segundo de silencio \textbf{y después la conversación sigue}. No pasa nada. Ese es justamente el descubrimiento.}
+
+\begin{drawbox}{milcMagenta}{Antes de cerrar tu inventario}
+\begin{checklista}
+\item Separaste los apodos \textbf{elegidos} de las etiquetas \textbf{puestas}.
+\item Pasaste tres casos por las tres preguntas y escribiste las respuestas.
+\item Tu frase corta cabe en cinco segundos, \textbf{no humilla} al que hizo el chiste y no es un sermón.
+\item La ensayaste \textbf{en voz alta} y suena a ti, no a frase de cartilla.
+\item Anotaste al menos un chiste \textbf{tuyo} o del que te reíste.
+\item Entendiste que \textbf{no reírse ya es una decisión}, y que el público es quien hace funcionar un chiste.
+\end{checklista}
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Las tres preguntas.} \emph{«¿Se ríe también ella? · ¿Es sobre algo que puede cambiar? · ¿Lo diría mirándola?»} \\[1mm]
+\textbf{Mi frase corta.} \emph{«\_\_\_\_»} (menos de cinco segundos; no humilla a nadie; no es sermón). \\[1mm]
+\textbf{Si el que lo hizo fui yo.} \emph{«Lo que dije de \_\_\_\_ estuvo mal, no era chiste»} ---y esto se conecta con el momento 6, donde la reparación se hace completa---.
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+
+
+\textbf{En tu cuaderno (Actividad 3 · CREA).} Título: «Actividad 3. Mi inventario y mi frase». \textbf{Formato:} los dos grupos de apodos + las tres preguntas aplicadas a tres casos + tu frase corta + cómo salió el ensayo. \textbf{Extensión:} una página. \textbf{Sabes que terminaste cuando} pudiste \textbf{decir tu frase en voz alta} sin que te diera risa a ti.
+\end{infoband}
+
+\puente{El producto es un inventario con una decisión adentro. \emph{No sirve de nada saber que un chiste hiere si uno se queda callado igual.}}
+
+\milcestacion{milcMostaza}{Producto de la sesión}
+\textbf{Inventario de la palabra: apodos clasificados, la prueba de las tres preguntas y una frase para intervenir}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) El inventario distingue los apodos elegidos de las etiquetas puestas por otros. (2) Las tres preguntas están aplicadas a casos reales del salón, con respuesta escrita. (3) La frase corta cumple las tres condiciones: breve, no humillante y sin sermón. (4) El inventario incluye la propia participación —chistes hechos o risas— sin justificarla. (5) Se explica por qué «era chiste» corre la línea de lo permitido en vez de borrar el daño.
+\end{softbox}
+
+\puente{Antes de cerrar, revisa lo más difícil: si en tu inventario no apareció ningún chiste tuyo, probablemente no lo hiciste completo.}
+
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con tres voces: el otro que siempre es más que la etiqueta, lo que sí está en tu poder cuando hablas, y por qué un apodo hoy dura más que antes.}
+
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{«Analéctico quiere indicar el hecho real humano por el que todo hombre, todo grupo o pueblo se sitúa siempre más allá (aná-) del horizonte de la totalidad.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Enrique Dussel · Filosofía de la liberación (1977), §2.4}
+
+Un apodo hace exactamente lo contrario de lo que dice Dussel: \textbf{encierra a alguien dentro de una sola palabra} ---el gordo, el pobre, el bruto, el de allá--- y decreta que eso es todo lo que es. \emph{Y funciona, porque el grupo empieza a mirarlo así.} \textbf{Lo analéctico es la afirmación contraria:} cualquier persona está \textbf{siempre más allá} de lo que tu curso alcanza a decir de ella. \textbf{Hay una prueba fácil:} pregúntate qué sabes de esa persona \emph{aparte} del apodo ---qué le gusta, qué se le da bien, qué le pasa en la casa---. \emph{Si no sabes casi nada, no es porque no haya nada: es porque la etiqueta te ahorró conocerla.}
+
+\textbf{De la persona más apodada de mi salón, ¿qué sé de ella que no tenga que ver con el apodo?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Epicteto · Enquiridión, 1 (c. 125 d.C.; trad. desde E. Carter) · cuidado interior}
+\textit{«Algunas cosas están en nuestro poder y otras no. Están en nuestro poder la opinión, el impulso, el deseo, el rechazo; en una palabra, todo aquello que es obra nuestra.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Epicteto · Enquiridión, 1 (c. 125 d.C.; trad. desde E. Carter)}
+
+Ojo con el uso tramposo de esta frase: \emph{no dice} que al que le duele un apodo le duela por debilidad. \textbf{Dice algo dirigido al que habla:} el impulso de soltar el chiste \textbf{es obra tuya} ---y por lo tanto está en tu poder---. \emph{No está en tu poder que dé risa, ni que caiga bien, ni que el otro «lo tome como es»:} eso lo decide él. \textbf{Y hay un segundo impulso que también es obra tuya:} el de reírte. \emph{Ninguno de los dos es automático, aunque los dos se sientan así.}
+
+\textbf{¿Cuántas veces esta semana me reí de algo que, si lo pienso dos segundos, no me parecía?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{«Las tecnologías digitales están re-ontologizando la naturaleza misma de la infoesfera.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Luciano Floridi · La cuarta revolución (2014; trad.)}
+
+Antes un apodo se acababa cuando uno cambiaba de colegio. \textbf{Ahora no.} \emph{Queda en el nombre del grupo, en el sticker que alguien hizo con tu foto, en el comentario de hace dos años que sigue ahí.} \textbf{Eso es lo que Floridi llama re-ontologizar:} no es que el chiste ahora circule más rápido ---es que \textbf{cambió de naturaleza}---. \emph{Un apodo dicho en el recreo se lo llevaba la tarde; el mismo apodo escrito no se lo lleva nadie,} y quien lo recibe no puede ni siquiera cambiarse de salón para dejarlo atrás. \textbf{Esto vuelve el momento 8 inevitable:} lo que pasa en los grupos de chat es este mismo problema, con memoria.
+
+\textbf{¿Hay algo que escribí sobre alguien que todavía se puede leer, y que ya no diría hoy?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres son citas textuales y llevan su referencia debajo. Puedes remitir a la obra en clase.
+\end{infoband}
+
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
+
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Calidad de la intervención & \milcopcion{Tengo una frase corta que corta el chiste sin humillar al que lo hizo.} & \milcopcion{Sé cuándo un chiste se pasa, pero solo se me ocurre el sermón.} & \milcopcion{Sigo pensando que el problema es que la gente se ofende por todo.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Dos cosas. \textbf{Primero, usa tu frase} ---una vez, en una situación real, aunque sea la más pequeña---. \emph{O, si no se dio la ocasión, haz lo mínimo: no te rías de uno.} Anota qué pasó después: si hubo silencio, si alguien te apoyó, si no pasó nada. \textbf{Segundo, pregunta en tu casa por la palabra que valía:} averigua con alguien mayor \textbf{si en su época se fiaba en la tienda del barrio}, quién decidía a quién se le fiaba y qué pasaba con alguien que no pagaba ---si le cerraban el fiado, si se sabía en el barrio, si su familia respondía por él---. \textbf{Trae:} cómo te fue con tu frase y lo que te contaron. \emph{Vas a encontrar una idea que hoy suena rara: había gente a la que «no le fiaban», y no era por pobre, era por su palabra.}
+\end{infoband}
+
+\end{document}

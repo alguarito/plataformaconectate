@@ -1,0 +1,556 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra UNICA de las guias MILC v3.
+%
+% La usan las tres familias de guias, cada una con su driver:
+%   · Grados 6-11  -> scripts/build-guias-g11.py
+%   · Bebras       -> scripts/build-guias-bebras.py
+%   · Semillero    -> scripts/build-guias-semillero.py
+%
+% Antes habia tres copias casi identicas (~400 lineas iguales, 6 distintas):
+% cada mejora habia que aplicarla tres veces, y en la practica no se hacia
+% (el motor de recursos vivia solo en dos de ellas). Lo que varia entre
+% familias esta parametrizado en 6 placeholders que cada driver llena
+% (se nombran aqui SIN su sintaxis real: el builder reemplaza por texto plano,
+% tambien dentro de los comentarios, y un valor multilinea rompe el preambulo):
+%
+%   HEADER_IZQ        encabezado izquierdo de pagina
+%   HEADER_DER        encabezado derecho de pagina
+%   PORTADA_ETIQUETA  rotulo sobre el numero grande (GRADO/MOMENTO/MODULO)
+%   PORTADA_SERIE     linea de serie de la portada
+%   PORTADA_ID        identificador de la guia en la portada
+%   PORTADA_CIRCULO   el circulito de grado (°), o vacio si no aplica
+%
+% El resto de claves las documenta content/guias/_SCHEMA.md. El script valida
+% que no queden placeholders sin reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+% Librerías TikZ para los diagramas de las guías (bloque `recursos:`):
+%  · babel  → babel en español vuelve activos caracteres como «>», y TikZ los usa
+%             en sus opciones (>=stealth, ->). Sin esta librería, cualquier
+%             diagrama con flechas revienta con «\language@active@arg> has an
+%             extra }». Debe ir ANTES de que se dibuje nada.
+%  · positioning        → sintaxis «below left=2pt and 3pt».
+%  · decorations.pathreplacing → llaves ({brace}) para señalar rangos.
+\usetikzlibrary{babel,positioning,decorations.pathreplacing}
+\usepackage{graphicx}
+% Circuitos: el trabajo de electrónica se hace hoy con micro:bit y sus sensores
+% integrados (MakeCode, sin cableado), así que no se necesitan esquemáticos.
+% Si algún día entran montajes con protoboard, basta descomentar esta línea:
+% los diagramas .tex/.tikz declarados en `recursos:` ya se incrustan solos.
+% \usepackage{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
+\usepackage{enumitem}
+\usepackage{microtype}
+
+% Helvetica Neue no trae la flecha U+2192, asi que cada «→» escrito literalmente
+% en el YAML se compilaba a NADA, en silencio (462 flechas en 61 guias: rutas del
+% tipo «paleta → tipografia → lockup» salian rotas). Mapeamos el caracter a su
+% version matematica, que si tiene glifo. Asi el autor puede seguir escribiendo
+% «→» comodamente en el YAML.
+\usepackage{newunicodechar}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0D9488}
+\definecolor{milcGradeDark}{HTML}{115E59}
+\definecolor{milcGradeSoft}{HTML}{CCFBF1}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Territorio interior · Educación socioemocional}
+\rhead{\small Grado 8° · Momento 1 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+% La flecha va en modo matematico a proposito: Helvetica Neue NO tiene el glifo
+% U+2192, asi que \textrightarrow se compilaba a NADA («Missing character: There
+% is no → in font Helvetica Neue») y el puente salia sin flecha. En modo
+% matematico la flecha viene de la fuente matematica y si se dibuja.
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{$\rightarrow$}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+% ─── Listas aireadas para las guías socioemocionales ────────────────────
+% Componer las verificaciones como «\checkbox texto\\» deja el texto que salta
+% de línea debajo del cuadrito y apelmaza el bloque. Estos entornos alinean la
+% continuación y airean los ítems. Los usa Territorio Interior; cualquier
+% familia puede hacerlo.
+\newlist{checklista}{itemize}{1}
+\setlist[checklista]{
+  label=\textcolor{milcGradeDark}{\fbox{\phantom{x}}},
+  leftmargin=9mm, labelsep=3.2mm, itemsep=2.4mm,
+  topsep=2.5mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+\newlist{pasoslista}{enumerate}{1}
+\setlist[pasoslista]{
+  label=\textcolor{milcGradeDark}{\sffamily\bfseries\arabic*.},
+  leftmargin=8mm, labelsep=3mm, itemsep=2.8mm,
+  topsep=1mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
+% ── Recursos visuales de la guía ──────────────────────────────────────
+% Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
+% \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
+% \guiaDiagrama → fuente TikZ/circuitikz (.tex) incrustada como vector:
+%                 es la vía para circuitos y esquemáticos editables.
+% #1 = ruta relativa al .tex · #2 = pie (puede ir vacío)
+\newcommand{\guiaFigura}[2]{%
+\begin{center}
+\includegraphics[width=0.88\linewidth,height=0.38\textheight,keepaspectratio]{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\newcommand{\guiaDiagrama}[2]{%
+\begin{center}
+\input{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\begin{document}
+\thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
+\begin{tikzpicture}[remember picture,overlay]
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont MOMENTO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont TERRITORIO INTERIOR · SOCIOEMOCIONAL};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
+
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 1};
+  % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
+  % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  
+
+  \node[anchor=west,text=milcGradeText,text width=11.4cm,align=left] at ([xshift=1.5cm,yshift=0.5cm]gradonum.east)
+    {
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Territorio interior · Socioemocional}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont\setlength{\baselineskip}{27pt}La necesidad\\[4pt]de pertenecer\\[4pt]qué se paga por entrar}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Grado 8° · Momento 1}
+    };
+\end{tikzpicture}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Tu mapa de pertenencias: los grupos a los que perteneces pasados por las dos condiciones de Baumeister y Leary, la lista de lo que cada uno te pide, y la distinción entre lo que cuesta construir algo juntos y lo que es peaje.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · Apertura ancestral · Pertenencia e identidad · Triángulo Dussel-Estoicismo-Floridi}}
+
+\newpage
+
+\section*{Apertura: La necesidad de pertenecer: qué se paga por entrar y qué no debería costar}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+En \textbf{Riosucio} (Caldas), el Carnaval se hace cada dos años, y el corazón de la fiesta son \textbf{las Cuadrillas}. Una cuadrilla es un grupo de vecinos que \textbf{se prepara durante los dos años completos} ---y en secreto--- para salir un solo día: componen su música, escriben sus coplas, hacen los disfraces y las máscaras, arman el montaje con el que van a hacerle crítica al país, al pueblo y al mundo. \textbf{En la edición más reciente participaron 38 cuadrillas.} \textbf{Y hay una regla que dice mucho:} una cuadrilla \textbf{no se repite} antes de que pasen \textbf{veinte años} desde que apareció ---y solo si el pueblo la consagró como «una gran Cuadrilla»---. \textbf{Fíjate en lo que eso significa.} Entrar a una cuadrilla \textbf{cuesta}: cuesta dos años de trabajo, de ensayos, de guardar el secreto. \emph{Pero fíjate en qué es lo que cuesta:} cuesta \textbf{construir algo con otros}. \textbf{Nadie paga peaje} ---nadie tiene que humillar a otro, ni traicionar a nadie, ni dejar de ser quien es---. \emph{Y la palabra no es casual: «cuadrilla» es también, en esta región cafetera, el grupo que sale junto a recoger la cosecha. En los dos casos nombra lo mismo: gente que se junta a hacer algo que sola no podría.}
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+A los trece años la gente suele oír que le da «demasiada importancia» al grupo. \textbf{La psicología dice lo contrario:} la necesidad de pertenecer no es una debilidad de la edad \textbf{sino una de las motivaciones humanas más profundas}. \textbf{Roy Baumeister} y \textbf{Mark Leary} revisaron toda la evidencia disponible y concluyeron que el \textbf{«need to belong»} ---la necesidad de pertenecer--- es \textbf{poderosa, fundamental y está en todas partes}: la gente forma vínculos con una facilidad enorme y \textbf{se resiste a romperlos} incluso cuando le convendría (Baumeister y Leary, 1995). \textbf{Y precisaron algo decisivo: no basta con estar rodeado.} Hacen falta \textbf{dos condiciones}. \textbf{Primera:} interacciones \textbf{frecuentes y agradables} ---no ásperas, no a punta de tensión---. \textbf{Segunda:} que ocurran dentro de un \textbf{vínculo que dure}, con \textbf{preocupación e interés mutuo}. \emph{Cuando faltan, no es un problema de ánimo:} la falta de vínculos aparece asociada a efectos sobre la salud y el bienestar. \textbf{Traducido a tu vida:} querer pertenecer no tiene nada de malo. \emph{Lo que hay que mirar es si el grupo al que perteneces cumple las dos condiciones ---o si solo te deja estar ahí---.}
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{En la cuadrilla se pagan \textbf{dos años de trabajo}, pero nadie paga con dignidad. \textbf{¿Cuál de tus grupos te cobra cosas que no son trabajo} ---callarte, reírte de alguien, dejar de hablar con otro, gastar lo que no tienes---?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar podrás: (1) \textbf{reconocer} que la necesidad de pertenecer es una motivación humana fundamental y no un defecto de tu edad; (2) \textbf{aplicar} las dos condiciones de Baumeister y Leary a tus propios grupos; (3) \textbf{distinguir} lo que cuesta construir algo con otros de lo que es \textbf{peaje} ---lo que un grupo cobra por dejarte estar---; (4) \textbf{identificar} al menos una segunda pertenencia posible, porque quien solo tiene una puerta paga cualquier precio por no perderla.
+\end{softbox}
+
+
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Comprende los fenómenos que afectan a su territorio, regula sus emociones ante ellos y acompaña a otros con empatía (transversal 6°--11°, articulado con la política «Escuela, territorio de vida» del MEN, Resolución 006519 de 2025, y la Ley 1620 de 2013)\\
+Referentes & Primera ayuda psicológica (OMS, 2011/2012) · Directrices IASC (2007) · USGS y Servicio Geológico Colombiano · Pueblo nasa y la minga (CRIC) · Dussel · Estoicismo · Floridi\\
+Producto final & Tu mapa de pertenencias: los grupos a los que perteneces pasados por las dos condiciones de Baumeister y Leary, la lista de lo que cada uno te pide, y la distinción entre lo que cuesta construir algo juntos y lo que es peaje.\\
+\end{tabularx}
+\normalsize
+
+\puente{Este es el primer momento del grado, y el que sostiene los otros nueve: \textbf{decir que no, mirar sin intervenir, el rumor, la moda, el liderazgo} ---todo eso pasa porque pertenecer importa---.}
+
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pertenezco y me sostengo.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Primero, el mapa: a qué grupos perteneces de verdad, y qué te pide cada uno. \emph{Sin juzgarlos todavía.}}
+
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- El mapa de pertenencias.} \textbf{Nadie va a leer esta página.} \textbf{Primera parte.} Haz la lista de \textbf{los grupos a los que perteneces}: el del salón, el del barrio, el del equipo, la familia, el de la iglesia, el del videojuego, el grupo de chat. \emph{Todos, incluidos los que no tienen nombre.} \textbf{Segunda parte.} Al frente de cada uno escribe \textbf{qué te pide}: ¿tiempo? ¿dinero? ¿que te vistas de cierta forma? ¿que no hables con alguien? ¿que te rías de algo? ¿que hagas cosas que no harías solo? \textbf{Tercera parte.} Marca en cuál te sientes \textbf{tranquilo} ---donde puedes decir algo raro sin que se te caiga el mundo--- y en cuál andas \textbf{pendiente} de no equivocarte. \textbf{Y la incómoda:} ¿hay algún grupo del que \textbf{tienes miedo de quedar por fuera}? \emph{Escríbelo. El miedo a quedar por fuera es exactamente lo que se cobra caro.}
+\end{softbox}
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Listaste todos tus grupos, incluidos los que no tienen nombre.}
+\milccheckrow{Escribiste al frente de cada uno \textbf{qué te pide}, en concreto.}
+\milccheckrow{Marcaste en cuáles estás tranquilo y en cuáles andas pendiente de no equivocarte.}
+
+\begin{infoband}{milcVerde}
+
+
+\textbf{En tu cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1. Mi mapa de pertenencias». \textbf{Formato:} lista de grupos, con lo que cada uno pide y si en él estás tranquilo o pendiente. \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} puedes señalar \textbf{el grupo del que más miedo te da quedar por fuera}. Esta página es tuya: \textbf{nadie más tiene que leerla si tú no quieres}.
+\end{infoband}
+
+\puente{Ya lo tienes. Ahora, por qué esto pesa tanto, cuáles son las dos condiciones y dónde está la línea entre construir y pagar peaje.}
+
+\milcestacion{milcTurquesa}{Fase 2 · Sistematización: entender la pertenencia}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro claves sobre pertenecer}
+Cuatro claves para dejar de sentir que querer pertenecer es un defecto, y empezar a mirar lo único que sí importa: el precio.
+\end{softbox}
+
+\milcpaso{1}{milcTurquesa}{\textbf{Querer pertenecer no es debilidad: es una necesidad humana.} Baumeister y Leary revisaron la evidencia y encontraron que la necesidad de pertenecer es \textbf{poderosa, fundamental y universal}, y que la gente \textbf{se resiste a romper vínculos} aun cuando le convendría (Baumeister y Leary, 1995). \emph{Esto explica algo que a lo mejor te ha pasado:} seguir en un grupo donde ya no la pasas bien, y no saber por qué no te vas. \textbf{No es que seas débil ---es que romper un vínculo va contra algo muy hondo---.} \emph{Y saberlo cambia la conversación:} el problema nunca es «me importa demasiado la gente». El problema es \textbf{a quién} le estás dando ese lugar.}
+\milcpaso{2}{milcTurquesa}{\textbf{Las dos condiciones, y sirven como examen.} No basta con estar rodeado. Hace falta \textbf{(1)} que las interacciones sean \textbf{frecuentes y agradables} y \textbf{(2)} que ocurran en un \textbf{vínculo que dure, con preocupación mutua}. \textbf{Aplícalo:} un grupo donde se hablan todos los días pero siempre con tensión \emph{falla la primera}. Un grupo donde la pasan bien pero a nadie le importa si faltas tres días \emph{falla la segunda}. \emph{Y el caso más difícil de ver:} el grupo popular donde entras \textbf{a condición de no fallar nunca}. \textbf{Ahí no hay preocupación mutua: hay evaluación permanente}, y por eso cansa tanto aunque desde afuera parezca el mejor lugar.}
+\milcpaso{3}{milcTurquesa}{\textbf{Costo de construir y peaje no son lo mismo.} \emph{La cuadrilla cuesta dos años}: ensayos, trabajo, guardar el secreto. \textbf{Eso es costo de construir, y deja algo:} al final existe un montaje que antes no existía, y lo hiciste tú con otros. \textbf{El peaje es distinto:} es lo que un grupo te cobra \textbf{por dejarte estar}, y no produce nada ---callarte, reírte de alguien, dejar de hablarle a un amigo de antes, gastar lo que no tienes, hacer algo que después no cuentas en la casa---. \textbf{La prueba es sencilla:} \emph{¿lo que te pide construye algo, o solo prueba que obedeces?} \textbf{Y una señal casi infalible:} el peaje \textbf{sube}. Lo que hoy te piden no es lo que te van a pedir en dos meses.}
+\milcpaso{4}{milcTurquesa}{\textbf{El que solo tiene una puerta paga cualquier precio.} Aquí está la herramienta más útil de esta guía, y no es de carácter sino de estructura: \textbf{si perteneces a un solo lado, ese lado te puede cobrar lo que quiera}, porque quedarte por fuera significa quedarte sin nada. \emph{Si perteneces a tres, ninguno tiene ese poder.} \textbf{Por eso la respuesta a la presión de grupo casi nunca es «ser más fuerte»:} es \textbf{tener más de una pertenencia} ---el equipo, el semillero, la banda, el grupo del barrio, los primos---. \emph{No es tener muchos amigos: es no jugarse todo a una sola mesa.}}
+
+\begin{drawbox}{milcTurquesa}{El examen de un grupo, en cuatro preguntas}
+\begin{pasoslista}
+\item \textbf{¿Nos hablamos seguido y sin tensión?} \emph{(primera condición)}
+\item \textbf{¿Alguien nota si falto tres días?} \emph{(segunda condición: el vínculo dura y hay interés mutuo)}
+\item \textbf{Lo que me pide, ¿construye algo o solo prueba que obedezco?}
+\item \textbf{¿El precio ha subido} desde que entré?
+\item \textbf{Si me saliera mañana, ¿me quedaría algún otro lado?} \emph{Si la respuesta es no, ese es el trabajo pendiente.}
+\end{pasoslista}
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{«No me importa lo que piensen»:} casi siempre es mentira, y creérselo impide mirar el precio. \textbf{Confundir costo con peaje:} entrenar dos horas diarias construye; callarse cuando humillan a alguien, no. \textbf{«Es que así son ellos»:} describe el precio y lo llama personalidad. \textbf{Romper de golpe:} salirse de todo sin tener a dónde ir suele terminar en volver peor. \textbf{Creer que el grupo popular es el mejor:} entrar a condición de no fallar nunca es evaluación, no pertenencia. \textbf{Pensar que esto se arregla con carácter:} se arregla con más de una puerta.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+
+
+\textbf{En tu cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2. Las dos condiciones». \textbf{Formato:} escoge \textbf{tres} de tus grupos y pásalos por las dos condiciones, respondiendo cada una con un hecho concreto ---no con una impresión---. \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} puedes explicar la diferencia entre \textbf{costo de construir y peaje} con un ejemplo tuyo de cada uno.
+\end{infoband}
+
+\puente{Ya sabes distinguirlo. Es hora de mirarle el precio a tus grupos ---y de abrir una segunda puerta, que es lo que de verdad te da libertad---.}
+
+\milcestacion{milcMagenta}{Fase 3 · Praxis: revisar el precio}
+
+\begin{softbox}{milcMagenta}{milcGris}{Cómo se le mira el precio a un grupo}
+Ahora se le pone precio a lo que ya tienes. No para renunciar a nada hoy, sino para saber qué estás pagando ---que es lo único que permite decidirlo---.
+\end{softbox}
+
+\milcpaso{1}{milcMagenta}{\textbf{El mapa, ordenado (8 min).} Pasa tu lista a dos columnas: \textbf{lo que aporto} y \textbf{lo que me piden}. \emph{Vas a encontrar que en los grupos que funcionan las dos columnas se parecen,} y que en los que cansan una está llena y la otra vacía.}
+\milcpaso{2}{milcMagenta}{\textbf{Las dos condiciones, aplicadas (8 min).} A tres grupos, con \textbf{hechos}: «nos hablamos todos los días» es un hecho; «somos muy unidos» no lo es. \textbf{Para la segunda condición hay una prueba concreta:} \emph{la última vez que faltaste, ¿alguien preguntó?}}
+\milcpaso{3}{milcMagenta}{\textbf{La lista del peaje (8 min).} Escribe, sin adornos, \textbf{lo que has hecho este año para no quedar por fuera de algún grupo}. \emph{Es la parte incómoda y es el corazón de la guía.} \textbf{Y al frente de cada cosa, una sola pregunta:} ¿construyó algo, o solo probó que obedezco? \emph{Nadie tiene que leer esta lista.}}
+\milcpaso{4}{milcMagenta}{\textbf{La segunda puerta (10 min).} Escoge \textbf{una pertenencia posible que hoy no tienes} y da el primer paso concreto: el semillero, un equipo, un taller, el grupo de la iglesia, la banda, los primos con los que dejaste de hablar. \textbf{Escribe qué vas a hacer y cuándo} ---un paso, con fecha---. \emph{Esto no es un plan B por si te va mal: es lo que hace que ningún grupo pueda cobrarte de más.}}
+
+\begin{drawbox}{milcMagenta}{Antes de cerrar tu mapa}
+\begin{checklista}
+\item Tu mapa tiene las dos columnas: \textbf{lo que aportas} y \textbf{lo que te piden}.
+\item Pasaste tres grupos por las dos condiciones, \textbf{con hechos} y no con impresiones.
+\item Escribiste la lista del peaje, incluida la parte que no le contarías a nadie.
+\item Separaste, en esa lista, lo que \textbf{construyó algo} de lo que solo \textbf{probó que obedeces}.
+\item Escogiste una \textbf{segunda puerta} y escribiste un paso concreto con fecha.
+\item Entendiste que querer pertenecer \textbf{no es un defecto}: lo que se revisa es el precio.
+\end{checklista}
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{El examen del grupo.} \emph{«¿Seguido y sin tensión? · ¿Alguien nota si falto? · ¿Construye o prueba obediencia? · ¿El precio subió?»} \\[1mm]
+\textbf{Costo o peaje.} \emph{«Lo que me pide \_\_\_\_ es \_\_\_\_. Construye: \_\_\_\_ / Solo prueba que obedezco: \_\_\_\_»} \\[1mm]
+\textbf{Mi segunda puerta.} \emph{«Voy a \_\_\_\_ el día \_\_\_\_.»} ---un paso, con fecha---.
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+
+
+\textbf{En tu cuaderno (Actividad 3 · CREA).} Título: «Actividad 3. El precio de mis grupos». \textbf{Formato:} el mapa en dos columnas + las dos condiciones aplicadas a tres grupos + la lista del peaje clasificada + la segunda puerta con su fecha. \textbf{Extensión:} una página. \textbf{Sabes que terminaste cuando} tienes escrito \textbf{un paso concreto con fecha} hacia una pertenencia que hoy no tienes.
+\end{infoband}
+
+\puente{El producto es un mapa con precios. \emph{No para renunciar a nada: para saber qué estás pagando y decidirlo tú.}}
+
+\milcestacion{milcMostaza}{Producto de la sesión}
+\textbf{Mapa de pertenencias: las dos condiciones aplicadas, la lista del peaje y una segunda puerta con fecha}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) El mapa distingue lo que se aporta de lo que se pide, con hechos concretos. (2) Las dos condiciones de Baumeister y Leary están aplicadas a grupos reales, no a grupos ideales. (3) La lista del peaje separa lo que construye algo de lo que solo prueba obediencia. (4) Se identifica una segunda pertenencia posible con un primer paso fechado. (5) Se reconoce la necesidad de pertenecer como motivación legítima, sin convertirla en excusa para cualquier precio.
+\end{softbox}
+
+\puente{Antes de cerrar, revisa lo incómodo: si en tu mapa hay un grupo cuyo precio no te atreverías a contarle a nadie, ese es el que hay que mirar.}
+
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con tres voces: la comunidad que no es una masa, el cambio como ley de las cosas, y el lugar compartido donde hoy también se pertenece.}
+
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{«Aquel que es capaz de escuchar silenciosamente al Otro como otro es el que puede constituir una comunidad y no una mera sociedad totalizada.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Enrique Dussel · Filosofía de la liberación (1977)}
+
+Dussel separa dos cosas que en el colegio se confunden todo el tiempo: \textbf{una comunidad} y \textbf{una sociedad totalizada}. \emph{En la segunda todos son parecidos porque el que no se parece no entra ---o entra callado---.} \textbf{Y la señal para distinguirlas es la que él nombra: si ahí se puede escuchar al otro \emph{como otro}}, es decir, distinto, sin exigirle que se vuelva una copia. \textbf{Aplícalo a tu mapa:} en tus grupos, ¿el que piensa distinto \emph{cabe}, o le toca fingir? \emph{La cuadrilla de Riosucio funciona porque cada quien pone algo suyo: el que escribe, el que canta, el que cose. Un grupo donde todos tienen que ser iguales no necesita a nadie en particular ---y por eso nadie está seguro adentro---.}
+
+\textbf{En mi grupo principal, ¿alguien piensa distinto y lo dice en voz alta? ¿Qué le pasa cuando lo hace?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · Meditaciones VII, 47 (c. 175 d.C.) · cuidado interior}
+\textit{«Contempla las evoluciones de los astros y piensa al mismo tiempo que evolucionas con ellos; y reflexiona continuamente cómo los elementos cambian unos en otros.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Marco Aurelio · Meditaciones VII, 47 (c. 175 d.C.)}
+
+Marco Aurelio mira el cielo para acordarse de una cosa: \textbf{todo está cambiando, incluido él}. \emph{Y a los trece años eso es información útil, porque el grupo se siente eterno:} parece que el que quede por fuera hoy queda por fuera para siempre. \textbf{No es cierto, y hay una prueba a la mano:} pregúntale a alguien de veinte años con quiénes andaba en octavo. \emph{Casi nadie sigue con los mismos.} \textbf{Esto no sirve para menospreciar lo que sientes ---duele hoy y duele de verdad---:} sirve para \textbf{no pagar un precio permanente por un lugar temporal}.
+
+\textbf{Lo que estoy dispuesto a hacer hoy por este grupo, ¿lo haría si supiera que en dos años no nos hablamos?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{«Somos organismos informacionales ---inforgs--- que compartimos un entorno global hecho, en última instancia, de información: la infoesfera.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Luciano Floridi · La cuarta revolución (2014)}
+
+Hoy pertenecer tiene una capa que no existía: \textbf{estar o no estar en un grupo de chat}, aparecer o no en las fotos, que te etiqueten. \emph{Y esa capa tiene una trampa:} es \textbf{medible}. \textbf{Antes uno no sabía cuánta gente lo quería; ahora hay un número}, y el número invita a compararse todo el tiempo. \emph{Pero fíjate en lo que el número no mide:} las dos condiciones. \textbf{Que te agreguen a un grupo no dice nada sobre si alguien notaría que faltaste tres días.} \emph{Y esa segunda es la que sostiene.}
+
+\textbf{¿Estoy midiendo mi lugar en un grupo por lo que se ve, o por si alguien preguntaría por mí?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres son citas textuales y llevan su referencia debajo. Puedes remitir a la obra en clase.
+\end{infoband}
+
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
+
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Calidad del mapa & \milcopcion{Distingo lo que aporto a un grupo de lo que ese grupo me cobra por dejarme estar.} & \milcopcion{Reconozco lo que me piden, pero creo que en todos los grupos es igual.} & \milcopcion{Sigo pensando que si me quisieran de verdad no me pedirían nada.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Dos cosas. \textbf{Primero, da el paso de tu segunda puerta} ---uno solo, el que escribiste con fecha--- y anota qué pasó. \emph{Si no se dio, anota qué te lo impidió: casi siempre es pena, y la pena se pasa haciéndolo.} \textbf{Segundo, pregunta en tu casa por los grupos de antes:} averigua con alguien mayor \textbf{a qué grupos pertenecía cuando tenía tu edad} ---la cuadrilla, el equipo del barrio, el grupo de la parroquia, la comparsa, el combo de la cuadra---, \textbf{qué hacían juntos}, cómo se entraba y si alguien quedaba por fuera. \textbf{Trae:} cómo te fue con tu paso y lo que te contaron. \emph{Vas a encontrar algo que sirve para todo el año: casi todos esos grupos se juntaban para \emph{hacer} algo ---jugar, tocar, ensayar, trabajar--- y no solamente para estar. Los grupos que hacen algo cobran menos peaje, porque tienen otra cosa de qué ocuparse.}
+\end{infoband}
+
+\end{document}

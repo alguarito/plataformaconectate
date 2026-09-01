@@ -1,0 +1,555 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra UNICA de las guias MILC v3.
+%
+% La usan las tres familias de guias, cada una con su driver:
+%   · Grados 6-11  -> scripts/build-guias-g11.py
+%   · Bebras       -> scripts/build-guias-bebras.py
+%   · Semillero    -> scripts/build-guias-semillero.py
+%
+% Antes habia tres copias casi identicas (~400 lineas iguales, 6 distintas):
+% cada mejora habia que aplicarla tres veces, y en la practica no se hacia
+% (el motor de recursos vivia solo en dos de ellas). Lo que varia entre
+% familias esta parametrizado en 6 placeholders que cada driver llena
+% (se nombran aqui SIN su sintaxis real: el builder reemplaza por texto plano,
+% tambien dentro de los comentarios, y un valor multilinea rompe el preambulo):
+%
+%   HEADER_IZQ        encabezado izquierdo de pagina
+%   HEADER_DER        encabezado derecho de pagina
+%   PORTADA_ETIQUETA  rotulo sobre el numero grande (GRADO/MOMENTO/MODULO)
+%   PORTADA_SERIE     linea de serie de la portada
+%   PORTADA_ID        identificador de la guia en la portada
+%   PORTADA_CIRCULO   el circulito de grado (°), o vacio si no aplica
+%
+% El resto de claves las documenta content/guias/_SCHEMA.md. El script valida
+% que no queden placeholders sin reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+% Librerías TikZ para los diagramas de las guías (bloque `recursos:`):
+%  · babel  → babel en español vuelve activos caracteres como «>», y TikZ los usa
+%             en sus opciones (>=stealth, ->). Sin esta librería, cualquier
+%             diagrama con flechas revienta con «\language@active@arg> has an
+%             extra }». Debe ir ANTES de que se dibuje nada.
+%  · positioning        → sintaxis «below left=2pt and 3pt».
+%  · decorations.pathreplacing → llaves ({brace}) para señalar rangos.
+\usetikzlibrary{babel,positioning,decorations.pathreplacing}
+\usepackage{graphicx}
+% Circuitos: el trabajo de electrónica se hace hoy con micro:bit y sus sensores
+% integrados (MakeCode, sin cableado), así que no se necesitan esquemáticos.
+% Si algún día entran montajes con protoboard, basta descomentar esta línea:
+% los diagramas .tex/.tikz declarados en `recursos:` ya se incrustan solos.
+% \usepackage{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
+\usepackage{enumitem}
+\usepackage{microtype}
+
+% Helvetica Neue no trae la flecha U+2192, asi que cada «→» escrito literalmente
+% en el YAML se compilaba a NADA, en silencio (462 flechas en 61 guias: rutas del
+% tipo «paleta → tipografia → lockup» salian rotas). Mapeamos el caracter a su
+% version matematica, que si tiene glifo. Asi el autor puede seguir escribiendo
+% «→» comodamente en el YAML.
+\usepackage{newunicodechar}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0D9488}
+\definecolor{milcGradeDark}{HTML}{115E59}
+\definecolor{milcGradeSoft}{HTML}{CCFBF1}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Territorio interior · Educación socioemocional}
+\rhead{\small Grado 8° · Momento 8 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+% La flecha va en modo matematico a proposito: Helvetica Neue NO tiene el glifo
+% U+2192, asi que \textrightarrow se compilaba a NADA («Missing character: There
+% is no → in font Helvetica Neue») y el puente salia sin flecha. En modo
+% matematico la flecha viene de la fuente matematica y si se dibuja.
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{$\rightarrow$}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+% ─── Listas aireadas para las guías socioemocionales ────────────────────
+% Componer las verificaciones como «\checkbox texto\\» deja el texto que salta
+% de línea debajo del cuadrito y apelmaza el bloque. Estos entornos alinean la
+% continuación y airean los ítems. Los usa Territorio Interior; cualquier
+% familia puede hacerlo.
+\newlist{checklista}{itemize}{1}
+\setlist[checklista]{
+  label=\textcolor{milcGradeDark}{\fbox{\phantom{x}}},
+  leftmargin=9mm, labelsep=3.2mm, itemsep=2.4mm,
+  topsep=2.5mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+\newlist{pasoslista}{enumerate}{1}
+\setlist[pasoslista]{
+  label=\textcolor{milcGradeDark}{\sffamily\bfseries\arabic*.},
+  leftmargin=8mm, labelsep=3mm, itemsep=2.8mm,
+  topsep=1mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
+% ── Recursos visuales de la guía ──────────────────────────────────────
+% Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
+% \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
+% \guiaDiagrama → fuente TikZ/circuitikz (.tex) incrustada como vector:
+%                 es la vía para circuitos y esquemáticos editables.
+% #1 = ruta relativa al .tex · #2 = pie (puede ir vacío)
+\newcommand{\guiaFigura}[2]{%
+\begin{center}
+\includegraphics[width=0.88\linewidth,height=0.38\textheight,keepaspectratio]{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\newcommand{\guiaDiagrama}[2]{%
+\begin{center}
+\input{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\begin{document}
+\thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
+\begin{tikzpicture}[remember picture,overlay]
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont MOMENTO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont TERRITORIO INTERIOR · SOCIOEMOCIONAL};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
+
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 8};
+  % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
+  % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  
+
+  \node[anchor=west,text=milcGradeText,text width=11.4cm,align=left] at ([xshift=1.5cm,yshift=0.5cm]gradonum.east)
+    {
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Territorio interior · Socioemocional}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont\setlength{\baselineskip}{27pt}Nosotros\\[4pt]y ellos\\[4pt]la cerca que nadie construyó}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Grado 8° · Momento 8}
+    };
+\end{tikzpicture}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Tu mapa de cercas: las divisiones reales de tu curso con el criterio que las sostiene, la prueba de si son arbitrarias, y una acción de cruce —trabajar una semana con alguien del otro lado— planeada con día y tarea.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · Apertura ancestral · Prejuicio y estigma · Triángulo Dussel-Estoicismo-Floridi}}
+
+\newpage
+
+\section*{Apertura: Nosotros y ellos: la cerca que se pone sin que nadie la construya}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+\textbf{Riosucio} (Caldas) es hoy un solo municipio, y el país lo conoce por su Carnaval. \textbf{Pero antes fueron dos pueblos, y estaban separados por una cerca.} De un lado, \textbf{La Montaña}, la parroquia \textbf{indígena}; del otro, \textbf{San Sebastián de Quiebralomo}, la parroquia \textbf{minera}. \textbf{Y no es una manera de hablar: hubo una cerca real}, que durante \textbf{más de veinte años} dividió físicamente los dos poblados, \textbf{sus iglesias y sus plazas}. \emph{Cada lado tenía su templo, su plaza y su gente, y la rivalidad venía de siglos.} \textbf{La unión no fue espontánea:} se firmó un acuerdo de unión en \textbf{1814}, y la fusión en un solo municipio llamado Riosucio llegó por \textbf{decreto del 17 de junio de 1846}, del gobernador de la Provincia del Cauca, con vigencia desde el \textbf{1.º de julio}. \textbf{Y aquí está el detalle que lo vuelve inolvidable:} \emph{Riosucio todavía tiene \textbf{dos plazas y dos iglesias}}. \textbf{La cerca ya no está, pero el pueblo conserva la forma que le dejó.} \emph{Y lo que terminó de unirlos no fue el decreto: fue una fiesta que se hace entre los dos ---un carnaval que necesita de todos---.}
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+¿Cuánto hace falta para que se forme un «nosotros» y un «ellos»? \textbf{Muchísimo menos de lo que uno creería.} A comienzos de los setenta, \textbf{Henri Tajfel} y su equipo hicieron un experimento con escolares que se volvió famoso por lo mínimo del montaje. \textbf{Les mostraron cuadros de dos pintores ---Paul Klee y Wassily Kandinsky--- y les dijeron a los muchachos que quedaban divididos en dos grupos según cuál habían preferido.} \emph{Eso era todo:} no se conocían entre sí dentro del grupo, no interactuaban, no había nada que ganar personalmente, y la categoría \textbf{no significaba absolutamente nada}. \textbf{Aun así, al momento de repartir puntos, favorecieron a los de su grupo y perjudicaron a los del otro} (Tajfel y otros, 1971). \textbf{Fíjate en lo que eso demuestra:} \emph{para que aparezca el favoritismo no hace falta odio, ni historia, ni competencia, ni siquiera conocerse}. \textbf{Basta con que alguien trace una raya.} \emph{Y eso es una mala noticia y una buena a la vez:} \textbf{mala, porque significa que las cercas se levantan solas; buena, porque significa que casi ninguna se sostiene en algo real.}
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{Riosucio tuvo una cerca de verdad y hoy conserva \textbf{dos plazas} donde ya no hay ninguna cerca. \textbf{¿Qué divisiones de tu curso siguen funcionando} \ldots \textbf{aunque nadie recuerde de dónde salieron}?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar podrás: (1) \textbf{explicar} por qué basta una raya arbitraria para producir favoritismo, con el experimento de Tajfel; (2) \textbf{identificar} las cercas reales de tu curso y el criterio que las sostiene; (3) \textbf{probar} si ese criterio es arbitrario, es decir, si podría haber sido cualquier otro; (4) \textbf{planear} una acción de cruce ---trabajar con alguien del otro lado en una tarea común---, que es lo único que ha demostrado bajar cercas.
+\end{softbox}
+
+
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Comprende los fenómenos que afectan a su territorio, regula sus emociones ante ellos y acompaña a otros con empatía (transversal 6°--11°, articulado con la política «Escuela, territorio de vida» del MEN, Resolución 006519 de 2025, y la Ley 1620 de 2013)\\
+Referentes & Primera ayuda psicológica (OMS, 2011/2012) · Directrices IASC (2007) · USGS y Servicio Geológico Colombiano · Pueblo nasa y la minga (CRIC) · Dussel · Estoicismo · Floridi\\
+Producto final & Tu mapa de cercas: las divisiones reales de tu curso con el criterio que las sostiene, la prueba de si son arbitrarias, y una acción de cruce —trabajar una semana con alguien del otro lado— planeada con día y tarea.\\
+\end{tabularx}
+\normalsize
+
+\puente{Ya viste cómo se fabrica una fama (momento 4) y una vara (momento 7). \textbf{Hoy es lo mismo, pero aplicado a grupos enteros:} cómo se fabrica un «ellos».}
+
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Veo la cerca y la cruzo.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Primero, el mapa real de tu curso: quiénes son «nosotros», quiénes son «ellos» y qué se dice de cada lado.}
+
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- El mapa de cercas.} \textbf{Sin nombres: usa iniciales o «grupo A».} \textbf{Primera parte.} Dibuja los \textbf{grupos de tu curso} y ponle a cada uno \textbf{el criterio que lo define}: los del barrio tal, los que juegan, las que andan juntas, los nuevos, los que van bien en clase, los que tienen plata. \emph{Escribe el criterio aunque suene feo: es el dato.} \textbf{Segunda parte.} Escoge \textbf{la división más fuerte} de tu curso y escribe \textbf{qué se dice de «ellos»} ---las frases que se usan, tal cual---. \textbf{Tercera parte, la que casi nadie hace.} De ese otro grupo, \textbf{escribe los nombres de cuantos puedas} y, al lado de cada uno, \textbf{algo que sepas de esa persona en particular}. \emph{Cuenta cuántos lograste.} \textbf{Y la última:} ¿cuándo empezó esa división? \emph{Casi nadie sabe. Eso también es el dato.}
+\end{softbox}
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Dibujaste los grupos con \textbf{el criterio} que define a cada uno.}
+\milccheckrow{Escribiste tal cual las frases que se dicen de «ellos».}
+\milccheckrow{Contaste de cuántos del otro grupo sabes algo en particular.}
+
+\begin{infoband}{milcVerde}
+
+
+\textbf{En tu cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1. El mapa de cercas». \textbf{Formato:} el dibujo con criterios + las frases sobre «ellos» + la lista del otro lado con lo que sabes de cada uno + desde cuándo existe la división. \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} tienes \textbf{el número} de personas del otro grupo de las que sabes algo. Esta página es tuya: \textbf{nadie más tiene que leerla si tú no quieres}.
+\end{infoband}
+
+\puente{Ya lo tienes. Ahora, el experimento que muestra que basta una raya, y por qué al otro lado siempre lo vemos más parecido de lo que es.}
+
+\milcestacion{milcTurquesa}{Fase 2 · Sistematización: entender la cerca}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro claves sobre nosotros y ellos}
+Cuatro claves para entender por qué las cercas aparecen solas y por qué casi ninguna aguanta que la miren de cerca.
+\end{softbox}
+
+\milcpaso{1}{milcTurquesa}{\textbf{Basta con dividir. Nada más.} En el experimento de Tajfel, la división se hizo con \textbf{cuadros de dos pintores} ---Klee y Kandinsky--- y era completamente irrelevante: los muchachos no se conocían dentro de su grupo, no interactuaban y no tenían nada personal que ganar. \textbf{Y aun así favorecieron a los suyos} (Tajfel y otros, 1971). \emph{Traduce eso a tu salón:} \textbf{la división no necesita una razón para funcionar}, así que \emph{buscar «por qué nos caen mal» es perder el tiempo}. \textbf{La pregunta correcta es otra:} \emph{¿quién trazó la raya, y cuándo?} \textbf{Y casi siempre la respuesta es que nadie se acuerda ---lo cual dice todo sobre qué tan importante era el motivo---.}}
+\milcpaso{2}{milcTurquesa}{\textbf{«Ellos son todos iguales» es un error de fábrica.} \emph{A los del propio grupo los vemos uno por uno} ---este es el chistoso, este el callado, este el que ayuda---. \textbf{A los del otro los vemos como un bloque}, y por eso cualquier cosa que haga uno solo se le atribuye a todos. \emph{La prueba la acabas de hacer tú:} \textbf{cuenta de cuántos del otro grupo sabías algo particular.} \emph{Casi siempre son poquísimos ---y no porque no haya nada que saber---.} \textbf{Y ojo con la trampa que se cierra sola:} como no los conoces, cualquier cosa que oigas de ellos te suena creíble \textbf{---y ahí el momento 4 se junta con este---.}}
+\milcpaso{3}{milcTurquesa}{\textbf{La cerca se hereda, y sobrevive a su causa.} En Riosucio la cerca desapareció hace casi dos siglos \textbf{y el pueblo todavía tiene dos plazas}. \emph{En un curso pasa igual, pero en pequeño:} la mayoría de las divisiones \textbf{empezaron por algo que ya nadie recuerda} ---una pelea de sexto, un partido, un profesor que armó los grupos así--- \textbf{y se siguen respetando por costumbre}. \textbf{Y hay algo más:} \emph{a los que llegan nuevos se les enseña la cerca en la primera semana} ---«con esos no»---. \textbf{Es decir, la división ya no la sostiene el motivo: la sostiene el que la enseña.}}
+\milcpaso{4}{milcTurquesa}{\textbf{Lo que sí baja una cerca: una tarea común.} \emph{Hablar bien del otro grupo no funciona; hacer campañas de tolerancia tampoco, o muy poco.} \textbf{Lo que funciona es tener que sacar algo adelante juntos}, donde se necesiten de verdad y donde el resultado dependa de los dos. \emph{Riosucio es un ejemplo enorme de esto:} \textbf{lo que terminó de juntar a los dos pueblos no fue el decreto de 1846 ---fue un carnaval que hay que hacer entre todos---.} \textbf{Y fíjate en la palabra que se repite en todo este programa:} \emph{la minga, el convite, la cuadrilla}. \textbf{Todas son lo mismo: gente distinta con una tarea común.}}
+
+\begin{drawbox}{milcTurquesa}{La prueba de lo arbitrario, en cuatro preguntas}
+\begin{pasoslista}
+\item \textbf{¿Desde cuándo existe esta división?} \emph{Si nadie sabe, ya tienes tu respuesta.}
+\item \textbf{¿Quién la trazó?} \emph{Casi nunca hay un autor. Como el rumor del momento 4.}
+\item \textbf{¿Podría haber sido otro el criterio?} \emph{Si en vez de barrio hubiera sido lista de asistencia, ¿estaríamos igual de convencidos?}
+\item \textbf{¿De cuántos del otro lado sé algo particular?} \emph{El número mide el tamaño de la cerca.}
+\end{pasoslista}
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{«Es que sí son así»:} de un bloque se puede decir cualquier cosa porque nadie lo comprueba. \textbf{Buscar la razón de la división:} el experimento muestra que no hace falta ninguna. \textbf{Hacer campañas de tolerancia:} sin tarea común, no mueven nada. \textbf{«Yo no tengo nada contra ellos»:} el favoritismo aparece sin necesidad de tener algo en contra. \textbf{Enseñarle la cerca al que llega:} «con esos no» es lo que mantiene viva la división. \textbf{Mezclar por decreto:} juntar sin tarea produce dos grupos en la misma mesa. \textbf{Creer que es cosa de niños:} Riosucio tardó siglos.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+
+
+\textbf{En tu cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2. La prueba de lo arbitrario». \textbf{Formato:} pasa la división más fuerte de tu curso por las cuatro preguntas y responde cada una. \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} puedes explicar por qué \textbf{a los del propio grupo los vemos uno por uno y a los del otro como un bloque}.
+\end{infoband}
+
+\puente{Ya sabes que la cerca es arbitraria. Es hora de la única cosa que la baja, y no es hablar bien de nadie: \textbf{es trabajar juntos en algo}.}
+
+\milcestacion{milcMagenta}{Fase 3 · Praxis: cruzar la cerca}
+
+\begin{softbox}{milcMagenta}{milcGris}{Cómo se cruza una cerca que nadie construyó}
+Aquí no hay discurso que sirva. Lo único que baja una cerca es que dos personas de lados distintos tengan que sacar algo adelante.
+\end{softbox}
+
+\milcpaso{1}{milcMagenta}{\textbf{El mapa de cercas, terminado (7 min).} Completa el dibujo con los criterios. \emph{Compara con dos compañeros:} \textbf{van a descubrir que no todos dibujan las mismas cercas} ---y que quien está en un grupo grande casi no ve las divisiones, mientras que quien está en el borde las ve todas---. \emph{Eso también es un dato: las cercas se ven mejor desde afuera.}}
+\milcpaso{2}{milcMagenta}{\textbf{La prueba de lo arbitrario (8 min).} Pasa tu división más fuerte por las cuatro preguntas. \textbf{Presta atención a la tercera} ---\emph{¿podría haber sido otro el criterio?}---: \emph{es la que desarma, porque casi siempre la respuesta es que sí, y que habría dado exactamente igual}.}
+\milcpaso{3}{milcMagenta}{\textbf{Los nombres del otro lado (8 min).} Vuelve a tu lista y complétala. \textbf{Meta concreta:} \emph{averigua, esta semana, una cosa de \textbf{tres} personas del otro grupo}. \textbf{No hace falta hacerse amigo:} preguntar algo en un trabajo, en la fila, en el descanso. \emph{Lo que se está desarmando aquí es el bloque ---y un bloque se desarma con nombres propios---.}}
+\milcpaso{4}{milcMagenta}{\textbf{La acción de cruce (12 min, y una semana).} Escoge \textbf{una tarea real} en la que necesites trabajar con alguien del otro lado: un trabajo de clase, un partido, el aseo, un montaje, un proyecto del semillero. \textbf{Escribe qué es, con quién, qué día y qué le toca a cada uno.} \emph{Y aquí está la condición que decide si esto funciona o no:} \textbf{tiene que haber algo que salga mal si el otro no cumple}. \emph{Si tu «acción de cruce» es saludar o ser amable, no va a pasar nada: eso no es una tarea común, es cortesía.}}
+
+\begin{drawbox}{milcMagenta}{Antes de cerrar tu mapa de cercas}
+\begin{checklista}
+\item Tu mapa tiene los grupos \textbf{con su criterio}, aunque el criterio suene feo escrito.
+\item Pasaste la división más fuerte por las \textbf{cuatro preguntas}.
+\item Contaste de cuántos del otro lado sabes algo particular, y te propusiste \textbf{tres} más.
+\item Tu acción de cruce tiene \textbf{tarea, persona, día y reparto}.
+\item Hay algo que \textbf{sale mal si el otro no cumple} ---si no, no es tarea común---.
+\item Entendiste que basta una raya arbitraria para producir favoritismo, sin necesidad de odio.
+\end{checklista}
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{La prueba.} \emph{«¿Desde cuándo? · ¿Quién la trazó? · ¿Podría haber sido otro criterio? · ¿De cuántos sé algo?»} \\[1mm]
+\textbf{Mi acción de cruce.} \emph{«Voy a \_\_\_\_ (tarea) con \_\_\_\_ el día \_\_\_\_. A mí me toca \_\_\_\_ y a él/ella \_\_\_\_.»} \\[1mm]
+\textbf{La condición.} \emph{«Si no cumple, sale mal \_\_\_\_.»} ---si no hay respuesta, no es tarea común---.
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+
+
+\textbf{En tu cuaderno (Actividad 3 · CREA).} Título: «Actividad 3. Cruzar la cerca». \textbf{Formato:} el mapa con criterios + las cuatro preguntas respondidas + la lista de nombres del otro lado + la acción de cruce con día, reparto y condición. \textbf{Extensión:} una página. \textbf{Sabes que terminaste cuando} tu acción de cruce tiene \textbf{algo que sale mal si el otro no cumple}.
+\end{infoband}
+
+\puente{El producto es una acción de cruce. \emph{Una cerca no se cae porque alguien haga una campaña: se cae cuando dos que estaban en lados distintos tienen que sacar algo adelante.}}
+
+\milcestacion{milcMostaza}{Producto de la sesión}
+\textbf{Mapa de cercas: las divisiones con su criterio, la prueba de lo arbitrario y una acción de cruce con tarea común}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) El mapa nombra el criterio de cada división, aunque resulte incómodo escribirlo. (2) La prueba de lo arbitrario está aplicada a la división más fuerte, con las cuatro respuestas. (3) Se cuenta cuántas personas del otro grupo se conocen individualmente, y se fija una meta concreta. (4) La acción de cruce tiene tarea, persona, día y reparto de responsabilidades. (5) Existe interdependencia real: algo sale mal si el otro no cumple. La cortesía no cuenta como cruce.
+\end{softbox}
+
+\puente{Antes de cerrar, revisa lo que hace fracasar estos ejercicios: si tu acción de cruce es «ser amable con ellos», no va a pasar nada. Tiene que haber una tarea.}
+
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con tres voces: el otro que no cabe en la categoría, la abeja y el enjambre, y qué se cultiva en un lugar que se comparte.}
+
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{«Analéctico quiere indicar el hecho real humano por el que todo hombre, todo grupo o pueblo se sitúa siempre más allá (aná-) del horizonte de la totalidad.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Enrique Dussel · Filosofía de la liberación (1977), §2.4}
+
+Un «ellos» es \textbf{una totalidad}: un saco donde caben veinte personas distintas y todas quedan iguales. \emph{Dussel dice que nadie cabe ahí ---que cada uno está siempre más allá---,} \textbf{y la prueba está en el ejercicio que hiciste:} \emph{apenas escribes nombres propios y algo de cada uno, el bloque se deshace}. \textbf{Fíjate en el orden en que ocurre:} \emph{no dejamos de conocer a la gente porque tengamos prejuicios ---tenemos prejuicios porque no la conocemos---.} \textbf{Y eso convierte la solución en algo muy concreto y nada sentimental:} \textbf{no hay que querer más a nadie. Hay que saber más de cada quien.}
+
+\textbf{¿A cuántas personas de mi curso podría describir con algo que no tenga que ver con su grupo?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · Meditaciones VI, 54 (c. 175 d.C.) · cuidado interior}
+\textit{«Lo que no beneficia al enjambre, tampoco beneficia a la abeja.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Marco Aurelio · Meditaciones VI, 54 (c. 175 d.C.)}
+
+Una cerca dentro de un curso se defiende siempre con el mismo argumento: \emph{«a mí me va bien con mi grupo»}. \textbf{Marco Aurelio responde a eso en once palabras.} \emph{Un curso partido en dos funciona peor para todos:} los trabajos se hacen peor, las salidas se organizan peor, y sobre todo \textbf{aprende que se puede tratar a un grupo entero como si fuera menos} ---y esa lección después se usa con cualquiera---. \textbf{Riosucio lo muestra a escala de pueblo:} \emph{los dos lados vivieron siglos convencidos de que estaban bien separados, y lo que terminó dándoles algo grande fue tener que hacer una fiesta entre todos.}
+
+\textbf{¿Qué cosa buena no ha pasado en mi curso porque estamos divididos?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{«El florecimiento de las entidades informacionales y de toda la infoesfera debe promoverse preservando, cultivando y enriqueciendo sus propiedades.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Luciano Floridi · La ética de la información (2013; trad.)}
+
+Hoy las cercas también se construyen con grupos de chat, y son \textbf{más eficientes que una cerca de madera}: \emph{el grupo paralelo donde están todos menos «ellos» hace que la división \textbf{tenga sede}}. \textbf{Y pasa algo que empeora las cosas:} adentro solo se oye una versión, así que la idea que cada lado tiene del otro \textbf{se vuelve más extrema con el tiempo}, no menos. \emph{Cultivar, aquí, es muy concreto:} \textbf{un solo grupo donde estén todos los del curso para lo que es de todos}. \emph{No arregla las amistades ---no tiene por qué---, pero impide lo peor: que alguien se entere tarde de lo que se avisó.}
+
+\textbf{¿Hay en mi curso un grupo de chat donde están todos menos algunos? ¿Quiénes son los que faltan?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres son citas textuales y llevan su referencia debajo. Puedes remitir a la obra en clase.
+\end{infoband}
+
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
+
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Calidad del cruce & \milcopcion{Identifiqué una cerca real y planeé trabajar con alguien del otro lado, con día y tarea.} & \milcopcion{Reconozco las divisiones del curso, pero creo que son por afinidad y ya.} & \milcopcion{Sigo pensando que los del otro grupo sí son todos parecidos.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Dos cosas. \textbf{Primero, haz la acción de cruce} y trae \textbf{qué salió} ---no si fue agradable: si la tarea salió---. \emph{Y trae también las tres cosas que averiguaste de tres personas del otro lado.} \textbf{Segundo, pregunta en tu casa por las divisiones del pueblo:} averigua con alguien mayor \textbf{si en su barrio, su vereda o su pueblo había lados} ---los de arriba y los de abajo, los de este lado del río, los de tal barrio---, \textbf{qué se decía de los del otro lado} y si alguien se pasó alguna vez. \textbf{Trae:} el resultado de tu tarea y lo que te contaron. \emph{Vas a encontrar dos cosas que se repiten en todo el país: casi nadie sabía explicar de dónde venía la división ---igual que en tu curso---, y casi siempre lo que juntó a la gente fue algo que había que hacer entre todos: una fiesta, una carretera, un puente, una escuela.}
+\end{infoband}
+
+\end{document}

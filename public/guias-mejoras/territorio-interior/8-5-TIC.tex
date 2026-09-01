@@ -1,0 +1,555 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra UNICA de las guias MILC v3.
+%
+% La usan las tres familias de guias, cada una con su driver:
+%   · Grados 6-11  -> scripts/build-guias-g11.py
+%   · Bebras       -> scripts/build-guias-bebras.py
+%   · Semillero    -> scripts/build-guias-semillero.py
+%
+% Antes habia tres copias casi identicas (~400 lineas iguales, 6 distintas):
+% cada mejora habia que aplicarla tres veces, y en la practica no se hacia
+% (el motor de recursos vivia solo en dos de ellas). Lo que varia entre
+% familias esta parametrizado en 6 placeholders que cada driver llena
+% (se nombran aqui SIN su sintaxis real: el builder reemplaza por texto plano,
+% tambien dentro de los comentarios, y un valor multilinea rompe el preambulo):
+%
+%   HEADER_IZQ        encabezado izquierdo de pagina
+%   HEADER_DER        encabezado derecho de pagina
+%   PORTADA_ETIQUETA  rotulo sobre el numero grande (GRADO/MOMENTO/MODULO)
+%   PORTADA_SERIE     linea de serie de la portada
+%   PORTADA_ID        identificador de la guia en la portada
+%   PORTADA_CIRCULO   el circulito de grado (°), o vacio si no aplica
+%
+% El resto de claves las documenta content/guias/_SCHEMA.md. El script valida
+% que no queden placeholders sin reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+% Librerías TikZ para los diagramas de las guías (bloque `recursos:`):
+%  · babel  → babel en español vuelve activos caracteres como «>», y TikZ los usa
+%             en sus opciones (>=stealth, ->). Sin esta librería, cualquier
+%             diagrama con flechas revienta con «\language@active@arg> has an
+%             extra }». Debe ir ANTES de que se dibuje nada.
+%  · positioning        → sintaxis «below left=2pt and 3pt».
+%  · decorations.pathreplacing → llaves ({brace}) para señalar rangos.
+\usetikzlibrary{babel,positioning,decorations.pathreplacing}
+\usepackage{graphicx}
+% Circuitos: el trabajo de electrónica se hace hoy con micro:bit y sus sensores
+% integrados (MakeCode, sin cableado), así que no se necesitan esquemáticos.
+% Si algún día entran montajes con protoboard, basta descomentar esta línea:
+% los diagramas .tex/.tikz declarados en `recursos:` ya se incrustan solos.
+% \usepackage{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
+\usepackage{enumitem}
+\usepackage{microtype}
+
+% Helvetica Neue no trae la flecha U+2192, asi que cada «→» escrito literalmente
+% en el YAML se compilaba a NADA, en silencio (462 flechas en 61 guias: rutas del
+% tipo «paleta → tipografia → lockup» salian rotas). Mapeamos el caracter a su
+% version matematica, que si tiene glifo. Asi el autor puede seguir escribiendo
+% «→» comodamente en el YAML.
+\usepackage{newunicodechar}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0D9488}
+\definecolor{milcGradeDark}{HTML}{115E59}
+\definecolor{milcGradeSoft}{HTML}{CCFBF1}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Territorio interior · Educación socioemocional}
+\rhead{\small Grado 8° · Momento 5 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+% La flecha va en modo matematico a proposito: Helvetica Neue NO tiene el glifo
+% U+2192, asi que \textrightarrow se compilaba a NADA («Missing character: There
+% is no → in font Helvetica Neue») y el puente salia sin flecha. En modo
+% matematico la flecha viene de la fuente matematica y si se dibuja.
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{$\rightarrow$}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+% ─── Listas aireadas para las guías socioemocionales ────────────────────
+% Componer las verificaciones como «\checkbox texto\\» deja el texto que salta
+% de línea debajo del cuadrito y apelmaza el bloque. Estos entornos alinean la
+% continuación y airean los ítems. Los usa Territorio Interior; cualquier
+% familia puede hacerlo.
+\newlist{checklista}{itemize}{1}
+\setlist[checklista]{
+  label=\textcolor{milcGradeDark}{\fbox{\phantom{x}}},
+  leftmargin=9mm, labelsep=3.2mm, itemsep=2.4mm,
+  topsep=2.5mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+\newlist{pasoslista}{enumerate}{1}
+\setlist[pasoslista]{
+  label=\textcolor{milcGradeDark}{\sffamily\bfseries\arabic*.},
+  leftmargin=8mm, labelsep=3mm, itemsep=2.8mm,
+  topsep=1mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
+% ── Recursos visuales de la guía ──────────────────────────────────────
+% Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
+% \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
+% \guiaDiagrama → fuente TikZ/circuitikz (.tex) incrustada como vector:
+%                 es la vía para circuitos y esquemáticos editables.
+% #1 = ruta relativa al .tex · #2 = pie (puede ir vacío)
+\newcommand{\guiaFigura}[2]{%
+\begin{center}
+\includegraphics[width=0.88\linewidth,height=0.38\textheight,keepaspectratio]{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\newcommand{\guiaDiagrama}[2]{%
+\begin{center}
+\input{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\begin{document}
+\thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
+\begin{tikzpicture}[remember picture,overlay]
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont MOMENTO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont TERRITORIO INTERIOR · SOCIOEMOCIONAL};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
+
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 5};
+  % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
+  % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  
+
+  \node[anchor=west,text=milcGradeText,text width=11.4cm,align=left] at ([xshift=1.5cm,yshift=0.5cm]gradonum.east)
+    {
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Territorio interior · Socioemocional}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont\setlength{\baselineskip}{27pt}La ruta\\[4pt]cuando algo pasa\\[4pt]tipo I, tipo II y tipo III}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Grado 8° · Momento 5}
+    };
+\end{tikzpicture}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Tu ruta de una página: los tres tipos de situación con un ejemplo propio de cada uno, los nombres y los lugares reales de tu colegio para avisar, y la distinción entre avisar y acusar escrita con tus palabras.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · Apertura ancestral · Ley 1620 y ruta de atención · Triángulo Dussel-Estoicismo-Floridi}}
+
+\newpage
+
+\section*{Apertura: La ruta cuando algo pasa: qué es un tipo I, un tipo II y un tipo III}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+En Colombia hay comunidades indígenas que \textbf{juzgan sus propios casos}: la Constitución de 1991 les reconoce \textbf{jurisdicción propia} dentro de su territorio. \textbf{Y en 1997 la Corte Constitucional tuvo que responder una pregunta difícil:} ¿esa justicia propia puede hacer \emph{cualquier cosa}? \textbf{La respuesta fue la sentencia T-523 de 1997} (magistrado ponente \textbf{Carlos Gaviria Díaz}), y es una de las más importantes que se han escrito sobre el tema. \textbf{La Corte dijo dos cosas a la vez.} \textbf{Primera: sí, la comunidad juzga según su propio derecho} ---con su asamblea, sus autoridades y sus formas---, y eso hay que respetarlo. \textbf{Segunda: hay límites que ninguna autoridad puede pasar}, ni la del Estado ni la de la comunidad, porque son un \emph{consenso intercultural verdadero}: \textbf{el derecho a la vida}, \textbf{la prohibición de la esclavitud}, \textbf{la prohibición de la tortura} y \textbf{la legalidad de las faltas y las penas} ---es decir, que nadie sea sancionado por algo que no estaba definido como falta antes---. \emph{Guarda esas cuatro:} \textbf{es exactamente el esqueleto de cualquier manual de convivencia que sirva.} \emph{Hay una ruta propia, y hay un piso que nadie puede romper.}
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+Tu colegio también tiene su ruta, y no la inventó: se la fija la \textbf{Ley 1620 de 2013}, que creó el Sistema Nacional de Convivencia Escolar, y su reglamento, el \textbf{Decreto 1965 de 2013}. \textbf{Ahí están clasificadas las situaciones en tres tipos, y conviene saberlos de memoria.} \textbf{Tipo I:} situaciones \textbf{esporádicas} que afectan el clima escolar y que \textbf{en ningún caso generan daños al cuerpo ni a la salud física o mental} ---un roce, una discusión, un empujón aislado---. \textbf{Tipo II:} situaciones de \textbf{agresión escolar, acoso (\emph{bullying}) y ciberacoso} que \textbf{no constituyen delito}, y que \textbf{se presentan de manera repetida o sistemática} o causan daños al cuerpo o a la salud sin generar incapacidad. \textbf{Tipo III:} situaciones que son \textbf{presuntos delitos} ---contra la libertad, la integridad y la formación sexual, o cualquier otro delito de la ley penal---. \textbf{Fíjate en la palabra que separa el tipo I del tipo II: \emph{repetida}.} \emph{Lo mismo que una vez es un roce, tres veces es acoso ---y cambia de ruta---.} \textbf{Y fíjate en el tipo III: ahí no hay nada que decidir entre estudiantes.} \emph{Eso se avisa, siempre, y lo maneja un adulto.}
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{La Corte reconoció una justicia propia \textbf{y a la vez puso cuatro cosas que nadie puede pasar}. \textbf{¿Cuál de las situaciones que se manejan «entre nosotros» en tu salón lleva ya tanto tiempo repitiéndose} que dejó de ser tipo I sin que nadie se diera cuenta?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar podrás: (1) \textbf{clasificar} una situación real en tipo I, II o III con el criterio de la ley, sabiendo que la repetición es lo que cambia el tipo; (2) \textbf{distinguir} avisar de acusar, y explicar por qué el tipo III no se maneja entre pares; (3) \textbf{identificar} en tu propio colegio los nombres, los cargos y los lugares a los que se avisa; (4) \textbf{escribir} la frase con que avisarías, en menos de diez segundos y sin acusar a nadie.
+\end{softbox}
+
+
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Comprende los fenómenos que afectan a su territorio, regula sus emociones ante ellos y acompaña a otros con empatía (transversal 6°--11°, articulado con la política «Escuela, territorio de vida» del MEN, Resolución 006519 de 2025, y la Ley 1620 de 2013)\\
+Referentes & Primera ayuda psicológica (OMS, 2011/2012) · Directrices IASC (2007) · USGS y Servicio Geológico Colombiano · Pueblo nasa y la minga (CRIC) · Dussel · Estoicismo · Floridi\\
+Producto final & Tu ruta de una página: los tres tipos de situación con un ejemplo propio de cada uno, los nombres y los lugares reales de tu colegio para avisar, y la distinción entre avisar y acusar escrita con tus palabras.\\
+\end{tabularx}
+\normalsize
+
+\puente{En el momento 3 viste qué puede hacer un espectador. \textbf{Hoy vas al punto donde eso deja de ser opcional:} hay cosas en las que no hay que decidir si uno se mete.}
+
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Clasifico y aviso.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Primero, casos reales ---sin nombres---, y la pregunta de la que depende todo: \emph{¿cuántas veces ha pasado?}}
+
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- Tres casos.} \textbf{Sin nombres propios: usa iniciales o «persona 1».} \textbf{Primera parte.} Escribe \textbf{tres situaciones que hayas visto este año} en tu colegio ---no las más graves: escribe las que de verdad viste---. \textbf{Segunda parte, la que define todo.} Al frente de cada una responde: \emph{¿fue una sola vez o se ha repetido? ¿Hubo daño en el cuerpo? ¿Alguien quedó incapacitado?} \textbf{Tercera parte.} ¿\textbf{Alguien avisó}? Si no, ¿por qué? \emph{Escribe la razón textual: «es de sapos», «no era tan grave», «no sabía a quién», «se iba a poner peor».} \textbf{Y una pregunta final que casi nadie sabe responder:} \textbf{si mañana pasara algo grave, ¿a quién exactamente irías?} \emph{Nombre y lugar. Si no lo sabes, escríbelo así: «no sé». Eso es justamente lo que vamos a arreglar hoy.}
+\end{softbox}
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Escribiste tres situaciones reales, con iniciales.}
+\milccheckrow{Respondiste para cada una si \textbf{se repitió} y si hubo daño en el cuerpo.}
+\milccheckrow{Escribiste, textual, la razón por la que no se avisó.}
+
+\begin{infoband}{milcVerde}
+
+
+\textbf{En tu cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1. Tres casos». \textbf{Formato:} los tres casos con las tres preguntas + si alguien avisó y por qué no + tu respuesta a «a quién iría». \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} tienes claro \textbf{cuál de los tres se ha repetido}. Esta página es tuya: \textbf{nadie más tiene que leerla si tú no quieres}.
+\end{infoband}
+
+\puente{Ya los tienes. Ahora los tres tipos con el criterio de la ley, y por qué avisar y acusar no son lo mismo.}
+
+\milcestacion{milcTurquesa}{Fase 2 · Sistematización: entender la ruta}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro claves sobre la ruta}
+Cuatro claves para dejar de decidir «a ojo» qué es grave y qué no, y para saber qué hacer con cada cosa.
+\end{softbox}
+
+\milcpaso{1}{milcTurquesa}{\textbf{Los tres tipos, y la palabra que los separa.} \textbf{Tipo I:} \emph{esporádicas}, afectan el clima escolar y \textbf{no generan daño al cuerpo ni a la salud}. \textbf{Tipo II:} agresión, \textbf{acoso} y \textbf{ciberacoso} que \textbf{no son delito}, pero que \textbf{se repiten o son sistemáticas}, o causan daño sin incapacidad. \textbf{Tipo III:} \textbf{presuntos delitos} ---incluidos los que atentan contra la libertad, la integridad y la formación sexual--- (Ley 1620 de 2013 y Decreto 1965 de 2013). \emph{La palabra que hay que subrayar es \textbf{repetida}.} \textbf{Un apodo una vez es tipo I; el mismo apodo todos los días durante un mes es tipo II}, aunque cada vez suene igual de pequeña. \emph{Por eso la pregunta más importante frente a cualquier caso no es «¿qué tan feo fue?», sino \textbf{«¿cuántas veces?»}.}}
+\milcpaso{2}{milcTurquesa}{\textbf{Avisar no es acusar, y la diferencia se puede definir.} \emph{Acusar} busca que a alguien le pase algo. \textbf{Avisar busca que a alguien deje de pasarle algo.} \emph{Distintas en el propósito y también en la forma:} el que acusa cuenta lo que \textbf{cree} y señala culpables; \textbf{el que avisa cuenta lo que vio y dice qué le preocupa}. \textbf{Y hay una prueba de bolsillo que sirve siempre:} \emph{¿lo estoy contando para que alguien esté a salvo, o para que alguien quede mal?} \textbf{Ojo con la palabra «sapo»:} \emph{es la herramienta que usa el que hace el daño para quedarse sin testigos.} \textbf{Ningún código de honor entre estudiantes cubre a quien está lastimando a otro.}}
+\milcpaso{3}{milcTurquesa}{\textbf{Los límites que ninguna autoridad puede pasar.} La T-523 los nombró para la justicia de una comunidad, y valen igual para un manual de convivencia: \textbf{la vida}, \textbf{la prohibición de la esclavitud}, \textbf{la prohibición de la tortura} y \textbf{la legalidad} ---nadie puede ser sancionado por algo que no estaba definido como falta antes---. \emph{Ese último es el que más te va a servir a ti:} \textbf{tienes derecho a saber de antemano qué está prohibido, y a que te oigan antes de que te sancionen}. \emph{Y funciona en los dos sentidos:} también protege a la persona de la que se dice algo en el momento 4. \textbf{Un curso que castiga por rumores está pasando el mismo límite que la Corte le puso al Estado.}}
+\milcpaso{4}{milcTurquesa}{\textbf{Lo que no se maneja entre pares.} Hay cosas que no son asunto de valientes ni de mediadores de trece años. \textbf{Si hay riesgo para el cuerpo, si hay algo de contenido sexual, si hay armas, si alguien habló de hacerse daño, o si algo lleva repitiéndose semanas: eso se avisa a un adulto, siempre.} \emph{No porque no seas capaz ---es que la ley puso ahí una ruta con adultos responsables, y usarla no es rendirse---.} \textbf{Y una cosa más, para quitarle peso a la decisión:} \emph{tú no tienes que estar seguro de qué tipo es}. \textbf{Clasificar le toca al comité de convivencia; a ti te toca contar lo que viste.}}
+
+\begin{drawbox}{milcTurquesa}{Cómo se clasifica una situación, en tres preguntas}
+\begin{pasoslista}
+\item \textbf{¿Es un presunto delito} ---algo sexual, armas, lesiones graves---? \emph{Entonces es tipo III: se avisa a un adulto y ahí termina tu parte.}
+\item \textbf{¿Se ha repetido, o dejó daño en el cuerpo o en la salud?} \emph{Entonces es tipo II: va al comité de convivencia.}
+\item \textbf{¿Fue una vez, sin daño?} \emph{Tipo I: se puede manejar con acompañamiento, y ahí sí caben las herramientas del grado 7.}
+\item \textbf{Si dudas entre dos, trátalo como el más alto.} \emph{Equivocarse hacia arriba solo cuesta una conversación; hacia abajo cuesta otra cosa.}
+\end{pasoslista}
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{«Es de sapos»:} es la frase con que el que hace daño se queda sin testigos. \textbf{Medir por lo feo y no por lo repetido:} la repetición es lo que cambia el tipo. \textbf{Querer clasificar uno mismo:} eso le toca al comité; a ti te toca contar lo que viste. \textbf{Mediar en un tipo III:} nunca; eso se avisa. \textbf{Avisar en el chat:} la ruta tiene personas y lugares, no grupos. \textbf{Prometerle a alguien que no vas a contar algo grave:} no se promete lo que no se puede cumplir. \textbf{Esperar a estar seguro:} contar lo que viste no es acusar a nadie.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+
+
+\textbf{En tu cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2. Los tres tipos». \textbf{Formato:} escribe la definición de cada tipo con tus palabras y clasifica tus tres casos de la Actividad 1, diciendo \textbf{por qué}. \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} puedes explicar por qué \textbf{la misma acción puede ser tipo I o tipo II según cuántas veces haya pasado}.
+\end{infoband}
+
+\puente{Ya sabes clasificar. Es hora de averiguar lo que casi nadie sabe: \textbf{a quién se avisa en tu colegio}, con nombre y con lugar.}
+
+\milcestacion{milcMagenta}{Fase 3 · Praxis: construir la ruta propia}
+
+\begin{softbox}{milcMagenta}{milcGris}{Cómo se arma una ruta que sí se pueda usar}
+Una ruta que hay que buscar en el momento no sirve de nada. Aquí se averigua, se escribe y se deja donde se pueda ver.
+\end{softbox}
+
+\milcpaso{1}{milcMagenta}{\textbf{Clasificar casos (8 min, en parejas).} Intercambien los tres casos ---sin nombres--- y clasifíquenlos con las tres preguntas. \emph{Discutan los que no coincidan:} \textbf{casi siempre el desacuerdo está en la palabra «repetida»}, porque uno de los dos sabía que venía pasando hace rato y el otro no.}
+\milcpaso{2}{milcMagenta}{\textbf{Los nombres reales (10 min).} \textbf{Esta es la parte que hace útil la guía y hay que hacerla de verdad.} Averigüen y escriban: \emph{¿quién es el orientador o la orientadora del colegio y dónde queda su oficina? ¿Quién coordina convivencia? ¿Quiénes están en el comité escolar de convivencia? ¿Qué dice el manual de convivencia sobre esto?} \textbf{Nombres, cargos y lugares.} \emph{Si algo no aparece, escríbanlo también: es información igual de importante.}}
+\milcpaso{3}{milcMagenta}{\textbf{La frase para avisar (8 min).} Escribe \textbf{cómo empezarías}. \textbf{Condiciones:} que diga \textbf{qué viste} ---no lo que crees---, que diga \textbf{qué te preocupa}, y que \textbf{no acuse a nadie}. \emph{Ejemplo de la forma, no del contenido:} «Profe, quería contarle algo que vi. Lleva pasando como tres semanas y me preocupa». \textbf{Y una frase de repuesto para cuando la cosa es urgente:} «Necesito hablar con usted ahora».}
+\milcpaso{4}{milcMagenta}{\textbf{La prueba de los diez segundos (5 min).} Guarda la ruta y, sin mirarla, \textbf{contesta en voz alta:} \emph{¿a quién irías si pasa algo grave, dónde queda y qué dirías primero?} \textbf{Si tardas más de diez segundos, la ruta todavía no está aprendida.} \emph{Repítanlo en parejas hasta que salga sin pensar: en el momento real no va a haber tiempo de leer nada.}}
+
+\begin{drawbox}{milcMagenta}{Antes de cerrar tu ruta}
+\begin{checklista}
+\item Los tres tipos están definidos con tus palabras y aplicados a casos reales.
+\item Tu ruta tiene \textbf{nombres propios, cargos y lugares} ---no «un profesor»---.
+\item Sabes qué situaciones \textbf{no se manejan entre pares} y por qué.
+\item Tu frase para avisar dice qué viste y qué te preocupa, y \textbf{no acusa}.
+\item Pasaste la prueba de los diez segundos sin mirar el papel.
+\item Puedes explicar la diferencia entre \textbf{avisar} y \textbf{acusar} con tus palabras.
+\end{checklista}
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Las tres preguntas.} \emph{«¿Es un presunto delito? · ¿Se repitió o dejó daño? · ¿Fue una vez sin daño?»} ---si dudas, trátalo como el más alto---. \\[1mm]
+\textbf{Mi ruta.} \emph{Tipo I → \_\_\_\_ · Tipo II → \_\_\_\_ · Tipo III → \_\_\_\_} (con nombre, cargo y lugar). \\[1mm]
+\textbf{La frase.} \emph{«Profe \_\_\_\_, quería contarle algo que vi. Lleva pasando \_\_\_\_ y me preocupa.»}
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+
+
+\textbf{En tu cuaderno (Actividad 3 · CREA).} Título: «Actividad 3. Mi ruta de una página». \textbf{Formato:} los tres tipos con un ejemplo propio + la ruta con nombres, cargos y lugares + la frase para avisar + la de urgencia. \textbf{Extensión:} una página, en una sola cara para poder mirarla de un vistazo. \textbf{Sabes que terminaste cuando} \textbf{pasas la prueba de los diez segundos} sin leer.
+\end{infoband}
+
+\puente{El producto es una ruta de una página. \emph{Una ruta que hay que buscar en el momento no sirve: por eso se escribe antes.}}
+
+\milcestacion{milcMostaza}{Producto de la sesión}
+\textbf{Ruta de una página: los tres tipos con ejemplos propios, los nombres reales del colegio y la frase para avisar}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) Los tres tipos están definidos correctamente, y la repetición aparece como criterio que cambia el tipo. (2) La ruta contiene nombres propios, cargos y lugares reales del colegio, no categorías genéricas. (3) Se identifican con claridad las situaciones que no se manejan entre pares. (4) La frase para avisar relata lo observado y lo que preocupa, sin acusar ni interpretar. (5) Se explica la diferencia entre avisar y acusar con un criterio propio y verificable.
+\end{softbox}
+
+\puente{Antes de cerrar, revisa lo que hace inútil a la mayoría de las rutas: si en la tuya no hay nombres propios ni salones concretos, no es una ruta.}
+
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con tres voces: el que reclama un derecho y no un favor, la demora como remedio de la ira, y el cuidado de un lugar compartido.}
+
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{«El otro se revela realmente como otro\ldots como el pobre, el oprimido; el que, a la vera del camino, fuera del sistema, muestra su rostro sufriente y sin embargo desafiante: «¡Tengo hambre!, ¡tengo derecho a comer!»»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Enrique Dussel · Filosofía de la liberación (1977)}
+
+Toda esta guía se sostiene en la última palabra de la cita: \textbf{derecho}. \emph{Cuando alguien avisa, no está haciéndole un favor a nadie ni metiéndose donde no lo llaman:} \textbf{está haciendo que exista un derecho que ya existía}. \textbf{Por eso «es de sapos» es una frase tan eficaz y tan tramposa:} convierte un derecho en una traición. \emph{Fíjate en quién se beneficia de que nadie avise ---nunca es el que está siendo lastimado---.} \textbf{Y fíjate en la otra mitad de la cita:} el otro \textbf{se revela}, se hace ver. \emph{Después de que alguien te muestra que está mal, quedarte quieto ya no es no saber.}
+
+\textbf{Cuando me callo algo, ¿a quién le sirve exactamente ese silencio?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Séneca · Sobre la ira, libro II (c. 45 d.C.) · cuidado interior}
+\textit{«El mayor remedio para la ira es la demora.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Séneca · Sobre la ira, libro II (c. 45 d.C.)}
+
+Aquí Séneca sirve para dos cosas distintas y las dos importan. \textbf{La primera:} cuando algo acaba de pasar, todo el mundo quiere resolverlo \textbf{ya} ---devolvérsela, contarlo en el grupo, armar la vuelta---. \emph{La ruta es lenta a propósito:} \textbf{la demora es lo que impide que un tipo I se convierta en un tipo III}. \textbf{La segunda:} la demora \textbf{no es lo mismo que dejarlo pasar}. \emph{Demorar es esperar para hacer lo correcto; dejar pasar es no hacer nada y llamarlo prudencia.} \textbf{Y hay un caso donde la demora no aplica:} \emph{ante un tipo III no se espera. Ahí lo correcto es inmediato.}
+
+\textbf{Cuando digo «mejor no me meto», ¿estoy esperando el momento correcto o estoy dejándolo pasar?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{«El florecimiento de las entidades informacionales y de toda la infoesfera debe promoverse preservando, cultivando y enriqueciendo sus propiedades.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Luciano Floridi · La ética de la información (2013; trad.)}
+
+La ley nombra el \textbf{ciberacoso} al lado del acoso, y eso tiene una consecuencia que casi nadie sabe: \emph{lo que pasa en un grupo de chat \textbf{sí} entra en la ruta} ---no es «otro mundo» ni queda fuera del colegio---. \textbf{Y cuando el caso es digital hay algo particular:} \emph{el daño se conserva} ---sigue ahí, se puede volver a leer, se puede reenviar---. \textbf{Por eso en estos casos avisar temprano importa más, no menos.} \emph{Y por eso también, cuando alguien pide que borren algo suyo, borrarlo sin discutir es la forma más barata que existe de que un tipo I no se vuelva un tipo II.}
+
+\textbf{¿Hay algo circulando en un chat de mi curso que ya lleva semanas y que nadie ha reportado?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres son citas textuales y llevan su referencia debajo. Puedes remitir a la obra en clase.
+\end{infoband}
+
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
+
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Calidad de la ruta & \milcopcion{Sé clasificar una situación y a quién avisar, con nombre y lugar.} & \milcopcion{Distingo lo grave de lo leve, pero no sé a quién se le dice.} & \milcopcion{Sigo pensando que avisar es sapear.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Dos cosas. \textbf{Primero, completa la ruta con datos reales} ---ve, pregunta, confirma dónde queda la oficina de orientación y cómo se llama quien la atiende---. \emph{Y haz algo que parece menor y no lo es: preséntate.} \textbf{Es infinitamente más fácil pedir ayuda a alguien con quien ya hablaste una vez.} \textbf{Segundo, busca el manual de convivencia de tu colegio} y encuentra \textbf{qué dice sobre las situaciones tipo II}. \emph{Trae la página o la frase exacta.} \textbf{Trae también:} lo que averiguaste de la ruta. \emph{Vas a encontrar algo que suele sorprender: el manual ya tiene todo esto escrito, y casi nadie lo ha leído ---ni los estudiantes, ni a veces los adultos---. Un derecho que nadie conoce funciona casi igual que uno que no existe.}
+\end{infoband}
+
+\end{document}

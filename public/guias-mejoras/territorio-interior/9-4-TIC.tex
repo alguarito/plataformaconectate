@@ -1,0 +1,558 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra UNICA de las guias MILC v3.
+%
+% La usan las tres familias de guias, cada una con su driver:
+%   · Grados 6-11  -> scripts/build-guias-g11.py
+%   · Bebras       -> scripts/build-guias-bebras.py
+%   · Semillero    -> scripts/build-guias-semillero.py
+%
+% Antes habia tres copias casi identicas (~400 lineas iguales, 6 distintas):
+% cada mejora habia que aplicarla tres veces, y en la practica no se hacia
+% (el motor de recursos vivia solo en dos de ellas). Lo que varia entre
+% familias esta parametrizado en 6 placeholders que cada driver llena
+% (se nombran aqui SIN su sintaxis real: el builder reemplaza por texto plano,
+% tambien dentro de los comentarios, y un valor multilinea rompe el preambulo):
+%
+%   HEADER_IZQ        encabezado izquierdo de pagina
+%   HEADER_DER        encabezado derecho de pagina
+%   PORTADA_ETIQUETA  rotulo sobre el numero grande (GRADO/MOMENTO/MODULO)
+%   PORTADA_SERIE     linea de serie de la portada
+%   PORTADA_ID        identificador de la guia en la portada
+%   PORTADA_CIRCULO   el circulito de grado (°), o vacio si no aplica
+%
+% El resto de claves las documenta content/guias/_SCHEMA.md. El script valida
+% que no queden placeholders sin reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+% Librerías TikZ para los diagramas de las guías (bloque `recursos:`):
+%  · babel  → babel en español vuelve activos caracteres como «>», y TikZ los usa
+%             en sus opciones (>=stealth, ->). Sin esta librería, cualquier
+%             diagrama con flechas revienta con «\language@active@arg> has an
+%             extra }». Debe ir ANTES de que se dibuje nada.
+%  · positioning        → sintaxis «below left=2pt and 3pt».
+%  · decorations.pathreplacing → llaves ({brace}) para señalar rangos.
+\usetikzlibrary{babel,positioning,decorations.pathreplacing}
+\usepackage{graphicx}
+% Circuitos: el trabajo de electrónica se hace hoy con micro:bit y sus sensores
+% integrados (MakeCode, sin cableado), así que no se necesitan esquemáticos.
+% Si algún día entran montajes con protoboard, basta descomentar esta línea:
+% los diagramas .tex/.tikz declarados en `recursos:` ya se incrustan solos.
+% \usepackage{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
+\usepackage{enumitem}
+\usepackage{microtype}
+
+% Helvetica Neue no trae la flecha U+2192, asi que cada «→» escrito literalmente
+% en el YAML se compilaba a NADA, en silencio (462 flechas en 61 guias: rutas del
+% tipo «paleta → tipografia → lockup» salian rotas). Mapeamos el caracter a su
+% version matematica, que si tiene glifo. Asi el autor puede seguir escribiendo
+% «→» comodamente en el YAML.
+\usepackage{newunicodechar}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0D9488}
+\definecolor{milcGradeDark}{HTML}{115E59}
+\definecolor{milcGradeSoft}{HTML}{CCFBF1}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Territorio interior · Educación socioemocional}
+\rhead{\small Grado 9° · Momento 4 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+% La flecha va en modo matematico a proposito: Helvetica Neue NO tiene el glifo
+% U+2192, asi que \textrightarrow se compilaba a NADA («Missing character: There
+% is no → in font Helvetica Neue») y el puente salia sin flecha. En modo
+% matematico la flecha viene de la fuente matematica y si se dibuja.
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{$\rightarrow$}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+% ─── Listas aireadas para las guías socioemocionales ────────────────────
+% Componer las verificaciones como «\checkbox texto\\» deja el texto que salta
+% de línea debajo del cuadrito y apelmaza el bloque. Estos entornos alinean la
+% continuación y airean los ítems. Los usa Territorio Interior; cualquier
+% familia puede hacerlo.
+\newlist{checklista}{itemize}{1}
+\setlist[checklista]{
+  label=\textcolor{milcGradeDark}{\fbox{\phantom{x}}},
+  leftmargin=9mm, labelsep=3.2mm, itemsep=2.4mm,
+  topsep=2.5mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+\newlist{pasoslista}{enumerate}{1}
+\setlist[pasoslista]{
+  label=\textcolor{milcGradeDark}{\sffamily\bfseries\arabic*.},
+  leftmargin=8mm, labelsep=3mm, itemsep=2.8mm,
+  topsep=1mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
+% ── Recursos visuales de la guía ──────────────────────────────────────
+% Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
+% \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
+% \guiaDiagrama → fuente TikZ/circuitikz (.tex) incrustada como vector:
+%                 es la vía para circuitos y esquemáticos editables.
+% #1 = ruta relativa al .tex · #2 = pie (puede ir vacío)
+\newcommand{\guiaFigura}[2]{%
+\begin{center}
+\includegraphics[width=0.88\linewidth,height=0.38\textheight,keepaspectratio]{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\newcommand{\guiaDiagrama}[2]{%
+\begin{center}
+\input{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\begin{document}
+\thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
+\begin{tikzpicture}[remember picture,overlay]
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont MOMENTO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont TERRITORIO INTERIOR · SOCIOEMOCIONAL};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
+
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 4};
+  % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
+  % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  
+
+  \node[anchor=west,text=milcGradeText,text width=11.4cm,align=left] at ([xshift=1.5cm,yshift=0.5cm]gradonum.east)
+    {
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Territorio interior · Socioemocional}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont\setlength{\baselineskip}{27pt}Celos\\[4pt]no son amor\\[4pt]lo que la ley excusaba}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Grado 9° · Momento 4}
+    };
+\end{tikzpicture}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Tu línea del continuo: las conductas de una relación dañina ordenadas de la más pequeña a la más grave, con el punto exacto donde tú pondrías el límite, y la frase con que se lo dirías a un amigo que está en el escalón dos.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · Apertura ancestral · Violencia en la pareja · Triángulo Dussel-Estoicismo-Floridi}}
+
+\newpage
+
+\section*{Apertura: Celos no son amor: lo que la ley excusaba y lo que hoy nombra}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+En Colombia hubo una ley ---y estuvo viva hasta hace poco--- que decía, en la práctica, que \textbf{matar a una mujer podía costar menos que matar a cualquier otra persona}. El \textbf{Código Penal de 1936} (Ley 95 de 1936) recogía lo que los juristas llaman el \textbf{uxoricidio por adulterio}: si el homicidio o las lesiones las cometía \textbf{el cónyuge, el padre o la madre, el hermano o la hermana} contra la esposa, la hija o la hermana \emph{«de vida honesta»} sorprendida en acceso carnal ilegítimo ---o contra la persona que estuviera con ella---, \textbf{las penas se reducían de la mitad a las tres cuartas partes}. \emph{Léelo otra vez, despacio.} \textbf{No era que la justicia mirara para otro lado: era que la ley, escrita, decía que ese muerto valía menos.} \textbf{Y fíjate en el requisito «de vida honesta»,} que es donde se ve el mecanismo completo: \emph{la rebaja dependía de la reputación de la víctima} ---exactamente lo que trabajaste en el momento 4 del grado 8---. \textbf{Esa norma estuvo vigente hasta que la reemplazó el Código Penal de 1980, que empezó a regir en enero de 1981.} \emph{Es decir: hay gente viva hoy que nació cuando eso todavía era ley.}
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+¿Y qué dice la ley hoy? \textbf{Casi exactamente lo contrario, y la diferencia tardó ochenta años.} El \textbf{6 de julio de 2015}, Colombia promulgó la \textbf{Ley 1761}, conocida como \textbf{«Ley Rosa Elvira Cely»} por la mujer bogotana asesinada tras ser torturada y agredida sexualmente. \textbf{Esa ley creó el \emph{feminicidio} como \emph{delito autónomo}}: quien cause la muerte a una mujer \textbf{por su condición de ser mujer} o por motivos de su identidad de género incurre en prisión de \textbf{250 a 500 meses}. \emph{Y aquí está lo que de verdad importa para esta guía, más que la pena:} \textbf{la ley reconoce que la muerte violenta de una mujer \emph{no suele ser un hecho aislado}, sino el final de \textbf{un continuo} de agresiones ---psicológicas, económicas, físicas o sexuales--- que se acumulan en el tiempo.} \textbf{Esa palabra, \emph{continuo}, es la lección entera.} \emph{Lo que en 1936 se trataba como un arrebato ---un momento de furia que merecía rebaja--- hoy se entiende como \textbf{el último escalón de una escalera que empezó mucho antes}, con cosas que nadie llamó violencia.}
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{La ley de 1936 miraba \textbf{un instante}; la de 2015 mira \textbf{una escalera completa}. \textbf{¿En qué escalón está la relación más preocupante que conoces} \ldots \textbf{y en cuál estabas dispuesto a decir algo}?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar podrás: (1) \textbf{reconocer} que la ley colombiana excusó parcialmente estos homicidios hasta 1981, y qué cambió en 2015; (2) \textbf{explicar} qué significa que la violencia contra la pareja sea un \textbf{continuo} y no un estallido; (3) \textbf{ordenar} las conductas de una relación dañina de la más pequeña a la más grave y \textbf{ubicar tu límite en los escalones bajos}; (4) \textbf{hablar} con alguien que esté en un escalón temprano, y saber cuándo eso deja de ser asunto de amigos.
+\end{softbox}
+
+
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Comprende los fenómenos que afectan a su territorio, regula sus emociones ante ellos y acompaña a otros con empatía (transversal 6°--11°, articulado con la política «Escuela, territorio de vida» del MEN, Resolución 006519 de 2025, y la Ley 1620 de 2013)\\
+Referentes & Primera ayuda psicológica (OMS, 2011/2012) · Directrices IASC (2007) · USGS y Servicio Geológico Colombiano · Pueblo nasa y la minga (CRIC) · Dussel · Estoicismo · Floridi\\
+Producto final & Tu línea del continuo: las conductas de una relación dañina ordenadas de la más pequeña a la más grave, con el punto exacto donde tú pondrías el límite, y la frase con que se lo dirías a un amigo que está en el escalón dos.\\
+\end{tabularx}
+\normalsize
+
+\puente{En el momento 3 aprendiste a reconocer el patrón. \textbf{Hoy vas a ver a dónde llega ese patrón cuando nadie lo detiene} ---y por qué el lugar de intervenir es el principio---.}
+
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Veo la escalera completa.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Primero, sin juzgar a nadie: qué se considera un arrebato y qué se considera una decisión, en las historias que circulan.}
+
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- Arrebato o decisión.} \textbf{Sin nombres, nunca.} \textbf{Primera parte.} Escribe \textbf{las explicaciones que se dan} cuando alguien hace daño a su pareja: «se le fue la mano», «estaba borracho», «ella lo provocó», «es que la quiere mucho», «perdió el control», «estaba muy celoso». \emph{Tal cual se dicen.} \textbf{Segunda parte, la que hace pensar.} Al frente de cada una responde: \emph{si de verdad hubiera perdido el control, \textbf{¿por qué no le pega a su jefe, ni al policía, ni delante de la mamá de ella?}} \textbf{Tercera parte.} Piensa en \textbf{cómo empiezan} las historias que conoces de lejos: \emph{¿empezaron con un golpe, o con algo que en su momento pareció normal ---o incluso bonito---?} \textbf{Y la última:} \emph{¿en qué momento alguien de afuera se dio cuenta de que algo andaba mal?} \textbf{¿Y dijo algo?}
+\end{softbox}
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Escribiste las explicaciones tal como circulan.}
+\milccheckrow{Respondiste por qué el «descontrol» solo aparece con ciertas personas y no con otras.}
+\milccheckrow{Anotaste con qué empezó la historia que conoces, y cuándo alguien de afuera lo notó.}
+
+\begin{infoband}{milcVerde}
+
+
+\textbf{En tu cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1. Arrebato o decisión». \textbf{Formato:} las explicaciones con la pregunta respondida + cómo empezó + cuándo se notó desde afuera. \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} puedes responder por qué \textbf{el que «pierde el control» casi nunca lo pierde con su jefe}. Esta página es tuya: \textbf{nadie más tiene que leerla si tú no quieres}.
+\end{infoband}
+
+\puente{Ya lo tienes. Ahora, lo que la ley decía en 1936, lo que dice desde 2015, y qué significa la palabra «continuo».}
+
+\milcestacion{milcTurquesa}{Fase 2 · Sistematización: entender el continuo}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro claves sobre los celos y el daño}
+Cuatro claves para dejar de mirar el final de la historia y aprender a mirar el principio.
+\end{softbox}
+
+\milcpaso{1}{milcTurquesa}{\textbf{La ley lo excusaba, y eso no es historia antigua.} El Código Penal de 1936 \textbf{rebajaba la pena de la mitad a las tres cuartas partes} a quien matara o hiriera a su esposa, hija o hermana \emph{«de vida honesta»} sorprendida en acceso carnal ilegítimo, o a quien estuviera con ella. \emph{Y la rebaja dependía de la reputación de la víctima:} \textbf{si no era «de vida honesta», ni siquiera había a quién compadecer}. \textbf{Estuvo vigente hasta enero de 1981}, cuando entró a regir el Código de 1980. \emph{Ponle números a eso:} \textbf{tus abuelos ya eran adultos.} \emph{No estamos hablando de una barbaridad de la Colonia ---estamos hablando de una ley que muchas familias de tu barrio alcanzaron a vivir---.}}
+\milcpaso{2}{milcTurquesa}{\textbf{No es un estallido: es un continuo.} La \textbf{Ley 1761 de 2015} creó el feminicidio como delito autónomo y, al hacerlo, \textbf{reconoció que la muerte violenta de una mujer no suele resultar de hechos aislados sino de un \emph{continuo} de agresiones ---psicológicas, económicas, físicas o sexuales--- acumuladas en el tiempo}. \emph{Y esa es una idea que cambia lo que hay que buscar:} \textbf{no hay que esperar a que algo sea grave para que cuente}. \textbf{La prueba de que no es descontrol la hiciste tú en la Actividad 1:} \emph{el que «pierde el control» \textbf{escoge muy bien delante de quién lo pierde}, y escoge qué romper y a quién golpear}. \textbf{Eso no es un arrebato: es una conducta dirigida.}}
+\milcpaso{3}{milcTurquesa}{\textbf{Sentir no es actuar, y aquí se juega todo.} \emph{Los celos son una emoción: llegan solos, no se piden y no se pueden evitar.} \textbf{Sentirlos no tiene nada de malo y no le hace daño a nadie.} \emph{Lo que hace daño es lo que se hace con ellos:} \textbf{revisar un teléfono, exigir una respuesta inmediata, prohibir una amistad, aparecer sin avisar, hacer una escena, amenazar con dejarla o con hacerse daño}. \textbf{Todo eso son conductas, y las conductas se eligen.} \emph{Y hay un dato que conviene tener a mano cuando alguien diga «es que la quiere mucho»:} \textbf{querer a alguien no produce ninguna de esas conductas.} \emph{Las produce querer \emph{tener} a alguien ---que es lo que trabajaste en el momento 2 del grado 7---.}}
+\milcpaso{4}{milcTurquesa}{\textbf{El límite se pone abajo, no arriba.} \emph{Casi todo el mundo, si le preguntan, pone su límite en el golpe.} \textbf{El problema es que en el escalón del golpe ya casi nunca queda margen:} para entonces la persona suele estar aislada de sus amigos, convencida de que exagera y avergonzada de contarlo. \textbf{Por eso el trabajo de esta guía es decidir \emph{en frío} un límite bajo:} \emph{«si alguien me pide la clave, ahí»; «si me dice con quién puedo hablar, ahí»; «si me toca mentir sobre dónde estuve, ahí»}. \textbf{Un límite decidido antes se sostiene; uno decidido en caliente se negocia.} \emph{Y lo mismo vale para acompañar a otro:} \textbf{el momento de decir algo es el escalón dos, no el ocho.}}
+
+\begin{drawbox}{milcTurquesa}{La escalera, de abajo hacia arriba}
+\begin{pasoslista}
+\item \textbf{Parece cariño:} escribir todo el día, querer estar siempre, ponerse triste si sales.
+\item \textbf{Empieza a pedir:} la clave, la ubicación, saber con quién estás. \emph{Aquí es donde hay que poner el límite.}
+\item \textbf{Empieza a decidir:} con quién hablas, qué te pones, a dónde vas.
+\item \textbf{Aísla:} pelea con tus amigos, con tu familia; te quedas solo con esa persona.
+\item \textbf{Culpa y vergüenza:} «tú me obligaste», «no cuentes esto», y empiezas a mentir por él o por ella.
+\item \textbf{Amenaza:} con dejarte, con contar algo tuyo, con hacerse daño, con hacerte daño.
+\item \textbf{Desde el escalón cinco, esto ya no es asunto de amigos:} \textbf{se avisa a un adulto.}
+\end{pasoslista}
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{«Perdió el control»:} nadie lo pierde con su jefe. \textbf{«Ella lo provocó»:} es la lógica de la «vida honesta» de 1936, viva en 2026. \textbf{Poner el límite en el golpe:} para entonces ya casi no hay margen. \textbf{«Es que la quiere mucho»:} querer no produce esas conductas; querer tener, sí. \textbf{Decirle a un amigo que deje a esa persona:} rara vez funciona y suele cerrar la conversación. \textbf{Prometer no contar:} no se promete lo que no se puede cumplir. \textbf{Creer que a los hombres no les pasa:} les pasa, y les cuesta más contarlo.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+
+
+\textbf{En tu cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2. De 1936 a 2015». \textbf{Formato:} escribe qué decía la ley de 1936, qué dice la de 2015 y \textbf{qué idea cambió entre las dos}. \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} puedes explicar la palabra \textbf{continuo} con un ejemplo propio.
+\end{infoband}
+
+\puente{Ya sabes que es una escalera. Es hora de dibujarla y de decidir ---antes, en frío--- en qué escalón pones tú el límite.}
+
+\milcestacion{milcMagenta}{Fase 3 · Praxis: poner el límite}
+
+\begin{softbox}{milcMagenta}{milcGris}{Cómo se pone un límite antes de que sea tarde}
+Aquí no se analiza a nadie del colegio. Se construye una escalera con casos generales y se decide, en frío, dónde va tu límite.
+\end{softbox}
+
+\milcpaso{1}{milcMagenta}{\textbf{La escalera (10 min, en grupos).} Con \textbf{conductas generales} ---nunca casos de personas conocidas---, ordenen los siete escalones de la anatomía y \textbf{agreguen los que falten}. \emph{Discutan el orden:} \textbf{el desacuerdo casi siempre está entre los escalones dos y tres}, que es exactamente la zona donde la gente duda si «es para tanto».}
+\milcpaso{2}{milcMagenta}{\textbf{Dónde pongo el límite (8 min, individual).} Escribe \textbf{tu límite}, con esta forma: \emph{«si alguien hace \_\_\_\_, para mí ahí se acabó»}. \textbf{Una condición:} \emph{que esté en los escalones uno a tres}. \textbf{Y escribe también qué harías} ---no solo qué sentirías---. \emph{Guárdalo. Este papel es para el día en que no estés pensando con claridad.}}
+\milcpaso{3}{milcMagenta}{\textbf{Hablar con el que está abajo (10 min, en parejas).} Ensayen la conversación con \textbf{un amigo que está en el escalón dos}. \textbf{Reglas:} \emph{no decirle que deje a esa persona} ---eso cierra la puerta---, \emph{no hablar mal de su pareja}, \emph{no dar ultimátums}. \textbf{Lo que sí funciona:} \emph{nombrar lo que viste} («me di cuenta de que ya no sales con nosotros»), \emph{preguntar} («¿cómo te sientes con eso?») y \emph{dejar la puerta abierta} («cuando quieras hablar, aquí estoy»). \emph{Es la escucha del momento 1 del grado 7, en el caso más difícil.}}
+\milcpaso{4}{milcMagenta}{\textbf{La ruta y el aviso (7 min).} Repite la ruta del momento 3 con \textbf{nombre, cargo y lugar}, y escribe \textbf{la frase con que avisarías a un adulto}. \textbf{Y deja anotado el criterio, para no tener que decidirlo en el momento:} \emph{del escalón cinco hacia arriba ---aislamiento, culpa, amenazas--- \textbf{se avisa siempre}, aunque el amigo pida que no}. \emph{Perder una amistad por avisar es un costo real, y aun así es el correcto.}}
+
+\begin{drawbox}{milcMagenta}{Antes de cerrar tu línea del continuo}
+\begin{checklista}
+\item Tu escalera está ordenada y \textbf{no menciona a nadie} del colegio.
+\item Tu límite está escrito y queda \textbf{en los escalones uno a tres}.
+\item Escribiste \textbf{qué harías}, no solo qué sentirías.
+\item Ensayaste la conversación \textbf{sin decirle a nadie que deje a su pareja}.
+\item Tu ruta tiene nombre, cargo y lugar.
+\item Tienes escrito el criterio de aviso: \textbf{del escalón cinco hacia arriba se avisa siempre}.
+\end{checklista}
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Mi límite.} \emph{«Si alguien \_\_\_\_, para mí ahí se acabó. Lo que voy a hacer es \_\_\_\_.»} \\[1mm]
+\textbf{Para un amigo en el escalón dos.} \emph{«Me di cuenta de que \_\_\_\_. ¿Cómo te sientes con eso? Cuando quieras hablar, aquí estoy.»} \\[1mm]
+\textbf{Para avisar.} \emph{«Profe \_\_\_\_, estoy preocupado por alguien y necesito contarle algo.»}
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+
+
+\textbf{En tu cuaderno (Actividad 3 · CREA).} Título: «Actividad 3. Mi línea del continuo». \textbf{Formato:} la escalera completa + tu límite con lo que harías + la conversación ensayada + la ruta y el criterio de aviso. \textbf{Extensión:} una página. \textbf{Sabes que terminaste cuando} tu límite \textbf{no está en el golpe}.
+\end{infoband}
+
+\puente{El producto es un límite escrito. \emph{Un límite que se decide en caliente casi nunca se pone.}}
+
+\milcestacion{milcMostaza}{Producto de la sesión}
+\textbf{Línea del continuo: la escalera ordenada, un límite propio en los escalones bajos y la conversación para acompañar}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) La escalera ordena conductas generales, sin identificar a ninguna persona real. (2) El límite propio está ubicado en los escalones tempranos y especifica una acción, no solo una emoción. (3) La conversación de acompañamiento no ordena dejar la relación ni habla mal de la pareja. (4) La ruta identifica persona, cargo y lugar. (5) Se explicita el criterio de aviso obligatorio y se reconoce su costo.
+\end{softbox}
+
+\puente{Antes de cerrar, revisa lo decisivo: si tu límite quedó en el escalón del golpe, esta guía no sirvió de nada.}
+
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con tres voces: el rostro que reclama un derecho, la demora como remedio de la ira, y el cuidado de lo que compartimos.}
+
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{«El otro se revela realmente como otro\ldots como el pobre, el oprimido; el que, a la vera del camino, fuera del sistema, muestra su rostro sufriente y sin embargo desafiante: «¡Tengo hambre!, ¡tengo derecho a comer!»»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Enrique Dussel · Filosofía de la liberación (1977)}
+
+La ley de 1936 hizo, en el papel, lo que Dussel describe: \textbf{dejó a alguien \emph{fuera del sistema}}. \emph{Y lo hizo con un requisito preciso ---«de vida honesta»---, que es una manera de decir que \textbf{el derecho a que tu muerte valga dependía de tu reputación}.} \textbf{Junta eso con el momento 4 del grado 8 y verás el mecanismo completo:} \emph{primero se fabrica una fama, después la fama sirve para justificar el daño}. \textbf{Por eso el rumor nunca es solo un rumor.} \emph{Y por eso la cita termina como termina:} \textbf{lo que se reclama no es compasión ---es un derecho---}, y un derecho no se pierde por lo que digan de uno.
+
+\textbf{¿He oído a alguien explicar un daño diciendo cómo era la persona que lo recibió?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Séneca · Sobre la ira, libro II (c. 45 d.C.) · cuidado interior}
+\textit{«El mayor remedio para la ira es la demora.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Séneca · Sobre la ira, libro II (c. 45 d.C.)}
+
+Séneca escribió un tratado entero sobre la ira, y su conclusión práctica es esta: \textbf{esperar}. \emph{Pero cuidado con la lectura fácil, porque aquí puede hacer daño:} \textbf{esta frase es para el que siente la ira, \textbf{no} para el que la recibe}. \emph{A nadie que esté siendo tratado mal se le puede pedir paciencia.} \textbf{Para el que la siente, en cambio, la frase dice algo enorme:} \emph{si la ira se puede \textbf{demorar}, entonces se puede \textbf{gobernar} ---y si se puede gobernar, \textbf{lo que se hizo con ella fue una decisión}---}. \textbf{Ahí se cae de una vez la excusa del descontrol,} \emph{que la ley de 1936 tomó por buena durante cuarenta y cinco años.}
+
+\textbf{Cuando me he puesto furioso, ¿escogí delante de quién y con qué?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{«El florecimiento de las entidades informacionales y de toda la infoesfera debe promoverse preservando, cultivando y enriqueciendo sus propiedades.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Luciano Floridi · La ética de la información (2013; trad.)}
+
+\textbf{Florecer} es la palabra que le falta a casi toda conversación sobre relaciones a los quince años. \emph{No se trata solo de que nadie salga lastimado ---eso es el piso, no la meta---:} \textbf{se trata de si las dos personas están creciendo}. \emph{Y hay una versión digital de esto que conviene mirar de frente:} \textbf{una relación que ocupa el ciento por ciento del tiempo en pantalla ---mensajes que hay que contestar a los dos minutos, ubicación compartida, historias que hay que ver--- no deja espacio para que crezca nada más}, ni amistades, ni estudio, ni descanso. \emph{Y ese estrechamiento es exactamente el escalón dos de la escalera,} \textbf{aunque nadie haya dicho una sola palabra fea.}
+
+\textbf{En las relaciones que veo, ¿cuánto del día ocupa contestar? ¿Qué dejó de caber ahí?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres son citas textuales y llevan su referencia debajo. Puedes remitir a la obra en clase.
+\end{infoband}
+
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
+
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Calidad del límite & \milcopcion{Ordené el continuo y puse mi límite en los escalones bajos, no en el golpe.} & \milcopcion{Ordeno las conductas, pero mi límite sigue estando en lo grave.} & \milcopcion{Sigo pensando que si no hay golpes no hay problema.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Dos cosas. \textbf{Primero, guarda tu límite escrito} donde lo puedas encontrar ---y cuéntaselo a una persona de confianza---. \emph{Un límite que otro conoce es mucho más difícil de negociar consigo mismo.} \textbf{Y si al leer la escalera reconociste a alguien ---o te reconociste---, habla con un adulto esta semana.} \emph{No hay que estar seguro para hablar: contar lo que uno ve no es acusar a nadie, como aprendiste en el grado 8.} \textbf{Segundo, pregunta en tu casa qué se decía antes:} averigua con alguien mayor \textbf{qué se hacía en su época cuando en una casa del barrio había maltrato} ---si alguien se metía, si se decía que «entre marido y mujer nadie se debe meter», a dónde podía ir una mujer, si existía alguna autoridad que sirviera---. \textbf{Trae:} tu límite escrito y lo que te contaron. \emph{Vas a oír casi con seguridad la frase «entre marido y mujer nadie se debe meter». Vale la pena saber que esa frase es exactamente contemporánea de la ley de 1936, y que las dos cosas se cayeron juntas.}
+\end{infoband}
+
+\end{document}

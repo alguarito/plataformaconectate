@@ -1,0 +1,556 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra UNICA de las guias MILC v3.
+%
+% La usan las tres familias de guias, cada una con su driver:
+%   · Grados 6-11  -> scripts/build-guias-g11.py
+%   · Bebras       -> scripts/build-guias-bebras.py
+%   · Semillero    -> scripts/build-guias-semillero.py
+%
+% Antes habia tres copias casi identicas (~400 lineas iguales, 6 distintas):
+% cada mejora habia que aplicarla tres veces, y en la practica no se hacia
+% (el motor de recursos vivia solo en dos de ellas). Lo que varia entre
+% familias esta parametrizado en 6 placeholders que cada driver llena
+% (se nombran aqui SIN su sintaxis real: el builder reemplaza por texto plano,
+% tambien dentro de los comentarios, y un valor multilinea rompe el preambulo):
+%
+%   HEADER_IZQ        encabezado izquierdo de pagina
+%   HEADER_DER        encabezado derecho de pagina
+%   PORTADA_ETIQUETA  rotulo sobre el numero grande (GRADO/MOMENTO/MODULO)
+%   PORTADA_SERIE     linea de serie de la portada
+%   PORTADA_ID        identificador de la guia en la portada
+%   PORTADA_CIRCULO   el circulito de grado (°), o vacio si no aplica
+%
+% El resto de claves las documenta content/guias/_SCHEMA.md. El script valida
+% que no queden placeholders sin reemplazar antes de escribir el archivo final.
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+% Librerías TikZ para los diagramas de las guías (bloque `recursos:`):
+%  · babel  → babel en español vuelve activos caracteres como «>», y TikZ los usa
+%             en sus opciones (>=stealth, ->). Sin esta librería, cualquier
+%             diagrama con flechas revienta con «\language@active@arg> has an
+%             extra }». Debe ir ANTES de que se dibuje nada.
+%  · positioning        → sintaxis «below left=2pt and 3pt».
+%  · decorations.pathreplacing → llaves ({brace}) para señalar rangos.
+\usetikzlibrary{babel,positioning,decorations.pathreplacing}
+\usepackage{graphicx}
+% Circuitos: el trabajo de electrónica se hace hoy con micro:bit y sus sensores
+% integrados (MakeCode, sin cableado), así que no se necesitan esquemáticos.
+% Si algún día entran montajes con protoboard, basta descomentar esta línea:
+% los diagramas .tex/.tikz declarados en `recursos:` ya se incrustan solos.
+% \usepackage{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
+\usepackage{enumitem}
+\usepackage{microtype}
+
+% Helvetica Neue no trae la flecha U+2192, asi que cada «→» escrito literalmente
+% en el YAML se compilaba a NADA, en silencio (462 flechas en 61 guias: rutas del
+% tipo «paleta → tipografia → lockup» salian rotas). Mapeamos el caracter a su
+% version matematica, que si tiene glifo. Asi el autor puede seguir escribiendo
+% «→» comodamente en el YAML.
+\usepackage{newunicodechar}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0D9488}
+\definecolor{milcGradeDark}{HTML}{115E59}
+\definecolor{milcGradeSoft}{HTML}{CCFBF1}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Territorio interior · Educación socioemocional}
+\rhead{\small Grado 9° · Momento 10 · MILC v3}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+% La flecha va en modo matematico a proposito: Helvetica Neue NO tiene el glifo
+% U+2192, asi que \textrightarrow se compilaba a NADA («Missing character: There
+% is no → in font Helvetica Neue») y el puente salia sin flecha. En modo
+% matematico la flecha viene de la fuente matematica y si se dibuja.
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{$\rightarrow$}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+% ─── Listas aireadas para las guías socioemocionales ────────────────────
+% Componer las verificaciones como «\checkbox texto\\» deja el texto que salta
+% de línea debajo del cuadrito y apelmaza el bloque. Estos entornos alinean la
+% continuación y airean los ítems. Los usa Territorio Interior; cualquier
+% familia puede hacerlo.
+\newlist{checklista}{itemize}{1}
+\setlist[checklista]{
+  label=\textcolor{milcGradeDark}{\fbox{\phantom{x}}},
+  leftmargin=9mm, labelsep=3.2mm, itemsep=2.4mm,
+  topsep=2.5mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+\newlist{pasoslista}{enumerate}{1}
+\setlist[pasoslista]{
+  label=\textcolor{milcGradeDark}{\sffamily\bfseries\arabic*.},
+  leftmargin=8mm, labelsep=3mm, itemsep=2.8mm,
+  topsep=1mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+\newcommand{\milcestacion}[2]{%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
+% ── Recursos visuales de la guía ──────────────────────────────────────
+% Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
+% \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
+% \guiaDiagrama → fuente TikZ/circuitikz (.tex) incrustada como vector:
+%                 es la vía para circuitos y esquemáticos editables.
+% #1 = ruta relativa al .tex · #2 = pie (puede ir vacío)
+\newcommand{\guiaFigura}[2]{%
+\begin{center}
+\includegraphics[width=0.88\linewidth,height=0.38\textheight,keepaspectratio]{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\newcommand{\guiaDiagrama}[2]{%
+\begin{center}
+\input{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\begin{document}
+\thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
+\begin{tikzpicture}[remember picture,overlay]
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont MOMENTO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont TERRITORIO INTERIOR · SOCIOEMOCIONAL};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
+
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 10};
+  % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
+  % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  
+
+  \node[anchor=west,text=milcGradeText,text width=11.4cm,align=left] at ([xshift=1.5cm,yshift=0.5cm]gradonum.east)
+    {
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Territorio interior · Socioemocional}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont\setlength{\baselineskip}{27pt}El acuerdo\\[4pt]de aula\\[4pt]la norma que uno se da}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Grado 9° · Momento 10}
+    };
+\end{tikzpicture}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+El acuerdo de aula del curso: entre cinco y ocho reglas escritas por ustedes a partir de los nueve momentos del año, cada una con lo que pasa si se rompe, quién lo verifica y cuándo se revisa —firmado por todos y con fecha de revisión puesta—.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · Apertura ancestral · Norma propia y acuerdo · Triángulo Dussel-Estoicismo-Floridi}}
+
+\newpage
+
+\section*{Apertura: El acuerdo de aula: la norma que uno se da a sí mismo}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+En el Cauca, los pueblos organizados en el \textbf{CRIC} y el \textbf{pueblo misak} hacen algo que en un colegio suena casi imposible: \textbf{se dan sus propias normas}. \emph{No las reciben hechas: las deliberan en asamblea y las declaran como \textbf{mandatos}} ---la palabra ya lo dice todo, porque un mandato es lo que \textbf{la comunidad le manda} a sus autoridades y a sí misma---. \textbf{Y hay dos rasgos que nos importan hoy.} \textbf{Primero: quien hace la norma es quien va a vivir bajo ella.} \emph{No la escribe alguien de afuera que no va a sufrir sus consecuencias.} \textbf{Segundo: hay rendición de cuentas, y es pública.} \emph{Las autoridades ---que llevan el bastón que trabajaste en el momento 9 del grado 8--- \textbf{responden ante la asamblea que las nombró}, y lo hacen delante de todos.} \emph{Fíjate en el par completo, porque es lo que hace que el sistema funcione:} \textbf{la comunidad se da la norma \emph{y} vigila a quien la aplica}. \emph{Un curso que escribe reglas y no decide quién verifica ni ante quién se responde acaba de hacer la mitad del trabajo ---y es la mitad que no sirve sola---.}
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+¿Y esto funciona, o es solo bonito? \textbf{Hay una investigación que le dio a su autora el Nobel de Economía.} \textbf{Elinor Ostrom} estudió cientos de casos de comunidades que administran un recurso común ---agua de riego, bosques, pesquerías--- y se propuso encontrar \textbf{cuál era el mejor conjunto de reglas}. \emph{No lo encontró: no hay reglas que sirvan en todas partes.} \textbf{Lo que sí encontró, y publicó en \emph{El gobierno de los bienes comunes} (1990), fueron \textbf{ocho principios de diseño} que aparecían en los sistemas que \emph{duraban} \textbf{y faltaban en los que se derrumbaban}.} \textbf{Tres de esos principios son exactamente el trabajo de hoy.} \emph{Uno:} \textbf{las reglas las hacen \emph{los propios usuarios}}, ajustadas a las necesidades y condiciones de su comunidad y su entorno. \emph{Dos:} \textbf{quienes vigilan el cumplimiento \emph{responden ante los usuarios}} del recurso ---no ante alguien de afuera---. \emph{Tres:} \textbf{tiene que haber mecanismos \emph{baratos} de resolución de conflictos} ---baratos en tiempo y en costo social: algo que la gente use de verdad---. \emph{Míralos juntos y verás lo mismo que hacen el CRIC y los misak, dicho por una economista que estudió medio mundo.}
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{Ostrom encontró que \textbf{los sistemas que duran son aquellos cuyas reglas hacen los que las cumplen}. \textbf{¿Cuántas de las normas de tu salón las escribió alguien que se sienta ahí todos los días}\ldots \textbf{y cuántas de las que ustedes mismos propusieron han durado más de un mes}?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar podrás: (1) \textbf{explicar} por qué una norma hecha por quienes la van a cumplir tiene más posibilidades de sostenerse; (2) \textbf{redactar} reglas \textbf{verificables} y distinguirlas de los deseos; (3) \textbf{diseñar} quién verifica y ante quién se responde, con rendición pública; (4) \textbf{cerrar} el año en un acuerdo firmado que recoja los nueve momentos anteriores, con consecuencias y fecha de revisión.
+\end{softbox}
+
+
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Comprende los fenómenos que afectan a su territorio, regula sus emociones ante ellos y acompaña a otros con empatía (transversal 6°--11°, articulado con la política «Escuela, territorio de vida» del MEN, Resolución 006519 de 2025, y la Ley 1620 de 2013)\\
+Referentes & Primera ayuda psicológica (OMS, 2011/2012) · Directrices IASC (2007) · USGS y Servicio Geológico Colombiano · Pueblo nasa y la minga (CRIC) · Dussel · Estoicismo · Floridi\\
+Producto final & El acuerdo de aula del curso: entre cinco y ocho reglas escritas por ustedes a partir de los nueve momentos del año, cada una con lo que pasa si se rompe, quién lo verifica y cuándo se revisa —firmado por todos y con fecha de revisión puesta—.\\
+\end{tabularx}
+\normalsize
+
+\puente{Este es el último momento del grado, y no trae tema nuevo: \textbf{convierte los nueve anteriores en reglas} que ustedes puedan usar el año entrante.}
+
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Me doy la norma.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Primero, el inventario del año: qué aprendieron en cada momento que \emph{merece} volverse norma.}
+
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- Lo que el año dejó.} \textbf{Primera parte.} Repasa los nueve momentos del grado y escribe, para cada uno, \textbf{una cosa} que aprendiste y que \emph{le serviría a tu curso como norma}. \emph{Del 1: verificar antes de suponer. Del 2: los mandatos. Del 3 y el 4: el control y el límite. Del 5: las microagresiones. Del 6: las barreras. Del 7: el que llega. Del 8: la reparación colectiva. Del 9: reparar antes que castigar.} \textbf{Segunda parte.} De las normas que ya existen en tu salón ---las del manual, las del profesor, las que nadie escribió---, marca \textbf{cuáles se cumplen} y \textbf{cuáles no}, y al frente de las que no, escribe \textbf{por qué}. \emph{Casi siempre las razones son tres: nadie verifica, nadie sabe qué pasa si se rompe, o nadie estuvo de acuerdo con ella.} \textbf{Y la última:} de las cosas que su curso ha decidido hacer este año, \emph{¿cuántas siguen vivas?}
+\end{softbox}
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Escribiste \textbf{una posible norma} salida de cada uno de los nueve momentos.}
+\milccheckrow{Marcaste qué normas existentes se cumplen y cuáles no, con la razón.}
+\milccheckrow{Contaste cuántas decisiones del curso siguen vivas.}
+
+\begin{infoband}{milcVerde}
+
+
+\textbf{En tu cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1. Lo que el año dejó». \textbf{Formato:} las nueve posibles normas + las existentes con su razón de incumplimiento + cuántas decisiones siguen vivas. \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} tienes \textbf{nueve candidatas} y sabes por qué fallan las normas que ya existen.
+\end{infoband}
+
+\puente{Ya lo tienen. Ahora, por qué las normas propias duran más, y qué hace que una regla se pueda comprobar.}
+
+\milcestacion{milcTurquesa}{Fase 2 · Sistematización: entender la norma propia}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro claves sobre darse una norma}
+Cuatro claves para que su acuerdo no termine como casi todos los acuerdos de curso: en una cartelera despegándose.
+\end{softbox}
+
+\milcpaso{1}{milcTurquesa}{\textbf{La hacen los que la cumplen.} Es el primer principio de Ostrom: \textbf{las reglas las elaboran \emph{los propios usuarios}}, ajustadas a sus necesidades y a sus condiciones (Ostrom, 1990). \emph{Y es exactamente lo que hacen los mandatos del CRIC y de los misak:} \textbf{la asamblea se da la norma}. \emph{La razón es práctica, no romántica:} \textbf{quien vive el problema sabe dónde está el detalle}. \emph{Una regla escrita desde afuera prohíbe lo que se ve desde afuera ---correr, gritar, el celular---, y casi nunca toca lo que de verdad hace daño en un salón:} \textbf{quién queda por fuera, qué se reenvía, cómo se arman los grupos.} \emph{Ustedes ya saben cuáles son ---llevan un grado entero estudiándolos---.}}
+\milcpaso{2}{milcTurquesa}{\textbf{Pocas, claras y verificables.} \emph{Un acuerdo de veinte puntos no lo cumple nadie ---ni se acuerda---.} \textbf{Entre cinco y ocho es lo que funciona.} \emph{Y cada una tiene que pasar una prueba:} \textbf{¿cualquiera del curso podría decir, mirando, si se está cumpliendo?} \emph{Compara:} \textbf{«respetarnos» no se puede comprobar}; \emph{«los grupos de trabajo se arman por sorteo» sí; «nadie se sienta solo en el descanso más de dos días seguidos» sí; «lo que se dice en un chat privado no se trae al grupo» sí}. \textbf{La diferencia no es de tono: es que la segunda describe \emph{una conducta observable}.} \emph{Todo lo demás es un deseo, y los deseos no se incumplen ---simplemente no ocurren---.}}
+\milcpaso{3}{milcTurquesa}{\textbf{Quién vigila, y ante quién responde.} Segundo principio de Ostrom: \textbf{quienes vigilan el cumplimiento \emph{rinden cuentas a los usuarios}}, no a alguien de afuera. \emph{Y es el par exacto de la rendición pública del CRIC:} \textbf{la autoridad responde ante la asamblea que la nombró}. \textbf{Aplicado a un curso, esto significa dos decisiones concretas:} \emph{quién verifica cada regla ---con nombre, y mejor si rota---} y \emph{ante quién informa}. \textbf{Y una advertencia:} \emph{si el único que verifica es el profesor, ustedes no se dieron una norma ---le pidieron una a alguien más---.} \textbf{Es la diferencia entre el bastón de mando y una orden.}}
+\milcpaso{4}{milcTurquesa}{\textbf{Se revisa, o se muere ---y tiene que haber una salida barata---.} \emph{Tercer principio que usaremos:} \textbf{mecanismos \emph{baratos} de resolución de conflictos}, es decir, algo tan sencillo que la gente lo use de verdad en vez de dejar el problema crecer. \emph{En un curso puede ser tan simple como:} \textbf{«el que se sienta aludido lo dice en el momento y se para ahí»}, o \emph{«cinco minutos de revisión los viernes»}. \textbf{Y la revisión no es un adorno: es lo que hace que el acuerdo exista un mes después}, \emph{como aprendieron en el momento 10 del grado 8}. \textbf{La pregunta de cada revisión es siempre la misma:} \emph{¿se está cumpliendo? ¿quién no ha podido y por qué? ¿qué hay que ajustar?}}
+
+\begin{drawbox}{milcTurquesa}{La forma de una regla que sirve}
+\begin{pasoslista}
+\item \textbf{Describe una conducta observable,} no una virtud. \emph{«Se arman por sorteo», no «somos incluyentes».}
+\item \textbf{Dice qué pasa si se rompe} ---y no es un castigo: es qué se hace para arreglarlo---.
+\item \textbf{Tiene quién verifica,} con nombre y rotando.
+\item \textbf{Tiene fecha de revisión} ya puesta.
+\item \textbf{Y el conjunto es corto:} \emph{entre cinco y ocho. Si son más, no las van a recordar.}
+\end{pasoslista}
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{Reglas que son deseos:} «respetarnos», «ser unidos». \textbf{Veinte puntos:} nadie los recuerda. \textbf{Consecuencias que son castigos:} después de nueve momentos, ustedes saben que reparar funciona mejor. \textbf{Que solo verifique el profesor:} entonces no es un acuerdo propio. \textbf{Copiar el manual de convivencia:} ese ya existe; esto es lo que le falta. \textbf{No fechar la revisión:} sin fecha dura tres semanas. \textbf{Aprobar por mayoría sin oír a los que no están de acuerdo:} esos son los que la van a romper, y tienen razones.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+
+
+\textbf{En tu cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2. Deseo o regla». \textbf{Formato:} escribe \textbf{cinco} enunciados en su versión «deseo» y en su versión «regla verificable». \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} puedes explicar por qué \textbf{un deseo no se incumple: simplemente no ocurre}.
+\end{infoband}
+
+\puente{Ya saben qué quieren. Es hora de escribirlo bien ---pocas, claras, con consecuencia y con responsable---.}
+
+\milcestacion{milcMagenta}{Fase 3 · Praxis: escribir el acuerdo}
+
+\begin{softbox}{milcMagenta}{milcGris}{Cómo se escribe un acuerdo que dure}
+Este es el producto del año. Se escribe entre todos, se firma y se revisa: exactamente como un mandato.
+\end{softbox}
+
+\milcpaso{1}{milcMagenta}{\textbf{Lo que el año dejó (10 min, todo el curso).} Pongan en común las nueve candidatas y agrúpenlas. \emph{Van a ver que se repiten los mismos tres o cuatro asuntos ---quién queda por fuera, qué circula en los chats, cómo se arman los grupos, cómo se arregla lo que se rompe---.} \textbf{Escojan los cinco a ocho que de verdad les importan.} \emph{Y oigan con atención a quien esté en desacuerdo con alguno: es quien mejor sabe dónde va a fallar.}}
+\milcpaso{2}{milcMagenta}{\textbf{Redactar las reglas (15 min).} Escríbanlas \textbf{una por una, en conducta observable}. \emph{Pasen cada una por la prueba:} \textbf{«¿cualquiera podría decir, mirando, si se cumple?»} \emph{Si la respuesta es no, reescríbanla ---no la descarten: casi siempre hay una versión verificable de lo que querían decir---.}}
+\milcpaso{3}{milcMagenta}{\textbf{Consecuencia y verificación (12 min).} Para cada regla: \textbf{qué se hace si se rompe} ---y después del momento 9, ustedes ya saben que la consecuencia útil es \emph{reparadora} y no punitiva---; \textbf{quién verifica}, con nombre y \textbf{rotando}; y \textbf{ante quién se informa}. \emph{Añadan además el mecanismo barato:} \textbf{una frase que cualquiera pueda decir en el momento} para parar algo sin armar un problema.}
+\milcpaso{4}{milcMagenta}{\textbf{Firmar y fechar (8 min).} \textbf{Fírmenlo todos} ---firmar no es un trámite: es lo que convierte una lista en un compromiso---, \textbf{péguenlo donde se vea} y \textbf{pongan la primera fecha de revisión ahora}, antes de salir del salón. \emph{Y decidan quién convoca esa revisión, con nombre.} \textbf{Después preséntenselo al director de grupo} ---no para que lo apruebe, sino para que lo conozca: \emph{esto es un mandato de ustedes, no un permiso que piden}---.}
+
+\begin{drawbox}{milcMagenta}{Antes de cerrar el acuerdo}
+\begin{checklista}
+\item Son \textbf{entre cinco y ocho} reglas, no veinte.
+\item Cada una describe una \textbf{conducta observable} y pasó la prueba de la verificación.
+\item Cada una dice \textbf{qué se hace si se rompe}, y es reparador y no punitivo.
+\item Cada una tiene \textbf{quién verifica}, con nombre y rotando, y ante quién informa.
+\item Escucharon a quienes estaban en desacuerdo \textbf{antes} de aprobar.
+\item Está \textbf{firmado}, pegado, y con \textbf{fecha de revisión y convocante} ya escritos.
+\end{checklista}
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{La regla.} \emph{«En este curso, \_\_\_\_.»} ---conducta observable---. \\[1mm]
+\textbf{Lo demás.} \emph{«Si se rompe, \_\_\_\_. Verifica \_\_\_\_ (rota cada \_\_\_\_). Informa ante \_\_\_\_.»} \\[1mm]
+\textbf{El cierre.} \emph{«Revisamos el \_\_\_\_. Convoca \_\_\_\_.»} ---y la frase barata: \emph{«el que se sienta aludido lo dice y se para ahí»}---.
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+
+
+\textbf{En tu cuaderno (Actividad 3 · CREA).} Título: «Actividad 3. Nuestro acuerdo de aula». \textbf{Formato:} las cinco a ocho reglas completas ---conducta, consecuencia, verificador, instancia--- + la frase barata + la fecha de revisión y quién convoca. \textbf{Extensión:} una página. \textbf{Sabes que terminaste cuando} \textbf{está firmado y la fecha de revisión está escrita}.
+\end{infoband}
+
+\puente{El producto es un acuerdo firmado. \emph{Y su prueba no es la firma: es la primera revisión.}}
+
+\milcestacion{milcMostaza}{Producto de la sesión}
+\textbf{Acuerdo de aula: entre cinco y ocho reglas verificables, con consecuencia reparadora, verificador rotativo y fecha de revisión}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) El acuerdo tiene entre cinco y ocho reglas, redactadas como conductas observables. (2) Cada regla pasa la prueba de verificación: cualquiera podría decir si se cumple. (3) Las consecuencias son reparadoras y no punitivas, coherentes con el momento 9. (4) Hay verificador con nombre y rotación, y una instancia ante la cual se informa. (5) El acuerdo está firmado por todos y tiene fecha de revisión y convocante escritos.
+\end{softbox}
+
+\puente{Antes de cerrar, revisen la trampa clásica: si una regla no se puede comprobar, es un deseo con forma de norma.}
+
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos el grado con tres voces: la comunidad que nace de escuchar, la coherencia entre decir y hacer, y el cuidado de lo compartido.}
+
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{«Aquel que es capaz de escuchar silenciosamente al Otro como otro es el que puede constituir una comunidad y no una mera sociedad totalizada.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Enrique Dussel · Filosofía de la liberación (1977)}
+
+\textbf{Con esta frase se cierra el grado, y ahora se puede leer completa.} \emph{Una «sociedad totalizada» también puede tener reglas ---muy buenas reglas, incluso---:} \textbf{lo que no tiene es a alguien escuchando al que no piensa como la mayoría}. \emph{Por eso en la Actividad 3 hay una instrucción que parece menor y es la más importante:} \textbf{oír a quien esté en desacuerdo \emph{antes} de aprobar}. \textbf{No por cortesía ---por eficacia:} \emph{el que está en desacuerdo es el que sabe dónde va a fallar la regla, y además es el que la va a romper}. \emph{Un acuerdo aprobado por mayoría sobre las objeciones de una minoría no es un acuerdo: es una votación con la que hay que convivir.}
+
+\textbf{Cuando decidimos algo en el curso, ¿alguien preguntó qué pensaban los que votaron en contra?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Séneca · Cartas a Lucilio, 20 (c. 64 d.C.) · cuidado interior}
+\textit{«La filosofía enseña a obrar, no a hablar; quiere que cada uno viva a la manera que prescribe, que estén en armonía nuestras palabras con nuestras acciones.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Séneca · Cartas a Lucilio, 20 (c. 64 d.C.)}
+
+\textbf{«Que estén en armonía nuestras palabras con nuestras acciones».} \emph{Eso es, exactamente, la diferencia entre un acuerdo y una cartelera.} \textbf{Y también es la razón por la que este acuerdo se firma:} \emph{la firma pone tu nombre al lado de una palabra que después vas a tener que sostener con hechos}. \emph{Séneca añade algo que este grado entero comprobó:} \textbf{la filosofía «enseña a obrar, no a hablar»}. \emph{Los nueve momentos anteriores no terminaron en opiniones ---terminaron en una conversación sostenida, un mandato desobedecido, una lista entregada, un protocolo, una reparación---.} \textbf{Este acuerdo es la última de esas obras, y la única que va a seguir funcionando cuando la clase termine.}
+
+\textbf{De lo que firmé este año, ¿qué he sostenido con hechos?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{«El florecimiento de las entidades informacionales y de toda la infoesfera debe promoverse preservando, cultivando y enriqueciendo sus propiedades.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Luciano Floridi · La ética de la información (2013; trad.)}
+
+\textbf{Su acuerdo tiene que cubrir los dos lugares donde vive el curso: el salón y el chat.} \emph{Y el segundo casi siempre se olvida, aunque es donde ocurre la mitad de lo que trabajaron este año} ---lo que se reenvía, quién está y quién no, lo que queda escrito---. \textbf{Por eso conviene que al menos \emph{una} de sus reglas sea sobre el grupo:} \emph{qué no se trae ahí, qué se borra si alguien lo pide, quién revisa que estén todos los del curso}. \textbf{Y fíjate en el verbo de Floridi:} \emph{no dice «proteger» ---dice \textbf{cultivar} y \textbf{enriquecer}---}. \textbf{Un acuerdo que solo prohíbe cuida; uno que además dice qué sí se hace ahí, cultiva.} \emph{Los que duran son los segundos.}
+
+\textbf{De nuestras reglas, ¿cuántas dicen qué sí hacemos, y cuántas solo qué no?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres son citas textuales y llevan su referencia debajo. Puedes remitir a la obra en clase.
+\end{infoband}
+
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
+
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Calidad del acuerdo & \milcopcion{Nuestras reglas son pocas, verificables, con consecuencia, responsable y fecha de revisión.} & \milcopcion{Escribimos reglas, pero son deseos: no se puede comprobar si se cumplen.} & \milcopcion{Sigo pensando que las normas las pone el que manda y uno las cumple o no.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la primera revisión ---y para el año que viene.} \textbf{Primero, la revisión en la fecha que pusieron}, con las tres preguntas: \emph{¿se está cumpliendo? ¿quién no ha podido y por qué? ¿qué hay que ajustar?} \textbf{Y guarden el dato que importa:} \emph{cuántas de las reglas siguen vivas al mes}. \emph{Ese número, y no la firma, es la nota de este grado.} \textbf{Segundo, pregunta en tu casa por las normas propias:} averigua con alguien mayor \textbf{si perteneció alguna vez a algo que se diera sus propias reglas} ---una junta de acción comunal, un sindicato, una cooperativa, un grupo de la iglesia, un equipo, una asociación de padres---: \textbf{cómo las decidían, quién las hacía cumplir, qué pasaba con el que no las cumplía y si alguna vez tuvieron que cambiarlas}. \textbf{Trae:} el resultado de la revisión y lo que te contaron. \emph{Vas a encontrar los principios de Ostrom sin que nadie los haya leído: en los grupos que duraron, las reglas las hicieron los mismos socios, todos sabían quién vigilaba, y había una manera rápida y barata de arreglar los líos. En los que se acabaron, casi siempre falta alguna de las tres.}
+\end{infoband}
+
+\end{document}

@@ -70,11 +70,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuáles son las 2 grandes mitades del periodo 3?',
           opciones: [
             'Word + Excel.',
-            'Procesador de texto (S2-S6) + Internet/búsqueda crítica (S7-S9), con cierre integrador en S10.',
             'Sólo internet.',
-            'Sólo cuaderno.'
+            'Sólo cuaderno.',
+            'Procesador de texto (S2-S6) + Internet/búsqueda crítica (S7-S9), con cierre integrador en S10.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. Primera mitad: escribir digital (Word, formato, tablas). Segunda mitad: buscar críticamente (operadores, CRAAP). S10 cierra todo.',
           feedbackIncorrecto: '2 mitades: procesador de texto (S2-S6) + búsqueda crítica (S7-S9). S10 cierra integrando. Ese es el plan del periodo.'
         },
@@ -82,23 +82,23 @@ const contenido: ContenidoGuia = {
           enunciado: 'Doña Mercedes la maestra rural decía \'¿qué primero?\'',
           opciones: [
             'Escribir muy rápido.',
-            'Primero pensar, después escribir.',
             'Buscar en Wikipedia primero.',
+            'Primero pensar, después escribir.',
             'Copiar de otro lado.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Primero pensar (ordenar ideas en cuaderno), después escribir (en digital). Esa secuencia te entrena en voz propia y evita el bloqueo del papel en blanco.',
           feedbackIncorrecto: '"Primero pensar, después escribir". Doña Mercedes lo decía hace 50 años. Sigue siendo verdad: la escritura sin pensamiento es ruido.'
         },
         {
           enunciado: 'Cuál es UNA de las 5 reglas éticas de internet del P3?',
           opciones: [
-            'Compartir todo lo que veas.',
             'Citar siempre tus fuentes.',
+            'Compartir todo lo que veas.',
             'Copiar sin permiso.',
             'Creerle al primer resultado.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Bien. Citar fuentes es regla 1. Otras: verifica, no comparta sin verificar, respeta derechos, usa para sumar. 5 reglas mínimas.',
           feedbackIncorrecto: 'Citar fuentes es regla 1 del P3. Las 5: cita · verifica · no comparta sin verificar · respeta derechos · usa para sumar. Son ética básica.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu pregunta-radar del periodo es \'¿cómo cito fuentes correctamente?\'. ¿Qué sesiones te ayudarán?',
           opciones: [
             'Ninguna.',
-            'S5 (imágenes con pie), S9 (evaluar fuentes con CRAAP), y S10 (documento con fuentes citadas).',
             'Solo S1 que es hoy.',
-            'Solo una clase fuera del colegio.'
+            'Solo una clase fuera del colegio.',
+            'S5 (imágenes con pie), S9 (evaluar fuentes con CRAAP), y S10 (documento con fuentes citadas).'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Bien. La pregunta sobre fuentes la responden varias sesiones: S5 enseña a poner pie de imágenes, S9 evalúa fuentes con CRAAP, S10 te hace citar en documento real.',
           feedbackIncorrecto: 'S5 (imágenes con pie) + S9 (CRAAP de fuentes) + S10 (documento con fuentes citadas). Varias sesiones convergen en responder esa pregunta.'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Estoy produciendo voz propia o solo consumiendo voces ajenas?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador que escribía con disciplina)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Escribir es pensar despacio. Buscar es elegir despacio. Las dos disciplinas hacen al ciudadano libre."',
       preguntaEspejo: '¿Me estoy entrenando en escribir y buscar despacio, o sigo el ritmo apurado de los demás?'

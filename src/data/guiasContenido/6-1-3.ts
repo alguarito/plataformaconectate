@@ -83,10 +83,10 @@ const contenido: ContenidoGuia = {
           opciones: [
             'Hey coordi',
             'Qué más',
-            'Buenos días señor coordinador',
-            'Saludos cordiales mi rey'
+            'Saludos cordiales mi rey',
+            'Buenos días señor coordinador'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Bien. A una autoridad le hablas con respeto: buenos días + nombre o cargo. Eso abre puertas; lo otro las cierra.',
           feedbackIncorrecto: 'A un adulto con autoridad le hablas formal: "Buenos días señor coordinador". El respeto en el saludo importa.'
         },
@@ -94,23 +94,23 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuál de estas contraseñas es fuerte?',
           opciones: [
             'lara123',
-            'qwerty',
             'Mango2026!',
+            'qwerty',
             'mi nombre completo'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 1,
           feedbackCorrecto: 'Correcto. Mezcla mayúscula, minúsculas, números y un signo. Ocho caracteres o más. Eso es fuerte.',
           feedbackIncorrecto: 'Una contraseña fuerte mezcla mayúsculas, minúsculas, números y un signo. "Mango2026!" cumple todo.'
         },
         {
           enunciado: 'Tu mejor amigo te pide la contraseña de tu correo institucional. ¿Qué haces?',
           opciones: [
-            'Se la doy porque confío en él.',
             'No se la doy. La contraseña es solo mía.',
+            'Se la doy porque confío en él.',
             'Se la doy pero la cambio mañana.',
             'Se la doy a medias, solo la mitad.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Exacto. La contraseña no se comparte. Si tu amigo necesita algo en internet, que use su propia cuenta.',
           feedbackIncorrecto: 'La regla es clara: la contraseña no se comparte. La amistad cambia; los problemas si la dan también.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Acabas de escribir un correo. Antes de pulsar \'enviar\' deberías...',
           opciones: [
             'Mandarlo de inmediato para no demorar.',
-            'Leerlo dos veces y revisar las 5 partes.',
             'Agregar muchos signos de admiración.',
-            'Escribirlo TODO EN MAYÚSCULAS para que se note.'
+            'Escribirlo TODO EN MAYÚSCULAS para que se note.',
+            'Leerlo dos veces y revisar las 5 partes.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. Releer antes de enviar evita errores. Verificas que están las 5 partes y que el cuerpo es claro y corto.',
           feedbackIncorrecto: 'Antes de enviar, relees. Verificas las 5 partes y que el cuerpo es corto. Mayúsculas en todo es como gritar.'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: 'Cuando le escribo a un adulto, ¿le escribo como si yo mismo mereciera que me lean en serio?'
     },
     estoico: {
-      autor: 'Séneca (un romano que escribió cartas durante toda su vida)',
+      autor: 'Séneca',
       lente: 'lente del cuidado interior',
       cita: '"Antes de enviar una carta, léela tres veces. La primera para corregir, la segunda para acortar, la tercera para asegurarte de que dice lo que querías decir."',
       preguntaEspejo: '¿Estoy enviando con prisa, o estoy revisando lo que digo antes de mandarlo?'

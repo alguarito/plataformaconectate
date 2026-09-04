@@ -70,23 +70,23 @@ const contenido: ContenidoGuia = {
           enunciado: 'Le pides a ChatGPT que te explique fotosíntesis. Después escribes el resumen con TUS palabras. ¿Es legítimo o trampa?',
           opciones: [
             'Trampa.',
-            'Legítimo (uso como tutor).',
             'Depende del país.',
+            'Legítimo (uso como tutor).',
             'Solo si pagas premium.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Uso como TUTOR: la IA ayudó a entender. Tú escribiste con tu voz. Aprendiste. Es uso legítimo número 1.',
           feedbackIncorrecto: 'Legítimo. Uso como tutor. La IA explica, tú entiendes y escribes con tu voz. Aprendiste. Es uso 1 de los 4 legítimos.'
         },
         {
           enunciado: 'Le pides a ChatGPT que escriba un ensayo de 3 páginas y lo entregas TAL CUAL como tuyo. ¿Es?',
           opciones: [
-            'Legítimo si está bien escrito.',
             'TRAMPA: no aprendiste, no añadiste voz, pasaste como tuyo lo que no era.',
+            'Legítimo si está bien escrito.',
             'Legítimo si es premium.',
             'Trampa solo si el profe se da cuenta.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. TRAMPA. Es el uso no legítimo #5: escribir entero y entregar como tuyo. La regla universal: si no aprendiste, es trampa. Aunque nadie te vea.',
           feedbackIncorrecto: 'Trampa. No aprendiste, no añadiste voz, pasaste como autor. La regla universal se rompe. El que aprende es Pedro; el que copia, Lucía.'
         },
@@ -106,11 +106,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Antes de entregar, te preguntas \'¿puedo explicar verbalmente este trabajo si el profe me pregunta?\'. La respuesta es NO. ¿Qué haces?',
           opciones: [
             'Lo entrego igual.',
-            'Vuelvo a estudiar el tema hasta que pueda explicarlo. Si solo entregué sin entender, no es legítimo.',
             'Le pido al profe que no pregunte.',
-            'Cambio el profe.'
+            'Cambio el profe.',
+            'Vuelvo a estudiar el tema hasta que pueda explicarlo. Si solo entregué sin entender, no es legítimo.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. Pregunta 2 de la autoevaluación: si no puedo explicar verbalmente, no entiendo. Si no entiendo, no aprendí. Vuelvo al tema. Estándar adulto: honestidad con uno mismo.',
           feedbackIncorrecto: 'Vuelves a estudiar. Si no puedes explicar verbalmente, no entendiste. Solo entregaste un producto sin aprender. La pregunta 2 de la autoevaluación lo detecta.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu compañero dice \'todos usan IA para hacer las tareas, no es trampa\'. ¿Cómo lo corriges?',
           opciones: [
             'Tiene razón, lo seguiré.',
-            'Que otros hagan trampa no la convierte en legítima. La regla es: ¿aprendí? Si no, es trampa, sin importar cuántos lo hagan.',
             'Es solo opinión.',
-            'Le pago al compañero por la copia.'
+            'Le pago al compañero por la copia.',
+            'Que otros hagan trampa no la convierte en legítima. La regla es: ¿aprendí? Si no, es trampa, sin importar cuántos lo hagan.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. La ética no se mide por mayoría. Si la mayoría hace trampa, sigue siendo trampa. La regla universal: ¿aprendí? Si no, es trampa. Independiente del consenso social.',
           feedbackIncorrecto: 'La ética no depende de mayorías. Si la mayoría hace trampa, sigue siendo trampa. La regla \'aprendí o no\' es universal. Tu integridad no se ajusta a lo que otros hacen.'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: 'Cuando uso IA en tareas, ¿estoy votando por convertirme en Pedro con asistente o en Lucía con atajos?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador de la integridad)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"La integridad es la única posesión que no te pueden quitar. Pero tú mismo puedes regalarla con tus decisiones diarias."',
       preguntaEspejo: '¿Estoy cultivando mi integridad o regalándola con decisiones pequeñas?'

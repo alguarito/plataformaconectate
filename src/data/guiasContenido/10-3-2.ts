@@ -69,12 +69,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: '¿Cuáles son los 3 elementos obligatorios de la contabilidad básica?',
           opciones: [
-            'Ingresos, egresos y balance neto',
             'Solo ingresos',
             'Solo egresos',
+            'Ingresos, egresos y balance neto',
             'Solo el saldo bancario'
           ],
-          respuestaIndex: 0,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Exacto. Ingresos, egresos y balance neto. Los tres juntos cuentan la historia económica del periodo.',
           feedbackIncorrecto: 'Son ingresos, egresos y balance neto. Faltar a uno deja la contabilidad incompleta.'
         },
@@ -82,11 +82,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'La regla "lo que no se mide, no se mejora" significa que...',
           opciones: [
             'No vale la pena medir',
-            'Sin registro sistemático, no puedes controlar tus gastos',
             'Hay que medir solo a veces',
-            'El registro es opcional'
+            'El registro es opcional',
+            'Sin registro sistemático, no puedes controlar tus gastos'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Correcto. Sin registro sistemático, los gastos escapan a tu control.',
           feedbackIncorrecto: 'Sin registro, no hay control. Por eso la disciplina diaria del cuaderno es clave.'
         },
@@ -105,12 +105,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: '¿Qué importa más, el cuaderno físico o Google Sheets?',
           opciones: [
+            'La disciplina del registro, no la herramienta',
             'Solo Sheets',
             'Solo papel',
-            'La disciplina del registro, no la herramienta',
             'Nada importa'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Correcto. Sin disciplina, ninguna herramienta sirve. Con disciplina, cualquiera funciona.',
           feedbackIncorrecto: 'Importa la disciplina del registro diario. La herramienta es secundaria.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuántas semanas mínimas de registro pide la sesión?',
           opciones: [
             '1 día',
-            '2 semanas',
             '1 año',
-            '10 años'
+            '10 años',
+            '2 semanas'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Exacto. 2 semanas mínimas para producir un balance interpretable.',
           feedbackIncorrecto: 'Son 2 semanas mínimas. Suficientes para detectar patrones y producir un primer balance útil.'
         }

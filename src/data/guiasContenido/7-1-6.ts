@@ -70,11 +70,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu equipo va a coautorar un trabajo. ¿Cuál es el PRIMER paso?',
           opciones: [
             'Cada uno empieza a escribir donde quiera.',
-            'Acordar roles: leer enunciado juntos, listar subtemas, asignar uno a cada uno, acordar tiempos.',
             'Pelearse por quién hace más.',
+            'Acordar roles: leer enunciado juntos, listar subtemas, asignar uno a cada uno, acordar tiempos.',
             'Un solo encargado hace todo.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Los 4 pasos del acuerdo de roles. Sin acuerdo previo, la coautoría se vuelve caos. 5 minutos de acuerdo ahorran horas de pelea.',
           feedbackIncorrecto: 'Acuerdo de roles primero: leer enunciado, listar subtemas, asignar, acordar tiempos. 5 minutos al inicio ahorran horas al final.'
         },
@@ -82,11 +82,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Estás coautorando y ves un cursor azul con el nombre de tu compañero en TU sección. ¿Qué haces?',
           opciones: [
             'Lo borro inmediatamente.',
-            'Le escribo un comentario al margen preguntándole por qué está ahí.',
             'Lloro.',
-            'Cierro el documento y lo culpo después.'
+            'Cierro el documento y lo culpo después.',
+            'Le escribo un comentario al margen preguntándole por qué está ahí.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Bien. Comunicación clara: comentario al margen o mensaje por chat preguntando. No asumes mala intención; preguntas y resuelves.',
           feedbackIncorrecto: 'Comentario al margen o mensaje por chat. Pregunta antes de borrar o reaccionar mal. La coautoría es comunicación constante.'
         },
@@ -105,24 +105,24 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'Estás trabajando con 2 compañeros desde casa. ¿Es coautoría sincrónica o asincrónica?',
           opciones: [
-            'Sincrónica siempre.',
             'Asincrónica: cada uno escribe cuando puede; no requieren estar conectados al mismo tiempo.',
+            'Sincrónica siempre.',
             'Ninguna, hay que ir al colegio.',
             'Solo si están en la misma casa.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Asincrónica permite que cada uno entre cuando puede. Microsoft 365 actualiza el documento en la nube. Ideal para equipos con horarios distintos.',
           feedbackIncorrecto: 'Asincrónica: cada uno cuando puede, sin coincidir en tiempo. La nube actualiza. Es lo que más se usa en equipos profesionales.'
         },
         {
           enunciado: 'Terminan el trabajo colaborativo. ¿Qué hace falta para cerrarlo bien?',
           opciones: [
-            'Cada uno se va sin más.',
             'Revisión conjunta del documento completo (que se vea uniforme) + bitácora individual en cuaderno.',
+            'Cada uno se va sin más.',
             'Borrar el documento.',
             'Pelear por quién hizo más.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Revisión conjunta cierra el trabajo (formato uniforme, sin contradicciones). Bitácora individual ayuda a aprender qué funcionó y qué no.',
           feedbackIncorrecto: 'Revisión conjunta + bitácora. Sin cierre formal, los proyectos quedan a medias. La bitácora te enseña qué mejorar para la próxima.'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Cuántos trabajos de grupo se me han complicado por falta de acuerdo inicial?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador que sabía delegar)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Confía en tu equipo lo suficiente para no querer hacer su parte. Esa confianza es la base del trabajo colectivo."',
       preguntaEspejo: '¿Confío en mi equipo o termino haciendo todo yo por desconfianza?'

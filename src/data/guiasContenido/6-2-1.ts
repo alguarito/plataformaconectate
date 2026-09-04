@@ -70,11 +70,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Por qué entender el hardware del computador te hace más libre?',
           opciones: [
             'Porque puedes presumir de saber mucho.',
-            'Porque resuelves problemas sin depender de técnicos, decides con criterio cuando compras, no te dejas engañar.',
             'Porque ya no necesitas usarlo.',
+            'Porque resuelves problemas sin depender de técnicos, decides con criterio cuando compras, no te dejas engañar.',
             'Porque ahorra electricidad.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Entender te quita dependencia. El que sabe decide; el que no sabe depende. Esa es la libertad técnica del siglo XXI.',
           feedbackIncorrecto: 'Entender te hace libre: decides cuando compras, resuelves problemas básicos, no te estafan. Sin entender, dependes de otros para todo.'
         },
@@ -83,10 +83,10 @@ const contenido: ContenidoGuia = {
           opciones: [
             'Puedo comer chocolate frente al computador.',
             'Apagar el computador con el botón de fuerza.',
-            'Manos limpias y secas antes de tocar teclado o ratón.',
-            'Usar el computador descalzo.'
+            'Usar el computador descalzo.',
+            'Manos limpias y secas antes de tocar teclado o ratón.'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Bien. Manos limpias y secas: una de las 5 reglas. La humedad y la suciedad dañan electrónica. Pequeña disciplina, gran ahorro.',
           feedbackIncorrecto: 'Manos limpias y secas es regla 1. Otras: sin comer, buena postura, apagado correcto, reportar daños. Cuidar la sala es ciudadanía.'
         },
@@ -105,12 +105,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: '¿Cuántos temas tiene el periodo 2 según la ruta presentada?',
           opciones: [
-            '5 temas.',
             '10 sesiones de S1 a S10 + S11 de cosecha.',
+            '5 temas.',
             '20 temas.',
             'Solo 1 tema.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. P2 tiene 10 sesiones (S1 a S10) más S11 de cosecha. Cada sesión es un tema cerrado pero conectado con los anteriores.',
           feedbackIncorrecto: '10 sesiones (S1 a S10) más S11 de cosecha. Es el patrón de los 3 periodos del año. Conoces la ruta = caminas con mapa.'
         },
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Vivo con miedo de las máquinas que uso, o con criterio? ¿Qué cosa me dejaría de dar miedo si la entendiera mejor?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador que entendía sus instrumentos)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Saber el nombre y la función de cada herramienta que usas es la primera virtud del que actúa bien en el mundo."',
       preguntaEspejo: '¿Cuántas herramientas uso todos los días sin saber su nombre ni su función? ¿Cómo me afecta eso?'

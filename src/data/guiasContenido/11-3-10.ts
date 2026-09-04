@@ -82,23 +82,23 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Por qué demo en VIVO y no video pregrabado?',
           opciones: [
             'Para gastar tiempo.',
-            'Para que la audiencia vea el MVP REAL, no maquillado. Si falla algo, lo dices con honestidad. Es señal de proyecto auténtico.',
             'Es opcional.',
+            'Para que la audiencia vea el MVP REAL, no maquillado. Si falla algo, lo dices con honestidad. Es señal de proyecto auténtico.',
             'Para parecer técnico.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Demo en vivo = MVP real. Video pregrabado oculta bugs. La autenticidad gana credibilidad. Errores en vivo respondidos con honestidad > video perfecto irreal.',
           feedbackIncorrecto: 'Demo en vivo = realidad sin maquillaje. Si falla algo, lo reconoces. Si funciona, se nota que es real. Video oculta; vivo revela.'
         },
         {
           enunciado: 'En Q&A te preguntan algo que NO sabes. ¿Qué haces?',
           opciones: [
-            'Inventas una respuesta.',
             'Dices: \'No lo sé exactamente. Lo que sí sé es X. Voy a investigar Y\'. Honestidad y compromiso futuro.',
+            'Inventas una respuesta.',
             'Cambias de tema.',
             'Te enojas.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Honestidad gana credibilidad. No saber + decirlo + comprometerse a investigar = madurez profesional. Inventar baja autoridad para siempre.',
           feedbackIncorrecto: 'Honestidad gana. "No sé, pero sí sé X, y voy a investigar Y" muestra madurez. Inventar destruye credibilidad si te cogen.'
         },
@@ -106,11 +106,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Qué es el manifiesto final?',
           opciones: [
             'Solo un papel.',
-            '1 página integrando los 3 periodos de G11. Declaras qué tipo de profesional digital quieres ser. Firmado como cierre del bachillerato técnico.',
             'El logo del proyecto.',
-            'Una camiseta.'
+            'Una camiseta.',
+            '1 página integrando los 3 periodos de G11. Declaras qué tipo de profesional digital quieres ser. Firmado como cierre del bachillerato técnico.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. Manifiesto = declaración firmada de identidad profesional. Integra los 3 periodos (marca + automatización + emprendimiento). Lo guardas para tu yo de 25 años.',
           feedbackIncorrecto: 'Manifiesto final = declaración firmada. Integra los 3 periodos de G11. Es huella del tipo de profesional digital que quieres ser. Lo conservas.'
         },

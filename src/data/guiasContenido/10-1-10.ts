@@ -81,12 +81,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: '¿Qué prueba si el oficio editorial funcionó o no?',
           opciones: [
-            'El precio del libro',
             'La lectura en voz alta del fragmento',
+            'El precio del libro',
             'La cantidad de páginas',
             'El color de la portada'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Correcto. La lectura en voz alta revela si el texto tiene voz humana o suena a chatbot.',
           feedbackIncorrecto: 'La lectura en voz alta. Revela si el libro suena a ti o si quedó genérico.'
         },
@@ -94,11 +94,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Qué actitud profesional pide la declaración de uso de IA?',
           opciones: [
             'Ocultarlo para parecer más auténtico',
-            'Declarar modelos, porcentaje generado y porcentaje reescrito a mano',
             'No mencionarlo',
-            'Exagerar el uso humano'
+            'Exagerar el uso humano',
+            'Declarar modelos, porcentaje generado y porcentaje reescrito a mano'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Exacto. La honestidad gana respeto profesional y construye la nueva cultura editorial.',
           feedbackIncorrecto: 'La honestidad sobre uso de IA es estándar profesional contemporáneo. Ocultarlo erosiona la cultura.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'La regla "el libro no termina cuando se firma; termina cuando se comparte" significa que...',
           opciones: [
             'Hay que vender pronto',
-            'El libro alcanza sentido pleno al circular y ser leído por otros',
             'El libro nunca termina',
-            'El libro debe quedar guardado'
+            'El libro debe quedar guardado',
+            'El libro alcanza sentido pleno al circular y ser leído por otros'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Exacto. El libro vive al circular. Sin lector, queda como archivo sin propósito cumplido.',
           feedbackIncorrecto: 'Significa que el libro alcanza sentido pleno al ser leído. Compartir cierra el ciclo editorial.'
         }

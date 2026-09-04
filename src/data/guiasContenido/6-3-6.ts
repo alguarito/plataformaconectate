@@ -81,12 +81,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: '¿Cuál es el camino en Word para insertar número de página?',
           opciones: [
-            'Inicio → Numeración.',
             'Insertar → Número de página → escoger posición.',
+            'Inicio → Numeración.',
             'Archivo → Guardar.',
             'Diseño → Color.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Bien. Insertar → Número de página → escoge posición (lo más común: parte inferior, esquina derecha). Word inserta el contador automático.',
           feedbackIncorrecto: 'Insertar → Número de página → posición. Lo más común: parte inferior, esquina derecha. El número se inserta y se actualiza solo.'
         },
@@ -94,11 +94,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿La portada debe llevar número de página?',
           opciones: [
             'Sí, siempre. Es la página 1.',
-            'No. La página 1 es la primera página de contenido, no la portada.',
             'Sí, pero en romano (I).',
-            'Solo si el profe lo pide.'
+            'Solo si el profe lo pide.',
+            'No. La página 1 es la primera página de contenido, no la portada.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. La portada va sin número de página. La página 1 es la primera de contenido. Esto es regla universal de documentos profesionales.',
           feedbackIncorrecto: 'La portada NO se numera. La primera página de contenido es la página 1. Hay una opción en Word para "Diferente en primera página" que excluye la portada.'
         },
@@ -106,11 +106,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Qué deberías poner en el pie de página de tu trabajo escolar?',
           opciones: [
             'Tu contraseña.',
-            'Fecha de entrega + nombre del colegio + número de página.',
             'Una frase chistosa.',
+            'Fecha de entrega + nombre del colegio + número de página.',
             'Solo el número de página, nada más.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Fecha + colegio + número de página. Información institucional secundaria. El encabezado lleva tu identificación; el pie complementa con contexto.',
           feedbackIncorrecto: 'Pie de página: fecha + colegio + número. Información que complementa al encabezado. Identificación arriba; contexto institucional abajo.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Acabas de escribir la portada en la página 1. ¿Cómo saltas a la página 2?',
           opciones: [
             'Presiono Enter muchas veces hasta llegar.',
-            'Ctrl + Enter (salto de página).',
             'Salgo de Word y vuelvo a entrar.',
-            'Insertar → Tabla.'
+            'Insertar → Tabla.',
+            'Ctrl + Enter (salto de página).'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Exacto. Ctrl+Enter es el salto de página. La portada queda separada y el cursor llega a la página 2 lista para contenido. Profesional y rápido.',
           feedbackIncorrecto: 'Ctrl+Enter = salto de página. Termina la página actual y empieza una nueva. Mejor que dar Enter mil veces (eso se desordena al editar después).'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Mis trabajos tienen marco o flotan sin contexto?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador que documentaba con disciplina)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"La disciplina pequeña hace al trabajo grande visible. Quien marca cada hoja con su nombre se respeta y respeta a quien lo lee."',
       preguntaEspejo: 'Las pequeñas disciplinas (marco, formato, organización), ¿las cumplo o las dejo para otra vez?'

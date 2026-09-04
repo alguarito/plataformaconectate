@@ -81,12 +81,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'Le cuentas a ChatGPT tu contraseña del banco para pedirle consejo. ¿Está bien?',
           opciones: [
-            'Sí, ChatGPT es seguro.',
             'NO. NUNCA compartas datos sensibles (contraseñas, cédula, info íntima) con IA. Quedan en servidores.',
+            'Sí, ChatGPT es seguro.',
             'Solo si es premium.',
             'Da igual.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. NUNCA datos sensibles. Una vez escrito, no sabes dónde queda. Samsung prohibió ChatGPT a empleados por código sensible filtrado. Lección clara.',
           feedbackIncorrecto: 'NUNCA. Datos sensibles (contraseñas, cédula, info íntima) NO se comparten con IA. Quedan en servidores. Riesgo real. Regla 2 del uso responsable.'
         },
@@ -94,11 +94,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu compañero copia un ensayo entero de ChatGPT y lo entrega como suyo. ¿Es trampa?',
           opciones: [
             'No, es como usar Wikipedia.',
-            'Sí. Si no aprendió, no es su trabajo. Usar IA como asistente con atribución sí está bien.',
             'Solo si copia mal.',
-            'Da igual.'
+            'Da igual.',
+            'Sí. Si no aprendió, no es su trabajo. Usar IA como asistente con atribución sí está bien.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. La regla: si no aprendiste, es trampa. Usar IA para entender + atribuir = ético. Copiar entero sin entender ni atribuir = trampa.',
           feedbackIncorrecto: 'Sí es trampa. La regla universal: si no aprendiste, es trampa. IA como asistente con atribución es ético. Como reemplazo sin aprender es plagio nuevo.'
         },
@@ -106,11 +106,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Usas DALL-E para hacer una imagen y la vendes como creación tuya. ¿Está bien?',
           opciones: [
             'Sí, total.',
-            'No del todo. Debes identificar que es creación con IA, no presentarla como 100% tuya.',
             'Solo si es gratis.',
+            'No del todo. Debes identificar que es creación con IA, no presentarla como 100% tuya.',
             'Depende del país.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Atribuir el uso de IA. La creación con IA es categoría nueva: ni 100% tuya ni 100% de la IA. Honestidad pide atribución.',
           feedbackIncorrecto: 'Identifica el uso de IA. La creación es híbrida (parcialmente tuya, parcialmente IA). Venderla como 100% tuya es deshonesto. Atribuye y aclara.'
         },
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Mi código refleja la sociedad digital en la que quiero vivir cuando sea adulto?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador de la integridad personal)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Sé el mismo cuando nadie te ve que cuando todos te miran. La integridad no se ajusta a la audiencia."',
       preguntaEspejo: 'Cuando uso IA solo, ¿soy el mismo que cuando alguien me observa?'

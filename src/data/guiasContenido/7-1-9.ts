@@ -70,11 +70,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Necesitas pedir al rector permiso para faltar una semana por viaje familiar. ¿Qué canal usas?',
           opciones: [
             'WhatsApp.',
-            'Outlook (correo formal con las 5 partes).',
             'Teams chat.',
+            'Outlook (correo formal con las 5 partes).',
             'Una nota en papel.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Solicitud formal a autoridad = Outlook. Queda registrado, formal, con tu firma. WhatsApp y Teams son menos formales; el papel se pierde.',
           feedbackIncorrecto: 'A autoridades: Outlook. Petición formal, registrada, con las 5 partes. Queda en archivo institucional. Es la práctica adulta correcta.'
         },
@@ -82,23 +82,23 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu equipo de 3 va a hacer videollamada para revisar el trabajo. ¿Qué canal?',
           opciones: [
             'Outlook.',
-            'Teams (Reunión programada con videollamada).',
             'WhatsApp con audio amateur.',
-            'FaceTime.'
+            'FaceTime.',
+            'Teams (Reunión programada con videollamada).'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Bien. Teams es la app de reuniones virtuales institucionales: videollamada + pantalla compartida + agenda. Mucho más profesional que WhatsApp.',
           feedbackIncorrecto: 'Teams para reuniones virtuales académicas/profesionales. Video, pantalla compartida, agenda, calendario integrado. La opción profesional.'
         },
         {
           enunciado: 'Tu correo institucional debería tener... (escoge lo más profesional)',
           opciones: [
-            'Sin firma.',
             'Una firma fija con tu nombre, grado, colegio y año.',
+            'Sin firma.',
             'Tu emoji favorito.',
             'Una imagen de tu mascota.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Firma fija profesional: nombre, grado, colegio, año. Aparece sola al final de cada correo. Identidad profesional consistente.',
           feedbackIncorrecto: 'Firma fija profesional. Configurada una vez en Outlook, aparece automáticamente. \'Atentamente, [Nombre], Grado 7[letra], I.E. Sor María Juliana, año 2026\'.'
         },
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Estoy hablando igual con todos sin distinguir contextos? ¿Eso me ayuda o me complica?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador que dominaba la comunicación)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"La carta formal queda. El recado se va con el viento. Sabe usar las dos a su tiempo."',
       preguntaEspejo: '¿Estoy desarrollando precisión profesional en comunicación, o me quedo en informalidad permanente?'

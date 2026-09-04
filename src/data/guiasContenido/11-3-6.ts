@@ -69,12 +69,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: '¿Cuántos slides tiene un pitch estándar?',
           opciones: [
-            '1',
             '7',
+            '1',
             '30',
             '50'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. 7 slides es el estándar. Estructura: problema + afectados + solución + MVP + datos + modelo + llamada. Lo que no cabe en 7 sobra.',
           feedbackIncorrecto: '7 slides. Estructura estándar mundial. 30 slides en 3 min = caos. 7 con estructura clara = pitch profesional.'
         },
@@ -82,11 +82,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuál es buen storytelling para arrancar?',
           opciones: [
             '78% de tenderos pierden tiempo.',
-            'Don Aurelio, 58 años, pierde 8h cada semana haciendo cuentas a mano que un Excel resolvería en 15 min.',
             'Mi solución revolucionará el mundo.',
+            'Don Aurelio, 58 años, pierde 8h cada semana haciendo cuentas a mano que un Excel resolvería en 15 min.',
             'Hay un problema importante.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Bien. Humano concreto con nombre + dolor específico. Conecta emocionalmente. El dato 78% va después; el humano va primero.',
           feedbackIncorrecto: 'Storytelling = humano concreto primero, datos después. Don Aurelio con nombre y edad y pérdida específica > estadísticas frías.'
         },
@@ -106,11 +106,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu pitch termina con \'Gracias por escuchar\'. ¿Está bien?',
           opciones: [
             'Sí, suena cortés.',
-            'No. Falta la CTA: qué quieres del oyente (visitar sitio, dar feedback, comprar, invertir).',
             'Sí, los pitches terminan así.',
-            'Solo si es viernes.'
+            'Solo si es viernes.',
+            'No. Falta la CTA: qué quieres del oyente (visitar sitio, dar feedback, comprar, invertir).'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Bien. CTA específica. "Gracias" no acciona; "Visita el sitio y prueba gratis" sí. El pitch sin CTA queda colgando.',
           feedbackIncorrecto: 'CTA siempre. Sin llamada a la acción, el pitch no acciona. "Visita X, descarga Y, dame feedback Z" es CTA específica.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu primer ensayo del pitch fue tenso. ¿Qué haces?',
           opciones: [
             'Pitcho así nomás.',
-            'Grabo, escucho, ajusto. Mínimo 2 ensayos con grabación. Cada uno mejora claridad y confianza.',
             'Me rindo.',
+            'Grabo, escucho, ajusto. Mínimo 2 ensayos con grabación. Cada uno mejora claridad y confianza.',
             'Pido que pitchee otro.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Iteración con grabación. Primer ensayo es borrador; segundo se afina; tercero es sólido. Sin iteración, el pitch queda crudo.',
           feedbackIncorrecto: 'Iteración con grabación. Escuchar tu propia voz revela tensiones que no sentías. 2-3 ensayos = pitch profesional.'
         }

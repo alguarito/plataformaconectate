@@ -70,11 +70,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuál es la principal diferencia entre autor y editor?',
           opciones: [
             'El editor escribe más rápido',
-            'El autor escribe; el editor decide qué entra y firma como responsable',
             'Son lo mismo',
+            'El autor escribe; el editor decide qué entra y firma como responsable',
             'El editor solo corrige comas'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Exacto. El autor escribe; el editor decide y firma como responsable de la obra publicada.',
           feedbackIncorrecto: 'El autor escribe; el editor decide qué entra y firma como responsable. Son roles distintos con funciones distintas.'
         },
@@ -93,24 +93,24 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'Si pierdes la distinción autor/editor, ¿qué pasa con tu libro?',
           opciones: [
-            'Termina con un libro que la IA escribió y tú solo presentaste',
             'Lo terminas más rápido',
             'Vendes más copias',
-            'No pasa nada'
+            'No pasa nada',
+            'Termina con un libro que la IA escribió y tú solo presentaste'
           ],
-          respuestaIndex: 0,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Exacto. Sin la distinción clara, terminas presentando lo que la IA generó. Con la distinción, terminas con un libro tuyo.',
           feedbackIncorrecto: 'Sin la distinción, terminas con un libro que la IA escribió y tú solo presentaste. Por eso el oficio editorial importa.'
         },
         {
           enunciado: '¿Quién firma como responsable del libro?',
           opciones: [
-            'La IA que generó el texto',
             'El editor (tú)',
+            'La IA que generó el texto',
             'El servidor del modelo',
             'Nadie en particular'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Correcto. El editor firma. La IA no tiene personalidad jurídica ni responsabilidad sobre lo publicado.',
           feedbackIncorrecto: 'El editor firma. La IA no asume responsabilidad sobre lo publicado; tú sí.'
         },
@@ -119,10 +119,10 @@ const contenido: ContenidoGuia = {
           opciones: [
             'Editor de adquisiciones',
             'Editor de mesa',
-            'Editor de estilo',
-            'Editor de WhatsApp'
+            'Editor de WhatsApp',
+            'Editor de estilo'
           ],
-          respuestaIndex: 3,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Exacto. Adquisiciones, mesa y estilo son tipos reales. "Editor de WhatsApp" no es categoría editorial.',
           feedbackIncorrecto: 'Los tres primeros son tipos reales (adquisiciones, mesa, estilo). El cuarto no es categoría editorial.'
         }

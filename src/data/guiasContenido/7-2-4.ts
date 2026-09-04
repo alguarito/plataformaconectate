@@ -69,12 +69,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: '¿Qué símbolo se usa para representar el INICIO o FIN de un algoritmo?',
           opciones: [
-            'Rombo.',
             'Óvalo (o pastilla).',
+            'Rombo.',
             'Rectángulo.',
             'Triángulo.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Óvalo para INICIO y FIN. El óvalo abre y cierra el diagrama. Todo algoritmo debe tener exactamente un óvalo de inicio y al menos uno de fin.',
           feedbackIncorrecto: 'Óvalo para INICIO/FIN. Estándar universal. Rombo es decisión; rectángulo es proceso. Cada forma tiene su uso.'
         },
@@ -94,11 +94,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuántas flechas salen de un rombo en un diagrama bien hecho?',
           opciones: [
             'Solo 1.',
-            'Exactamente 2: una para SÍ y una para NO.',
             '3 o más.',
+            'Exactamente 2: una para SÍ y una para NO.',
             'Ninguna.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Bien. Exactamente 2 flechas saliendo de un rombo, una SÍ y una NO. Si tu decisión tiene más opciones, mejor dividirla en varios rombos.',
           feedbackIncorrecto: '2 flechas: SÍ y NO. El rombo binariza decisiones. Para 3+ opciones, varios rombos en secuencia (rombo > anidado).'
         },
@@ -106,23 +106,23 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu algoritmo recibe el nombre del usuario y al final imprime un saludo. ¿Qué símbolo usas para \'recibir nombre\' y \'imprimir saludo\'?',
           opciones: [
             'Rectángulo.',
-            'Paralelogramo (símbolo de entrada/salida de datos).',
             'Óvalo.',
-            'Rombo.'
+            'Rombo.',
+            'Paralelogramo (símbolo de entrada/salida de datos).'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. Paralelogramo para entrada/salida. \'Recibir nombre\' = entrada; \'Imprimir saludo\' = salida. Ambos van en paralelogramos.',
           feedbackIncorrecto: 'Paralelogramo para datos que entran o salen del algoritmo. \'Leer entrada\' o \'Mostrar resultado\' van en paralelogramos, no en rectángulos.'
         },
         {
           enunciado: 'Tu diagrama tiene flechas en muchas direcciones y se ve enredado. ¿Qué haces?',
           opciones: [
-            'Lo dejo así.',
             'Lo redibujo aplicando la regla: flechas en dirección única (arriba-abajo o izquierda-derecha).',
+            'Lo dejo así.',
             'Borro las flechas.',
             'Agrego más símbolos.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Bien. Las flechas deben seguir una dirección clara (típicamente de arriba abajo, o de izquierda a derecha). Si están enredadas, redibuja organizando.',
           feedbackIncorrecto: 'Las flechas en una dirección lógica (arriba-abajo o izq-der). Si están enredadas, el diagrama se vuelve ilegible. Mejor redibujar limpio.'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Qué otros lenguajes simbólicos universales conozco (matemáticas, música, señales de tráfico)? ¿Qué tienen en común?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador que usaba diagramas para planear campañas)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Un dibujo claro vale más que mil palabras vagas. Quien dibuja antes de hablar, ahorra confusiones."',
       preguntaEspejo: '¿Cuántas veces he intentado explicar algo complicado solo con palabras cuando un dibujo lo haría rápido?'

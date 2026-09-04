@@ -70,11 +70,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Quieres llevar el control de tus gastos semanales (qué compraste, cuánto, total). ¿Qué app?',
           opciones: [
             'Word.',
-            'Excel: porque tienes columnas, números y vas a sumar.',
             'PowerPoint.',
+            'Excel: porque tienes columnas, números y vas a sumar.',
             'OneNote.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Control de gastos = números en tabla + suma automática. Excel es perfecto: columnas de fecha, descripción, monto, total con =SUMA().',
           feedbackIncorrecto: 'Excel para todo lo que tiene números en tabla con cálculos. Word es para texto; PowerPoint para presentar. Para sumar gastos, Excel.'
         },
@@ -82,11 +82,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu tarea de Sociales es escribir un ensayo de 3 páginas. ¿Qué app?',
           opciones: [
             'Excel.',
-            'PowerPoint.',
             'Word.',
+            'PowerPoint.',
             'Forms.'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 1,
           feedbackCorrecto: 'Bien. Ensayo = texto corrido en párrafos. Word está diseñado para textos largos: justificado, sangría, formato de párrafos, encabezado/pie.',
           feedbackIncorrecto: 'Word para ensayos. Excel deforma el texto corrido; PowerPoint pierde el flujo narrativo. Para textos largos: Word.'
         },
@@ -94,23 +94,23 @@ const contenido: ContenidoGuia = {
           enunciado: 'En Excel, ¿qué pasa si en la celda E2 escribes =PROMEDIO(B2:D2)?',
           opciones: [
             'Aparece la palabra PROMEDIO literalmente.',
-            'Excel calcula el promedio de las celdas B2, C2 y D2 y muestra el resultado.',
             'Se daña el archivo.',
-            'No pasa nada.'
+            'No pasa nada.',
+            'Excel calcula el promedio de las celdas B2, C2 y D2 y muestra el resultado.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. = le dice a Excel \'calcula esto\'. PROMEDIO es la función. (B2:D2) es el rango. Excel hace la operación y muestra el resultado.',
           feedbackIncorrecto: 'Excel calcula: = empieza fórmula, PROMEDIO calcula promedio, (B2:D2) es el rango. Aparece el resultado, no la fórmula escrita.'
         },
         {
           enunciado: 'Vas a presentar oralmente \'Los animales del Valle\' a tu clase. ¿Qué app?',
           opciones: [
-            'Excel con muchas filas.',
             'PowerPoint con diapositivas visuales.',
+            'Excel con muchas filas.',
             'Word con saltos de página.',
             'Forms.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Exacto. Presentación oral = PowerPoint. Cada diapositiva con 1 idea, imágenes, transiciones. F5 modo presentador. Profesional desde día 1.',
           feedbackIncorrecto: 'PowerPoint para presentar oralmente. Word puede pero pierde transiciones. Excel deforma. PowerPoint está hecho para esto.'
         },
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Quiero ser turista del software o artesano que domina lo esencial?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador que entendía la economía de medios)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Pocas armas bien usadas ganan más batallas que muchas mal manejadas."',
       preguntaEspejo: '¿Estoy aprendiendo lo esencial a fondo, o coleccionando conocimientos superficiales?'

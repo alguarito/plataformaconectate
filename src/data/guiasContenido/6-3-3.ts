@@ -82,23 +82,23 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu documento tiene 5 fuentes distintas. ¿Está bien o mal?',
           opciones: [
             'Bien, así se ve creativo.',
-            'Mal. Más de 2 fuentes en un documento se ve como collage. Usa máximo 2: una para títulos, una para texto.',
             'Da lo mismo, las fuentes no importan.',
-            'Solo está mal si son colores.'
+            'Solo está mal si son colores.',
+            'Mal. Más de 2 fuentes en un documento se ve como collage. Usa máximo 2: una para títulos, una para texto.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Bien. Máximo 2 fuentes: una para títulos, otra para texto. Más fuentes = caos visual. Es como una persona vestida con 5 colores distintos.',
           feedbackIncorrecto: 'Máximo 2 fuentes por documento. Una para títulos, otra para texto. Más se ve recargado y caótico. Calibri o Arial son seguras.'
         },
         {
           enunciado: '¿Cuándo SÍ se debe poner texto en color azul (no negro)?',
           opciones: [
+            'Solo en títulos, y en azul OSCURO (no fluorescente).',
             'En todo el documento, se ve más bonito.',
             'Nunca, todo debe ser negro.',
-            'Solo en títulos, y en azul OSCURO (no fluorescente).',
             'Solo si el lector es daltónico.'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Cuerpo del texto = NEGRO siempre. Títulos: pueden ser azul oscuro, gris oscuro o vino tinto. Nunca fluorescentes.',
           feedbackIncorrecto: 'Cuerpo del texto: NEGRO siempre. Títulos: pueden ir en azul oscuro o gris oscuro. Cambiar el color del cuerpo se ve infantil.'
         },
@@ -106,11 +106,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu profe te dice \'haz un documento profesional\'. ¿Qué alineación usas?',
           opciones: [
             'Centrada (Ctrl+E) para todo.',
-            'Justificada (Ctrl+J): el texto llega a ambos márgenes parejo.',
             'Derecha (Ctrl+D).',
+            'Justificada (Ctrl+J): el texto llega a ambos márgenes parejo.',
             'Sin alineación específica.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Exacto. Justificada se usa en libros, informes, documentos formales. Centrada solo para títulos. Izquierda para informales.',
           feedbackIncorrecto: 'Para documentos profesionales: alineación justificada (Ctrl+J). Centrada solo para títulos y citas destacadas.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Quieres destacar 4 palabras importantes en un párrafo de 6 líneas. ¿Cuántas debería ir en negrita?',
           opciones: [
             'Las 4, son todas importantes.',
-            'Máximo 2-3. Si todas están en negrita, pierde el énfasis.',
             'Ninguna, mejor todo en cursiva.',
-            'El párrafo entero en negrita.'
+            'El párrafo entero en negrita.',
+            'Máximo 2-3. Si todas están en negrita, pierde el énfasis.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. Si todo está en negrita, nada destaca. Escoge las 2-3 palabras más importantes. Las demás van en texto normal.',
           feedbackIncorrecto: 'Máximo 2-3 negritas por párrafo. Si destacas todo, no destaca nada. Es como gritar todo el tiempo: te dejan de oír.'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: 'Cuando entrego un documento, ¿le facilito el camino al lector o lo dejo solo?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador que escribía con orden y disciplina)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Lo que está ordenado por fuera ayuda a la mente a ordenarse por dentro."',
       preguntaEspejo: '¿Cómo afecta a mi propio pensamiento el desorden visual de un documento?'

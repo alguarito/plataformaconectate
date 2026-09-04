@@ -70,23 +70,23 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Qué bloque usas para preguntar algo al lector y esperar su respuesta?',
           opciones: [
             'Decir [texto] por 2 segundos.',
-            'Preguntar [texto] y esperar (turquesa, Sensores).',
             'Mover 10 pasos.',
-            'Cambiar fondo.'
+            'Cambiar fondo.',
+            'Preguntar [texto] y esperar (turquesa, Sensores).'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. \'Preguntar y esperar\' es bloque turquesa de Sensores. Aparece caja de texto en el escenario. El programa se pausa hasta que el lector escriba y presione Enter.',
           feedbackIncorrecto: '\'Preguntar y esperar\' (Sensores, turquesa). Único bloque que invita al lector a escribir. \'Decir\' solo muestra texto sin esperar respuesta.'
         },
         {
           enunciado: 'El lector escribió \'izquierda\'. ¿Cómo se llama la variable donde Scratch guarda esa palabra?',
           opciones: [
-            'miVariable.',
             'respuesta (variable especial de Sensores).',
+            'miVariable.',
             'entrada.',
             'Lo borra.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. La variable \'respuesta\' (turquesa, Sensores) guarda automáticamente lo último que el lector escribió en preguntar. La usas en condicionales.',
           feedbackIncorrecto: 'La variable se llama \'respuesta\'. Scratch la guarda automáticamente después de \'preguntar y esperar\'. La usas en condicionales: Si respuesta = ...'
         },
@@ -106,11 +106,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'La condición \'Si respuesta = izquierda\' no se cumple cuando el lector escribió \'Izquierda\' con mayúscula. ¿Por qué?',
           opciones: [
             'Scratch está dañado.',
-            'Las comparaciones son sensibles a mayúsculas. \'izquierda\' (todo minúscula) es distinto a \'Izquierda\' (con I mayúscula).',
             'Es magia.',
+            'Las comparaciones son sensibles a mayúsculas. \'izquierda\' (todo minúscula) es distinto a \'Izquierda\' (con I mayúscula).',
             'El programa hizo trampa.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Comparaciones case-sensitive: \'izquierda\' ≠ \'Izquierda\'. Para evitar problemas, indica al lector cómo escribir o convierte todo a minúsculas con un operador.',
           feedbackIncorrecto: 'Sensibilidad a mayúsculas: \'izquierda\' (minúscula) NO es igual a \'Izquierda\' (con mayúscula). Indica el formato esperado o convierte la respuesta a minúsculas.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Para que tu narrativa interactiva sea profesional, ¿qué debe pasar después de cada decisión?',
           opciones: [
             'Que el lector llegue al mismo final.',
-            'Que cada rama tenga su propia escena y final coherente. La decisión debe tener consecuencia real.',
             'Nada, todo igual.',
+            'Que cada rama tenga su propia escena y final coherente. La decisión debe tener consecuencia real.',
             'Que termine con bandera verde.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Cada decisión = consecuencia real. Cada rama con su propio final. Eso respeta al lector y hace la narrativa interesante. Si todas las ramas llevan al mismo final, no es interactiva.',
           feedbackIncorrecto: 'Cada rama con su propia escena y final coherente. Si todas terminan igual, la decisión no importa. Lo interactivo es que cada elección tenga consecuencia real.'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: 'Cuando creo algo, ¿lo hago para controlar la experiencia del otro o para invitarlo a participar?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador de la coherencia narrativa)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Cada camino de tu historia debe ser coherente con su propia lógica. No abandones al lector a mitad de un rumbo."',
       preguntaEspejo: 'Mi historia, ¿trata con respeto las decisiones del lector o lo abandona en alguna rama?'

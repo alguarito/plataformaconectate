@@ -70,23 +70,23 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuánto dura la sustentación final del grado 10°?',
           opciones: [
             '1 minuto',
-            '10 minutos + 5 de Q&A',
             '60 minutos',
+            '10 minutos + 5 de Q&A',
             '1 día'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Exacto. 10 minutos de sustentación y 5 de preguntas.',
           feedbackIncorrecto: 'Son 10 + 5. Tiempo controlado para condensar lo esencial del año.'
         },
         {
           enunciado: '¿Cuáles son los 3 productos presentados en la sustentación?',
           opciones: [
-            'Solo el libro',
             'Libro P1 + mini-proyecto P2 + micro-emprendimiento P3',
+            'Solo el libro',
             'Solo el Canvas',
             'Solo notas'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Correcto. Los 3 productos del año juntos demuestran las habilidades adquiridas.',
           feedbackIncorrecto: 'Los 3 productos del año. Cada uno cierra un periodo y juntos cuentan la historia del grado.'
         },
@@ -94,11 +94,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'La carta abierta firmada es...',
           opciones: [
             'Opcional',
-            'Declaración personal con compromiso explícito para el grado 11°',
             'Un correo cualquiera',
-            'Un anexo escondido'
+            'Un anexo escondido',
+            'Declaración personal con compromiso explícito para el grado 11°'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Exacto. Declaración con compromiso. Es el primer documento que llevas al grado 11°.',
           feedbackIncorrecto: 'Es declaración personal con compromiso. Primer documento del grado 11°.'
         },
@@ -106,11 +106,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Qué propiedad NO es irrenunciable de la sustentación final?',
           opciones: [
             'Tiempo controlado',
+            'Música de fondo',
             'Demostración real',
-            'Honestidad sobre uso de IA',
-            'Música de fondo'
+            'Honestidad sobre uso de IA'
           ],
-          respuestaIndex: 3,
+          respuestaIndex: 1,
           feedbackCorrecto: 'Exacto. La música no es propiedad irrenunciable. Sí lo son tiempo, demo y honestidad.',
           feedbackIncorrecto: 'La música no. Las 3 propiedades clave son tiempo controlado, demostración real y honestidad sobre uso de IA.'
         },

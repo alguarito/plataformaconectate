@@ -70,11 +70,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Qué hace =SUMAR.SI?',
           opciones: [
             'Suma todo',
-            'Suma condicional según un criterio',
             'Resta valores',
+            'Suma condicional según un criterio',
             'No existe'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Exacto. Suma solo los valores que cumplen la condición especificada.',
           feedbackIncorrecto: 'Suma condicional. Útil para sumar solo los gastos de una categoría específica.'
         },
@@ -94,23 +94,23 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Qué tipo de gráfico es mejor para mostrar evolución del balance semanal?',
           opciones: [
             'Circular',
-            'Líneas',
             '3D rotativo',
-            'Mapa de calor'
+            'Mapa de calor',
+            'Líneas'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Exacto. Líneas muestra tendencia en el tiempo de forma clara.',
           feedbackIncorrecto: 'El gráfico de líneas es el adecuado para evolución temporal.'
         },
         {
           enunciado: 'La regla "las fórmulas dan velocidad; la IA da sugerencias; tú decides" significa que...',
           opciones: [
-            'La IA reemplaza el criterio',
             'El editor humano combina velocidad de fórmulas, propuesta de IA y criterio propio',
+            'La IA reemplaza el criterio',
             'Hay que evitar fórmulas',
             'Las fórmulas son lo único válido'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Correcto. Las 3 capas se combinan: fórmulas rápidas, IA propone, humano decide.',
           feedbackIncorrecto: 'Combinas las 3 capas: velocidad, propuesta y criterio. Ninguna sola basta.'
         },

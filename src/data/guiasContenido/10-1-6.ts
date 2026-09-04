@@ -69,12 +69,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: '¿Cuál es la ley colombiana que regula los derechos de autor?',
           opciones: [
-            'Ley 100 de 1993',
             'Ley 23 de 1982',
+            'Ley 100 de 1993',
             'Ley 30 de 1992',
             'Ley 1581 de 2012'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Exacto. Ley 23 de 1982, complementada por la Decisión Andina 351 de 1993.',
           feedbackIncorrecto: 'Es la Ley 23 de 1982. Es marco principal de derechos de autor en Colombia.'
         },
@@ -82,11 +82,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Los derechos morales son...',
           opciones: [
             'Transferibles y temporales',
-            'Intransferibles y perpetuos',
             'Solo para mayores de edad',
-            'Nunca se reconocen'
+            'Nunca se reconocen',
+            'Intransferibles y perpetuos'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Correcto. Intransferibles y perpetuos. Nunca dejan de ser tuyos aunque vendas todo lo demás.',
           feedbackIncorrecto: 'Son intransferibles y perpetuos. No se pueden ceder ni se acaban con el tiempo.'
         },
@@ -106,11 +106,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Si usas IA con intervención editorial sustancial, ¿de quién es la obra?',
           opciones: [
             'De la IA',
-            'Tuya con declaración honesta del uso de IA',
             'De OpenAI',
+            'Tuya con declaración honesta del uso de IA',
             'De nadie'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Correcto. Bajo el marco actual, con intervención sustancial y declaración honesta, la obra es tuya.',
           feedbackIncorrecto: 'La obra es tuya con declaración honesta. La intervención humana sustancial es lo que sostiene la autoría.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Qué permite una licencia Creative Commons (CC)?',
           opciones: [
             'Bloquear todo uso',
-            'Compartir la obra bajo condiciones específicas (atribución, no comercial, etc.)',
             'Solo vender la obra',
-            'Eliminar al autor'
+            'Eliminar al autor',
+            'Compartir la obra bajo condiciones específicas (atribución, no comercial, etc.)'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Exacto. CC permite compartir bajo condiciones claras, alternativa a "todos los derechos reservados".',
           feedbackIncorrecto: 'Permite compartir bajo condiciones (atribución, no comercial, sin derivadas, compartir igual).'
         }

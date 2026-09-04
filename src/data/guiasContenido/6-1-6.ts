@@ -70,11 +70,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuál es la diferencia entre identidad digital y huella digital?',
           opciones: [
             'Son lo mismo, solo cambia el nombre.',
-            'La identidad es lo que tú muestras; la huella es lo que queda sin que tú decidas.',
             'La identidad es para adultos; la huella es para niños.',
-            'La huella es buena; la identidad es mala.'
+            'La huella es buena; la identidad es mala.',
+            'La identidad es lo que tú muestras; la huella es lo que queda sin que tú decidas.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. La identidad la decides tú. La huella se va dejando casi sin notar. Cuidar las dos requiere cosas distintas.',
           feedbackIncorrecto: 'La identidad es lo que tú decides mostrar. La huella es lo que las apps registran sin que tú lo notes.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Alguien te dice \'si no tienes nada que esconder, no necesitas privacidad\'. ¿Qué piensas?',
           opciones: [
             'Tiene razón, si me porto bien no necesito privacidad.',
-            'Privacidad no es esconder; es escoger qué se cuenta de mí y a quién.',
             'Solo los famosos necesitan privacidad.',
+            'Privacidad no es esconder; es escoger qué se cuenta de mí y a quién.',
             'La privacidad ya no existe, da igual.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Bien. Privacidad es libertad de decidir. No es ocultar cosas malas; es proteger tu espacio para escoger qué muestras.',
           feedbackIncorrecto: 'Privacidad es libertad de decidir qué se sabe de ti. No tiene que ver con esconder cosas malas, sino con poder escoger.'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Estoy dejándome describir por mis búsquedas y mis likes, o sigo siendo yo el que decide quién soy?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador romano que se preguntaba qué dura y qué pasa)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Lo que haces a solas habla más fuerte de ti que lo que muestras en público."',
       preguntaEspejo: '¿Hago en el celular cosas que coinciden con quien soy, o cosas que me darían pena si las viera mi familia?'

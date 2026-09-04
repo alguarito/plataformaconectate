@@ -70,11 +70,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Para qué sirve "# Título"?',
           opciones: [
             'Para un comentario',
-            'Para un encabezado H1',
             'Para borrar texto',
+            'Para un encabezado H1',
             'Para hacer negrita'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Exacto. Un # equivale a H1, ## a H2, ### a H3. Define la jerarquía.',
           feedbackIncorrecto: '# crea encabezado H1. Más # bajan el nivel: ## H2, ### H3.'
         },
@@ -93,12 +93,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: '¿Cuál es la mayor ventaja de Markdown frente a Word?',
           opciones: [
-            'Es más bonito',
             '',
+            'Es más bonito',
             'Es de pago',
             'No tiene ventajas'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Exacto. Portabilidad: el mismo archivo soporta múltiples salidas sin reescribir el contenido.',
           feedbackIncorrecto: 'Su mayor ventaja es la portabilidad. El mismo archivo .md se convierte a PDF, HTML, libro o presentación.'
         },
@@ -106,11 +106,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuál de estos editores entiende Markdown y es gratuito?',
           opciones: [
             'Photoshop',
-            'VS Code',
             'Excel',
-            'WhatsApp'
+            'WhatsApp',
+            'VS Code'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Correcto. VS Code es gratuito y soporta Markdown nativamente con vista previa.',
           feedbackIncorrecto: 'VS Code es gratuito y soporta Markdown. También StackEdit, Dillinger y Obsidian.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Quién creó Markdown y cuándo?',
           opciones: [
             'Microsoft, 1995',
-            'John Gruber, 2004',
             'Google, 2010',
-            'Anonymous, 2020'
+            'Anonymous, 2020',
+            'John Gruber, 2004'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Exacto. John Gruber lo creó en 2004 con filosofía de simplicidad y portabilidad.',
           feedbackIncorrecto: 'John Gruber, 2004. Filosofía: texto plano que se convierte automáticamente a formato visual.'
         }

@@ -82,23 +82,23 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Qué debe contener obligatoriamente la introducción?',
           opciones: [
             'Solo el saludo',
-            'Contexto, objetivo y alcance',
             'Solo conclusiones',
-            'Solo bibliografía'
+            'Solo bibliografía',
+            'Contexto, objetivo y alcance'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Correcto. Contexto, objetivo y alcance. Ese trío orienta al lector apurado.',
           feedbackIncorrecto: 'Contexto, objetivo y alcance. Sin esos tres, el lector apurado no sabe qué leer.'
         },
         {
           enunciado: '¿Cuál es la regla profesional sobre las secciones?',
           opciones: [
-            'Mezclar todo',
             'Cada sección tiene función única, no se mezcla',
+            'Mezclar todo',
             'Solo escribir desarrollo',
             'Saltar conclusiones'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Exacto. Función única por sección. Mezclar pierde rigor.',
           feedbackIncorrecto: 'Cada sección tiene función única. Mezclar datos en la introducción o conclusiones sin recomendaciones pierde rigor.'
         },
@@ -106,23 +106,23 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Qué hace una recomendación accionable?',
           opciones: [
             'Dice "habría que mejorar"',
-            'Propone qué, quién y para cuándo',
             'Solo describe el problema',
+            'Propone qué, quién y para cuándo',
             'Es opcional'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Correcto. Accionable significa qué se hace, quién lo hace y plazo concreto.',
           feedbackIncorrecto: 'Propone qué, quién y plazo. "Habría que mejorar" no es accionable; "Coordinación instala X antes de junio" sí.'
         },
         {
           enunciado: '¿Desde cuándo existe la estructura del informe técnico?',
           opciones: [
-            '',
             'Siglo XVII (primeros informes científicos)',
+            '',
             'Solo en TikTok',
             '1500 a.C.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Exacto. Desde el siglo XVII con los primeros informes científicos. Sigue vigente.',
           feedbackIncorrecto: 'Existe desde el siglo XVII. Es de las herramientas más estables del oficio profesional escrito.'
         }

@@ -70,11 +70,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Necesitas saludar a 30 estudiantes. ¿Qué tipo de bucle usas?',
           opciones: [
             'WHILE (porque no sabes cuándo termina).',
-            'FOR (repetir 30 veces, sabes el número exacto).',
             'Ninguno, escribes 30 instrucciones separadas.',
-            'Bucle infinito.'
+            'Bucle infinito.',
+            'FOR (repetir 30 veces, sabes el número exacto).'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. Número exacto = bucle FOR. PARA contador DESDE 1 HASTA 30: saludar. Una instrucción de bucle, 30 saludos ejecutados.',
           feedbackIncorrecto: 'FOR para número exacto conocido (30 estudiantes). WHILE para \'no sé cuántas pero sé cuándo parar\'. Aquí sabes que son 30, entonces FOR.'
         },
@@ -82,11 +82,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu juego dice \'repetir hasta que el jugador gane 100 puntos\'. ¿Qué tipo de bucle es?',
           opciones: [
             'FOR (porque hay número 100).',
-            'WHILE (porque no sabes cuántas iteraciones, solo cuándo parar).',
             'Ninguno.',
+            'WHILE (porque no sabes cuántas iteraciones, solo cuándo parar).',
             'Bucle infinito.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. No sabes cuántas iteraciones (podrían ser 5 o 50). Sabes la condición de parada (100 puntos). Eso es WHILE.',
           feedbackIncorrecto: 'WHILE porque no conoces el número exacto, solo cuándo parar. El jugador puede ganar en 5 turnos o 50; el bucle termina cuando llegue a 100.'
         },
@@ -105,24 +105,24 @@ const contenido: ContenidoGuia = {
         {
           enunciado: '¿Qué es un bucle infinito y cómo evitarlo?',
           opciones: [
-            'Es bueno, queremos que el programa corra siempre.',
             'Es un bucle que nunca termina (la condición nunca se vuelve falsa). Se evita verificando que algo cambie adentro.',
+            'Es bueno, queremos que el programa corra siempre.',
             'Es un bucle invisible.',
             'Es un bucle que termina rápido.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Bucle infinito = nunca termina. Programa se traba. Se evita verificando que el contador se incremente o la condición pueda volverse falsa.',
           feedbackIncorrecto: 'Bucle infinito traba el programa. Evítalo verificando que algo cambie en cada iteración (incrementar contador, modificar variable que está en la condición).'
         },
         {
           enunciado: 'Si NO existieran los bucles, ¿qué pasaría con la programación?',
           opciones: [
-            'Sería igual, no afecta.',
             'Sería imposible procesar muchos datos: tendrías que escribir miles de instrucciones repetidas.',
+            'Sería igual, no afecta.',
             'Los programas serían más rápidos.',
             'Sería más fácil.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Sin bucles, indexar Google sería escribir millones de instrucciones. Wikipedia, Spotify, TikTok: imposibles. Los bucles escalaron la programación.',
           feedbackIncorrecto: 'Sin bucles no habría Google, Wikipedia, ni redes sociales. Procesar muchos datos requiere bucles. Son fundamentales para programación moderna.'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Qué repeticiones de mi vida son mecánicas (deberían automatizarse) y cuáles son formativas (vale la pena repetir conscientemente)?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador de la disciplina diaria)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Lo que se repite con criterio, perfecciona. Lo que se repite por inercia, embrutece. La diferencia está en la atención."',
       preguntaEspejo: 'Las repeticiones de mi vida diaria, ¿tienen propósito claro o las hago por inercia?'

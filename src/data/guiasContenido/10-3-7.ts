@@ -70,11 +70,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuántos bloques tiene el Business Model Canvas?',
           opciones: [
             '1',
-            '9',
             '50',
-            '100'
+            '100',
+            '9'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Exacto. 9 bloques en un lienzo apaisado.',
           feedbackIncorrecto: 'Son 9 bloques. Cada uno cumple función específica en el modelo.'
         },
@@ -94,23 +94,23 @@ const contenido: ContenidoGuia = {
           enunciado: 'La regla "el Canvas se llena con datos verificables" significa que...',
           opciones: [
             'Hay que inventar datos',
-            'Cada bloque debe sostenerse con evidencia del estudio de mercado',
             'No importa la fuente',
+            'Cada bloque debe sostenerse con evidencia del estudio de mercado',
             'Solo importa el bloque central'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Exacto. Sin datos verificables, el Canvas es ficción. Con datos, es plan operable.',
           feedbackIncorrecto: 'Cada bloque sostenido con evidencia. Sin datos, el Canvas es invento y se cae al primer cliente.'
         },
         {
           enunciado: '¿Qué bloque dice qué problema resuelves para el cliente?',
           opciones: [
-            'Fuentes de ingresos',
             'Propuesta de valor',
+            'Fuentes de ingresos',
             'Costos',
             'Canales'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Correcto. La propuesta de valor es el corazón del Canvas.',
           feedbackIncorrecto: 'La propuesta de valor. Define qué problema resuelves o qué deseo satisfaces.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'La IA como copiloto del Canvas...',
           opciones: [
             'Decide los bloques por ti',
-            'Sugiere mejoras concretas en bloques específicos; tú decides',
             'Reemplaza el estudio de mercado',
-            'No tiene rol'
+            'No tiene rol',
+            'Sugiere mejoras concretas en bloques específicos; tú decides'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Exacto. La IA propone mejoras puntuales; la decisión queda contigo.',
           feedbackIncorrecto: 'Sugiere mejoras concretas; tú decides. La IA acelera, no reemplaza la dirección del emprendedor.'
         }

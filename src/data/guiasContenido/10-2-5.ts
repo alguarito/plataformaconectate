@@ -69,12 +69,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: '¿Qué problema tiene \'No crees que el recreo es muy corto?\'',
           opciones: [
-            'Ninguno',
             '',
+            'Ninguno',
             'Es demasiado larga',
             'No tiene signo de pregunta'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Exacto. La pregunta empuja al "sí". Una pregunta neutra dice "¿Cómo evalúas la duración del recreo?".',
           feedbackIncorrecto: 'Es sesgada. Induce respuesta al usar "no crees" antes de la afirmación.'
         },
@@ -82,47 +82,47 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuántas respuestas mínimas recolectarás para tu encuesta?',
           opciones: [
             '1',
-            '15-20',
             '1000',
-            '10000'
+            '10000',
+            '15-20'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Correcto. 15-20 respuestas mínimas dan masa para análisis sin exigir esfuerzo desproporcionado.',
           feedbackIncorrecto: 'Son 15-20 respuestas mínimas. Menos no permite análisis serio; muchas más son carga sin valor agregado.'
         },
         {
           enunciado: 'La pregunta "¿Te gustan el recreo y la cafetería?" tiene problema de...',
           opciones: [
-            'Doble cabeza',
             'Idioma',
+            'Doble cabeza',
             'Longitud',
             'Color'
           ],
-          respuestaIndex: 0,
+          respuestaIndex: 1,
           feedbackCorrecto: 'Exacto. Doble cabeza. Pregunta dos cosas a la vez y la respuesta no puede ser clara.',
           feedbackIncorrecto: 'Es pregunta doble cabeza. Hay que separarlas en dos preguntas distintas.'
         },
         {
           enunciado: 'La regla "las respuestas dependen de cómo preguntas" significa que...',
           opciones: [
-            'El diseño de las preguntas determina la calidad de los datos',
             'Hay que preguntar mucho',
             'Las respuestas son aleatorias',
+            'El diseño de las preguntas determina la calidad de los datos',
             'No importa el diseño'
           ],
-          respuestaIndex: 0,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Correcto. El diseño cuidadoso de las preguntas evita sesgos y produce datos confiables.',
           feedbackIncorrecto: 'Significa que el diseño de las preguntas determina la calidad de los datos. Preguntar mal produce respuestas inutilizables.'
         },
         {
           enunciado: '¿Para qué sirve pasar la encuesta por la IA antes de aplicarla?',
           opciones: [
-            'Para perder tiempo',
             'Para detectar sesgos, ambigüedad, doble cabeza y supuestos',
+            'Para perder tiempo',
             'Para hacerla más larga',
             'Para traducirla'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Exacto. La IA detecta varios problemas comunes que el diseñador novato no ve.',
           feedbackIncorrecto: 'Para detectar problemas: sesgos, ambigüedad, doble cabeza, supuestos. Ahorra rehacer la encuesta después.'
         }

@@ -70,23 +70,23 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuáles son los 5 entregables del proyecto?',
           opciones: [
             'Solo el Word.',
-            'Word + Excel + PowerPoint + Bitácora colaborativa + Sustentación Teams.',
             'Solo PowerPoint.',
-            'Word + PDF.'
+            'Word + PDF.',
+            'Word + Excel + PowerPoint + Bitácora colaborativa + Sustentación Teams.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. Los 5 entregables son interdependientes: Word es la base, Excel da datos, PowerPoint resume, bitácora documenta proceso, sustentación demuestra al profe.',
           feedbackIncorrecto: '5 entregables: Word, Excel, PowerPoint, Bitácora, Sustentación. Cada uno tiene peso. Faltar 1 baja drásticamente la nota del equipo.'
         },
         {
           enunciado: 'Un integrante hizo todo y los otros 2 firman. ¿Qué nota saca el equipo según la rúbrica?',
           opciones: [
-            '100% (entregaron a tiempo).',
             'Mala: los criterios de organización, coautoría real y sustentación bajan mucho. Los que no aportaron sacan menos puntos.',
+            '100% (entregaron a tiempo).',
             'Es la misma para todos siempre.',
             'Depende del clima.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Bien. La rúbrica evalúa coautoría real y participación individual. Si uno solo hizo todo, los criterios 1 (organización), 7 (coautoría) y 9 (todos sustenten) bajan.',
           feedbackIncorrecto: 'La rúbrica detecta cuando uno solo hizo todo. Criterios 1, 7 y 9 bajan. Los que no aportaron sacan menos en su nota individual. Por eso conviene distribuir bien.'
         },
@@ -106,11 +106,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'En la sustentación Teams, ¿quién debe hablar?',
           opciones: [
             'Solo el líder del equipo.',
-            'Todos los integrantes, 2-3 minutos cada uno sobre su sección.',
             'El profe.',
+            'Todos los integrantes, 2-3 minutos cada uno sobre su sección.',
             'Nadie, solo se muestra el PowerPoint.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Todos los integrantes hablan de su sección. El profe quiere ver que cada uno domina lo suyo. Si uno solo presenta, baja el criterio 9.',
           feedbackIncorrecto: 'Todos los integrantes deben hablar. Cada uno presenta su sección. Si uno solo presenta, los otros 2 no demostraron dominio y baja la nota colectiva.'
         },
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Cómo me sentí trabajando con otros en esta minga digital? ¿Más sólido o más débil que trabajando solo?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador que valoraba el trabajo cumplido)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Termina lo que empezaste. La obra cumplida da paz; la obra inconclusa pesa siempre."',
       preguntaEspejo: '¿Estoy cerrando los proyectos completos o los dejo a medias por costumbre?'

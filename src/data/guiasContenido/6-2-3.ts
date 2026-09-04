@@ -82,23 +82,23 @@ const contenido: ContenidoGuia = {
           enunciado: 'Apagas el computador. ¿Qué pasa con la información que estaba en la RAM?',
           opciones: [
             'Queda guardada para siempre.',
-            'Se borra. La RAM es memoria temporal.',
             'Se mueve sola al disco duro.',
-            'Solo se borra si el computador está sin batería.'
+            'Solo se borra si el computador está sin batería.',
+            'Se borra. La RAM es memoria temporal.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Bien. La RAM es memoria temporal: solo guarda lo que se usa AHORA. Al apagar se borra. Para guardar permanente, está el disco duro.',
           feedbackIncorrecto: 'La RAM se borra al apagar. Es memoria corta. Lo que quieres guardar para siempre tiene que estar en el disco duro.'
         },
         {
           enunciado: 'Una persona dice \'mi computador está lento, le voy a meter más RAM\'. ¿Qué le va a pasar al equipo?',
           opciones: [
-            'Va a ser mejor para guardar archivos.',
             'Va a poder tener más programas abiertos al tiempo sin pegarse.',
+            'Va a ser mejor para guardar archivos.',
             'Va a procesar los videos más rápido en YouTube.',
             'Va a tener más espacio para fotos.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Más RAM = más mesa de trabajo = más programas abiertos a la vez sin lentitud. Para guardar archivos sirve más disco; para procesar más rápido, mejor CPU.',
           feedbackIncorrecto: 'Más RAM permite tener más cosas abiertas al tiempo sin que se pegue. Para guardar archivos sirve disco; para velocidad pura, CPU.'
         },
@@ -106,11 +106,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuál de estas piezas, si falla, hace que NADA encienda?',
           opciones: [
             'La RAM.',
-            'El disco duro.',
             'La fuente de poder.',
+            'El disco duro.',
             'La tarjeta gráfica.'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 1,
           feedbackCorrecto: 'Exacto. La fuente de poder alimenta a todas las piezas. Si falla, no hay electricidad para ninguna y el computador no enciende.',
           feedbackIncorrecto: 'La fuente de poder es la que alimenta de electricidad a todo. Si falla, nada enciende. Las otras piezas dañadas dejan encender pero con problemas.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuál es la analogía correcta para CPU, RAM y disco duro?',
           opciones: [
             'CPU = mesa, RAM = cerebro, disco = archivo.',
-            'CPU = cerebro, RAM = mesa de trabajo, disco = archivo.',
             'CPU = archivo, RAM = mesa, disco = cerebro.',
+            'CPU = cerebro, RAM = mesa de trabajo, disco = archivo.',
             'CPU = cable, RAM = cerebro, disco = mesa.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. CPU es cerebro (piensa), RAM es mesa de trabajo (memoria corta), disco duro es archivo (memoria larga). Esa analogía te sirve toda la vida.',
           feedbackIncorrecto: 'CPU = cerebro (piensa), RAM = mesa de trabajo (corto plazo), disco = archivo (largo plazo). Si las confundes, vuelve a la tabla del cuaderno.'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿De cuántas cosas dependo todos los días sin saber su nombre? ¿Cuál sería la próxima que querría aprender a nombrar?'
     },
     estoico: {
-      autor: 'Epicteto (filósofo romano que enseñaba a no temer lo conocido)',
+      autor: 'Epicteto',
       lente: 'lente del cuidado interior',
       cita: '"Lo que se entiende, se domina. Lo que no se entiende, te domina a ti."',
       preguntaEspejo: '¿Qué cosas me asustan solo porque no las entiendo? ¿Cuál vale la pena empezar a entender hoy?'

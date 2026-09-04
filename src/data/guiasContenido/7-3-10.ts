@@ -70,11 +70,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuáles son los componentes mínimos de la cosecha P3?',
           opciones: [
             'Solo el documento principal.',
-            'Documento principal + anexo de transparencia + atribución + reflexión final + sustentación.',
             'Solo el quiz.',
-            'Solo lo que la IA escribió.'
+            'Solo lo que la IA escribió.',
+            'Documento principal + anexo de transparencia + atribución + reflexión final + sustentación.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. Los 5 componentes integran todo P3: proyecto + anexo (cómo usé IA) + atribución + reflexión + sustentación. Falta alguno = entrega incompleta.',
           feedbackIncorrecto: 'Los 5: documento principal + anexo transparencia + atribución + reflexión + sustentación. Cada uno tiene su peso. Falta alguno = cosecha incompleta.'
         },
@@ -93,12 +93,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'Tu anexo de transparencia tiene solo 1 prompt. ¿Es suficiente?',
           opciones: [
-            'Sí, alcanza.',
             'No. La rúbrica pide mínimo 3 prompts con sus verificaciones y adaptaciones.',
+            'Sí, alcanza.',
             'Sí si paga premium.',
             'Da igual.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Mínimo 3 prompts en el anexo. Demuestra que usaste IA en varios momentos del proyecto, no solo 1 vez. Cada uno con verificación.',
           feedbackIncorrecto: 'Mínimo 3 prompts en el anexo. Cada uno con verificación y adaptación. Muestra al profe que usaste IA reflexivamente, no solo de pasada.'
         },
@@ -106,11 +106,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Por qué tienes que reflexionar al final del año académico?',
           opciones: [
             'Por trámite.',
-            'Para reconocer tu crecimiento: qué sabías al inicio, qué sabes al final. Eso prepara mejor el siguiente año.',
             'Para llenar páginas.',
+            'Para reconocer tu crecimiento: qué sabías al inicio, qué sabes al final. Eso prepara mejor el siguiente año.',
             'Solo si lo pide el profe.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Reflexión = reconocer crecimiento. Hace 30 sesiones no sabías esto; hoy sí. Reconocerlo te empodera y prepara el siguiente año.',
           feedbackIncorrecto: 'Reflexión = reconocer crecimiento. Comparar el yo de hace 30 sesiones con el de hoy. Esa autoconciencia es disciplina adulta y prepara el siguiente nivel.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Hace 30 sesiones no sabías nada de IA. Hoy entregas un proyecto con IA responsable. ¿Cómo te sientes?',
           opciones: [
             'Igual que al inicio.',
-            'Distinto: ahora soy ciudadano digital con criterio ético, no usuario pasivo. Esa identidad permanece.',
             'Sin cambio.',
+            'Distinto: ahora soy ciudadano digital con criterio ético, no usuario pasivo. Esa identidad permanece.',
             'Aburrido.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Ese cambio de identidad es valioso. Antes eras usuario novato; ahora eres ciudadano digital con criterio. Esa transformación no se olvida.',
           feedbackIncorrecto: 'Eres ciudadano digital con criterio ético ahora. Antes usuario pasivo; ahora consciente. Ese cambio se acumula con los años. Tu yo de 25 te lo agradecerá.'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Reconozco el valor de haber aprendido esto en momento clave?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador del año cumplido)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Cerrar un año con oficio cumplido es base para el siguiente. Cierra bien grado 7°; abrirás bien grado 8°."',
       preguntaEspejo: '¿Estoy cerrando este año con el oficio que quiero llevar a 8°?'

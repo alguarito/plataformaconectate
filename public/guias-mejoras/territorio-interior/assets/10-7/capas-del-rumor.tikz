@@ -1,7 +1,14 @@
 % Las tres capas de un mensaje viral, sobre una cadena tipo de agosto de 2026.
 % Macroestructura (qué afirma en el fondo) · microestructura (cómo lo encadena)
 % · modalizadores (cómo se blinda para no responder por lo que dice).
-\begin{tikzpicture}[x=1cm,y=1cm,font=\sffamily\footnotesize]
+%
+% Las tres capas se apilan con posicionamiento RELATIVO (below=... of ...):
+% con coordenadas fijas (y=-3.15, -6.5) la capa 1, que tiene más texto, se
+% desbordaba bajo la capa 2 y el conjunto medía 11,5 cm (Overfull \vbox de
+% 109pt en la p. 6 de la guía 10-7). Así cada capa mide lo que su texto pide.
+\begin{tikzpicture}[x=1cm,y=1cm,font=\sffamily\footnotesize,
+  capa/.style={anchor=north west,text width=6.4cm,align=left,inner sep=2.6mm,
+               rounded corners=2mm,text=white}]
 
   % ── El mensaje ──────────────────────────────────────────────────────
   \node[anchor=north west, text width=7.1cm, align=left, inner sep=3mm,
@@ -14,8 +21,7 @@
      todos tus contactos.»};
 
   % ── Capa 1 · macroestructura ────────────────────────────────────────
-  \node[anchor=north west, text width=6.4cm, align=left, inner sep=2.6mm,
-        rounded corners=2mm, fill=milcGradePrimary, text=white] (macro) at (7.9,0)
+  \node[capa, fill=milcGradePrimary] (macro) at (7.9,0)
     {\textbf{1. Macroestructura}\\[.8mm]
      Lo que afirma en el fondo, en una sola frase:\\
      \emph{«el agua es peligrosa y hay que clorarla ya».}\\[.8mm]
@@ -23,30 +29,31 @@
      mensaje realmente prueba.};
 
   % ── Capa 2 · microestructura ────────────────────────────────────────
-  \node[anchor=north west, text width=6.4cm, align=left, inner sep=2.6mm,
-        rounded corners=2mm, fill=milcTurquesa, text=white] (micro) at (7.9,-3.15)
+  \node[capa, fill=milcTurquesa, below=3mm of macro.south west, anchor=north west] (micro)
     {\textbf{2. Microestructura}\\[.8mm]
      Cómo encadena las frases. Aquí el conector \textbf{«y por eso»} fabrica
      una causa donde solo hay dos hechos puestos uno detrás del otro.\\[.8mm]
      Que el acueducto se afecte no implica que el agua esté contaminada.};
 
   % ── Capa 3 · modalizadores ──────────────────────────────────────────
-  \node[anchor=north west, text width=6.4cm, align=left, inner sep=2.6mm,
-        rounded corners=2mm, fill=milcVino, text=white] (modal) at (7.9,-6.5)
+  \node[capa, fill=milcVino, below=3mm of micro.south west, anchor=north west] (modal)
     {\textbf{3. Modalizadores}\\[.8mm]
      \textbf{«Al parecer»}, \textbf{«me confirmaron»}, \textbf{«dicen que»}:
      el blindaje. Afirman sin que nadie quede afirmando.\\[.8mm]
      Si borras esas tres expresiones, el mensaje se queda sin ninguna fuente.};
 
-  % ── Flechas ─────────────────────────────────────────────────────────
-  \draw[milcGradePrimary,line width=1pt,->] (7.15,-.55) -- (7.85,-.55);
-  \draw[milcTurquesa,line width=1pt,->] (7.15,-1.75) -- (7.85,-3.7);
-  \draw[milcVino,line width=1pt,->] (7.15,-2.35) -- (7.85,-7.05);
+  % ── Flechas: del mensaje a cada capa ────────────────────────────────
+  \draw[milcGradePrimary,line width=1pt,->]
+    ([yshift=-5.5mm]msg.north east) -- ([yshift=-5.5mm]macro.north west);
+  \draw[milcTurquesa,line width=1pt,->]
+    ([yshift=-15mm]msg.north east) -- ([yshift=-5.5mm]micro.north west);
+  \draw[milcVino,line width=1pt,->]
+    ([yshift=-22mm]msg.north east) -- ([yshift=-5.5mm]modal.north west);
 
-  % ── Pie de lectura ──────────────────────────────────────────────────
+  % ── Pie de lectura, bajo la capa más baja ───────────────────────────
   \node[anchor=north west, text width=14.3cm, align=left, inner sep=2.4mm,
         rounded corners=2mm, draw=milcNegro!25, font=\sffamily\scriptsize,
-        text=milcNegro!80] at (0,-9.95)
+        text=milcNegro!80] at ([yshift=-4mm]modal.south -| msg.west)
     {\textbf{La prueba de las tres capas.} Un rumor eficaz tiene la
      macroestructura \emph{fuerte} (se resume en una frase que da miedo), la
      microestructura \emph{tramposa} (conectores que inventan causalidad) y los

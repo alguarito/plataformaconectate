@@ -368,6 +368,22 @@ ROTULOS_POR_DEFECTO = {
 }
 
 
+def saber_ancestral_tex(apertura: dict) -> str:
+    """Saber ancestral más, si el YAML la declara, su referencia (APA 7).
+
+    Contrato v3.1: `apertura.fuente` es la referencia completa de la práctica
+    documentada. Se imprime en cuerpo pequeño bajo el texto, dentro del mismo
+    bloque, para que el lector vea de dónde sale lo que acaba de leer."""
+    texto = apertura["saber_ancestral"]
+    fuente = (apertura.get("fuente") or "").strip()
+    if not fuente:
+        return texto
+    return (
+        f"{texto}\\par\\smallskip{{\\footnotesize\\textcolor{{milcNegro!70}}"
+        f"{{\\textbf{{Fuente.}} {fuente}}}}}"
+    )
+
+
 def yaml_a_placeholders(guia: dict) -> dict[str, str]:
     """Aplana el dict YAML a las claves uppercase que espera el template."""
     periodo = guia["periodo"]
@@ -417,8 +433,8 @@ def yaml_a_placeholders(guia: dict) -> dict[str, str]:
         "PDF_TITULO": texto_pdf(guia["titulo"]),
         "PRODUCTO_FINAL": guia["producto_final"],
 
-        # Apertura
-        "SABER_ANCESTRAL": apertura["saber_ancestral"],
+        # Apertura (la fuente APA, si existe, va como pie del bloque)
+        "SABER_ANCESTRAL": saber_ancestral_tex(apertura),
         "SABER_CONTEMPORANEO": apertura["saber_contemporaneo"],
         "PREGUNTA_PUENTE": apertura["pregunta_puente"],
         "SABER_HACER": apertura["saber_hacer"],

@@ -12,161 +12,280 @@ const contenido: ContenidoGuia = {
   periodo: 2,
   sesion: 3,
   titulo: 'Algoritmos — del pseudocódigo al diagrama de flujo',
-  resumen: 'Como la receta paso a paso de la abuela: cocina campesina como archivo de algoritmos heredados. Aprendes a escribir pseudocódigo claro y diagramas de flujo con símbolos ISO 5807.',
+  resumen: 'Un algoritmo se escribe primero en pseudocódigo y después se dibuja con cuatro símbolos. Hoy haces los dos con una tarea de tu vida, con el cuidado de los orfebres del Cauca medio que pensaban los seis pasos de la cera perdida antes de vaciar el metal.',
   duracionMin: 90,
-  subtema: 'Algoritmos · Pseudocódigo · Diagramas de flujo',
+  subtema: 'Lógica y micro:bit',
   preLectura: {
-    porQueImporta: 'Saber expresar algoritmos en pseudocódigo y diagramas te prepara para programar en CUALQUIER lenguaje. Es habilidad transferible: a Python, JavaScript, MakeCode o lo que venga después.',
-    preguntaDetonante: '¿Qué de la receta paso a paso de la abuela — su disciplina narrativa — podemos llevar al pseudocódigo y al diagrama de flujo?',
+    porQueImporta: 'Todo programa empieza siendo un algoritmo en papel. Saber escribirlo y dibujarlo es lo que te deja programar sin perderte, y explicarle a otro lo que hiciste.',
+    preguntaDetonante: 'Cuando escribas cómo alistas el morral, ¿qué paso no se puede hacer antes que otro? ¿Y en cuál hay una decisión?',
     activacion: {
-      titulo: 'La receta como código',
-      descripcion: 'En 5 minutos: en parejas escojan una receta familiar simple (huevo perico, agua de panela, etc.) y escríbanla como pseudocódigo con palabras clave INICIO, LEER, SI, FIN.',
+      titulo: 'El paso que te saltaste',
+      descripcion: 'En 3 minutos, escribe cómo se hace un sándwich en cinco pasos. Dáselo a tu pareja y pregúntale en qué paso se quedaría un extraterrestre.',
       duracionMin: 5
     },
     conexion: {
-      anterior: 'En la sesión 12 construiste tablas de verdad para verificar lógica.',
-      siguiente: 'En la sesión 14 trabajarás con sensores físicos en MakeCode.'
+      anterior: 'En la sesión 2 verificaste reglas con tablas de verdad.',
+      siguiente: 'En la sesión 4 programas el micro:bit en MakeCode con sensores.'
     }
   },
   conceptosClave: [
     {
       termino: 'Pseudocódigo',
-      definicion: 'Lenguaje cercano al humano pero estructurado: usa palabras clave (SI, ENTONCES, MIENTRAS) e indentación para mostrar la lógica del algoritmo sin sintaxis estricta.',
-      ejemplo: 'LEER edad. SI edad >= 18 ENTONCES MOSTRAR "mayor" SINO MOSTRAR "menor". Cualquier programador entiende qué hace.',
-      emoji: '📜',
-      categoria: 'Cómo se describe'
+      definicion: 'Algoritmo escrito en texto ordenado, con palabras clave en mayúscula y un paso por línea.',
+      ejemplo: 'LEER clima. SI llueve ENTONCES MOSTRAR «paraguas» SINO MOSTRAR «gorra».',
+      categoria: 'Cómo se escribe'
+    },
+    {
+      termino: 'Las tres estructuras',
+      definicion: 'Secuencia, decisión y repetición. Con esas tres se escribe cualquier algoritmo.',
+      ejemplo: 'Alistar el morral es secuencia; «si hay educación física, meter los tenis» es decisión; «repetir por cada materia» es repetición.',
+      categoria: 'Cómo se escribe'
+    },
+    {
+      termino: 'Variable',
+      definicion: 'Un dato con nombre que el algoritmo lee y usa para decidir.',
+      ejemplo: '«tiempo disponible» es una variable; si es menor que diez minutos, no hay desayuno completo.',
+      categoria: 'Cómo se escribe'
     },
     {
       termino: 'Diagrama de flujo',
-      definicion: 'Representación visual del algoritmo con 4 símbolos: óvalo (inicio/fin), rectángulo (proceso), rombo (decisión), paralelogramo (entrada/salida).',
-      ejemplo: 'Para calcular IMC: inicio → leer peso/altura (paralelogramo) → calcular (rectángulo) → decisión (rombo) → mostrar resultado (paralelogramo) → fin.',
-      emoji: '📊',
-      categoria: 'Cómo se diagrama'
+      definicion: 'El mismo algoritmo dibujado con símbolos y flechas que marcan el orden.',
+      ejemplo: 'Un óvalo de inicio, tres rectángulos, un rombo con sí y no, y un óvalo de fin.',
+      categoria: 'Cómo se dibuja'
     },
     {
-      termino: 'Secuencia',
-      definicion: 'Estructura básica de algoritmo: pasos en orden, uno tras otro. Sin orden, las recetas y algoritmos no funcionan.',
-      ejemplo: 'Para sancocho: 1. Pelar plátano. 2. Cortar. 3. Cocer 30 min. El orden no se puede cambiar sin romper la receta.',
-      emoji: '📍'
+      termino: 'Los cuatro símbolos',
+      definicion: 'Óvalo para inicio y fin, rectángulo para acción, rombo para decisión, paralelogramo para entrada y salida.',
+      ejemplo: 'Cada SI del pseudocódigo es un rombo con dos flechas.',
+      categoria: 'Cómo se dibuja'
     },
     {
-      termino: 'Decisión (selección)',
-      definicion: 'Estructura que permite elegir entre 2 o más caminos según una condición. SI-ENTONCES-SINO es su forma básica.',
-      ejemplo: 'SI el plátano está verde, freír. SINO, asar. La decisión cambia el camino del algoritmo.',
-      emoji: '🔀'
-    },
-    {
-      termino: 'Algoritmo en 4 estructuras',
-      definicion: 'Cualquier algoritmo se construye con 4 estructuras: secuencia, decisión, repetición (bucle) y entrada/salida. Combinadas resuelven problemas complejos.',
-      ejemplo: 'Algoritmo de mañana: leer alarma (E/S) + decidir levantarse (decisión) + secuencia de ducha + repetir hasta despertar (bucle).',
-      emoji: '🧩'
+      termino: 'La prueba del que no sabe',
+      definicion: 'Alguien que no conoce la tarea ejecuta el diagrama siguiendo solo las flechas.',
+      ejemplo: 'Si tu pareja pregunta «¿y aquí qué hago?», ahí falta un paso.',
+      categoria: 'Cómo se dibuja'
     }
   ],
   laboratorios: [
     {
       tipo: 'quiz',
-      titulo: '¿Sabes escribir algoritmos en pseudocódigo y diagrama?',
-      instrucciones: '5 preguntas para verificar las 4 estructuras y los 4 símbolos del diagrama de flujo.',
+      titulo: '¿Sabes pasar del pseudocódigo al diagrama?',
+      instrucciones: 'Cinco preguntas para verificar que dominas las estructuras y los símbolos. No va al cuaderno.',
       preguntas: [
         {
-          enunciado: '¿Cuál símbolo de diagrama de flujo representa una decisión?',
+          enunciado: 'En un diagrama de flujo, ¿qué símbolo representa una decisión?',
           opciones: [
-            'Rombo',
-            'Óvalo',
-            'Rectángulo',
-            'Paralelogramo'
+            'El rectángulo, porque representa una acción del algoritmo.',
+            'El óvalo, porque marca un punto importante del recorrido.',
+            'El rombo, con una entrada y dos salidas.',
+            'El paralelogramo, porque por ahí entra o sale un dato.'
+          ],
+          respuestaIndex: 2,
+          feedbackCorrecto: 'Sí. El rombo es la decisión, y siempre tiene dos salidas, sí y no.',
+          feedbackIncorrecto: 'El rectángulo es acción, el óvalo es inicio o fin y el paralelogramo es entrada o salida. La decisión es el rombo.'
+        },
+        {
+          enunciado: '¿Cuáles son las tres estructuras con las que se escribe cualquier algoritmo?',
+          opciones: [
+            'Secuencia, decisión y repetición.',
+            'Entrada de datos, proceso y salida.',
+            'Inicio, desarrollo y fin del texto.',
+            'Variable, constante y fórmula compuesta.'
           ],
           respuestaIndex: 0,
-          feedbackCorrecto: 'Exacto. El rombo representa decisión (con 2 salidas típicas: sí/no). El óvalo es inicio/fin; rectángulo es proceso; paralelogramo es E/S.',
-          feedbackIncorrecto: 'La decisión se representa con rombo. Tiene 2 salidas (sí/no). Los otros símbolos son: óvalo (inicio/fin), rectángulo (proceso), paralelogramo (E/S).'
+          feedbackCorrecto: 'Correcto. Con secuencia, decisión y repetición se escribe cualquier algoritmo. Entrada y salida son los datos, no estructuras.',
+          feedbackIncorrecto: 'Las estructuras de control son tres, secuencia, decisión y repetición. Lo demás son datos o partes de un texto.'
         },
         {
-          enunciado: '¿Cuál de estas NO es una de las 4 estructuras básicas de algoritmo?',
+          enunciado: 'Un rombo del diagrama tiene una sola flecha de salida. ¿Qué pasa?',
           opciones: [
-            'Secuencia',
-            'Decisión',
-            'Cifrado',
-            'Repetición'
-          ],
-          respuestaIndex: 2,
-          feedbackCorrecto: 'Correcto. Las 4 estructuras son secuencia, decisión, repetición y entrada/salida. Cifrado no es estructura algorítmica básica.',
-          feedbackIncorrecto: 'Las 4 son: secuencia, decisión, repetición, entrada/salida. Cifrado es otra cosa (técnica de seguridad).'
-        },
-        {
-          enunciado: '¿Qué hace la indentación en el pseudocódigo?',
-          opciones: [
-            'Decoración',
-            'Mostrar visualmente qué está dentro de un SI o un MIENTRAS',
-            'Cambiar el orden de ejecución',
-            'No tiene función'
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto: 'Exacto. La indentación visualiza la jerarquía. Lo que está dentro de un SI va indentado para que se vea claro qué pertenece al bloque.',
-          feedbackIncorrecto: 'La indentación muestra jerarquía. Lo que está dentro de un SI o un MIENTRAS va sangrado para distinguirlo visualmente.'
-        },
-        {
-          enunciado: 'Receta de arepa: "pelar plátano, cortar, si está verde freír, si maduro asar". ¿Qué estructuras usa?',
-          opciones: [
-            'Solo secuencia',
-            'Solo decisión',
-            'Repetición',
-            'Secuencia + decisión'
+            'Nada, porque el rombo solo necesita una salida para funcionar bien.',
+            'El diagrama queda más corto y por eso se entiende mejor.',
+            'Excel lo corrige solo cuando importas el diagrama desde draw.io.',
+            'Falta el camino del «no», y quien lo ejecute no sabe qué hacer.'
           ],
           respuestaIndex: 3,
-          feedbackCorrecto: 'Correcto. Los primeros pasos son secuencia (pelar, cortar). Después hay decisión según el estado del plátano (verde→freír, maduro→asar).',
-          feedbackIncorrecto: 'Usa secuencia (pelar, cortar) Y decisión (verde→freír, maduro→asar). Las dos estructuras combinadas.'
+          feedbackCorrecto: 'Eso es. Toda decisión tiene dos salidas. Con una sola, el caso del «no» no tiene camino.',
+          feedbackIncorrecto: 'Un rombo con una salida es una decisión que no decide. Falta el camino del «no».'
         },
         {
-          enunciado: '¿Por qué se recomienda escribir pseudocódigo ANTES de programar el código real?',
+          enunciado: '¿Cuál de estas líneas está bien escrita en pseudocódigo?',
           opciones: [
-            'Es trámite escolar',
-            'Para que tarde más el proyecto',
-            'Para que la lógica esté clara antes de luchar con la sintaxis',
-            'Para confundir al programador'
+            'si el clima es lluvia pues mostrar que lleve paraguas.',
+            'SI clima = lluvia ENTONCES MOSTRAR «paraguas» SINO MOSTRAR «gorra».',
+            'Lluvia paraguas, sol gorra.',
+            'clima lluvia paraguas si no gorra.'
           ],
-          respuestaIndex: 2,
-          feedbackCorrecto: 'Exacto. La phronesis del oficio dice: planear antes de actuar. Pseudocódigo permite pensar la lógica sin distraerse con sintaxis.',
-          feedbackIncorrecto: 'Se escribe pseudocódigo para clarificar la lógica antes de la sintaxis. Pensar primero, codificar después: ahorra horas de debug.'
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Sí. Palabras clave en mayúscula, una variable con nombre y los dos caminos.',
+          feedbackIncorrecto: 'El pseudocódigo lleva SI, ENTONCES y SINO en mayúscula, una variable clara y los dos caminos de la decisión.'
+        },
+        {
+          enunciado: '¿Para qué sirve que tu pareja ejecute tu diagrama sin explicaciones?',
+          opciones: [
+            'Para saber si el diagrama se entiende solo, con flechas y símbolos.',
+            'Para que tu pareja aprenda a hacer tu tarea cotidiana.',
+            'Para ganar tiempo en la clase y terminar antes que los demás.',
+            'Para que el diagrama quede más bonito y mejor presentado.'
+          ],
+          respuestaIndex: 0,
+          feedbackCorrecto: 'Correcto. Si alguien que no conoce la tarea llega al fin, el diagrama funciona. Donde se atasca, falta algo.',
+          feedbackIncorrecto: 'La prueba del que no sabe muestra si el diagrama se sostiene solo. Cada atasco es un paso o un camino que falta.'
         }
       ]
     }
   ],
   postLectura: {
-    reflexion: 'El pseudocódigo democratiza el código: hace que personas sin formación técnica puedan opinar sobre algoritmos. ¿Qué proceso de tu colegio sería bueno escribir como pseudocódigo para que cualquiera lo pueda revisar?',
-    transferencia: 'Esta semana: elige UN proceso real (timbre, asistencia, calificaciones, cafetería) y escríbelo como pseudocódigo + diagrama de flujo. Compártelo con alguien y mejora donde haya confusión.',
-    cierre: 'La receta de la abuela y el diagrama ISO comparten algo: cuando se escribe bien, cualquiera puede seguirla. La claridad del orden es ética del trabajo compartido.'
+    reflexion: '¿En qué paso se atascó tu pareja, y por qué a ti te parecía obvio?',
+    transferencia: 'La próxima vez que expliques cómo hacer algo, cuenta los pasos y marca las decisiones antes de empezar a hablar.',
+    cierre: 'Primero el orden en papel, después las manos. Como el orfebre antes de vaciar el metal.'
   },
   saberAncestral: {
-    saber: 'En las cocinas del Valle del Cauca y en las casas de los abuelos del Pacífico, las recetas no se escribían: se transmitían. Pero cualquier abuela que enseñaba a hacer arepa o sancocho seguía un orden inquebrantable que cualquier nieto reconoce: primero esto, después aquello, si pasa esto otra cosa. "Primero pelas el plátano. Después lo cortas en rodajas. Si está verde, lo fríes. Si está maduro, lo asas. Si quedan pedazos, los muelo". La receta tiene 4 piezas silenciosas que cualquier algoritmo profesional reconocería: (1) Secuencia: el orden de los pasos importa (no se puede cortar antes de pelar). (2) Decisión: a veces hay dos caminos según una condición (verde → freír / maduro → asar). (3) Repetición: a veces hay que hacer lo mismo varias veces ("revuelve hasta que esté liso"). (4) Entrada y salida: la materia prima entra (plátano), el plato sale (frito o asado). La sabiduría de la receta ancestral es la forma natural del algoritmo: la programación moderna no inventó esta estructura, solo le dio nombres formales.',
-    fuente: 'Recetas tradicionales del campo colombiano (sancocho, ajiaco, mote, chicha)',
-    preguntaPuente: '¿Qué sabía la abuela al transmitir la receta del sancocho con orden estricto, que el programador novato olvida cuando salta a escribir código sin pensar el algoritmo? ¿Y por qué un diagrama de flujo bien hecho permite explicar un algoritmo a alguien que no programa?'
+    saber: 'Hace más de mil años, en el Cauca medio (hoy Quindío, Risaralda y norte del Valle), unos orfebres fundían piezas huecas de oro. Su técnica exigía un orden exacto: la cera perdida con núcleo. Los coleccionistas les pusieron «quimbayas», un nombre que no era el suyo. El procedimiento tenía seis pasos (Banco de la República, s.\\,f.). Modelar el núcleo con arcilla y carbón molido. Cubrirlo con una capa de cera y ponerle un embudo. Fijar soportes para que el núcleo no se mueva. Cubrir todo con un molde de arcilla. Calentar, sacar la cera y vaciar el metal. Romper el molde y sacar los soportes y el núcleo. No hay paso que se pueda adelantar ni vuelta atrás: si el molde se rompe antes de tiempo, la pieza se pierde. Es un algoritmo de orden absoluto, pensado completo antes de empezar. La cara de exclusión: el Tesoro Quimbaya se sacó de una tumba en Filandia en 1890, sin excavación científica, y los orfebres no dejaron nombre; los coleccionistas sí (Uribe Villegas, 1992). Hoy escribes un algoritmo de tu vida con ese cuidado: cada paso en su lugar.',
+    fuente: 'Orfebres del Cauca medio · la cera perdida, seis pasos sin vuelta atrás',
+    referencia: 'Banco de la República. (s.\\,f.). Quimbaya. Enciclopedia Banrepcultural. · Uribe Villegas, M. A. (1992). La orfebrería Quimbaya tardía. Boletín Museo del Oro, 31, 30--124.',
+    preguntaPuente: 'El orfebre no podía vaciar el metal antes de sacar la cera, ni romper el molde antes de que el metal enfriara. Cuando escribas cómo se hace una arepa o cómo alistas el morral, ¿qué paso no se puede hacer antes que otro? ¿Y en qué paso hay una decisión?'
   },
+  mapaRuta: [
+    {
+      numero: 1,
+      iconos: [
+        '🌱'
+      ],
+      titulo: 'La cera perdida, seis pasos sin vuelta atrás',
+      duracionMin: 10
+    },
+    {
+      numero: 2,
+      iconos: [
+        '✏️'
+      ],
+      titulo: 'Actividad 1 · La lista del extraterrestre',
+      duracionMin: 15
+    },
+    {
+      numero: 3,
+      iconos: [
+        '📖',
+        '✏️'
+      ],
+      titulo: 'Actividad 2 · De la lista al pseudocódigo',
+      duracionMin: 30
+    },
+    {
+      numero: 4,
+      iconos: [
+        '✏️',
+        '✅'
+      ],
+      titulo: 'Actividad 3 · El diagrama que otro ejecuta',
+      duracionMin: 25
+    },
+    {
+      numero: 5,
+      iconos: [
+        '💭'
+      ],
+      titulo: 'Tres ideas y tu compromiso',
+      duracionMin: 10
+    }
+  ],
+  actividades: [
+    {
+      numero: 1,
+      verbo: 'IDENTIFICA',
+      titulo: 'La lista del extraterrestre',
+      tiempoMin: 15,
+      modalidad: 'individual',
+      pasos: [
+        'Elige algo que sabes hacer sin pensar, alistar el morral, hacer una arepa, lavar los tenis.',
+        'Escribe los pasos numerados, en orden, con frases cortas, sin saltarte ninguno por obvio.',
+        'Si en algún paso decides algo, márcalo con una D.',
+        'Léela como si fueras un extraterrestre que no sabe nada. ¿En qué paso se quedaría atascado?'
+      ],
+      cuaderno: {
+        titulo: 'La lista del extraterrestre',
+        formato: 'lista numerada de al menos ocho pasos, con D en las decisiones y una línea sobre el paso donde se atasca',
+        extension: 'media página'
+      },
+      criterios: [
+        'Hay al menos ocho pasos y una D.',
+        'El paso atascado está corregido.'
+      ]
+    },
+    {
+      numero: 2,
+      verbo: 'APLICA',
+      titulo: 'De la lista al pseudocódigo',
+      tiempoMin: 30,
+      modalidad: 'parejas',
+      pasos: [
+        'Con tu pareja, tomen la lista de uno de los dos y escriban qué entra (LEER) y qué sale (MOSTRAR).',
+        'Reescriban los pasos con palabras clave en mayúscula, un paso por línea y sangría en lo que va dentro de un SI.',
+        'Metan al menos una variable, como tiempo disponible o clima, y un si-sino sobre ella.',
+        'Prueben el pseudocódigo con un caso concreto, línea por línea hasta el final.'
+      ],
+      cuaderno: {
+        titulo: 'De la lista al pseudocódigo',
+        formato: 'el pseudocódigo completo con mayúsculas, sangría, una variable y un si-sino, y el caso de prueba con su resultado',
+        extension: 'media página'
+      },
+      criterios: [
+        'Tiene al menos ocho pasos, una variable y un si-sino.',
+        'El caso de prueba llegó hasta MOSTRAR.'
+      ]
+    },
+    {
+      numero: 3,
+      verbo: 'EVALÚA',
+      titulo: 'El diagrama que otro ejecuta',
+      tiempoMin: 25,
+      modalidad: 'individual',
+      pasos: [
+        'Dibuja tu pseudocódigo como diagrama de flujo con los cuatro símbolos, en papel o en draw.io.',
+        'Cuenta, un óvalo de inicio, al menos uno de fin, un rombo por cada SI.',
+        'Entrégaselo a tu pareja sin decirle nada y pídele que lo ejecute con un caso, siguiendo solo las flechas.',
+        'Anota dónde se atascó o qué símbolo le confundió, y corrige.',
+        'Escribe cinco líneas sobre cómo se corresponden el pseudocódigo y el diagrama.'
+      ],
+      cuaderno: {
+        titulo: 'El diagrama que otro ejecuta',
+        formato: 'el diagrama dibujado, el lugar donde se atascó tu pareja y las cinco líneas de correspondencia',
+        extension: 'una página'
+      },
+      criterios: [
+        'Tu pareja llegó al fin del diagrama y el atasco quedó corregido.',
+        'Las cinco líneas nombran cada símbolo.'
+      ]
+    }
+  ],
   triangulo: {
     dussel: {
-      autor: 'Enrique Dussel',
+      autor: 'Enrique Dussel · Filosofía de la liberación (1977), §4.3.2.4',
       lente: 'lente del nosotros',
-      cita: 'Un algoritmo claro libera al ejecutor; un algoritmo opaco lo somete a la voluntad oculta del programador.',
-      preguntaEspejo: '¿Mi algoritmo es lo suficientemente claro para que otro lo modifique sin pedirme ayuda?'
+      cita: 'La tecnología no es teoría aplicada: es un oficio que se piensa mientras se hace.',
+      preguntaEspejo: '¿Qué paso de mi algoritmo solo entendí cuando lo escribí, y no antes?'
     },
     estoico: {
-      autor: 'Epicteto',
+      autor: 'Séneca · Cartas a Lucilio, 20 (c. 64 d.C.)',
       lente: 'lente del cuidado interior',
-      cita: 'Planear antes de actuar es virtud del oficio; improvisar es debilidad disfrazada de espontaneidad.',
-      preguntaEspejo: '¿Estoy planeando con pseudocódigo antes de actuar, o salto directo al código sin pensar?'
+      cita: 'La filosofía enseña a hacer, no a decir; lo que se dice y lo que se hace tienen que coincidir.',
+      preguntaEspejo: '¿Mi diagrama se puede hacer, o solo se puede leer?'
     },
     floridi: {
-      autor: 'Luciano Floridi',
+      autor: 'Luciano Floridi · Commentary on the Onlife Manifesto (2015), § 3.1',
       lente: 'lente de la infoesfera',
-      cita: 'El algoritmo claro y revisable es la nueva ética del oficio digital en la era automatizada.',
-      preguntaEspejo: '¿Mi pseudocódigo permite revisar la lógica, o oculta la decisión bajo código complejo?'
-    }
+      cita: 'Las tecnologías se usan primero para ahorrar tiempo y después para matarlo.',
+      preguntaEspejo: '¿Cuándo fue la última vez que empecé a hacer algo sin pensar el orden, y cuánto me costó?'
+    },
+    modo: 'ideas'
   },
   cincoDimensiones: {
-    personal: 'Aprendiste a escribir instrucciones que cualquiera puede seguir — habilidad fundamental para enseñar, dirigir, colaborar.',
-    emocional: 'Resististe la tentación de dar "instrucciones cortas" — entendiste que la claridad respeta al lector aunque al autor le tome más tiempo.',
-    ciudadana: 'Exigir versiones en pseudocódigo de algoritmos que toman decisiones públicas (becas, ingresos, créditos) es ciudadanía algorítmica.',
-    local: 'Heredaste el archivo de algoritmos de la cocina campesina colombiana — saberes que llevan siglos siendo ejecutados con éxito.',
-    intergeneracional: 'La receta de la abuela y el diagrama de flujo ISO comparten lógica. Lo que cambia es el medio, no la ética de la claridad.'
+    personal: 'Escribiste algo que hacías sin pensar y descubriste cuántos pasos tiene. Pensar el orden antes de hacer es una destreza que se lleva a todo.',
+    emocional: 'Ver a tu pareja atascarse en tu diagrama es incómodo. Es también la única forma de saber que el diagrama sirve.',
+    ciudadana: 'Un procedimiento escrito y dibujado lo puede seguir cualquiera, no solo quien lo inventó. Así deberían ser los trámites que te piden.',
+    local: 'Los orfebres del Cauca medio pensaban seis pasos sin vuelta atrás antes de tocar el oro. Tu algoritmo tiene la misma disciplina, a otra escala.',
+    intergeneracional: 'Un diagrama claro lo ejecuta quien venga después sin preguntarte. Es la forma en que un oficio deja de depender de una sola persona.'
   }
 };
 

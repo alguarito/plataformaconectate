@@ -32,7 +32,7 @@ const contenido: ContenidoGuia = {
     {
       termino: 'Huella digital',
       definicion: 'El rastro que dejas cuando usas internet. No es lo mismo que la identidad: la identidad es lo que tú decides mostrar; la huella es todo lo demás (búsquedas, ubicación, tiempo en apps, cosas que otros publican de ti).',
-      ejemplo: 'Tu identidad digital incluye tu foto de perfil. Tu huella incluye que el martes viste 47 videos de TikTok entre 10 y 11 pm.',
+      ejemplo: 'Tu identidad digital incluye tu foto de perfil. Tu huella incluye que el martes viste 47 videos de TikTok entre 10 y 11 p. m..',
       emoji: '👣'
     },
     {

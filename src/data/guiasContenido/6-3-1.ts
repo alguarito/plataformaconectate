@@ -70,8 +70,8 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuáles son las 2 grandes mitades del periodo 3?',
           opciones: [
             'Word + Excel.',
-            'Sólo internet.',
-            'Sólo cuaderno.',
+            'Solo internet.',
+            'Solo cuaderno.',
             'Procesador de texto (S2-S6) + Internet/búsqueda crítica (S7-S9), con cierre integrador en S10.'
           ],
           respuestaIndex: 3,

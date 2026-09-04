@@ -154,7 +154,7 @@ const contenido: ContenidoGuia = {
     floridi: {
       autor: 'Luciano Floridi (filósofo italiano del oficio de programar)',
       lente: 'lente de la infoesfera',
-      cita: '"El 50% del oficio de programar es nombrar bien. El otro 50% es lógica. Los buenos programadores invierten en ambos."',
+      cita: '"El 50 % del oficio de programar es nombrar bien. El otro 50 % es lógica. Los buenos programadores invierten en ambos."',
       preguntaEspejo: '¿Voy a ser un programador (o pensador) que nombra bien, o uno que mete x en todas partes?'
     }
   },

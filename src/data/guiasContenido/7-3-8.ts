@@ -162,7 +162,7 @@ const contenido: ContenidoGuia = {
     personal: 'Al terminar la clase: (1) podrás identificar los 5 temas éticos clave; (2) sabrás analizar dilemas éticos reales; (3) podrás evaluar situaciones con criterio propio; (4) habrás creado tu código person…',
     emocional: 'La integridad con IA es lo mismo.',
     ciudadana: 'Cada vez que decides usar IA con criterio — verificar, no compartir datos, atribuir, no propagar deepfakes — estás aportando a un mundo digital más justo.',
-    local: 'Antes de salir, comparte tu código con un compañero — ¿se parecen o son distintos?.',
+    local: 'Antes de salir, comparte tu código con un compañero — ¿se parecen o son distintos?',
     intergeneracional: 'La mayoría de adultos hoy usa IA sin pensar en ética: copia, plagia, propaga deepfakes, no verifica.'
   }
 };

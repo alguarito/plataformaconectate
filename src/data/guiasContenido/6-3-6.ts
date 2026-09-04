@@ -161,7 +161,7 @@ const contenido: ContenidoGuia = {
   cincoDimensiones: {
     personal: 'Al terminar la clase: (1) podrás identificar los 3 elementos de marco (encabezado, pie, número); (2) sabrás aplicar los 3 en Word/Docs; (3) podrás distinguir entre portada y página de contenido; (4) h…',
     emocional: 'Poner encabezado y pie toma 30 segundos por documento, pero comunica respeto y profesionalismo.',
-    ciudadana: 'Un documento sin marco flota sin contexto: ¿quién lo escribió?, ¿cuándo?, ¿de qué tema?, ¿para qué materia?.',
+    ciudadana: 'Un documento sin marco flota sin contexto: ¿quién lo escribió?, ¿cuándo?, ¿de qué tema?, ¿para qué materia?',
     local: 'Antes de salir, verificas que los 3 elementos aparecen en las páginas correctas.',
     intergeneracional: 'Hay una diferencia entre escribir y producir un documento profesional.'
   }

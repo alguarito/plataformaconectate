@@ -55,8 +55,8 @@ const contenido: ContenidoGuia = {
     },
     {
       termino: 'Tipo porcentaje',
-      definicion: 'Celda que muestra el símbolo % y se calcula internamente como decimal. 50% es 0,5 en operaciones internas.',
-      ejemplo: 'Si tienes 0,15 en una celda y aplicas formato porcentaje, Excel muestra "15%". Multiplicar por una celda monetaria te da el descuento.',
+      definicion: 'Celda que muestra el símbolo % y se calcula internamente como decimal. 50 % es 0,5 en operaciones internas.',
+      ejemplo: 'Si tienes 0,15 en una celda y aplicas formato porcentaje, Excel muestra "15 %". Multiplicar por una celda monetaria te da el descuento.',
       emoji: '📊'
     }
   ],
@@ -111,8 +111,8 @@ const contenido: ContenidoGuia = {
             '0,005%'
           ],
           respuestaIndex: 2,
-          feedbackCorrecto: 'Correcto. Aplicar porcentaje a una celda con valor 50 lo interpreta como 50 (no 0,5) y lo muestra como 5000%. Para tener 50% debes escribir 0,5 antes.',
-          feedbackIncorrecto: 'Excel muestra 5000% porque interpreta el 50 como número entero y lo multiplica por 100. Para tener 50% debes escribir 0,5 con el formato porcentaje aplicado.'
+          feedbackCorrecto: 'Correcto. Aplicar porcentaje a una celda con valor 50 lo interpreta como 50 (no 0,5) y lo muestra como 5000 %. Para tener 50 % debes escribir 0,5 antes.',
+          feedbackIncorrecto: 'Excel muestra 5000 % porque interpreta el 50 como número entero y lo multiplica por 100. Para tener 50 % debes escribir 0,5 con el formato porcentaje aplicado.'
         },
         {
           enunciado: '¿Cuál es la regla profesional para elegir el tipo de una columna?',

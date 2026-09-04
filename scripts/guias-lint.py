@@ -446,8 +446,10 @@ def lint_fuente_apertura(g: dict) -> tuple[list[str], list[str]]:
         return errors, warnings
     if re.search(r"\[|TODO|VERIFICAR|PENDIENTE", fuente, re.IGNORECASE):
         errors.append("apertura.fuente contiene un marcador pendiente ([…], TODO, VERIFICAR): no puede llegar al PDF")
-    if not re.search(r"\(\s*(c\.\s*)?\d{3,4}", fuente):
-        errors.append("apertura.fuente no trae año entre paréntesis: no parece una referencia APA")
+    # Una página sin fecha se cita «(s. f.)» con la fecha de consulta (APA 7).
+    sin_fecha = re.search(r"\(\s*s\.\s*\\?,?\s*f\.\s*\)", fuente) and re.search(r"[Cc]onsultad[oa].*\d{4}", fuente)
+    if not re.search(r"\(\s*(c\.\s*)?\d{3,4}", fuente) and not sin_fecha:
+        errors.append("apertura.fuente no trae año entre paréntesis (ni «(s. f.)» con fecha de consulta): no parece una referencia APA")
     return errors, warnings
 
 

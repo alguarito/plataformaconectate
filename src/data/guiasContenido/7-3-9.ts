@@ -49,7 +49,7 @@ const contenido: ContenidoGuia = {
     },
     {
       termino: '5 preguntas de autoevaluación',
-      definicion: 'Antes de entregar trabajo con IA, hazte 5 preguntas: (1) ¿aprendí?, (2) ¿puedo explicar verbalmente?, (3) ¿mi voz está?, (4) ¿atribuí?, (5) ¿mi yo adulto orgulloso?. Si las 5 son SÍ, fue uso legítimo.',
+      definicion: 'Antes de entregar trabajo con IA, hazte 5 preguntas: (1) ¿aprendí?, (2) ¿puedo explicar verbalmente?, (3) ¿mi voz está?, (4) ¿atribuí?, (5) ¿mi yo adulto orgulloso? Si las 5 son SÍ, fue uso legítimo.',
       ejemplo: 'Antes de entregar el ensayo: \'¿Puedo explicar verbalmente al profe lo que escribí?\' Si la respuesta es NO, no entiendo y solo entregué. Ahí hay problema. Vuelve a estudiar.',
       emoji: '🪞'
     },
@@ -162,7 +162,7 @@ const contenido: ContenidoGuia = {
     personal: 'Al terminar la clase: (1) podrás identificar los 4 usos legítimos vs los 4 no legítimos; (2) sabrás aplicar la regla universal (¿aprendí?); (3) podrás atribuir IA correctamente en un trabajo; (4) habr…',
     emocional: 'Cada vez que decides usar IA con criterio o sin él, estás formando o desformando tu integridad personal.',
     ciudadana: 'Pedro y Lucía de la historia de doña Mercedes pasaron de grado igual.',
-    local: 'Antes de salir, intercambia tu política con un compañero — ¿se parecen?.',
+    local: 'Antes de salir, intercambia tu política con un compañero — ¿se parecen?',
     intergeneracional: 'El mercado laboral del futuro no premia a quien copia de IA: premia a quien usa IA como asistente y agrega valor humano genuino.'
   }
 };

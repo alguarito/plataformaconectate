@@ -38,13 +38,13 @@ const contenido: ContenidoGuia = {
     {
       termino: 'Coautoría sincrónica',
       definicion: 'Todos los coautores están conectados al mismo tiempo. Útil para sesiones de trabajo intensivas. Requiere coordinación constante (chat paralelo). Es más rápida pero más caótica si no hay acuerdo previo.',
-      ejemplo: 'Los 3 del equipo se citan a las 5pm un viernes para escribir el trabajo juntos en Teams + Word compartido. Una hora intensa pero terminan en una sentada.',
+      ejemplo: 'Los 3 del equipo se citan a las 5 p. m. un viernes para escribir el trabajo juntos en Teams + Word compartido. Una hora intensa pero terminan en una sentada.',
       emoji: '⚡'
     },
     {
       termino: 'Coautoría asincrónica',
       definicion: 'Cada coautor entra al documento cuando puede, escribe su parte, sale. Los demás verán los cambios cuando entren después. Ideal para 7° grado: cada estudiante en sus horarios disponibles.',
-      ejemplo: 'María escribe su sección el lunes a las 8pm. Pedro la suya el martes a las 6am. Lucía la suya el miércoles a las 4pm. El documento crece sin que coincidan en tiempo.',
+      ejemplo: 'María escribe su sección el lunes a las 8 p. m.. Pedro la suya el martes a las 6 a. m.. Lucía la suya el miércoles a las 4 p. m.. El documento crece sin que coincidan en tiempo.',
       emoji: '⏰'
     },
     {

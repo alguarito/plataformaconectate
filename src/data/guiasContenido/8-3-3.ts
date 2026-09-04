@@ -1,6 +1,9 @@
 /**
  * Contenido enriquecido para Grado 8 · Período 3 · Sesión 3
- * (sesión global 23 — Presentación de alto impacto).
+ * (sesión global 23).
+ *
+ * Auto-generado desde content/guias/8/8-3-3.yaml por
+ * scripts/build-guias-web-ts.py. Edita el YAML, no este archivo.
  */
 import type { ContenidoGuia } from './_schema';
 
@@ -8,91 +11,161 @@ const contenido: ContenidoGuia = {
   grado: 8,
   periodo: 3,
   sesion: 3,
+  titulo: 'Narrativa de alto impacto — estructura TED-style',
   resumen: 'Como el cuento del fogón: principio, nudo y desenlace. Aprendes a construir presentación de 7 minutos con narrativa que engancha desde el primer segundo y deja huella al cerrar.',
   duracionMin: 90,
   subtema: 'Narrativa · Alto impacto · TED-style',
-
   preLectura: {
     porQueImporta: 'Saber contar un proyecto con narrativa es habilidad de líder, no solo de presentador. Te servirá para vender ideas, defender propuestas, conseguir aliados.',
     preguntaDetonante: '¿Qué del cuento del fogón —la gramática narrativa heredada— podemos llevar a la presentación tecnológica?',
-    activacion: { titulo: 'El gancho que enganchó', descripcion: 'En 5 minutos: cada uno cuenta a su pareja un proyecto suyo en 30 segundos, empezando por un dato sorprendente o una pregunta. Comparen: ¿cuál enganchó más?', duracionMin: 5 },
-    conexion: { anterior: 'En la sesión 22 aprendiste animaciones e hipervínculos disciplinados.', siguiente: 'En la sesión 24 aprenderás edición ética de imágenes para tu presentación.' },
+    activacion: {
+      titulo: 'El gancho que enganchó',
+      descripcion: 'En 5 minutos: cada uno cuenta a su pareja un proyecto suyo en 30 segundos, empezando por un dato sorprendente o una pregunta. Comparen: ¿cuál enganchó más?',
+      duracionMin: 5
+    },
+    conexion: {
+      anterior: 'En la sesión 22 aprendiste animaciones e hipervínculos disciplinados.',
+      siguiente: 'En la sesión 24 aprenderás edición ética de imágenes para tu presentación.'
+    }
   },
-
   conceptosClave: [
-    { categoria: '📖 Narrativa', termino: 'Gancho inicial', definicion: 'Primera frase o imagen que captura atención inmediata. Dato sorprendente, pregunta retórica, anécdota corta. Los primeros 30 segundos deciden si la audiencia escuchará el resto.', ejemplo: '"El 70% del agua de Cartago se va en agricultura tradicional. Mi proyecto la reduce al 5%". El gancho enganchó.', emoji: '🎣' },
-    { categoria: '📖 Narrativa', termino: 'Conflicto', definicion: 'Problema humano real que tu proyecto aborda. NO es enumeración de datos — es la situación que afecta a personas concretas. Sin conflicto humano, no hay narrativa.', ejemplo: '"Las huertas familiares de mi barrio dependen del agua que escasea. Mis vecinos riegan o pagan agua, no pueden hacer ambas".', emoji: '⚔️' },
-    { categoria: '📖 Narrativa', termino: 'Solución', definicion: 'Cómo tu proyecto aborda el conflicto. Combina técnica (cómo funciona) con valor humano (qué cambia para las personas). NO solo tecnología.', ejemplo: '"Hidroponía escolar reduce 95% del consumo de agua. Replicable en hogares con $50,000 de inversión inicial".', emoji: '💡' },
-    { categoria: '📖 Narrativa', termino: 'Llamado a acción', definicion: 'Lo que quieres que la audiencia haga después de tu presentación. Concreto, específico, ejecutable. NO genérico ("apoyen el proyecto").', ejemplo: '"Implementemos un piloto en 3 hogares antes de fin de año. Necesito 2 voluntarios y $150,000 del fondo de la cooperativa".', emoji: '📢' },
-    { categoria: '🎯 Soporte visual', termino: 'Imagen impactante', definicion: 'Foto o gráfico que comunica al primer vistazo el conflicto o la solución. NO genérica — específica de tu contexto.', ejemplo: 'Foto de tu vecina regando con balde + imagen de hidroponía funcionando = comparación visual del antes/después.', emoji: '📸' },
-    { categoria: '🎯 Soporte visual', termino: 'Dato sorpresa', definicion: 'Cifra inesperada que la audiencia no conocía. Crea momento de "wow" y memoria. Debe ser verificable y tener fuente.', ejemplo: '"En Cartago, 1 de cada 3 estudiantes vive en hogar con huerta. (Fuente: encuesta colegio, 2026)". Sorprendente para muchos.', emoji: '🤯' },
-    { categoria: '🎯 Soporte visual', termino: 'Comparación visual', definicion: 'Mostrar dos imágenes lado a lado para que la audiencia VEA la diferencia. Más potente que enumerar números.', ejemplo: 'Antes: huerta tradicional con balde. Después: hidroponía con bomba. Las dos fotos cuentan la historia sin palabras.', emoji: '⚖️' },
-    { categoria: '🎯 Soporte visual', termino: 'Cierre memorable', definicion: 'Última frase, imagen o promesa que se queda en la mente. Más allá de "gracias" — algo que la audiencia recuerde mañana.', ejemplo: '"En 5 años, cada hogar de Cartago podría producir su comida con 1/20 del agua actual. ¿Empezamos hoy?" Pregunta abierta + visión.', emoji: '🌟' },
+    {
+      termino: 'Estructura TED de 3 actos',
+      definicion: 'Estructura clásica del discurso breve y de impacto. Gancho (10-15%), desarrollo (70-75%) y cierre (10-15%).',
+      ejemplo: 'En 3 minutos, 30 segundos de gancho, 2 minutos de desarrollo y 30 segundos de cierre. La proporción no es decorativa.',
+      emoji: '🎭'
+    },
+    {
+      termino: 'Gancho',
+      definicion: 'Primera oración que paraliza al oyente. No introduce; engancha. Puede ser historia, pregunta, dato o imagen.',
+      ejemplo: '"En este barrio, 3 de cada 10 estudiantes ha pensado en dejar el colegio este año." Engancha con dato, no con saludo.',
+      emoji: '🪝'
+    },
+    {
+      termino: 'Desarrollo',
+      definicion: 'Cuerpo central del discurso. Cuenta la historia, desarrolla el conflicto, entrega los argumentos. Necesita tensión.',
+      ejemplo: 'Para 3 minutos, ocupa unos 2 minutos. Hay algo en juego, una pregunta sin respuesta clara que mantiene la atención.',
+      emoji: '📖'
+    },
+    {
+      termino: 'Cierre',
+      definicion: 'Conclusión que deja una imagen, una invitación o una pregunta abierta para el oyente. No es resumen; es marca.',
+      ejemplo: '"Si tres compañeros piensan en irse, ¿qué hace usted mañana al saludar?" Cierra con pregunta directa.',
+      emoji: '🎬'
+    },
+    {
+      termino: 'Regla de las 150 palabras por minuto',
+      definicion: 'Ritmo de habla profesional. Para 3 minutos, alrededor de 400-500 palabras escritas. Más, no se entiende; menos, se desperdicia tiempo.',
+      ejemplo: 'Escribes el discurso, lo cuentas, ajustas. Si pasas de 500 palabras para 3 minutos, hay que recortar.',
+      emoji: '⏱️'
+    }
   ],
-
-  laboratorios: [{
-    tipo: 'quiz',
-    titulo: 'Quiz · Narrativa de alto impacto',
-    instrucciones: '5 preguntas tipo ICFES sobre estructura narrativa de presentaciones.',
-    preguntas: [
-      { enunciado: 'El "gancho inicial" en una presentación profesional es:', opciones: ['Cualquier saludo formal', 'Dato sorprendente, pregunta o anécdota corta que captura atención inmediata', 'Una broma para relajar', 'La introducción larga del autor'], respuestaIndex: 1, feedbackCorrecto: '✅ Correcto. El gancho captura atención en los primeros 30 segundos. Sin gancho, la audiencia se distrae con sus celulares. Con gancho, escucha el resto.', feedbackIncorrecto: '❌ Saludo formal e introducción larga son aburridos. Bromas son arriesgadas (depende del público). El GANCHO efectivo es: dato sorprendente, pregunta retórica, anécdota corta.' },
-      { enunciado: 'Un "llamado a la acción" efectivo es:', opciones: ['"Espero que les guste"', '"Implementemos un piloto en 3 hogares antes de fin de año, necesito 2 voluntarios"', '"Apoyen el proyecto"', '"Gracias por escuchar"'], respuestaIndex: 1, feedbackCorrecto: '✅ Excelente. Llamado efectivo: específico (qué), cuándo (plazo), cómo (qué se necesita). Lo demás son fórmulas vacías que no movilizan acción.', feedbackIncorrecto: '❌ "Espero que les guste" no pide acción. "Apoyen" es genérico. "Gracias" cierra sin movilizar. El LLAMADO EFECTIVO es ESPECÍFICO: qué, cuándo, cómo.' },
-      { enunciado: 'En la fórmula TED de presentaciones de alto impacto, la estructura es:', opciones: ['Solo enumeración de datos', 'Dato sorprendente → conflicto humano → solución → imagen memorable', 'Saludo → autor → contenido → preguntas', 'Solo gracias y aplauso'], respuestaIndex: 1, feedbackCorrecto: '✅ Sí. La fórmula TED universal: capturar (dato/pregunta) → involucrar (conflicto humano) → resolver (solución) → recordar (cierre memorable). Funciona en cualquier idioma y cultura.', feedbackIncorrecto: '❌ Las charlas TED siguen estructura narrativa, NO enumeración. Tampoco saludo formal típico. La fórmula: gancho → conflicto humano → solución → cierre memorable.' },
-      { enunciado: 'Para tu presentación de 7 minutos sobre tu proyecto, ¿cuánto tiempo dedicar al gancho inicial?', opciones: ['3 minutos (mucho contexto)', '30 segundos (corto y poderoso)', '5 minutos (importante)', 'No es necesario'], respuestaIndex: 1, feedbackCorrecto: '✅ Correcto. El gancho debe ser CORTO Y PODEROSO: 30 segundos para capturar. Más es perder tiempo de la solución; menos puede no enganchar.', feedbackIncorrecto: '❌ El gancho NO es introducción larga. Su poder está en BREVEDAD: 30 segundos para capturar atención. El resto del tiempo es para conflicto, solución y cierre.' },
-      { enunciado: '"Datos sin contexto humano" en una presentación significa:', opciones: ['Cifras presentadas sin traducirlas a impacto en personas reales', 'Datos de ciencias humanas', 'Información cualitativa', 'Datos sin gráfico'], respuestaIndex: 0, feedbackCorrecto: '✅ Sí. "Reducción 70% en consumo agua" es dato. "70% menos sed para mi vecina que riega con balde" es dato CON contexto humano. La narrativa traduce números a vidas.', feedbackIncorrecto: '❌ "Datos sin contexto humano" es presentar cifras sin traducirlas a IMPACTO en personas reales. La narrativa profesional siempre conecta dato → vida humana → emoción.' },
-    ],
-  }],
-
+  laboratorios: [
+    {
+      tipo: 'quiz',
+      titulo: '¿Construyes narrativa TED?',
+      instrucciones: '5 preguntas para verificar que dominas la estructura de 3 actos.',
+      preguntas: [
+        {
+          enunciado: '¿Qué porcentaje del tiempo total ocupa el gancho en un discurso TED?',
+          opciones: [
+            '10-15%',
+            '50%',
+            '70%',
+            '90%'
+          ],
+          respuestaIndex: 0,
+          feedbackCorrecto: 'Exacto. 10-15%. El gancho es corto pero decisivo; engancha en segundos para mantener al oyente.',
+          feedbackIncorrecto: 'Es 10-15%. Corto pero crítico. El gancho debe enganchar en pocos segundos, no extenderse.'
+        },
+        {
+          enunciado: '¿Cuál es la diferencia entre introducir y enganchar?',
+          opciones: [
+            'No hay diferencia',
+            'Introducir es más corto',
+            'Enganchar siempre es con chistes',
+            'Introducir presenta el tema, enganchar paraliza al oyente con algo concreto'
+          ],
+          respuestaIndex: 3,
+          feedbackCorrecto: 'Correcto. Introducir es presentar; enganchar es paralizar al oyente con historia, dato, pregunta o imagen.',
+          feedbackIncorrecto: 'Introducir es presentación general; enganchar es paralizar con algo concreto y específico que cree atención inmediata.'
+        },
+        {
+          enunciado: 'Para un discurso de 3 minutos, ¿cuántas palabras escritas son razonables?',
+          opciones: [
+            '',
+            '400-500',
+            '',
+            ''
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Exacto. 400-500 palabras. A 150 palabras por minuto, 3 minutos caben en esa extensión.',
+          feedbackIncorrecto: 'Son 400-500 palabras (a unas 150 por minuto). Más se atropella; menos sobra tiempo sin contenido.'
+        },
+        {
+          enunciado: '¿Qué define un buen cierre TED?',
+          opciones: [
+            'Resumir lo dicho punto por punto',
+            'Dar las gracias largo',
+            'Dejar una imagen, invitación o pregunta que marque al oyente',
+            'Pedir aplausos'
+          ],
+          respuestaIndex: 2,
+          feedbackCorrecto: 'Correcto. El cierre deja marca: imagen, invitación o pregunta. No es resumen; es golpe final.',
+          feedbackIncorrecto: 'El cierre debe dejar marca con una imagen, invitación o pregunta. Resumir es desperdiciar el último impacto.'
+        },
+        {
+          enunciado: 'La regla "lo que no se puede contar en 3 minutos, todavía no es idea clara" significa que...',
+          opciones: [
+            'Hay que hablar rápido',
+            'Solo se puede hablar 3 minutos',
+            'Si necesitas mucho tiempo, no has terminado de afinar tu idea',
+            '3 minutos es el límite legal'
+          ],
+          respuestaIndex: 2,
+          feedbackCorrecto: 'Exacto. La regla apunta a la claridad mental: si no cabe en 3 minutos, el orador aún no comprende a fondo su idea.',
+          feedbackIncorrecto: 'Significa que el límite revela claridad. Si no logras condensar en 3 minutos, la idea todavía no está afinada.'
+        }
+      ]
+    }
+  ],
   postLectura: {
     reflexion: 'La narrativa es habilidad humana ancestral aplicada al contenido moderno. ¿Qué historia personal podrías contar para enganchar al iniciar tu presentación?',
     transferencia: 'Esta semana: redacta TU gancho inicial (30 segundos) y TU cierre memorable. Pruébalos con un compañero. Pregúntale: "¿qué recordarías 24 horas después?".',
-    cierre: 'El cuento del fogón sobrevive en cada presentación TED memorable: gancho, conflicto, solución, cierre que perdura. La narrativa es ancestral; el medio es nuevo.',
+    cierre: 'El cuento del fogón sobrevive en cada presentación TED memorable: gancho, conflicto, solución, cierre que perdura. La narrativa es ancestral; el medio es nuevo.'
   },
-
   saberAncestral: {
-    saber:
-      'El cuento del fogón en el campo colombiano —pacífico, andino, llanero— era ritual nocturno: la abuela o el abuelo armaban historia con principio (algo cotidiano, anclaje), nudo (un conflicto inesperado), desenlace (resolución con enseñanza). Los niños escuchaban dos horas sin reloj. ¿Por qué funcionaba? Porque la estructura narrativa enganchaba al cuerpo y a la mente al mismo tiempo. Las presentaciones TED-style heredan exactamente esa gramática: gancho corto, conflicto claro, resolución con huella. La narrativa no es habilidad moderna — es la más antigua de las técnicas de comunicación humana.',
+    saber: 'Cualquier persona que haya pasado una noche al lado del fogón de un abuelo o de una abuela del Pacífico colombiano, del Cauca rural o del Quindío cafetero, recuerda este detalle: el cuentista capturaba la atención del nieto en 30 segundos, no en 10 minutos. El cuento ancestral no empezaba con "había una vez...": empezaba con una imagen concreta, una frase corta, un detalle que enganchaba: "Cuando yo era niño, vi al diablo cruzar el río. Tenía ojos de candela". Esa primera oración, dicha en voz baja, paralizaba al nieto. Después venía el desarrollo: el conflicto, la lucha, la pregunta sin respuesta clara. Y al final, siempre, el cierre: una lección, una advertencia, una imagen que se quedaba dando vueltas en la cabeza durante días. La estructura era inquebrantable: principio que engancha, conflicto que duele, resolución que enseña. Aristóteles llamó a esto principio, medio y fin; los abuelos del fogón lo conocían siglos antes. Quien sabía contar bien era recordado durante generaciones; quien no, hablaba al vacío. La narrativa TED moderna es exactamente ese cuento del fogón aplicado a 3 minutos con cronómetro.',
     fuente: 'Cuento del fogón en hogares campesinos del Pacífico, los Andes y los Llanos',
-    preguntaPuente:
-      '¿Qué hacía que los niños del campo escucharan dos horas el cuento del fogón sin pedir descanso? ¿Y qué hace que muchas presentaciones digitales cansen en 7 minutos?',
+    preguntaPuente: '¿Qué sabía el abuelo del fogón al empezar el cuento con una imagen concreta, que el orador novato olvida cuando empieza con "hoy les voy a hablar de..."? ¿Y por qué un discurso TED de 3 minutos es más exigente que uno de 30, no menos?'
   },
-
   triangulo: {
     dussel: {
       autor: 'Enrique Dussel',
       lente: 'lente del nosotros',
-      cita: 'La narrativa propia es soberanía sobre la propia historia — contar es resistir.',
-      preguntaEspejo:
-        '¿Las historias que cuento en mis presentaciones vienen de mi lugar y mi voz, o reproduzco narrativas prestadas del norte global?',
+      cita: 'El discurso que da voz a algo personal o comunitario es liberador; el que repite frases hechas reproduce el silencio del sistema.',
+      preguntaEspejo: '¿Mi discurso da voz a algo personal, o repite ideas que cualquiera podría decir?'
     },
     estoico: {
-      autor: 'Marco Aurelio',
+      autor: 'Epicteto',
       lente: 'lente del cuidado interior',
-      cita: 'La estructura narrativa clara es virtud — improvisar 7 minutos sin estructura es desprecio del oyente.',
-      preguntaEspejo:
-        'Cuando preparo una presentación, ¿le doy estructura narrativa o improviso confiando en que "se me va a ocurrir"?',
+      cita: 'El cronómetro es disciplina; el discurso que se pasa muestra falta de oficio, no abundancia de ideas.',
+      preguntaEspejo: '¿Estoy respetando los 3 minutos como disciplina, o ignoro el tiempo asignado?'
     },
     floridi: {
       autor: 'Luciano Floridi',
       lente: 'lente de la infoesfera',
-      cita: 'En la infoesfera saturada, la narrativa que perdura es la que respeta la gramática ancestral del cuento.',
-      preguntaEspejo:
-        '¿Mis presentaciones perduran en la memoria del oyente o se diluyen como información sin forma?',
-    },
+      cita: 'Hablar con responsabilidad en la era de la atención escasa es la nueva ética de la palabra pública.',
+      preguntaEspejo: '¿Mi discurso respeta el tiempo del oyente con palabras cuidadas, o lo desperdicia con relleno?'
+    }
   },
-
   cincoDimensiones: {
-    personal:
-      'Aprendiste que la narrativa es habilidad transferible — sirve a presentaciones, ensayos, conversaciones difíciles, defensa de ideas.',
-    emocional:
-      'Resististe la tentación de "soltar información" y elegiste la disciplina narrativa que respeta al oyente.',
-    ciudadana:
-      'Contar bien historias es ciudadanía cultural concreta: cada cuento bien contado preserva memoria comunitaria.',
-    local:
-      'Heredaste la gramática del cuento del fogón: principio, conflicto, desenlace con huella.',
-    intergeneracional:
-      'La abuela cuentera y el orador TED comparten oficio. Lo que cambia es el medio, no la estructura.',
-  },
+    personal: 'Aprendiste que la narrativa es habilidad transferible — sirve a presentaciones, ensayos, conversaciones difíciles, defensa de ideas.',
+    emocional: 'Resististe la tentación de "soltar información" y elegiste la disciplina narrativa que respeta al oyente.',
+    ciudadana: 'Contar bien historias es ciudadanía cultural concreta: cada cuento bien contado preserva memoria comunitaria.',
+    local: 'Heredaste la gramática del cuento del fogón: principio, conflicto, desenlace con huella.',
+    intergeneracional: 'La abuela cuentera y el orador TED comparten oficio. Lo que cambia es el medio, no la estructura.'
+  }
 };
 
 export default contenido;

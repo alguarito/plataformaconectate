@@ -1,6 +1,9 @@
 /**
  * Contenido enriquecido para Grado 8 · Período 3 · Sesión 6
- * (sesión global 26 — Ciberbullying).
+ * (sesión global 26).
+ *
+ * Auto-generado desde content/guias/8/8-3-6.yaml por
+ * scripts/build-guias-web-ts.py. Edita el YAML, no este archivo.
  */
 import type { ContenidoGuia } from './_schema';
 
@@ -8,91 +11,162 @@ const contenido: ContenidoGuia = {
   grado: 8,
   periodo: 3,
   sesion: 6,
+  titulo: 'Ciberbullying — prevención y Línea 141',
   resumen: 'Como el consejo del mayor cuando hay pelea: cuidar a la víctima, marcar límites. Aprendes a reconocer ciberbullying, capturar evidencia y conocer las rutas de ayuda en Colombia (Línea 141 ICBF).',
   duracionMin: 90,
   subtema: 'Ciberseguridad · Ciberbullying · Línea 141',
-
   preLectura: {
     porQueImporta: 'Saber reconocer y actuar ante ciberbullying puede salvar a un compañero — incluido tú mismo. Es habilidad ciudadana fundamental en la era digital.',
     preguntaDetonante: '¿Qué del consejo del mayor —cuidar a la víctima y marcar límites— podemos llevar al ciberbullying digital?',
-    activacion: { titulo: 'El espectador defensor', descripcion: 'En 5 minutos: en parejas piensen en una situación de ciberbullying que vieron (no necesariamente vivieron). ¿Qué hicieron los espectadores? ¿Qué podrían haber hecho de manera distinta?', duracionMin: 5 },
-    conexion: { anterior: 'En la sesión 25 aprendiste edición de audio y voz cuidada.', siguiente: 'En la sesión 27 profundizarás en sexting y grooming.' },
+    activacion: {
+      titulo: 'El espectador defensor',
+      descripcion: 'En 5 minutos: en parejas piensen en una situación de ciberbullying que vieron (no necesariamente vivieron). ¿Qué hicieron los espectadores? ¿Qué podrían haber hecho de manera distinta?',
+      duracionMin: 5
+    },
+    conexion: {
+      anterior: 'En la sesión 25 aprendiste edición de audio y voz cuidada.',
+      siguiente: 'En la sesión 27 profundizarás en sexting y grooming.'
+    }
   },
-
   conceptosClave: [
-    { categoria: '🔍 Cómo se reconoce', termino: 'Ciberbullying', definicion: 'Agresión digital sostenida y desigual contra una persona. NO es UN conflicto puntual — es patrón repetido con poder asimétrico que daña a la víctima.', ejemplo: 'Insultos diarios en grupo de WhatsApp dirigidos a UNA persona durante semanas. Es bullying digital. Una pelea aislada NO lo es.', emoji: '🚨' },
-    { categoria: '🔍 Cómo se reconoce', termino: 'Roles', definicion: 'Tres roles principales: AGRESOR (acción), VÍCTIMA (recibe), ESPECTADOR (ve). El espectador puede transformarse en DEFENSOR — el cambio crucial.', ejemplo: 'En grupo donde insultan a Juan: Pedro insulta (agresor), Juan recibe (víctima), Maria mira y calla (espectador). Si Maria interviene, se vuelve defensora.', emoji: '👥' },
-    { categoria: '🔍 Cómo se reconoce', termino: 'Modalidades', definicion: 'Formas de ciberbullying: insultos en chat, exposición de imágenes íntimas, exclusión de grupos, difusión de rumores, suplantación de identidad.', ejemplo: 'Crear meme humillante con foto de un compañero, compartirlo en redes, etiquetarlo. Es una forma específica de ciberbullying.', emoji: '📱' },
-    { categoria: '🔍 Cómo se reconoce', termino: 'Señales de alarma', definicion: 'Cambios en la víctima que indican que está siendo afectada: cambio de ánimo, evitar redes, bajar rendimiento, aislamiento, faltar al colegio.', ejemplo: 'Tu hermana antes activa en redes ahora las evita. Antes salía con amigos, ahora se encierra. Pueden ser señales — pregúntale con cuidado.', emoji: '⚠️' },
-    { categoria: '🛡️ Cómo se actúa', termino: 'Evidencia', definicion: 'Captura de pantalla con FECHA, USUARIO, MENSAJE COMPLETO. Sin retoque. Es prueba para procesos institucionales y legales.', ejemplo: 'Captura del mensaje hostil + fecha visible + nombre/foto de quien lo envió. NO borres antes de capturar. NO retoques.', emoji: '📸' },
-    { categoria: '🛡️ Cómo se actúa', termino: 'Bloqueo y reporte', definicion: 'Cada plataforma (WhatsApp, Instagram, TikTok) tiene su botón de bloqueo y reporte. Bloquear corta el contacto; reportar avisa a la plataforma.', ejemplo: 'En WhatsApp: tres puntos → Reportar → Bloquear. En Instagram: tres puntos → Reportar → Acoso o intimidación.', emoji: '🙅' },
-    { categoria: '🛡️ Cómo se actúa', termino: 'Rutas institucionales', definicion: 'En Colombia: orientador escolar → rector → ICBF (Línea 141 gratuita 24/7) → policía si hay amenaza física. Cada escalón tiene autoridad para intervenir.', ejemplo: 'Si el orientador no actúa, escalas al rector. Si el rector tampoco, ICBF. Si hay amenaza directa, policía. La ruta SE ESCALA.', emoji: '🏛️' },
-    { categoria: '🛡️ Cómo se actúa', termino: 'Apoyo comunitario', definicion: 'No callar como espectador. Escribir a la víctima en privado para acompañar. Reportar al adulto. Crear cultura donde callar es la excepción.', ejemplo: 'Mensaje privado: "Vi lo que pasó. No estás solo. ¿Quieres que vayamos juntos al orientador?". Acompañar transforma víctima en defendida.', emoji: '🤝' },
+    {
+      termino: 'Ciberbullying',
+      definicion: 'Uso de medios digitales para hostigar, intimidar o humillar a una persona de manera repetida. Combina repetición, desbalance de poder, intención de daño, espacio digital y permanencia.',
+      ejemplo: 'Un grupo de WhatsApp donde varios compañeros publican fotos burlándose de un mismo estudiante durante semanas. Es ciberbullying, no broma.',
+      emoji: '🚫',
+      categoria: 'Cómo se reconoce'
+    },
+    {
+      termino: 'Repetición y desbalance',
+      definicion: 'Dos propiedades clave que diferencian el ciberbullying del conflicto cotidiano. Es sostenido en el tiempo y con ventaja de un lado.',
+      ejemplo: 'Una pelea aislada no es bullying. Hostigamiento sostenido por un grupo a una persona sola, sí lo es.',
+      emoji: '⚖️'
+    },
+    {
+      termino: 'Línea 141 del ICBF',
+      definicion: 'Canal oficial colombiano de atención 24/7 para menores en situación de riesgo o violencia, incluido ciberbullying.',
+      ejemplo: 'Si tú o un compañero sufre hostigamiento digital, puedes llamar al 141 a cualquier hora. La línea es gratuita.',
+      emoji: '☎️'
+    },
+    {
+      termino: 'Te Protejo',
+      definicion: 'Plataforma colombiana (teprotejo.org) para denunciar contenido en línea contra menores: ciberbullying, grooming, pornografía infantil.',
+      ejemplo: 'Encuentras un perfil que difunde fotos íntimas de menores. Lo reportas en teprotejo.org sin dar tus datos.',
+      emoji: '🆘'
+    },
+    {
+      termino: 'Ley 1620 de 2013',
+      definicion: 'Ley colombiana que crea el Sistema Nacional de Convivencia Escolar y obliga a cada colegio a tener un protocolo de manejo de conflictos.',
+      ejemplo: 'Si vives ciberbullying en el colegio, tu institución debe tener un protocolo activo según la Ley 1620. Pregúntalo en orientación.',
+      emoji: '📚'
+    }
   ],
-
-  laboratorios: [{
-    tipo: 'quiz',
-    titulo: 'Quiz · Ciberbullying y rutas de ayuda',
-    instrucciones: '5 preguntas tipo ICFES sobre identificación, evidencia y rutas en Colombia.',
-    preguntas: [
-      { enunciado: 'Si presencio insultos repetidos a un compañero en un grupo de WhatsApp, lo correcto es:', opciones: ['Reírme para no ser el siguiente', 'Capturar evidencia, escribir privadamente a la víctima y reportar al orientador', 'Ignorar, no es asunto mío', 'Defender en público gritando al agresor'], respuestaIndex: 1, feedbackCorrecto: '✅ Excelente. El espectador defensor: 1) capturar evidencia, 2) acompañar a la víctima en privado, 3) reportar al adulto. NO reírse (eso valida al agresor) ni ignorar (silencio cómplice).', feedbackIncorrecto: '❌ Reírse valida al agresor; ignorar es silencio cómplice; defender gritando puede escalar la violencia. Lo correcto: capturar evidencia + acompañar a la víctima en privado + reportar al adulto. Eso es ser DEFENSOR.' },
-      { enunciado: 'La Línea 141 del ICBF en Colombia es:', opciones: ['Línea de pago para denuncias', 'Línea gratuita 24/7 para casos de violencia, bullying y abuso de menores', 'Solo para casos extremos', 'Línea para adultos'], respuestaIndex: 1, feedbackCorrecto: '✅ Sí. Línea 141 es GRATUITA, CONFIDENCIAL, 24/7. Atiende casos de violencia, bullying, abuso. Conocerla y compartirla SALVA. Memorízala.', feedbackIncorrecto: '❌ La Línea 141 es GRATUITA (no de pago), 24/7 (cualquier momento), CONFIDENCIAL, para CUALQUIER caso (no solo extremos), para MENORES y adolescentes. Es recurso clave de protección.' },
-      { enunciado: 'Si ves un mensaje hostil dirigido a un compañero, ANTES de bloquear o borrar:', opciones: ['Bórralo rápido para "no contaminarte"', 'Captura pantalla con fecha y usuario visible (es evidencia)', 'Compártelo a más personas', 'No hagas nada'], respuestaIndex: 1, feedbackCorrecto: '✅ Correcto. La EVIDENCIA es crucial para procesos institucionales y legales. Captura ANTES de borrar. Sin evidencia, la palabra del agresor vale lo mismo que la de la víctima.', feedbackIncorrecto: '❌ Borrar evidencia sin capturar es perder la prueba. Compartir empeora la situación. No hacer nada es silencio cómplice. CAPTURA ANTES DE BORRAR es la regla profesional.' },
-      { enunciado: 'La diferencia entre conflicto puntual y ciberbullying es:', opciones: ['No hay diferencia', 'Conflicto puntual es UNA situación; ciberbullying es PATRÓN repetido con poder asimétrico', 'El ciberbullying es solo en internet', 'Conflicto puntual es más grave'], respuestaIndex: 1, feedbackCorrecto: '✅ Excelente. CIBERBULLYING = patrón repetido + poder desigual. Una pelea aislada NO es bullying. Sostenido + desigual = bullying. Identificar el patrón guía la intervención.', feedbackIncorrecto: '❌ HAY diferencia clara: conflicto puntual es UNA situación entre iguales. Ciberbullying es PATRÓN repetido con PODER ASIMÉTRICO. Confundirlos lleva a intervención equivocada.' },
-      { enunciado: 'Si un compañero te confiesa que lo están haciendo ciberbullying, lo MÁS importante es:', opciones: ['Decirle que sea fuerte y siga adelante', 'Escucharlo sin juzgar, validar su experiencia, acompañarlo a buscar ayuda institucional', 'Investigar tú mismo a los agresores', 'Mantener el secreto'], respuestaIndex: 1, feedbackCorrecto: '✅ Sí. Escuchar SIN JUZGAR + VALIDAR ("te creo, no es tu culpa") + ACOMPAÑAR a buscar ayuda institucional. Eso es apoyo real, no clichés ("sé fuerte").', feedbackIncorrecto: '❌ "Sé fuerte" minimiza el dolor. Investigar solo puede ser peligroso. Mantener secreto deja a la víctima sin protección institucional. Lo correcto: ESCUCHAR + VALIDAR + ACOMPAÑAR a ayuda profesional.' },
-    ],
-  }],
-
+  laboratorios: [
+    {
+      tipo: 'quiz',
+      titulo: '¿Sabes cómo prevenir y denunciar ciberbullying?',
+      instrucciones: '5 preguntas para verificar que conoces los canales oficiales.',
+      preguntas: [
+        {
+          enunciado: '¿Cuál es el número de la línea oficial del ICBF para menores en riesgo?',
+          opciones: [
+            '123',
+            '141',
+            '911',
+            '1800'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Exacto. 141. Atención 24/7, gratuita, para menores en cualquier situación de riesgo o violencia.',
+          feedbackIncorrecto: 'Es la Línea 141 del ICBF. Atención 24/7 gratuita para menores en situación de violencia o riesgo.'
+        },
+        {
+          enunciado: '¿Qué propiedad NO define al ciberbullying?',
+          opciones: [
+            'Repetición',
+            'Desbalance de poder',
+            'Una sola broma aislada',
+            'Intención de daño'
+          ],
+          respuestaIndex: 2,
+          feedbackCorrecto: 'Correcto. Una broma aislada no es bullying. El ciberbullying es sostenido y con desbalance de poder.',
+          feedbackIncorrecto: 'Una sola broma no es bullying. Las propiedades clave son repetición, desbalance, intención, espacio digital y permanencia.'
+        },
+        {
+          enunciado: '¿Qué ley obliga a los colegios colombianos a tener protocolo de convivencia escolar?',
+          opciones: [
+            'Ley 100',
+            'Ley 30',
+            'Ley 9',
+            'Ley 1620 de 2013'
+          ],
+          respuestaIndex: 3,
+          feedbackCorrecto: 'Exacto. La Ley 1620 de 2013 crea el Sistema Nacional de Convivencia Escolar.',
+          feedbackIncorrecto: 'Es la Ley 1620 de 2013. Cada colegio debe tener un protocolo activo según esa ley.'
+        },
+        {
+          enunciado: 'Quieres denunciar contenido en línea contra un menor de forma anónima. ¿Dónde lo haces?',
+          opciones: [
+            'En la plataforma Te Protejo (teprotejo.org)',
+            'En cualquier red social',
+            'En el correo personal del agresor',
+            'No se puede denunciar'
+          ],
+          respuestaIndex: 0,
+          feedbackCorrecto: 'Correcto. Te Protejo permite denuncia anónima de contenido en línea contra menores.',
+          feedbackIncorrecto: 'La plataforma es Te Protejo (teprotejo.org). Acepta denuncias anónimas y opera con instituciones competentes.'
+        },
+        {
+          enunciado: '¿Por qué la permanencia es propiedad clave del ciberbullying?',
+          opciones: [
+            'Porque es divertido',
+            'Porque dura un minuto',
+            'Porque solo afecta a adultos',
+            'Porque lo publicado en redes deja huella y prolonga el daño en el tiempo'
+          ],
+          respuestaIndex: 3,
+          feedbackCorrecto: 'Exacto. Lo digital deja huella; el daño se prolonga incluso si el agresor borra, porque puede haber capturas o reenvíos.',
+          feedbackIncorrecto: 'La permanencia importa porque el contenido digital deja rastro: capturas y reenvíos mantienen el daño vivo aunque se borre.'
+        }
+      ]
+    }
+  ],
   postLectura: {
     reflexion: 'El silencio del espectador es el aliado del agresor. ¿En qué situaciones de tu vida has sido espectador silencioso? ¿Qué te impidió actuar?',
     transferencia: 'Esta semana: memoriza la Línea 141 ICBF. Si ves o vives ciberbullying, aplica los pasos: capturar evidencia + acompañar a víctima + reportar a adulto.',
-    cierre: 'El consejo del mayor y la Línea 141 comparten esencia: la comunidad protege a sus víctimas. La sabiduría ancestral sobrevive en los protocolos modernos.',
+    cierre: 'El consejo del mayor y la Línea 141 comparten esencia: la comunidad protege a sus víctimas. La sabiduría ancestral sobrevive en los protocolos modernos.'
   },
-
   saberAncestral: {
-    saber:
-      'En los pueblos del Valle y el Pacífico, cuando un niño o niña era víctima de abuso o pelea, la comunidad activaba protocolos no escritos pero claros: el mayor del barrio era avisado, las madres se acompañaban, el agresor era nombrado en público y enfrentado por el consejo. La víctima no quedaba sola, el silencio no era opción, el agresor no se quedaba sin consecuencia. La Línea 141 del ICBF y los protocolos de ciberbullying heredan esa lógica comunitaria: identificar víctima, acompañar, denunciar, romper el silencio. La protección colectiva es ancestral; lo nuevo es el medio digital donde ocurre el abuso.',
+    saber: 'En las comunidades indígenas del Pacífico, en los resguardos del Cauca, en los pueblos afrodescendientes del Chocó, había una práctica que sostenía el cuidado de los vulnerables: cuando un joven sufría, la comunidad entera intervenía. Si un niño llegaba al cabildo con la mirada baja, alguien preguntaba. Si una joven dejaba de venir, las mayores iban a su casa. Si un adolescente era objeto de burla, el cabildo hablaba con quien se burlaba. La sabiduría era inquebrantable: el sufrimiento del menor no era asunto privado; era asunto comunitario. No se esperaba a que el daño fuera grave; se intervenía en las primeras señales. Esa práctica tiene nombre simple: cuidado colectivo. Ningún menor debe sufrir en silencio porque la comunidad existe para escucharlo. En la era digital, donde los espacios de relación están en redes y chats, esa sabiduría se traduce en infraestructura institucional de protección: la Línea 141 del ICBF, los protocolos escolares, las leyes. Conocer esos canales no es trámite: es honor a la sabiduría comunitaria aplicada al espacio digital.',
     fuente: 'Consejo de mayores y protocolos de protección comunitaria en pueblos del Valle y el Pacífico',
-    preguntaPuente:
-      '¿Cómo respondía la comunidad de tus abuelos cuando un niño era víctima de bullying o abuso? ¿Y qué hace tu generación cuando ese mismo abuso ocurre en pantallas?',
+    preguntaPuente: '¿Qué sabía la comunidad indígena al intervenir antes de que el daño fuera grave, que la cultura digital actual olvida cuando deja a las víctimas de ciberbullying en silencio? ¿Y por qué la Línea 141 funciona también para testigos y amigos, no solo para víctimas directas?'
   },
-
   triangulo: {
     dussel: {
       autor: 'Enrique Dussel',
       lente: 'lente del nosotros',
-      cita: 'La indiferencia ante la víctima reproduce la violencia que pretende ignorar.',
-      preguntaEspejo:
-        '¿En cuántos chats grupales he visto bullying y no he intervenido? ¿Qué cambia si la próxima vez intervengo, aunque sea con un mensaje privado a la víctima?',
+      cita: 'La comunidad que protege a sus vulnerables es liberadora; la que los abandona reproduce la violencia del sistema mediante el silencio.',
+      preguntaEspejo: '¿He sido testigo activo cuando vi señales de ciberbullying, o espectador silencioso?'
     },
     estoico: {
-      autor: 'Marco Aurelio',
+      autor: 'Séneca',
       lente: 'lente del cuidado interior',
-      cita: 'No te perturbe el insulto del que no respeta — pero acompaña a quien sí lo sufre.',
-      preguntaEspejo:
-        'Cuando recibo un comentario hiriente en redes, ¿reacciono con impulso o con calma estoica? ¿Y cuando lo recibe alguien más, soy testigo o aliado?',
+      cita: 'El silencio del testigo es complicidad disfrazada de neutralidad.',
+      preguntaEspejo: '¿Mi plan personal me permite no quedarme en silencio cuando vea ciberbullying?'
     },
     floridi: {
       autor: 'Luciano Floridi',
       lente: 'lente de la infoesfera',
-      cita: 'La capacidad de proteger a las víctimas en la infoesfera es prueba del nivel ético de una sociedad digital.',
-      preguntaEspejo:
-        '¿Conozco los canales reales de denuncia (Línea 141, plataformas) o solo los teóricos? ¿Estoy preparado para activarlos si algo le pasa a alguien cercano?',
-    },
+      cita: 'La infosfera es espacio ético compartido; cada usuario es responsable de lo que sostiene en ella.',
+      preguntaEspejo: '¿Mis acciones diarias en redes contribuyen a una infosfera sana o a una hostil?'
+    }
   },
-
   cincoDimensiones: {
-    personal:
-      'Aprendiste a identificar ciberbullying con criterio — habilidad que aplica a tu propia vida digital y a la de tus pares.',
-    emocional:
-      'Resististe la tentación del silencio o la complicidad pasiva. La protección activa exige coraje cotidiano.',
-    ciudadana:
-      'Conocer la Línea 141 y los protocolos de denuncia es ciudadanía digital concreta — protección de derechos en pantalla.',
-    local:
-      'Heredaste la lógica del consejo de mayores: la comunidad protege a sus víctimas sin esperar permiso.',
-    intergeneracional:
-      'El abuelo que intervenía en la riña del barrio y tú frente al chat tóxico comparten ética: el silencio ante el abuso es complicidad.',
-  },
+    personal: 'Aprendiste a identificar ciberbullying con criterio — habilidad que aplica a tu propia vida digital y a la de tus pares.',
+    emocional: 'Resististe la tentación del silencio o la complicidad pasiva. La protección activa exige coraje cotidiano.',
+    ciudadana: 'Conocer la Línea 141 y los protocolos de denuncia es ciudadanía digital concreta — protección de derechos en pantalla.',
+    local: 'Heredaste la lógica del consejo de mayores: la comunidad protege a sus víctimas sin esperar permiso.',
+    intergeneracional: 'El abuelo que intervenía en la riña del barrio y tú frente al chat tóxico comparten ética: el silencio ante el abuso es complicidad.'
+  }
 };
 
 export default contenido;

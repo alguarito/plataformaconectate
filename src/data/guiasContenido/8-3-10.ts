@@ -1,10 +1,9 @@
 /**
  * Contenido enriquecido para Grado 8 · Período 3 · Sesión 10
- * (sesión global 30 — última del grado 8).
+ * (sesión global 30).
  *
- * Tema: Sustentación pública y portafolio digital.
- * Esta guía es la versión MILC v2 con apertura ancestral, pensamiento
- * computacional, 5 dimensiones y Triángulo Dussel-Estoicismo-Floridi.
+ * Auto-generado desde content/guias/8/8-3-10.yaml por
+ * scripts/build-guias-web-ts.py. Edita el YAML, no este archivo.
  */
 import type { ContenidoGuia } from './_schema';
 
@@ -12,244 +11,161 @@ const contenido: ContenidoGuia = {
   grado: 8,
   periodo: 3,
   sesion: 10,
-  resumen:
-    'Cierre del grado 8: del consejo de mayores a la sustentación digital. Aplicas pensamiento computacional al armar tu portafolio y cierras con el Triángulo de pensamiento.',
+  titulo: 'Sustentación pública y portafolio digital del grado 8',
+  resumen: 'Cierre del grado 8: del consejo de mayores a la sustentación digital. Aplicas pensamiento computacional al armar tu portafolio y cierras con el Triángulo de pensamiento.',
   duracionMin: 90,
   subtema: 'Cierre del grado · Triángulo de pensamiento',
-
   preLectura: {
-    porQueImporta:
-      'Aprender a sustentar es aprender a darle voz a tu trabajo. Hoy lo que practiques aquí te servirá para tu primer trabajo, tu primera entrevista o tu primera asamblea ciudadana.',
-    preguntaDetonante:
-      '¿Qué del consejo de mayores podemos llevar a una sustentación digital — y qué de lo digital podríamos ofrecerle al consejo?',
+    porQueImporta: 'Aprender a sustentar es aprender a darle voz a tu trabajo. Hoy lo que practiques aquí te servirá para tu primer trabajo, tu primera entrevista o tu primera asamblea ciudadana.',
+    preguntaDetonante: '¿Qué del consejo de mayores podemos llevar a una sustentación digital — y qué de lo digital podríamos ofrecerle al consejo?',
     activacion: {
       titulo: 'El círculo de palabra',
-      descripcion:
-        'En parejas (3 min): cada uno cuenta al otro UN logro del periodo en máximo 60 segundos. El otro escucha sin interrumpir, luego repite con sus palabras lo que entendió. Reflexionen: ¿cuán parecido es esto a sustentar un proyecto?',
-      duracionMin: 5,
+      descripcion: 'En parejas (3 min): cada uno cuenta al otro UN logro del periodo en máximo 60 segundos. El otro escucha sin interrumpir, luego repite con sus palabras lo que entendió. Reflexionen: ¿cuán parecido es esto a sustentar un proyecto?',
+      duracionMin: 5
     },
     conexion: {
       anterior: 'Sesiones 21-29: técnicas multimedia, ciberseguridad y ética digital del periodo 3.',
-      siguiente: 'Grado 9 abre con tecnología, ciencia y comunicación: sustentar será habilidad transversal.',
-    },
+      siguiente: 'Grado 9 abre con tecnología, ciencia y comunicación: sustentar será habilidad transversal.'
+    }
   },
-
   conceptosClave: [
-    // ───── Cómo se prepara ─────
     {
-      categoria: '🛠️ Cómo se prepara',
-      termino: 'Audiencia',
-      definicion:
-        'Las personas que te escuchan. Una buena sustentación se diseña para una audiencia concreta, no para "el público en general". Saber a quién hablas cambia qué dices, qué evitas y qué evidencia eliges.',
-      ejemplo:
-        'No le hablas igual a tu profesor que a tus compañeros que a la junta de acción comunal del barrio. La misma evidencia, distintas palabras y ejemplos.',
-      emoji: '👥',
+      termino: 'Sustentación pública',
+      definicion: 'Acto formal de cierre del año. Presentación del proyecto integrador con tiempo controlado, demo real y honestidad ante preguntas.',
+      ejemplo: '10 minutos donde muestras el proyecto, demuestras lo que funciona y respondes preguntas sin inventar.',
+      emoji: '🎤'
     },
     {
-      categoria: '🛠️ Cómo se prepara',
-      termino: 'Anatomía de presentación',
-      definicion:
-        'La estructura clásica de una buena sustentación: apertura (30s) → problema (1 min) → evidencia (1-2 min) → propuesta (1-2 min) → preguntas (2-3 min) → cierre (30s). Total: 5-7 minutos.',
-      ejemplo:
-        'Como un libro: portada, planteamiento, capítulos centrales, clímax, preguntas y desenlace. Una sustentación que sigue esta anatomía rara vez se pierde.',
-      emoji: '🏛️',
+      termino: 'Portafolio digital',
+      definicion: 'Selección curada de las mejores piezas producidas durante el año. No es archivo de todo lo hecho.',
+      ejemplo: 'De 30 piezas producidas, eliges las 6 mejores y las organizas con índice, descripción y enlace. Eso es portafolio.',
+      emoji: '🗂️'
     },
     {
-      categoria: '🛠️ Cómo se prepara',
-      termino: 'Frase de abstracción',
-      definicion:
-        'Tu proyecto entero contado en UNA sola oración. Si no cabe en una frase, todavía no está clara. Funciona como brújula en toda la sustentación: cuando dudas, vuelves a ella.',
-      ejemplo:
-        '"Mi portafolio demuestra cómo el pensamiento computacional ayuda a un estudiante de octavo a sustentar con calma y evidencia". Test de la abuela: si tu abuela la entiende sin que expliques nada más, está lista.',
-      emoji: '✏️',
+      termino: 'Selección curada',
+      definicion: 'Decisión consciente de qué piezas representan mejor lo aprendido. Calidad sobre cantidad, con criterio explícito.',
+      ejemplo: 'Eliges el podcast comunitario por sobre 5 podcasts más, porque ese muestra mejor tu manejo del audio y de la voz del afectado.',
+      emoji: '✂️'
     },
     {
-      categoria: '🛠️ Cómo se prepara',
-      termino: 'Evidencia',
-      definicion:
-        'Dato, captura, registro o prueba que sustenta lo que afirmas. Sin evidencia, una sustentación es una opinión. Con evidencia, es un argumento que la audiencia puede revisar.',
-      ejemplo:
-        'Si dices "mi proyecto mejora la seguridad digital de mi familia", la evidencia es el antes/después: capturas de las contraseñas débiles que detectaste y de las que crearon nuevas.',
-      emoji: '🔍',
-    },
-    // ───── Cómo se entrega ─────
-    {
-      categoria: '🎙️ Cómo se entrega',
-      termino: 'Argumentación',
-      definicion:
-        'Conectar la evidencia con la afirmación mediante razones. No basta con mostrar datos: hay que explicar por qué prueban lo que dices. La argumentación es el puente entre lo que enseñas y lo que la audiencia concluye.',
-      ejemplo:
-        '"Estas capturas (evidencia) muestran que mi familia mejoró la seguridad (afirmación) porque el porcentaje de contraseñas fuertes pasó de 0% a 80% en una semana (razón)."',
-      emoji: '🧮',
+      termino: 'Carta abierta de cierre',
+      definicion: 'Documento personal en primera persona donde declaras qué aprendiste, qué te marcó y a qué te comprometes para el grado siguiente.',
+      ejemplo: '"Este año aprendí a editar audio y a respetar el consentimiento. Me comprometo a usarlo el año entrante en proyectos del aula."',
+      emoji: '✉️'
     },
     {
-      categoria: '🎙️ Cómo se entrega',
-      termino: 'Voz propia',
-      definicion:
-        'La autoría auténtica: lo que tú aprendiste, en tus palabras, con tus ejemplos. Es lo opuesto a leer un texto que parece de otra persona o que la IA escribió por ti sin que entiendas qué dice.',
-      ejemplo:
-        'Si tu portafolio dice cosas que tú no podrías explicar oralmente sin ese papel, perdiste tu voz. Si lo que escribiste suena como hablas, la encontraste.',
-      emoji: '🎙️',
-    },
-    {
-      categoria: '🎙️ Cómo se entrega',
-      termino: 'Lenguaje no verbal',
-      definicion:
-        'Lo que comunicas sin palabras: voz, postura, mirada, manos, ritmo. Estudios de oratoria muestran que el 38% del impacto viene de la voz, el 55% del cuerpo y solo el 7% de las palabras exactas.',
-      ejemplo:
-        'Respirar profundo antes de empezar, mantener pies firmes, mirar a tres personas distintas durante la sustentación, y dejar silencio después de una idea importante.',
-      emoji: '🧘',
-    },
-    {
-      categoria: '🎙️ Cómo se entrega',
-      termino: 'Retroalimentación iterativa',
-      definicion:
-        'Aceptar preguntas y críticas para mejorar, no para defenderte. Cada pregunta de la audiencia es una oportunidad de iterar tu propuesta antes de la siguiente versión.',
-      ejemplo:
-        'Si te preguntan "¿y qué pasa con los adultos mayores que no usan internet?" y tu portafolio no lo cubre, anótalo como mejora futura, no como ataque.',
-      emoji: '🔄',
-    },
+      termino: 'Honestidad ante preguntas duras',
+      definicion: 'Tercera propiedad irrenunciable de la sustentación. Reconocer lo no resuelto en lugar de inventar respuestas que apenas tapan.',
+      ejemplo: '"Esa parte aún no la tengo lista; lo que tengo claro es por dónde voy a empezar a resolverla." Respuesta honesta y profesional.',
+      emoji: '🤝'
+    }
   ],
-
   laboratorios: [
     {
       tipo: 'quiz',
-      titulo: 'Quiz · ¿Cómo se sustenta bien?',
-      instrucciones:
-        '5 preguntas tipo ICFES sobre la anatomía de una sustentación pública y el Triángulo de pensamiento. Lee con calma, escoge la mejor opción, revisa el feedback antes de avanzar.',
+      titulo: '¿Cierras el grado con portafolio profesional?',
+      instrucciones: '5 preguntas para verificar que entiendes la sustentación y el portafolio digital.',
       preguntas: [
         {
-          enunciado:
-            'Camila va a sustentar su portafolio. Está nerviosa. Según la práctica estoica de Epicteto, ¿qué debería distinguir antes de empezar?',
+          enunciado: '¿Qué diferencia un portafolio de un archivo de todo lo hecho?',
           opciones: [
-            'Distinguir las preguntas fáciles de las difíciles',
-            'Distinguir lo que depende de ella (su preparación, su atención) de lo que no (las preguntas que harán)',
-            'Distinguir a sus amigos de sus enemigos en la audiencia',
-            'Distinguir las evidencias buenas de las malas',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            '✅ Exacto. La libertad estoica empieza distinguiendo lo que depende de ti (preparación, respiración, juicio) de lo que no (qué preguntan). Eso baja la ansiedad.',
-          feedbackIncorrecto:
-            '❌ Revisa la cita de Epicteto en la guía: "Algunas cosas dependen de nosotros y otras no — distinguir esto es la libertad". El estoicismo no separa amigos/enemigos ni preguntas fáciles/difíciles, separa control/no-control.',
-        },
-        {
-          enunciado:
-            'Aplicando el pilar de ABSTRACCIÓN del pensamiento computacional a tu sustentación, ¿qué deberías producir?',
-          opciones: [
-            'Una lista exhaustiva de todo lo que hiciste',
-            'Una frase única que diga lo esencial de tu portafolio',
-            'Un diagrama complejo con muchas conexiones',
-            'Un resumen detallado de cada evidencia',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            '✅ Sí. Abstracción = quedarte con lo esencial. "Si no cabe en una frase, todavía no está clara." Es tu brújula durante la sustentación.',
-          feedbackIncorrecto:
-            '❌ Abstracción NO es resumir todo: es elegir lo esencial. Una sola frase que capture el corazón del trabajo. Lo demás es desarrollo.',
-        },
-        {
-          enunciado:
-            'Dussel propone que toda comunidad de comunicación se hace plena cuando incluye "la voz del excluido". En tu sustentación, ¿qué pregunta refleja mejor esta idea?',
-          opciones: [
-            '¿Qué cosas sé que mis compañeros no saben?',
-            '¿Quién no está en mi sustentación pero debería ser escuchado?',
-            '¿Qué evidencias tengo más fuertes?',
-            '¿Cómo gano la atención del profesor?',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            '✅ Correcto. La analéctica de Dussel parte del Otro — del que no tiene voz. Una sustentación es más fuerte cuando reconoce a quienes habitualmente quedan fuera.',
-          feedbackIncorrecto:
-            '❌ Dussel no se trata de saber más que otros ni de ganar atención. Su filosofía pregunta: ¿quién está siendo silenciado y cómo le doy voz?',
-        },
-        {
-          enunciado:
-            'Floridi dice que somos "inforgs" en una infoesfera. Al armar tu portafolio público, ¿qué responsabilidad asumes como inforg?',
-          opciones: [
-            'Mostrar absolutamente todo lo que hiciste',
-            'Distinguir qué información es de uso público y cuál merece cuidado o protección',
-            'Subir tantos archivos como sea posible',
-            'Copiar el portafolio de un compañero exitoso',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            '✅ Exacto. Ser inforg responsable es decidir éticamente qué se muestra y qué se protege. La privacidad de otros y los datos sensibles requieren cuidado, no exhibición.',
-          feedbackIncorrecto:
-            '❌ Floridi no pide mostrar todo ni nada — pide DECIDIR éticamente. Cada acto de información tiene peso moral. Hay datos que se protegen, no se exhiben.',
-        },
-        {
-          enunciado:
-            'En la "anatomía de la sustentación" presentada en la guía, ¿qué fase va inmediatamente DESPUÉS de presentar la evidencia?',
-          opciones: [
-            'El cierre y agradecimiento',
-            'Las preguntas de la audiencia',
-            'La propuesta o producto final',
-            'La apertura con saludo',
+            'Nada, son lo mismo',
+            'El portafolio es más grande',
+            'El portafolio es selección curada de lo mejor; el archivo es todo',
+            'El portafolio se imprime'
           ],
           respuestaIndex: 2,
-          feedbackCorrecto:
-            '✅ Sí. La anatomía es: Apertura → Problema → Evidencia → Propuesta → Preguntas → Cierre. La propuesta sigue inmediatamente a la evidencia porque se sustenta en ella.',
-          feedbackIncorrecto:
-            '❌ Recuerda el algoritmo de presentación: Apertura → Problema → Evidencia → **Propuesta** → Preguntas → Cierre. La propuesta debe venir después de la evidencia y antes de las preguntas.',
+          feedbackCorrecto: 'Exacto. Portafolio es curaduría: lo mejor seleccionado con criterio. Archivo es todo, sin filtro.',
+          feedbackIncorrecto: 'La diferencia es la curaduría. Portafolio selecciona lo mejor con criterio; archivo guarda todo sin filtro.'
         },
-      ],
-    },
+        {
+          enunciado: '¿Cuántos minutos dura la sustentación pública de cierre?',
+          opciones: [
+            '3',
+            '10',
+            '30',
+            '60'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Correcto. 10 minutos. Tiempo controlado para presentar el proyecto y demostrar habilidades en demo real.',
+          feedbackIncorrecto: 'Son 10 minutos. Tiempo controlado obliga a curar el mensaje, mostrar lo esencial y dejar espacio para preguntas.'
+        },
+        {
+          enunciado: '¿Qué propiedad NO es irrenunciable de la sustentación?',
+          opciones: [
+            'Efectos visuales llamativos',
+            'Tiempo controlado',
+            'Demostración real (no solo descripción)',
+            'Honestidad ante preguntas duras'
+          ],
+          respuestaIndex: 0,
+          feedbackCorrecto: 'Exacto. Los efectos visuales son decoración opcional. Lo irrenunciable es tiempo, demo y honestidad.',
+          feedbackIncorrecto: 'Los efectos visuales son decoración. Lo irrenunciable es tiempo controlado, demo real y honestidad ante preguntas.'
+        },
+        {
+          enunciado: 'La carta abierta de cierre se escribe en...',
+          opciones: [
+            'Tercera persona impersonal',
+            'Latín',
+            'Solo con emojis',
+            'Primera persona, como declaración personal'
+          ],
+          respuestaIndex: 3,
+          feedbackCorrecto: 'Correcto. Primera persona. Es declaración personal de aprendizaje y compromiso, no informe institucional.',
+          feedbackIncorrecto: 'Va en primera persona. Es la firma personal del año: lo que aprendiste, lo que te marcó, a qué te comprometes.'
+        },
+        {
+          enunciado: 'Un examinador detecta un punto que no resuelves. ¿Cómo respondes con honestidad profesional?',
+          opciones: [
+            'Inventas una respuesta',
+            'Cambias de tema',
+            'Reconoces lo no resuelto y explicas por dónde empezarías a resolverlo',
+            'Te quedas callado'
+          ],
+          respuestaIndex: 2,
+          feedbackCorrecto: 'Exacto. Reconocer lo no resuelto y mostrar el plan para abordarlo es señal de oficio profesional, no de debilidad.',
+          feedbackIncorrecto: 'Reconoces lo no resuelto y explicas por dónde empezarías a resolverlo. La honestidad gana confianza profesional.'
+        }
+      ]
+    }
   ],
-
   postLectura: {
-    reflexion:
-      'Esta guía es el cierre del grado 8. ¿Cuál de las tres voces del Triángulo (Dussel, Estoicismo, Floridi) te resuena más en este momento de tu vida y por qué?',
-    transferencia:
-      'Identifica un espacio en tu colegio, barrio, parroquia o familia donde podrías volver a sustentar algo en los próximos 6 meses. Anótalo. Conviértelo en compromiso real, no en intención vaga.',
-    cierre:
-      'Sustentar es darle voz a algo. La voz del consejo de mayores se hace, hoy, también voz digital. El círculo se cierra: lo ancestral camina con lo contemporáneo cuando ambos se escuchan.',
+    reflexion: 'Esta guía es el cierre del grado 8. ¿Cuál de las tres voces del Triángulo (Dussel, Estoicismo, Floridi) te resuena más en este momento de tu vida y por qué?',
+    transferencia: 'Identifica un espacio en tu colegio, barrio, parroquia o familia donde podrías volver a sustentar algo en los próximos 6 meses. Anótalo. Conviértelo en compromiso real, no en intención vaga.',
+    cierre: 'Sustentar es darle voz a algo. La voz del consejo de mayores se hace, hoy, también voz digital. El círculo se cierra: lo ancestral camina con lo contemporáneo cuando ambos se escuchan.'
   },
-
   saberAncestral: {
-    saber:
-      'En la tradición de las "palabras de cierre" del consejo de mayores —los cabildos indígenas, las mingas afro-pacíficas, las asambleas de campesinos del Valle— al cerrar un ciclo de trabajo (cosecha, año, proyecto comunitario) el vocero más experimentado decía: "esto hicimos, esto aprendimos, esto queda pendiente". No era resumen — era ritual. Tu cierre de grado 8 hereda esa lógica: portafolio que muestra lo hecho, sustentación que defiende lo aprendido, triángulo de pensamiento que nombra lo que sigues pensando. El círculo se cierra cuando lo ancestral camina con lo contemporáneo en la misma palabra.',
+    saber: 'En los talleres antiguos del Valle del Cauca, en las comunidades indígenas del Pacífico, en los gremios tradicionales europeos que llegaron al continente, había un acto ritual que marcaba el paso de aprendiz a oficial: la graduación frente a los mayores del oficio. El aprendiz que había trabajado un año bajo el maestro debía presentar su pieza maestra: la obra que demostraba que el oficio había sido aprendido. Esa presentación ocurría en público, en un día señalado, ante el maestro, los oficiales viejos y los aprendices más jóvenes del taller. El aprendiz exponía su pieza, contaba cómo la hizo, declaraba sus dificultades. Los mayores hacían preguntas técnicas y a veces incómodas. Si el aprendiz defendía con honestidad y competencia, los mayores le entregaban el título del oficio: ya no era aprendiz, era oficial. Si la defensa flaqueaba, volvía al taller por otro año. La sabiduría era inquebrantable: el oficio se certifica ante quienes lo conocen, no en privado. Ese ritual es exactamente lo que cierra el año escolar: la sustentación pública del proyecto integrador frente a la comunidad del grupo es la versión contemporánea de la graduación del aprendiz.',
     fuente: 'Palabras de cierre en cabildos, mingas y asambleas tradicionales colombianas',
-    preguntaPuente:
-      '¿Cómo cerraba el consejo de tus abuelos un año de trabajo? ¿Y qué de esa práctica sobrevive en tu propio cierre de grado 8?',
+    preguntaPuente: '¿Qué sabía el aprendiz al sentarse frente a los mayores para defender su pieza maestra, que el estudiante novato olvida cuando confunde sustentación con leer slides? ¿Y por qué el portafolio digital es la primera carta de presentación profesional para todo lo que venga después del grado 8?'
   },
-
   triangulo: {
     dussel: {
       autor: 'Enrique Dussel',
       lente: 'lente del nosotros',
-      cita: 'Cerrar bien un ciclo es declarar públicamente lo aprendido — y eso es ciudadanía intelectual desde el primer ciclo.',
-      preguntaEspejo:
-        '¿Estoy cerrando este grado con voz propia o solo cumpliendo la tarea? ¿Qué cambia si lo asumo como ritual de oficio, no como nota?',
+      cita: 'El aprendiz que regresa a la comunidad con oficio asumido cierra el ciclo de la pedagogía liberadora.',
+      preguntaEspejo: '¿Mi sustentación devuelve oficio asumido, o solo presenta archivo sin transformación personal?'
     },
     estoico: {
       autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
-      cita: 'No es lo que dices al cerrar — es la coherencia entre lo dicho y lo que sostienes después lo que define el cierre.',
-      preguntaEspejo:
-        '¿Lo que sustento hoy en el cierre de grado 8 voy a sostenerlo con actos en el grado 9? ¿O quedará como discurso bonito sin consecuencia?',
+      cita: 'Reconocer con honestidad lo que se aprendió y lo que falta es virtud final del año; inflar logros es debilidad.',
+      preguntaEspejo: '¿Mi sustentación declara con honestidad lo que aprendí y lo que aún me falta?'
     },
     floridi: {
       autor: 'Luciano Floridi',
       lente: 'lente de la infoesfera',
-      cita: 'El portafolio digital es la memoria persistente del propio camino — cuídalo como cuidarías una bitácora de vida.',
-      preguntaEspejo:
-        '¿Mi portafolio refleja honestamente lo que aprendí en grado 8, o oculta lo que me costó? ¿Cuál de las dos versiones me servirá más en el futuro?',
-    },
+      cita: 'El portafolio digital responsable es la nueva carta de presentación del profesional en la era de la información distribuida.',
+      preguntaEspejo: '¿Mi portafolio es identidad digital responsable que demuestra habilidades, o solo es archivo escolar disfrazado?'
+    }
   },
-
   cincoDimensiones: {
-    personal:
-      'Cerraste el grado 8 con sustentación, portafolio y triángulo de pensamiento — ritual completo de oficio académico.',
-    emocional:
-      'Sentiste la satisfacción y el nervio de presentar públicamente lo trabajado durante un año. Habilidad escasa que entrenaste.',
-    ciudadana:
-      'Practicaste palabra pública con evidencia y reconocimiento de límites. Esa habilidad es base de la vida democrática adulta.',
-    local:
-      'Heredaste el ritual de cierre del consejo de mayores: presentar lo hecho con dignidad, lo aprendido con humildad, lo pendiente con honestidad.',
-    intergeneracional:
-      'El cabildo que cerraba el año con palabras del vocero y tu cierre digital de grado 8 comparten gramática. El círculo se cierra cuando ambos se escuchan.',
-  },
+    personal: 'Cerraste el grado 8 con sustentación, portafolio y triángulo de pensamiento — ritual completo de oficio académico.',
+    emocional: 'Sentiste la satisfacción y el nervio de presentar públicamente lo trabajado durante un año. Habilidad escasa que entrenaste.',
+    ciudadana: 'Practicaste palabra pública con evidencia y reconocimiento de límites. Esa habilidad es base de la vida democrática adulta.',
+    local: 'Heredaste el ritual de cierre del consejo de mayores: presentar lo hecho con dignidad, lo aprendido con humildad, lo pendiente con honestidad.',
+    intergeneracional: 'El cabildo que cerraba el año con palabras del vocero y tu cierre digital de grado 8 comparten gramática. El círculo se cierra cuando ambos se escuchan.'
+  }
 };
 
 export default contenido;

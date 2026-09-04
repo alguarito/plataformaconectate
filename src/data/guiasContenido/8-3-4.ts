@@ -1,6 +1,9 @@
 /**
  * Contenido enriquecido para Grado 8 · Período 3 · Sesión 4
- * (sesión global 24 — Edición ética de imagen).
+ * (sesión global 24).
+ *
+ * Auto-generado desde content/guias/8/8-3-4.yaml por
+ * scripts/build-guias-web-ts.py. Edita el YAML, no este archivo.
  */
 import type { ContenidoGuia } from './_schema';
 
@@ -8,91 +11,161 @@ const contenido: ContenidoGuia = {
   grado: 8,
   periodo: 3,
   sesion: 4,
+  titulo: 'Edición de imagen — ética visual y derechos de imagen',
   resumen: 'Como el retoque del fotógrafo de plaza: limpiar la mancha, ajustar la luz, recortar el papel. Cuidar la imagen sin mentir sobre su contenido. Aprendes la línea ética entre edición y manipulación.',
   duracionMin: 90,
   subtema: 'Edición · Ética visual · Derechos de imagen',
-
   preLectura: {
     porQueImporta: 'Saber editar éticamente te protege legal y profesionalmente. En un mundo de Photoshop fácil, la honestidad visual es habilidad escasa y valiosa.',
     preguntaDetonante: '¿Qué del retoque del fotógrafo de plaza —su ética de mejorar sin mentir— podemos llevar a la edición digital?',
-    activacion: { titulo: 'La línea ética', descripcion: 'En 5 minutos: en parejas decidan si las siguientes ediciones son éticas o manipulación: 1) aclarar foto oscura, 2) borrar persona del fondo, 3) recortar bordes, 4) cambiar color del cielo. Justifiquen.', duracionMin: 5 },
-    conexion: { anterior: 'En la sesión 23 construiste presentación de alto impacto.', siguiente: 'En la sesión 25 aprenderás edición básica de sonido para presentaciones.' },
+    activacion: {
+      titulo: 'La línea ética',
+      descripcion: 'En 5 minutos: en parejas decidan si las siguientes ediciones son éticas o manipulación: 1) aclarar foto oscura, 2) borrar persona del fondo, 3) recortar bordes, 4) cambiar color del cielo. Justifiquen.',
+      duracionMin: 5
+    },
+    conexion: {
+      anterior: 'En la sesión 23 construiste presentación de alto impacto.',
+      siguiente: 'En la sesión 25 aprenderás edición básica de sonido para presentaciones.'
+    }
   },
-
   conceptosClave: [
-    { categoria: '✂️ Edición básica', termino: 'Recortar', definicion: 'Eliminar bordes innecesarios para enfocar el sujeto. Cambia el ENCUADRE pero no el CONTENIDO. Edición ética cuando elimina distracciones.', ejemplo: 'Foto del proyecto con bordes con basura. Recortar enfoca lo importante. NO es manipulación.', emoji: '✂️' },
-    { categoria: '✂️ Edición básica', termino: 'Brillo/Contraste', definicion: 'Ajustar luminosidad y diferencia entre claros/oscuros. Hace legible una imagen oscura sin alterar su contenido.', ejemplo: 'Foto con sombra del flash: aumentar brillo +20% para ver detalles. Sigue siendo la misma escena.', emoji: '☀️' },
-    { categoria: '✂️ Edición básica', termino: 'Saturación', definicion: 'Intensidad de los colores. Sutil aumento puede mejorar; exceso se ve artificial y poco profesional.', ejemplo: 'Aumentar saturación 10-15% mejora colores naturales. +50% se ve falso.', emoji: '🎨' },
-    { categoria: '✂️ Edición básica', termino: 'Filtros', definicion: 'Efectos predefinidos. Algunos son útiles (blanco y negro, sepia para histórico). Filtros agresivos quitan profesionalismo.', ejemplo: 'Filtro de Instagram en presentación profesional pierde seriedad. Filtros sutiles de ajuste son aceptables.', emoji: '🎭' },
-    { categoria: '⚖️ Ética visual', termino: 'Edición vs manipulación', definicion: 'EDICIÓN mejora la legibilidad sin alterar contenido. MANIPULACIÓN cambia lo que la imagen muestra. La línea es: ¿se altera la realidad?', ejemplo: 'Aclarar foto = edición ética. Borrar persona del fondo = manipulación. La diferencia es ética, no técnica.', emoji: '⚖️' },
-    { categoria: '⚖️ Ética visual', termino: 'Conservar la verdad', definicion: 'Principio profesional: la imagen editada debe seguir representando lo que realmente pasó. Periodismo y ciencia exigen esto. Educación también.', ejemplo: 'Si la foto del experimento muestra error, no lo borres. Documenta el error. La ciencia es honestidad visual.', emoji: '🔍' },
-    { categoria: '⚖️ Ética visual', termino: 'Atribución', definicion: 'Citar al autor y la fuente cuando la imagen no es propia. Es ética y legal. Sin atribución es plagio visual.', ejemplo: '"Imagen: Pexels, autor: Juan Pérez, 2024" en pequeño bajo la imagen. Da crédito y permite verificación.', emoji: '🏷️' },
-    { categoria: '⚖️ Ética visual', termino: 'Derechos de imagen', definicion: 'Conjunto legal sobre quién puede usar una imagen. Creative Commons (CC) permite uso con condiciones. Imágenes con copyright requieren permiso.', ejemplo: 'Pexels, Unsplash, Pixabay → CC, libre uso. Google Imágenes generalmente NO es libre — son imágenes con derechos.', emoji: '⚖️' },
+    {
+      termino: 'Edición básica de imagen',
+      definicion: 'Cuatro ajustes que cubren el 80% de las necesidades cotidianas: recortar, ajustar brillo y contraste, añadir texto, aplicar filtros suaves.',
+      ejemplo: 'Recortas una foto del patio del colegio, subes el brillo y agregas el título del evento. Listo para publicar.',
+      emoji: '✂️'
+    },
+    {
+      termino: 'Ley 1581 de 2012',
+      definicion: 'Ley colombiana de protección de datos personales. Incluye el tratamiento de imágenes de personas reconocibles.',
+      ejemplo: 'Publicar una foto reconocible de un compañero sin permiso puede violar la Ley 1581. Hay que pedir autorización antes.',
+      emoji: '📜'
+    },
+    {
+      termino: 'Derecho a la imagen propia',
+      definicion: 'Derecho constitucional (art. 15) que protege a las personas frente al uso, edición y publicación de su imagen sin consentimiento.',
+      ejemplo: 'Para usar la foto de un docente en un afiche del colegio, hay que pedirle permiso explícito; no basta con que sea "del colegio".',
+      emoji: '🛡️'
+    },
+    {
+      termino: 'Permiso explícito',
+      definicion: 'Autorización clara, escrita u oral, donde la persona acepta que su imagen sea editada y publicada con un propósito definido.',
+      ejemplo: '"Autorizo a usar mi foto en el afiche del festival del colegio, no en redes personales." Permiso claro y delimitado.',
+      emoji: '✅'
+    },
+    {
+      termino: 'Ética visual',
+      definicion: 'Principio de oficio que pide que la edición dignifique o al menos no degrade a la persona retratada. Más allá de la ley.',
+      ejemplo: 'Una caricatura que ridiculiza el rasgo físico de alguien viola la ética visual, aun si la persona "se rió de la broma".',
+      emoji: '🪞'
+    }
   ],
-
-  laboratorios: [{
-    tipo: 'quiz',
-    titulo: 'Quiz · Edición ética de imagen',
-    instrucciones: '5 preguntas tipo ICFES sobre edición ética y derechos de imagen.',
-    preguntas: [
-      { enunciado: '¿Cuál es la línea entre edición ética y manipulación?', opciones: ['No hay línea, todo es edición', 'Edición mejora legibilidad sin alterar contenido; manipulación cambia lo que la imagen muestra', 'La edición es siempre ilegal', 'Solo importa el resultado final'], respuestaIndex: 1, feedbackCorrecto: '✅ Excelente. EDICIÓN: aclarar, recortar, ajustar contraste sin cambiar QUÉ se muestra. MANIPULACIÓN: borrar/agregar elementos, cambiar lo que la imagen representa. La línea es ÉTICA, no técnica.', feedbackIncorrecto: '❌ SÍ hay línea ética clara: edición = mejorar legibilidad sin alterar contenido (recortar bordes, ajustar brillo). Manipulación = cambiar lo que la imagen muestra (borrar/agregar elementos). Ambas son técnicas, pero éticamente distintas.' },
-      { enunciado: 'Para presentaciones profesionales, los filtros de Instagram (vintage, blur, etc.):', opciones: ['Son obligatorios', 'Pierden profesionalismo y deben evitarse', 'Mejoran toda imagen', 'Solo aplican a fotos personales'], respuestaIndex: 1, feedbackCorrecto: '✅ Sí. Los filtros de Instagram tienen estética casual/personal. En presentación profesional pierden seriedad. Lo profesional: ediciones SUTILES (brillo, contraste 5-15%) sin filtros agresivos.', feedbackIncorrecto: '❌ Filtros de Instagram en contexto profesional pierden seriedad. La presentación profesional usa ediciones SUTILES (ajuste fino de brillo/contraste, no filtros agresivos).' },
-      { enunciado: 'Si descargas una imagen de Pexels para tu presentación, debes:', opciones: ['Borrar la marca de agua', 'Citar fuente y autor (es ética y legal)', 'Pagarle al autor', 'No es necesario nada'], respuestaIndex: 1, feedbackCorrecto: '✅ Correcto. Pexels es Creative Commons (libre uso) PERO la atribución es ética. Cita: "Imagen: Pexels, autor X". Es legal Y demuestra integridad profesional.', feedbackIncorrecto: '❌ Pexels NO requiere pago (es libre). Pero la ATRIBUCIÓN al autor sí es ética y profesional. Cita siempre: "Imagen: Pexels, autor X". La atribución es buen oficio.' },
-      { enunciado: 'Aumentar la saturación de una foto al 100% (máximo):', opciones: ['Es siempre mejor', 'Hace que la imagen se vea artificial y poco profesional', 'Es la edición estándar', 'Mejora la calidad real'], respuestaIndex: 1, feedbackCorrecto: '✅ Sí. Saturación máxima se ve "fake". La regla profesional: ajustes SUTILES (10-15% máximo). Más se ve sobre-procesado y pierde naturalidad.', feedbackIncorrecto: '❌ Saturación al máximo se ve ARTIFICIAL, no mejorada. La regla profesional: ajustes SUTILES (10-15%). El sobre-procesamiento se nota y pierde profesionalismo.' },
-      { enunciado: 'Una imagen descargada de Google Imágenes (sin verificar licencia):', opciones: ['Es libre de uso', 'Generalmente tiene derechos de autor — requiere verificar antes de usar', 'Solo aplica para Google', 'Es de dominio público'], respuestaIndex: 1, feedbackCorrecto: '✅ Correcto. Google Imágenes es BUSCADOR, no banco de imágenes libres. Cada imagen puede tener derechos. Verificar la licencia (filtro de Google: "derechos de uso") o usar plataformas explícitamente CC (Pexels, Unsplash).', feedbackIncorrecto: '❌ Google Imágenes es BUSCADOR (encuentra imágenes en internet). Cada imagen tiene su licencia que hay que verificar. Para uso seguro: usar Pexels, Unsplash, Pixabay (Creative Commons) o filtrar Google por "libre para usar".' },
-    ],
-  }],
-
+  laboratorios: [
+    {
+      tipo: 'quiz',
+      titulo: '¿Editas con ética visual?',
+      instrucciones: '5 preguntas para verificar que combinas técnica y derechos de imagen.',
+      preguntas: [
+        {
+          enunciado: '¿Cuántos ajustes básicos cubren el 80% de las necesidades cotidianas de edición?',
+          opciones: [
+            '1',
+            '4',
+            '20',
+            '100'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Exacto. Recortar, brillo y contraste, texto y filtros. Cuatro pasos resuelven la mayoría de los casos del aula.',
+          feedbackIncorrecto: 'Son 4: recortar, brillo y contraste, texto y filtros. Cuatro ajustes resuelven la mayoría de los casos cotidianos.'
+        },
+        {
+          enunciado: '¿Cuál es la ley colombiana que protege los datos personales y las imágenes?',
+          opciones: [
+            'Ley 100 de 1993',
+            'Ley 30 de 1992',
+            'Ley 1581 de 2012',
+            'No hay ley'
+          ],
+          respuestaIndex: 2,
+          feedbackCorrecto: 'Correcto. La Ley 1581 de 2012 regula el tratamiento de datos personales, incluyendo imágenes.',
+          feedbackIncorrecto: 'Es la Ley 1581 de 2012, marco general de protección de datos personales en Colombia.'
+        },
+        {
+          enunciado: '¿Qué artículo de la Constitución protege el derecho a la imagen propia?',
+          opciones: [
+            'Artículo 5',
+            'Artículo 50',
+            'Artículo 100',
+            'Artículo 15'
+          ],
+          respuestaIndex: 3,
+          feedbackCorrecto: 'Exacto. El artículo 15 protege la intimidad y el derecho a la imagen propia.',
+          feedbackIncorrecto: 'Es el artículo 15. Protege la intimidad personal y, dentro de ella, el derecho a la imagen propia.'
+        },
+        {
+          enunciado: 'Editas y publicas la foto de un compañero sin pedirle permiso. ¿Qué problema tienes?',
+          opciones: [
+            'Puedes estar violando la Ley 1581 y el derecho constitucional a la imagen',
+            'Ninguno, es del colegio',
+            'Solo si la foto es fea',
+            'Solo si la edición es muy fuerte'
+          ],
+          respuestaIndex: 0,
+          feedbackCorrecto: 'Correcto. Sin permiso explícito, la publicación puede violar la ley y el derecho constitucional. No depende del resultado estético.',
+          feedbackIncorrecto: 'El problema es legal y ético. Sin permiso explícito, la publicación puede violar la Ley 1581 y el artículo 15 constitucional.'
+        },
+        {
+          enunciado: '¿Qué pide la ética visual además de cumplir la ley?',
+          opciones: [
+            'Que la edición sea creativa',
+            'Que tenga filtros llamativos',
+            'Que tenga muchos colores',
+            'Que la edición dignifique o al menos no degrade a la persona retratada'
+          ],
+          respuestaIndex: 3,
+          feedbackCorrecto: 'Exacto. La ética visual va más allá del permiso legal: pide que la edición respete la dignidad de la persona retratada.',
+          feedbackIncorrecto: 'La ética visual pide que la edición dignifique o, al menos, no degrade. Es exigencia del oficio más allá de la ley.'
+        }
+      ]
+    }
+  ],
   postLectura: {
     reflexion: 'La edición ética es disciplina personal. ¿Cuándo te has sentido tentado a "mejorar" una imagen cruzando la línea ética? ¿Cómo lo manejaste?',
     transferencia: 'Esta semana: revisa 5 imágenes de tus redes sociales. ¿Cuáles fueron editadas éticamente y cuáles cruzaron la línea? Aplica la regla "¿alteré el contenido o solo la legibilidad?".',
-    cierre: 'El fotógrafo de plaza y el editor digital comparten oficio: cuidar la imagen sin mentir sobre su contenido. La ética es ancestral; las herramientas son nuevas.',
+    cierre: 'El fotógrafo de plaza y el editor digital comparten oficio: cuidar la imagen sin mentir sobre su contenido. La ética es ancestral; las herramientas son nuevas.'
   },
-
   saberAncestral: {
-    saber:
-      'El fotógrafo de plaza en pueblos del Valle, Cundinamarca y Boyacá del siglo XX hacía retoque a mano: con lápiz suave aclaraba una sombra fuerte, con pincel limpiaba una mancha del negativo, con cuchilla corregía una raya. Pero había línea ética estricta: nunca borrar a una persona del retrato familiar, nunca adelgazar al modelo, nunca cambiar el escenario real. El retoque cuidaba legibilidad; la manipulación mentía. La edición digital hereda esa línea: ajustar luz, contraste y recorte está bien; borrar personas, alterar cuerpos, falsificar contextos está mal. La ética visual es ancestral.',
+    saber: 'En el centro de Cartago, antes de las imprentas digitales, había un oficio que sostenía la comunicación visual: el pintor de carteles. Cuando un comerciante anunciaba apertura, una familia un velorio o el alcalde una reunión, el pintor bajaba a la plaza con pinceles y cuaderno de bocetos. Su trabajo era representación pública, y seguía un código ético estricto: nunca burla del retratado, nunca mentira sobre quién era. Si pintaba el rostro del comerciante, lo hacía con respeto: sin caricaturizar, sin alterar facciones. Si era para un velorio, con la dignidad que la familia merecía. El pintor que se burlaba perdía clientela en una semana. La sabiduría era inquebrantable: cuando representas a otra persona, la representación debe respetarla. Esa ética visual del oficio antiguo es exactamente la que pide la edición de imagen digital responsable, en la era de Photoshop, deepfakes y memes virales.',
     fuente: 'Fotógrafos de plaza en pueblos del Valle, Cundinamarca y Boyacá (siglo XX)',
-    preguntaPuente:
-      '¿Por qué el fotógrafo de plaza retocaba pero nunca mentía sobre el contenido de la foto? ¿Y qué pasa hoy cuando una imagen editada en redes cruza la línea ética sin que nadie lo note?',
+    preguntaPuente: '¿Qué sabía el pintor de carteles del centro al respetar la imagen del retratado, que el editor digital novato olvida cuando hace memes burlándose de un compañero? ¿Y por qué un recorte aparentemente inocente puede cambiar el sentido completo de una imagen?'
   },
-
   triangulo: {
     dussel: {
       autor: 'Enrique Dussel',
       lente: 'lente del nosotros',
-      cita: 'La imagen manipulada que circula sin advertencia es violencia visual silenciosa.',
-      preguntaEspejo:
-        '¿He compartido imágenes editadas como si fueran "tal cual"? ¿Qué efecto tuvo eso en quien las vio?',
+      cita: 'Una edición que dignifica a la persona retratada es liberadora; una que la caricaturiza o degrada reproduce la violencia simbólica del sistema.',
+      preguntaEspejo: '¿Mi edición dignifica a la persona retratada, o aprovecha que ella no puede protestar para tomar atajos visuales?'
     },
     estoico: {
       autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
-      cita: 'La línea entre mejorar y mentir se cruza fácil — la virtud está en no acercarse a ella.',
-      preguntaEspejo:
-        'Cuando edito una imagen mía, ¿estoy ajustando legibilidad o alterando contenido? ¿Cuál de las dos posturas puedo defender en 5 años?',
+      cita: 'Mostrar la verdad de la imagen es virtud; manipular para confundir es vicio del oficio visual.',
+      preguntaEspejo: '¿Mi edición preserva la verdad de la imagen, o la manipula para sugerir algo que no era?'
     },
     floridi: {
       autor: 'Luciano Floridi',
       lente: 'lente de la infoesfera',
-      cita: 'La integridad de la imagen es base de la confianza en la infoesfera visual contemporánea.',
-      preguntaEspejo:
-        '¿Mi feed reproduce la cultura del retoque indistinguible o aporta a una infoesfera más honesta?',
-    },
+      cita: 'La ética visual es la nueva ética profesional en la era de las imágenes virales.',
+      preguntaEspejo: 'Si mi imagen editada se viralizara en redes, ¿la persona retratada me agradecería o me demandaría?'
+    }
   },
-
   cincoDimensiones: {
-    personal:
-      'Aprendiste a distinguir edición ética de manipulación — habilidad cognitiva que aplica a tu propia producción visual diaria.',
-    emocional:
-      'Resististe la tentación de "mejorar la imagen" cruzando la línea — entendiste que la ética visual exige paciencia.',
-    ciudadana:
-      'Detectar manipulaciones en imágenes de prensa, publicidad y redes es defensa ciudadana cotidiana.',
-    local:
-      'Heredaste la línea ética del fotógrafo de plaza: cuidar la imagen sin mentir sobre lo que muestra.',
-    intergeneracional:
-      'El fotógrafo de los años 50 y el editor de Photoshop comparten dilema. Lo que cambia es la herramienta, no la línea ética.',
-  },
+    personal: 'Aprendiste a distinguir edición ética de manipulación — habilidad cognitiva que aplica a tu propia producción visual diaria.',
+    emocional: 'Resististe la tentación de "mejorar la imagen" cruzando la línea — entendiste que la ética visual exige paciencia.',
+    ciudadana: 'Detectar manipulaciones en imágenes de prensa, publicidad y redes es defensa ciudadana cotidiana.',
+    local: 'Heredaste la línea ética del fotógrafo de plaza: cuidar la imagen sin mentir sobre lo que muestra.',
+    intergeneracional: 'El fotógrafo de los años 50 y el editor de Photoshop comparten dilema. Lo que cambia es la herramienta, no la línea ética.'
+  }
 };
 
 export default contenido;

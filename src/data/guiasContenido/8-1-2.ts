@@ -1,6 +1,9 @@
 /**
  * Contenido enriquecido para Grado 8 · Período 1 · Sesión 2
- * Tema: Tipos de datos y formato de celdas en Excel.
+ * (sesión global 2).
+ *
+ * Auto-generado desde content/guias/8/8-1-2.yaml por
+ * scripts/build-guias-web-ts.py. Edita el YAML, no este archivo.
  */
 import type { ContenidoGuia } from './_schema';
 
@@ -8,242 +11,161 @@ const contenido: ContenidoGuia = {
   grado: 8,
   periodo: 1,
   sesion: 2,
-  resumen:
-    'Cada tipo de dato en Excel tiene su columna y formato. Como en el cuaderno del tendero del barrio: si confunde libras con unidades, pierde dinero al final del mes.',
+  titulo: 'Tipos de datos y formato de celdas en Excel',
+  resumen: 'Cada tipo de dato en Excel tiene su columna y formato. Como en el cuaderno del tendero del barrio: si confunde libras con unidades, pierde dinero al final del mes.',
   duracionMin: 90,
   subtema: 'Excel · Tipos de datos · Formato de celdas',
-
   preLectura: {
-    porQueImporta:
-      'Lo que aprendas hoy te servirá toda la vida: registrar gastos, calcular notas, llevar control de ventas, hacer un presupuesto familiar. Saber poner cada dato en su columna con su formato es disciplina que ahorra horas y evita errores.',
-    preguntaDetonante:
-      '¿Qué del oficio del tendero — su disciplina de poner cada cosa en su columna — podemos llevar a la hoja de cálculo digital?',
+    porQueImporta: 'Lo que aprendas hoy te servirá toda la vida: registrar gastos, calcular notas, llevar control de ventas, hacer un presupuesto familiar. Saber poner cada dato en su columna con su formato es disciplina que ahorra horas y evita errores.',
+    preguntaDetonante: '¿Qué del oficio del tendero — su disciplina de poner cada cosa en su columna — podemos llevar a la hoja de cálculo digital?',
     activacion: {
       titulo: 'El recibo que no cuadra',
-      descripcion:
-        'En 3 minutos: piensa en una vez que recibiste un recibo o factura con un dato confuso (precio mal escrito, fecha rara, columna sin etiqueta). ¿Qué error cometió quien lo hizo? ¿Cómo lo evitarías en Excel?',
-      duracionMin: 5,
+      descripcion: 'En 3 minutos: piensa en una vez que recibiste un recibo o factura con un dato confuso (precio mal escrito, fecha rara, columna sin etiqueta). ¿Qué error cometió quien lo hizo? ¿Cómo lo evitarías en Excel?',
+      duracionMin: 5
     },
     conexion: {
       anterior: 'En la sesión 1 aprendiste a hacer preguntas a los datos con phronesis.',
-      siguiente: 'En la sesión 3 estructurarás tablas con campos, registros y limpieza básica.',
-    },
+      siguiente: 'En la sesión 3 estructurarás tablas con campos, registros y limpieza básica.'
+    }
   },
-
   conceptosClave: [
     {
-      categoria: '🔢 Cómo se ingresa el dato',
-      termino: 'Número',
-      definicion:
-        'Valor con el que Excel puede calcular. Se alinea automáticamente a la derecha. Si Excel lo trata como texto, los cálculos fallan.',
-      ejemplo:
-        'Escribir 1500 (sin comillas ni letras) permite =SUMA. Escribir "1500" (entre comillas) o "mil quinientos" rompe el cálculo.',
-      emoji: '🔢',
+      termino: 'Tipo número',
+      definicion: 'Celda que contiene cantidades calculables. Excel la alinea a la derecha por defecto y permite operaciones aritméticas (SUMA, PROMEDIO).',
+      ejemplo: '"15", "3,14", "200" son números. Si escribes "quince" en una celda, Excel lo trata como texto y no podrá sumarlo con otros números.',
+      emoji: '🔢'
     },
     {
-      categoria: '🔢 Cómo se ingresa el dato',
-      termino: 'Texto',
-      definicion:
-        'Etiqueta o descripción que NO entra en cálculos. Se alinea a la izquierda por defecto. Útil para nombres, descripciones, códigos.',
-      ejemplo:
-        '"Lápices HB", "Juan Pérez", "Sede A". Los códigos como "08-A" mejor como texto si no quieres que Excel los trate como fecha.',
-      emoji: '🔤',
+      termino: 'Tipo texto',
+      definicion: 'Celda con cadenas de caracteres no calculables. Excel la alinea a la izquierda por defecto. Sirve para nombres, descripciones, códigos.',
+      ejemplo: '"María Pérez", "Producto A123", "Código X-45" son texto. Aunque parezcan números (un código), si tienen letras o se usan como identificador, deben ir como texto.',
+      emoji: '🔤'
     },
     {
-      categoria: '🔢 Cómo se ingresa el dato',
-      termino: 'Fecha',
-      definicion:
-        'Punto en el tiempo. En Excel es realmente un número (días desde 1900) que se muestra con formato de fecha. Permite restar fechas para calcular días transcurridos.',
-      ejemplo:
-        '12/03/2026 — Excel sabe que es marzo 12. Restando "hoy" menos "tu cumpleaños" obtienes tu edad en días.',
-      emoji: '📅',
+      termino: 'Tipo fecha',
+      definicion: 'Celda con día/mes/año ordenable cronológicamente. Permite restar fechas para calcular cuántos días pasaron entre dos eventos.',
+      ejemplo: '"15/03/2026" formateado como fecha permite ordenar de antiguo a reciente, calcular edad, contar días entre dos.',
+      emoji: '📅'
     },
     {
-      categoria: '🔢 Cómo se ingresa el dato',
-      termino: 'Moneda',
-      definicion:
-        'Número con unidad de medida monetaria visible. Se ingresa el valor sin símbolo y se aplica formato moneda (COP, USD, etc.).',
-      ejemplo:
-        'Escribir 1500 → aplicar formato moneda → se ve $1.500. NO escribir "$1.500" como texto: pierdes el cálculo.',
-      emoji: '💰',
+      termino: 'Tipo moneda',
+      definicion: 'Variante del tipo número con símbolo de moneda y separación de miles automática. Útil para precios, gastos, salarios.',
+      ejemplo: '"$ 5.000" con formato moneda permite que Excel reconozca el contexto financiero y muestre miles separados correctamente.',
+      emoji: '💰'
     },
     {
-      categoria: '🎨 Cómo se presenta el dato',
-      termino: 'Formato de celda',
-      definicion:
-        'Máscara visual que cambia cómo se muestra un valor sin alterar su valor real. Permite mostrar el mismo número como 1500, $1.500 o 1.500,00 según el contexto.',
-      ejemplo:
-        'El número 0.5 con formato porcentaje se muestra como 50%. Mismo valor, distinta presentación según para quién es.',
-      emoji: '🎯',
-    },
-    {
-      categoria: '🎨 Cómo se presenta el dato',
-      termino: 'Decimales',
-      definicion:
-        'Cantidad de cifras después del punto. Define la precisión visible. La precisión real del cálculo no cambia, solo lo que ves.',
-      ejemplo:
-        'Para edad: 0 decimales (15). Para promedio de notas: 1 decimal (3.7). Para moneda: 0 o 2 decimales (cuantos centavos).',
-      emoji: '📐',
-    },
-    {
-      categoria: '🎨 Cómo se presenta el dato',
-      termino: 'Alineación',
-      definicion:
-        'Cómo se acomoda el dato dentro de la celda. Convención profesional: texto a la izquierda, números a la derecha, encabezados centrados.',
-      ejemplo:
-        'Una columna con 30 nombres a la izquierda y 30 precios a la derecha es legible al primer vistazo. Todo centrado se vuelve confuso.',
-      emoji: '🔀',
-    },
-    {
-      categoria: '🎨 Cómo se presenta el dato',
-      termino: 'Encabezado',
-      definicion:
-        'Texto en la primera fila que nombra cada columna. Sin encabezado, una tabla es ilegible para alguien que no la creó.',
-      ejemplo:
-        '"Producto | Cantidad | Fecha | Precio" en negrita en la fila 1. Convertir esos encabezados en tabla con Ctrl+T para mejor manejo.',
-      emoji: '🏷️',
-    },
+      termino: 'Tipo porcentaje',
+      definicion: 'Celda que muestra el símbolo % y se calcula internamente como decimal. 50% es 0,5 en operaciones internas.',
+      ejemplo: 'Si tienes 0,15 en una celda y aplicas formato porcentaje, Excel muestra "15%". Multiplicar por una celda monetaria te da el descuento.',
+      emoji: '📊'
+    }
   ],
-
   laboratorios: [
     {
       tipo: 'quiz',
-      titulo: 'Quiz · Tipos de datos en Excel',
-      instrucciones:
-        '5 preguntas tipo ICFES sobre tipos de datos, formatos y errores comunes al ingresar información en hojas de cálculo.',
+      titulo: '¿Sabes elegir el tipo de dato correcto?',
+      instrucciones: '5 preguntas para verificar que distingues los 5 tipos básicos de Excel y cuándo usar cada uno.',
       preguntas: [
         {
-          enunciado:
-            'Si en una celda de Excel escribes "12-mar-2026" y luego intentas sumarla con otra celda que contiene "15-mar-2026", ¿qué hace Excel?',
+          enunciado: 'Escribes \'15-marzo\' en una celda y quieres ordenar las filas cronológicamente. ¿Qué tipo debe tener esa celda?',
           opciones: [
-            'Suma los caracteres de los textos',
-            'Devuelve un error porque son textos',
-            'Suma los números de serie internos de las fechas',
-            'Solo suma los días del mes',
+            'Texto',
+            'Número',
+            'Moneda',
+            'Fecha'
+          ],
+          respuestaIndex: 3,
+          feedbackCorrecto: 'Correcto. Solo el tipo Fecha permite ordenar cronológicamente. Si la celda es texto, el orden sería alfabético y "15-marzo" iría junto a "15-enero" en lugar de su lugar real.',
+          feedbackIncorrecto: 'El tipo correcto es Fecha. Solo así Excel reconoce el orden cronológico real, no alfabético.'
+        },
+        {
+          enunciado: 'Tu columna precio tiene celdas con 5000, 7.500, "cinco mil". ¿Qué problema vas a tener al sumar?',
+          opciones: [
+            'La celda con cinco mil será ignorada porque Excel la trata como texto',
+            'Ninguno, Excel suma todo automáticamente',
+            'Excel convertirá cinco mil a 5000 automáticamente',
+            'La suma incluirá las 3 celdas como números'
+          ],
+          respuestaIndex: 0,
+          feedbackCorrecto: 'Exacto. Excel ignora silenciosamente las celdas con texto cuando sumas. El total queda menor de lo esperado sin aviso.',
+          feedbackIncorrecto: 'Excel no convierte texto a número automáticamente. La celda con \'cinco mil\' queda fuera de la suma y el total resultante engaña.'
+        },
+        {
+          enunciado: '¿Cuál es la herramienta de Excel que cambia el tipo de una celda?',
+          opciones: [
+            'Insertar → Tabla',
+            'Formato → Formato de celdas → Número',
+            'Datos → Validación',
+            'Inicio → Borrar formato'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Correcto. Formato de celdas → Número permite elegir Número, Texto, Fecha, Moneda, Porcentaje y otros.',
+          feedbackIncorrecto: 'La ruta correcta es Formato → Formato de celdas → pestaña Número. Las otras opciones hacen cosas distintas.'
+        },
+        {
+          enunciado: 'Pones 50 en una celda y aplicas formato Porcentaje. ¿Qué muestra Excel?',
+          opciones: [
+            '50%',
+            '0,5%',
+            '5000%',
+            '0,005%'
           ],
           respuestaIndex: 2,
-          feedbackCorrecto:
-            '✅ Excelente. Excel almacena las fechas como números de serie internos (12-mar-2026 ≈ 46095). Al sumar, suma esos números. Ojo: sumar fechas raras veces tiene sentido — restar sí (te dice cuántos días pasaron).',
-          feedbackIncorrecto:
-            '❌ Internamente Excel guarda las fechas como números (días desde 1900). Por eso PUEDE sumarlas — aunque el resultado sea raro semánticamente. Lo útil es RESTARLAS para saber días entre fechas.',
+          feedbackCorrecto: 'Correcto. Aplicar porcentaje a una celda con valor 50 lo interpreta como 50 (no 0,5) y lo muestra como 5000%. Para tener 50% debes escribir 0,5 antes.',
+          feedbackIncorrecto: 'Excel muestra 5000% porque interpreta el 50 como número entero y lo multiplica por 100. Para tener 50% debes escribir 0,5 con el formato porcentaje aplicado.'
         },
         {
-          enunciado:
-            '¿Cuál es la mejor manera de ingresar el precio "$1.500" en una hoja de cálculo profesional?',
+          enunciado: '¿Cuál es la regla profesional para elegir el tipo de una columna?',
           opciones: [
-            'Escribir "$1.500" como texto entre comillas',
-            'Escribir 1500 y aplicar formato de moneda COP',
-            'Escribir "mil quinientos" en letras',
-            'Usar varias celdas: una con $ y otra con 1500',
+            'Decidir según lo que voy a hacer con la columna después',
+            'Elegir el tipo que se vea más bonito',
+            'Usar siempre Texto por seguridad',
+            'Dejar el tipo por defecto que ponga Excel'
           ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            '✅ Correcto. Escribir el número puro (1500) y aplicar formato moneda separa el valor real de su presentación. Así puedes calcular sumas, promedios, descuentos sin que el símbolo $ rompa las fórmulas.',
-          feedbackIncorrecto:
-            '❌ Si escribes "$1.500" como texto, ningún cálculo funciona. Si lo escribes en letras, peor. La regla: ingresa el número limpio, aplica el formato como capa visual.',
-        },
-        {
-          enunciado:
-            'Sara quiere registrar el peso de 30 perros en kg con precisión decimal. ¿Qué tipo de dato y formato debe usar?',
-          opciones: [
-            'Texto, sin formato',
-            'Número con 2 decimales',
-            'Fecha, formato corto',
-            'Moneda en COP',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            '✅ Sí. Pesos como 12.5, 8.3, 15.0 son números con decimales. El formato de 2 decimales muestra 12.50 (incluso si es exacto). Ni texto, ni fecha, ni moneda — es número con decimales.',
-          feedbackIncorrecto:
-            '❌ El peso es claramente un número (cuantitativo continuo). Texto rompe cálculos. Fecha es absurdo para peso. Moneda implicaría que es dinero — no es. Es número con decimales.',
-        },
-        {
-          enunciado:
-            'Si una columna se llama "edades" pero algunas celdas tienen "12 años" y otras "12", ¿qué pasa al calcular el promedio?',
-          opciones: [
-            'Excel suma todas y promedia correctamente',
-            'Excel solo promedia los valores que son número puro',
-            'Excel devuelve error porque hay textos',
-            'Excel convierte los textos a 0',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            '✅ Exacto. =PROMEDIO ignora los textos ("12 años") y solo calcula con los números puros (12). El resultado es real pero está hecho con menos datos de los que parece. Por eso la limpieza importa.',
-          feedbackIncorrecto:
-            '❌ Excel no falla, pero tampoco trata "12 años" como número. =PROMEDIO ignora los textos. El resultado es real pero solo con los registros numéricos limpios. Por eso la coherencia de tipo importa.',
-        },
-        {
-          enunciado:
-            'Antonio tiene una tabla con números a la izquierda y texto al centro. Para una presentación profesional, la mejor práctica visual es:',
-          opciones: [
-            'Centrar todo para uniformidad',
-            'Texto a la izquierda, números a la derecha, encabezados centrados',
-            'Todo a la derecha para que se vea moderno',
-            'No importa, Excel ajusta solo',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            '✅ Correcto. Es convención editorial profesional: texto izquierda (lectura natural), números a la derecha (comparar dígitos alineados), encabezados centrados o en negrita. Centrar todo confunde.',
-          feedbackIncorrecto:
-            '❌ Centrar todo o todo a la derecha no es convención profesional. La regla universal es: texto izquierda, números derecha, encabezados centrados o en negrita. Da claridad inmediata al lector.',
-        },
-      ],
-    },
+          respuestaIndex: 0,
+          feedbackCorrecto: 'Exacto. La phronesis consiste en decidir el tipo por el uso futuro: si voy a sumar, número; si voy a ordenar cronológicamente, fecha; si solo voy a leer, texto.',
+          feedbackIncorrecto: 'La regla profesional es decidir el tipo según el uso: ¿voy a calcular?, ¿ordenar?, ¿solo leer? El uso determina el tipo correcto.'
+        }
+      ]
+    }
   ],
-
   postLectura: {
-    reflexion:
-      '¿En qué momento de tu vida te servirá organizar datos con tipos correctos y formato? Piensa en compras, ventas, presupuestos, tareas. Lo que aprendiste hoy te ahorra horas mañana.',
-    transferencia:
-      'Esta semana: lleva un registro en Excel (o Google Sheets) de algo real (gastos del kiosko, tiempo de pantalla, calificaciones). Aplica los 4 tipos: texto, número, fecha, moneda. Verifica con una fórmula =SUMA o =PROMEDIO.',
-    cierre:
-      'La disciplina del tendero — cada cosa en su columna — se vuelve hábito digital cuando la repites. Hoy es práctica; mañana, costumbre.',
+    reflexion: '¿En qué momento de tu vida te servirá organizar datos con tipos correctos y formato? Piensa en compras, ventas, presupuestos, tareas. Lo que aprendiste hoy te ahorra horas mañana.',
+    transferencia: 'Esta semana: lleva un registro en Excel (o Google Sheets) de algo real (gastos del kiosko, tiempo de pantalla, calificaciones). Aplica los 4 tipos: texto, número, fecha, moneda. Verifica con una fórmula =SUMA o =PROMEDIO.',
+    cierre: 'La disciplina del tendero — cada cosa en su columna — se vuelve hábito digital cuando la repites. Hoy es práctica; mañana, costumbre.'
   },
-
   saberAncestral: {
-    saber:
-      'El cuaderno del tendero de barrio en el Valle era una hoja de cálculo antes de que existieran las hojas de cálculo. Cada columna tenía su tipo: fecha, producto, cantidad, precio unitario, total. Confundir libras con unidades, o pesos con dólares, no era error pequeño — era pérdida real al final del mes. El tendero aprendía con la práctica que cada dato tiene su naturaleza y su lugar.',
+    saber: 'En los talleres de carpintería del centro de Cartago y en los aserríos del Pacífico, ningún maestro toma madera del montón al azar antes de cortar. Tiene un gesto previo que parece pérdida de tiempo a quien no sabe del oficio: clasifica la madera por tipo. El cedro va a un lado: liviano, blando, fácil de tallar; sirve para puertas y cofres. El guayacán va al otro: pesado, durísimo, casi imposible de cortar a mano; sirve para vigas y postes que aguantan lluvia y peso. El balso en una tercera pila: liviano como espuma, perfecto para juguetes y maquetas. Si el maestro confunde los tipos, el desastre es seguro: una puerta de guayacán pesa demasiado y rompe los goznes; una viga de balso se quiebra al primer aguacero; un juguete de cedro se astilla en las manos del niño. La sabiduría es ancestral y simple: cada material tiene un uso, y cada uso exige el material correcto. Quien no clasifica antes de cortar pierde la pieza y a veces la confianza del cliente.',
     fuente: 'Cuaderno del tendero de barrio en el Valle del Cauca',
-    preguntaPuente:
-      '¿Qué del cuaderno del tendero (cada cosa en su columna, cada tipo respetado) podemos aplicar a Excel hoy? ¿Y qué nuevo problema aparece cuando una hoja electrónica nos deja mezclar tipos sin avisarnos?',
+    preguntaPuente: '¿Qué sabía el carpintero al clasificar la madera por tipo antes de cortar, que el novato olvida cuando llena celdas de Excel sin pensar en el tipo de dato? ¿Y qué pasa con un promedio de notas si una celda dice "cuatro punto cinco" en lugar de \\emph{4{,}5}?'
   },
-
   triangulo: {
     dussel: {
       autor: 'Enrique Dussel',
       lente: 'lente del nosotros',
-      cita: 'Cada tipo de dato tiene origen — y reconocerlo es ya un acto político.',
-      preguntaEspejo:
-        '¿De dónde vienen los datos que estoy organizando en mi hoja? ¿A quién sirvió primero esa información antes de llegar a mí?',
+      cita: 'Los datos correctamente clasificados respetan a quien los produjo; los mal clasificados los reducen a ruido.',
+      preguntaEspejo: '¿Mi clasificación de tipos respeta lo que cada columna representa, o trato todo como números abstractos?'
     },
     estoico: {
-      autor: 'Marco Aurelio',
+      autor: 'Epicteto',
       lente: 'lente del cuidado interior',
-      cita: 'Lo cotidiano bien hecho es la base de lo extraordinario; cuida la columna antes que el resultado.',
-      preguntaEspejo:
-        '¿Estoy dispuesto a invertir 5 minutos en formatear bien las columnas o prefiero apresurarme y rehacer el trabajo después?',
+      cita: 'Lo pequeño bien hecho prepara lo grande; lo pequeño descuidado lo arruina.',
+      preguntaEspejo: '¿Estoy dedicando suficiente cuidado a esta tarea pequeña, sabiendo que las siguientes sesiones se montan sobre ella?'
     },
     floridi: {
       autor: 'Luciano Floridi',
       lente: 'lente de la infoesfera',
-      cita: 'La calidad informacional empieza por el tipo de dato bien declarado en su origen.',
-      preguntaEspejo:
-        '¿Mis hojas de cálculo aportan calidad informacional a quien las recibe, o son ruido tipográfico disfrazado de datos?',
-    },
+      cita: 'La información bien estructurada es la nueva ética de la era digital.',
+      preguntaEspejo: '¿Mi hoja está estructurada para que otra persona la entienda y la use sin pedirme aclaraciones, o solo yo la entiendo?'
+    }
   },
-
   cincoDimensiones: {
-    personal:
-      'Aprendiste que la diferencia entre amateur y profesional con Excel es disciplina con los tipos de dato — no inteligencia bruta.',
-    emocional:
-      'Resististe la tentación del "ya está, sigamos" — entendiste que el orden inicial te ahorra frustración después.',
-    ciudadana:
-      'Una hoja de cálculo limpia respeta a quien la lee. Esa cortesía editorial es ciudadanía digital concreta.',
-    local:
-      'Heredaste el oficio del tendero del Valle: cada cosa en su columna, cada tipo respetado, cada total verificable.',
-    intergeneracional:
-      'El cuaderno de la abuela y tu Excel comparten el mismo principio. Lo que cambia es la herramienta, no la disciplina.',
-  },
+    personal: 'Aprendiste que la diferencia entre amateur y profesional con Excel es disciplina con los tipos de dato — no inteligencia bruta.',
+    emocional: 'Resististe la tentación del "ya está, sigamos" — entendiste que el orden inicial te ahorra frustración después.',
+    ciudadana: 'Una hoja de cálculo limpia respeta a quien la lee. Esa cortesía editorial es ciudadanía digital concreta.',
+    local: 'Heredaste el oficio del tendero del Valle: cada cosa en su columna, cada tipo respetado, cada total verificable.',
+    intergeneracional: 'El cuaderno de la abuela y tu Excel comparten el mismo principio. Lo que cambia es la herramienta, no la disciplina.'
+  }
 };
 
 export default contenido;

@@ -1,6 +1,9 @@
 /**
  * Contenido enriquecido para Grado 8 · Período 2 · Sesión 5
- * (sesión global 15 — Actuadores y eventos en MakeCode).
+ * (sesión global 15).
+ *
+ * Auto-generado desde content/guias/8/8-2-5.yaml por
+ * scripts/build-guias-web-ts.py. Edita el YAML, no este archivo.
  */
 import type { ContenidoGuia } from './_schema';
 
@@ -8,102 +11,161 @@ const contenido: ContenidoGuia = {
   grado: 8,
   periodo: 2,
   sesion: 5,
-  resumen:
-    'Como las campanas del pueblo: cada respuesta automática tiene su propio código sonoro. Aprendes a programar actuadores (LEDs, sonido, pantalla) en secuencias coreografiadas con propósito comunicativo.',
+  titulo: 'Actuadores — LEDs, sonido y coreografía',
+  resumen: 'Como las campanas del pueblo: cada respuesta automática tiene su propio código sonoro. Aprendes a programar actuadores (LEDs, sonido, pantalla) en secuencias coreografiadas con propósito comunicativo.',
   duracionMin: 90,
   subtema: 'Actuadores · LEDs · Sonido · Coreografía',
-
   preLectura: {
-    porQueImporta:
-      'Saber diseñar respuestas automáticas multi-actuador te permite construir interfaces accesibles, alarmas claras, indicadores intuitivos. Es habilidad de diseño UX antes de existir UX.',
-    preguntaDetonante:
-      '¿Qué de las campanas del pueblo — la disciplina del código sonoro reconocible — podemos llevar a los actuadores que diseñamos hoy?',
+    porQueImporta: 'Saber diseñar respuestas automáticas multi-actuador te permite construir interfaces accesibles, alarmas claras, indicadores intuitivos. Es habilidad de diseño UX antes de existir UX.',
+    preguntaDetonante: '¿Qué de las campanas del pueblo — la disciplina del código sonoro reconocible — podemos llevar a los actuadores que diseñamos hoy?',
     activacion: {
       titulo: 'La respuesta automática perfecta',
-      descripcion:
-        'En 5 minutos: en parejas identifiquen una respuesta automática del entorno (timbre del colegio, alarma del celular, notificación) que está bien diseñada y otra que está mal. ¿Qué las diferencia?',
-      duracionMin: 5,
+      descripcion: 'En 5 minutos: en parejas identifiquen una respuesta automática del entorno (timbre del colegio, alarma del celular, notificación) que está bien diseñada y otra que está mal. ¿Qué las diferencia?',
+      duracionMin: 5
     },
     conexion: {
       anterior: 'En la sesión 14 aprendiste a leer sensores y configurar eventos automáticos.',
-      siguiente: 'En la sesión 16 trabajarás variables, umbrales y calibración para sistemas más sofisticados.',
-    },
+      siguiente: 'En la sesión 16 trabajarás variables, umbrales y calibración para sistemas más sofisticados.'
+    }
   },
-
   conceptosClave: [
-    { categoria: '💡 Tipos de actuador', termino: 'LED', definicion: 'Diodo emisor de luz. En el micro:bit hay matriz 5x5 de LEDs rojos integrados que se encienden individualmente o en patrones (iconos, mensajes, animaciones).', ejemplo: 'show_icon(Heart) enciende los LEDs en forma de corazón. plot(2,2) enciende solo el LED del centro. Útil para iconos rápidos.', emoji: '💡' },
-    { categoria: '💡 Tipos de actuador', termino: 'Buzzer/sonido', definicion: 'Componente que produce sonido. En micro:bit v2 está integrado; en v1 requiere uno externo. Permite reproducir notas musicales, melodías, beeps simples.', ejemplo: 'play_tone(440, 500) emite la nota La por 500 ms. Útil para confirmaciones sonoras o alarmas cortas.', emoji: '🔔' },
-    { categoria: '💡 Tipos de actuador', termino: 'Pantalla LED 5x5', definicion: 'La matriz de LEDs del micro:bit que muestra texto, números o iconos predefinidos. Limitada pero suficiente para mensajes cortos y reconocibles.', ejemplo: 'show_string("HOLA") desplaza el texto carácter por carácter. show_number(42) muestra el número.', emoji: '📺' },
-    { categoria: '💡 Tipos de actuador', termino: 'Servomotor', definicion: 'Motor que se mueve a un ángulo específico (0° a 180°). Útil para abrir/cerrar puertas pequeñas, mover indicadores físicos, controlar mecanismos.', ejemplo: 'servo.set_angle(90) mueve el servo a posición central. servo.set_angle(180) lo lleva al extremo. Buen actuador físico.', emoji: '⚙️' },
-    { categoria: '🎬 Diseño de respuesta', termino: 'Secuencia', definicion: 'Orden temporal de activación de actuadores. Una buena secuencia cuenta una historia: apertura visual → refuerzo sonoro → confirmación textual.', ejemplo: 'Saluda automático: 1) icono corazón (1s) → 2) melodía bienvenida (1.5s) → 3) texto "¡HOLA!" (2s). Lectura clara.', emoji: '📋' },
-    { categoria: '🎬 Diseño de respuesta', termino: 'Patrón', definicion: 'Repetición consistente de una respuesta. Si tu saluda usa "luz + sonido + texto", todos los saludas deberían usar ese mismo patrón para que la audiencia lo aprenda.', ejemplo: 'Como las campanas del pueblo: 1 campanada = misa, 2 = muerte, 3 = fiesta. La consistencia hace que el patrón se aprenda.', emoji: '🔁' },
-    { categoria: '🎬 Diseño de respuesta', termino: 'Duración', definicion: 'Tiempo que cada actuador permanece activo. Demasiado corto se pierde; demasiado largo molesta. La duración óptima depende del tipo de actuador y del mensaje.', ejemplo: 'LED visual: 1-2 segundos. Sonido: máximo 2 segundos (más es molesto). Texto: 2-3 segundos por mensaje.', emoji: '⏱️' },
-    { categoria: '🎬 Diseño de respuesta', termino: 'Combinación multiestímulo', definicion: 'Coordinación de varios actuadores para un mensaje único. La regla universal del diseño: visual capta atención, sonoro confirma, textual explica.', ejemplo: 'Una alarma efectiva: LED rojo parpadea + buzzer corto repetido + texto "ALERTA". Tres canales coordinados, mismo mensaje.', emoji: '🎼' },
+    {
+      termino: 'Actuador',
+      definicion: 'Componente que ejecuta acción física a partir de la decisión del programa. Produce efectos en el mundo (luz, sonido, movimiento).',
+      ejemplo: 'Los 25 LEDs de la matriz 5x5 del micro:bit son actuadores: encienden o apagan según el programa.',
+      emoji: '💡'
+    },
+    {
+      termino: 'Matriz de LEDs 5x5',
+      definicion: '25 luces pequeñas organizadas en 5 filas y 5 columnas en la cara del micro:bit. Cada una se puede encender independientemente.',
+      ejemplo: 'En MakeCode "mostrar LEDs" permite pintar la matriz como mosaico: cada cuadrito representa un LED encendido o apagado.',
+      emoji: '🟨'
+    },
+    {
+      termino: 'Pausa (ms)',
+      definicion: 'Bloque que detiene la ejecución por milisegundos. Crucial para animaciones: sin pausa, los frames se ven solo el último.',
+      ejemplo: 'Mostrar frame 1, pausa 200ms, mostrar frame 2, pausa 200ms... La pausa hace visible la animación.',
+      emoji: '⏸'
+    },
+    {
+      termino: 'Tocar tono (Hz, ms)',
+      definicion: 'Bloque de música que emite frecuencia por tiempo determinado. Frecuencias estándar: do=262, re=294, mi=330, fa=349, sol=392.',
+      ejemplo: 'tocar tono(262, 500) emite un do durante medio segundo. Encadenando notas se construyen melodías.',
+      emoji: '🎵'
+    },
+    {
+      termino: 'Coreografía',
+      definicion: 'Secuencia ordenada de frames de LEDs con sonido sincronizado. Comunica algo (latido, ola, palabra) y se controla con botones.',
+      ejemplo: 'Corazón pequeño → mediano → grande → mediano → pequeño con sonido grave-agudo-grave. Cuenta latido en 5 frames.',
+      emoji: '💃'
+    }
   ],
-
-  laboratorios: [{
-    tipo: 'quiz',
-    titulo: 'Quiz · Actuadores y secuencias',
-    instrucciones: '5 preguntas tipo ICFES sobre diseño de respuestas automáticas multi-actuador.',
-    preguntas: [
-      { enunciado: 'Si quieres que el micro:bit muestre un icono de corazón, ¿qué bloque usarías?', opciones: ['play_tone(440, 500)', 'show_icon(Heart)', 'set_servo_angle(90)', 'sound_level()'], respuestaIndex: 1, feedbackCorrecto: '✅ Correcto. show_icon(Heart) muestra el icono predefinido de corazón en la matriz LED 5x5. MakeCode tiene varios iconos: Heart, Smile, Sad, Yes, No, etc.', feedbackIncorrecto: '❌ play_tone es para sonido. set_servo_angle es para servomotor. sound_level lee sonido. Para mostrar visualmente un icono se usa show_icon().' },
-      { enunciado: 'En una secuencia bien diseñada de saluda automático, ¿qué actuador suele ir PRIMERO?', opciones: ['Texto en pantalla', 'Visual (LED o icono)', 'Sonido (buzzer)', 'Servomotor'], respuestaIndex: 1, feedbackCorrecto: '✅ Sí. La regla es "primero los ojos". El visual capta atención antes que el sonido. Después viene el sonoro como refuerzo, y al final el texto como confirmación.', feedbackIncorrecto: '❌ La regla del diseño multi-actuador: VISUAL primero (capta atención), SONORO después (refuerza), TEXTO al final (explica). Texto primero se pierde en el ojo no enfocado.' },
-      { enunciado: 'Una respuesta automática que activa LED + sonido + texto al MISMO TIEMPO se siente:', opciones: ['Profesional y clara', 'Caótica y difícil de procesar', 'Económica en tiempo', 'Eficiente'], respuestaIndex: 1, feedbackCorrecto: '✅ Correcto. Sin pausas entre actuadores, todo se mezcla y la mente humana se pierde. La SECUENCIA con pausas (200-500ms entre cada uno) hace que se entienda.', feedbackIncorrecto: '❌ Activar todo a la vez es CAÓTICO, no profesional. La regla: secuenciar con pausas pequeñas (200-500ms). Cada actuador tiene su momento.' },
-      { enunciado: 'La duración óptima de un sonido (buzzer) en una respuesta automática es:', opciones: ['Más de 5 segundos para que se escuche bien', 'Entre 1 y 2 segundos máximo', 'Lo más corto posible (50ms)', 'No importa, depende del usuario'], respuestaIndex: 1, feedbackCorrecto: '✅ Sí. Sonidos de 1-2 segundos son perceptibles y no molestos. Más de 3 segundos se vuelve agresivo. Menos de 0.5 segundos se pierde.', feedbackIncorrecto: '❌ Sonidos largos (>3s) MOLESTAN. Sonidos demasiado cortos se PIERDEN. La duración óptima es 1-2 segundos: suficiente para captar, no tanto para irritar.' },
-      { enunciado: 'Si la regla del pueblo era "1 campanada=misa, 2=muerte, 3=fiesta", el principio de diseño que aplica es:', opciones: ['Aleatoriedad para sorprender', 'Consistencia del patrón para que se aprenda', 'Volumen máximo siempre', 'Simplicidad sin código'], respuestaIndex: 1, feedbackCorrecto: '✅ Excelente. La CONSISTENCIA del patrón (mismo número de campanadas → mismo significado) permite que la comunidad lo aprenda sin manual. Es el principio de diseño universal.', feedbackIncorrecto: '❌ La aleatoriedad rompe el aprendizaje. El volumen no es el principio. La consistencia DEL PATRÓN es lo que hace que cualquier respuesta automática (campanas, alarmas, semáforos) se vuelva legible.' },
-    ],
-  }],
-
+  laboratorios: [
+    {
+      tipo: 'quiz',
+      titulo: '¿Sabes usar actuadores con criterio?',
+      instrucciones: '5 preguntas para verificar que dominas LEDs, sonido y sincronización en MakeCode.',
+      preguntas: [
+        {
+          enunciado: 'Programaste 5 frames seguidos sin "pausa" entre ellos. ¿Qué pasa?',
+          opciones: [
+            'Animación fluida',
+            'Error',
+            'Se ve todo en pantalla a la vez',
+            'Solo se ve el último frame porque cambian demasiado rápido'
+          ],
+          respuestaIndex: 3,
+          feedbackCorrecto: 'Exacto. Sin pausa los frames cambian a velocidad de microsegundos. Solo se percibe el último. La pausa hace visible la secuencia.',
+          feedbackIncorrecto: 'Sin pausa solo se ve el último. Los frames cambian tan rápido que el ojo solo capta el final. Necesitas pausa entre ellos.'
+        },
+        {
+          enunciado: '¿Cuál es la frecuencia estándar de la nota "do" (do central)?',
+          opciones: [
+            '262 Hz',
+            '100 Hz',
+            '440 Hz',
+            '1000 Hz'
+          ],
+          respuestaIndex: 0,
+          feedbackCorrecto: 'Correcto. Do central = 262 Hz. Re=294, mi=330, fa=349, sol=392, la=440, si=494. Estándares musicales.',
+          feedbackIncorrecto: 'Do central es 262 Hz. La 440 (que confunde) es la nota "la", referencia para afinación.'
+        },
+        {
+          enunciado: '¿Cuántos LEDs tiene la matriz del micro:bit?',
+          opciones: [
+            '16',
+            '25',
+            '100',
+            '9'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Exacto. 5x5 = 25 LEDs. Cada uno controlable independientemente con "mostrar LEDs" o "encender LED en X,Y".',
+          feedbackIncorrecto: 'Son 25 LEDs (matriz 5x5). Cada uno se puede encender por separado.'
+        },
+        {
+          enunciado: '¿Qué hace un actuador?',
+          opciones: [
+            'Percibe el mundo',
+            'Calcula valores',
+            'Ejecuta acciones físicas a partir de decisiones del programa',
+            'Almacena datos'
+          ],
+          respuestaIndex: 2,
+          feedbackCorrecto: 'Correcto. Actuador ejecuta acciones (luz, sonido, movimiento). Sensor percibe; actuador actúa. Son complementarios.',
+          feedbackIncorrecto: 'Actuador ejecuta acciones físicas. Lo que percibe es el sensor. Actuador y sensor son complementarios.'
+        },
+        {
+          enunciado: 'Vas a programar el "latido" del corazón. ¿Qué patrón de frames usas?',
+          opciones: [
+            'Un corazón fijo todo el tiempo',
+            'Corazón aleatorio',
+            '25 LEDs aleatorios',
+            'Corazón pequeño → mediano → grande → mediano → pequeño, con pausas'
+          ],
+          respuestaIndex: 3,
+          feedbackCorrecto: 'Exacto. Latido = expansión y contracción rítmica. El patrón pequeño-mediano-grande-mediano-pequeño con pausas comunica latido.',
+          feedbackIncorrecto: 'El latido se comunica con la secuencia pequeño-mediano-grande-mediano-pequeño y pausas entre cada frame.'
+        }
+      ]
+    }
+  ],
   postLectura: {
     reflexion: 'Las campanas del pueblo y los actuadores digitales comparten un principio: comunicar con disciplina y consistencia. ¿En qué situación de tu colegio o casa convendría diseñar una respuesta automática para mejorar la convivencia?',
     transferencia: 'Esta semana: en MakeCode diseña un saluda automático completo con LED + sonido + texto y pruébalo con 3 personas distintas. ¿Lo entienden todas igual? Ajusta hasta que sí.',
-    cierre: 'Las campanas y los actuadores digitales hacen lo mismo: dar voz a una decisión que la comunidad necesita escuchar. Diseñar es ordenar percepciones con respeto.',
+    cierre: 'Las campanas y los actuadores digitales hacen lo mismo: dar voz a una decisión que la comunidad necesita escuchar. Diseñar es ordenar percepciones con respeto.'
   },
-
   saberAncestral: {
-    saber:
-      'Las campanas del pueblo en el Valle, el Pacífico y los Andes nunca fueron decorativas. Cada toque tenía código sonoro: tres campanadas largas = misa, repique alegre = boda, doble lento = funeral, tañido suelto = aviso de incendio. Todo el pueblo conocía el código y respondía adecuadamente. Los actuadores digitales (LEDs, buzzer, pantalla) heredan ese principio: cada secuencia de salida es código convencional que comunica algo específico. Diseñar una coreografía de LEDs es heredar el oficio del campanero.',
+    saber: 'En los pueblos del Valle del Cauca y en los puertos del Pacífico, antes de los teléfonos y los altavoces, la comunicación a distancia se hacía con dos instrumentos antiguos que combinaban luz y sonido: la campana del pueblo y el faro del puerto. La campana sonaba con códigos que toda la comunidad conocía: un solo toque para el ángelus, dos toques rápidos para el incendio, un repique largo para el difunto, tres campanadas para la misa. El faro del puerto, en cambio, era luz: pulso largo, pulso corto, pulso largo, según un patrón conocido por todos los marineros. Cada faro tenía su firma de luz para que el navegante supiera de qué puerto venía la señal. La sabiduría era doble: (1) Comunicar sin estar presente: la campana y el faro hablaban por sí solos a kilómetros. (2) Hablar con patrones, no con ruido aleatorio: cada secuencia tenía significado. La campana y el faro eran actuadores ancestrales: máquinas que, activadas por una decisión humana o automática, comunicaban a distancia con códigos de sonido y luz. El micro:bit hace lo mismo a escala de tu mano: LEDs y altavoz que dicen algo cuando se les programa con criterio.',
     fuente: 'Códigos sonoros de campanas en pueblos colombianos del Valle, Pacífico y Andes',
-    preguntaPuente:
-      '¿Cómo entendía todo el pueblo el código de las campanas sin que alguien lo enseñara formalmente? ¿Y qué hace que un patrón de LEDs digitales comunique bien o mal?',
+    preguntaPuente: '¿Qué sabía el pueblo al codificar la campana con toques distintos para anuncios diferentes, que el novato olvida cuando enciende todos los LEDs al azar sin patrón? ¿Y por qué una animación con 8 frames sincronizada con música es más comunicativa que 25 LEDs encendidos al mismo tiempo?'
   },
-
   triangulo: {
     dussel: {
       autor: 'Enrique Dussel',
       lente: 'lente del nosotros',
-      cita: 'Toda señal automática educa o aliena — depende de si la comunidad puede leer su código o no.',
-      preguntaEspejo:
-        '¿Mi diseño de actuadores comunica con códigos que la comunidad entiende, o exige conocimiento técnico para descifrarlo?',
+      cita: 'Un sistema que comunica con patrones honra al receptor; un sistema que solo decora desperdicia la voz que tiene.',
+      preguntaEspejo: 'Mi coreografía, ¿comunica algo claro al observador o solo enciende LEDs bonitos?'
     },
     estoico: {
-      autor: 'Marco Aurelio',
+      autor: 'Epicteto',
       lente: 'lente del cuidado interior',
-      cita: 'La disciplina del oficio se nota en la consistencia de la señal — el campanero no improvisa.',
-      preguntaEspejo:
-        '¿Mis respuestas automáticas son consistentes o varían sin lógica? ¿Cuál de las dos da más confianza al usuario?',
+      cita: 'El patrón es disciplina del código; lo aleatorio es pereza disfrazada de creatividad.',
+      preguntaEspejo: '¿Mis frames siguen un patrón disciplinado, o están en orden aleatorio?'
     },
     floridi: {
       autor: 'Luciano Floridi',
       lente: 'lente de la infoesfera',
-      cita: 'Las señales digitales que diseñamos hoy son las campanas de la infoesfera contemporánea.',
-      preguntaEspejo:
-        '¿Mis notificaciones, alertas y respuestas automáticas educan al usuario o lo bombardean? ¿Qué pensarían los antiguos campaneros de mi diseño?',
-    },
+      cita: 'El código que se expresa con sentido es la nueva ética del oficio creativo en la era digital.',
+      preguntaEspejo: '¿Mi coreografía expresa algo decidido con criterio, o es ensayo aleatorio que probó cosas hasta que algo funcionó?'
+    }
   },
-
   cincoDimensiones: {
-    personal:
-      'Aprendiste que diseñar señales automáticas es responsabilidad comunicativa — cada parpadeo le habla a alguien.',
-    emocional:
-      'Resististe la tentación del "más colores = mejor diseño". Entendiste que la consistencia silenciosa comunica más que la espectacularidad.',
-    ciudadana:
-      'Tus actuadores bien diseñados son códigos comunitarios — pequeñas piezas que mejoran convivencia cotidiana.',
-    local:
-      'Heredaste el oficio del campanero: cada señal tiene código, cada código sostiene confianza, cada confianza sostiene comunidad.',
-    intergeneracional:
-      'Las campanas que organizaron la vida del pueblo y tus actuadores digitales comparten ética: comunicar con disciplina, no con ruido.',
-  },
+    personal: 'Aprendiste que diseñar señales automáticas es responsabilidad comunicativa — cada parpadeo le habla a alguien.',
+    emocional: 'Resististe la tentación del "más colores = mejor diseño". Entendiste que la consistencia silenciosa comunica más que la espectacularidad.',
+    ciudadana: 'Tus actuadores bien diseñados son códigos comunitarios — pequeñas piezas que mejoran convivencia cotidiana.',
+    local: 'Heredaste el oficio del campanero: cada señal tiene código, cada código sostiene confianza, cada confianza sostiene comunidad.',
+    intergeneracional: 'Las campanas que organizaron la vida del pueblo y tus actuadores digitales comparten ética: comunicar con disciplina, no con ruido.'
+  }
 };
 
 export default contenido;

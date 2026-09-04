@@ -25,13 +25,15 @@ Uso:
 from __future__ import annotations
 
 import re
-import subprocess
 import sys
 from pathlib import Path
 
 # Presentación honesta del triángulo: ver scripts/lib_triangulo.py
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from lib_triangulo import atribucion, cita_presentada, nota_docente  # noqa: E402
+# Compilación XeLaTeX compartida (lee el .log, falla con Overfull \vbox):
+# ver scripts/lib_xelatex.py
+from lib_xelatex import XELATEX, compilar, texto_pdf  # noqa: E402,F401
 
 import yaml
 
@@ -42,7 +44,7 @@ ROOT = Path(__file__).resolve().parent.parent
 TEMPLATE = ROOT / "scripts/generadores/template-milc-v3.tex"
 CONTENT_DIR = ROOT / "content" / "guias" / "territorio-interior"
 OUT_DIR = ROOT / "public" / "guias-mejoras" / "territorio-interior"
-XELATEX = "/Library/TeX/texbin/xelatex"
+# XELATEX viene de lib_xelatex: el del PATH o, si no hay, el de MacTeX.
 
 # Paleta de Territorio interior (teal): tono sereno, deliberadamente
 # distinto del lima de Bebras y del azul de los grados. Print-safe: texto
@@ -105,7 +107,9 @@ def recursos_a_tex(guia: dict) -> dict[str, str]:
         if ext in EXT_DIAGRAMA_TEX:
             por_seccion[donde].append(f"\\guiaDiagrama{{{destino}}}{{{pie}}}")
         elif ext in EXT_IMAGEN:
-            por_seccion[donde].append(f"\\guiaFigura{{{destino}}}{{{pie}}}")
+            # El alt va al PDF etiquetado (/Alt); entre llaves por si trae «]».
+            alt = (asset.get("alt") or "").strip()
+            por_seccion[donde].append(f"\\guiaFigura[{{{alt}}}]{{{destino}}}{{{pie}}}")
         else:
             AVISOS_RECURSOS.append(f"{archivo}: extensión '{ext}' no soportada: omitido")
 
@@ -223,6 +227,8 @@ def yaml_a_placeholders(guia: dict) -> dict[str, str]:
         "GUIA_NUMERO": str(momento),
         "TITULO_GUIA": guia["titulo"],
         "TITULO_GUIA_PORTADA": titulo_portada_tex,
+        # Metadatos del PDF: título en texto plano.
+        "PDF_TITULO": texto_pdf(guia["titulo"]),
         "PRODUCTO_FINAL": guia["producto_final"],
 
         # Apertura
@@ -286,8 +292,14 @@ def yaml_a_placeholders(guia: dict) -> dict[str, str]:
     }
 
 
-def compilar_guia(guia: dict, template_text: str) -> tuple[bool, str]:
-    """Llena el template, corre 2 pasadas de xelatex y limpia auxiliares."""
+def compilar_guia(guia: dict, template_text: str) -> tuple[bool, str, list[str]]:
+    """Llena el template, compila (2 pasadas), valida el .log y limpia auxiliares.
+
+    Devuelve (ok, mensaje, avisos): avisos de recursos + `Overfull \\hbox`.
+    """
+    # AVISOS_RECURSOS es global al proceso: se vacía por guía para que cada
+    # resultado lleve solo los suyos.
+    AVISOS_RECURSOS.clear()
     clave = guia["clave"]
     out_tex = OUT_DIR / f"{clave}-TIC.tex"
     out_pdf = out_tex.with_suffix(".pdf")
@@ -300,27 +312,16 @@ def compilar_guia(guia: dict, template_text: str) -> tuple[bool, str]:
     remaining = re.findall(r"<<<[A-Z_0-9]+>>>", contenido)
     if remaining:
         sample = sorted(set(remaining))[:5]
-        return False, f"placeholders sin reemplazar: {sample}{'…' if len(set(remaining)) > 5 else ''}"
+        return False, f"placeholders sin reemplazar: {sample}{'…' if len(set(remaining)) > 5 else ''}", list(AVISOS_RECURSOS)
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     out_tex.write_text(contenido, encoding="utf-8")
 
-    for i in (1, 2):
-        result = subprocess.run(
-            [XELATEX, "-interaction=nonstopmode", "-halt-on-error", out_tex.name],
-            cwd=out_tex.parent,
-            capture_output=True,
-            text=True,
-        )
-        if result.returncode != 0:
-            return False, f"xelatex pasada {i} falló (revisa {out_tex.with_suffix('.log').name})"
-
-    for ext in (".aux", ".log", ".out"):
-        aux = out_tex.with_suffix(ext)
-        if aux.exists():
-            aux.unlink()
-
-    return True, f"{out_pdf.name} ({out_pdf.stat().st_size:,} bytes)"
+    avisos = list(AVISOS_RECURSOS)
+    # 2 pasadas, lectura del .log (Overfull box = guía fallida) y limpieza
+    # de auxiliares solo si todo salió bien: ver lib_xelatex.compilar.
+    ok, msg = compilar(out_tex, avisos)
+    return ok, msg, avisos
 
 
 def main(argv: list[str]) -> int:
@@ -350,13 +351,15 @@ def main(argv: list[str]) -> int:
         if not guia.get("completo"):
             print(f"  ·  {clave}  PENDIENTE")
             continue
-        ok, msg = compilar_guia(guia, template_text)
+        ok, msg, avisos = compilar_guia(guia, template_text)
         if ok:
             print(f"  ✓  {clave}  OK   {msg}")
             completas.append(clave)
         else:
             print(f"  ✗  {clave}  ERROR   {msg}")
             errores.append(clave)
+        for a in avisos:
+            print(f"       ⚠  {a}")
 
     print()
     print(f"Resumen: {len(completas)} compiladas · {len(errores)} errores")

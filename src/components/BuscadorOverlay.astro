@@ -2,15 +2,14 @@
 /**
  * Buscador global de ConectaTE (MILC v3).
  *
- * Indexa al BUILD las fuentes editoriales del corpus:
- *   - 180 guías MILC v3 (título + saber ancestral + conceptos clave + triángulo)
- *   - 18 proyectos integradores entregable-céntricos (reto + anclaje + entregables)
- *   - 18 exámenes finales (título + período + DBA del periodo)
- *   - 18 anclajes ancestrales del plan de área (atajo a la guía S1 que los contiene)
+ * El índice (guías, conceptos clave, proyectos, exámenes, anclajes ancestrales)
+ * se construye al BUILD en src/data/indiceBuscador.ts y se sirve como JSON
+ * estático en `${base}/data/buscador.json` (src/pages/data/buscador.json.ts).
+ * Este overlay NO embebe el índice en el HTML: lo descarga UNA sola vez al
+ * abrir el diálogo (o al primer foco del input). Antes, el índice inyectado
+ * con define:vars sumaba ~1,4 MB a cada página del sitio.
  *
- * Cada concepto clave de las guías también se indexa como item independiente,
- * de modo que buscar "identidad digital" lleva directo a la guía donde se
- * desarrolla, no solo a las que lo mencionan en el título.
+ * Al HTML solo llegan el `base` y los totales por tipo (números) para los chips.
  *
  * UX:
  *   - Búsqueda en vivo (≥ 2 chars), insensible a tildes y mayúsculas.
@@ -19,181 +18,20 @@
  *   - Hasta 100 resultados visibles + botón "Cargar más".
  *   - Navegación con ↑ ↓ + Enter; cerrar con Esc; abrir con ⌘ K / Ctrl K / /.
  *   - Marca ✓ las guías y proyectos ya completados (localStorage).
+ *   - Estado visible «Cargando índice…» y error con reintento si falla la red.
  */
-import { grados } from '../data/grados';
-import { getAllContenidoGuia } from '../data/guiasContenido/_index';
-import { getAllContenidoProyecto } from '../data/proyectosContenido/_index';
-import { examenes } from '../data/examenes';
-import { anclajesAncestrales } from '../data/planArea';
+import { construirIndice, contarIndice } from '../data/indiceBuscador';
 
 const base = import.meta.env.BASE_URL;
 
-function normalizar(s: string): string {
-  return s
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
-    .trim();
-}
-
-type TipoResultado = 'guia' | 'proyecto' | 'examen' | 'concepto' | 'anclaje';
-
-interface ItemIndice {
-  tipo: TipoResultado;
-  grado: number;
-  periodo: number;
-  sesion: number;          // 0 para proyectos/exámenes/anclajes
-  titulo: string;
-  contexto: string;        // ej. "G6 · P1 · S2"
-  subtitulo?: string;      // texto descriptivo opcional
-  href: string;
-  k: string;               // texto normalizado para match
-  bgClass: string;         // color del período (badge)
-}
-
-// Mapa rápido grado → periodo → bgClass para los badges
-const colorPorPeriodo: Record<string, string> = {};
-const periodoTitulo: Record<string, string> = {};
-for (const g of grados) {
-  for (const p of g.periodos) {
-    colorPorPeriodo[`${g.numero}-${p.numero}`] = p.bgClass;
-    periodoTitulo[`${g.numero}-${p.numero}`] = p.titulo;
-  }
-}
-
-// Grados en construcción no entran al índice
-const gradosEnConstruccion = new Set(
-  grados.filter((g) => g.enConstruccion).map((g) => g.numero),
-);
-
-const indice: ItemIndice[] = [];
-
-// ─── 1. Guías MILC v3 ─────────────────────────────────────────────────────
-for (const guia of getAllContenidoGuia()) {
-  if (gradosEnConstruccion.has(guia.grado)) continue;
-  const claveColor = `${guia.grado}-${guia.periodo}`;
-  const bgClass = colorPorPeriodo[claveColor] ?? 'bg-bento-blue';
-
-  const titulo = guia.titulo ?? guia.resumen;
-  const saber = guia.saberAncestral
-    ? `${guia.saberAncestral.saber ?? ''} ${guia.saberAncestral.fuente ?? ''} ${guia.saberAncestral.preguntaPuente ?? ''}`
-    : '';
-  const conceptos = guia.conceptosClave
-    .map((c) => `${c.termino} ${c.definicion}`)
-    .join(' ');
-  const triangulo = guia.triangulo
-    ? `${guia.triangulo.dussel.cita} ${guia.triangulo.estoico.cita} ${guia.triangulo.floridi.cita} ${guia.triangulo.dussel.lente} ${guia.triangulo.estoico.lente} ${guia.triangulo.floridi.lente}`
-    : '';
-  const preLectura = `${guia.preLectura.porQueImporta} ${guia.preLectura.preguntaDetonante}`;
-  const subtema = guia.subtema ?? '';
-
-  indice.push({
-    tipo: 'guia',
-    grado: guia.grado,
-    periodo: guia.periodo,
-    sesion: guia.sesion,
-    titulo,
-    subtitulo: guia.resumen,
-    contexto: `G${guia.grado} · P${guia.periodo} · S${guia.sesion}`,
-    href: `${base}/grado-${guia.grado}/periodo-${guia.periodo}/guia-${guia.sesion}`,
-    k: normalizar(`${titulo} ${subtema} ${preLectura} ${saber} ${conceptos} ${triangulo}`),
-    bgClass,
-  });
-
-  // ─── Cada concepto clave como item independiente ──────────────────────
-  for (const c of guia.conceptosClave) {
-    indice.push({
-      tipo: 'concepto',
-      grado: guia.grado,
-      periodo: guia.periodo,
-      sesion: guia.sesion,
-      titulo: c.termino,
-      subtitulo: c.definicion,
-      contexto: `G${guia.grado} · P${guia.periodo} · S${guia.sesion}`,
-      href: `${base}/grado-${guia.grado}/periodo-${guia.periodo}/guia-${guia.sesion}#concepto-${normalizar(c.termino).replace(/\s+/g, '-')}`,
-      k: normalizar(`${c.termino} ${c.definicion} ${c.ejemplo ?? ''}`),
-      bgClass,
-    });
-  }
-}
-
-// ─── 2. Proyectos integradores MILC v3 ────────────────────────────────────
-for (const proy of getAllContenidoProyecto()) {
-  if (gradosEnConstruccion.has(proy.grado)) continue;
-  const claveColor = `${proy.grado}-${proy.periodo}`;
-  const bgClass = colorPorPeriodo[claveColor] ?? 'bg-bento-blue';
-
-  const entregables = proy.entregables
-    .map((e) => `${e.titulo} ${e.queEntregas} ${e.criterios.join(' ')}`)
-    .join(' ');
-  const aprendizajes = proy.aprendizajes.map((a) => a.titulo).join(' ');
-
-  indice.push({
-    tipo: 'proyecto',
-    grado: proy.grado,
-    periodo: proy.periodo,
-    sesion: 0,
-    titulo: proy.titulo || `Proyecto integrador · ${proy.reto}`,
-    subtitulo: proy.reto,
-    contexto: `G${proy.grado} · P${proy.periodo} · Proyecto`,
-    href: `${base}/grado-${proy.grado}/periodo-${proy.periodo}/proyecto`,
-    k: normalizar(
-      `proyecto integrador ${proy.titulo} ${proy.reto} ${proy.anclaje} ${proy.estrategia} ${proy.dba} ${entregables} ${aprendizajes}`,
-    ),
-    bgClass,
-  });
-}
-
-// ─── 3. Exámenes finales ──────────────────────────────────────────────────
-for (const ex of examenes) {
-  if (gradosEnConstruccion.has(ex.grado)) continue;
-  const claveColor = `${ex.grado}-${ex.periodo}`;
-  const bgClass = colorPorPeriodo[claveColor] ?? 'bg-bento-blue';
-  const tituloPer = periodoTitulo[claveColor] ?? '';
-
-  indice.push({
-    tipo: 'examen',
-    grado: ex.grado,
-    periodo: ex.periodo,
-    sesion: 0,
-    titulo: `Examen final · ${tituloPer || `P${ex.periodo}`}`,
-    subtitulo: 'Banco de práctica y examen formal del período',
-    contexto: `G${ex.grado} · P${ex.periodo} · Examen`,
-    href: `${base}/grado-${ex.grado}/periodo-${ex.periodo}/examen`,
-    k: normalizar(
-      `examen final ${tituloPer} banco de practica sintesis aplicacion argumentacion ${ex.archivo}`,
-    ),
-    bgClass,
-  });
-}
-
-// ─── 4. Anclajes ancestrales del plan de área ─────────────────────────────
-// Cada anclaje enlaza al período correspondiente; el saber se desarrolla en S1.
-for (const a of anclajesAncestrales) {
-  if (gradosEnConstruccion.has(a.grado)) continue;
-  const claveColor = `${a.grado}-${a.periodo}`;
-  const bgClass = colorPorPeriodo[claveColor] ?? 'bg-bento-blue';
-
-  indice.push({
-    tipo: 'anclaje',
-    grado: a.grado,
-    periodo: a.periodo,
-    sesion: 1,
-    titulo: a.oficio,
-    subtitulo: a.resumen,
-    contexto: `G${a.grado} · P${a.periodo} · Saber ancestral`,
-    href: `${base}/grado-${a.grado}/periodo-${a.periodo}/guia-1`,
-    k: normalizar(`${a.oficio} ${a.resumen} saber ancestral anclaje`),
-    bgClass,
-  });
-}
-
-const totalItems = indice.length;
-const totalGuias = indice.filter((i) => i.tipo === 'guia').length;
-const totalProyectos = indice.filter((i) => i.tipo === 'proyecto').length;
-const totalConceptos = indice.filter((i) => i.tipo === 'concepto').length;
-const totalExamenes = indice.filter((i) => i.tipo === 'examen').length;
-const totalAnclajes = indice.filter((i) => i.tipo === 'anclaje').length;
+// Solo los totales (números) van al HTML; el índice completo vive en el JSON.
+const totales = contarIndice(construirIndice(base));
+const totalItems = totales.total;
+const totalGuias = totales.guias;
+const totalProyectos = totales.proyectos;
+const totalConceptos = totales.conceptos;
+const totalExamenes = totales.examenes;
+const totalAnclajes = totales.anclajes;
 ---
 
 <dialog
@@ -273,6 +111,27 @@ const totalAnclajes = indice.filter((i) => i.tipo === 'anclaje').length;
         </button>
       </div>
 
+      {/* Estado de carga del índice (oculto salvo cargando/error) */}
+      <div
+        id="buscador-estado"
+        hidden
+        role="status"
+        aria-live="polite"
+        class="flex items-center justify-center gap-3 px-5 md:px-6 py-2 border-b text-xs font-bold"
+        style="border-color: var(--border); color: var(--fg-muted);"
+      >
+        <span id="buscador-estado-texto"></span>
+        <button
+          type="button"
+          id="buscador-reintentar"
+          hidden
+          class="px-3 py-1 rounded-full border-2 font-black uppercase tracking-widest hover:opacity-80 transition-opacity"
+          style="border-color: var(--fg); color: var(--fg);"
+        >
+          Reintentar
+        </button>
+      </div>
+
       {/* Resultados */}
       <div
         id="buscador-resultados"
@@ -312,12 +171,15 @@ const totalAnclajes = indice.filter((i) => i.tipo === 'anclaje').length;
   </div>
 </dialog>
 
-<script define:vars={{ indice }}>
+<script define:vars={{ base }}>
   const dialog = document.getElementById('buscador-overlay');
   const input = document.getElementById('buscador-input');
   const out = document.getElementById('buscador-resultados');
   const vacio = document.getElementById('buscador-vacio');
   const contador = document.getElementById('buscador-contador');
+  const estado = document.getElementById('buscador-estado');
+  const estadoTexto = document.getElementById('buscador-estado-texto');
+  const reintentar = document.getElementById('buscador-reintentar');
 
   if (!dialog || !input || !out) {
     // SSR — no continuamos
@@ -362,6 +224,7 @@ const totalAnclajes = indice.filter((i) => i.tipo === 'anclaje').length;
       return visible;
     }
 
+    // Se lee UNA vez por render (no por resultado): ver render().
     function leerCompletadas() {
       try {
         const raw = localStorage.getItem('conectate.progreso.v1');
@@ -373,13 +236,12 @@ const totalAnclajes = indice.filter((i) => i.tipo === 'anclaje').length;
       }
     }
 
-    function estaCompletado(item) {
-      const c = leerCompletadas();
+    function estaCompletado(item, completadas) {
       if (item.tipo === 'guia') {
-        return `g${item.grado}-p${item.periodo}-s${item.sesion}` in c.guias;
+        return `g${item.grado}-p${item.periodo}-s${item.sesion}` in completadas.guias;
       }
       if (item.tipo === 'proyecto') {
-        return `g${item.grado}-p${item.periodo}` in c.proyectos;
+        return `g${item.grado}-p${item.periodo}` in completadas.proyectos;
       }
       return false;
     }
@@ -408,10 +270,62 @@ const totalAnclajes = indice.filter((i) => i.tipo === 'anclaje').length;
     let limite = 100;
     const PAGINA = 100;
 
+    // ─── Índice: carga diferida, una sola vez ─────────────────────────────
+
+    const URL_INDICE = `${String(base).replace(/\/$/, '')}/data/buscador.json`;
+    let indice = null;        // ItemIndice[] una vez descargado
+    let cargaEnCurso = null;  // Promise mientras se descarga
+    let errorCarga = false;
+
+    function mostrarEstado(texto, conReintento) {
+      if (!estado || !estadoTexto) return;
+      if (!texto) {
+        estado.hidden = true;
+        return;
+      }
+      estadoTexto.textContent = texto;
+      if (reintentar) reintentar.hidden = !conReintento;
+      estado.hidden = false;
+    }
+
+    function cargarIndice() {
+      if (indice) return Promise.resolve(indice);
+      if (cargaEnCurso) return cargaEnCurso;
+      errorCarga = false;
+      mostrarEstado('Cargando índice…', false);
+      cargaEnCurso = fetch(URL_INDICE, { credentials: 'same-origin' })
+        .then((res) => {
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          return res.json();
+        })
+        .then((data) => {
+          if (!Array.isArray(data)) throw new Error('Índice inválido');
+          indice = data;
+          mostrarEstado('');
+          render();
+          return indice;
+        })
+        .catch(() => {
+          cargaEnCurso = null;
+          errorCarga = true;
+          mostrarEstado('No se pudo cargar el buscador; revisa tu conexión.', true);
+          render();
+          return null;
+        });
+      return cargaEnCurso;
+    }
+
+    if (reintentar) {
+      reintentar.addEventListener('click', () => {
+        cargarIndice();
+        input.focus();
+      });
+    }
+
     // ─── Render ───────────────────────────────────────────────────────────
 
     function calcularMatches() {
-      if (queryNorm.length < 2) return [];
+      if (!indice || queryNorm.length < 2) return [];
       let base = indice;
       if (filtroActivo !== 'todo') {
         base = indice.filter((i) => i.tipo === filtroActivo);
@@ -428,6 +342,33 @@ const totalAnclajes = indice.filter((i) => i.tipo === 'anclaje').length;
         if (contador) contador.textContent = '';
         return;
       }
+
+      // Hay consulta pero el índice aún no está: placeholder (o error).
+      if (!indice) {
+        resultadosVisibles = [];
+        cursor = -1;
+        if (contador) contador.textContent = '';
+        out.innerHTML = errorCarga
+          ? `
+          <div class="text-center py-12 px-6">
+            <div class="text-5xl mb-3" aria-hidden="true">📡</div>
+            <div class="font-bold text-lg mb-1">Sin índice de búsqueda</div>
+            <div class="text-sm" style="color: var(--fg-muted);">
+              No se pudo cargar el buscador; revisa tu conexión y pulsa «Reintentar».
+            </div>
+          </div>`
+          : `
+          <div class="text-center py-12 px-6">
+            <div class="text-5xl mb-3" aria-hidden="true">⏳</div>
+            <div class="font-bold text-lg mb-1">Cargando índice…</div>
+            <div class="text-sm" style="color: var(--fg-muted);">
+              Solo se descarga una vez; los resultados aparecerán enseguida.
+            </div>
+          </div>`;
+        if (!errorCarga) cargarIndice();
+        return;
+      }
+
       const matches = calcularMatches();
       resultadosVisibles = matches.slice(0, limite);
       cursor = resultadosVisibles.length > 0 ? 0 : -1;
@@ -446,6 +387,9 @@ const totalAnclajes = indice.filter((i) => i.tipo === 'anclaje').length;
           </div>`;
         return;
       }
+
+      // Progreso: una sola lectura de localStorage por render
+      const completadas = leerCompletadas();
 
       // Agrupar por grado
       const porGrado = new Map();
@@ -467,7 +411,7 @@ const totalAnclajes = indice.filter((i) => i.tipo === 'anclaje').length;
             Grado ${grado}°
           </div>`);
         for (const it of items) {
-          const completado = estaCompletado(it);
+          const completado = estaCompletado(it, completadas);
           const icono = ICONOS[it.tipo] ?? '📄';
           const etiqueta = ETIQUETAS[it.tipo] ?? 'Resultado';
           const subtitulo = it.subtitulo
@@ -568,6 +512,11 @@ const totalAnclajes = indice.filter((i) => i.tipo === 'anclaje').length;
 
     // ─── Eventos de input/teclado ─────────────────────────────────────────
 
+    // Primer foco del input: dispara la descarga (idempotente).
+    input.addEventListener('focus', () => {
+      cargarIndice();
+    });
+
     input.addEventListener('input', (e) => {
       queryNorm = normalizar(e.target.value);
       limite = PAGINA;
@@ -603,6 +552,8 @@ const totalAnclajes = indice.filter((i) => i.tipo === 'anclaje').length;
 
     function abrir() {
       if (typeof dialog.showModal === 'function') dialog.showModal();
+      // Descarga el índice al abrir (una sola vez; no bloquea el foco).
+      cargarIndice();
       requestAnimationFrame(() => input.focus());
     }
 

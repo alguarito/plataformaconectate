@@ -11,160 +11,284 @@ const contenido: ContenidoGuia = {
   grado: 8,
   periodo: 1,
   sesion: 2,
-  titulo: 'Tipos de datos y formato de celdas en Excel',
-  resumen: 'Cada tipo de dato en Excel tiene su columna y formato. Como en el cuaderno del tendero del barrio: si confunde libras con unidades, pierde dinero al final del mes.',
+  titulo: 'Cada celda tiene un tipo — número, texto, fecha, moneda, porcentaje',
+  resumen: 'Excel adivina el tipo de cada celda, y a veces adivina mal. Hoy aprendes los cinco tipos, los aplicas con Formato de celdas y revisas la hoja de tu pareja, como la bordadora que sabe el nombre de cada puntada.',
   duracionMin: 90,
-  subtema: 'Excel · Tipos de datos · Formato de celdas',
+  subtema: 'Análisis de datos con phronesis',
   preLectura: {
-    porQueImporta: 'Lo que aprendas hoy te servirá toda la vida: registrar gastos, calcular notas, llevar control de ventas, hacer un presupuesto familiar. Saber poner cada dato en su columna con su formato es disciplina que ahorra horas y evita errores.',
-    preguntaDetonante: '¿Qué del oficio del tendero — su disciplina de poner cada cosa en su columna — podemos llevar a la hoja de cálculo digital?',
+    porQueImporta: 'Casi todo error de Excel empieza aquí, en una celda con el tipo equivocado. Un número con letras no se suma, una fecha como texto no se ordena, y nadie te avisa.',
+    preguntaDetonante: 'Cuando abras una hoja con veinte columnas, ¿sabrás decir de qué tipo es cada una?',
     activacion: {
-      titulo: 'El recibo que no cuadra',
-      descripcion: 'En 3 minutos: piensa en una vez que recibiste un recibo o factura con un dato confuso (precio mal escrito, fecha rara, columna sin etiqueta). ¿Qué error cometió quien lo hizo? ¿Cómo lo evitarías en Excel?',
+      titulo: 'La celda que no suma',
+      descripcion: 'En 3 minutos, escribe en Excel «cinco mil» en una celda y 5000 en otra. Suma las dos. ¿Qué pasó? Anota lo que viste.',
       duracionMin: 5
     },
     conexion: {
-      anterior: 'En la sesión 1 aprendiste a hacer preguntas a los datos con phronesis.',
-      siguiente: 'En la sesión 3 estructurarás tablas con campos, registros y limpieza básica.'
+      anterior: 'En la sesión 1 le hiciste cinco preguntas a una hoja antes de calcular.',
+      siguiente: 'En la sesión 3 conviertes esta hoja en una tabla con campos y registros, y la limpias con bitácora.'
     }
   },
   conceptosClave: [
     {
-      termino: 'Tipo número',
-      definicion: 'Celda que contiene cantidades calculables. Excel la alinea a la derecha por defecto y permite operaciones aritméticas (SUMA, PROMEDIO).',
-      ejemplo: '"15", "3,14", "200" son números. Si escribes "quince" en una celda, Excel lo trata como texto y no podrá sumarlo con otros números.',
-      emoji: '🔢'
+      termino: 'Número',
+      definicion: 'Cantidad que se puede calcular. Excel la alinea a la derecha y la deja sumar, promediar y comparar.',
+      ejemplo: '15, 3,14 y 200 son números. «Quince» con letras no lo es, y Excel no lo suma.',
+      categoria: 'Los cinco tipos'
     },
     {
-      termino: 'Tipo texto',
-      definicion: 'Celda con cadenas de caracteres no calculables. Excel la alinea a la izquierda por defecto. Sirve para nombres, descripciones, códigos.',
-      ejemplo: '"María Pérez", "Producto A123", "Código X-45" son texto. Aunque parezcan números (un código), si tienen letras o se usan como identificador, deben ir como texto.',
-      emoji: '🔤'
+      termino: 'Texto',
+      definicion: 'Palabras o códigos que solo se leen. Excel los alinea a la izquierda y no los calcula.',
+      ejemplo: '«María Pérez» y «Código X-45» son texto. Un código con letras va como texto aunque tenga números.',
+      categoria: 'Los cinco tipos'
     },
     {
-      termino: 'Tipo fecha',
-      definicion: 'Celda con día/mes/año ordenable cronológicamente. Permite restar fechas para calcular cuántos días pasaron entre dos eventos.',
-      ejemplo: '"15/03/2026" formateado como fecha permite ordenar de antiguo a reciente, calcular edad, contar días entre dos.',
-      emoji: '📅'
+      termino: 'Fecha',
+      definicion: 'Día, mes y año que Excel puede ordenar y restar. Con formato de fecha se calcula cuántos días pasaron entre dos.',
+      ejemplo: '15/03/2026 como fecha se ordena de la más antigua a la más reciente. «15 de marzo» como texto, no.',
+      categoria: 'Los cinco tipos'
     },
     {
-      termino: 'Tipo moneda',
-      definicion: 'Variante del tipo número con símbolo de moneda y separación de miles automática. Útil para precios, gastos, salarios.',
-      ejemplo: '"$ 5.000" con formato moneda permite que Excel reconozca el contexto financiero y muestre miles separados correctamente.',
-      emoji: '💰'
+      termino: 'Moneda',
+      definicion: 'Número con símbolo de dinero y separador de miles. Sirve para precios, gastos y ventas.',
+      ejemplo: '$ 5.000 con formato de moneda se suma y se muestra con el signo de peso.',
+      categoria: 'Los cinco tipos'
     },
     {
-      termino: 'Tipo porcentaje',
-      definicion: 'Celda que muestra el símbolo % y se calcula internamente como decimal. 50 % es 0,5 en operaciones internas.',
-      ejemplo: 'Si tienes 0,15 en una celda y aplicas formato porcentaje, Excel muestra "15 %". Multiplicar por una celda monetaria te da el descuento.',
-      emoji: '📊'
+      termino: 'Porcentaje',
+      definicion: 'Tasa que se muestra con el símbolo % pero se calcula como decimal. 50 % vale 0,5 por dentro.',
+      ejemplo: 'Si la celda tiene 0,15 y le pones formato de porcentaje, Excel muestra 15 %.',
+      categoria: 'Los cinco tipos'
+    },
+    {
+      termino: 'Formato de celdas',
+      definicion: 'Menú de Excel donde eliges la categoría de una celda o columna. Cambia cómo se muestra el dato, no corrige un dato mal escrito.',
+      ejemplo: 'Clic derecho sobre la columna, Formato de celdas, pestaña Número, categoría Fecha.',
+      categoria: 'La herramienta'
     }
   ],
   laboratorios: [
     {
       tipo: 'quiz',
-      titulo: '¿Sabes elegir el tipo de dato correcto?',
-      instrucciones: '5 preguntas para verificar que distingues los 5 tipos básicos de Excel y cuándo usar cada uno.',
+      titulo: '¿Sabes qué tipo lleva cada celda?',
+      instrucciones: 'Cinco preguntas para verificar que distingues los cinco tipos y sabes cuándo usar cada uno. No va al cuaderno.',
       preguntas: [
         {
-          enunciado: 'Escribes \'15-marzo\' en una celda y quieres ordenar las filas cronológicamente. ¿Qué tipo debe tener esa celda?',
+          enunciado: 'Tienes una columna con las fechas de cumpleaños del salón y quieres ordenarla del más antiguo al más reciente. ¿Qué tipo debe tener?',
           opciones: [
-            'Texto',
-            'Número',
-            'Moneda',
-            'Fecha'
-          ],
-          respuestaIndex: 3,
-          feedbackCorrecto: 'Correcto. Solo el tipo Fecha permite ordenar cronológicamente. Si la celda es texto, el orden sería alfabético y "15-marzo" iría junto a "15-enero" en lugar de su lugar real.',
-          feedbackIncorrecto: 'El tipo correcto es Fecha. Solo así Excel reconoce el orden cronológico real, no alfabético.'
-        },
-        {
-          enunciado: 'Tu columna precio tiene celdas con 5000, 7.500, "cinco mil". ¿Qué problema vas a tener al sumar?',
-          opciones: [
-            'La celda con cinco mil será ignorada porque Excel la trata como texto',
-            'Ninguno, Excel suma todo automáticamente',
-            'Excel convertirá cinco mil a 5000 automáticamente',
-            'La suma incluirá las 3 celdas como números'
-          ],
-          respuestaIndex: 0,
-          feedbackCorrecto: 'Exacto. Excel ignora silenciosamente las celdas con texto cuando sumas. El total queda menor de lo esperado sin aviso.',
-          feedbackIncorrecto: 'Excel no convierte texto a número automáticamente. La celda con \'cinco mil\' queda fuera de la suma y el total resultante engaña.'
-        },
-        {
-          enunciado: '¿Cuál es la herramienta de Excel que cambia el tipo de una celda?',
-          opciones: [
-            'Insertar → Tabla',
-            'Formato → Formato de celdas → Número',
-            'Datos → Validación',
-            'Inicio → Borrar formato'
+            'Texto, porque las fechas llevan el nombre del mes.',
+            'Fecha, porque solo así Excel las ordena por el calendario.',
+            'Número, porque los días son cantidades.',
+            'Moneda, porque se separan con puntos.'
           ],
           respuestaIndex: 1,
-          feedbackCorrecto: 'Correcto. Formato de celdas → Número permite elegir Número, Texto, Fecha, Moneda, Porcentaje y otros.',
-          feedbackIncorrecto: 'La ruta correcta es Formato → Formato de celdas → pestaña Número. Las otras opciones hacen cosas distintas.'
+          feedbackCorrecto: 'Sí. Solo el tipo Fecha ordena por el calendario. Como texto, «15 de marzo» quedaría junto a «15 de enero» por orden alfabético.',
+          feedbackIncorrecto: 'Como texto, Excel ordena las fechas por la primera letra, no por el calendario. El tipo correcto es Fecha.'
         },
         {
-          enunciado: 'Pones 50 en una celda y aplicas formato Porcentaje. ¿Qué muestra Excel?',
+          enunciado: 'Sumas tres celdas: 5000, 3000 y «cinco mil» escrito con letras. ¿Qué hace Excel?',
           opciones: [
-            '50%',
-            '0,5%',
-            '5000%',
-            '0,005%'
+            'Convierte «cinco mil» en 5000 y suma 13000.',
+            'Muestra un error y no calcula nada.',
+            'Pregunta si quieres convertir el texto a número.',
+            'Suma 8000 y deja fuera la celda con letras, sin avisar.'
           ],
-          respuestaIndex: 2,
-          feedbackCorrecto: 'Correcto. Aplicar porcentaje a una celda con valor 50 lo interpreta como 50 (no 0,5) y lo muestra como 5000 %. Para tener 50 % debes escribir 0,5 antes.',
-          feedbackIncorrecto: 'Excel muestra 5000 % porque interpreta el 50 como número entero y lo multiplica por 100. Para tener 50 % debes escribir 0,5 con el formato porcentaje aplicado.'
+          respuestaIndex: 3,
+          feedbackCorrecto: 'Exacto. Excel salta el texto en silencio. El total sale de dos celdas, no de tres, y nadie te avisa.',
+          feedbackIncorrecto: 'Excel no convierte letras en números ni pregunta. Simplemente deja esa celda fuera de la suma y el total engaña.'
         },
         {
-          enunciado: '¿Cuál es la regla profesional para elegir el tipo de una columna?',
+          enunciado: '¿Cuál es la ruta para cambiar el tipo de una columna completa?',
           opciones: [
-            'Decidir según lo que voy a hacer con la columna después',
-            'Elegir el tipo que se vea más bonito',
-            'Usar siempre Texto por seguridad',
-            'Dejar el tipo por defecto que ponga Excel'
+            'Seleccionar la columna, clic derecho, Formato de celdas, pestaña Número.',
+            'Insertar, Tabla, y elegir el estilo.',
+            'Datos, Validación de datos, y escribir el tipo.',
+            'Inicio, Borrar formato, y volver a escribir los datos.'
           ],
           respuestaIndex: 0,
-          feedbackCorrecto: 'Exacto. La phronesis consiste en decidir el tipo por el uso futuro: si voy a sumar, número; si voy a ordenar cronológicamente, fecha; si solo voy a leer, texto.',
-          feedbackIncorrecto: 'La regla profesional es decidir el tipo según el uso: ¿voy a calcular?, ¿ordenar?, ¿solo leer? El uso determina el tipo correcto.'
+          feedbackCorrecto: 'Correcto. Formato de celdas es donde eliges Número, Texto, Fecha, Moneda o Porcentaje para toda la columna.',
+          feedbackIncorrecto: 'Las otras rutas hacen cosas distintas. El tipo se elige en Formato de celdas, pestaña Número.'
+        },
+        {
+          enunciado: 'Una celda ya tiene el valor 50 y le aplicas formato de porcentaje. ¿Qué muestra Excel?',
+          opciones: [
+            '50 %.',
+            '0,5 %.',
+            '5000 %.',
+            '0,005 %.'
+          ],
+          respuestaIndex: 2,
+          feedbackCorrecto: 'Sí. Excel entiende 50 como 50 enteros, no como 0,5, y los muestra como 5000 %. Para ver 50 % hay que escribir 0,5.',
+          feedbackIncorrecto: 'Por dentro, el porcentaje es un decimal. 50 entero se convierte en 5000 %. Para que muestre 50 %, la celda debe tener 0,5.'
+        },
+        {
+          enunciado: 'Una hoja tiene la columna «Código de estudiante» con valores como A-045 y B-112. ¿Qué tipo le conviene?',
+          opciones: [
+            'Número, porque tiene cifras.',
+            'Texto, porque es un identificador que no se calcula.',
+            'Fecha, porque el guion separa partes.',
+            'Porcentaje, porque cada código es una parte del total.'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Eso es. Un código sirve para identificar, no para sumar. Va como texto aunque tenga cifras.',
+          feedbackIncorrecto: 'Los códigos no se suman ni se ordenan como cantidades. Son texto, aunque lleven números.'
         }
       ]
     }
   ],
   postLectura: {
-    reflexion: '¿En qué momento de tu vida te servirá organizar datos con tipos correctos y formato? Piensa en compras, ventas, presupuestos, tareas. Lo que aprendiste hoy te ahorra horas mañana.',
-    transferencia: 'Esta semana: lleva un registro en Excel (o Google Sheets) de algo real (gastos del kiosko, tiempo de pantalla, calificaciones). Aplica los 4 tipos: texto, número, fecha, moneda. Verifica con una fórmula =SUMA o =PROMEDIO.',
-    cierre: 'La disciplina del tendero — cada cosa en su columna — se vuelve hábito digital cuando la repites. Hoy es práctica; mañana, costumbre.'
+    reflexion: '¿Cuál de las cinco columnas te costó más tipar, y por qué?',
+    transferencia: 'La próxima vez que veas una tabla en clase, en un recibo o en una noticia, pregúntate de qué tipo es cada columna y si alguien podría sumarla.',
+    cierre: 'Excel adivina; tú decides. Ponerle tipo a una celda es la diferencia entre un dato y una palabra que parece dato.'
   },
   saberAncestral: {
-    saber: 'En los talleres de carpintería del centro de Cartago y en los aserríos del Pacífico, ningún maestro toma madera del montón al azar antes de cortar. Tiene un gesto previo que parece pérdida de tiempo a quien no sabe del oficio: clasifica la madera por tipo. El cedro va a un lado: liviano, blando, fácil de tallar; sirve para puertas y cofres. El guayacán va al otro: pesado, durísimo, casi imposible de cortar a mano; sirve para vigas y postes que aguantan lluvia y peso. El balso en una tercera pila: liviano como espuma, perfecto para juguetes y maquetas. Si el maestro confunde los tipos, el desastre es seguro: una puerta de guayacán pesa demasiado y rompe los goznes; una viga de balso se quiebra al primer aguacero; un juguete de cedro se astilla en las manos del niño. La sabiduría es ancestral y simple: cada material tiene un uso, y cada uso exige el material correcto. Quien no clasifica antes de cortar pierde la pieza y a veces la confianza del cliente.',
-    fuente: 'Cuaderno del tendero de barrio en el Valle del Cauca',
-    preguntaPuente: '¿Qué sabía el carpintero al clasificar la madera por tipo antes de cortar, que el novato olvida cuando llena celdas de Excel sin pensar en el tipo de dato? ¿Y qué pasa con un promedio de notas si una celda dice "cuatro punto cinco" en lugar de \\emph{4{,}5}?'
+    saber: 'En Cartago, el bordado a mano es economía y es lenguaje. Más de 1.500 bordadoras trabajan en el municipio y cerca de cien negocios venden lo que hacen (Chica García, 2019). Una sola prenda pasa por las manos de unas ocho artesanas. Y cada gesto de la aguja tiene nombre propio: cadeneta, pasado, rococó, paté cabra, randas caladas (Universidad Autónoma de Occidente, 2021). Ese nombre no es adorno. Cuando la maestra dice «aquí va pasado, no cadeneta», la aprendiz sabe qué hacer y qué corregir. Sin el nombre solo habría «una puntada», y nadie podría pedir, corregir ni enseñar. Ahí está también la cara de exclusión del oficio: la mayoría de quienes bordan son mujeres cabeza de familia con ingreso precario, y saber nombrar no les da todavía un salario digno. Hoy vas a hacer con Excel lo que la bordadora hace con la aguja: ponerle nombre al tipo de cada celda, para que se pueda calcular, corregir y enseñar.',
+    fuente: 'Bordadoras de Cartago · nombrar las puntadas',
+    referencia: 'Chica García, A. (2019, 17 de agosto). Bordados de Cartago: la herencia española que apropiaron las mujeres vallunas. Radio Nacional de Colombia.',
+    preguntaPuente: 'La bordadora sabe si una puntada es cadeneta o pasado antes de corregirla. Cuando abras una hoja con veinte columnas, ¿sabrás decir de qué tipo es cada una? ¿Y qué le pasa a un promedio si una celda dice «cuatro coma cinco» con letras?'
   },
+  mapaRuta: [
+    {
+      numero: 1,
+      iconos: [
+        '🌱'
+      ],
+      titulo: 'Nombrar las puntadas',
+      duracionMin: 10
+    },
+    {
+      numero: 2,
+      iconos: [
+        '👁',
+        '✏️'
+      ],
+      titulo: 'Actividad 1 · Cinco celdas, cinco tipos',
+      duracionMin: 15
+    },
+    {
+      numero: 3,
+      iconos: [
+        '📖',
+        '🔎'
+      ],
+      titulo: 'Actividad 2 · El tipo de cada columna',
+      duracionMin: 25
+    },
+    {
+      numero: 4,
+      iconos: [
+        '✏️',
+        '✅'
+      ],
+      titulo: 'Actividad 3 · Revisa la hoja de tu pareja',
+      duracionMin: 30
+    },
+    {
+      numero: 5,
+      iconos: [
+        '💭'
+      ],
+      titulo: 'Tres ideas y tu compromiso',
+      duracionMin: 10
+    }
+  ],
+  actividades: [
+    {
+      numero: 1,
+      verbo: 'IDENTIFICA',
+      titulo: 'Cinco celdas, cinco tipos',
+      tiempoMin: 15,
+      modalidad: 'individual',
+      pasos: [
+        'Abre Excel y escribe en cinco celdas distintas tu nombre completo, tu edad, tu fecha de nacimiento, el precio de una empanada hoy y el porcentaje de tu salón que usa gafas.',
+        'Mira cómo trata Excel cada celda. ¿La alinea a la derecha o a la izquierda? ¿Le pone símbolo?',
+        'Escribe al lado de cada celda el tipo que crees que Excel le dio.',
+        'Marca con una estrella la celda que Excel trató distinto de lo que esperabas.'
+      ],
+      cuaderno: {
+        titulo: 'Cinco celdas, cinco tipos',
+        formato: 'tabla de 5 filas y 3 columnas (celda / lo que escribí / tipo que Excel le dio)',
+        extension: 'media página'
+      },
+      criterios: [
+        'Las cinco filas de la tabla están llenas.',
+        'Una celda tiene estrella y puedes explicar por qué Excel la trató distinto.'
+      ]
+    },
+    {
+      numero: 2,
+      verbo: 'APLICA',
+      titulo: 'Ponle el tipo correcto a cada columna',
+      tiempoMin: 25,
+      modalidad: 'parejas',
+      pasos: [
+        'Con tu pareja, creen una hoja con cinco columnas, Nombre, Edad, Fecha de cumpleaños, Precio de la empanada, Porcentaje de asistencia.',
+        'Llenen cinco filas con datos reales del salón.',
+        'Antes de tocar nada, tomen la captura del «antes».',
+        'Seleccionen cada columna, clic derecho, Formato de celdas, y elijan la categoría que corresponde.',
+        'Tomen la captura del «después» y comparen las dos.'
+      ],
+      cuaderno: {
+        titulo: 'El tipo de cada columna',
+        formato: 'tabla de 5 filas y 3 columnas (columna / tipo elegido / qué voy a hacer con ella)',
+        extension: 'media página'
+      },
+      criterios: [
+        'Las cinco columnas tienen tipo y razón.',
+        'Las dos capturas están guardadas con nombre.'
+      ]
+    },
+    {
+      numero: 3,
+      verbo: 'EVALÚA',
+      titulo: 'Revisa la hoja de tu pareja y arregla la tuya',
+      tiempoMin: 30,
+      modalidad: 'individual',
+      pasos: [
+        'Abre la hoja de tu pareja sin que te explique nada.',
+        'Busca tres columnas con tipo equivocado o dudoso. Pista, alineación rara, dinero sin símbolo, fecha que no se ordena.',
+        'Anota cada hallazgo con la razón en una línea.',
+        'Devuélvele la hoja y recibe los hallazgos de la tuya.',
+        'Corrige tu hoja, toma la captura final y llena la tabla del cuaderno.'
+      ],
+      cuaderno: {
+        titulo: 'Qué cambió y por qué',
+        formato: 'tabla de 5 filas y 2 columnas (columna / qué cambió y por qué), más los tres hallazgos de la hoja ajena',
+        extension: 'una página'
+      },
+      criterios: [
+        'Tu pareja encontró tus errores y los corregiste.',
+        'Una suma de prueba sobre la columna de edades da el resultado esperado.',
+        'La hoja está guardada con nombre claro.'
+      ]
+    }
+  ],
   triangulo: {
     dussel: {
-      autor: 'Enrique Dussel',
+      autor: 'Enrique Dussel · Filosofía de la liberación (1977), §2.4.2.2',
       lente: 'lente del nosotros',
-      cita: 'Los datos correctamente clasificados respetan a quien los produjo; los mal clasificados los reducen a ruido.',
-      preguntaEspejo: '¿Mi clasificación de tipos respeta lo que cada columna representa, o trato todo como números abstractos?'
+      cita: 'Una persona no es una cosa más entre las cosas de un sistema. Cuando la reducimos a un número, algo de ella queda por fuera.',
+      preguntaEspejo: '¿Qué de las personas de mi hoja se pierde cuando solo miro los números?'
     },
     estoico: {
-      autor: 'Epicteto',
+      autor: 'Marco Aurelio · Meditaciones X, 16 (c. 175 d.C.)',
       lente: 'lente del cuidado interior',
-      cita: 'Lo pequeño bien hecho prepara lo grande; lo pequeño descuidado lo arruina.',
-      preguntaEspejo: '¿Estoy dedicando suficiente cuidado a esta tarea pequeña, sabiendo que las siguientes sesiones se montan sobre ella?'
+      cita: 'Deja de discutir cómo debería ser una persona que hace bien las cosas, y hazlas bien.',
+      preguntaEspejo: '¿Le puse a esta tarea pequeña el cuidado que va a necesitar la grande?'
     },
     floridi: {
-      autor: 'Luciano Floridi',
+      autor: 'Luciano Floridi · Big data and their epistemological challenge (2012)',
       lente: 'lente de la infoesfera',
-      cita: 'La información bien estructurada es la nueva ética de la era digital.',
-      preguntaEspejo: '¿Mi hoja está estructurada para que otra persona la entienda y la use sin pedirme aclaraciones, o solo yo la entiendo?'
-    }
+      cita: 'La mitad de los datos que guardamos es basura, y el problema es que no sabemos cuál mitad.',
+      preguntaEspejo: '¿Cuántas celdas de mi hoja parecen datos y no lo son?'
+    },
+    modo: 'ideas'
   },
   cincoDimensiones: {
-    personal: 'Aprendiste que la diferencia entre amateur y profesional con Excel es disciplina con los tipos de dato — no inteligencia bruta.',
-    emocional: 'Resististe la tentación del "ya está, sigamos" — entendiste que el orden inicial te ahorra frustración después.',
-    ciudadana: 'Una hoja de cálculo limpia respeta a quien la lee. Esa cortesía editorial es ciudadanía digital concreta.',
-    local: 'Heredaste el oficio del tendero del Valle: cada cosa en su columna, cada tipo respetado, cada total verificable.',
-    intergeneracional: 'El cuaderno de la abuela y tu Excel comparten el mismo principio. Lo que cambia es la herramienta, no la disciplina.'
+    personal: 'Aprendiste a ponerle nombre al tipo de un dato antes de usarlo. Es una costumbre pequeña que evita errores grandes.',
+    emocional: 'Dejaste que tu pareja encontrara tus errores y no te defendiste. Eso también se entrena.',
+    ciudadana: 'Un dato mal tipado hace que un promedio salga mal en silencio. Saber cómo pasa es poder pedir explicaciones cuando una cifra pública no cuadra.',
+    local: 'Las bordadoras de Cartago nombran cada puntada para poder corregir y enseñar. Tú nombraste cada tipo con el mismo propósito.',
+    intergeneracional: 'La maestra bordadora y la aprendiz, la hoja y su revisor. En los dos casos el saber pasa cuando alguien mira tu trabajo y sabe nombrar lo que ve.'
   }
 };
 

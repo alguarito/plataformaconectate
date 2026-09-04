@@ -91,14 +91,13 @@ REQUIRED_PATHS = [
     "praxis.intro", "praxis.pilares", "praxis.checklist.titulo",
     "praxis.checklist.items", "praxis.plantilla_guion", "praxis.cuaderno",
     "praxis.producto_titulo", "praxis.criterios",
-    "triangulo.dussel.autor", "triangulo.dussel.cita",
     "triangulo.dussel.aplicacion", "triangulo.dussel.pregunta_espejo",
-    "triangulo.estoico.autor", "triangulo.estoico.cita",
     "triangulo.estoico.aplicacion", "triangulo.estoico.pregunta_espejo",
-    "triangulo.floridi.autor", "triangulo.floridi.cita",
     "triangulo.floridi.aplicacion", "triangulo.floridi.pregunta_espejo",
     "compromiso",
 ]
+# Los campos del triángulo que dependen del modo (contrato v3.1) se validan en
+# lint_triangulo: `citas` pide autor+cita, `ideas` autor+idea, `preguntas` pregunta.
 
 # Colors (ANSI)
 RESET = "\033[0m"
@@ -199,10 +198,44 @@ def lint_saber_ancestral(g: dict) -> list[str]:
     return []
 
 
+MODOS_TRIANGULO = ("preguntas", "ideas", "citas")
+MODO_POR_GRADO = {6: "preguntas", 7: "preguntas", 8: "ideas", 9: "citas", 10: "citas", 11: "citas"}
+
+
+def _modo_triangulo(g: dict) -> str:
+    m = str((g.get("triangulo") or {}).get("modo") or "").strip().lower()
+    return m if m in MODOS_TRIANGULO else "citas"
+
+
 def lint_triangulo(g: dict) -> list[str]:
-    """Valida el triángulo: 3 voces con citas y autores correctos."""
+    """Valida el triángulo según su modo: `preguntas` (6.º–7.º, sin autores),
+    `ideas` (8.º, nombre e idea) o `citas` (9.º–11.º, citas con autor y obra)."""
     errors = []
-    tri = g.get("triangulo", {})
+    tri = g.get("triangulo", {}) or {}
+    modo = _modo_triangulo(g)
+    declarado = str(tri.get("modo") or "").strip().lower()
+    if declarado and declarado not in MODOS_TRIANGULO:
+        errors.append(f"triangulo.modo '{declarado}' no es válido: preguntas | ideas | citas")
+
+    if modo == "preguntas":
+        for nombre in ("dussel", "estoico", "floridi"):
+            voz = tri.get(nombre) or {}
+            preg = (voz.get("pregunta") or "").strip()
+            if len(preg) < 15 or "?" not in preg:
+                errors.append(f"triangulo.{nombre}.pregunta (modo preguntas) falta o no es una pregunta")
+        return errors
+
+    if modo == "ideas":
+        for nombre in ("dussel", "estoico", "floridi"):
+            voz = tri.get(nombre) or {}
+            if not (voz.get("autor") or "").strip():
+                errors.append(f"triangulo.{nombre}.autor (modo ideas) vacío")
+            if len((voz.get("idea") or "").strip()) < 20:
+                errors.append(f"triangulo.{nombre}.idea (modo ideas) falta o es muy corta")
+        autor_est = (tri.get("estoico") or {}).get("autor") or ""
+        if not any(e in autor_est for e in ("Marco Aurelio", "Epicteto", "Séneca", "Seneca")):
+            errors.append("triangulo.estoico.autor debe ser Marco Aurelio | Epicteto | Séneca")
+        return errors
 
     # Dussel
     if "Dussel" not in (tri.get("dussel", {}).get("autor") or ""):
@@ -266,6 +299,8 @@ def lint_citas_trazables(g: dict) -> list[str]:
     """
     warnings = []
     tri = g.get("triangulo") or {}
+    if _modo_triangulo(g) != "citas":
+        return warnings
 
     for nombre in ("dussel", "estoico", "floridi"):
         voz = tri.get(nombre) or {}
@@ -553,6 +588,144 @@ def lint_web_estructura(g: dict) -> tuple[list[str], list[str]]:
     return errors, warnings
 
 
+# ─── Banco de citas y de anclas (si existen en el repo) ──────────────────────
+
+_BANCO_CITAS = ROOT / "content" / "guias" / "_banco-citas.yaml"
+_BANCO_ANCLAS = ROOT / "content" / "anclas" / "banco-anclas.yaml"
+
+
+def _norm(t: str) -> str:
+    t = re.sub(r"\\ldots|…|\.\.\.", " ", t or "")
+    t = re.sub(r"[«»\"“”‘’'`]", "", t)
+    return re.sub(r"[^a-záéíóúñü0-9]+", " ", t.lower()).strip()
+
+
+def _cargar_banco_citas() -> dict | None:
+    if not _BANCO_CITAS.exists():
+        return None
+    try:
+        d = yaml.safe_load(_BANCO_CITAS.read_text(encoding="utf-8")) or {}
+    except Exception:
+        return None
+    autores = {(c.get("autor") or "").strip() for c in d.get("citas") or []}
+    textos = {_norm(c.get("texto") or "") for c in d.get("citas") or []}
+    return {"autores": autores, "textos": textos}
+
+
+def _cargar_anclas_prohibidas() -> list[str]:
+    if not _BANCO_ANCLAS.exists():
+        return []
+    try:
+        d = yaml.safe_load(_BANCO_ANCLAS.read_text(encoding="utf-8")) or {}
+    except Exception:
+        return []
+    return [str(x.get("nombre") or "").strip() for x in d.get("descartadas") or [] if x.get("nombre")]
+
+
+def lint_modo_triangulo(g: dict) -> tuple[list[str], list[str]]:
+    """Aviso si el modo no es el que la calibración por edad espera; en v3.1 y
+    modo citas, las citas deben venir del banco verificado."""
+    errors: list[str] = []
+    warnings: list[str] = []
+    grado = int(g.get("grado") or 0)
+    modo = _modo_triangulo(g)
+    esperado = MODO_POR_GRADO.get(grado)
+    if _es_v31(g) and esperado and modo != esperado:
+        warnings.append(f"triangulo.modo es '{modo}'; para {grado}.º la calibración por edad espera '{esperado}'")
+    if modo != "citas" or not _es_v31(g):
+        return errors, warnings
+    banco = _cargar_banco_citas()
+    if not banco:
+        return errors, warnings
+    tri = g.get("triangulo") or {}
+    for nombre in ("dussel", "estoico", "floridi"):
+        voz = tri.get(nombre) or {}
+        autor = (voz.get("autor") or "").strip()
+        if autor and autor not in banco["autores"]:
+            errors.append(f"triangulo.{nombre}.autor «{autor}» no está en _banco-citas.yaml (usa el string exacto del banco)")
+        if _norm(voz.get("cita") or "") not in banco["textos"]:
+            errors.append(f"triangulo.{nombre}.cita no coincide con ninguna cita verificada del banco")
+    return errors, warnings
+
+
+# Límite de palabras por oración según segmento de edad (guía de voz).
+_MAX_ORACION = {6: 18, 7: 18, 8: 25, 9: 25, 10: 30, 11: 30}
+_CAMPOS_VOZ = [
+    "apertura.saber_ancestral", "apertura.saber_contemporaneo", "apertura.pregunta_puente",
+    "escuta.escena", "sistematizacion.intro", "sistematizacion.errores_comunes",
+    "praxis.intro", "compromiso",
+]
+# Frases plantilla que la auditoría encontró repetidas en decenas de guías.
+FRASES_PLANTILLA = [
+    "Antes de empezar, mira el viaje completo",
+    "que el novato olvida",
+    "que el estudiante novato olvida",
+    "La regla profesional",
+    "Hora de aplicar",
+    "Lo esencial cabe en",
+    "La phronesis del oficio consiste en",
+    "traición al oficio",
+    "debilidad disfrazada de",
+    "la sustentación de mañana será",
+    "La sabiduría era inquebrantable",
+]
+
+
+def _oraciones(texto: str) -> list[str]:
+    limpio = re.sub(r"\\[a-zA-Z]+\{|\}|\\\\\[\d+mm\]", " ", texto or "")
+    limpio = re.sub(r"\(\d+\)", " ", limpio)
+    return [o.strip() for o in re.split(r"(?<=[.!?;:])\s+", limpio) if o.strip()]
+
+
+def lint_oraciones_largas(g: dict) -> tuple[list[str], list[str]]:
+    warnings: list[str] = []
+    limite = _MAX_ORACION.get(int(g.get("grado") or 0), 30)
+    for path in _CAMPOS_VOZ:
+        text = _get(g, path) or ""
+        largas = [o for o in _oraciones(text) if len(o.split()) > limite]
+        if largas:
+            peor = max(largas, key=lambda o: len(o.split()))
+            warnings.append(
+                f"{path}: {len(largas)} oración(es) de más de {limite} palabras (la más larga tiene "
+                f"{len(peor.split())}): «{peor[:60]}…»"
+            )
+    return [], warnings
+
+
+def lint_frases_plantilla(g: dict) -> tuple[list[str], list[str]]:
+    warnings: list[str] = []
+    texto = "\n".join(str(v) for _, v in _walk_strings(g))
+    halladas = [f for f in FRASES_PLANTILLA if f.lower() in texto.lower()]
+    if halladas:
+        warnings.append("frases plantilla que la guía de voz prohíbe: " + " · ".join(f"«{h}»" for h in halladas))
+    return [], warnings
+
+
+def lint_anclas_prohibidas(g: dict) -> tuple[list[str], list[str]]:
+    errors: list[str] = []
+    warnings: list[str] = []
+    prohibidas = _cargar_anclas_prohibidas()
+    if not prohibidas:
+        return errors, warnings
+    sa = (_get(g, "apertura.saber_ancestral") or "").lower()
+    halladas = [p for p in prohibidas if p.lower() in sa]
+    if halladas:
+        msg = "el saber ancestral usa anclas descartadas por el banco: " + ", ".join(halladas)
+        (errors if _es_v31(g) else warnings).append(msg)
+    return errors, warnings
+
+
+def _walk_strings(x, path=""):
+    if isinstance(x, str):
+        yield path, x
+    elif isinstance(x, list):
+        for i, v in enumerate(x):
+            yield from _walk_strings(v, f"{path}[{i}]")
+    elif isinstance(x, dict):
+        for k, v in x.items():
+            yield from _walk_strings(v, f"{path}.{k}" if path else k)
+
+
 # ─── Reporte ─────────────────────────────────────────────────────────────────
 
 def lint_guia(g: dict, grado: int = 11) -> tuple[list[str], list[str]]:
@@ -589,6 +762,10 @@ def lint_guia(g: dict, grado: int = 11) -> tuple[list[str], list[str]]:
         lint_tiempo_modalidad,
         lint_extension_cuaderno,
         lint_web_estructura,
+        lint_modo_triangulo,
+        lint_oraciones_largas,
+        lint_frases_plantilla,
+        lint_anclas_prohibidas,
     ):
         e, w = regla(g)
         errors += e

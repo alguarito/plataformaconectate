@@ -63,6 +63,7 @@ LATEX_PATTERNS: list[tuple[re.Pattern, str]] = [
     (re.compile(r"\$<\$"), "<"),
     (re.compile(r"\$>\$"), ">"),
     (re.compile(r"\$\^(\d+)\$"), r"^\1"),
+    (re.compile(r"(?<=\S)~(?=\S)"), " "),  # espacio indivisible LaTeX (p. ej. 60~\%)
     (re.compile(r"---"), "—"),
     (re.compile(r"``"), '"'),
     (re.compile(r"''"), '"'),
@@ -271,17 +272,44 @@ def derive_saber_ancestral(data: dict) -> dict:
     return out
 
 
+LENTES_SIN_NOMBRE = {
+    "dussel": "Mirar a los demás",
+    "estoico": "Mirar hacia adentro",
+    "floridi": "Mirar la información",
+}
+
+
 def derive_triangulo(data: dict) -> dict:
+    """Triángulo según `triangulo.modo` (contrato v3.1): `preguntas` (6.º–7.º,
+    sin autores), `ideas` (8.º, nombre e idea sin cita) o `citas` (9.º–11.º).
+    Sin `modo`, se conserva el comportamiento de siempre (`citas`)."""
     tri = data.get("triangulo", {}) or {}
-    out = {}
+    modo = str(tri.get("modo") or "citas").strip().lower()
+    if modo not in ("preguntas", "ideas", "citas"):
+        modo = "citas"
+    out: dict = {}
     for key in ("dussel", "estoico", "floridi"):
         v = tri.get(key) or {}
+        if modo == "preguntas":
+            frase = v.get("pregunta") or v.get("cita", "")
+            autor = ""
+            lente = LENTES_SIN_NOMBRE[key]
+        elif modo == "ideas":
+            frase = v.get("idea") or v.get("cita", "")
+            autor = latex_to_text(v.get("autor", ""))
+            lente = LENTES[key]
+        else:
+            frase = v.get("cita", "")
+            autor = latex_to_text(v.get("autor", ""))
+            lente = LENTES[key]
         out[key] = {
-            "autor": latex_to_text(v.get("autor", "")),
-            "lente": LENTES[key],
-            "cita": latex_to_text(v.get("cita", "")),
+            "autor": autor,
+            "lente": lente,
+            "cita": latex_to_text(frase),
             "preguntaEspejo": latex_to_text(v.get("pregunta_espejo", "")),
         }
+    if modo != "citas":
+        out["modo"] = modo
     return out
 
 

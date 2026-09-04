@@ -177,10 +177,15 @@ export interface Actividad {
 
 /* ─────── Triángulo de pensamiento (cierre filosófico — contrato MILC v3) ─────── */
 
+export type ModoTriangulo = 'preguntas' | 'ideas' | 'citas';
+
 export interface VozTriangulo {
-  /** Nombre del autor o tradición (Dussel, Marco Aurelio, Floridi, etc.) */
+  /** Nombre del autor o tradición (Dussel, Marco Aurelio, Floridi, etc.). Vacío en modo `preguntas`. */
   autor: string;
-  /** Cita textual breve */
+  /**
+   * Según el modo del triángulo: cita textual (`citas`), idea contada con
+   * palabras de la guía (`ideas`) o pregunta cotidiana (`preguntas`).
+   */
   cita: string;
   /** Pregunta-espejo que el estudiante se hace a partir de la cita */
   preguntaEspejo: string;
@@ -189,6 +194,12 @@ export interface VozTriangulo {
 }
 
 export interface Triangulo {
+  /**
+   * Calibración por edad (skill alvaro-milc-pedagogy): 6.º–7.º `preguntas`
+   * (sin nombrar autores), 8.º `ideas` (nombre e idea, sin cita), 9.º–11.º
+   * `citas` (textuales con referencia). Ausente = `citas`.
+   */
+  modo?: ModoTriangulo;
   /** Voz 1: Dussel — color institucional vino #5A0038 */
   dussel: VozTriangulo;
   /** Voz 2: tradición estoica (Marco Aurelio, Epicteto o Séneca) — color mostaza #E5B400 */

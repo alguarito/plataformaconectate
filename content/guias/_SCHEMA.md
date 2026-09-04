@@ -195,7 +195,53 @@ web:
 ```
 
 Reglas v3.1 del linter: `lint_fuente_apertura`, `lint_quiz_balance`, `lint_verbo_unico`,
-`lint_tiempo_modalidad`, `lint_extension_cuaderno`, `lint_web_estructura`.
+`lint_tiempo_modalidad`, `lint_extension_cuaderno`, `lint_web_estructura`,
+`lint_modo_triangulo`, `lint_oraciones_largas`, `lint_frases_plantilla`, `lint_anclas_prohibidas`.
+
+### Triángulo por edad (`triangulo.modo`)
+
+La calibración de la skill pedagógica manda: 6.º–7.º **`preguntas`**, 8.º **`ideas`**,
+9.º–11.º **`citas`**. Sin `modo`, se conserva `citas` (comportamiento anterior).
+
+```yaml
+triangulo:
+  modo: preguntas            # 6.º–7.º · sin nombrar autores
+  dussel:
+    pregunta: ¿A quién no le preguntaste hoy qué opina, y por qué?
+    aplicacion: |-           # dos o tres frases que aterrizan la pregunta
+    pregunta_espejo: …       # se imprime como «Para tu cuaderno: …»
+  estoico: { pregunta: …, aplicacion: …, pregunta_espejo: … }
+  floridi: { pregunta: …, aplicacion: …, pregunta_espejo: … }
+
+triangulo:
+  modo: ideas                # 8.º · nombre e idea contada con palabras de la guía
+  dussel:
+    autor: Enrique Dussel · Filosofía de la liberación (1977)   # se imprime solo el nombre
+    idea: Quien queda fuera del sistema tiene rostro y voz…     # sin comillas
+    aplicacion: …
+    pregunta_espejo: …
+
+triangulo:
+  modo: citas                # 9.º–11.º · citas verificadas del banco
+  dussel:
+    autor: "Enrique Dussel · Filosofía de la liberación (1977)" # string EXACTO de _banco-citas.yaml
+    cita: …                                                     # texto EXACTO del banco
+```
+
+Los rótulos de las cajas («Mirar a los demás» / «Enrique Dussel · lente del nosotros» /
+«Estoicismo · Marco Aurelio · Meditaciones VI, 21 (c. 175 d.C.) · cuidado interior») y la nota
+para el docente los pone `scripts/lib_triangulo.py` (`placeholders_triangulo`) para los cuatro
+drivers; la web los replica en `TrianguloBlock.astro`.
+
+### Bancos
+
+- `content/guias/_banco-citas.yaml`: citas cotejadas contra la obra. En una guía v3.1 con modo
+  `citas`, `autor` y `cita` deben coincidir con el banco (error del linter si no).
+- `content/anclas/banco-anclas.yaml`: prácticas con fuente verificable y cara de exclusión, más la
+  lista `descartadas:` (cabañuelas, pregonero, sereno…) que el linter rechaza en el saber ancestral.
+- `docs/guia-de-voz.md`: tono, longitud de oración por segmento (18 / 25 / 30 palabras), frases
+  prohibidas y ejemplos antes/después.
+
 
 ## Reglas de validación
 

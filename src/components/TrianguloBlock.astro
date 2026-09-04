@@ -28,6 +28,26 @@ interface Props {
 const { data } = Astro.props;
 
 /**
+ * Modo por edad (contrato v3.1): `preguntas` no nombra autores y no lleva
+ * atribución; `ideas` nombra al autor y aclara que la idea está contada con
+ * palabras de la guía; `citas` es el comportamiento de siempre.
+ */
+const modo = data.modo ?? 'citas';
+const TITULO = {
+  preguntas: 'Tres preguntas para cerrar.',
+  ideas: 'Tres ideas para cerrar.',
+  citas: 'Tres voces para cerrar.',
+}[modo];
+const INTRO = {
+  preguntas:
+    'Tres preguntas que se hacen personas que han pensado mucho en los demás, en uno mismo y en la información. Responde una en tu cuaderno.',
+  ideas:
+    'Tres ideas de tres pensadores, contadas con palabras de esta guía. Elige una y responde su pregunta en tu cuaderno.',
+  citas:
+    'No es decoración: son tres lentes que te acompañan toda la secundaria. Lee con calma y responde la pregunta-espejo en tu cuaderno.',
+}[modo];
+
+/**
  * Quita las comillas que rodean la frase en los datos.
  *
  * 60 archivos de contenido guardan la formulación ya entrecomillada, así que
@@ -54,6 +74,10 @@ function nombreLimpio(autor: string): string {
 
 /** La línea de crédito que va debajo de la frase. */
 function atribucion(voz: VozTriangulo): string {
+  if (modo === 'preguntas') return '';
+  if (modo === 'ideas') {
+    return `— idea tomada de ${nombreLimpio(voz.autor)}, contada con palabras de esta guía. No es una cita textual.`;
+  }
   return tieneObra(voz.autor)
     ? `— ${voz.autor}`
     : `— formulación de esta guía, al modo de ${nombreLimpio(voz.autor)}. No es una cita textual.`;
@@ -85,12 +109,11 @@ const textuales = voces.filter(({ voz }) => tieneObra(voz.autor)).length;
   </div>
 
   <h2 id="triangulo-titulo" class="text-2xl md:text-3xl font-black tracking-tight leading-[1.1] mb-3">
-    Tres voces para cerrar.
+    {TITULO}
   </h2>
 
   <p class="text-base leading-relaxed max-w-2xl mb-7" style="color: var(--fg-muted);">
-    No es decoración: son tres lentes que te acompañan toda la secundaria. Lee con calma
-    y responde la pregunta-espejo en tu cuaderno.
+    {INTRO}
   </p>
 
   <div class="flex flex-col gap-6">
@@ -100,27 +123,34 @@ const textuales = voces.filter(({ voz }) => tieneObra(voz.autor)).length;
         <article class="pl-5 md:pl-6" style={`border-left: 6px solid ${c.color};`}>
           <div class="flex items-baseline gap-3 flex-wrap mb-2.5">
             <h3 class="text-xl md:text-2xl font-black tracking-tight" style={`color: ${c.texto};`}>
-              {nombreLimpio(voz.autor)}
+              {modo === 'preguntas' ? voz.lente : nombreLimpio(voz.autor)}
             </h3>
-            <span class="text-xs font-bold" style="color: var(--fg-muted);">
-              {voz.lente}
-            </span>
+            {modo !== 'preguntas' && (
+              <span class="text-xs font-bold" style="color: var(--fg-muted);">
+                {voz.lente}
+              </span>
+            )}
           </div>
 
-          <p class="text-base leading-relaxed mb-1.5" style="color: var(--fg);">
-            {tieneObra(voz.autor) ? `«${sinComillas(voz.cita)}»` : sinComillas(voz.cita)}
+          <p
+            class:list={['leading-relaxed mb-1.5', modo === 'preguntas' ? 'text-lg md:text-xl font-bold' : 'text-base']}
+            style="color: var(--fg);"
+          >
+            {modo === 'citas' && tieneObra(voz.autor) ? `«${sinComillas(voz.cita)}»` : sinComillas(voz.cita)}
           </p>
 
-          <p class="text-xs italic leading-snug mb-3" style="color: var(--fg-muted);">
-            {atribucion(voz)}
-          </p>
+          {atribucion(voz) && (
+            <p class="text-xs italic leading-snug mb-3" style="color: var(--fg-muted);">
+              {atribucion(voz)}
+            </p>
+          )}
 
           <p class="text-sm md:text-base leading-relaxed mb-3" style="color: var(--fg-muted);">
             {voz.aplicacion}
           </p>
 
           <p class="font-bold text-base md:text-lg leading-snug" style={`color: ${c.texto};`}>
-            Pregunta-espejo: {voz.preguntaEspejo}
+            {modo === 'preguntas' ? 'Para tu cuaderno' : 'Pregunta-espejo'}: {voz.preguntaEspejo}
           </p>
         </article>
       );
@@ -132,7 +162,11 @@ const textuales = voces.filter(({ voz }) => tieneObra(voz.autor)).length;
     style="background: var(--bg); color: var(--fg-muted);"
   >
     <strong style="color: var(--fg);">Nota para el docente.</strong>
-    {textuales === 3
+    {modo === 'preguntas'
+      ? 'En 6.º y 7.º el cierre son tres preguntas cotidianas inspiradas en Dussel, en los estoicos y en Floridi, sin nombrarlos: los nombres llegan en 8.º y las citas con su obra, de 9.º en adelante.'
+      : modo === 'ideas'
+      ? 'Las tres ideas están contadas con palabras de esta guía a partir del pensamiento de cada autor; no son citas textuales. De 9.º en adelante se trabajan con la obra y su referencia.'
+      : textuales === 3
       ? 'Las tres son citas textuales y llevan su referencia debajo. Puedes remitir a la obra en clase.'
       : textuales === 0
         ? 'Las tres formulaciones son del autor de la guía, no citas textuales de los pensadores: recogen su lente para pensar el tema, no sus palabras. Si vas a citarlos en clase, remite a la obra original.'

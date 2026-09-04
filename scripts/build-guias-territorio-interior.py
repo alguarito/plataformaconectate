@@ -30,7 +30,7 @@ from pathlib import Path
 
 # Presentación honesta del triángulo: ver scripts/lib_triangulo.py
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from lib_triangulo import atribucion, cita_presentada, nota_docente  # noqa: E402
+from lib_triangulo import placeholders_triangulo  # noqa: E402
 # Compilación XeLaTeX compartida (lee el .log, falla con Overfull \vbox):
 # ver scripts/lib_xelatex.py
 from lib_xelatex import XELATEX, compilar, texto_pdf  # noqa: E402,F401
@@ -272,20 +272,8 @@ def yaml_a_placeholders(guia: dict) -> dict[str, str]:
         "CRITERIOS_LISTA": criterios_str,
 
         # Triángulo de pensamiento
-                "TRIANGULO_NOTA": nota_docente(triangulo),
-"DUSSEL_CITA": cita_presentada(triangulo["dussel"]),
-        "DUSSEL_ATRIBUCION": atribucion(triangulo["dussel"]),
-        "DUSSEL_APLICACION": triangulo["dussel"]["aplicacion"],
-        "DUSSEL_PREGUNTA": triangulo["dussel"]["pregunta_espejo"],
-        "ESTOICISMO_AUTOR": triangulo["estoico"]["autor"],
-        "ESTOICISMO_CITA": cita_presentada(triangulo["estoico"]),
-        "ESTOICISMO_ATRIBUCION": atribucion(triangulo["estoico"]),
-        "ESTOICISMO_APLICACION": triangulo["estoico"]["aplicacion"],
-        "ESTOICISMO_PREGUNTA": triangulo["estoico"]["pregunta_espejo"],
-        "FLORIDI_CITA": cita_presentada(triangulo["floridi"]),
-        "FLORIDI_ATRIBUCION": atribucion(triangulo["floridi"]),
-        "FLORIDI_APLICACION": triangulo["floridi"]["aplicacion"],
-        "FLORIDI_PREGUNTA": triangulo["floridi"]["pregunta_espejo"],
+        # Triángulo: título, rótulos, citas, atribuciones y nota según `triangulo.modo`
+        **placeholders_triangulo(triangulo, grado=guia.get("grado")),
 
         # Compromiso
         "COMPROMISO_INFOBAND": guia["compromiso"],

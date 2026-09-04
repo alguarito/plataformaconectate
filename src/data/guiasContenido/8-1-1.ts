@@ -153,7 +153,7 @@ const contenido: ContenidoGuia = {
     cierre: 'Saber de datos no es saber más números, es saber qué preguntarles. La tendera lo hace con su cuaderno; tú, con tu hoja.'
   },
   saberAncestral: {
-    saber: 'En muchas tiendas de barrio de Cartago todavía existe el cuaderno del fiado. Cada renglón guarda cuatro datos: quién llevó, qué día, qué llevó y cuánto vale. Cuando la familia viene a pagar, la tendera no suma de una. Primero le pregunta al cuaderno: ¿esta letra es mía o de mi hijo?, ¿este cinco es un cinco o un tres?, ¿falta el sábado?, ¿estoy cobrando la quincena o el mes? Solo después saca la cuenta. Una socióloga que estudió el fiado en un pequeño negocio de Cali encontró que fiar es un pacto de confianza entre vecinos, sostenido por un cuaderno que se revisa y se tacha (Martínez Benavides, 2021). «Miremos el cuaderno» resuelve la discusión que la memoria sola no resuelve. Ahí está lo importante: el registro vale porque cualquiera puede ponerlo a prueba. Pero el cuaderno tiene una cara de exclusión: a quien la tendera no conoce, no le fía. Solo cuenta a los que ya estaban adentro. Preguntar antes de sumar y saber quién falta en la lista: eso es lo que hoy vas a hacer con una hoja de datos.',
+    saber: 'En muchas tiendas de barrio de Cartago todavía existe el cuaderno del fiado. Cada renglón guarda cuatro datos: quién llevó, qué día, qué llevó y cuánto vale. Cuando la familia viene a pagar, la tendera no suma de una. Primero le pregunta al cuaderno. ¿Esta letra es mía o de mi hijo? ¿Este cinco es un cinco o un tres? ¿Falta el sábado? ¿Estoy cobrando la quincena o el mes? Solo después saca la cuenta. Una socióloga estudió el fiado en un pequeño negocio de Cali. Encontró que fiar es un pacto de confianza entre vecinos, sostenido por un cuaderno que se revisa y se tacha (Martínez Benavides, 2021). «Miremos el cuaderno» resuelve la discusión que la memoria sola no resuelve. Ahí está lo importante: el registro vale porque cualquiera puede ponerlo a prueba. Pero el cuaderno tiene una cara de exclusión: a quien la tendera no conoce, no le fía. Solo cuenta a los que ya estaban adentro. Preguntar antes de sumar y saber quién falta en la lista: eso vas a hacer hoy con una hoja de datos.',
     fuente: 'Cuaderno del fiado · tiendas de barrio',
     referencia: 'Martínez Benavides, A. (2021). Circuitos crediticios: fiado y trabajo relacional en un pequeño negocio en Cali, Colombia. Estudios Sociológicos de El Colegio de México, 39(116), 467--494.',
     preguntaPuente: 'La tendera le pregunta al cuaderno antes de sumar. Cuando abras una hoja con 200 filas, ¿qué le vas a preguntar antes del primer promedio? ¿Y quién no aparece en esas filas?'
@@ -282,21 +282,22 @@ const contenido: ContenidoGuia = {
     dussel: {
       autor: 'Enrique Dussel · Filosofía de la liberación (1977)',
       lente: 'lente del nosotros',
-      cita: 'El otro se revela realmente como otro\\ldots como el pobre, el oprimido; el que, a la vera del camino, fuera del sistema, muestra su rostro sufriente y sin embargo desafiante.',
+      cita: 'Quien queda fuera del sistema tiene rostro y voz. Mirarlo es el primer paso para no repetir la exclusión.',
       preguntaEspejo: '¿Quién no aparece en mi hoja? ¿Qué cambiaría en mi cálculo si estuviera?'
     },
     estoico: {
       autor: 'Marco Aurelio · Meditaciones VI, 21 (c. 175 d.C.)',
       lente: 'lente del cuidado interior',
-      cita: 'Si alguien puede refutarme y probar de modo concluyente que pienso o actúo incorrectamente, de buen grado cambiaré de proceder. Pues persigo la verdad, que no dañó nunca a nadie; en cambio, sí se daña el que persiste en su propio engaño e ignorancia.',
+      cita: 'Si alguien te muestra que estás equivocado, cambia de camino con gusto. Lo que daña no es el error: es aferrarse a él.',
       preguntaEspejo: '¿Estoy leyendo los datos como son, o como me gustaría que fueran para darme la razón?'
     },
     floridi: {
       autor: 'Luciano Floridi · Big data and their epistemological challenge (2012)',
       lente: 'lente de la infoesfera',
-      cita: 'Los pequeños patrones solo pueden ser significativos si se agregan correctamente, se comparan y se procesan a tiempo.',
+      cita: 'Un patrón pequeño solo significa algo si se agregó bien, se comparó con otro y llegó a tiempo.',
       preguntaEspejo: '¿Mi cálculo agrega bien, compara con algo y llega a tiempo? ¿O es un número solo?'
-    }
+    },
+    modo: 'ideas'
   },
   cincoDimensiones: {
     personal: 'Aprendiste que un dato no es una decisión, es un insumo. Lo que conecta el número con la acción es preguntar antes.',

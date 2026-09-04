@@ -115,3 +115,116 @@ def nota_docente(triangulo: dict) -> str:
         "referencia debajo--- y formulaciones del autor de la guía, señaladas como tales. "
         "Solo las primeras se pueden citar como palabras del pensador."
     )
+
+
+# ─── Contrato v3.1 · modo del triángulo por grado ─────────────────────────────
+#
+# La skill pedagógica calibra el cierre filosófico por edad: en 6.º y 7.º son
+# tres preguntas cotidianas sin nombrar autores; en 8.º aparecen los nombres con
+# una idea breve, sin cita textual; de 9.º a 11.º van citas textuales completas
+# con referencia. El YAML lo declara en `triangulo.modo`; si no lo declara, se
+# conserva el modo `citas` (el comportamiento de siempre).
+
+MODOS = ("preguntas", "ideas", "citas")
+
+MODO_POR_GRADO = {6: "preguntas", 7: "preguntas", 8: "ideas",
+                  9: "citas", 10: "citas", 11: "citas"}
+
+# Rótulos de cada voz cuando NO se nombra al autor (modo preguntas).
+LENTES_SIN_NOMBRE = {
+    "dussel": "Mirar a los demás",
+    "estoico": "Mirar hacia adentro",
+    "floridi": "Mirar la información",
+}
+LENTES = {
+    "dussel": "lente del nosotros",
+    "estoico": "cuidado interior",
+    "floridi": "lente de la infoesfera",
+}
+TITULOS = {
+    "preguntas": "Tres preguntas para cerrar",
+    "ideas": "Tres ideas para cerrar · Dussel, un estoico y Floridi",
+    "citas": "Triángulo de pensamiento · cierre filosófico",
+}
+
+
+def modo_de(triangulo: dict, grado: int | None = None) -> str:
+    """Modo declarado en el YAML; si no hay, `citas` (compatibilidad)."""
+    m = ((triangulo or {}).get("modo") or "").strip().lower()
+    if m in MODOS:
+        return m
+    return "citas"
+
+
+def modo_esperado(grado: int | None) -> str | None:
+    return MODO_POR_GRADO.get(int(grado)) if grado is not None else None
+
+
+def rotulo_voz(voz: dict, clave: str, modo: str) -> str:
+    """Título de la caja de cada voz según el modo."""
+    voz = voz or {}
+    if modo == "preguntas":
+        return LENTES_SIN_NOMBRE[clave]
+    nombre = nombre_limpio(voz.get("autor", ""))
+    if clave == "estoico":
+        # En modo citas el rótulo conserva el autor completo (obra y año), como
+        # siempre se imprimió; en modo ideas solo el nombre.
+        quien = (voz.get("autor", "") or "").strip() if modo == "citas" else nombre
+        return f"Estoicismo · {quien} · {LENTES[clave]}"
+    apellido = {"dussel": "Dussel", "floridi": "Floridi"}[clave]
+    return f"{apellido} · {LENTES[clave]}" if modo == "citas" else f"{nombre} · {LENTES[clave]}"
+
+
+def frase_principal(voz: dict, modo: str) -> str:
+    """Lo que va en el sitio de la cita: pregunta, idea o cita, según el modo."""
+    voz = voz or {}
+    if modo == "preguntas":
+        return f"\\textbf{{{sin_comillas(voz.get('pregunta') or voz.get('cita', ''))}}}"
+    if modo == "ideas":
+        return sin_comillas(voz.get("idea") or voz.get("cita", ""))
+    return cita_presentada(voz)
+
+
+def atribucion_modo(voz: dict, modo: str) -> str:
+    if modo == "preguntas":
+        return ""
+    if modo == "ideas":
+        return (f"--- idea tomada de {nombre_limpio((voz or {}).get('autor', ''))}, "
+                f"contada con palabras de esta guía. No es una cita textual.")
+    return atribucion(voz)
+
+
+def nota_docente_modo(triangulo: dict, modo: str) -> str:
+    if modo == "preguntas":
+        return (
+            "\\textbf{Nota para el docente.} En 6.º y 7.º el cierre son tres preguntas "
+            "cotidianas inspiradas en Dussel, en los estoicos y en Floridi, sin nombrarlos: "
+            "los nombres llegan en 8.º y las citas con su obra, de 9.º en adelante."
+        )
+    if modo == "ideas":
+        return (
+            "\\textbf{Nota para el docente.} Las tres ideas están contadas con palabras de "
+            "esta guía a partir del pensamiento de cada autor; no son citas textuales. "
+            "De 9.º en adelante se trabajan con la obra y su referencia."
+        )
+    return nota_docente(triangulo)
+
+
+def placeholders_triangulo(triangulo: dict, grado: int | None = None) -> dict[str, str]:
+    """Todos los placeholders del bloque del triángulo, para cualquier driver."""
+    tri = triangulo or {}
+    modo = modo_de(tri, grado)
+    out = {
+        "TRIANGULO_TITULO": TITULOS[modo],
+        "TRIANGULO_NOTA": nota_docente_modo(tri, modo),
+        "ESTOICISMO_AUTOR": (tri.get("estoico") or {}).get("autor", "") or "",
+    }
+    for clave, pref in (("dussel", "DUSSEL"), ("estoico", "ESTOICISMO"), ("floridi", "FLORIDI")):
+        voz = tri.get(clave) or {}
+        out[f"{pref}_ROTULO"] = rotulo_voz(voz, clave, modo)
+        out[f"{pref}_CITA"] = frase_principal(voz, modo)
+        out[f"{pref}_ATRIBUCION"] = atribucion_modo(voz, modo)
+        out[f"{pref}_APLICACION"] = voz.get("aplicacion", "") or ""
+        pregunta = voz.get("pregunta_espejo", "") or ""
+        out[f"{pref}_PREGUNTA"] = f"Para tu cuaderno: {pregunta}" if modo == "preguntas" and pregunta else pregunta
+    return out

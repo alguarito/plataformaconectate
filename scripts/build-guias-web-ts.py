@@ -214,6 +214,8 @@ def derive_conceptos(data: dict) -> list[dict]:
         }
         if c.get("emoji"):
             item["emoji"] = c["emoji"]
+        if c.get("categoria"):
+            item["categoria"] = latex_to_text(c["categoria"])
         out.append(item)
     return out
 
@@ -256,11 +258,17 @@ def derive_post_lectura(data: dict) -> dict:
 
 
 def derive_saber_ancestral(data: dict) -> dict:
+    """`apertura.origen` es el rótulo corto (se pinta en la etiqueta del
+    bloque); `apertura.fuente` es la referencia APA completa (pie del bloque).
+    Contrato v3.1: ambas son opcionales y solo se emiten si existen."""
     apertura = data.get("apertura", {}) or {}
-    return {
-        "saber": latex_to_text(apertura.get("saber_ancestral", "")),
-        "preguntaPuente": latex_to_text(apertura.get("pregunta_puente", "")),
-    }
+    out = {"saber": latex_to_text(apertura.get("saber_ancestral", ""))}
+    if apertura.get("origen"):
+        out["fuente"] = latex_to_text(apertura["origen"])
+    if apertura.get("fuente"):
+        out["referencia"] = latex_to_text(apertura["fuente"])
+    out["preguntaPuente"] = latex_to_text(apertura.get("pregunta_puente", ""))
+    return out
 
 
 def derive_triangulo(data: dict) -> dict:
@@ -298,6 +306,125 @@ def derive_cinco_dimensiones(data: dict) -> dict:
     }
 
 
+VERBOS_WEB = {"IDENTIFICA", "EXPLICA", "APLICA", "ANALIZA", "EVALÚA", "CREA"}
+MODALIDADES_WEB = {"individual", "parejas", "equipo"}
+ICONOS_WEB = {"🌱", "📖", "✏️", "👁", "✅", "🔎", "💭"}
+
+
+def _warn(clave: str, msg: str) -> None:
+    print(f"  ! {clave}: {msg}", file=sys.stderr)
+
+
+def derive_actividades(data: dict) -> list[dict]:
+    """Mapea `web.actividades[]` → `actividades` (contrato v3.1).
+
+    El bloque es explícito en el YAML (no se parsea la prosa del PDF): la
+    coherencia entre ambos la vigila `guias-lint.py` (lint_web_estructura)."""
+    web = data.get("web", {}) or {}
+    items = web.get("actividades") or []
+    clave = f"{data.get('grado')}-{data.get('periodo')}-{data.get('sesion')}"
+    out: list[dict] = []
+    for a in items:
+        verbo = str(a.get("verbo", "")).strip().upper()
+        modalidad = str(a.get("modalidad", "")).strip().lower()
+        if verbo not in VERBOS_WEB:
+            _warn(clave, f"web.actividades: verbo inválido '{verbo}', se omite la actividad")
+            continue
+        if modalidad not in MODALIDADES_WEB:
+            _warn(clave, f"web.actividades: modalidad inválida '{modalidad}', se omite la actividad")
+            continue
+        cuaderno = a.get("cuaderno") or {}
+        item = {
+            "numero": int(a.get("numero", len(out) + 1)),
+            "verbo": verbo,
+            "titulo": latex_to_text(a.get("titulo", "")),
+            "tiempoMin": int(a.get("tiempo_min", 0)),
+            "modalidad": modalidad,
+        }
+        if a.get("equipo_tamano"):
+            item["equipoTamano"] = int(a["equipo_tamano"])
+        item["pasos"] = [latex_to_text(x) for x in (a.get("pasos") or [])]
+        item["cuaderno"] = {
+            "titulo": latex_to_text(cuaderno.get("titulo", "")),
+            "formato": latex_to_text(cuaderno.get("formato", "")),
+            "extension": latex_to_text(cuaderno.get("extension", "")),
+        }
+        item["criterios"] = [latex_to_text(x) for x in (a.get("criterios") or [])]
+        out.append(item)
+    return out
+
+
+def derive_mapa_ruta(data: dict) -> list[dict]:
+    """Mapea `web.mapa_ruta[]` → `mapaRuta`. Si no existe pero sí hay
+    `web.actividades`, deriva una estación por actividad."""
+    web = data.get("web", {}) or {}
+    clave = f"{data.get('grado')}-{data.get('periodo')}-{data.get('sesion')}"
+    items = web.get("mapa_ruta") or []
+    out: list[dict] = []
+    for e in items:
+        iconos = [str(i) for i in (e.get("iconos") or []) if str(i) in ICONOS_WEB]
+        if not iconos:
+            _warn(clave, f"web.mapa_ruta: estación {e.get('numero')} sin iconos válidos; se usa 📖")
+            iconos = ["📖"]
+        out.append({
+            "numero": int(e.get("numero", len(out) + 1)),
+            "iconos": iconos,
+            "titulo": latex_to_text(e.get("titulo", "")),
+            "duracionMin": int(e.get("duracion_min", 0)),
+        })
+    if out:
+        return out
+    for a in derive_actividades(data):
+        out.append({
+            "numero": a["numero"],
+            "iconos": ["✏️"],
+            "titulo": f"Actividad {a['numero']} · {a['titulo']}",
+            "duracionMin": a["tiempoMin"],
+        })
+    return out
+
+
+def override_pre_lectura(data: dict, base: dict) -> dict:
+    """`web.pre_lectura` sobrescribe campo a campo lo derivado de la prosa."""
+    web = data.get("web", {}) or {}
+    pl = web.get("pre_lectura") or {}
+    if not pl:
+        return base
+    out = dict(base)
+    if pl.get("por_que_importa"):
+        out["porQueImporta"] = latex_to_text(pl["por_que_importa"])
+    if pl.get("pregunta_detonante"):
+        out["preguntaDetonante"] = latex_to_text(pl["pregunta_detonante"])
+    act = pl.get("activacion") or {}
+    if act:
+        out["activacion"] = {
+            "titulo": latex_to_text(act.get("titulo", base["activacion"]["titulo"])),
+            "descripcion": latex_to_text(act.get("descripcion", base["activacion"]["descripcion"])),
+            "duracionMin": int(act.get("duracion_min", base["activacion"]["duracionMin"])),
+        }
+    con = pl.get("conexion") or {}
+    if con:
+        out["conexion"] = {
+            "anterior": latex_to_text(con.get("anterior", base["conexion"]["anterior"])),
+            "siguiente": latex_to_text(con.get("siguiente", base["conexion"]["siguiente"])),
+        }
+    return out
+
+
+def override_simple(data: dict, base: dict, campo_web: str, claves: list[str]) -> dict:
+    """Sobrescribe `base` con las claves presentes en `web.<campo_web>`
+    (cinco_dimensiones, post_lectura)."""
+    web = data.get("web", {}) or {}
+    src = web.get(campo_web) or {}
+    if not src:
+        return base
+    out = dict(base)
+    for k in claves:
+        if src.get(k):
+            out[k] = latex_to_text(src[k])
+    return out
+
+
 # ───────── Generador ─────────
 
 
@@ -311,18 +438,36 @@ def build_contenido(data: dict) -> dict:
     titulo = latex_to_text(data.get("titulo", ""))
     if titulo:
         contenido["titulo"] = titulo
-    contenido["resumen"] = derive_resumen(data) or titulo
-    contenido["duracionMin"] = 90
-    subtema = derive_subtema(data)
+    web = data.get("web", {}) or {}
+    if web.get("resumen"):
+        contenido["resumen"] = latex_to_text(web["resumen"])
+    else:
+        contenido["resumen"] = derive_resumen(data) or titulo
+    contenido["duracionMin"] = int(data.get("duracion_min") or 90)
+    subtema = latex_to_text(web.get("subtema", "")) or derive_subtema(data)
     if subtema:
         contenido["subtema"] = subtema
-    contenido["preLectura"] = derive_pre_lectura(data)
+    contenido["preLectura"] = override_pre_lectura(data, derive_pre_lectura(data))
     contenido["conceptosClave"] = derive_conceptos(data)
     contenido["laboratorios"] = derive_laboratorios(data)
-    contenido["postLectura"] = derive_post_lectura(data)
+    contenido["postLectura"] = override_simple(
+        data, derive_post_lectura(data), "post_lectura",
+        ["reflexion", "transferencia", "cierre"],
+    )
     contenido["saberAncestral"] = derive_saber_ancestral(data)
+    # Contrato v3.1: mapa de ruta y actividades explícitos. Solo se emiten si
+    # el YAML los trae, así ningún TS de guías anteriores cambia.
+    mapa = derive_mapa_ruta(data)
+    if mapa:
+        contenido["mapaRuta"] = mapa
+    actividades = derive_actividades(data)
+    if actividades:
+        contenido["actividades"] = actividades
     contenido["triangulo"] = derive_triangulo(data)
-    contenido["cincoDimensiones"] = derive_cinco_dimensiones(data)
+    contenido["cincoDimensiones"] = override_simple(
+        data, derive_cinco_dimensiones(data), "cinco_dimensiones",
+        ["personal", "emocional", "ciudadana", "local", "intergeneracional"],
+    )
     return contenido
 
 
@@ -473,6 +618,11 @@ def main() -> int:
         if args.dry_run:
             print(f"  · {clave} ({'OVERWRITE' if exists else 'NEW'}) — {len(ts_text)} bytes")
         else:
+            if exists:
+                print(
+                    f"  ! sobrescribiendo {clave}.ts "
+                    f"(recuperable con: git show HEAD:src/data/guiasContenido/{clave}.ts)"
+                )
             ts_path.write_text(ts_text, encoding="utf-8")
             if exists:
                 sobrescritas.append(clave)

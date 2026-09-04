@@ -1,10 +1,9 @@
 /**
  * Contenido enriquecido para Grado 8 · Período 1 · Sesión 1
- * (sesión global 1 — apertura del grado 8).
+ * (sesión global 1).
  *
- * Tema: Análisis de datos con phronesis.
- * Versión MILC v3 con apertura ancestral, pensamiento computacional,
- * 5 dimensiones y Triángulo Dussel-Estoicismo-Floridi.
+ * Auto-generado desde content/guias/8/8-1-1.yaml por
+ * scripts/build-guias-web-ts.py. Edita el YAML, no este archivo.
  */
 import type { ContenidoGuia } from './_schema';
 
@@ -12,244 +11,300 @@ const contenido: ContenidoGuia = {
   grado: 8,
   periodo: 1,
   sesion: 1,
-  resumen:
-    'Apertura del grado 8: del oficio de pesar el grano a la prudencia digital. Aprendes a hacerle preguntas a los datos antes de calcular y a tomar decisiones que reconocen sus límites.',
+  titulo: 'Preguntar antes de calcular — phronesis con datos',
+  resumen: 'Antes de sacar el primer promedio, hazle preguntas a la hoja. Hoy aprendes las cinco preguntas que un analista hace antes de calcular, con el cuaderno del fiado como maestro.',
   duracionMin: 90,
-  subtema: 'Phronesis · Preguntar antes de calcular',
-
+  subtema: 'Análisis de datos con phronesis',
   preLectura: {
-    porQueImporta:
-      'Saber leer datos te servirá toda la vida — desde decidir qué red social te conviene hasta votar con criterio. Pero leer datos sin prudencia es peligroso: te lleva a conclusiones rápidas que no sostiene la realidad.',
-    preguntaDetonante:
-      '¿Qué del oficio de pesar el grano de los abuelos podemos llevar al análisis digital de datos?',
+    porQueImporta: 'Saber leer una hoja de datos te va a servir toda la vida, desde decidir qué red social te conviene hasta votar con criterio. Pero leer datos sin preguntar es peligroso. Te lleva a conclusiones rápidas que la realidad no sostiene.',
+    preguntaDetonante: 'La tendera le pregunta al cuaderno antes de sumar. Cuando abras una hoja con 200 filas, ¿qué le vas a preguntar antes del primer promedio?',
     activacion: {
       titulo: 'El dato del bolsillo',
-      descripcion:
-        'En 3 minutos: saca tu celular y mira tu tiempo de pantalla del último día. ¿Qué pregunta inmediata se te ocurre con ese dato? ¿Qué te falta saber para tomar una decisión prudente sobre tu uso del celular?',
-      duracionMin: 5,
+      descripcion: 'En 3 minutos, saca tu celular y mira tu tiempo de pantalla de ayer. ¿Qué pregunta se te ocurre con ese dato? ¿Qué te falta saber para decidir algo sobre tu uso del celular?',
+      duracionMin: 5
     },
     conexion: {
-      anterior: 'En grado 7 trabajaste con tablas básicas y comparación de datos cualitativos.',
-      siguiente: 'En la sesión 2 aprenderás a ingresar datos en Excel con sus tipos correctos (número, texto, fecha, moneda).',
-    },
+      anterior: 'En 7.º trabajaste con tablas básicas y comparaste datos de palabras, no de números.',
+      siguiente: 'En la sesión 2 vas a ingresar datos en Excel con su tipo correcto, número, texto, fecha, moneda.'
+    }
   },
-
   conceptosClave: [
-    // ───── Cómo se observan los datos ─────
     {
-      categoria: '🔍 Cómo se observan los datos',
-      termino: 'Variable',
-      definicion:
-        'Característica que cambia entre personas, objetos o situaciones. Puede ser numérica (edad, nota, minutos) o categórica (red social, color, género).',
-      ejemplo:
-        'En tu curso, "edad" es una variable numérica (12, 13, 14...) y "red social favorita" es una variable categórica (TikTok, Instagram, etc.).',
-      emoji: '📊',
-    },
-    {
-      categoria: '🔍 Cómo se observan los datos',
-      termino: 'Población',
-      definicion:
-        'El conjunto completo de personas u objetos del que queremos sacar conclusiones. Antes de analizar, define con claridad de qué grupo hablas.',
-      ejemplo:
-        'Si tu pregunta es "¿qué red social usan más en mi colegio?", la población son TODOS los estudiantes del colegio, no solo los de tu salón.',
-      emoji: '👥',
-    },
-    {
-      categoria: '🔍 Cómo se observan los datos',
-      termino: 'Muestra',
-      definicion:
-        'Subgrupo de la población al que efectivamente preguntaste. Una buena muestra es representativa: refleja la diversidad de la población completa.',
-      ejemplo:
-        'Si encuestas SOLO a tus 5 mejores amigas, esa muestra no es representativa del colegio — los datos no se pueden generalizar.',
-      emoji: '🎯',
-    },
-    {
-      categoria: '🔍 Cómo se observan los datos',
       termino: 'Registro',
-      definicion:
-        'Una unidad individual de información con todos sus campos completos. En una tabla de Excel, cada fila es un registro.',
-      ejemplo:
-        'Un registro de "Juan, 13 años, 8°A, TikTok" tiene 4 campos. Si falta uno, el registro está incompleto y debilita el análisis.',
-      emoji: '📋',
-    },
-    // ───── Cómo se decide con prudencia ─────
-    {
-      categoria: '🦉 Cómo se decide con prudencia',
-      termino: 'Tendencia',
-      definicion:
-        'La dirección general que muestran los datos cuando los miras en conjunto. Puede ser hacia arriba (creciente), abajo (decreciente) o estable.',
-      ejemplo:
-        'Si el promedio de notas del curso fue 3.0 en marzo, 3.5 en abril, 3.8 en mayo, la tendencia es creciente — están mejorando.',
-      emoji: '🔭',
+      definicion: 'Una fila completa de la hoja, con todos sus campos. En el cuaderno del fiado, un renglón es un registro, quién, qué día, qué llevó, cuánto vale.',
+      ejemplo: '«Camila, 13 años, 8-A, 4,2» es un registro de 4 campos. Si falta uno, el registro está incompleto y debilita el análisis.',
+      categoria: 'Cómo se observan los datos'
     },
     {
-      categoria: '🦉 Cómo se decide con prudencia',
-      termino: 'Sesgo',
-      definicion:
-        'Inclinación que distorsiona los datos. Puede ser de la pregunta, de la muestra, o del que recolecta. Un análisis prudente reconoce sus posibles sesgos.',
-      ejemplo:
-        'Si encuestas "¿no crees que TikTok es la mejor red?" estás induciendo la respuesta — la pregunta tiene sesgo. Mejor: "¿qué red usas más cada día?".',
-      emoji: '⚖️',
+      termino: 'Variable',
+      definicion: 'Lo que cambia de una fila a otra, una columna. Puede ser un número (nota, minutos, pesos) o una categoría (grupo, red social, sí o no).',
+      ejemplo: 'En la hoja de 8-A, «nota» es una variable numérica y «grupo» es una variable de categoría.',
+      categoria: 'Cómo se observan los datos'
     },
     {
-      categoria: '🦉 Cómo se decide con prudencia',
+      termino: 'Origen del dato',
+      definicion: 'De dónde salió la información, una encuesta, una observación, un registro automático, una copia de otra hoja. Sin origen claro, el dato es difícil de defender.',
+      ejemplo: '«Tiempo de pantalla» puede venir de lo que cada uno dijo (poco confiable) o de la app del celular (más confiable). El origen cambia la confianza.',
+      categoria: 'Cómo se observan los datos'
+    },
+    {
+      termino: 'Vacío y error de tipo',
+      definicion: 'Una celda vacía no es un cero. Un número escrito con letras («dos mil») es texto y no se suma. Los dos fallan en silencio.',
+      ejemplo: 'Tres celdas con «ausente» en la columna de notas hacen que Excel promedie a 27 estudiantes y no a 30, sin avisar.',
+      categoria: 'Cómo se observan los datos'
+    },
+    {
       termino: 'Phronesis',
-      definicion:
-        'Sabiduría práctica griega: saber decidir bien en situaciones concretas. No es repetir fórmulas, es aplicar criterio al caso particular reconociendo lo que NO sabes.',
-      ejemplo:
-        'Aristóteles distinguía a quien sabe la teoría (episteme) de quien sabe decidir bien (phronesis). El profesor que ajusta la nota a tu proceso, no a la fórmula sola, tiene phronesis.',
-      emoji: '🦉',
+      definicion: 'Palabra griega para la sabiduría práctica, saber decidir bien en un caso concreto, reconociendo lo que no sabes. No es repetir fórmulas, es aplicar criterio.',
+      ejemplo: 'La tendera que revisa el cuaderno renglón por renglón antes de cobrar tiene phronesis. El que suma de memoria, no.',
+      categoria: 'Cómo se decide con prudencia'
     },
     {
-      categoria: '🦉 Cómo se decide con prudencia',
-      termino: 'Decisión informada',
-      definicion:
-        'Acción que reconoce qué dicen los datos Y qué no dicen. No es certeza absoluta — es la mejor opción dado lo que se sabe y lo que se ignora.',
-      ejemplo:
-        '"Los datos sugieren reducir el tiempo de TikTok del curso, pero no me dicen por qué cada estudiante lo usa. Por eso propongo conversar antes de regular." Eso es una decisión informada.',
-      emoji: '🤝',
+      termino: 'Las cinco preguntas',
+      definicion: 'Origen, autor y fecha, tipo de dato, errores y vacíos, pregunta concreta. Se hacen en ese orden, antes de la primera fórmula.',
+      ejemplo: 'Antes de promediar las notas del grupo, pregunta quién las recogió, si hay celdas vacías y qué quieres saber con ese promedio.',
+      categoria: 'Cómo se decide con prudencia'
     },
+    {
+      termino: 'Muestra y sesgo',
+      definicion: 'La muestra es a quién le preguntaste de verdad. Si solo preguntaste a tus amigos, la muestra está sesgada y no habla por el colegio.',
+      ejemplo: 'Una encuesta de tiempo de pantalla respondida por 12 amigos entre sí describe a esos 12, no al grado.',
+      categoria: 'Cómo se decide con prudencia'
+    },
+    {
+      termino: 'Limitaciones declaradas',
+      definicion: 'Decir abiertamente qué no puede afirmar tu análisis, muestra pequeña, periodo corto, columna dudosa. Es honestidad profesional, no debilidad.',
+      ejemplo: '«Estos datos vienen de 30 estudiantes de un solo salón en una semana; no describen al colegio».',
+      categoria: 'Cómo se decide con prudencia'
+    }
   ],
-
   laboratorios: [
     {
       tipo: 'quiz',
-      titulo: 'Quiz · Phronesis con datos',
-      instrucciones:
-        '5 preguntas tipo ICFES sobre cómo formular preguntas, distinguir variables, reconocer sesgos y tomar decisiones prudentes con datos. Lee con calma, escoge la mejor opción y revisa el feedback.',
+      titulo: '¿Le preguntaste a la hoja?',
+      instrucciones: 'Cinco preguntas para verificar que reconoces cuándo un cálculo es prudente y cuándo es un atajo peligroso. No va al cuaderno.',
       preguntas: [
         {
-          enunciado:
-            'En un curso de 30 estudiantes, las edades van de 12 a 14 años. ¿Qué tipo de variable es la edad?',
+          enunciado: 'La hoja de notas de 8-A tiene tres celdas con la palabra «ausente». Si sacas el promedio sin mirar, ¿qué pasa?',
           opciones: [
-            'Cualitativa nominal',
-            'Cuantitativa continua',
-            'Cuantitativa discreta',
-            'Cualitativa ordinal',
+            'Excel cuenta cada «ausente» como un cero y el promedio del grupo baja.',
+            'Excel muestra un mensaje de error y se niega a calcular el promedio.',
+            'Excel salta esas celdas sin avisar y promedia a menos estudiantes.',
+            'Tres celdas no cambian nada en un grupo de 30.'
           ],
           respuestaIndex: 2,
-          feedbackCorrecto:
-            '✅ Exacto. La edad en años cumplidos toma valores enteros (12, 13, 14) — es cuantitativa discreta. Si midiéramos la edad en años con decimales (12.5, 13.7), sería continua.',
-          feedbackIncorrecto:
-            '❌ Revisa: la edad SÍ es cuantitativa (es número, no categoría), y como toma valores enteros (no fracciones de año), es discreta. La continua es como peso en kg con decimales.',
+          feedbackCorrecto: 'Exacto. Excel salta el texto en silencio. El promedio sale de 27 estudiantes, no de 30, y nadie te avisa. Por eso miras antes.',
+          feedbackIncorrecto: 'Excel no avisa ni cuenta el texto como cero. Simplemente lo salta, y el promedio queda hecho con menos estudiantes de los que crees.'
         },
         {
-          enunciado:
-            'Si una encuesta sobre uso del celular se hace SOLO al curso 8°A, ¿qué error podríamos cometer al concluir sobre todo el colegio?',
+          enunciado: 'Te entregan una hoja con 200 filas de gastos de la tienda escolar. ¿Cuál es la primera pregunta?',
           opciones: [
-            'Sesgo de muestreo: la muestra no representa a la población',
-            'Cálculo equivocado',
-            'Falta de variables',
-            'Pregunta mal formulada',
+            '¿De dónde vienen los datos y quién los recogió?',
+            '¿Qué gráfico se ve mejor en la presentación final del grupo?',
+            '¿Cuál es el promedio de gasto por día en la tienda escolar?',
+            '¿Qué fórmula avanzada puedo usar?'
           ],
           respuestaIndex: 0,
-          feedbackCorrecto:
-            '✅ Correcto. El error principal es de muestreo: 8°A es solo una parte del colegio, y los demás cursos (otras edades, otros grupos) podrían comportarse distinto. La conclusión no es generalizable.',
-          feedbackIncorrecto:
-            '❌ El cálculo puede estar bien, las variables suficientes y la pregunta clara — pero si la muestra (8°A) no representa a la población (colegio), la generalización falla. Eso es sesgo de muestreo.',
+          feedbackCorrecto: 'Sí. Origen y autor van primero. Sin eso, cualquier promedio es un número sin respaldo.',
+          feedbackIncorrecto: 'Gráficos, promedios y fórmulas vienen después. La primera pregunta es de dónde salió la hoja y quién la hizo.'
         },
         {
-          enunciado:
-            'Camila quiere saber qué red social es más popular en su colegio. ¿Cuál es la mejor pregunta inicial?',
+          enunciado: 'Una encuesta de tiempo de pantalla la respondieron 12 estudiantes, todos amigos de quien la hizo. ¿Cuál frase es honesta?',
           opciones: [
-            '"¿Te gusta TikTok?"',
-            '"¿Cuántas redes usas?"',
-            '"¿Qué red social usas más cada día y cuántos minutos?"',
-            '"¿Cuándo dejarás las redes?"',
+            'Con 12 respuestas ya se sabe lo que pasa en todo el colegio.',
+            'Los datos hablan solos; no hace falta explicar nada.',
+            'Mejor no decir cuántos respondieron para que el trabajo no se vea flojo.',
+            'Describe solo a esos 12, que además son amigos.'
+          ],
+          respuestaIndex: 3,
+          feedbackCorrecto: 'Correcto. Decir cuántos fueron y que son un grupo cerrado es declarar la limitación. Eso es honestidad con datos.',
+          feedbackIncorrecto: 'La frase honesta declara la muestra, doce personas y amigas entre sí. Esconderlo o generalizar es engañar al lector.'
+        },
+        {
+          enunciado: 'En la columna «precio» aparece «dos mil» escrito con letras. ¿Qué haces?',
+          opciones: [
+            'Se suma igual; Excel entiende el texto.',
+            'Es un error de tipo; se corrige o se deja fuera, y se anota.',
+            'Se borra la fila completa sin anotar nada en la ficha.',
+            'Se pasan todos los precios a texto para que queden iguales entre sí.'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Eso es. Texto donde va un número es un error de tipo. Lo corriges si sabes el valor, o lo dejas fuera y lo escribes en «dejo fuera».',
+          feedbackIncorrecto: 'Excel no suma palabras, y borrar sin anotar esconde el problema. La respuesta prudente es reconocer el error de tipo y decir qué hiciste con él.'
+        },
+        {
+          enunciado: '¿Qué hace la tendera que muestra phronesis con su cuaderno del fiado?',
+          opciones: [
+            'Cobra de memoria para no perder tiempo con el cuaderno.',
+            'Suma rápido para atender al siguiente cliente de la fila.',
+            'Revisa renglón por renglón y sabe a quién no le fía.',
+            'Le fía a todo el mundo para tener más datos.'
           ],
           respuestaIndex: 2,
-          feedbackCorrecto:
-            '✅ Sí. La opción C es específica (red, frecuencia, tiempo), abierta (no induce respuesta) y útil (te da datos para análisis real). Las otras tienen sesgo o son demasiado vagas.',
-          feedbackIncorrecto:
-            '❌ La A induce a TikTok (sesgo), la B es ambigua, la D es manipuladora. La C es la única que da datos limpios y útiles para decidir con phronesis.',
-        },
-        {
-          enunciado:
-            'El profesor presenta este dato: "El 60% del curso aprobó". Para tomar una decisión prudente, ¿qué información adicional NECESITAS?',
-          opciones: [
-            'Cuántos estudiantes son y cuáles fueron las notas más bajas',
-            'Cuál es la mejor materia del curso',
-            'Si hay grupo de estudio organizado',
-            'Quién es el mejor estudiante',
-          ],
-          respuestaIndex: 0,
-          feedbackCorrecto:
-            '✅ Excelente. "60%" sin contexto puede esconder mucho: ¿de cuántos? ¿qué tan baja fue la nota más baja? ¿el otro 40% fue por poco o muy lejos? Sin esos datos, decidir es apresurado.',
-          feedbackIncorrecto:
-            '❌ Conocer la mejor materia o el mejor estudiante no te ayuda a tomar la decisión sobre QUÉ HACER con los que reprobaron. Lo que necesitas es contexto del propio dato (tamaño, dispersión).',
-        },
-        {
-          enunciado:
-            'Una decisión es "prudente con datos" cuando:',
-          opciones: [
-            'Confía 100% en los números',
-            'Ignora los números',
-            'Reconoce qué dicen los datos y qué NO dicen',
-            'Espera siempre tener más datos',
-          ],
-          respuestaIndex: 2,
-          feedbackCorrecto:
-            '✅ Eso es phronesis. Una decisión prudente NO es certeza absoluta ni parálisis: es actuar reconociendo los límites de lo que se sabe. La decisión nombra "los datos sugieren X pero no me dicen Y".',
-          feedbackIncorrecto:
-            '❌ Confiar 100% en datos es ingenuo (los datos pueden tener sesgo). Ignorarlos es irresponsable. Esperar más datos es procrastinación. La phronesis es actuar reconociendo límites.',
-        },
-      ],
-    },
+          feedbackCorrecto: 'Sí. Revisar antes de sumar y saber quién no está en el cuaderno, eso es preguntar antes de calcular.',
+          feedbackIncorrecto: 'La phronesis no es rapidez ni memoria. Es revisar el registro antes de sacar la cuenta y saber quién quedó fuera.'
+        }
+      ]
+    }
   ],
-
   postLectura: {
-    reflexion:
-      '¿Recuerdas alguna vez que tomaste una decisión "con datos" que después resultó equivocada? ¿Qué te faltó preguntar antes de decidir? Esa es la pregunta de la phronesis.',
-    transferencia:
-      'En tu próxima decisión cotidiana (qué comprar, qué red usar, cómo organizar tu tiempo), pregúntate antes: "¿qué dato me serviría?" y "¿qué NO me dice ese dato?". Conviértelo en hábito.',
-    cierre:
-      'La phronesis no es saber más datos: es saber qué preguntarles. Pesar el grano antes de venderlo es la misma sabiduría que mirar los datos antes de decidir.',
+    reflexion: '¿Recuerdas una vez que decidiste algo «con datos» y después resultó mal? ¿Qué te faltó preguntar antes de decidir?',
+    transferencia: 'En tu próxima decisión cotidiana (qué comprar, qué red usar, cómo organizar tu tiempo) pregúntate antes «¿qué dato me serviría?» y «¿qué no me dice ese dato?». Conviértelo en costumbre.',
+    cierre: 'Saber de datos no es saber más números, es saber qué preguntarles. La tendera lo hace con su cuaderno; tú, con tu hoja.'
   },
-
   saberAncestral: {
-    saber:
-      'El oficio de pesar el grano en las plazas del Valle exigía dos saberes: la balanza calibrada y el ojo del comerciante. La balanza daba el número; el ojo decidía qué hacer con ese número — si el grano estaba seco, si el costal venía con tierra adentro, si valía pagar o renegociar. El dato no era el final, era el principio de la decisión. La phronesis (sabiduría práctica griega) y el oficio del comerciante del Valle comparten esa lógica: medir es solo la mitad del trabajo.',
-    fuente: 'Oficio del comerciante y la balanza en las plazas del Valle del Cauca',
-    preguntaPuente:
-      '¿Qué del oficio de pesar el grano de los abuelos podemos llevar al análisis digital de datos? ¿Qué pierde el que solo mira el número sin saber preguntar por el contexto?',
+    saber: 'En muchas tiendas de barrio de Cartago todavía existe el cuaderno del fiado. Cada renglón guarda cuatro datos: quién llevó, qué día, qué llevó y cuánto vale. Cuando la familia viene a pagar, la tendera no suma de una. Primero le pregunta al cuaderno: ¿esta letra es mía o de mi hijo?, ¿este cinco es un cinco o un tres?, ¿falta el sábado?, ¿estoy cobrando la quincena o el mes? Solo después saca la cuenta. Una socióloga que estudió el fiado en un pequeño negocio de Cali encontró que fiar es un pacto de confianza entre vecinos, sostenido por un cuaderno que se revisa y se tacha (Martínez Benavides, 2021). «Miremos el cuaderno» resuelve la discusión que la memoria sola no resuelve. Ahí está lo importante: el registro vale porque cualquiera puede ponerlo a prueba. Pero el cuaderno tiene una cara de exclusión: a quien la tendera no conoce, no le fía. Solo cuenta a los que ya estaban adentro. Preguntar antes de sumar y saber quién falta en la lista: eso es lo que hoy vas a hacer con una hoja de datos.',
+    fuente: 'Cuaderno del fiado · tiendas de barrio',
+    referencia: 'Martínez Benavides, A. (2021). Circuitos crediticios: fiado y trabajo relacional en un pequeño negocio en Cali, Colombia. Estudios Sociológicos de El Colegio de México, 39(116), 467--494.',
+    preguntaPuente: 'La tendera le pregunta al cuaderno antes de sumar. Cuando abras una hoja con 200 filas, ¿qué le vas a preguntar antes del primer promedio? ¿Y quién no aparece en esas filas?'
   },
-
+  mapaRuta: [
+    {
+      numero: 1,
+      iconos: [
+        '🌱'
+      ],
+      titulo: 'El cuaderno del fiado',
+      duracionMin: 10
+    },
+    {
+      numero: 2,
+      iconos: [
+        '👁',
+        '✏️'
+      ],
+      titulo: 'Actividad 1 · Mira la hoja antes de tocarla',
+      duracionMin: 15
+    },
+    {
+      numero: 3,
+      iconos: [
+        '📖',
+        '✏️'
+      ],
+      titulo: 'Actividad 2 · Las cinco preguntas',
+      duracionMin: 35
+    },
+    {
+      numero: 4,
+      iconos: [
+        '✏️',
+        '✅'
+      ],
+      titulo: 'Actividad 3 · Decide qué calcular',
+      duracionMin: 25
+    },
+    {
+      numero: 5,
+      iconos: [
+        '💭'
+      ],
+      titulo: 'Tres voces y tu compromiso',
+      duracionMin: 5
+    }
+  ],
+  actividades: [
+    {
+      numero: 1,
+      verbo: 'IDENTIFICA',
+      titulo: 'Mira la hoja antes de tocarla',
+      tiempoMin: 15,
+      modalidad: 'individual',
+      pasos: [
+        'Recibe la hoja de datos que te entrega o proyecta tu docente, notas del último parcial, tiempo de pantalla del salón o gastos de la tienda escolar.',
+        'Mírala 5 minutos sin calcular nada. Ni promedios, ni sumas.',
+        'Anota qué columnas tiene y cuántas filas hay.',
+        'Marca al menos un dato raro, una celda vacía, un texto donde va un número, un valor imposible.',
+        'Escribe una pregunta que te gustaría responder con esos datos.'
+      ],
+      cuaderno: {
+        titulo: 'Primera mirada',
+        formato: 'ficha de 4 casillas, columnas, filas, datos raros, mi pregunta',
+        extension: 'media página'
+      },
+      criterios: [
+        'Tu ficha tiene las cuatro casillas llenas.',
+        'Puedes señalar con el dedo un dato raro y decir por qué es raro.',
+        'Tu pregunta se puede responder con esas columnas, no con otras.'
+      ]
+    },
+    {
+      numero: 2,
+      verbo: 'ANALIZA',
+      titulo: 'Hazle las cinco preguntas a tu hoja',
+      tiempoMin: 25,
+      modalidad: 'parejas',
+      pasos: [
+        'Con tu pareja, toma la hoja que miraste en la Actividad 1.',
+        'Respondan en una línea de dónde viene y quién la recogió. Si no saben, escriban «no se sabe», también es una respuesta.',
+        'Recorran columna por columna y anoten el tipo de dato (número, texto, fecha) y cuántas celdas vacías o raras hay.',
+        'Escriban la pregunta concreta que quieren responder con esos datos.',
+        'Marquen cada columna con C (de confianza), D (dudosa) o X (de descarte) y digan por qué en cinco palabras.'
+      ],
+      cuaderno: {
+        titulo: 'Las cinco preguntas',
+        formato: 'tabla de 5 filas y 2 columnas (pregunta / respuesta), más la lista de columnas con su letra C, D o X',
+        extension: 'media página; cada respuesta de 1 a 2 renglones'
+      },
+      criterios: [
+        'Las cinco preguntas tienen respuesta, aunque alguna sea «no se sabe».',
+        'Cada columna de la hoja tiene su letra C, D o X con una razón.',
+        'Tu pareja puede leer tu tabla y decir, sin preguntarte nada, si confiaría en un promedio de esa hoja.'
+      ]
+    },
+    {
+      numero: 3,
+      verbo: 'EVALÚA',
+      titulo: 'Decide qué calcular y qué dejar fuera',
+      tiempoMin: 25,
+      modalidad: 'individual',
+      pasos: [
+        'Relee las respuestas de las cinco preguntas. Tu pareja puede opinar, pero escribes tú.',
+        'Elige la pregunta que sí se puede responder con confianza y subráyala.',
+        'Escribe qué vas a calcular (promedio, suma, conteo, mínimo, máximo) y por qué sirve para tu pregunta.',
+        'Escribe qué dejas fuera y por qué, una columna dudosa, celdas vacías, un dato que no entiendes.',
+        'Cierra con un párrafo de 4 renglones, cuántas filas hay, de qué periodo son y a quién sí y a quién no describen.'
+      ],
+      cuaderno: {
+        titulo: 'Decido qué calcular',
+        formato: 'ficha de 4 piezas, pregunta elegida, calculo, dejo fuera, párrafo de cierre',
+        extension: '1 página'
+      },
+      criterios: [
+        'Cada cálculo tiene una razón escrita al lado.',
+        'Hay al menos una cosa que dejas fuera y dices por qué.',
+        'El párrafo dice cuántas filas hay y de qué periodo son.',
+        'Lo leíste en voz alta y suena honesto, no defensivo.'
+      ]
+    }
+  ],
   triangulo: {
     dussel: {
-      autor: 'Enrique Dussel',
+      autor: 'Enrique Dussel · Filosofía de la liberación (1977)',
       lente: 'lente del nosotros',
-      cita: 'El dato sin pregunta sobre quién quedó afuera reproduce la exclusión que oculta.',
-      preguntaEspejo:
-        '¿Quién no aparece en los datos que estoy mirando? ¿Qué decisión cambiaría si esos invisibles estuvieran contados?',
+      cita: 'El otro se revela realmente como otro\\ldots como el pobre, el oprimido; el que, a la vera del camino, fuera del sistema, muestra su rostro sufriente y sin embargo desafiante.',
+      preguntaEspejo: '¿Quién no aparece en mi hoja? ¿Qué cambiaría en mi cálculo si estuviera?'
     },
     estoico: {
-      autor: 'Marco Aurelio',
+      autor: 'Marco Aurelio · Meditaciones VI, 21 (c. 175 d.C.)',
       lente: 'lente del cuidado interior',
-      cita: 'No te perturben los datos que no controlas; ocúpate de cómo los lees y qué decides con ellos.',
-      preguntaEspejo:
-        '¿Qué de los datos depende de mí (qué pregunto, cómo decido) y qué no? ¿Estoy concentrando energía en lo que sí depende?',
+      cita: 'Si alguien puede refutarme y probar de modo concluyente que pienso o actúo incorrectamente, de buen grado cambiaré de proceder. Pues persigo la verdad, que no dañó nunca a nadie; en cambio, sí se daña el que persiste en su propio engaño e ignorancia.',
+      preguntaEspejo: '¿Estoy leyendo los datos como son, o como me gustaría que fueran para darme la razón?'
     },
     floridi: {
-      autor: 'Luciano Floridi',
+      autor: 'Luciano Floridi · Big data and their epistemological challenge (2012)',
       lente: 'lente de la infoesfera',
-      cita: 'La phronesis digital es la virtud informacional de nuestro tiempo — saber qué preguntar al dato antes de calcular.',
-      preguntaEspejo:
-        '¿Estoy entrenando mi phronesis digital o solo aprendiendo a calcular más rápido? ¿Qué dato consumí hoy sin preguntar quién lo generó?',
-    },
+      cita: 'Los pequeños patrones solo pueden ser significativos si se agregan correctamente, se comparan y se procesan a tiempo.',
+      preguntaEspejo: '¿Mi cálculo agrega bien, compara con algo y llega a tiempo? ¿O es un número solo?'
+    }
   },
-
   cincoDimensiones: {
-    personal:
-      'Aprendiste que un dato no es decisión — es insumo. La prudencia es lo que conecta el número con la acción.',
-    emocional:
-      'Resististe la tentación de la respuesta rápida. Distinguir lo que el dato dice de lo que no dice es paciencia entrenable.',
-    ciudadana:
-      'Reconociste que ignorar datos es irresponsable, pero confiar ciegamente es ingenuo. Esa distinción es ciudadanía digital adulta.',
-    local:
-      'Conectaste el oficio del comerciante del Valle con tu próximo análisis en Excel — saberes que dialogan, no que se reemplazan.',
-    intergeneracional:
-      'La phronesis griega y la prudencia del abuelo en la plaza son la misma virtud, en distinto idioma. Hoy la heredas en formato digital.',
-  },
+    personal: 'Aprendiste que un dato no es una decisión, es un insumo. Lo que conecta el número con la acción es preguntar antes.',
+    emocional: 'Resististe la tentación de la respuesta rápida. Distinguir lo que el dato dice de lo que no dice es paciencia que se entrena.',
+    ciudadana: 'Ignorar los datos es irresponsable, pero creerles a ciegas es ingenuo. Pedir que un promedio diga a quién dejó fuera es ciudadanía con datos.',
+    local: 'Conectaste el cuaderno del fiado de las tiendas de Cartago con tu próxima hoja de Excel. Son saberes que dialogan, no que se reemplazan.',
+    intergeneracional: 'La tendera con su cuaderno y el analista con su hoja hacen lo mismo, preguntar antes de sumar. Hoy heredas esa costumbre en formato digital.'
+  }
 };
 
 export default contenido;

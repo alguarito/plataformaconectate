@@ -112,6 +112,11 @@ export interface SaberAncestral {
   saber: string;
   /** De dónde viene: Wayuu, Quimbaya, campesino, afro-pacífico, etc. */
   fuente?: string;
+  /**
+   * Referencia bibliográfica (APA 7) de la práctica documentada. Se imprime
+   * como pie del bloque; `fuente` sigue siendo el rótulo corto del origen.
+   */
+  referencia?: string;
   /** Pregunta-puente que conecta el saber ancestral con el tema técnico. */
   preguntaPuente: string;
 }

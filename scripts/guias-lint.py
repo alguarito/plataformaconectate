@@ -11,6 +11,15 @@ Verifica que cada guía cumpla:
 - Saber ancestral con origen nombrado (Wayuu, Quimbaya, Pacífico, etc.)
 - Caracteres especiales LaTeX escapados (`#`, `&`, `%` sin `\\` previo)
 
+Contrato v3.1 (opt-in: se activa cuando el YAML declara `duracion_min`; para
+las guías anteriores las reglas nuevas solo avisan):
+- `apertura.fuente` con referencia APA 7 (año entre paréntesis, sin marcadores pendientes)
+- Un solo verbo por actividad (nada de «CREA + EVALÚA»)
+- Tiempo y modalidad «(N min · modalidad)» en las tres actividades; la suma no supera `duracion_min`
+- «Extensión:» en los tres cuadernos; exactamente 3 checks en Escucha
+- Quiz con la respuesta correcta repartida (máx. 40 % en una posición) y sin ser siempre la más larga
+- Si hay `web.actividades` / `web.mapa_ruta`, coinciden con la prosa (verbo, tiempo, modalidad, título del cuaderno)
+
 Uso:
     python3 scripts/guias-lint.py            # todas las guías completas
     python3 scripts/guias-lint.py 1-2        # solo una
@@ -312,7 +321,7 @@ def lint_latex_escapes(g: dict) -> list[str]:
         "praxis.intro", "praxis.cuaderno", "praxis.plantilla_guion",
         "praxis.checklist.items",
         "triangulo.dussel.aplicacion", "triangulo.estoico.aplicacion", "triangulo.floridi.aplicacion",
-        "compromiso",
+        "compromiso", "apertura.fuente",
     ]
     for path in campos:
         text = _get(g, path)
@@ -365,6 +374,185 @@ def lint_assets(g: dict, grado: int) -> list[str]:
     return errors
 
 
+# ─── Contrato v3.1 (opt-in por `duracion_min`) ────────────────────────────────
+#
+# Estas reglas nacen de la auditoría del 2026-09-03. Hoy las incumplen casi
+# todas las guías (180 sin fuente, 129 quizzes con la correcta casi siempre en
+# la misma posición, 74 verbos dobles, 296 cuadernos sin «Extensión»), así que
+# para una guía sin `duracion_min` solo avisan. Cuando la guía declara
+# `duracion_min` está diciendo «cumplo v3.1» y pasan a ser errores.
+
+ICONOS_MAPA = {"🌱", "📖", "✏️", "👁", "✅", "🔎", "💭"}
+
+_RE_ACT = re.compile(r"Actividad\s+(\d+)\s*·\s*([A-ZÁÉÍÓÚ]+)(\s*\+\s*[A-ZÁÉÍÓÚ]+)?")
+_RE_TIEMPO = re.compile(r"\(\s*(\d+)\s*min\s*·\s*(individual|parejas|equipo[^)]*)\)", re.IGNORECASE)
+_CAMPOS_ACT = [("escuta.escena", 1), ("sistematizacion.intro", 2), ("praxis.intro", 3)]
+_CUADERNOS = ["escuta.cuaderno", "sistematizacion.cuaderno", "praxis.cuaderno"]
+
+
+def _es_v31(g: dict) -> bool:
+    return bool(g.get("duracion_min"))
+
+
+def _sev(g: dict, errors: list[str], warnings: list[str], msg: str) -> None:
+    (errors if _es_v31(g) else warnings).append(msg)
+
+
+def lint_fuente_apertura(g: dict) -> tuple[list[str], list[str]]:
+    """El saber ancestral necesita una referencia verificable."""
+    errors: list[str] = []
+    warnings: list[str] = []
+    fuente = (_get(g, "apertura.fuente") or "").strip()
+    if not fuente:
+        _sev(g, errors, warnings,
+             "apertura.fuente ausente: el saber ancestral necesita una referencia (APA 7) "
+             "o rotularse como relato, no como saber.")
+        return errors, warnings
+    if re.search(r"\[|TODO|VERIFICAR|PENDIENTE", fuente, re.IGNORECASE):
+        errors.append("apertura.fuente contiene un marcador pendiente ([…], TODO, VERIFICAR): no puede llegar al PDF")
+    if not re.search(r"\(\s*(c\.\s*)?\d{3,4}", fuente):
+        errors.append("apertura.fuente no trae año entre paréntesis: no parece una referencia APA")
+    return errors, warnings
+
+
+def lint_quiz_balance(g: dict) -> tuple[list[str], list[str]]:
+    """Un quiz donde la correcta siempre es la B (o la más larga) no mide nada."""
+    errors: list[str] = []
+    warnings: list[str] = []
+    preguntas = ((_get(g, "web.quiz") or {}).get("preguntas")) or []
+    if not preguntas:
+        return errors, warnings
+    posiciones: list[int] = []
+    mas_larga = 0
+    for i, q in enumerate(preguntas, start=1):
+        ops = q.get("opciones") or []
+        idx = q.get("respuesta_index")
+        if not isinstance(idx, int) or idx < 0 or idx >= len(ops):
+            errors.append(f"web.quiz pregunta {i}: respuesta_index fuera de rango")
+            continue
+        posiciones.append(idx)
+        if ops and len(str(ops[idx])) == max(len(str(o)) for o in ops):
+            mas_larga += 1
+    n = len(posiciones)
+    if n >= 3:
+        top = max(posiciones.count(p) for p in set(posiciones))
+        if top / n > 0.4:
+            warnings.append(
+                f"web.quiz: la correcta cae {top} de {n} veces en la misma posición (máximo 40 %); repártela"
+            )
+        if mas_larga / n > 0.6:
+            warnings.append(
+                f"web.quiz: la correcta es la opción más larga en {mas_larga} de {n}; iguala las longitudes"
+            )
+    return errors, warnings
+
+
+def lint_verbo_unico(g: dict) -> tuple[list[str], list[str]]:
+    """Cada actividad lleva exactamente uno de los 6 verbos."""
+    errors: list[str] = []
+    warnings: list[str] = []
+    for path in [p for p, _ in _CAMPOS_ACT] + _CUADERNOS:
+        text = _get(g, path) or ""
+        for m in _RE_ACT.finditer(text):
+            if m.group(3):
+                _sev(g, errors, warnings,
+                     f"{path}: 'Actividad {m.group(1)} · {m.group(2)}{m.group(3).strip()}' usa dos verbos; "
+                     "el contrato pide exactamente uno")
+                break
+    return errors, warnings
+
+
+def lint_tiempo_modalidad(g: dict) -> tuple[list[str], list[str]]:
+    """Las tres actividades declaran «(N min · modalidad)» y caben en la sesión."""
+    errors: list[str] = []
+    warnings: list[str] = []
+    dur = g.get("duracion_min")
+    total = 0
+    if not dur:
+        warnings.append("duracion_min ausente: declara la duración de la sesión (contrato v3.1)")
+    for path, n in _CAMPOS_ACT:
+        text = _get(g, path) or ""
+        m = _RE_TIEMPO.search(text)
+        if not m:
+            _sev(g, errors, warnings, f"{path}: la Actividad {n} no declara '(N min · modalidad)'")
+        else:
+            total += int(m.group(1))
+    if dur and total > int(dur):
+        errors.append(f"las actividades suman {total} min y duracion_min es {dur}")
+    return errors, warnings
+
+
+def lint_extension_cuaderno(g: dict) -> tuple[list[str], list[str]]:
+    """Anatomía completa del cuaderno y exactamente 3 checks en Escucha."""
+    errors: list[str] = []
+    warnings: list[str] = []
+    for path in _CUADERNOS:
+        text = _get(g, path) or ""
+        if "Extensión" not in text and "Extension" not in text:
+            _sev(g, errors, warnings, f"{path}: falta 'Extensión:' en la anatomía del cuaderno")
+    checks = _get(g, "escuta.checks") or []
+    if len(checks) != 3:
+        warnings.append(f"escuta.checks tiene {len(checks)} ítems; la plantilla imprime exactamente 3")
+    return errors, warnings
+
+
+def lint_web_estructura(g: dict) -> tuple[list[str], list[str]]:
+    """`web.actividades` y `web.mapa_ruta` deben coincidir con la prosa del PDF."""
+    errors: list[str] = []
+    warnings: list[str] = []
+    web = g.get("web") or {}
+    acts = web.get("actividades") or []
+    mapa = web.get("mapa_ruta") or []
+    if not acts and not mapa:
+        return errors, warnings
+    if len(acts) != 3:
+        errors.append(f"web.actividades debe tener 3 actividades (tiene {len(acts)})")
+    for i, (path, n) in enumerate(_CAMPOS_ACT):
+        if i >= len(acts):
+            break
+        a = acts[i] or {}
+        text = _get(g, path) or ""
+        m = _RE_ACT.search(text)
+        t = _RE_TIEMPO.search(text)
+        if int(a.get("numero", 0)) != n:
+            errors.append(f"web.actividades[{i}].numero debe ser {n}")
+        verbo = str(a.get("verbo", "")).upper()
+        if verbo not in VERBOS_VALIDOS:
+            errors.append(f"web.actividades[{i}].verbo inválido '{verbo}'")
+        elif m and m.group(2) != verbo:
+            errors.append(f"web.actividades[{i}].verbo '{verbo}' no coincide con {path} ('{m.group(2)}')")
+        if t:
+            if int(t.group(1)) != int(a.get("tiempo_min", -1)):
+                errors.append(
+                    f"web.actividades[{i}].tiempo_min ({a.get('tiempo_min')}) no coincide con {path} ({t.group(1)} min)"
+                )
+            mod = t.group(2).split()[0].lower()
+            if mod != str(a.get("modalidad", "")).lower():
+                errors.append(f"web.actividades[{i}].modalidad no coincide con {path}")
+        pasos = a.get("pasos") or []
+        if not 3 <= len(pasos) <= 6:
+            errors.append(f"web.actividades[{i}]: entre 3 y 6 pasos (tiene {len(pasos)})")
+        if len(a.get("criterios") or []) < 2:
+            errors.append(f"web.actividades[{i}]: al menos 2 criterios observables")
+        cu = a.get("cuaderno") or {}
+        for k in ("titulo", "formato", "extension"):
+            if not cu.get(k):
+                errors.append(f"web.actividades[{i}].cuaderno.{k} vacío")
+        titulo_cu = (cu.get("titulo") or "").strip()
+        prosa_cu = _get(g, _CUADERNOS[i]) or ""
+        if titulo_cu and titulo_cu not in prosa_cu:
+            errors.append(f"web.actividades[{i}].cuaderno.titulo «{titulo_cu}» no aparece en {_CUADERNOS[i]}")
+    for e in mapa:
+        malos = [str(i) for i in (e.get("iconos") or []) if str(i) not in ICONOS_MAPA]
+        if malos:
+            errors.append(f"web.mapa_ruta estación {e.get('numero')}: iconos no válidos {malos}")
+    if mapa and g.get("duracion_min"):
+        suma = sum(int(e.get("duracion_min", 0)) for e in mapa)
+        if suma != int(g["duracion_min"]):
+            warnings.append(f"web.mapa_ruta suma {suma} min y duracion_min es {g['duracion_min']}")
+    return errors, warnings
+
+
 # ─── Reporte ─────────────────────────────────────────────────────────────────
 
 def lint_guia(g: dict, grado: int = 11) -> tuple[list[str], list[str]]:
@@ -392,6 +580,19 @@ def lint_guia(g: dict, grado: int = 11) -> tuple[list[str], list[str]]:
     warnings += lint_saber_ancestral(g)
     warnings += lint_200_palabras(g)
     warnings += lint_citas_trazables(g)
+
+    # Contrato v3.1 (error solo si la guía declara duracion_min)
+    for regla in (
+        lint_fuente_apertura,
+        lint_quiz_balance,
+        lint_verbo_unico,
+        lint_tiempo_modalidad,
+        lint_extension_cuaderno,
+        lint_web_estructura,
+    ):
+        e, w = regla(g)
+        errors += e
+        warnings += w
 
     return errors, warnings
 

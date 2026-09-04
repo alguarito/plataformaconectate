@@ -228,21 +228,26 @@
 % ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
 % Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
 % dato practico (tiempo/modalidad) a la derecha, en una sola linea.
-% Nunca huerfana: pide 6 lineas libres (o salta de pagina rellenando con
-% \vfill) y prohibe el salto justo despues de la banda. after skip=0pt +
-% \nopagebreak + \vspace: el penalty 10000 va ANTES del espacio, asi TeX
-% tampoco puede partir en ese glue. Cada banda deja marcador PDF y actualiza
-% la cabecera derecha.
+% Nunca huerfana: pide 9 lineas libres (o salta de pagina rellenando con
+% \vfill) y prohibe el salto justo despues de la banda. Nueve y no seis:
+% la caja partible que sigue necesita ~80pt (titulo adosado, relleno y dos
+% lineas) para arrancar en la misma pagina; con menos, tcolorbox la manda
+% entera a la siguiente y la banda se queda sola. El penalty 10000 va
+% en `after`, ANTES del espacio posterior: un `after skip` (aunque sea 0pt)
+% es un \vskip tras la caja, y ese glue es un punto de corte legal que un
+% \nopagebreak escrito despues de \end{tcolorbox} ya no cierra. Cada banda
+% deja marcador PDF y actualiza la cabecera derecha.
 \newcounter{milcestacion}
 \newcommand{\milcestacion}[2]{%
-\Needspace*{6\baselineskip}%
+\Needspace*{9\baselineskip}%
 \stepcounter{milcestacion}%
 \pdfbookmark[1]{#2}{milcestacion\themilcestacion}%
 \markright{#2}%
 \begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
-  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=0pt]
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,
+  after={\par\nopagebreak\vskip7pt}]
 {\sffamily\bfseries\fontsize{15}{18}\selectfont\milctintasobre{#1}#2}
-\end{tcolorbox}\nopagebreak\vspace{7pt}\nopagebreak}
+\end{tcolorbox}}
 
 % Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
 % eran formato de consulta docente, no de estudiante. El numero va en un

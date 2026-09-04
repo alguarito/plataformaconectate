@@ -150,6 +150,53 @@ web:
         feedback_incorrecto: "..."
 ```
 
+## Contrato v3.1 (opt-in) — campos nuevos
+
+Una guía declara que cumple el contrato v3.1 cuando trae `duracion_min`. Con
+ese campo presente, el linter convierte en **errores** las reglas nuevas; sin
+él, solo avisa (así las 180 guías anteriores siguen compilando). Piloto: `8-1-1`.
+
+```yaml
+duracion_min: 90            # int · duración de la sesión; las actividades no pueden sumar más
+
+apertura:
+  origen: Cuaderno del fiado · tiendas de barrio     # rótulo corto (etiqueta del bloque web)
+  fuente: |-                                          # referencia APA 7 (LaTeX); va como pie del bloque
+    Martínez Benavides, A. (2021). Circuitos crediticios… \emph{Estudios Sociológicos, 39}(116), 467--494.
+
+# Prosa (PDF): cada actividad lleva UN verbo, tiempo y modalidad, y el cuaderno
+# trae Título · Formato · Extensión · Sabes que terminaste cuando.
+#   \textbf{Actividad 2 · ANALIZA --- Título} (25 min · parejas). (1) … (2) …
+
+web:
+  resumen: …                 # opcional · sobrescribe el resumen derivado
+  subtema: …                 # opcional
+  pre_lectura:               # opcional · sobrescribe lo derivado de la prosa
+    por_que_importa: …
+    pregunta_detonante: …
+    activacion: { titulo: …, descripcion: …, duracion_min: 5 }
+    conexion: { anterior: …, siguiente: … }
+  mapa_ruta:                 # 4-6 estaciones; la suma de duracion_min = duracion_min de la guía
+    - { numero: 1, iconos: ["🌱"], titulo: …, duracion_min: 10 }
+  actividades:               # exactamente 3; deben coincidir con la prosa (verbo, tiempo, modalidad, título del cuaderno)
+    - numero: 1
+      verbo: IDENTIFICA      # uno de los 6
+      titulo: …
+      tiempo_min: 15
+      modalidad: individual  # individual | parejas | equipo (+ equipo_tamano)
+      pasos: [ … ]           # 3-6
+      cuaderno: { titulo: …, formato: …, extension: … }   # el título aparece en la prosa como «Actividad N --- Título»
+      criterios: [ … ]       # ≥ 2, observables
+  conceptos_clave:           # `categoria` agrupa en la web (sin emoji)
+    - { categoria: …, termino: …, definicion: …, ejemplo: … }
+  cinco_dimensiones:         # opcional · personal, emocional, ciudadana, local, intergeneracional
+  post_lectura:              # opcional · reflexion, transferencia, cierre
+  quiz:                      # la respuesta correcta se reparte entre posiciones (máx. 40 % en una)
+```
+
+Reglas v3.1 del linter: `lint_fuente_apertura`, `lint_quiz_balance`, `lint_verbo_unico`,
+`lint_tiempo_modalidad`, `lint_extension_cuaderno`, `lint_web_estructura`.
+
 ## Reglas de validación
 
 El builder rechaza un YAML que falle alguna de estas reglas (Pieza 4):
@@ -169,6 +216,7 @@ El builder rechaza un YAML que falle alguna de estas reglas (Pieza 4):
 - **Itálica:** `*texto*` → `\emph{texto}` / `<em>`.
 - **Citas:** usa `'\` no `'` cuando vayan dentro de texto regular.
 - **Em-dash:** usa `---` (LaTeX style). El builder respeta.
+- **Texto con LaTeX:** los campos de prosa llevan `\\textbf{}`, `\\emph{}`, `---`; el generador web los convierte a texto plano (`latex_to_text`).
 
 ## Cómo agregar/editar una guía
 

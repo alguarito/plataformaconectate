@@ -63,6 +63,7 @@ LATEX_PATTERNS: list[tuple[re.Pattern, str]] = [
     (re.compile(r"\$<\$"), "<"),
     (re.compile(r"\$>\$"), ">"),
     (re.compile(r"\$\^(\d+)\$"), r"^\1"),
+    (re.compile(r"(?<=\S)~(?=\S)"), " "),  # espacio indivisible LaTeX (p. ej. 60~\%)
     (re.compile(r"---"), "—"),
     (re.compile(r"``"), '"'),
     (re.compile(r"''"), '"'),

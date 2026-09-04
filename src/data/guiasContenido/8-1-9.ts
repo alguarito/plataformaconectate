@@ -11,160 +11,283 @@ const contenido: ContenidoGuia = {
   grado: 8,
   periodo: 1,
   sesion: 9,
-  titulo: 'Mini-estudio de datos del entorno escolar',
-  resumen: 'Como el consejo de productores del mercado: estudiar antes de decidir. Aplicas TODO lo del periodo a una pregunta real del colegio: pregunta + instrumento + datos + análisis + gráfico + conclusión + recomendación.',
+  titulo: 'Mini estudio de datos — ocho etapas para responder una pregunta del colegio',
+  resumen: 'Todo lo del periodo junto en un estudio propio de ocho etapas sobre una pregunta del colegio. Como el censo de un resguardo, se pregunta persona por persona, se verifica y se decide, sin olvidar a quién quedó fuera.',
   duracionMin: 90,
-  subtema: 'Mini-estudio · 8 etapas · Phronesis aplicada',
+  subtema: 'Análisis de datos con phronesis',
   preLectura: {
-    porQueImporta: 'Saber hacer un mini-estudio te servirá toda la vida: para sustentar una propuesta en tu trabajo, para tomar una decisión informada en tu familia, para argumentar en una junta. Es habilidad de ciudadano informado.',
-    preguntaDetonante: '¿Qué del consejo de productores del mercado — su disciplina de mirar datos antes de decidir — podemos llevar a un estudio del colegio?',
+    porQueImporta: 'Hacer un estudio pequeño y honesto es la habilidad que separa opinar de saber. La vas a usar en el colegio, en un trabajo y en cualquier discusión con cifras.',
+    preguntaDetonante: 'Cuando encuestes a veinte compañeros, ¿quién no va a estar en tu lista y qué le pasa a tu hallazgo por eso?',
     activacion: {
-      titulo: 'La problemática real',
-      descripcion: 'En 5 minutos: en parejas identifiquen UNA problemática real del colegio (cafetería, descansos, transporte, biblioteca, etc.) que se podría estudiar con datos. Formula la pregunta de investigación específica.',
+      titulo: 'Una pregunta que se pueda contar',
+      descripcion: 'En 3 minutos, escribe una pregunta sobre tu colegio que se responda contando algo, y otra que no se pueda responder con datos. ¿Cuál es la diferencia?',
       duracionMin: 5
     },
     conexion: {
-      anterior: 'En la sesión 8 aplicaste validación y formato condicional para hojas profesionales.',
-      siguiente: 'En la sesión 10 socializarás tu mini-estudio ante el curso.'
+      anterior: 'En la sesión 8 tu hoja aprendió a validar y a avisar con colores.',
+      siguiente: 'En la sesión 10 sustentas el mini estudio en cuatro minutos frente al grupo.'
     }
   },
   conceptosClave: [
     {
-      termino: 'Mini-estudio',
-      definicion: 'Investigación pequeña pero rigurosa sobre una pregunta real con 8 etapas obligatorias. Integra todas las habilidades del periodo en una pieza.',
-      ejemplo: '"¿Cuánto tiempo de pantalla tienen los compañeros del grado 8?" es una pregunta de mini-estudio si tiene datos, análisis y decisión.',
-      emoji: '🔬'
+      termino: 'Pregunta de investigación',
+      definicion: 'Una sola pregunta, clara, que se pueda responder contando o midiendo algo.',
+      ejemplo: '«¿Cuántos minutos de pantalla al día tienen los de octavo?» sí. «¿Cómo está el colegio?» no.',
+      categoria: 'Las etapas'
     },
     {
-      termino: 'Hipótesis previa',
-      definicion: 'Apuesta sobre lo que vas a encontrar, escrita antes de mirar los datos. Permite contrastar realidad con expectativa y aprender.',
-      ejemplo: '"Creo que el promedio de pantalla será 4 horas". Cuando los datos digan 6 horas, aprendes algo sobre tu percepción.',
-      emoji: '🎯'
+      termino: 'Hipótesis',
+      definicion: 'Lo que crees que vas a encontrar, escrito antes de mirar los datos, con su porqué.',
+      ejemplo: '«Creo que el promedio será de 4 horas, porque casi todos tienen celular».',
+      categoria: 'Las etapas'
     },
     {
-      termino: 'Hallazgo principal',
-      definicion: 'La conclusión más importante del estudio en 1 frase clara con cifra. No es opinión: es lo que dicen los datos.',
-      ejemplo: '"El promedio de pantalla del grupo es 5,2 horas/día, con MAX 11 horas en 1 estudiante que duerme poco."',
-      emoji: '💡'
+      termino: 'Muestra',
+      definicion: 'Las personas o los casos que sí quedaron en tus datos. Nunca son todos.',
+      ejemplo: 'Veinte compañeros de 8-A encuestados un martes. Los que faltaron ese día no están.',
+      categoria: 'Las etapas'
     },
     {
-      termino: 'Decisión razonada',
-      definicion: 'Acción concreta que se desprende del hallazgo. Conecta el dato con algo que se puede hacer en el mundo real.',
-      ejemplo: '"Dado que 3 compañeros tienen MAX mayor a 8 horas, propongo conversación en clase sobre uso del tiempo."',
-      emoji: '✅'
+      termino: 'Hallazgo',
+      definicion: 'Lo más importante que encontraste, en una sola frase, con cifras.',
+      ejemplo: '«El promedio fue de 3 horas y el máximo de 8; la mitad supera las 3».',
+      categoria: 'Las etapas'
     },
     {
-      termino: 'Limitaciones declaradas',
-      definicion: 'Reconocimiento honesto de qué no puede afirmar tu estudio: muestra pequeña, sesgo, periodo corto. Honestidad profesional.',
-      ejemplo: '"Encuesté solo a 15 personas del grupo. No es representativo del colegio entero. La cifra aplica solo al grupo."',
-      emoji: '🔍'
+      termino: 'Limitación',
+      definicion: 'Lo que tu estudio no pudo saber, dicho claramente en la última página.',
+      ejemplo: '«Solo encuesté a 8-A un martes; los otros grupos y los otros días quedaron fuera».',
+      categoria: 'Honestidad'
+    },
+    {
+      termino: 'Los cuatro filtros',
+      definicion: 'Datos accesibles esta semana, al menos quince datos, interés real y algún uso para el hallazgo.',
+      ejemplo: 'Una pregunta sobre todo el colegio no pasa el filtro de la semana; una sobre tu salón sí.',
+      categoria: 'Honestidad'
     }
   ],
   laboratorios: [
     {
       tipo: 'quiz',
-      titulo: '¿Sabes integrar un mini-estudio honesto?',
-      instrucciones: '5 preguntas para verificar que reconoces las 8 etapas y la diferencia entre conclusión honesta vs inflada.',
+      titulo: '¿Sabes armar un mini estudio?',
+      instrucciones: 'Cinco preguntas para verificar que reconoces una buena pregunta, una hipótesis a tiempo y una limitación honesta. No va al cuaderno.',
       preguntas: [
         {
-          enunciado: '¿Cuál es la primera etapa de un mini-estudio profesional?',
+          enunciado: '¿Cuál de estas preguntas se puede responder con datos en una semana?',
           opciones: [
-            'Recolectar muchos datos',
-            'Hacer un gráfico bonito',
-            'Calcular el promedio',
-            'Definir una pregunta clara y medible'
-          ],
-          respuestaIndex: 3,
-          feedbackCorrecto: 'Exacto. Sin pregunta clara, los datos no sirven. La primera etapa es siempre definir qué quieres responder.',
-          feedbackIncorrecto: 'La primera etapa es definir la pregunta. Sin pregunta clara, recolectar datos es trabajar a ciegas.'
-        },
-        {
-          enunciado: '¿Para qué sirve escribir la hipótesis ANTES de recolectar datos?',
-          opciones: [
-            'Para poder contrastar lo que creías con lo que los datos dicen',
-            'Para que coincida con los resultados',
-            'Es trámite escolar sin utilidad',
-            'Para confundir al lector'
+            '¿Cuántos minutos de pantalla al día tienen los de 8-A?',
+            '¿Los estudiantes de hoy son más felices que los de antes?',
+            '¿Es bueno o malo usar el celular en las clases del colegio?',
+            '¿Qué piensa la humanidad entera sobre la tecnología actual?'
           ],
           respuestaIndex: 0,
-          feedbackCorrecto: 'Correcto. La hipótesis previa permite aprender: si los datos la confirman, refuerzas la teoría; si la contradicen, descubres algo nuevo.',
-          feedbackIncorrecto: 'La hipótesis previa permite contrastar expectativa con realidad. Es herramienta de aprendizaje, no de confirmación.'
+          feedbackCorrecto: 'Sí. Tiene algo que se mide, minutos, y un grupo alcanzable, 8-A. Las otras no se cuentan ni se miden.',
+          feedbackIncorrecto: '«Felices», «bueno o malo» y «la humanidad» no se cuentan en una semana. La pregunta de los minutos en 8-A sí.'
         },
         {
-          enunciado: 'Tu mini-estudio tiene 12 respuestas. ¿Qué dice la honestidad profesional sobre tus conclusiones?',
+          enunciado: '¿Cuándo se escribe la hipótesis?',
           opciones: [
-            'Generalizar a todo el colegio sin problema',
-            'Limitar las conclusiones al grupo encuestado y declararlo',
-            'Inventar más datos',
-            'No sacar conclusiones'
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto: 'Exacto. Con 12 respuestas, las conclusiones aplican al grupo encuestado. Generalizar al colegio entero sería deshonesto.',
-          feedbackIncorrecto: 'Con muestra pequeña, hay que limitar conclusiones y declarar limitaciones. Honestidad profesional sobre rigor inflado.'
-        },
-        {
-          enunciado: 'Tu hallazgo dice: "promedio 5,2 horas pantalla". ¿Qué falta para que sea decisión razonada?',
-          opciones: [
-            'Solo el hallazgo basta',
-            'Más gráficos',
-            'Propuesta concreta de acción a partir del hallazgo',
-            'Una segunda encuesta'
+            'Después de calcular, para que coincida con el resultado.',
+            'Solo si el estudio sale bien y confirma lo esperado.',
+            'Antes de recolectar, para poder equivocarse con datos.',
+            'En la sustentación, cuando ya se sabe todo el resultado.'
           ],
           respuestaIndex: 2,
-          feedbackCorrecto: 'Correcto. Hallazgo sin decisión es dato suelto. La decisión conecta el número con algo que se puede hacer (conversación, propuesta, plan).',
-          feedbackIncorrecto: 'La decisión razonada conecta el hallazgo con acción concreta. Sin acción propuesta, el dato no sirve para nada.'
+          feedbackCorrecto: 'Exacto. Si la escribes después, todo parece esperado. Antes, te permite aprender del error.',
+          feedbackIncorrecto: 'Una hipótesis escrita después de ver los datos no es hipótesis. Va antes, aunque falle.'
         },
         {
-          enunciado: '¿Cuál es la diferencia entre "hallazgo principal" y "opinión"?',
+          enunciado: 'Encuestaste solo a tus cinco mejores amigos sobre el tiempo de pantalla. ¿Qué es lo correcto?',
           opciones: [
-            'No hay diferencia',
-            'El hallazgo tiene cifra y dato; la opinión solo afirmación',
-            'El hallazgo es escrito; la opinión es oral',
-            'La opinión es más importante'
+            'Presentar el resultado como el del colegio, porque son datos reales de verdad.',
+            'Botar el estudio completo, porque cinco datos no sirven para concluir nada.',
+            'Inventar quince datos más parecidos para completar la muestra mínima.',
+            'Declarar en las limitaciones que fueron cinco amigos y no el colegio.'
+          ],
+          respuestaIndex: 3,
+          feedbackCorrecto: 'Eso es. Cinco amigos es una limitación, y se dice. Un estudio pequeño y honesto vale; uno inflado no.',
+          feedbackIncorrecto: 'Ni se infla ni se inventa ni se bota. Se declara la limitación en la última página y se propone cómo mejorarlo.'
+        },
+        {
+          enunciado: '¿Cuál de estas frases es un hallazgo bien escrito?',
+          opciones: [
+            'Hice muchos cálculos con las cuatro funciones y varios gráficos interesantes.',
+            'Los de 8-A pasan en promedio 3 horas al día en pantalla; el máximo fue 8.',
+            'Los datos muestran cosas muy importantes sobre el uso del celular en el colegio.',
+            'Creo que la gente usa mucho el celular, como todo el mundo sabe desde hace años.'
           ],
           respuestaIndex: 1,
-          feedbackCorrecto: 'Exacto. El hallazgo se sostiene en cifras y datos verificables. La opinión es afirmación sin sustento empírico.',
-          feedbackIncorrecto: 'El hallazgo tiene cifra/dato verificable; la opinión es afirmación sin sustento. Esa distinción es la phronesis del oficio.'
+          feedbackCorrecto: 'Sí. Una frase, con cifras, que responde la pregunta. Las otras no dicen qué encontraste.',
+          feedbackIncorrecto: 'Un hallazgo dice qué encontraste, con cifras, en una frase. «Muchos cálculos» y «cosas importantes» no son hallazgos.'
+        },
+        {
+          enunciado: 'En el censo de un resguardo, ¿qué le pasa a quien no está el día del censo, y qué te enseña eso para tu estudio?',
+          opciones: [
+            'Nada, porque el cabildo lo agrega después de memoria; en tu estudio tampoco importa quién falta.',
+            'Queda fuera de la lista y del reparto; en tu estudio, hay que decir quién quedó fuera.',
+            'Lo cuentan dos veces al día siguiente; en tu estudio, se duplican los datos para compensar.',
+            'Lo reemplaza un funcionario con un promedio; en tu estudio, inventas el dato que falta.'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Correcto. La tierra se reparte conforme al censo. Por eso tu informe dice a quién no encuestaste.',
+          feedbackIncorrecto: 'Quien no está en la lista no existe para el reparto. La lección es declarar quién quedó fuera, no inventar ni duplicar.'
         }
       ]
     }
   ],
   postLectura: {
-    reflexion: 'Tu mini-estudio puede cambiar algo concreto del colegio. ¿Qué problema real propondrás estudiar y por qué te importa?',
-    transferencia: 'Esta semana ejecuta TU mini-estudio: pregunta acotada, instrumento honesto, 20+ encuestados, análisis con funciones, gráfico, conclusión prudente, recomendación accionable.',
-    cierre: 'El consejo de productores estudiaba antes de decidir. Tú haces lo mismo: tu palabra ante la administración tiene peso porque está sustentada en datos honestos.'
+    reflexion: '¿Qué persona o grupo quedó fuera de tu muestra, y cómo cambiaría tu hallazgo si estuviera?',
+    transferencia: 'La próxima vez que veas una cifra sobre «los jóvenes» o «los colombianos», pregúntate a cuántos encuestaron y a quién dejaron fuera.',
+    cierre: 'Una pregunta, quince datos y una frase honesta valen más que cien cifras sin pregunta.'
   },
   saberAncestral: {
-    saber: 'En los barrios del centro de Cartago había una figura silenciosa que nadie llamaba investigador pero que producía conocimiento todos los días: el observador del barrio. El sereno, sentado en su silla nocturna, sabía cuántos extraños habían pasado en la semana, a qué hora se prendían las luces de cada casa, qué carros se detenían frente a la tienda. La abuela del balcón sabía cuántas empanadas se vendían en la cuadra, en qué momento del día se agotaban, qué barrio venía a comprar. El tendero contaba cuántos clientes nuevos entraron, qué productos preguntaron que no tenía, qué horas tuvo más movimiento. Ninguno de ellos llamaba a su práctica investigación, pero seguían un método claro: (1) observaban con disciplina, (2) anotaban en un cuaderno o memoria, (3) comparaban con días anteriores, (4) detectaban patrones, (5) tomaban decisiones ("mañana voy a hacer más empanadas", "no le presto al de la motocicleta blanca"). Esa práctica del observador del barrio es la forma ancestral del análisis de datos: observar con disciplina, comparar con criterio, decidir con honestidad. La investigación moderna formaliza esos pasos pero no inventa nada nuevo.',
-    fuente: 'Consejos de productores en mercados campesinos del Valle del Cauca',
-    preguntaPuente: '¿Qué sabía el observador del barrio al seguir su método silencioso de las 5 prácticas, que el estudiante novato olvida cuando hace un "análisis" sin pregunta clara, sin hipótesis previa y sin limitaciones declaradas? ¿Y por qué las 8 etapas del mini-estudio son la formalización moderna de la phronesis del observador?'
+    saber: 'Cuando una comunidad indígena pide constituir o ampliar su resguardo, se levanta un censo. El instructivo oficial lo define como «una fotografía de la realidad de una comunidad en un tiempo y espacio específico» (Agencia Nacional de Tierras, 2023). No lo hace un funcionario solo. Se apoya en miembros del cabildo, maestros y líderes de la comunidad, que van casa por casa con un formato. Se pregunta a todas las personas: quiénes son, cuántos años tienen, qué hacen. Después alguien verifica lo escrito, lo sistematiza y lo cuenta. Y con esa lista se toma una decisión enorme: la tierra se distribuye «conforme al censo realizado». Mira las etapas: una pregunta, un método, una recolección persona por persona, una revisión, un cálculo, una decisión. Es un estudio completo. La cara de exclusión es literal: quien no queda en la lista el día del censo no existe para el reparto. Hoy vas a hacer un estudio mucho más pequeño, sobre tu colegio, con las mismas etapas y el mismo cuidado por quién queda fuera.',
+    fuente: 'Cabildos indígenas · el censo poblacional del resguardo',
+    referencia: 'Agencia Nacional de Tierras, Dirección de Asuntos Étnicos. (2023). Instructivo: levantamiento y diligenciamiento del formato de censo poblacional para comunidades indígenas (ACCTI-I-021, versión 1).',
+    preguntaPuente: 'El censo del resguardo decide la tierra, y quien no está en la lista queda fuera. Cuando encuestes a veinte compañeros sobre su tiempo de pantalla, ¿quién no va a estar en tu lista? ¿Y qué le pasa a tu hallazgo por esa ausencia?'
   },
+  mapaRuta: [
+    {
+      numero: 1,
+      iconos: [
+        '🌱'
+      ],
+      titulo: 'El censo del resguardo',
+      duracionMin: 10
+    },
+    {
+      numero: 2,
+      iconos: [
+        '✏️'
+      ],
+      titulo: 'Actividad 1 · Diez preguntas posibles',
+      duracionMin: 15
+    },
+    {
+      numero: 3,
+      iconos: [
+        '📖',
+        '✏️'
+      ],
+      titulo: 'Actividad 2 · Mi pregunta y mi hipótesis',
+      duracionMin: 25
+    },
+    {
+      numero: 4,
+      iconos: [
+        '🔎',
+        '✏️',
+        '✅'
+      ],
+      titulo: 'Actividad 3 · Mi mini estudio',
+      duracionMin: 30
+    },
+    {
+      numero: 5,
+      iconos: [
+        '💭'
+      ],
+      titulo: 'Tres ideas y tu compromiso',
+      duracionMin: 10
+    }
+  ],
+  actividades: [
+    {
+      numero: 1,
+      verbo: 'IDENTIFICA',
+      titulo: 'Diez preguntas posibles',
+      tiempoMin: 15,
+      modalidad: 'individual',
+      pasos: [
+        'Escribe diez preguntas sobre tu colegio que se puedan responder con datos, por ejemplo cuántos minutos de pantalla al día tienen los de octavo.',
+        'Revisa que cada pregunta tenga algo que se cuente o se mida.',
+        'Tacha las que no podrías responder en una semana.',
+        'Marca con una estrella las tres que más te interesan de verdad.'
+      ],
+      cuaderno: {
+        titulo: 'Diez preguntas posibles',
+        formato: 'lista numerada de diez preguntas, con tachones y estrellas',
+        extension: 'media página'
+      },
+      criterios: [
+        'Quedan al menos cinco preguntas sin tachar.',
+        'Tres tienen estrella.'
+      ]
+    },
+    {
+      numero: 2,
+      verbo: 'EVALÚA',
+      titulo: 'Elige la pregunta y escribe la hipótesis',
+      tiempoMin: 25,
+      modalidad: 'parejas',
+      pasos: [
+        'Con tu pareja, pasen sus tres preguntas con estrella por los cuatro filtros, datos esta semana, al menos quince datos, interés real, algún uso.',
+        'Elijan cada uno la pregunta que pase los cuatro.',
+        'Escriban la hipótesis antes de recolectar nada, creo que voy a encontrar X, porque Y.',
+        'Planeen la recolección, a quién, cuántos, cuándo y con qué.',
+        'Escriban quién va a quedar fuera de la muestra y por qué.'
+      ],
+      cuaderno: {
+        titulo: 'Mi pregunta y mi hipótesis',
+        formato: 'la pregunta elegida, los cuatro filtros con su respuesta, la hipótesis con su porqué, el plan de recolección y una línea sobre quién queda fuera',
+        extension: 'media página'
+      },
+      criterios: [
+        'La pregunta pasa los cuatro filtros.',
+        'La hipótesis está escrita antes de recolectar y sabes a quién no vas a encuestar.'
+      ]
+    },
+    {
+      numero: 3,
+      verbo: 'CREA',
+      titulo: 'El mini estudio completo',
+      tiempoMin: 30,
+      modalidad: 'individual',
+      pasos: [
+        'Recolecta los datos durante tres a cinco días, como planeaste.',
+        'Límpialos con bitácora y calcula las cuatro funciones y una fórmula compuesta que responda tu pregunta.',
+        'Haz un gráfico honesto del tipo correcto.',
+        'Escribe el hallazgo en una frase y la decisión que tomarías.',
+        'Arma el informe de dos páginas con las ocho etapas y cierra con limitaciones y mejoras.'
+      ],
+      cuaderno: {
+        titulo: 'Mi mini estudio',
+        formato: 'el esquema del informe con las ocho secciones tituladas y qué va en cada una; el informe completo se entrega aparte',
+        extension: 'una página'
+      },
+      criterios: [
+        'Las etapas 1 a 3 están listas y las ocho secciones tienen título.',
+        'Sabes qué te falta recolectar esta semana.'
+      ]
+    }
+  ],
   triangulo: {
     dussel: {
-      autor: 'Enrique Dussel',
+      autor: 'Enrique Dussel · Filosofía de la liberación (1977), §5.9.4.1',
       lente: 'lente del nosotros',
-      cita: 'El conocimiento que devuelve poder a la comunidad observada es liberador; el que la utiliza como objeto es extractivo.',
-      preguntaEspejo: '¿Mi mini-estudio devuelve algo útil a las personas observadas, o las utiliza como objeto de mi tarea?'
+      cita: 'Como los temas son infinitos y el tiempo corto, hay que saber perder tiempo para elegir los temas fundamentales.',
+      preguntaEspejo: '¿Elegí mi pregunta porque importa, o porque era la más fácil de responder?'
     },
     estoico: {
-      autor: 'Marco Aurelio',
+      autor: 'Marco Aurelio · Meditaciones VI, 21 (c. 175 d.C.)',
       lente: 'lente del cuidado interior',
-      cita: 'Declarar las limitaciones es virtud; inflar las conclusiones es debilidad disfrazada de seguridad.',
-      preguntaEspejo: '¿Mis conclusiones están proporcionadas al tamaño de mi muestra, o estoy afirmando más de lo que mis datos permiten?'
+      cita: 'Si alguien te muestra que estás equivocado, cambia de camino con gusto. Lo que daña no es el error: es aferrarse a él.',
+      preguntaEspejo: 'Si mis datos contradicen mi hipótesis, ¿voy a decirlo en el informe?'
     },
     floridi: {
-      autor: 'Luciano Floridi',
+      autor: 'Luciano Floridi · Big data and their epistemological challenge (2012)',
       lente: 'lente de la infoesfera',
-      cita: 'Investigar con rigor en la era de la información es responsabilidad ética del oficio.',
-      preguntaEspejo: '¿Mi mini-estudio cumple los estándares mínimos del rigor profesional, o es solo trabajo escolar improvisado?'
-    }
+      cita: 'Ganan quienes saben preguntar y responder, y por eso saben qué datos buscar.',
+      preguntaEspejo: '¿Mi pregunta me dijo exactamente qué datos buscar, o busqué y después pregunté?'
+    },
+    modo: 'ideas'
   },
   cincoDimensiones: {
-    personal: 'Aplicaste 8 sesiones de aprendizaje en UN producto integrador con voz propia — eso es phronesis encarnada.',
-    emocional: 'Resististe la tentación de afirmar más allá de los datos. Reconocer límites es madurez intelectual, no debilidad.',
-    ciudadana: 'Tu mini-estudio puede mejorar algo real del colegio. La estadística aplicada a tu comunidad es ciudadanía concreta.',
-    local: 'Heredaste el método del consejo de productores del Valle — estudiar antes de decidir cuando hay algo importante en juego.',
-    intergeneracional: 'El mercado campesino que estudiaba precios antes de la temporada y tu mini-estudio escolar comparten ética: decisión con evidencia.'
+    personal: 'Hiciste un estudio de principio a fin. Ya sabes que una pregunta bien hecha vale más que muchos datos.',
+    emocional: 'Si tu hipótesis falló, lo escribiste. Eso cuesta, y es lo que hace confiable tu informe.',
+    ciudadana: 'Un censo decide derechos; una encuesta decide una nota. En las dos, quien queda fuera importa. Preguntar por quién falta es ciudadanía.',
+    local: 'El censo de un resguardo se hace casa por casa con la gente del cabildo. Tu estudio se hizo pupitre por pupitre. La misma seriedad, otra escala.',
+    intergeneracional: 'Un informe con limitaciones claras lo puede continuar quien venga después. Eso es investigar en comunidad.'
   }
 };
 

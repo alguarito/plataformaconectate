@@ -11,160 +11,273 @@ const contenido: ContenidoGuia = {
   grado: 8,
   periodo: 1,
   sesion: 10,
-  titulo: 'Sustentación del mini-estudio — 4 minutos de phronesis comunicativa',
-  resumen: 'Como la asamblea trimestral en cabildos: presentar lo trabajado, escuchar preguntas, recibir crítica con humildad. Sustentar es darle voz pública al estudio que hiciste con phronesis.',
+  titulo: 'Sustentar el mini estudio — cuatro minutos y las preguntas de los demás',
+  resumen: 'Cuatro minutos, cinco diapositivas y las preguntas de los demás. Hoy llevas tu mini estudio al fogón del salón, como el nak chak misak donde el asunto se cuenta y se somete a las preguntas.',
   duracionMin: 90,
-  subtema: 'Socialización · Sustentación de 4 minutos · Phronesis comunicativa',
+  subtema: 'Análisis de datos con phronesis',
   preLectura: {
-    porQueImporta: 'Saber sustentar te servirá toda la vida: para defender un proyecto en tu universidad, para presentar una propuesta laboral, para participar en una junta de acción comunal. Es habilidad de ciudadano que se hace escuchar.',
-    preguntaDetonante: '¿Qué de la asamblea trimestral en cabildos — la disciplina de presentar y escuchar a la comunidad — podemos llevar a la sustentación digital?',
+    porQueImporta: 'Lo que no puedes contar en cuatro minutos todavía no lo entiendes del todo. Y responder «no lo resolví» con honestidad es una habilidad que vas a usar toda la vida.',
+    preguntaDetonante: 'Cuando te pregunten «¿y a quién no encuestaste?», ¿vas a responder o a defenderte?',
     activacion: {
-      titulo: 'La sustentación memorable',
-      descripcion: 'En 5 minutos: en parejas recuerden la mejor sustentación que han visto (de un compañero, profesor, conferencia). ¿Qué la hizo memorable? ¿Qué tuvo que las malas no tienen?',
+      titulo: 'Un minuto sin leer',
+      descripcion: 'En 3 minutos, cuéntale a tu pareja tu mini estudio en un minuto, sin mirar el informe. ¿Qué fue lo primero que dijiste? ¿Era lo más importante?',
       duracionMin: 5
     },
     conexion: {
-      anterior: 'En la sesión 9 ejecutaste tu mini-estudio del entorno escolar.',
-      siguiente: 'Cierre del periodo 1. En el periodo 2 entrarás a lógica avanzada y computación física.'
+      anterior: 'En la sesión 9 hiciste el mini estudio de ocho etapas.',
+      siguiente: 'El periodo 2 arranca con lógica avanzada y micro:bit.'
     }
   },
   conceptosClave: [
     {
-      termino: 'Sustentación oral',
-      definicion: 'Acto público donde el estudiante presenta y defiende su mini-estudio ante la audiencia. No es lectura: es comunicación con voz propia.',
-      ejemplo: '4 minutos contando pregunta, método, hallazgo y decisión, mirando al público, sin leer las slides.',
-      emoji: '🎤'
+      termino: 'Sustentación',
+      definicion: 'Contar en público un trabajo propio con tiempo limitado, apoyo visual y preguntas del público.',
+      ejemplo: 'Cuatro minutos, cinco diapositivas y tres preguntas del salón.',
+      categoria: 'La sustentación'
     },
     {
-      termino: '5 slides estándar',
-      definicion: 'Estructura mínima para sustentación corta: pregunta, método/datos, hallazgo, gráfico, decisión. Cada slide con tiempo asignado.',
-      ejemplo: 'Slide 1 (45 seg) pregunta + por qué importa. Slide 2 (45 seg) cómo recolecté datos. Slide 3 (60 seg) hallazgo principal con cifra. Slide 4 (45 seg) gráfico. Slide 5 (45 seg) decisión.',
-      emoji: '🎬'
+      termino: 'Las cinco diapositivas',
+      definicion: 'Pregunta, método, hallazgo, gráfico, decisión y limitaciones. Una idea por diapositiva y menos de veinticinco palabras.',
+      ejemplo: 'La diapositiva 3 dice solo «3 horas al día en promedio; máximo 8», con letra grande.',
+      categoria: 'La sustentación'
     },
     {
-      termino: 'Phronesis comunicativa',
-      definicion: 'Disciplina de decir lo justo: ni inflar lo logrado ni minimizarlo. Lo que se cuenta debe sostenerse con honestidad ante preguntas.',
-      ejemplo: '"Mi muestra fue 12 personas, no puedo generalizar al colegio" es phronesis. "Encuesté a toda la institución" sin haberlo hecho es engaño.',
-      emoji: '🧭'
+      termino: 'Guion hablado',
+      definicion: 'Lo que vas a decir, escrito para ordenarte y ensayarlo. No se lee en público.',
+      ejemplo: 'Unas seiscientas palabras son cuatro minutos hablando con calma.',
+      categoria: 'La sustentación'
     },
     {
-      termino: 'Autoevaluación profesional',
-      definicion: 'Reconocimiento honesto de 1-2 fortalezas y 1-2 mejoras después de sustentar. No autoflagelación ni autoelogio: balance real.',
-      ejemplo: '"Manejé bien el tiempo (fortaleza). Hablé muy rápido al principio por nervio (mejora). Para próxima sustentación ensayaré con cronómetro."',
-      emoji: '🪞'
+      termino: 'Responder con honestidad',
+      definicion: 'Decir lo que sabes y reconocer lo que no resolviste, con la razón.',
+      ejemplo: '«No lo resolví, porque solo encuesté a mi salón. Con más tiempo encuestaría a los tres octavos».',
+      categoria: 'Las preguntas'
     },
     {
-      termino: 'Cronometrar el ensayo',
-      definicion: 'Práctica profesional: ensayar 2 veces con reloj antes de la sustentación real. Permite ajustar tiempos por slide y detectar excesos.',
-      ejemplo: 'Si en el ensayo te toma 5,5 minutos lo planeado para 4, sabes que debes acortar o priorizar. Eso ahorra fracaso público.',
-      emoji: '⏱'
+      termino: 'Los cinco criterios',
+      definicion: 'Tiempo cumplido, se entendió qué hizo, cifras con contexto, gráfico honesto, dijo qué no pudo saber.',
+      ejemplo: 'Evaluar a un compañero es marcar los cinco y hacerle una pregunta que le sirva.',
+      categoria: 'Las preguntas'
+    },
+    {
+      termino: 'Autoevaluación concreta',
+      definicion: 'Una fortaleza y una mejora que se puedan comprobar la próxima vez.',
+      ejemplo: '«Controlé el tiempo» y «la próxima vez ensayo tres veces».',
+      categoria: 'Las preguntas'
     }
   ],
   laboratorios: [
     {
       tipo: 'quiz',
-      titulo: '¿Sabes sustentar con phronesis comunicativa?',
-      instrucciones: '5 preguntas para verificar que reconoces qué hace profesional una sustentación oral del mini-estudio.',
+      titulo: '¿Sabes sustentar en cuatro minutos?',
+      instrucciones: 'Cinco preguntas para verificar que sabes reducir, contar y responder. No va al cuaderno.',
       preguntas: [
         {
-          enunciado: '¿Cuál es el primer error del sustentante novato?',
+          enunciado: 'Tu diapositiva del hallazgo tiene cuatro párrafos. ¿Qué pasa cuando la proyectas?',
           opciones: [
-            'Hablar muy bajo',
-            'Leer las slides en voz alta',
-            'Tener slides simples',
-            'Mirar al público'
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto: 'Exacto. Leer las slides mata la sustentación. Si lees, el público lee solo y tu voz sobra. Mejor contar con apoyo visual mínimo.',
-          feedbackIncorrecto: 'Leer las slides es el primer error. Mejor hablar con apoyo visual mínimo y mirar al público.'
-        },
-        {
-          enunciado: '¿Cuántas slides son ideales para sustentación de 4 minutos?',
-          opciones: [
-            '20',
-            '15',
-            'Solo 1',
-            '4-5'
-          ],
-          respuestaIndex: 3,
-          feedbackCorrecto: 'Correcto. 4-5 slides, una por bloque (pregunta, método, hallazgo, gráfico, decisión). Menos no alcanza; más no se puede explicar en 4 min.',
-          feedbackIncorrecto: '4-5 slides es el estándar para sustentación corta. Más slides obligan a acelerar y leer; menos no muestra el camino.'
-        },
-        {
-          enunciado: 'Te preguntan: "¿la encuesta fue representativa del colegio?". La muestra fue 15. ¿Qué respondes con phronesis comunicativa?',
-          opciones: [
-            'No, fue de 15 personas, así que aplica solo al grupo encuestado. Una muestra mayor permitiría generalizar.',
-            'Sí, totalmente',
-            'Buena pregunta... siguiente pregunta',
-            'Depende'
+            'El grupo la lee y deja de escucharte mientras habla.',
+            'El grupo entiende mejor, porque tiene más información.',
+            'El cronómetro se detiene mientras la leen en silencio.',
+            'Nada, porque las diapositivas no importan en la nota.'
           ],
           respuestaIndex: 0,
-          feedbackCorrecto: 'Exacto. Honestidad técnica con explicación. La phronesis comunicativa declara límites en lugar de evadir.',
-          feedbackIncorrecto: 'La respuesta honesta declara el tamaño de la muestra y reconoce los límites. Evadir o inflar erosiona credibilidad.'
+          feedbackCorrecto: 'Sí. Una diapositiva llena compite con tu voz. Menos de veinticinco palabras y tú cuentas el resto.',
+          feedbackIncorrecto: 'Más texto no es más claridad. La gente lee en vez de escuchar. La diapositiva se lee en cinco segundos.'
         },
         {
-          enunciado: 'En la autoevaluación final, ¿qué es señal de profesionalismo?',
+          enunciado: 'Un compañero te pregunta algo que tu estudio no responde. ¿Cuál es la mejor respuesta?',
           opciones: [
-            'Decir que todo salió perfecto',
-            'Decir que todo salió mal',
-            'Reconocer 1-2 fortalezas y 1-2 mejoras concretas',
-            'No autoevaluarse'
+            'Inventar una explicación razonable para no quedar mal delante del grupo.',
+            'Decir que la pregunta no tiene que ver con el tema del estudio.',
+            'Decir «no lo resolví» y explicar por qué, con la limitación.',
+            'Pedirle que lo busque él mismo después de la clase.'
           ],
           respuestaIndex: 2,
-          feedbackCorrecto: 'Correcto. Balance real entre lo logrado y lo mejorable es profesional. Autoelogio y autocrítica extremos son señal de poco oficio.',
-          feedbackIncorrecto: 'Reconocer fortalezas y mejoras con honestidad balanceada es señal profesional. Extremos delatan inseguridad o vanidad.'
+          feedbackCorrecto: 'Exacto. Reconocer lo que no resolviste, con la razón, es la respuesta más profesional que hay.',
+          feedbackIncorrecto: 'Inventar o evadir hunde la sustentación. «No lo resolví porque…» la sostiene.'
         },
         {
-          enunciado: '¿Para qué sirve cronometrar el ensayo antes de sustentar?',
+          enunciado: '¿Cuánto tiempo le toca, más o menos, a cada una de las cinco diapositivas en cuatro minutos?',
           opciones: [
-            'Para impresionar al profe',
-            'Es trámite sin utilidad',
-            'Para perder tiempo',
-            'Para detectar si tu tiempo se ajusta a lo asignado y ajustar antes'
+            'Unos dos minutos a la primera y el resto se reparte como salga.',
+            'Entre 45 y 60 segundos cada una, con el hallazgo un poco más largo.',
+            'Diez segundos cada una y el resto para preguntas.',
+            'Depende de cuánto texto tenga cada diapositiva.'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Correcto. Unos 45 segundos por diapositiva y 60 para el hallazgo suman los cuatro minutos.',
+          feedbackIncorrecto: 'Cuatro minutos entre cinco ideas son unos 45 segundos cada una. El hallazgo puede llevarse un poco más.'
+        },
+        {
+          enunciado: '¿Cuál de estas es una autoevaluación concreta?',
+          opciones: [
+            'Estuvo bien, aunque podría mejorar en varias cosas la próxima vez.',
+            'Me sentí nervioso pero lo hice lo mejor que pude en ese momento.',
+            'Creo que en general fue una buena sustentación para el grupo.',
+            'Controlé el tiempo; la próxima vez ensayo tres veces para no leer.'
           ],
           respuestaIndex: 3,
-          feedbackCorrecto: 'Exacto. Si en el ensayo te pasas o no llegas, ajustas. Mejor descubrir el problema en privado que en público.',
-          feedbackIncorrecto: 'Cronometrar el ensayo te permite ajustar tiempos antes del fracaso público. Es disciplina profesional, no trámite.'
+          feedbackCorrecto: 'Sí. Una fortaleza que se puede comprobar y una mejora que dice qué vas a hacer.',
+          feedbackIncorrecto: '«Bien», «lo mejor que pude» y «en general» no se pueden comprobar. Una autoevaluación concreta nombra algo que hiciste y algo que harás.'
+        },
+        {
+          enunciado: 'Evalúas a un compañero. ¿Cuál de estas observaciones sigue los cinco criterios?',
+          opciones: [
+            'Me gustó mucho, hablas muy bien y se te entiende todo lo que dices.',
+            'Dijo el promedio sin unidad ni comparación; el gráfico sí empezaba en cero.',
+            'Debería haber usado más colores y más imágenes en las diapositivas.',
+            'Estuvo un poco largo para mi gusto, pero muy interesante.'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Eso es. Nombra criterios, cifras con contexto y gráfico honesto, y dice qué cumplió y qué no.',
+          feedbackIncorrecto: '«Me gustó», «más colores» e «interesante» son gustos. La evaluación con criterios dice qué cumplió y qué faltó.'
         }
       ]
     }
   ],
   postLectura: {
-    reflexion: 'La sustentación es darle voz pública a tu estudio. ¿Qué te cuesta más: hablar en público, recibir crítica, o reconocer lo que no sabes? ¿Por qué?',
-    transferencia: 'Mañana sustenta tu mini-estudio en 4 minutos. Cronométrate. Pide retroalimentación honesta a un compañero. Mejora antes de la próxima sustentación.',
-    cierre: 'La asamblea del cabildo y la sustentación digital comparten una verdad: la palabra dada en público se sostiene con evidencia. La phronesis es habilidad de ciudadano informado.'
+    reflexion: '¿Qué pregunta te hicieron hoy que tu estudio no podía responder, y qué harías distinto para responderla?',
+    transferencia: 'La próxima vez que expongas en cualquier materia, ensaya con cronómetro y prepara la respuesta a la pregunta que más temes.',
+    cierre: 'Cuatro minutos para contar, y todo el tiempo del mundo para escuchar. Así cierra el periodo.'
   },
   saberAncestral: {
-    saber: 'En los pueblos del Valle del Cauca había un ritual antiguo que cualquier aprendiz de oficio debía pasar antes de ser reconocido como oficial: contar a los mayores lo que aprendió. El aprendiz de carpintero, después de un año en el taller, se sentaba frente al maestro y a 2-3 oficiales viejos, y debía explicar con sus propias palabras: cómo elegir la madera, cómo afilar la herramienta, cómo ensamblar sin clavos. No bastaba con haber trabajado bien: había que poder contarlo. Los mayores hacían preguntas duras: "¿qué haces si la madera se raja al lijarla?", "¿cómo decides la pendiente del techo?". El aprendiz que respondía con honestidad (incluso reconociendo lo que no sabía) era reconocido como oficial. El que inventaba respuestas para impresionar era devuelto al taller por otro año. La sabiduría era inquebrantable: el oficio se demuestra hablando, no solo haciendo. Esa práctica antigua del cuentista del fogón aplicada al oficio es la forma ancestral de la sustentación oral profesional moderna.',
-    fuente: 'Asambleas trimestrales en cabildos indígenas colombianos (Misak, Nasa, Kogui, Wayuu)',
-    preguntaPuente: '¿Qué sabía el aprendiz de oficio al sentarse frente a los mayores para defender lo aprendido, que el estudiante novato olvida cuando confunde sustentar con leer las slides? ¿Y por qué un sustentante que reconoce limitaciones con elegancia es más respetado que uno que las esconde?'
+    saber: 'Entre los misak, en el resguardo de Guambía (Silvia, Cauca), la escuela no empieza en un salón: empieza en la cocina. Llaman nak chak a la cocina y nak kuk al fogón. Los mayores dicen que ahí «se dinamiza la educación propia» (Montano Morales, 2025). Alrededor del fuego se cocina, se come, se cuentan las cosas del día y se resuelven los desacuerdos. Un asunto no se resuelve donde ocurre: se lleva al fogón, se cuenta, y los demás preguntan. Quien cuenta no expone; se somete a las preguntas. Eso es sustentar. La cara de exclusión: cocinar entre los misak se concentra en el mundo femenino, y el fogón fue espacio de palabra y también de reparto desigual del trabajo. Y una advertencia: el nak chak es de un pueblo que defiende su territorio; lo que hacemos hoy es mucho más pequeño y aprende de eso, no lo imita. Hoy vas a llevar tu mini estudio al fogón del salón: cuatro minutos para contarlo y el tiempo que haga falta para las preguntas.',
+    fuente: 'Pueblo misak · el nak chak, donde el asunto se lleva al fogón',
+    referencia: 'Montano Morales, J. (2025). Comer y vivir bien en el mundo indígena misak: «sentipensar el cuidado de la vida». Revista de Estudios Sociales, (91), 163--174.',
+    preguntaPuente: 'En el nak chak, quien cuenta el asunto no se defiende: escucha las preguntas. Cuando un compañero te pregunte «¿y a quién no encuestaste?», ¿vas a responder o a defenderte? ¿Qué diferencia hay?'
   },
+  mapaRuta: [
+    {
+      numero: 1,
+      iconos: [
+        '🌱'
+      ],
+      titulo: 'El nak chak, donde se lleva el asunto',
+      duracionMin: 10
+    },
+    {
+      numero: 2,
+      iconos: [
+        '✏️'
+      ],
+      titulo: 'Actividad 1 · Cuatro minutos sin leer',
+      duracionMin: 15
+    },
+    {
+      numero: 3,
+      iconos: [
+        '🔎',
+        '✏️'
+      ],
+      titulo: 'Actividad 2 · Cinco diapositivas y un ensayo',
+      duracionMin: 30
+    },
+    {
+      numero: 4,
+      iconos: [
+        '✏️',
+        '✅'
+      ],
+      titulo: 'Actividad 3 · Sustentar, responder y evaluar',
+      duracionMin: 35
+    }
+  ],
+  actividades: [
+    {
+      numero: 1,
+      verbo: 'ANALIZA',
+      titulo: 'Cuatro minutos sin leer',
+      tiempoMin: 15,
+      modalidad: 'individual',
+      pasos: [
+        'Toma tu informe y ponlo boca abajo.',
+        'Pon el cronómetro en cuatro minutos y cuenta tu estudio en voz alta, como a un amigo.',
+        'Al terminar, anota qué dejaste fuera por falta de tiempo.',
+        'Anota qué dijiste de más y qué parte sonó más floja.'
+      ],
+      cuaderno: {
+        titulo: 'Cuatro minutos sin leer',
+        formato: 'tres líneas (qué dejé fuera / qué dije de más / qué sonó flojo) y el tiempo que tardé',
+        extension: 'un tercio de página'
+      },
+      criterios: [
+        'Las tres líneas están llenas.',
+        'Sabes qué vas a recortar antes de armar las diapositivas.'
+      ]
+    },
+    {
+      numero: 2,
+      verbo: 'CREA',
+      titulo: 'Cinco diapositivas y un ensayo',
+      tiempoMin: 30,
+      modalidad: 'parejas',
+      pasos: [
+        'Reduce tu informe a cinco ideas, una por diapositiva, pregunta, método, hallazgo, gráfico, decisión y limitaciones.',
+        'Arma las cinco con máximo veinticinco palabras cada una.',
+        'Escribe el guion hablado, unas seiscientas palabras son cuatro minutos.',
+        'Ensaya frente a tu pareja con cronómetro. Tu pareja te dice una cosa que no entendió y una que sobró. Cambien de rol.'
+      ],
+      cuaderno: {
+        titulo: 'Cinco diapositivas y un ensayo',
+        formato: 'las cinco ideas, una línea cada una, con su tiempo, y las dos observaciones de tu pareja',
+        extension: 'media página'
+      },
+      criterios: [
+        'Las cinco diapositivas tienen menos de veinticinco palabras.',
+        'Ensayaste con cronómetro y aplicaste al menos una observación de tu pareja.'
+      ]
+    },
+    {
+      numero: 3,
+      verbo: 'EVALÚA',
+      titulo: 'Sustentar, responder y evaluar',
+      tiempoMin: 35,
+      modalidad: 'individual',
+      pasos: [
+        'Sustenta frente al grupo, o en rondas de cinco, con cronómetro visible. Cuatro minutos.',
+        'Responde de tres a cinco preguntas. Si no sabes, di «no lo resolví» y por qué.',
+        'Mientras escuchas a otros, evalúa con los cinco criterios y escribe una pregunta para cada uno.',
+        'Escribe tu autoevaluación, una fortaleza concreta y una mejora concreta.',
+        'Entrega las diapositivas, el guion y la autoevaluación.'
+      ],
+      cuaderno: {
+        titulo: 'Sustentar, responder y evaluar',
+        formato: 'tabla de evaluación de tres compañeros con los cinco criterios y una pregunta para cada uno, y tu autoevaluación en dos líneas',
+        extension: 'una página'
+      },
+      criterios: [
+        'Sustentaste dentro del tiempo y respondiste al menos tres preguntas.',
+        'Evaluaste a tres compañeros con criterios y tu mejora dice qué vas a hacer distinto.'
+      ]
+    }
+  ],
   triangulo: {
     dussel: {
-      autor: 'Enrique Dussel',
+      autor: 'Enrique Dussel · Filosofía de la liberación (1977), §2.6.2.3',
       lente: 'lente del nosotros',
-      cita: 'La voz del aprendiz que devuelve a la comunidad lo aprendido cierra el ciclo de la pedagogía liberadora.',
-      preguntaEspejo: '¿Mi sustentación devolvió algo útil al grupo, o solo cumplí con un requisito?'
+      cita: 'El respeto es silencio; no el del que nada tiene que decir, sino el del que tiene todo que escuchar.',
+      preguntaEspejo: '¿Escuché la pregunta entera, o empecé a responder antes de que terminara?'
     },
     estoico: {
-      autor: 'Marco Aurelio',
+      autor: 'Marco Aurelio · Meditaciones VI, 53 (c. 175 d.C.)',
       lente: 'lente del cuidado interior',
-      cita: 'Decir las cosas como son ante la audiencia es valor; inflar el hallazgo para impresionar es debilidad.',
-      preguntaEspejo: '¿Inflé mi hallazgo para sonar más impresionante, o lo presenté con honestidad de muestra y método?'
+      cita: 'Acostúmbrate a atender a lo que dice el otro, y a meterte, hasta donde puedas, en lo que piensa.',
+      preguntaEspejo: '¿Qué pregunta de hoy me mostró algo de mi estudio que yo no había visto?'
     },
     floridi: {
-      autor: 'Luciano Floridi',
+      autor: 'The Onlife Initiative (ed. Luciano Floridi) · The Onlife Manifesto (2015), § 4.6',
       lente: 'lente de la infoesfera',
-      cita: 'La comunicación responsable es la nueva ética del oficio en la era de la información veloz.',
-      preguntaEspejo: '¿Mi sustentación podría ser citada con honestidad, o alguien la usaría para conclusiones que mi estudio no soporta?'
-    }
+      cita: 'La atención de las personas es un bien finito, precioso y escaso.',
+      preguntaEspejo: '¿Qué de mi sustentación gastó la atención del grupo sin devolverle nada?'
+    },
+    modo: 'ideas'
   },
   cincoDimensiones: {
-    personal: 'Cerraste el periodo dándole voz pública a tu trabajo — habilidad que la mayoría de adultos no entrena.',
-    emocional: 'Sentiste el nervio de hablar ante el grupo y lo sostuviste — entrenamiento real de presencia profesional.',
-    ciudadana: 'Practicaste palabra pública sustentada con datos. Esa habilidad es base de la deliberación democrática.',
-    local: 'Heredaste el ritual de la asamblea del cabildo: presentar, escuchar, ajustar, sin pretender certeza absoluta.',
-    intergeneracional: 'El miembro del cabildo Misak que sustentaba la cosecha y tú con tu mini-estudio comparten gramática: palabra pública con evidencia.'
+    personal: 'Contaste un trabajo tuyo en cuatro minutos y respondiste preguntas. Ya sabes qué es esencial en lo que hiciste.',
+    emocional: 'Decir «no lo resolví» delante del grupo cuesta. Hacerlo con la razón al lado es lo que te hace confiable.',
+    ciudadana: 'Quien sustenta en público y responde preguntas está haciendo lo que se le pide a cualquier autoridad con cifras. Aprender a exigirlo empieza por practicarlo.',
+    local: 'En el nak chak misak el asunto se cuenta al fogón y los demás preguntan. Tu salón fue hoy ese fogón, a otra escala.',
+    intergeneracional: 'Tu mejora concreta es lo primero que vas a probar en la próxima sustentación. Así avanza un oficio, una sustentación a la vez.'
   }
 };
 

@@ -11,163 +11,283 @@ const contenido: ContenidoGuia = {
   grado: 8,
   periodo: 1,
   sesion: 8,
-  titulo: 'Formato condicional y validación de datos — alertas visibles',
-  resumen: 'Como el semáforo del salón comunal: tres colores, tres reglas, todos las entienden. Aprendes a aplicar formato condicional (color por valor) y validación de datos (qué se puede escribir).',
+  titulo: 'Alertas visibles — formato condicional y validación de datos',
+  resumen: 'Una hoja bien hecha impide que entre lo que no debe y avisa con colores cuando algo se sale de rango. Hoy la construyes y la pones a prueba, como el tul nasa que solo admite cada planta en su categoría.',
   duracionMin: 90,
-  subtema: 'Excel · Formato condicional · Validación · Protección',
+  subtema: 'Análisis de datos con phronesis',
   preLectura: {
-    porQueImporta: 'Las hojas profesionales tienen reglas que ayudan al usuario y previenen errores. Estas dos herramientas (formato condicional + validación) separan una plantilla amateur de una corporativa. Ahorran horas de corrección y mejoran la lectura.',
-    preguntaDetonante: '¿Qué del semáforo del salón comunal — disciplina visual heredada — podemos llevar a la hoja de Excel para que ayude a leer y a no equivocarse?',
+    porQueImporta: 'La mayoría de los errores en una tabla entran por una celda que nadie protegió. Validar y resaltar es lo que convierte una hoja en una herramienta que cuida a quien la usa.',
+    preguntaDetonante: 'Cuando alguien escriba «cinco punto cinco» en la columna de notas, ¿tu hoja lo deja pasar?',
     activacion: {
-      titulo: 'El error que se podría evitar',
-      descripcion: 'En 5 minutos: piensa en una hoja de Excel que hayas visto donde alguien escribió mal y dañó los cálculos. ¿Qué validación habría evitado el error? Comparte con un compañero.',
+      titulo: 'La nota de siete',
+      descripcion: 'En 3 minutos, escribe 7 en una columna de notas y mira que Excel no dice nada. ¿Qué tendría que pasar para que la hoja se diera cuenta?',
       duracionMin: 5
     },
     conexion: {
-      anterior: 'En la sesión 7 elegiste el gráfico correcto según la pregunta.',
-      siguiente: 'En la sesión 9 aplicarás todo a un mini-estudio del entorno escolar.'
+      anterior: 'En la sesión 7 hiciste tres gráficos honestos y criticaste uno engañoso.',
+      siguiente: 'En la sesión 9 haces un mini estudio de datos con todo lo aprendido en el periodo.'
     }
   },
   conceptosClave: [
     {
       termino: 'Formato condicional',
-      definicion: 'Función de Excel que aplica color a celdas automáticamente según el valor. Convierte la hoja en tablero visual sin necesidad de gráfico aparte.',
-      ejemplo: 'Notas menores a 3 en rojo, entre 3 y 4 en amarillo, mayores a 4 en verde. El docente ve el estado del grupo de un vistazo.',
-      emoji: '🚦',
-      categoria: 'Cómo se resalta'
-    },
-    {
-      termino: 'Escala de colores',
-      definicion: 'Variante de formato condicional que aplica gradiente automático (verde-amarillo-rojo) a un rango. Útil para visualizar magnitudes relativas.',
-      ejemplo: 'Aplicar escala de colores a temperaturas semanales muestra los días más calientes en rojo y los más fríos en azul automáticamente.',
-      emoji: '🌈'
+      definicion: 'Pinta una celda según su valor. La hoja avisa con color sin que leas fila por fila.',
+      ejemplo: 'Nota menor que 3 en rojo, mayor que 4 en verde. Se aplica en Inicio, Formato condicional.',
+      categoria: 'Las dos herramientas'
     },
     {
       termino: 'Validación de datos',
-      definicion: 'Función que impide ingresar valores incorrectos en una celda. Rechaza entrada y muestra mensaje al usuario antes del error.',
-      ejemplo: 'Una columna de notas configurada con validación 0-5 rechaza si alguien escribe 7 o -1, evitando errores estructurales.',
-      emoji: '🛡',
-      categoria: 'Cómo se restringe'
+      definicion: 'Impide que entre lo que no debe. Rechaza el dato y muestra un mensaje.',
+      ejemplo: 'Notas solo entre 0 y 5. Se aplica en Datos, Validación de datos.',
+      categoria: 'Las dos herramientas'
     },
     {
       termino: 'Lista desplegable',
-      definicion: 'Tipo de validación que ofrece opciones predefinidas y solo acepta esas. Asegura consistencia en categorías.',
-      ejemplo: 'Columna Estado con lista desplegable [Aprobado, Reprobado, Pendiente] evita variantes como "aprobado", "APROBADO" o errores de tipeo.',
-      emoji: '📋',
-      categoria: 'Cómo se restringe'
+      definicion: 'Tipo de validación que solo acepta lo que está en una lista, como las cuatro categorías del tul.',
+      ejemplo: 'Asistencia solo puede ser Presente, Ausente o Excusa.',
+      categoria: 'Las dos herramientas'
     },
     {
-      termino: 'Prevenir vs resaltar',
-      definicion: 'Distinción profesional: validación previene errores futuros (al entrar el dato); formato condicional resalta los que ya existen (visualizar lo presente).',
-      ejemplo: 'Validación impide poner edad de 200 años; formato condicional resalta si alguna edad existente es mayor a 18 años para fines del filtro.',
-      emoji: '⚖️'
+      termino: 'Escala de colores',
+      definicion: 'Formato condicional que pinta del rojo al verde según dónde cae el valor dentro del rango.',
+      ejemplo: 'En una columna de notas, la más baja queda roja y la más alta verde, sin escribir reglas una por una.',
+      categoria: 'Cómo se usan'
+    },
+    {
+      termino: 'Prevenir o resaltar',
+      definicion: 'Lo que se puede impedir antes de que entre se valida; lo que ya está y hay que ver rápido se resalta.',
+      ejemplo: 'Una nota de 7 se previene con validación. Una nota de 1,0 se resalta con color.',
+      categoria: 'Cómo se usan'
+    },
+    {
+      termino: 'Mensaje de error',
+      definicion: 'Texto que muestra la validación al rechazar un dato. Tiene título y explicación.',
+      ejemplo: 'Título, «Nota fuera de rango». Explicación, «La nota debe estar entre 0 y 5».',
+      categoria: 'Cómo se usan'
     }
   ],
   laboratorios: [
     {
       tipo: 'quiz',
-      titulo: '¿Sabes prevenir y resaltar errores con Excel?',
-      instrucciones: '5 preguntas para verificar que distingues formato condicional de validación de datos.',
+      titulo: '¿Sabes hacer que la hoja avise?',
+      instrucciones: 'Cinco preguntas para verificar que distingues prevenir de resaltar y sabes usar las dos herramientas. No va al cuaderno.',
       preguntas: [
         {
-          enunciado: '¿Qué hace el formato condicional?',
+          enunciado: 'Quieres que nadie pueda escribir una nota mayor que 5 en la columna. ¿Qué usas?',
           opciones: [
-            'Aplica color a celdas según su valor automáticamente',
-            'Impide ingresar valores incorrectos',
-            'Cambia el tipo de dato de la celda',
-            'Calcula promedios'
-          ],
-          respuestaIndex: 0,
-          feedbackCorrecto: 'Exacto. Formato condicional pinta automáticamente las celdas según reglas que tú defines. Es visualización sin gráfico aparte.',
-          feedbackIncorrecto: 'Formato condicional aplica color a celdas según su valor. No impide ingresos (eso es validación). No cambia tipo. No calcula.'
-        },
-        {
-          enunciado: '¿Qué hace la validación de datos?',
-          opciones: [
-            'Pinta celdas con color',
-            'Impide ingresar valores fuera de un criterio definido',
-            'Calcula totales',
-            'Genera gráficos'
+            'Formato condicional con relleno rojo para las notas mayores que 5.',
+            'Validación de datos con decimal entre 0 y 5.',
+            'Una fórmula que reste 5 a cualquier nota mayor.',
+            'Ordenar la columna de mayor a menor.'
           ],
           respuestaIndex: 1,
-          feedbackCorrecto: 'Correcto. Validación previene errores rechazando entradas que no cumplen la regla (rango, lista, longitud, fórmula).',
-          feedbackIncorrecto: 'Validación impide ingresar valores incorrectos antes de que ocurra el error. No pinta (eso es formato condicional).'
+          feedbackCorrecto: 'Sí. Impedir que entre es validación. El color solo resalta lo que ya entró.',
+          feedbackIncorrecto: 'El color no impide nada, solo pinta. Para que la nota de 7 no entre, se necesita validación.'
         },
         {
-          enunciado: 'Quieres que la columna Estado solo acepte "Aprobado", "Reprobado" o "Pendiente". ¿Qué herramienta usas?',
+          enunciado: 'La columna de asistencia debe aceptar solo Presente, Ausente o Excusa. ¿Qué regla de validación conviene?',
           opciones: [
-            'Formato condicional',
-            'Función SUMA',
-            'Validación con lista desplegable',
-            'Tabla pivote'
+            'Longitud de texto menor que diez letras.',
+            'Número entero entre 1 y 3.',
+            'Lista desplegable con las tres opciones.',
+            'Formato de fecha.'
           ],
           respuestaIndex: 2,
-          feedbackCorrecto: 'Exacto. Validación con lista desplegable ofrece esas 3 opciones y rechaza cualquier otra entrada.',
-          feedbackIncorrecto: 'La solución es validación con lista desplegable. Garantiza que solo se ingresen las 3 opciones predefinidas.'
+          feedbackCorrecto: 'Correcto. La lista desplegable solo admite lo que está en la lista, como las categorías del tul.',
+          feedbackIncorrecto: 'Ni la longitud ni un número garantizan que se escriba una de las tres palabras. Eso lo hace la lista desplegable.'
         },
         {
-          enunciado: 'Sabiduría del semáforo del mercado: ¿qué hace el formato condicional con color verde-amarillo-rojo?',
+          enunciado: 'Una nota de 1,0 entra a la columna porque está entre 0 y 5. ¿Cómo hacer que se note rápido?',
           opciones: [
-            'Decora la hoja para que se vea bonita',
-            'Solo funciona en hojas grandes',
-            'Cambia el tipo de dato',
-            'Avisa visualmente del estado antes de que el lector lea cada número'
+            'Con validación, para que no entre.',
+            'Con una lista desplegable de notas.',
+            'Con formato condicional, para que se pinte de rojo.',
+            'Borrando la validación de la columna.'
           ],
-          respuestaIndex: 3,
-          feedbackCorrecto: 'Correcto. El semáforo del mercado avisa con color antes del problema. El formato condicional hace lo mismo: comunica estado visualmente.',
-          feedbackIncorrecto: 'El formato condicional avisa visualmente, igual que el semáforo del mercado. No es decoración: es comunicación rápida.'
+          respuestaIndex: 2,
+          feedbackCorrecto: 'Eso es. La nota es válida, así que la validación no la detiene. Resaltarla es trabajo del formato condicional.',
+          feedbackIncorrecto: '1,0 es una nota válida; la validación no la rechaza. Para verla rápido se usa formato condicional.'
         },
         {
-          enunciado: '¿Cuál es la diferencia clave entre validación y formato condicional?',
+          enunciado: 'Una validación rechaza el dato y no muestra ningún mensaje. ¿Qué pasa con la persona que escribía?',
           opciones: [
-            'Validación es para texto, formato para números',
-            'Validación previene errores futuros; formato resalta los presentes',
-            'Son lo mismo con nombre distinto',
-            'Validación es para gráficos'
+            'No pasa nada, porque Excel lo explica en la barra de estado.',
+            'Se queda sin saber qué hizo mal ni qué debe escribir.',
+            'Excel corrige el dato automáticamente.',
+            'La celda se pinta de rojo y ya.'
           ],
           respuestaIndex: 1,
-          feedbackCorrecto: 'Exacto. Validación previene en la entrada; formato resalta lo que ya hay. Son complementarias, no equivalentes.',
-          feedbackIncorrecto: 'Validación previene errores futuros al impedir entrada; formato condicional resalta los que ya existen. Trabajan juntas.'
+          feedbackCorrecto: 'Sí. Sin mensaje, la hoja rechaza y no explica. Por eso cada validación lleva título y explicación.',
+          feedbackIncorrecto: 'Excel no corrige ni explica solo. Sin mensaje, la persona no entiende el rechazo. El mensaje es parte de la regla.'
+        },
+        {
+          enunciado: '¿Cuál de estas es una buena razón para no pintar toda la hoja con formato condicional?',
+          opciones: [
+            'Si todo está pintado, ya nada resalta y la hoja se vuelve lenta.',
+            'Excel no permite más de una regla por hoja.',
+            'Los colores borran los datos de las celdas.',
+            'El formato condicional solo funciona en la primera columna.'
+          ],
+          respuestaIndex: 0,
+          feedbackCorrecto: 'Correcto. El color sirve porque es escaso. Si todo está pintado, no hay alerta.',
+          feedbackIncorrecto: 'Excel sí permite muchas reglas y el color no borra nada. El problema es que, si todo resalta, nada resalta.'
         }
       ]
     }
   ],
   postLectura: {
-    reflexion: 'El semáforo y la validación son ambos disciplinas comunitarias para prevenir errores. ¿En qué otros ámbitos de tu vida valdría la pena diseñar "validaciones" antes de los problemas?',
-    transferencia: 'Esta semana: en una hoja real (lista, presupuesto, registro), aplica al menos UNA validación de datos y UN formato condicional. Documenta qué error previniste.',
-    cierre: 'La hoja autovalidada es semáforo digital: cuida al usuario antes de que se equivoque. Es ética del diseño aplicada a la herramienta cotidiana.'
+    reflexion: '¿Qué dato incorrecto entró en tu hoja sin que la detuvieras, y qué regla le faltaba?',
+    transferencia: 'La próxima vez que un formulario te rechace algo sin explicar, piensa qué mensaje le habrías puesto tú.',
+    cierre: 'Una hoja que avisa cuida. Una que rechaza sin explicar, no.'
   },
   saberAncestral: {
-    saber: 'En la galería del centro de Cartago había una figura silenciosa que sostenía la paz del mercado: el celador. Pero la verdadera vigilancia no la hacía él solo: la hacían las señales del color. Las puertas de las galerías tenían un sistema antiguo de banderas y luces para avisar de cosas que estaban por pasar antes de que pasaran. Bandera roja arriba: cuidado, hay pelea o robo en una galería. Bandera verde: todo en calma, pueden seguir entrando compradores. Bandera amarilla: cuidado moderado, está lloviendo y los pisos están resbalosos. El sistema funcionaba sin gritos ni alarmas estridentes: el color avisaba antes de que pasara el problema, y los comerciantes y compradores podían ajustar su comportamiento. Si alguien intentaba entrar con un costal demasiado grande que iba a tumbar pilas, los celadores levantaban una mano antes de que el desastre ocurriera. El semáforo del mercado avisaba con color antes del problema, no después. Esa sabiduría preventiva es la phronesis del aviso a tiempo.',
-    fuente: 'Salón comunal del barrio y códigos visuales comunitarios del Valle',
-    preguntaPuente: '¿Qué sabía el celador del mercado al usar banderas de color para avisar antes del problema, que el novato olvida cuando solo revisa la hoja después de cometer el error? ¿Y por qué una hoja con formato condicional puede comunicar el estado del grupo sin que el docente lea fila por fila?'
+    saber: 'En los resguardos nasa de Toribío, Tacueyó y San Francisco, en el Cauca, la huerta de la casa se llama tul. No es un cultivo: es «la casa grande», donde conviven muchas especies bajo normas de equilibrio (Prieto Novoa y León-Sicard, 2024). Cada planta pertenece a una categoría: fría, caliente, dulce o brava. Y se siembra según esa categoría, para que unas no dañen a otras. Una planta no puede ser «más o menos caliente»: es de una categoría o de otra, y el tul funciona porque nadie mete una planta donde no va. Eso es una lista de valores válidos. En Excel se llama validación de datos, y el color que avisa cuando algo se sale de su sitio se llama formato condicional. La cara de exclusión: el estudio encontró que solo el 43 % de las familias mantiene el tul. La escuela foránea, las tecnologías agrícolas modernas y los cultivos ilícitos lo van borrando. Hoy vas a construir una hoja que, como el tul, solo admite lo que pertenece y avisa cuando algo se sale.',
+    fuente: 'Pueblo nasa · el tul y sus plantas frías, calientes, dulces y bravas',
+    referencia: 'Prieto Novoa, F. N. y León-Sicard, T. E. (2024). Actores y redes en la configuración del agroecosistema Tul Nasa en los resguardos indígenas de Toribío, Tacueyó y San Francisco en el departamento del Cauca, Colombia. Luna Azul, (59), 53--77.',
+    preguntaPuente: 'En el tul no se siembra una planta caliente donde va una fría, y nadie tiene que revisarlo después. Cuando alguien escriba «cinco punto cinco» en la columna de notas, ¿tu hoja lo deja pasar? ¿Y cómo te avisa de una nota de 1,0 en una lista de treinta?'
   },
+  mapaRuta: [
+    {
+      numero: 1,
+      iconos: [
+        '🌱'
+      ],
+      titulo: 'El tul y sus cuatro categorías',
+      duracionMin: 10
+    },
+    {
+      numero: 2,
+      iconos: [
+        '🔎',
+        '✏️'
+      ],
+      titulo: 'Actividad 1 · El semáforo de las notas',
+      duracionMin: 15
+    },
+    {
+      numero: 3,
+      iconos: [
+        '🔎',
+        '✏️'
+      ],
+      titulo: 'Actividad 2 · La hoja que se cuida sola',
+      duracionMin: 30
+    },
+    {
+      numero: 4,
+      iconos: [
+        '✏️',
+        '✅'
+      ],
+      titulo: 'Actividad 3 · Cinco intentos de romper la hoja',
+      duracionMin: 25
+    },
+    {
+      numero: 5,
+      iconos: [
+        '💭'
+      ],
+      titulo: 'Tres ideas y tu compromiso',
+      duracionMin: 10
+    }
+  ],
+  actividades: [
+    {
+      numero: 1,
+      verbo: 'IDENTIFICA',
+      titulo: 'El semáforo de las notas',
+      tiempoMin: 15,
+      modalidad: 'individual',
+      pasos: [
+        'Abre una tabla con diez notas, reales o inventadas, mezclando aprobadas y reprobadas.',
+        'Selecciona la columna de notas. Inicio, Formato condicional, Reglas para resaltar celdas, Menor que 3, relleno rojo.',
+        'Añade otra regla, Mayor que 4, relleno verde.',
+        'Mira la columna y anota qué sabes ahora en dos segundos que antes tenías que buscar fila por fila.'
+      ],
+      cuaderno: {
+        titulo: 'El semáforo de las notas',
+        formato: 'las dos reglas que aplicaste, escritas tal cual, y una línea sobre qué te muestra la columna de un vistazo',
+        extension: 'un tercio de página'
+      },
+      criterios: [
+        'Las dos reglas están escritas.',
+        'Puedes decir cuántas notas quedaron en rojo sin volver a mirar.'
+      ]
+    },
+    {
+      numero: 2,
+      verbo: 'APLICA',
+      titulo: 'La hoja que se cuida sola',
+      tiempoMin: 30,
+      modalidad: 'parejas',
+      pasos: [
+        'Con tu pareja, preparen una tabla con quince registros y cinco columnas, Nombre, Nota 1, Nota 2, Gastos de la semana, Asistencia.',
+        'Formato condicional en tres columnas, Nota 1 con escala de colores, Gastos resaltando los que pasen un límite, Asistencia marcando las faltas.',
+        'Validación en dos columnas, Nota 2 solo acepta decimales entre 0 y 5, Asistencia solo acepta la lista Presente, Ausente, Excusa.',
+        'A cada validación pónganle un mensaje de error con título y explicación.',
+        'Prueben una vez cada regla antes de seguir.'
+      ],
+      cuaderno: {
+        titulo: 'La hoja que se cuida sola',
+        formato: 'tabla de 5 filas y 3 columnas (columna / herramienta usada / regla escrita tal cual)',
+        extension: 'media página'
+      },
+      criterios: [
+        'Las cinco columnas tienen su regla.',
+        'Probaste una vez cada regla sin que fallara.'
+      ]
+    },
+    {
+      numero: 3,
+      verbo: 'EVALÚA',
+      titulo: 'Cinco intentos de romper la hoja',
+      tiempoMin: 25,
+      modalidad: 'individual',
+      pasos: [
+        'Intercambia la hoja con tu pareja.',
+        'Intenta meter cinco datos que no deben entrar, una nota de 7, una nota con letras, una asistencia fuera de la lista, un gasto negativo y un nombre de doscientas letras.',
+        'Toma la captura de cada mensaje que recibas.',
+        'Anota qué intento pasó sin que la hoja lo detuviera, si alguno.',
+        'Devuelve la hoja con tus hallazgos y corrige la tuya con los que recibas.'
+      ],
+      cuaderno: {
+        titulo: 'Cinco intentos de romper la hoja',
+        formato: 'tabla de 5 filas y 3 columnas (dato que intenté / qué hizo la hoja / mensaje que recibí), más la lista de lo que corregí en la mía',
+        extension: 'media página'
+      },
+      criterios: [
+        'Los cinco intentos tienen su resultado anotado.',
+        'Tu hoja rechaza los cinco después de corregirla.'
+      ]
+    }
+  ],
   triangulo: {
     dussel: {
-      autor: 'Enrique Dussel',
+      autor: 'Enrique Dussel · Filosofía de la liberación (1977), §2.6.2.2',
       lente: 'lente del nosotros',
-      cita: 'Avisar a tiempo es cuidado; dejar que el otro se equivoque y después corregir es desprecio disfrazado de neutralidad.',
-      preguntaEspejo: '¿Mis mensajes de validación cuidan al usuario explicando, o lo bloquean sin razón clara?'
+      cita: 'La conciencia ética es la capacidad de escuchar la voz del otro, incluso cuando cuestiona el sistema en que vivimos.',
+      preguntaEspejo: '¿Mi mensaje de error le habla a una persona o solo a un dato?'
     },
     estoico: {
-      autor: 'Epicteto',
+      autor: 'Séneca · Cartas a Lucilio, 13 (c. 64 d.C.)',
       lente: 'lente del cuidado interior',
-      cita: 'Prevenir es disciplina; corregir es servidumbre del error.',
-      preguntaEspejo: '¿Estoy previniendo errores con validación, o asumo que después los corregiré uno por uno?'
+      cita: 'Son muchas más las cosas que nos asustan que las que de verdad nos aprietan.',
+      preguntaEspejo: '¿Qué de mi tabla me asustaba antes del semáforo y ya no?'
     },
     floridi: {
-      autor: 'Luciano Floridi',
+      autor: 'The Onlife Initiative (ed. Luciano Floridi) · The Onlife Manifesto (2015), § 4.6',
       lente: 'lente de la infoesfera',
-      cita: 'Los sistemas que asisten al usuario son la nueva ética del oficio digital.',
-      preguntaEspejo: '¿Mi hoja asiste al usuario o lo deja solo frente al error?'
-    }
+      cita: 'Las configuraciones por defecto de una tecnología deberían respetar y proteger a la persona que la usa.',
+      preguntaEspejo: '¿Mi hoja protege a quien la usa, o solo lo corrige después?'
+    },
+    modo: 'ideas'
   },
   cincoDimensiones: {
-    personal: 'Aprendiste a diseñar herramientas que cuidan al usuario — habilidad profesional rara, valiosa, transferible a cualquier sistema.',
-    emocional: 'Resististe la lógica del "ya está, que el usuario se cuide" y elegiste la disciplina del diseño preventivo.',
-    ciudadana: 'Diseñar con validación es respetar a quien recibe la herramienta. Esa ética escala: de Excel a sistemas públicos, a apps, a leyes.',
-    local: 'Heredaste la lógica del semáforo del salón comunal — tres reglas claras que cuidan a todos, no solo a los expertos.',
-    intergeneracional: 'Los códigos visuales comunitarios que la abuela entendía sin leer son los mismos que el formato condicional automatiza hoy.'
+    personal: 'Aprendiste a hacer que la hoja te avise, en vez de revisarla tú fila por fila. Es delegar bien.',
+    emocional: 'Una tabla entera asusta; un semáforo dice dónde mirar. Separar lo que aprieta de lo que asusta se aprende.',
+    ciudadana: 'Un formulario público que rechaza sin explicar maltrata a la gente. Saber escribir un mensaje de error claro es una forma de respeto.',
+    local: 'En el tul nasa cada planta va en su categoría y el equilibrio se cuida solo. Tu hoja hace lo mismo con una lista desplegable.',
+    intergeneracional: 'El tul se aprende en la casa, viendo dónde va cada planta. Tu hoja cuidada la puede usar alguien que no sepa Excel.'
   }
 };
 

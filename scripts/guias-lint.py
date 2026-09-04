@@ -54,7 +54,8 @@ ANCLAJES_LOCALES = [
     "campesino", "campesina", "afro", "Afro",
     "indígena", "indigena", "ancestral", "abuela", "abuelo",
     "oficio", "tradición", "tradicion", "minga", "convite",
-    "tejido", "telar", "cosecha", "pregonero",
+    "tejido", "telar", "cosecha",  # «pregonero» salió: ancla descartada por el banco
+    "nasa", "misak", "wounaan", "emberá", "embera", "yanacona", "inga", "kamëntsá", "awá", "pastos", "eperara", "kokonuko", "cauca", "chocó", "riosucio", "ansermanuevo", "resguardo", "cabildo", "tul", "werregue", "calado", "bordad",
 ]
 
 # Caracteres especiales LaTeX que deben escaparse cuando aparecen literales

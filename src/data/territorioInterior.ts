@@ -385,16 +385,106 @@ const grado9: Nivel = {
     'Empatía profunda y violencias cotidianas: género, exclusión, desarraigo, y la diferencia entre reparar y castigar.',
   bgClass: 'bg-bento-teal',
   momentos: [
-    { numero: 1, slug: 'momento-1', nombre: 'Ponerse en el lugar del otro', foco: 'Tomar perspectiva, evaluado por conducta observable y no por autoinforme.', ancla:a('La formación del jaibaná embera: se aprende de un maestro, no se hereda', 'verificada'), estado: 'proximamente' },
-    { numero: 2, slug: 'momento-2', nombre: 'Género y mandatos', foco: 'Lo que se espera de hombres y mujeres, y quién lo decidió.', ancla:a('Los oficios asignados por género en la finca cafetera', 'verificada'), estado: 'proximamente' },
-    { numero: 3, slug: 'momento-3', nombre: 'Vínculos y consentimiento', foco: 'Relaciones sanas y señales tempranas de control.', ancla:a('La Real Pragmática de Matrimonios (1776): el permiso paterno era ley', 'verificada'), estado: 'proximamente' },
-    { numero: 4, slug: 'momento-4', nombre: 'Celos no son amor', foco: 'Violencia en la pareja adolescente: el control disfrazado de cuidado.', ancla:a('El artículo 383 del Código Penal de 1936, vigente hasta 1981', 'verificada'), estado: 'proximamente' },
-    { numero: 5, slug: 'momento-5', nombre: 'La broma que no es broma', foco: 'Racismo y clasismo cotidianos en el lenguaje del curso.', ancla:a('Las Gracias al Sacar (1795): la blancura estaba en un arancel', 'verificada'), estado: 'proximamente' },
-    { numero: 6, slug: 'momento-6', nombre: 'El aula que excluye', foco: 'Discapacidad y neurodivergencia: barreras que nadie puso a propósito.', ancla:a('El Instituto para Niños Ciegos y Sordos de Cali y la «lengua manual» de la Ley 324', 'verificada'), estado: 'proximamente' },
-    { numero: 7, slug: 'momento-7', nombre: 'El que llegó de otra parte', foco: 'Migración y desarraigo: llegar sin red a un lugar que ya está repartido.', ancla:a('El desplazamiento y la migración en Cartago, con cifras del RUV', 'verificada'), estado: 'proximamente' },
-    { numero: 8, slug: 'momento-8', nombre: 'Cuando el daño lo hizo el grupo', foco: 'Reparación colectiva: qué se hace cuando el responsable son todos.', ancla:a('El refrescamiento del territorio (Drexler, 2004)', 'verificada'), estado: 'proximamente' },
-    { numero: 9, slug: 'momento-9', nombre: 'Justicia y venganza', foco: 'Reparar no es castigar: dos respuestas distintas al mismo daño.', ancla:a('El palabrero wayuu: reparar en vez de encarcelar', 'verificada'), estado: 'proximamente' },
-    { numero: 10, slug: 'momento-10', nombre: 'El acuerdo de aula', foco: 'Construir norma propia en vez de recibirla hecha.', ancla:a('Los mandatos del CRIC y del pueblo misak, y su rendición pública', 'verificada'), estado: 'proximamente' },
+    {
+      numero: 1,
+      slug: 'momento-1',
+      nombre: 'Ponerse en el lugar del otro',
+      foco: 'Tomar perspectiva es una técnica que se aprende y se verifica, no un rasgo de carácter: se reconstruye el día de alguien y después se le pregunta si se acertó.',
+      ancla:a('La formación del jaibaná embera ---hombre o mujer, empieza en la infancia guiado por un maestro y buena parte de la enseñanza le llega en sueños---: no se hereda, se aprende, y lo que se aprende es a mirar desde donde miran otros', 'verificada'),
+      estado: 'activo',
+      claveGuia: '9-1',
+    },
+    {
+      numero: 2,
+      slug: 'momento-2',
+      nombre: 'Género y mandatos',
+      foco: 'Un mandato no se anuncia: se da por obvio y se cobra cuando se rompe. A unas les quita el derecho a intentar; a otros, el derecho a necesitar.',
+      ancla:a('La división del trabajo por género en la finca cafetera, todavía vigente: 92 % de las mujeres en preparación de alimentos, 83 % de los hombres aplicando agroquímicos ---y una participación femenina en la producción que nunca modificó el reparto doméstico---', 'verificada'),
+      estado: 'activo',
+      claveGuia: '9-2',
+    },
+    {
+      numero: 3,
+      slug: 'momento-3',
+      nombre: 'Vínculos y consentimiento',
+      foco: 'Consentir es libre, informado, específico y revocable. El control no es un episodio sino un patrón, y la pregunta temprana es qué podía hacer antes que ya no hace.',
+      ancla:a('La Pragmática Sanción de Carlos III (23 de marzo de 1776), «para evitar el abuso de contraer matrimonios desiguales»: obligaba a los menores de veinticinco a obtener el consentimiento paterno, y se extendió a América por real cédula del 7 de abril de 1778', 'verificada'),
+      estado: 'activo',
+      claveGuia: '9-3',
+    },
+    {
+      numero: 4,
+      slug: 'momento-4',
+      nombre: 'Celos no son amor',
+      foco: 'La violencia en la pareja no es un estallido sino un continuo. Los celos son una emoción que llega sola; revisar un teléfono o prohibir una amistad son conductas que se eligen.',
+      // El plan citaba «el artículo 383 del Código Penal de 1936». No fue posible
+      // confirmar el número del artículo en fuente primaria ---las referencias
+      // consultadas apuntan al 382---, así que la guía nombra la ley y el delito,
+      // que sí son rastreables, y no imprime el número. La fecha sí se confirmó:
+      // el Código de 1980 entró a regir en enero de 1981 (Decreto 141 de 1980).
+      ancla:a('El uxoricidio por adulterio del Código Penal de 1936 (Ley 95 de 1936), que reducía la pena de la mitad a las tres cuartas partes a quien matara o hiriera a la esposa, hija o hermana «de vida honesta» sorprendida en acceso carnal ilegítimo ---vigente hasta enero de 1981---', 'verificada'),
+      estado: 'activo',
+      claveGuia: '9-4',
+    },
+    {
+      numero: 5,
+      slug: 'momento-5',
+      nombre: 'La broma que no es broma',
+      foco: 'Racismo y clasismo cotidianos. Quienes cometen microagresiones con frecuencia no son conscientes: la ausencia de mala intención no es la excepción, es lo normal.',
+      ancla:a('La Real Cédula de Gracias al Sacar (10 de febrero de 1795): un arancel con setenta y una opciones de compra, entre ellas la blancura ---dispensa de la calidad de pardo, 100 reales; de quinterón, 800; el título de «don», 1.000---', 'verificada'),
+      estado: 'activo',
+      claveGuia: '9-5',
+    },
+    {
+      numero: 6,
+      slug: 'momento-6',
+      nombre: 'El aula que excluye',
+      foco: 'La discapacidad resulta de la interacción entre las personas y las barreras del entorno y de la actitud. Las barreras de comunicación y de método son las más frecuentes y las que nadie mira.',
+      ancla:a('El Instituto para Niños Ciegos y Sordos de Cali ---fundado en 1940 por Luisita Sánchez de Hurtado, y que empezó como internado: la forma de atender era reunir aparte--- y la Ley 324 de 1996, con la que el Estado reconoció la Lengua Manual Colombiana como idioma propio de la comunidad sorda', 'verificada'),
+      estado: 'activo',
+      claveGuia: '9-6',
+    },
+    {
+      numero: 7,
+      slug: 'momento-7',
+      nombre: 'El que llegó de otra parte',
+      foco: 'Lo primero que se pierde al migrar no es el lugar: es la gente que sabía quién eras. Al que llega no se le puede pedir que se integre; la red se ofrece.',
+      // El plan proponía «cifras del RUV para Cartago», que no están disponibles
+      // públicamente con el detalle municipal necesario. En vez de imprimir una
+      // cifra sin fuente, la guía usa lo verificable ---la historia del traslado y
+      // la ruta institucional de llegada--- y convierte la cifra en trabajo del
+      // estudiante, que debe buscarla y citarla.
+      ancla:a('Cartago misma llegó de otra parte: fundada el 9 de agosto de 1540 por Jorge Robledo a orillas del río Otún ---donde hoy está Pereira---, fue trasladada el 21 de abril de 1691 a su sitio actual, entre el Cauca y La Vieja', 'verificada'),
+      estado: 'activo',
+      claveGuia: '9-7',
+    },
+    {
+      numero: 8,
+      slug: 'momento-8',
+      nombre: 'Cuando el daño lo hizo el grupo',
+      foco: 'Reparación colectiva: hay daños que le pasan al grupo y no a una persona. Sin garantía de no repetición, toda reparación es un gesto.',
+      ancla:a('El refrescamiento del territorio entre los nasa: prácticas rituales con las que se limpia, se refresca y se cura el territorio ---lo que es de todos--- documentadas por Drexler (2004) en trabajo de campo entre 2002 y 2004', 'verificada'),
+      estado: 'activo',
+      claveGuia: '9-8',
+    },
+    {
+      numero: 9,
+      slug: 'momento-9',
+      nombre: 'Justicia y venganza',
+      foco: 'Dos preguntas distintas ante el mismo daño: «¿quién lo hizo y cuánto merece?» y «¿qué hace falta para arreglarlo?». Reparar no es la versión blanda de castigar.',
+      ancla:a('El sistema normativo wayuu aplicado por el pütchipü\'üi (palabrero), inspirado en la reparación y la compensación ---Patrimonio Cultural Inmaterial de la Humanidad, UNESCO 2010---: un conflicto puede cerrarse sin que nadie vaya preso', 'verificada'),
+      estado: 'activo',
+      claveGuia: '9-9',
+    },
+    {
+      numero: 10,
+      slug: 'momento-10',
+      nombre: 'El acuerdo de aula',
+      foco: 'Construir norma propia en vez de recibirla hecha: pocas reglas, verificables, con consecuencia reparadora, verificador rotativo y fecha de revisión.',
+      ancla:a('Los mandatos del CRIC y del pueblo misak: normas que la comunidad delibera en asamblea y se da a sí misma, y de las que las autoridades rinden cuentas públicamente ante quienes las nombraron', 'verificada'),
+      estado: 'activo',
+      claveGuia: '9-10',
+    },
   ],
 };
 

@@ -1,0 +1,611 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra UNICA de las guias MILC v3.
+%
+% La usan las cuatro familias de guias, cada una con su driver:
+%   · Grados 6-11          -> scripts/build-guias-g11.py
+%   · Bebras               -> scripts/build-guias-bebras.py
+%   · Semillero            -> scripts/build-guias-semillero.py
+%   · Territorio interior  -> scripts/build-guias-territorio-interior.py
+%
+% Antes habia tres copias casi identicas (~400 lineas iguales, 6 distintas):
+% cada mejora habia que aplicarla tres veces, y en la practica no se hacia
+% (el motor de recursos vivia solo en dos de ellas). Lo que varia entre
+% familias esta parametrizado en 6 placeholders que cada driver llena
+% (se nombran aqui SIN su sintaxis real: el builder reemplaza por texto plano,
+% tambien dentro de los comentarios, y un valor multilinea rompe el preambulo):
+%
+%   HEADER_IZQ        encabezado izquierdo de pagina
+%   HEADER_DER        encabezado derecho de pagina
+%   PORTADA_ETIQUETA  rotulo sobre el numero grande (GRADO/MOMENTO/MODULO)
+%   PORTADA_SERIE     linea de serie de la portada
+%   PORTADA_ID        identificador de la guia en la portada
+%   PORTADA_CIRCULO   el circulito de grado (°), o vacio si no aplica
+%   PDF_TITULO        titulo en texto plano (sin \textbf ni comillas TeX) para
+%                     los metadatos del PDF (/Title); lo produce lib_xelatex.texto_pdf
+%
+% Composicion (auditoria 2026-09-03): las bandas de estacion piden espacio
+% (\Needspace*) y prohiben el salto justo despues (\nopagebreak), asi no quedan
+% huerfanas al pie; las cajas largas (softbox, drawbox, infoband, puentebox) son
+% `breakable`, asi una caja de media pagina ya no arrastra todo a la siguiente
+% dejando la anterior al 40 %. Todo texto sobre mostaza o verde va en milcNegro
+% (blanco sobre #E5B400 da 1,93:1 y sobre #58A923 2,95:1; ninguno pasa WCAG AA).
+% El resto de claves las documenta content/guias/_SCHEMA.md. El script valida
+% que no queden placeholders sin reemplazar antes de escribir el archivo final.
+
+% Etiquetado PDF (latex-lab): /Lang, estructura y texto alternativo de las
+% figuras, para lectores de pantalla. Debe ir ANTES de \documentclass.
+\DocumentMetadata{lang=es-CO,tagging=on}
+\documentclass[11pt,letterpaper]{article}
+% headheight=24pt: la cabecera derecha lleva dos lineas (identidad de la guia
+% y estacion actual). headsep se acorta en la misma medida para que el bloque
+% de texto quede exactamente donde estaba con headheight=12pt.
+\usepackage[margin=2.0cm,headheight=24pt,headsep=13pt]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+% Librerías TikZ para los diagramas de las guías (bloque `recursos:`):
+%  · babel  → babel en español vuelve activos caracteres como «>», y TikZ los usa
+%             en sus opciones (>=stealth, ->). Sin esta librería, cualquier
+%             diagrama con flechas revienta con «\language@active@arg> has an
+%             extra }». Debe ir ANTES de que se dibuje nada.
+%  · positioning        → sintaxis «below left=2pt and 3pt».
+%  · decorations.pathreplacing → llaves ({brace}) para señalar rangos.
+\usetikzlibrary{babel,positioning,decorations.pathreplacing}
+\usepackage{graphicx}
+% Circuitos: el trabajo de electrónica se hace hoy con micro:bit y sus sensores
+% integrados (MakeCode, sin cableado), así que no se necesitan esquemáticos.
+% Si algún día entran montajes con protoboard, basta descomentar esta línea:
+% los diagramas .tex/.tikz declarados en `recursos:` ya se incrustan solos.
+% \usepackage{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{etoolbox}
+\usepackage{needspace}
+% hyperref al final del preambulo: metadatos del PDF (titulo, autor, idioma,
+% familia), marcadores por estacion (\pdfbookmark) y enlaces sin recuadro.
+\usepackage[hidelinks,
+  pdftitle={Cuando el daño lo hizo el grupo: reparar lo que es de todos},
+  pdfauthor={PhD. Álvaro Cárdenas Orozco},
+  pdfsubject={Territorio interior · Educación socioemocional · Grado 9° · Momento 8 · MILC v3},
+  pdflang={es-CO},
+  bookmarksopen=true,bookmarksnumbered=false]{hyperref}
+
+% Helvetica Neue no trae la flecha U+2192, asi que cada «→» escrito literalmente
+% en el YAML se compilaba a NADA, en silencio (462 flechas en 61 guias: rutas del
+% tipo «paleta → tipografia → lockup» salian rotas). Mapeamos el caracter a su
+% version matematica, que si tiene glifo. Asi el autor puede seguir escribiendo
+% «→» comodamente en el YAML.
+\usepackage{newunicodechar}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0D9488}
+\definecolor{milcGradeDark}{HTML}{115E59}
+\definecolor{milcGradeSoft}{HTML}{CCFBF1}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+% Cabecera de dos lineas: identidad de la guia arriba y, a la derecha y en
+% gris, la estacion en curso (\markright desde \milcestacion). Antes de la
+% primera estacion la segunda linea va vacia; el \strut mantiene la altura
+% para que la linea de arriba no baile entre paginas.
+\lhead{\small Territorio interior · Educación socioemocional\\[-1pt]{\footnotesize\strut}}
+\rhead{\small Grado 9° · Momento 8 · MILC v3\\[-1pt]{\footnotesize\strut\color{milcNegro!65}\rightmark}}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+% Sobre mostaza (#E5B400) y verde (#58A923) el texto va en milcNegro; sobre el
+% resto de la paleta, en blanco. Se usa dentro de fonttitle/fontupper, donde un
+% \color posterior manda sobre coltitle.
+\newcommand{\milctintasobre}[1]{%
+  \ifboolexpr{test{\ifstrequal{#1}{milcMostaza}} or test{\ifstrequal{#1}{milcVerde}}}%
+    {\color{milcNegro}}{\color{white}}}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,breakable,pad at break=3mm,
+  colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries\milctintasobre{#1},fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,breakable,pad at break=4mm,
+  colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries\milctintasobre{#1},
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,breakable,pad at break=2mm,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,breakable,pad at break=2mm,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+% La flecha va en modo matematico a proposito: Helvetica Neue NO tiene el glifo
+% U+2192, asi que \textrightarrow se compilaba a NADA («Missing character: There
+% is no → in font Helvetica Neue») y el puente salia sin flecha. En modo
+% matematico la flecha viene de la fuente matematica y si se dibuja.
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{$\rightarrow$}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+% ─── Listas aireadas para las guías socioemocionales ────────────────────
+% Componer las verificaciones como «\checkbox texto\\» deja el texto que salta
+% de línea debajo del cuadrito y apelmaza el bloque. Estos entornos alinean la
+% continuación y airean los ítems. Los usa Territorio Interior; cualquier
+% familia puede hacerlo.
+\newlist{checklista}{itemize}{1}
+\setlist[checklista]{
+  label=\textcolor{milcGradeDark}{\fbox{\phantom{x}}},
+  leftmargin=9mm, labelsep=3.2mm, itemsep=2.4mm,
+  topsep=2.5mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+\newlist{pasoslista}{enumerate}{1}
+\setlist[pasoslista]{
+  label=\textcolor{milcGradeDark}{\sffamily\bfseries\arabic*.},
+  leftmargin=8mm, labelsep=3mm, itemsep=2.8mm,
+  topsep=1mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+% Nunca huerfana: pide 9 lineas libres (o salta de pagina rellenando con
+% \vfill) y prohibe el salto justo despues de la banda. Nueve y no seis:
+% la caja partible que sigue necesita ~80pt (titulo adosado, relleno y dos
+% lineas) para arrancar en la misma pagina; con menos, tcolorbox la manda
+% entera a la siguiente y la banda se queda sola. El penalty 10000 va
+% en `after`, ANTES del espacio posterior: un `after skip` (aunque sea 0pt)
+% es un \vskip tras la caja, y ese glue es un punto de corte legal que un
+% \nopagebreak escrito despues de \end{tcolorbox} ya no cierra. Cada banda
+% deja marcador PDF y actualiza la cabecera derecha.
+\newcounter{milcestacion}
+\newcommand{\milcestacion}[2]{%
+\Needspace*{9\baselineskip}%
+\stepcounter{milcestacion}%
+\pdfbookmark[1]{#2}{milcestacion\themilcestacion}%
+\markright{#2}%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,
+  after={\par\nopagebreak\vskip7pt}]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\milctintasobre{#1}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\Needspace{4\baselineskip}%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
+% ── Recursos visuales de la guía ──────────────────────────────────────
+% Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
+% \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
+% \guiaDiagrama → fuente TikZ/circuitikz (.tex) incrustada como vector:
+%                 es la vía para circuitos y esquemáticos editables.
+% [#1] = texto alternativo (alt) · #2 = ruta relativa al .tex · #3 = pie
+% El alt llega al PDF etiquetado (/Alt) y lo lee el lector de pantalla.
+\newcommand{\guiaFigura}[3][]{%
+\begin{center}
+\includegraphics[width=0.88\linewidth,height=0.38\textheight,keepaspectratio,alt={#1}]{#2}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#3}}
+\end{center}
+}
+
+\newcommand{\guiaDiagrama}[2]{%
+\begin{center}
+\input{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\begin{document}
+\thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
+\begin{tikzpicture}[remember picture,overlay]
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont MOMENTO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont TERRITORIO INTERIOR · SOCIOEMOCIONAL};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
+
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 8};
+  % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
+  % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  
+
+  \node[anchor=west,text=milcGradeText,text width=11.4cm,align=left] at ([xshift=1.5cm,yshift=0.5cm]gradonum.east)
+    {
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Territorio interior · Socioemocional}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont\setlength{\baselineskip}{27pt}Cuando el daño\\[4pt]lo hizo el grupo\\[4pt]reparar lo que es de todos}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Grado 9° · Momento 8}
+    };
+\end{tikzpicture}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+La reparación colectiva del curso: un daño colectivo real identificado, la lista de qué se le debe a quién —incluido lo que se le debe al curso entero—, un acto público de reconocimiento y una garantía de no repetición escrita y verificable.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · Apertura ancestral · Reparación colectiva · Triángulo Dussel-Estoicismo-Floridi}}
+
+\newpage
+
+\section*{Apertura: Cuando el daño lo hizo el grupo: reparar lo que es de todos}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+Entre el pueblo \textbf{nasa} del Cauca hay algo que un curso no suele imaginar: \textbf{lo que se repara no siempre es una relación entre dos personas ---a veces es \emph{el territorio}---}. El antropólogo \textbf{Josef Drexler} hizo trabajo de campo entre los nasa entre \textbf{2002 y 2004}, participando en los rituales, y documentó las prácticas con las que \textbf{se «limpia», se «refresca» y se «cura» el territorio}: el \textbf{refrescamiento} (Drexler, 2004). \emph{Fíjate en el objeto del verbo, porque ahí está todo:} \textbf{no se refresca a un culpable ni a una víctima ---se refresca \emph{lo que es de todos}---}. \textbf{La idea de fondo es que un daño no se queda entre los que lo hicieron:} \emph{«ensucia» el ambiente común, lo desarmoniza}, y por eso hay que hacer algo \textbf{con la comunidad presente} para que ese ambiente vuelva a estar limpio. \emph{Compáralo con lo que hiciste en el momento 6 del grado 7:} \textbf{allí dos personas reparaban lo suyo}. \emph{Aquí es otra cosa: el daño le pasó al aire que todos respiran, y por eso la reparación también tiene que ser de todos.}
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+¿Y esto existe en la ley, o es solo una idea? \textbf{Existe, y con nombre propio.} La \textbf{Ley 1448 de 2011} ---la Ley de Víctimas--- estableció medidas de reparación \textbf{individuales} \textbf{y también \emph{colectivas}}, junto con los Decretos-ley 4633, 4634 y 4635 del mismo año. \textbf{Y definió quiénes pueden ser \emph{sujetos de reparación colectiva}:} \emph{grupos y organizaciones sociales, sindicales y políticos, y \textbf{comunidades que hayan sufrido daños colectivos}}. \textbf{Todo eso apunta a garantizar los derechos a la verdad, la justicia y la reparación \emph{con garantías de no repetición}.} \emph{Detente en dos cosas.} \textbf{Primera:} el Estado colombiano \textbf{reconoció que hay daños que no se le hacen a una persona sino a un colectivo} ---a un sindicato, a un pueblo, a una comunidad--- y que repararlos exige medidas distintas de pagarle a cada uno lo suyo. \textbf{Segunda, y es la que usaremos hoy:} \emph{la reparación no termina en compensar lo pasado ---incluye \textbf{garantías de no repetición}, es decir, algo que cambie hacia adelante---}. \textbf{Sin eso, lo demás es un gesto.}
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{Los nasa no refrescan a una persona: \textbf{refrescan el territorio}. \textbf{¿Qué daño ha ocurrido en tu curso que no le pasó a una sola persona} \ldots \textbf{sino al curso entero}?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar podrás: (1) \textbf{distinguir} un daño individual de uno colectivo, y reconocer que lo que se daña muchas veces es lo común; (2) \textbf{explicar} por qué cuando los responsables son muchos nadie responde, y cómo se rompe eso; (3) \textbf{organizar} un reconocimiento público que no humille a nadie; (4) \textbf{escribir} una garantía de no repetición \textbf{verificable}, sin la cual toda reparación es un gesto.
+\end{softbox}
+
+
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Comprende los fenómenos que afectan a su territorio, regula sus emociones ante ellos y acompaña a otros con empatía (transversal 6°--11°, articulado con la política «Escuela, territorio de vida» del MEN, Resolución 006519 de 2025, y la Ley 1620 de 2013)\\
+Referentes & Primera ayuda psicológica (OMS, 2011/2012) · Directrices IASC (2007) · USGS y Servicio Geológico Colombiano · Pueblo nasa y la minga (CRIC) · Dussel · Estoicismo · Floridi\\
+Producto final & La reparación colectiva del curso: un daño colectivo real identificado, la lista de qué se le debe a quién —incluido lo que se le debe al curso entero—, un acto público de reconocimiento y una garantía de no repetición escrita y verificable.\\
+\end{tabularx}
+\normalsize
+
+\puente{Vienes de siete momentos sobre daños que se hacen de a poquitos y entre muchos. \textbf{Hoy toca la pregunta que faltaba:} \emph{¿y cómo se repara algo que hizo un grupo entero?}}
+
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Reparo lo común.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Primero, nombrar lo que pasó en su propio curso. \emph{Sin culpables todavía: solo el hecho.}}
+
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- Lo que nos pasó a todos.} \textbf{Sin nombres, y con una regla que hay que respetar: aquí se nombran \emph{hechos}, no personas.} \textbf{Primera parte.} Escribe \textbf{tres cosas que hayan pasado en tu curso} y que \textbf{no le pasaron a una sola persona}: una burla que se volvió costumbre, un rumor que corrió y todos repitieron, alguien a quien se dejó de hablar, un chat donde se dijo algo de alguien, un profesor al que se le hizo la vida imposible, un daño a algo del colegio. \textbf{Segunda parte.} Para cada una: \emph{¿quién participó?} \textbf{Y sé honesto con la categoría que casi nadie usa: \emph{«los que no hicimos nada»}.} \textbf{Tercera parte.} ¿Alguien se disculpó? ¿Cambió algo después? \emph{¿O simplemente dejó de hablarse del tema?} \textbf{Y la última:} de esas tres, ¿cuál sigue teniendo consecuencias hoy ---aunque nadie las mencione---?
+\end{softbox}
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Escribiste \textbf{hechos}, no personas.}
+\milccheckrow{Incluiste la categoría «los que no hicimos nada» al repartir la participación.}
+\milccheckrow{Identificaste cuál sigue teniendo consecuencias hoy.}
+
+\begin{infoband}{milcVerde}
+
+
+\textbf{En tu cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1. Lo que nos pasó a todos». \textbf{Formato:} los tres hechos + quiénes participaron, incluidos los que miraron + si alguien se disculpó y si cambió algo + cuál sigue vivo. \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} identificaste uno que \textbf{sigue teniendo consecuencias}. Esta página es tuya: \textbf{nadie más tiene que leerla si tú no quieres}.
+\end{infoband}
+
+\puente{Ya lo tienen. Ahora, por qué un daño colectivo no se arregla con disculpas individuales y qué es una garantía de no repetición.}
+
+\milcestacion{milcTurquesa}{Fase 2 · Sistematización: entender el daño colectivo}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro claves sobre reparar entre todos}
+Cuatro claves para reparar algo cuando el responsable no es una persona.
+\end{softbox}
+
+\milcpaso{1}{milcTurquesa}{\textbf{Hay daños que le pasan al grupo, no a un individuo.} \emph{El refrescamiento nasa parte de esa idea:} \textbf{lo que se limpia es el territorio ---lo común---, porque el daño desarmonizó el ambiente de todos} (Drexler, 2004). \textbf{Y la ley colombiana llegó a lo mismo por otro camino:} la \textbf{Ley 1448 de 2011} reconoce como \textbf{sujetos de reparación colectiva} a grupos, organizaciones sociales, sindicales y políticas, \textbf{y a comunidades que sufrieron daños colectivos}. \emph{Aplícalo a un curso:} \textbf{cuando durante un año se repitió una burla, el daño no es solo lo que sintió la persona burlada ---es que el curso aprendió que eso se puede hacer---}. \emph{Eso segundo también hay que repararlo, y no se repara pidiéndole perdón a nadie.}}
+\milcpaso{2}{milcTurquesa}{\textbf{Cuando los responsables son muchos, no responde ninguno.} \emph{Ya conoces el mecanismo con otro nombre:} \textbf{es la difusión de responsabilidad del momento 3 del grado 8}, ahora aplicada a la culpa en vez de a la ayuda. \emph{Cada uno hizo poquito ---un comentario, una risa, un reenvío, un silencio---,} \textbf{y con ese poquito nadie se siente el responsable}. \textbf{La salida es la misma de entonces: nombrar.} \emph{Pero aquí hay una diferencia importante, y es lo que hace difícil este momento:} \textbf{no se trata de encontrar a un culpable para cargarle todo} ---eso arregla la conciencia del grupo y no repara nada---. \textbf{Se trata de que \emph{cada uno diga su parte}, incluida la más incómoda de todas: \emph{«yo estaba ahí y no hice nada»}.}}
+\milcpaso{3}{milcTurquesa}{\textbf{Reconocer en público, porque el daño fue público.} \emph{Ya lo aprendiste en el momento 6 del grado 7:} \textbf{si el daño se hizo delante de otros, la reparación también tiene que serlo}. \emph{Y en el refrescamiento eso es literal:} \textbf{el ritual se hace con la comunidad presente, porque lo que se está limpiando es de la comunidad.} \textbf{Ahora la advertencia, que es la parte delicada:} \emph{un acto público que \textbf{humille} a alguien no repara ---crea un daño nuevo---}. \textbf{Por eso el acto se hace sobre \emph{lo que pasó}, no sobre quiénes son las personas,} \emph{y por eso quien recibe la reparación decide cuánto quiere aparecer ---o si prefiere no aparecer---.}}
+\milcpaso{4}{milcTurquesa}{\textbf{La garantía de no repetición: sin eso, es un gesto.} \emph{La Ley 1448 no habla solo de compensar lo que pasó: habla de \textbf{garantías de no repetición}.} \textbf{Y esa idea le falta a casi todas las disculpas escolares.} \emph{Traducido a un curso:} \textbf{no basta con decir «lo sentimos» ---hay que cambiar algo que haga menos probable que vuelva a pasar---.} \emph{Ejemplos de garantías reales:} \textbf{un acuerdo escrito sobre lo que no se trae al grupo de chat, una regla sobre los apodos, un turno rotativo para armar los grupos de trabajo, alguien encargado de revisar quién falta}. \textbf{Y la prueba de que una garantía sirve:} \emph{que cualquiera del curso pueda decir, dentro de un mes, si se está cumpliendo o no.}}
+
+\begin{drawbox}{milcTurquesa}{Los cinco pasos de una reparación colectiva}
+\begin{pasoslista}
+\item \textbf{Nombrar el hecho,} sin adornos y sin buscar culpables todavía.
+\item \textbf{Que cada uno diga su parte,} incluida la de haber mirado sin hacer nada.
+\item \textbf{Preguntarle a quien recibió el daño qué necesita} ---y si quiere participar o no---.
+\item \textbf{Un acto de reconocimiento} sobre lo que pasó, no sobre quiénes son las personas.
+\item \textbf{Una garantía de no repetición} escrita, con responsable y con forma de comprobarla.
+\end{pasoslista}
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{Buscar un culpable único:} tranquiliza al grupo y no repara nada. \textbf{Disculpas individuales por separado:} el daño fue colectivo. \textbf{Hacer el acto sin preguntarle a quien recibió el daño:} lo convierte en un show de los que dañaron. \textbf{Obligar a la persona a estar presente o a perdonar:} ya viste en el grado 7 que la reparación se ofrece, no se cobra. \textbf{Quedarse en «lo sentimos»:} sin garantía es un gesto. \textbf{Una garantía que no se puede comprobar:} entonces es una promesa. \textbf{Cerrar el tema por cansancio:} sin cierre explícito el asunto sigue dando vueltas.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+
+
+\textbf{En tu cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2. Daño individual y daño colectivo». \textbf{Formato:} toma uno de tus tres hechos y separa \textbf{qué se le debe a la persona} y \textbf{qué se le debe al curso}. \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} puedes explicar por qué \textbf{buscar un solo culpable no repara un daño colectivo}.
+\end{infoband}
+
+\puente{Ya saben qué falta. Es hora de hacerlo: el reconocimiento, el reparto y la garantía.}
+
+\milcestacion{milcMagenta}{Fase 3 · Praxis: hacer la reparación}
+
+\begin{softbox}{milcMagenta}{milcGris}{Cómo se repara algo que hizo un grupo}
+Esto se hace de verdad, con un hecho real del curso, y con una condición: el docente acompaña y quien recibió el daño decide hasta dónde.
+\end{softbox}
+
+\milcpaso{1}{milcMagenta}{\textbf{Nombrar el daño (10 min, todo el curso).} Escojan \textbf{uno} de los hechos ---el que siga teniendo consecuencias--- y escríbanlo en una frase, \textbf{sin nombres y sin adjetivos}: \emph{«durante el año se repitió \_\_\_\_ y pasó \_\_\_\_»}. \textbf{Si no logran ponerse de acuerdo en la frase, ese desacuerdo es la primera parte del trabajo,} \emph{porque significa que cada uno recuerda algo distinto.}}
+\milcpaso{2}{milcMagenta}{\textbf{Quién debe qué (10 min).} Hagan dos columnas: \textbf{lo que se le debe a la persona o personas afectadas} y \textbf{lo que se le debe al curso}. \emph{En la primera va lo que ellas digan que necesitan ---hay que preguntárselo, y en privado---.} \textbf{En la segunda va lo que hay que cambiar para que el curso deje de ser un lugar donde eso pasa.} \emph{Y en las dos columnas debe aparecer la parte de los que miraron.}}
+\milcpaso{3}{milcMagenta}{\textbf{El acto público (15 min, con el docente).} \textbf{Solo si quien recibió el daño está de acuerdo}, y de la forma que esa persona prefiera ---presente o no---. \emph{Es corto y tiene tres partes:} \textbf{se lee la frase del hecho}, \textbf{cada quien dice su parte en una sola línea} ---«yo lo repetí», «yo me reí», «yo lo vi y no dije nada»--- y \textbf{se lee la garantía}. \textbf{Sin discursos, sin llanto obligatorio y sin señalar a nadie.} \emph{Y al final se declara cerrado, en voz alta, como en la armonización nasa: sin cierre explícito el asunto queda dando vueltas.}}
+\milcpaso{4}{milcMagenta}{\textbf{La garantía verificable (10 min).} Escriban \textbf{una} garantía ---no cinco---, con tres requisitos: \emph{qué cambia}, \emph{quién responde por ella} y \emph{cómo se comprueba dentro de un mes}. \textbf{Péguenla donde se vea.} \emph{Y pongan la fecha de la revisión ahora mismo, antes de que nadie salga del salón:} \textbf{es la lección del momento 10 del grado 8 y aquí vale igual.}}
+
+\begin{drawbox}{milcMagenta}{Antes de cerrar la reparación}
+\begin{checklista}
+\item El hecho está escrito en \textbf{una frase, sin nombres y sin adjetivos}.
+\item Le preguntaron \textbf{en privado} a quien recibió el daño qué necesita.
+\item Las dos columnas incluyen \textbf{la parte de los que miraron}.
+\item El acto se hizo \textbf{solo con el acuerdo} de la persona afectada y de la forma que ella escogió.
+\item Se declaró \textbf{cerrado en voz alta}.
+\item La garantía es \textbf{una}, tiene responsable y \textbf{fecha de revisión ya puesta}.
+\end{checklista}
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{El hecho.} \emph{«Durante \_\_\_\_ se repitió \_\_\_\_ y pasó \_\_\_\_.»} ---sin nombres, sin adjetivos---. \\[1mm]
+\textbf{Mi parte, en una línea.} \emph{«Yo \_\_\_\_.»} ---incluye «yo lo vi y no dije nada»---. \\[1mm]
+\textbf{La garantía.} \emph{«De ahora en adelante \_\_\_\_. Responde \_\_\_\_. Se comprueba el \_\_\_\_ mirando \_\_\_\_.»}
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+
+
+\textbf{En tu cuaderno (Actividad 3 · CREA).} Título: «Actividad 3. La reparación del curso». \textbf{Formato:} la frase del hecho + las dos columnas + tu propia línea del acto + la garantía con responsable y fecha. \textbf{Extensión:} una página. \textbf{Sabes que terminaste cuando} la garantía tiene \textbf{fecha de revisión escrita}.
+\end{infoband}
+
+\puente{El producto es una reparación hecha. \emph{Y su prueba no es el acto, sino que la garantía siga cumpliéndose dentro de un mes.}}
+
+\milcestacion{milcMostaza}{Producto de la sesión}
+\textbf{Reparación colectiva: el daño nombrado, lo que se le debe a cada quien, un acto de reconocimiento y una garantía verificable}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) El hecho está formulado sin nombres ni adjetivos, y el curso llegó a una sola versión. (2) Se distingue lo que se le debe a las personas afectadas de lo que se le debe al curso. (3) La parte de quienes miraron sin actuar aparece explícitamente. (4) El acto se realizó con acuerdo de la persona afectada, sin humillar a nadie, y se declaró cerrado. (5) Existe una garantía de no repetición con responsable y fecha de comprobación.
+\end{softbox}
+
+\puente{Antes de cerrar, revisen lo que decide todo: si su garantía no se puede comprobar, no es una garantía ---es una promesa---.}
+
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con tres voces: la comunidad que se funda escuchando, la abeja y el enjambre, y el cuidado de lo compartido.}
+
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{«Aquel que es capaz de escuchar silenciosamente al Otro como otro es el que puede constituir una comunidad y no una mera sociedad totalizada.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Enrique Dussel · Filosofía de la liberación (1977)}
+
+\textbf{Fíjate en el orden que propone Dussel:} \emph{primero se escucha, y de ahí sale la comunidad}. \textbf{Aplicado a una reparación colectiva, eso invierte el instinto normal.} \emph{Lo que un grupo culpable quiere hacer es \textbf{hablar} ---explicarse, disculparse, cerrar el tema rápido---.} \textbf{Y el primer paso correcto es el contrario: preguntarle a quien recibió el daño qué necesita, y aguantar la respuesta.} \emph{Porque si el grupo diseña la reparación solo, va a diseñar la que a él le sirve} ---la que lo deja tranquilo más rápido---. \textbf{Y ahí está la diferencia entre una comunidad y una «sociedad totalizada»:} \emph{en la segunda, la reparación también la decide la mayoría.}
+
+\textbf{Cuando quisimos arreglar algo en el curso, ¿le preguntamos al afectado o decidimos nosotros qué le servía?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · Meditaciones VI, 54 (c. 175 d.C.) · cuidado interior}
+\textit{«Lo que no beneficia al enjambre, tampoco beneficia a la abeja.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Marco Aurelio · Meditaciones VI, 54 (c. 175 d.C.)}
+
+\emph{Esta frase explica por qué existe la categoría misma de «daño colectivo».} \textbf{Cuando en un curso se instala que a alguien se le puede hacer algo, el que sale perjudicado no es solo esa persona ---es el enjambre---:} \emph{todos aprenden que aquí eso se puede, y todos quedan un poco menos seguros, porque mañana puede tocarle a cualquiera.} \textbf{Y de ahí se sigue algo práctico:} \emph{reparar no es un favor que el grupo le hace a la persona dañada}. \textbf{Es el grupo arreglando algo suyo.} \emph{Por eso el refrescamiento nasa limpia el territorio y no a un individuo: porque lo que quedó sucio es de todos.}
+
+\textbf{Después de lo que pasó, ¿qué aprendió mi curso que se puede hacer?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{«El florecimiento de las entidades informacionales y de toda la infoesfera debe promoverse preservando, cultivando y enriqueciendo sus propiedades.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Luciano Floridi · La ética de la información (2013; trad.)}
+
+\textbf{Hay un daño colectivo que hoy es casi imposible de reparar del todo, y hay que decirlo con franqueza:} \emph{lo que quedó escrito}. \textbf{Las capturas, los mensajes, los grupos paralelos ---eso no se «refresca» pidiendo disculpas: sigue ahí y se puede volver a abrir dentro de dos años.} \emph{Por eso, cuando el daño fue digital, la garantía de no repetición tiene una parte muy concreta:} \textbf{borrar lo que todavía circula ---y borrarlo de verdad, cada uno en su teléfono---.} \emph{Es incómodo y es lento, y es lo único que funciona.} \textbf{Y es también la razón por la que el momento 8 del grado 7 insiste tanto:} \emph{lo más barato sigue siendo no empezar.}
+
+\textbf{De lo que pasó en mi curso este año, ¿qué sigue existiendo en el teléfono de alguien?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres son citas textuales y llevan su referencia debajo. Puedes remitir a la obra en clase.
+\end{infoband}
+
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
+
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Calidad de la reparación colectiva & \milcopcion{Nombramos el daño, hubo reconocimiento público y quedó una garantía que se puede comprobar.} & \milcopcion{Reconocimos que pasó algo, pero cada uno se disculpó por su lado.} & \milcopcion{Sigo pensando que si fuimos muchos, nadie tiene que responder.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión, y para el mes siguiente.} \textbf{Primero, la revisión de la garantía} en la fecha que ustedes pusieron: \emph{¿se está cumpliendo? ¿quién no la ha cumplido y por qué? ¿hay que ajustarla?} \textbf{Y si algo del daño era digital, cada uno revisa su propio teléfono y borra lo que quede.} \emph{Traigan cuántos lo hicieron: ese número dice más sobre la reparación que el acto entero.} \textbf{Segundo, pregunta en tu casa cómo se cerraban las cosas:} averigua con alguien mayor \textbf{si alguna vez pasó algo en su barrio o su vereda que afectara a todos} ---una pelea entre familias, un robo, un rumor grande, algo que dividió al pueblo--- y \textbf{qué se hizo para cerrarlo}: si hubo una reunión, si intervino alguien, si se hizo algo público, o si simplemente se dejó de hablar del tema. \textbf{Trae:} el resultado de la revisión y lo que te contaron. \emph{Vas a encontrar las dos salidas, y conviene compararlas: donde hubo un cierre ---una reunión, una misa, un trabajo entre todos--- la gente volvió a hablarse; donde solo se dejó de hablar del tema, casi siempre alguien te va a decir que «eso todavía se siente».}
+\end{infoband}
+
+\end{document}

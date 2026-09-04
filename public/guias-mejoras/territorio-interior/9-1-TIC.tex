@@ -1,0 +1,611 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra UNICA de las guias MILC v3.
+%
+% La usan las cuatro familias de guias, cada una con su driver:
+%   · Grados 6-11          -> scripts/build-guias-g11.py
+%   · Bebras               -> scripts/build-guias-bebras.py
+%   · Semillero            -> scripts/build-guias-semillero.py
+%   · Territorio interior  -> scripts/build-guias-territorio-interior.py
+%
+% Antes habia tres copias casi identicas (~400 lineas iguales, 6 distintas):
+% cada mejora habia que aplicarla tres veces, y en la practica no se hacia
+% (el motor de recursos vivia solo en dos de ellas). Lo que varia entre
+% familias esta parametrizado en 6 placeholders que cada driver llena
+% (se nombran aqui SIN su sintaxis real: el builder reemplaza por texto plano,
+% tambien dentro de los comentarios, y un valor multilinea rompe el preambulo):
+%
+%   HEADER_IZQ        encabezado izquierdo de pagina
+%   HEADER_DER        encabezado derecho de pagina
+%   PORTADA_ETIQUETA  rotulo sobre el numero grande (GRADO/MOMENTO/MODULO)
+%   PORTADA_SERIE     linea de serie de la portada
+%   PORTADA_ID        identificador de la guia en la portada
+%   PORTADA_CIRCULO   el circulito de grado (°), o vacio si no aplica
+%   PDF_TITULO        titulo en texto plano (sin \textbf ni comillas TeX) para
+%                     los metadatos del PDF (/Title); lo produce lib_xelatex.texto_pdf
+%
+% Composicion (auditoria 2026-09-03): las bandas de estacion piden espacio
+% (\Needspace*) y prohiben el salto justo despues (\nopagebreak), asi no quedan
+% huerfanas al pie; las cajas largas (softbox, drawbox, infoband, puentebox) son
+% `breakable`, asi una caja de media pagina ya no arrastra todo a la siguiente
+% dejando la anterior al 40 %. Todo texto sobre mostaza o verde va en milcNegro
+% (blanco sobre #E5B400 da 1,93:1 y sobre #58A923 2,95:1; ninguno pasa WCAG AA).
+% El resto de claves las documenta content/guias/_SCHEMA.md. El script valida
+% que no queden placeholders sin reemplazar antes de escribir el archivo final.
+
+% Etiquetado PDF (latex-lab): /Lang, estructura y texto alternativo de las
+% figuras, para lectores de pantalla. Debe ir ANTES de \documentclass.
+\DocumentMetadata{lang=es-CO,tagging=on}
+\documentclass[11pt,letterpaper]{article}
+% headheight=24pt: la cabecera derecha lleva dos lineas (identidad de la guia
+% y estacion actual). headsep se acorta en la misma medida para que el bloque
+% de texto quede exactamente donde estaba con headheight=12pt.
+\usepackage[margin=2.0cm,headheight=24pt,headsep=13pt]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+% Librerías TikZ para los diagramas de las guías (bloque `recursos:`):
+%  · babel  → babel en español vuelve activos caracteres como «>», y TikZ los usa
+%             en sus opciones (>=stealth, ->). Sin esta librería, cualquier
+%             diagrama con flechas revienta con «\language@active@arg> has an
+%             extra }». Debe ir ANTES de que se dibuje nada.
+%  · positioning        → sintaxis «below left=2pt and 3pt».
+%  · decorations.pathreplacing → llaves ({brace}) para señalar rangos.
+\usetikzlibrary{babel,positioning,decorations.pathreplacing}
+\usepackage{graphicx}
+% Circuitos: el trabajo de electrónica se hace hoy con micro:bit y sus sensores
+% integrados (MakeCode, sin cableado), así que no se necesitan esquemáticos.
+% Si algún día entran montajes con protoboard, basta descomentar esta línea:
+% los diagramas .tex/.tikz declarados en `recursos:` ya se incrustan solos.
+% \usepackage{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{etoolbox}
+\usepackage{needspace}
+% hyperref al final del preambulo: metadatos del PDF (titulo, autor, idioma,
+% familia), marcadores por estacion (\pdfbookmark) y enlaces sin recuadro.
+\usepackage[hidelinks,
+  pdftitle={Ponerse en el lugar del otro: un oficio que se aprende, no un don},
+  pdfauthor={PhD. Álvaro Cárdenas Orozco},
+  pdfsubject={Territorio interior · Educación socioemocional · Grado 9° · Momento 1 · MILC v3},
+  pdflang={es-CO},
+  bookmarksopen=true,bookmarksnumbered=false]{hyperref}
+
+% Helvetica Neue no trae la flecha U+2192, asi que cada «→» escrito literalmente
+% en el YAML se compilaba a NADA, en silencio (462 flechas en 61 guias: rutas del
+% tipo «paleta → tipografia → lockup» salian rotas). Mapeamos el caracter a su
+% version matematica, que si tiene glifo. Asi el autor puede seguir escribiendo
+% «→» comodamente en el YAML.
+\usepackage{newunicodechar}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0D9488}
+\definecolor{milcGradeDark}{HTML}{115E59}
+\definecolor{milcGradeSoft}{HTML}{CCFBF1}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+% Cabecera de dos lineas: identidad de la guia arriba y, a la derecha y en
+% gris, la estacion en curso (\markright desde \milcestacion). Antes de la
+% primera estacion la segunda linea va vacia; el \strut mantiene la altura
+% para que la linea de arriba no baile entre paginas.
+\lhead{\small Territorio interior · Educación socioemocional\\[-1pt]{\footnotesize\strut}}
+\rhead{\small Grado 9° · Momento 1 · MILC v3\\[-1pt]{\footnotesize\strut\color{milcNegro!65}\rightmark}}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+% Sobre mostaza (#E5B400) y verde (#58A923) el texto va en milcNegro; sobre el
+% resto de la paleta, en blanco. Se usa dentro de fonttitle/fontupper, donde un
+% \color posterior manda sobre coltitle.
+\newcommand{\milctintasobre}[1]{%
+  \ifboolexpr{test{\ifstrequal{#1}{milcMostaza}} or test{\ifstrequal{#1}{milcVerde}}}%
+    {\color{milcNegro}}{\color{white}}}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,breakable,pad at break=3mm,
+  colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries\milctintasobre{#1},fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,breakable,pad at break=4mm,
+  colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries\milctintasobre{#1},
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,breakable,pad at break=2mm,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,breakable,pad at break=2mm,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+% La flecha va en modo matematico a proposito: Helvetica Neue NO tiene el glifo
+% U+2192, asi que \textrightarrow se compilaba a NADA («Missing character: There
+% is no → in font Helvetica Neue») y el puente salia sin flecha. En modo
+% matematico la flecha viene de la fuente matematica y si se dibuja.
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{$\rightarrow$}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+% ─── Listas aireadas para las guías socioemocionales ────────────────────
+% Componer las verificaciones como «\checkbox texto\\» deja el texto que salta
+% de línea debajo del cuadrito y apelmaza el bloque. Estos entornos alinean la
+% continuación y airean los ítems. Los usa Territorio Interior; cualquier
+% familia puede hacerlo.
+\newlist{checklista}{itemize}{1}
+\setlist[checklista]{
+  label=\textcolor{milcGradeDark}{\fbox{\phantom{x}}},
+  leftmargin=9mm, labelsep=3.2mm, itemsep=2.4mm,
+  topsep=2.5mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+\newlist{pasoslista}{enumerate}{1}
+\setlist[pasoslista]{
+  label=\textcolor{milcGradeDark}{\sffamily\bfseries\arabic*.},
+  leftmargin=8mm, labelsep=3mm, itemsep=2.8mm,
+  topsep=1mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+% Nunca huerfana: pide 9 lineas libres (o salta de pagina rellenando con
+% \vfill) y prohibe el salto justo despues de la banda. Nueve y no seis:
+% la caja partible que sigue necesita ~80pt (titulo adosado, relleno y dos
+% lineas) para arrancar en la misma pagina; con menos, tcolorbox la manda
+% entera a la siguiente y la banda se queda sola. El penalty 10000 va
+% en `after`, ANTES del espacio posterior: un `after skip` (aunque sea 0pt)
+% es un \vskip tras la caja, y ese glue es un punto de corte legal que un
+% \nopagebreak escrito despues de \end{tcolorbox} ya no cierra. Cada banda
+% deja marcador PDF y actualiza la cabecera derecha.
+\newcounter{milcestacion}
+\newcommand{\milcestacion}[2]{%
+\Needspace*{9\baselineskip}%
+\stepcounter{milcestacion}%
+\pdfbookmark[1]{#2}{milcestacion\themilcestacion}%
+\markright{#2}%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,
+  after={\par\nopagebreak\vskip7pt}]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\milctintasobre{#1}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\Needspace{4\baselineskip}%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
+% ── Recursos visuales de la guía ──────────────────────────────────────
+% Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
+% \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
+% \guiaDiagrama → fuente TikZ/circuitikz (.tex) incrustada como vector:
+%                 es la vía para circuitos y esquemáticos editables.
+% [#1] = texto alternativo (alt) · #2 = ruta relativa al .tex · #3 = pie
+% El alt llega al PDF etiquetado (/Alt) y lo lee el lector de pantalla.
+\newcommand{\guiaFigura}[3][]{%
+\begin{center}
+\includegraphics[width=0.88\linewidth,height=0.38\textheight,keepaspectratio,alt={#1}]{#2}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#3}}
+\end{center}
+}
+
+\newcommand{\guiaDiagrama}[2]{%
+\begin{center}
+\input{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\begin{document}
+\thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
+\begin{tikzpicture}[remember picture,overlay]
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont MOMENTO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont TERRITORIO INTERIOR · SOCIOEMOCIONAL};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
+
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 1};
+  % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
+  % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  
+
+  \node[anchor=west,text=milcGradeText,text width=11.4cm,align=left] at ([xshift=1.5cm,yshift=0.5cm]gradonum.east)
+    {
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Territorio interior · Socioemocional}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont\setlength{\baselineskip}{27pt}Ponerse en el\\[4pt]lugar del otro\\[4pt]se aprende, no se hereda}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Grado 9° · Momento 1}
+    };
+\end{tikzpicture}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Tu ejercicio de perspectiva: la reconstrucción escrita de un día de alguien con quien casi no hablas, verificada por esa persona, más el registro de en qué te equivocaste —que es la parte que enseña—.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · Apertura ancestral · Toma de perspectiva · Triángulo Dussel-Estoicismo-Floridi}}
+
+\newpage
+
+\section*{Apertura: Ponerse en el lugar del otro: un oficio que se aprende, no un don}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+Entre el pueblo \textbf{embera} hay una figura que cura y que acompaña a la comunidad: el \textbf{jaibaná}. \textbf{Y lo primero que hay que decir es lo que \emph{no} es:} \emph{no es un cargo que se hereda de padre a hijo, ni un don con el que se nace}. \textbf{Se aprende.} El aprendizaje suele empezar \textbf{en la infancia}, y siempre \textbf{guiado por un maestro} ---un jaibaná sabio, que enseña durante años---; buena parte de esa enseñanza le llega al aprendiz \textbf{en sueños}, y el oficio puede ejercerlo \textbf{un hombre o una mujer}. \textbf{Fíjate en lo que el jaibaná aprende a hacer:} \emph{aprende a mirar el mundo desde donde lo miran otros seres} ---a ver como gente a lo que los demás ven como planta o animal, y a dialogar con eso---. \textbf{Es, literalmente, un oficio de cambiar de punto de vista}, \emph{y por eso toma años y necesita un maestro}. \textbf{Guarda las dos cosas, porque son la tesis de esta guía:} \emph{cambiar de punto de vista \textbf{es una técnica}, y las técnicas se aprenden de alguien y se practican mal antes de hacerse bien.}
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+¿Y sirve de algo esforzarse por mirar desde el lugar del otro, o es solo un buen deseo? \textbf{Se midió, y el resultado es sorprendentemente concreto.} \textbf{Adam Galinsky} y \textbf{Gordon Moskowitz} hicieron tres experimentos comparando dos estrategias: \emph{tomar perspectiva} ---escribir un rato desde el punto de vista de otra persona--- frente a \emph{suprimir el estereotipo} ---esforzarse por no pensarlo---. \textbf{Tomar perspectiva ganó en todos los frentes.} Redujo la expresión de estereotipos \textbf{en pruebas conscientes y también en las no conscientes}; aumentó el \textbf{solapamiento} entre cómo la persona se veía a sí misma y cómo veía al grupo ajeno; \textbf{y en el tercer experimento hizo algo notable:} \emph{redujo el favoritismo hacia el propio grupo \textbf{en el paradigma de grupos mínimos}} ---el mismo montaje de Tajfel que trabajaste el año pasado--- \textbf{y lo hizo \emph{subiendo} la evaluación del otro grupo, no bajando la del propio} (Galinsky y Moskowitz, 2000). \emph{Traducido, y es la mejor noticia de este grado:} \textbf{la cerca que aparece sola sí se puede deshacer}, y no hace falta quererse menos a los propios para lograrlo.
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{El jaibaná pasa años aprendiendo a mirar desde otro lugar, \textbf{con un maestro y equivocándose}. \textbf{¿A quién de tu colegio crees entender perfectamente} \ldots \textbf{sin haber comprobado nunca si le acertaste}?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar podrás: (1) \textbf{entender} que tomar perspectiva es una técnica que se practica, y no un rasgo de carácter que se tiene o no se tiene; (2) \textbf{distinguir} tomar perspectiva de sentir lástima y de suprimir prejuicios a la fuerza; (3) \textbf{reconstruir} el día de una persona concreta y \textbf{verificarlo con ella}; (4) \textbf{registrar} tus errores de reconstrucción, que son lo único que de verdad enseña.
+\end{softbox}
+
+
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Comprende los fenómenos que afectan a su territorio, regula sus emociones ante ellos y acompaña a otros con empatía (transversal 6°--11°, articulado con la política «Escuela, territorio de vida» del MEN, Resolución 006519 de 2025, y la Ley 1620 de 2013)\\
+Referentes & Primera ayuda psicológica (OMS, 2011/2012) · Directrices IASC (2007) · USGS y Servicio Geológico Colombiano · Pueblo nasa y la minga (CRIC) · Dussel · Estoicismo · Floridi\\
+Producto final & Tu ejercicio de perspectiva: la reconstrucción escrita de un día de alguien con quien casi no hablas, verificada por esa persona, más el registro de en qué te equivocaste —que es la parte que enseña—.\\
+\end{tabularx}
+\normalsize
+
+\puente{El grado pasado terminó mostrando que \textbf{basta una raya arbitraria} para que aparezca un «ellos». Este grado empieza con lo contrario: \textbf{lo que se ha comprobado que deshace esa raya}.}
+
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Aprendo a mirar desde allá.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Primero, una prueba incómoda: escribir lo que crees saber de alguien y darte cuenta de cuánto de eso es invento.}
+
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- Lo que creo saber.} \textbf{Sin nombres: usa iniciales.} \textbf{Primera parte.} Escoge a \textbf{tres personas de tu curso con las que casi no hablas}. De cada una escribe todo lo que \emph{crees} saber: dónde vive, con quién, cómo llega al colegio, qué le gusta, en qué es buena, qué le preocupa. \textbf{Segunda parte, la que hace el trabajo.} Al frente de cada dato, marca \textbf{cómo lo sabes}: \emph{me lo dijo ella · lo vi · me lo contó alguien · me lo imagino}. \textbf{Sé honesto con la última categoría.} \textbf{Tercera parte.} Cuenta cuántos datos quedaron en «me lo imagino». \emph{Ese número es el punto de la actividad.} \textbf{Y la última:} ¿alguien ha creído saber algo de ti que era falso? \emph{¿Qué era, y de dónde crees que lo sacó?}
+\end{softbox}
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Escogiste tres personas con las que \textbf{casi no hablas}, no tres conocidas.}
+\milccheckrow{Marcaste cada dato con \textbf{cómo lo sabes}.}
+\milccheckrow{Contaste cuántos datos son imaginados.}
+
+\begin{infoband}{milcVerde}
+
+
+\textbf{En tu cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1. Lo que creo saber». \textbf{Formato:} las tres personas con sus datos y el origen de cada dato + el conteo de los imaginados + lo que alguien creyó saber de ti. \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} tienes \textbf{el número de datos que te inventaste}. Esta página es tuya: \textbf{nadie más tiene que leerla si tú no quieres}.
+\end{infoband}
+
+\puente{Ya la tienes. Ahora, por qué esto es una técnica, en qué se diferencia de la lástima y qué mostró el experimento.}
+
+\milcestacion{milcTurquesa}{Fase 2 · Sistematización: entender la perspectiva}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro claves sobre tomar perspectiva}
+Cuatro claves para convertir «ponerse en el lugar del otro» en algo que se pueda practicar y comprobar.
+\end{softbox}
+
+\milcpaso{1}{milcTurquesa}{\textbf{Se aprende de alguien, y por eso se puede enseñar.} \emph{El jaibaná no nace jaibaná:} empieza de niño, lo guía un maestro durante años y se equivoca mucho antes de servir para algo. \textbf{Eso desmonta la idea más común sobre la empatía} ---que hay gente sensible y gente que no---. \emph{Y encaja con lo que ya viste el año pasado:} el entrenamiento en empatía \textbf{funciona}, con efecto medido en ensayos aleatorizados. \textbf{Conclusión práctica:} \emph{si te cuesta ponerte en el lugar de alguien, no es que seas frío. Es que nadie te ha enseñado la técnica, y la técnica existe.}}
+\milcpaso{2}{milcTurquesa}{\textbf{Tomar perspectiva no es sentir lo mismo, ni es lástima.} \emph{Sentir lo que siente el otro} sirve poco: si te angustias igual que él, quedan dos personas angustiadas. \emph{Y la lástima es peor, porque se mira desde arriba:} el que compadece se pone en un lugar más alto que el compadecido ---y eso ya lo trabajaste en el momento 3 del grado 7---. \textbf{Tomar perspectiva es otra cosa, más fría y más útil:} \emph{es reconstruir, con datos, cómo se ve el mundo desde donde está parada esa persona} ---qué le queda cerca, qué le queda lejos, con qué cuenta, qué le cuesta---. \textbf{Fíjate en que eso se puede hacer aunque la persona no te caiga bien.} \emph{Y esa es justamente su potencia.}}
+\milcpaso{3}{milcTurquesa}{\textbf{Deshace el favoritismo, y se sabe cómo.} En el experimento de Galinsky y Moskowitz, tomar perspectiva le ganó a «esforzarse por no pensar el estereotipo», y funcionó también en las medidas \textbf{no conscientes} ---las que uno no puede fingir---. \textbf{Y el hallazgo fino:} redujo el favoritismo de grupo \textbf{subiendo la evaluación del otro grupo}, no bajando la del propio (Galinsky y Moskowitz, 2000). \emph{Léelo bien, porque cambia lo que hay que pedirte:} \textbf{nadie te está pidiendo que quieras menos a tu grupo}. \emph{Se trata de que el otro grupo deje de ser un bloque} ---y eso empieza, literalmente, por saber cosas de sus miembros---.}
+\milcpaso{4}{milcTurquesa}{\textbf{Se comprueba, no se declara.} \emph{Cualquiera puede decir que se pone en el lugar de los demás; casi nadie lo verifica.} \textbf{Y verificar es lo que separa esta actividad de un ejercicio de imaginación:} \emph{se reconstruye el día de una persona y después \textbf{se le pregunta a ella} si acertaste}. \textbf{Prepárate para el resultado, porque es el mismo casi siempre:} \emph{aciertas en lo visible ---dónde vive, qué materia le gusta--- y fallas en lo que importa} ---cuánto tarda en llegar, quién lo espera en la casa, qué es lo más difícil de su semana---. \textbf{Ese fallo no es un mal resultado: es el resultado.} \emph{Lo que enseña la técnica es la lista de tus errores.}}
+
+\begin{drawbox}{milcTurquesa}{Cómo se reconstruye el día de alguien}
+\begin{pasoslista}
+\item \textbf{La hora de levantarse y el camino:} \emph{¿a qué hora sale? ¿cómo llega? ¿cuánto tarda? ¿con quién?}
+\item \textbf{La casa:} \emph{¿quién hay? ¿quién cocina? ¿tiene dónde estudiar? ¿tiene que cuidar a alguien?}
+\item \textbf{El colegio, desde su silla:} \emph{¿con quién habla? ¿qué clase le gusta? ¿en cuál la pasa mal?}
+\item \textbf{Lo más difícil de su semana.} \emph{Aquí es donde casi todos fallan.}
+\item \textbf{Y el paso que lo vuelve real:} \textbf{preguntárselo a ella} y anotar en qué te equivocaste.
+\end{pasoslista}
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{Escoger a alguien conocido:} el ejercicio no enseña nada si ya sabes las respuestas. \textbf{Confundirlo con lástima:} compadecer se hace desde arriba. \textbf{Imaginar y no comprobar:} sin verificación es un cuento, no una técnica. \textbf{Preguntar como interrogatorio:} se conversa, no se encuesta. \textbf{Quedarse en lo visible:} lo que enseña está en lo que no se ve desde afuera. \textbf{Buscar que la reconstrucción salga bien:} el error es el producto. \textbf{Contar después lo que te contaron:} lo que sepas de esa persona no es material para el curso.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+
+
+\textbf{En tu cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2. Perspectiva, empatía y lástima». \textbf{Formato:} define las tres con tus palabras y pon un ejemplo propio de cada una; después explica qué hizo distinto tomar perspectiva en el experimento de Galinsky y Moskowitz. \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} puedes explicar por qué \textbf{se redujo el favoritismo subiendo la evaluación del otro grupo y no bajando la del propio}.
+\end{infoband}
+
+\puente{Ya sabes qué es. Es hora de hacerlo con alguien real ---y de comprobarlo, que es el paso que casi nadie da---.}
+
+\milcestacion{milcMagenta}{Fase 3 · Praxis: hacer el ejercicio}
+
+\begin{softbox}{milcMagenta}{milcGris}{Cómo se toma la perspectiva de alguien de verdad}
+Ahora se practica. Y como toda técnica, lo primero que produce son errores: por eso el producto es la lista de los tuyos.
+\end{softbox}
+
+\milcpaso{1}{milcMagenta}{\textbf{Escoger a quien no conozco (5 min).} De tus tres, quédate con \textbf{aquella de la que más datos imaginaste}. \emph{No con la que te caiga mejor:} \textbf{con la que menos sabes}. \emph{Si te da pena, ese es exactamente el punto ---la técnica también entrena eso---.}}
+\milcpaso{2}{milcMagenta}{\textbf{Reconstruir el día (12 min).} Escribe su día completo, de la hora de levantarse a la de acostarse, con los cinco puntos de la anatomía. \textbf{En presente y en detalle} ---«se levanta a las cinco y media porque le toca coger dos buses», no «madruga»---. \emph{Cuanto más concreto, más útil va a ser la comprobación.}}
+\milcpaso{3}{milcMagenta}{\textbf{Verificar con la persona (fuera de clase).} Háblale. \textbf{No le entregues el papel ni le digas que es una tarea sobre ella} ---eso incomoda a cualquiera---: \emph{conversa y pregunta}. Sirven las tres preguntas del momento 1 del grado 7: \emph{«¿cómo fue?», «¿qué fue lo más difícil?», «¿qué necesitas?»}. \textbf{Y una regla que no se negocia:} \emph{lo que te cuente no se cuenta a nadie más}. \textbf{Si no quiere hablar, se respeta y escoges a otra persona.}}
+\milcpaso{4}{milcMagenta}{\textbf{Registrar el error (8 min).} Vuelve a tu reconstrucción y \textbf{táchale lo que resultó falso}, anotando al lado lo que sí era. \emph{Después responde dos preguntas:} \textbf{¿en qué tipo de cosas acerté?} y \textbf{¿en qué tipo de cosas fallé?} \emph{Casi siempre el patrón es el mismo, y descubrirlo tú mismo vale más que leerlo aquí.}}
+
+\begin{drawbox}{milcMagenta}{Antes de cerrar tu ejercicio}
+\begin{checklista}
+\item Escogiste a la persona de la que \textbf{más datos habías imaginado}.
+\item Tu reconstrucción está en detalle concreto, no en generalidades.
+\item \textbf{Hablaste con la persona} y no le entregaste el papel ni la trataste como tarea.
+\item Tachaste lo que resultó falso y anotaste lo que sí era.
+\item Escribiste \textbf{en qué tipo de cosas acertaste y en cuáles fallaste}.
+\item Entendiste que lo que te contó \textbf{no se cuenta a nadie}.
+\end{checklista}
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{La reconstrucción.} \emph{«Se levanta a las \_\_\_\_ porque \_\_\_\_. Llega al colegio \_\_\_\_. En la casa hay \_\_\_\_. Lo más difícil de su semana es \_\_\_\_.»} \\[1mm]
+\textbf{Para conversar.} \emph{«¿Cómo fue tu semana? · ¿Qué fue lo más difícil? · ¿Qué necesitas?»} ---conversación, no interrogatorio---. \\[1mm]
+\textbf{El registro del error.} \emph{«Creí que \_\_\_\_. En realidad \_\_\_\_.»} ---una línea por error---.
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+
+
+\textbf{En tu cuaderno (Actividad 3 · CREA).} Título: «Actividad 3. Mi ejercicio de perspectiva». \textbf{Formato:} la reconstrucción completa + lo tachado con la corrección al lado + el patrón de aciertos y de fallos. \textbf{Extensión:} una página. \textbf{Sabes que terminaste cuando} tienes escrito \textbf{en qué tipo de cosas te equivocaste}.
+\end{infoband}
+
+\puente{El producto no es lo que imaginaste: \emph{es la lista de las cosas en que te equivocaste al imaginar}.}
+
+\milcestacion{milcMostaza}{Producto de la sesión}
+\textbf{Ejercicio de perspectiva: la reconstrucción de un día, verificada con la persona, y el registro de los errores}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) La persona escogida es aquella de la que más datos se habían imaginado, no una conocida. (2) La reconstrucción es concreta y detallada, no una descripción general. (3) Hubo verificación real mediante conversación, respetando que la persona pueda no querer hablar. (4) Los errores están registrados uno por uno, con la corrección al lado. (5) Se identifica el patrón: en qué tipo de cosas se acierta y en cuáles se falla.
+\end{softbox}
+
+\puente{Antes de cerrar, revisa lo esencial: si tu reconstrucción resultó perfecta, probablemente escogiste a alguien que ya conocías.}
+
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con tres voces: el otro que está siempre más allá de lo que puedo decir de él, la disposición a que me refuten, y el lugar compartido que se cultiva.}
+
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{«Analéctico quiere indicar el hecho real humano por el que todo hombre, todo grupo o pueblo se sitúa siempre más allá (aná-) del horizonte de la totalidad.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Enrique Dussel · Filosofía de la liberación (1977), §2.4}
+
+Esta cita es, exactamente, la razón por la que este ejercicio se \textbf{verifica}. \emph{Si el otro está siempre \textbf{más allá} de lo que yo puedo decir de él, entonces mi reconstrucción \textbf{va a estar equivocada}} ---no por descuido, sino por estructura---. \textbf{Y ahí está la diferencia entre tomar perspectiva y suponer:} \emph{el que supone se queda con su versión; el que toma perspectiva va y pregunta, porque sabe que le falta}. \textbf{Fíjate en que esto le pone un límite sano a la técnica:} \emph{nunca vas a «entender del todo» a nadie, y quien dice que entiende del todo a otro está describiéndose a sí mismo.}
+
+\textbf{¿De quién he dicho «yo sé cómo es esa persona» sin haber hablado nunca con ella?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · Meditaciones VI, 21 (c. 175 d.C.) · cuidado interior}
+\textit{«Si alguien puede refutarme y probar de modo concluyente que pienso o actúo incorrectamente, de buen grado cambiaré de proceder. Pues persigo la verdad, que no dañó nunca a nadie; en cambio, sí se daña el que persiste en su propio engaño e ignorancia.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Marco Aurelio · Meditaciones VI, 21 (c. 175 d.C.)}
+
+\textbf{«De buen grado cambiaré de proceder».} \emph{Eso es literalmente lo que hace la tercera parte de esta actividad:} ir donde la persona y \textbf{dejar que te refute}. \textbf{Y fíjate en el detalle de la cita:} Marco Aurelio no dice que aguantará la corrección ---dice que la recibirá \emph{de buen grado}, con gusto---. \emph{Esa es la actitud que hay que llevar a la conversación:} \textbf{ir a que te desmientan, no a confirmar lo que ya escribiste}. \emph{Y el remate encaja con todo el grado:} \textbf{«se daña el que persiste en su propio engaño»} ---un curso lleno de gente que cree conocerse sin haberse hablado nunca es exactamente eso---.
+
+\textbf{Cuando pregunto algo, ¿voy a enterarme o voy a confirmar lo que ya pensaba?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{«El florecimiento de las entidades informacionales y de toda la infoesfera debe promoverse preservando, cultivando y enriqueciendo sus propiedades.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Luciano Floridi · La ética de la información (2013; trad.)}
+
+Hay una tentación obvia y hay que nombrarla: \textbf{hoy se puede «investigar» a alguien sin hablarle} ---mirarle el perfil, las fotos, con quién aparece---. \emph{Eso no es tomar perspectiva: es vigilar}, y produce justo lo contrario, porque \textbf{lo que se ve en un perfil es lo que la persona escogió mostrar}. \emph{Además hay una asimetría que conviene notar:} \textbf{averiguar a espaldas de alguien lo deja sin decir nada}, y la técnica que estamos practicando consiste precisamente en que el otro pueda corregirte. \textbf{Cultivar, aquí, significa una cosa muy simple:} \emph{preguntar de frente lo que se podría averiguar a escondidas.}
+
+\textbf{¿Qué sé de mis compañeros por haberlo mirado, y qué sé por habérselo preguntado?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres son citas textuales y llevan su referencia debajo. Puedes remitir a la obra en clase.
+\end{infoband}
+
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
+
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Calidad de la toma de perspectiva & \milcopcion{Reconstruí el día de alguien, lo verifiqué con esa persona y anoté en qué me equivoqué.} & \milcopcion{Escribí lo que imagino de esa persona, pero no lo comprobé con ella.} & \milcopcion{Sigo pensando que ponerse en el lugar del otro es cuestión de ser buena gente.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Dos cosas. \textbf{Primero, trae tu lista de errores} ---no la reconstrucción: los errores--- y \textbf{una cosa que hayas aprendido de esa persona que no tenías cómo saber}. \emph{Si la conversación siguió después por su cuenta, anótalo también: es el mejor resultado posible.} \textbf{Segundo, pregunta en tu casa por un oficio que se aprende:} averigua con alguien mayor \textbf{qué sabe hacer que le enseñó otra persona} ---coser, cocinar algo específico, arreglar un motor, injertar, sacar cuentas, curar con plantas---, \textbf{quién se lo enseñó, cuánto tardó y cuántas veces le salió mal antes}. \textbf{Trae:} tu lista de errores y el oficio que te contaron. \emph{Vas a encontrar la misma estructura del jaibaná en cualquier oficio de tu familia: hubo un maestro, hubo años y hubo errores. Nadie aprendió nada importante de un día para otro, y ponerse en el lugar del otro no es la excepción.}
+\end{infoband}
+
+\end{document}

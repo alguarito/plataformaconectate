@@ -1,0 +1,611 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra UNICA de las guias MILC v3.
+%
+% La usan las cuatro familias de guias, cada una con su driver:
+%   · Grados 6-11          -> scripts/build-guias-g11.py
+%   · Bebras               -> scripts/build-guias-bebras.py
+%   · Semillero            -> scripts/build-guias-semillero.py
+%   · Territorio interior  -> scripts/build-guias-territorio-interior.py
+%
+% Antes habia tres copias casi identicas (~400 lineas iguales, 6 distintas):
+% cada mejora habia que aplicarla tres veces, y en la practica no se hacia
+% (el motor de recursos vivia solo en dos de ellas). Lo que varia entre
+% familias esta parametrizado en 6 placeholders que cada driver llena
+% (se nombran aqui SIN su sintaxis real: el builder reemplaza por texto plano,
+% tambien dentro de los comentarios, y un valor multilinea rompe el preambulo):
+%
+%   HEADER_IZQ        encabezado izquierdo de pagina
+%   HEADER_DER        encabezado derecho de pagina
+%   PORTADA_ETIQUETA  rotulo sobre el numero grande (GRADO/MOMENTO/MODULO)
+%   PORTADA_SERIE     linea de serie de la portada
+%   PORTADA_ID        identificador de la guia en la portada
+%   PORTADA_CIRCULO   el circulito de grado (°), o vacio si no aplica
+%   PDF_TITULO        titulo en texto plano (sin \textbf ni comillas TeX) para
+%                     los metadatos del PDF (/Title); lo produce lib_xelatex.texto_pdf
+%
+% Composicion (auditoria 2026-09-03): las bandas de estacion piden espacio
+% (\Needspace*) y prohiben el salto justo despues (\nopagebreak), asi no quedan
+% huerfanas al pie; las cajas largas (softbox, drawbox, infoband, puentebox) son
+% `breakable`, asi una caja de media pagina ya no arrastra todo a la siguiente
+% dejando la anterior al 40 %. Todo texto sobre mostaza o verde va en milcNegro
+% (blanco sobre #E5B400 da 1,93:1 y sobre #58A923 2,95:1; ninguno pasa WCAG AA).
+% El resto de claves las documenta content/guias/_SCHEMA.md. El script valida
+% que no queden placeholders sin reemplazar antes de escribir el archivo final.
+
+% Etiquetado PDF (latex-lab): /Lang, estructura y texto alternativo de las
+% figuras, para lectores de pantalla. Debe ir ANTES de \documentclass.
+\DocumentMetadata{lang=es-CO,tagging=on}
+\documentclass[11pt,letterpaper]{article}
+% headheight=24pt: la cabecera derecha lleva dos lineas (identidad de la guia
+% y estacion actual). headsep se acorta en la misma medida para que el bloque
+% de texto quede exactamente donde estaba con headheight=12pt.
+\usepackage[margin=2.0cm,headheight=24pt,headsep=13pt]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+% Librerías TikZ para los diagramas de las guías (bloque `recursos:`):
+%  · babel  → babel en español vuelve activos caracteres como «>», y TikZ los usa
+%             en sus opciones (>=stealth, ->). Sin esta librería, cualquier
+%             diagrama con flechas revienta con «\language@active@arg> has an
+%             extra }». Debe ir ANTES de que se dibuje nada.
+%  · positioning        → sintaxis «below left=2pt and 3pt».
+%  · decorations.pathreplacing → llaves ({brace}) para señalar rangos.
+\usetikzlibrary{babel,positioning,decorations.pathreplacing}
+\usepackage{graphicx}
+% Circuitos: el trabajo de electrónica se hace hoy con micro:bit y sus sensores
+% integrados (MakeCode, sin cableado), así que no se necesitan esquemáticos.
+% Si algún día entran montajes con protoboard, basta descomentar esta línea:
+% los diagramas .tex/.tikz declarados en `recursos:` ya se incrustan solos.
+% \usepackage{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{etoolbox}
+\usepackage{needspace}
+% hyperref al final del preambulo: metadatos del PDF (titulo, autor, idioma,
+% familia), marcadores por estacion (\pdfbookmark) y enlaces sin recuadro.
+\usepackage[hidelinks,
+  pdftitle={El aula que excluye: barreras que nadie puso a propósito},
+  pdfauthor={PhD. Álvaro Cárdenas Orozco},
+  pdfsubject={Territorio interior · Educación socioemocional · Grado 9° · Momento 6 · MILC v3},
+  pdflang={es-CO},
+  bookmarksopen=true,bookmarksnumbered=false]{hyperref}
+
+% Helvetica Neue no trae la flecha U+2192, asi que cada «→» escrito literalmente
+% en el YAML se compilaba a NADA, en silencio (462 flechas en 61 guias: rutas del
+% tipo «paleta → tipografia → lockup» salian rotas). Mapeamos el caracter a su
+% version matematica, que si tiene glifo. Asi el autor puede seguir escribiendo
+% «→» comodamente en el YAML.
+\usepackage{newunicodechar}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0D9488}
+\definecolor{milcGradeDark}{HTML}{115E59}
+\definecolor{milcGradeSoft}{HTML}{CCFBF1}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+% Cabecera de dos lineas: identidad de la guia arriba y, a la derecha y en
+% gris, la estacion en curso (\markright desde \milcestacion). Antes de la
+% primera estacion la segunda linea va vacia; el \strut mantiene la altura
+% para que la linea de arriba no baile entre paginas.
+\lhead{\small Territorio interior · Educación socioemocional\\[-1pt]{\footnotesize\strut}}
+\rhead{\small Grado 9° · Momento 6 · MILC v3\\[-1pt]{\footnotesize\strut\color{milcNegro!65}\rightmark}}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+% Sobre mostaza (#E5B400) y verde (#58A923) el texto va en milcNegro; sobre el
+% resto de la paleta, en blanco. Se usa dentro de fonttitle/fontupper, donde un
+% \color posterior manda sobre coltitle.
+\newcommand{\milctintasobre}[1]{%
+  \ifboolexpr{test{\ifstrequal{#1}{milcMostaza}} or test{\ifstrequal{#1}{milcVerde}}}%
+    {\color{milcNegro}}{\color{white}}}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,breakable,pad at break=3mm,
+  colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries\milctintasobre{#1},fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,breakable,pad at break=4mm,
+  colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries\milctintasobre{#1},
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,breakable,pad at break=2mm,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,breakable,pad at break=2mm,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+% La flecha va en modo matematico a proposito: Helvetica Neue NO tiene el glifo
+% U+2192, asi que \textrightarrow se compilaba a NADA («Missing character: There
+% is no → in font Helvetica Neue») y el puente salia sin flecha. En modo
+% matematico la flecha viene de la fuente matematica y si se dibuja.
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{$\rightarrow$}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+% ─── Listas aireadas para las guías socioemocionales ────────────────────
+% Componer las verificaciones como «\checkbox texto\\» deja el texto que salta
+% de línea debajo del cuadrito y apelmaza el bloque. Estos entornos alinean la
+% continuación y airean los ítems. Los usa Territorio Interior; cualquier
+% familia puede hacerlo.
+\newlist{checklista}{itemize}{1}
+\setlist[checklista]{
+  label=\textcolor{milcGradeDark}{\fbox{\phantom{x}}},
+  leftmargin=9mm, labelsep=3.2mm, itemsep=2.4mm,
+  topsep=2.5mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+\newlist{pasoslista}{enumerate}{1}
+\setlist[pasoslista]{
+  label=\textcolor{milcGradeDark}{\sffamily\bfseries\arabic*.},
+  leftmargin=8mm, labelsep=3mm, itemsep=2.8mm,
+  topsep=1mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+% Nunca huerfana: pide 9 lineas libres (o salta de pagina rellenando con
+% \vfill) y prohibe el salto justo despues de la banda. Nueve y no seis:
+% la caja partible que sigue necesita ~80pt (titulo adosado, relleno y dos
+% lineas) para arrancar en la misma pagina; con menos, tcolorbox la manda
+% entera a la siguiente y la banda se queda sola. El penalty 10000 va
+% en `after`, ANTES del espacio posterior: un `after skip` (aunque sea 0pt)
+% es un \vskip tras la caja, y ese glue es un punto de corte legal que un
+% \nopagebreak escrito despues de \end{tcolorbox} ya no cierra. Cada banda
+% deja marcador PDF y actualiza la cabecera derecha.
+\newcounter{milcestacion}
+\newcommand{\milcestacion}[2]{%
+\Needspace*{9\baselineskip}%
+\stepcounter{milcestacion}%
+\pdfbookmark[1]{#2}{milcestacion\themilcestacion}%
+\markright{#2}%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,
+  after={\par\nopagebreak\vskip7pt}]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\milctintasobre{#1}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\Needspace{4\baselineskip}%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
+% ── Recursos visuales de la guía ──────────────────────────────────────
+% Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
+% \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
+% \guiaDiagrama → fuente TikZ/circuitikz (.tex) incrustada como vector:
+%                 es la vía para circuitos y esquemáticos editables.
+% [#1] = texto alternativo (alt) · #2 = ruta relativa al .tex · #3 = pie
+% El alt llega al PDF etiquetado (/Alt) y lo lee el lector de pantalla.
+\newcommand{\guiaFigura}[3][]{%
+\begin{center}
+\includegraphics[width=0.88\linewidth,height=0.38\textheight,keepaspectratio,alt={#1}]{#2}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#3}}
+\end{center}
+}
+
+\newcommand{\guiaDiagrama}[2]{%
+\begin{center}
+\input{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\begin{document}
+\thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
+\begin{tikzpicture}[remember picture,overlay]
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont MOMENTO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont TERRITORIO INTERIOR · SOCIOEMOCIONAL};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
+
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 6};
+  % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
+  % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  
+
+  \node[anchor=west,text=milcGradeText,text width=11.4cm,align=left] at ([xshift=1.5cm,yshift=0.5cm]gradonum.east)
+    {
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Territorio interior · Socioemocional}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont\setlength{\baselineskip}{27pt}El aula\\[4pt]que excluye\\[4pt]barreras que nadie puso}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Grado 9° · Momento 6}
+    };
+\end{tikzpicture}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Tu auditoría de barreras: el recorrido real de tu colegio con las barreras físicas, de comunicación y de método que encontraste, cada una con quién queda por fuera y con un ajuste que no cuesta plata, más la lista entregada a alguien que pueda hacer algo.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · Apertura ancestral · Discapacidad y barreras · Triángulo Dussel-Estoicismo-Floridi}}
+
+\newpage
+
+\section*{Apertura: El aula que excluye: barreras que nadie puso a propósito}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+En \textbf{1940}, en el barrio San Fernando de Cali, la caleña \textbf{Luisita Sánchez de Hurtado} fundó el \textbf{Instituto para Niños Ciegos y Sordos}. \emph{Fue una obra enorme y sigue siendo una de las instituciones más importantes del país en su campo.} \textbf{Y al mismo tiempo dice algo sobre la época que conviene leer con cuidado:} \emph{empezó como un \textbf{internado}}, al que asistían personas de todas las edades ---\textbf{es decir, la manera de atender a los niños ciegos y sordos era \emph{sacarlos} de la escuela común y reunirlos aparte}---. \emph{Con los años eso cambió:} tras los daños del terremoto de \textbf{1979} tuvo que cerrar y volvió convertido en \textbf{externado}. \textbf{Y falta el dato que completa el cuadro.} \emph{Los niños sordos de este país se comunicaban entre ellos desde siempre, con una lengua propia.} \textbf{Pero esa lengua no fue reconocida por el Estado colombiano como \emph{idioma} sino hasta la \textbf{Ley 324 de 1996}}, que reconoció la \textbf{Lengua Manual Colombiana} como lengua propia de la comunidad sorda y ordenó garantizar intérpretes y promover escuelas para formarlos. \emph{Fíjate en la fecha: 1996. Es decir, hubo generaciones enteras cuya lengua materna \textbf{oficialmente no era una lengua}.}
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+¿Y dónde está exactamente la discapacidad: en la persona o en el lugar? \textbf{Hay una respuesta oficial, y Colombia la firmó.} La \textbf{Convención sobre los Derechos de las Personas con Discapacidad}, adoptada por la Asamblea General de las Naciones Unidas el \textbf{13 de diciembre de 2006} y aprobada en Colombia por la \textbf{Ley 1346 de 2009}, dice algo que cambia por completo dónde hay que mirar: \emph{«la discapacidad es un concepto que evoluciona y que \textbf{resulta de la interacción} entre las personas con deficiencias y \textbf{las barreras debidas a la actitud y al entorno} que evitan su participación plena y efectiva en la sociedad»}. \textbf{Lee otra vez esas dos palabras: \emph{interacción} y \emph{barreras}.} \emph{No dice que la discapacidad sea una característica de la persona.} \textbf{Dice que aparece \emph{entre} la persona y un entorno que fue construido sin contar con ella.} \emph{La consecuencia práctica es enorme y es el trabajo de hoy:} \textbf{si la barrera está en el entorno, entonces se puede quitar} ---y quitarla no es un favor que se le hace a nadie: es cumplir lo que ya está firmado---.
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{Hubo generaciones cuya lengua materna \textbf{oficialmente no era una lengua}, y niños a los que se atendía \textbf{sacándolos} de la escuela común. \textbf{¿Qué hay en tu colegio ---en el edificio, en cómo se explica, en cómo se avisan las cosas--- que deja a alguien por fuera} \ldots \textbf{sin que nadie lo haya querido}?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar podrás: (1) \textbf{explicar} que la discapacidad resulta de la interacción entre una persona y las barreras del entorno, según la norma que Colombia firmó; (2) \textbf{distinguir} tres clases de barrera ---física, de comunicación y de método--- y reconocer que las dos últimas son las que casi nadie ve; (3) \textbf{auditar} tu propio colegio y encontrar barreras concretas; (4) \textbf{proponer} ajustes que no cuestan dinero y entregarlos a alguien que pueda decidir.
+\end{softbox}
+
+
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Comprende los fenómenos que afectan a su territorio, regula sus emociones ante ellos y acompaña a otros con empatía (transversal 6°--11°, articulado con la política «Escuela, territorio de vida» del MEN, Resolución 006519 de 2025, y la Ley 1620 de 2013)\\
+Referentes & Primera ayuda psicológica (OMS, 2011/2012) · Directrices IASC (2007) · USGS y Servicio Geológico Colombiano · Pueblo nasa y la minga (CRIC) · Dussel · Estoicismo · Floridi\\
+Producto final & Tu auditoría de barreras: el recorrido real de tu colegio con las barreras físicas, de comunicación y de método que encontraste, cada una con quién queda por fuera y con un ajuste que no cuesta plata, más la lista entregada a alguien que pueda hacer algo.\\
+\end{tabularx}
+\normalsize
+
+\puente{En el momento 5 viste una jerarquía que se sostiene sin que nadie la defienda. \textbf{Hoy verás algo parecido y todavía más invisible:} \emph{barreras que excluyen sin que nadie las haya puesto con esa intención}.}
+
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Miro el entorno, no a la persona.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Primero, dentro de tu propio salón: qué necesita alguien para poder participar, y qué le falta.}
+
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- Quién no puede hacer qué.} \textbf{Sin nombres: usa iniciales.} \textbf{Primera parte.} Piensa en tu salón y en tu colegio y anota \textbf{qué actividades le resultan difíciles o imposibles a alguien}: subir al segundo piso, oír lo que dice el profesor de espaldas, leer del tablero desde atrás, entender una explicación larga y hablada, escribir rápido, quedarse quieto una hora, entrar al baño, participar en la izada. \textbf{Segunda parte, la que cambia la mirada.} Al frente de cada una, escribe \textbf{qué hay en el lugar} que lo hace difícil ---no qué tiene la persona---. \emph{Es decir: en vez de «no puede subir», escribe «no hay ascensor ni rampa».} \textbf{Tercera parte.} ¿Hay alguien en tu colegio que \textbf{no participa de algo} y todo el mundo lo da por normal? \textbf{Y la última:} ¿alguna vez \textbf{tú} no entendiste algo y no preguntaste? \emph{¿Qué te lo impidió: no entender, o que preguntar costara?}
+\end{softbox}
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Anotaste actividades concretas, no características de personas.}
+\milccheckrow{Escribiste \textbf{qué hay en el lugar} que lo hace difícil, no qué tiene la persona.}
+\milccheckrow{Identificaste a alguien que no participa de algo y todos lo dan por normal.}
+
+\begin{infoband}{milcVerde}
+
+
+\textbf{En tu cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1. Quién no puede hacer qué». \textbf{Formato:} la lista de actividades con la barrera del entorno al frente + quién no participa + tu propia experiencia de no preguntar. \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} todas tus frases hablan \textbf{del lugar} y no de las personas. Esta página es tuya: \textbf{nadie más tiene que leerla si tú no quieres}.
+\end{infoband}
+
+\puente{Ya lo tienes. Ahora, dónde está la discapacidad según la Convención, y por qué una lengua tardó hasta 1996 en ser reconocida.}
+
+\milcestacion{milcTurquesa}{Fase 2 · Sistematización: entender la barrera}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro claves sobre las barreras}
+Cuatro claves para dejar de mirar a la persona y aprender a mirar el lugar.
+\end{softbox}
+
+\milcpaso{1}{milcTurquesa}{\textbf{Aparte no es incluido, aunque se haga con cariño.} El Instituto de Cali nació en \textbf{1940} de una intención generosa \emph{y funcionaba como internado}: la forma de atender era \textbf{reunir aparte}. \emph{Y esto hay que decirlo con cuidado, porque no es un reproche a quien lo fundó ---en su época era lo que existía y era mejor que nada---.} \textbf{Pero muestra la lógica de una era entera:} \emph{si el niño no encaja en la escuela, se cambia al niño de escuela}. \textbf{Lo que cambió después es el orden de la frase:} \emph{si el niño no encaja en la escuela, \textbf{se cambia la escuela}}. \emph{Y ojo, porque esa lógica antigua sigue viva en versiones pequeñas:} \textbf{el que «hace las actividades aparte», el que se queda en el salón cuando los demás salen, el que tiene su propia hoja distinta y nunca la comparte con nadie.}}
+\milcpaso{2}{milcTurquesa}{\textbf{La discapacidad está en la interacción, y eso lo dice la norma.} La Convención de \textbf{2006} ---aprobada aquí por la \textbf{Ley 1346 de 2009}--- define la discapacidad como algo que \textbf{resulta de la interacción} entre las personas con deficiencias y \textbf{las barreras debidas a la actitud y al entorno}. \emph{Traducido a un ejemplo que se entiende de una:} \textbf{una persona en silla de ruedas no «tiene» la imposibilidad de entrar a la biblioteca ---la imposibilidad la tienen \emph{las escaleras}---.} \emph{Y fíjate en que la Convención nombra dos entornos:} \textbf{el físico y \emph{la actitud}}. \emph{La actitud también es una barrera:} \textbf{hablarle a alguien más despacio de lo necesario, decidir por él, felicitarlo por cosas ordinarias, hablarle al acompañante en vez de a él.}}
+\milcpaso{3}{milcTurquesa}{\textbf{Una lengua tardó hasta 1996 en ser lengua.} Los niños sordos colombianos se comunicaban entre sí desde siempre; \textbf{el Estado reconoció la \emph{Lengua Manual Colombiana} como idioma propio de la comunidad sorda con la Ley 324 de 1996}, que además ordenó garantizar intérpretes y promover escuelas para formarlos. \emph{Piensa lo que significa que algo tan evidente necesitara una ley:} \textbf{durante décadas, lo que esos niños hablaban se consideró un apaño, no una lengua} ---y a menudo se les enseñaba a hablar en vez de enseñarles en la suya---. \emph{La lección general vale para cualquier diferencia:} \textbf{muchas veces la barrera no es que alguien no pueda comunicarse ---es que lo suyo no se cuenta como comunicación válida---.}}
+\milcpaso{4}{milcTurquesa}{\textbf{Los ajustes que no cuestan plata.} \emph{Es fácil salir de aquí pensando que esto se arregla con obras, y no es así:} \textbf{la mayoría de las barreras de un salón se quitan gratis}. \emph{Ejemplos reales:} \textbf{hablar de frente} para quien lee los labios; \textbf{no explicar mientras se escribe} de espaldas; \textbf{dejar la instrucción por escrito} además de decirla; \textbf{dar un minuto más} para copiar; \textbf{dejar sentarse adelante} a quien lo necesita; \textbf{decir la palabra difícil deletreada}; \textbf{avisar los cambios con anticipación} ---esto último cambia el día entero de muchas personas neurodivergentes---; \textbf{no tocar la silla, el bastón ni al perro guía sin permiso}. \emph{Ninguna cuesta un peso, y casi todas mejoran la clase para todo el mundo.}}
+
+\begin{drawbox}{milcTurquesa}{Las tres clases de barrera}
+\begin{pasoslista}
+\item \textbf{Física:} escaleras sin rampa, puertas estrechas, baños, tableros que no se ven, ruido.
+\item \textbf{De comunicación:} todo dicho y nada escrito, avisos solo por audio, explicar de espaldas, letra pequeña.
+\item \textbf{De método:} una sola forma de evaluar, instrucciones largas y habladas, cambios sin avisar, ritmo único.
+\item \textbf{Y la que atraviesa las tres ---la actitud---:} decidir por alguien, hablarle al acompañante, felicitarlo por lo ordinario.
+\item \textbf{Regla de oro:} \emph{la pregunta no es «¿qué le pasa a esa persona?», sino «¿qué hay aquí que se lo impide?».}
+\end{pasoslista}
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{Mirar a la persona y no al lugar:} la Convención dice que la barrera está en el entorno. \textbf{Creer que solo son rampas:} las de comunicación y método son más frecuentes y más invisibles. \textbf{Ayudar sin preguntar:} se pregunta primero, siempre. \textbf{Hablarle al acompañante:} la persona está ahí. \textbf{Felicitar por lo ordinario:} venir a clase no es una hazaña. \textbf{«Actividades especiales aparte»:} aparte no es incluido. \textbf{Suponer que la diferencia se ve:} muchas no se ven.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+
+
+\textbf{En tu cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2. Dónde está la barrera». \textbf{Formato:} toma \textbf{cinco} frases del tipo «no puede\ldots» y reescríbelas como «aquí no hay\ldots» o «aquí se hace de tal forma que\ldots». \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} puedes explicar por qué \textbf{las escaleras son la barrera y no la silla de ruedas}.
+\end{infoband}
+
+\puente{Ya sabes dónde mirar. Es hora de recorrer tu colegio con esos ojos ---y de proponer arreglos que no cuestan plata---.}
+
+\milcestacion{milcMagenta}{Fase 3 · Praxis: auditar el colegio}
+
+\begin{softbox}{milcMagenta}{milcGris}{Cómo se audita un lugar buscando barreras}
+Esta guía termina en un papel entregado. Auditar sin entregar es hacer la mitad.
+\end{softbox}
+
+\milcpaso{1}{milcMagenta}{\textbf{El recorrido (15 min, en grupos, por el colegio).} Recorran una ruta real ---entrada, salón, baño, biblioteca, cafetería, cancha, la sala de sistemas--- \textbf{anotando barreras}. \emph{Un truco que funciona:} \textbf{háganlo imaginando a cuatro personas distintas} ---alguien que no ve bien, alguien que no oye, alguien que no puede subir escaleras, alguien a quien el ruido y los cambios lo desbordan--- y anoten qué le pasaría a cada una en cada punto.}
+\milcpaso{2}{milcMagenta}{\textbf{Las tres clases (8 min).} Clasifiquen lo encontrado en \textbf{física}, \textbf{de comunicación} y \textbf{de método}. \emph{Cuenten cuántas hay de cada una.} \textbf{Casi siempre las físicas son las menos y las de método las más} ---y son, justamente, las que nadie había mirado nunca---.}
+\milcpaso{3}{milcMagenta}{\textbf{El ajuste sin plata (10 min).} Al frente de cada barrera, escriban \textbf{un ajuste que no cueste dinero} y \textbf{quién tendría que hacerlo} ---un profesor, la coordinación, los mismos estudiantes---. \emph{Descarten por ahora las que necesitan obra:} \textbf{déjenlas anotadas aparte, pero el producto son las gratis}, porque son las que pueden ocurrir este mes.}
+\milcpaso{4}{milcMagenta}{\textbf{Entregar la lista (fuera de clase).} \textbf{Pásenla en limpio y entréguensela a alguien que pueda decidir}: el director de grupo, coordinación, el consejo estudiantil. \emph{Y háganlo bien:} \textbf{sin acusar a nadie} ---las barreras no las puso nadie a propósito, y presentarlas como reclamo garantiza que se defiendan---. \emph{Preséntenlas como lo que son:} \textbf{una lista de cosas fáciles que mejoran el colegio para todos}. \textbf{Anoten qué respondieron.}}
+
+\begin{drawbox}{milcMagenta}{Antes de cerrar tu auditoría}
+\begin{checklista}
+\item Recorrieron una ruta real y no la imaginaron desde el salón.
+\item Hicieron el recorrido pensando en \textbf{cuatro} personas distintas.
+\item Tienen barreras de los \textbf{tres tipos}, no solo físicas.
+\item Cada barrera tiene un \textbf{ajuste sin plata} y \textbf{quién} tendría que hacerlo.
+\item Todas sus frases hablan del lugar, no de las personas.
+\item \textbf{Entregaron la lista} y anotaron qué respondieron.
+\end{checklista}
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Cómo se escribe una barrera.} \emph{«En \_\_\_\_, quien \_\_\_\_ no puede \_\_\_\_ porque aquí \_\_\_\_.»} ---el sujeto de la última parte es el lugar---. \\[1mm]
+\textbf{El ajuste.} \emph{«Se arregla si \_\_\_\_. Lo tendría que hacer \_\_\_\_. No cuesta nada.»} \\[1mm]
+\textbf{Al entregar.} \emph{«Hicimos una lista de cosas fáciles que harían el colegio más fácil para todos. ¿Se la podemos mostrar?»}
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+
+
+\textbf{En tu cuaderno (Actividad 3 · CREA).} Título: «Actividad 3. Auditoría de barreras». \textbf{Formato:} la ruta recorrida + las barreras clasificadas en los tres tipos con su conteo + el ajuste y el responsable de cada una + a quién se entregó y qué respondió. \textbf{Extensión:} una página. \textbf{Sabes que terminaste cuando} la lista \textbf{está entregada}.
+\end{infoband}
+
+\puente{El producto se entrega. \emph{Una auditoría que se queda en el cuaderno no le quitó una barrera a nadie.}}
+
+\milcestacion{milcMostaza}{Producto de la sesión}
+\textbf{Auditoría de barreras: recorrido real, barreras de los tres tipos con ajustes sin costo, y la lista entregada}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) La auditoría surge de un recorrido real y contempla al menos cuatro perfiles distintos. (2) Las barreras están formuladas como propiedades del entorno, no de las personas. (3) Hay barreras de los tres tipos, incluidas las de comunicación y método. (4) Cada barrera tiene un ajuste sin costo y un responsable identificado. (5) La lista fue entregada a alguien con capacidad de decidir, sin formularla como reclamo.
+\end{softbox}
+
+\puente{Antes de cerrar, revisa lo que suele faltar: si tu lista solo tiene escaleras y rampas, te faltaron las barreras de comunicación y de método.}
+
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con tres voces: el rostro que reclama un derecho, la abeja y el enjambre, y el cuidado de un entorno compartido.}
+
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{«El otro se revela realmente como otro\ldots como el pobre, el oprimido; el que, a la vera del camino, fuera del sistema, muestra su rostro sufriente y sin embargo desafiante: «¡Tengo hambre!, ¡tengo derecho a comer!»»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Enrique Dussel · Filosofía de la liberación (1977)}
+
+\textbf{«Fuera del sistema»} es, en esta guía, una descripción literal: \emph{un edificio con escaleras deja a alguien fuera del sistema sin que nadie lo haya decidido}. \textbf{Y la última palabra vuelve a ser la clave:} \emph{el que reclama una rampa, un intérprete o una instrucción escrita \textbf{no está pidiendo un favor} ---está reclamando algo que Colombia firmó en 2006 y aprobó por ley en 2009---.} \textbf{Ese cambio de marco lo cambia todo:} \emph{una barrera no es una desgracia que le tocó a alguien ---es un incumplimiento---.} \emph{Y por eso la lista que ustedes entregan no es una petición de buena voluntad: es un recordatorio.}
+
+\textbf{¿He pensado alguna vez que hacer accesible algo era «un detalle bonito» y no una obligación?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · Meditaciones VI, 54 (c. 175 d.C.) · cuidado interior}
+\textit{«Lo que no beneficia al enjambre, tampoco beneficia a la abeja.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Marco Aurelio · Meditaciones VI, 54 (c. 175 d.C.)}
+
+\emph{Aquí la frase tiene una vuelta que sorprende y que conviene mirar bien:} \textbf{los ajustes que quitan barreras casi siempre mejoran la clase \emph{para todo el mundo}}. \emph{Piénsalo con los ejemplos:} \textbf{dejar la instrucción por escrito ayuda al que no oye \emph{y} al que se distrajo; hablar de frente ayuda al que lee los labios \emph{y} al del último puesto; avisar los cambios con tiempo ayuda a quien los cambios lo desbordan \emph{y} a quien tiene que organizar su tarde.} \textbf{Ese es el mejor argumento de esta guía y no es un argumento moral, es práctico:} \emph{lo que se hace por uno termina sirviéndole al enjambre entero.}
+
+\textbf{De los ajustes de nuestra lista, ¿cuáles me servirían también a mí?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{«El florecimiento de las entidades informacionales y de toda la infoesfera debe promoverse preservando, cultivando y enriqueciendo sus propiedades.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Luciano Floridi · La ética de la información (2013; trad.)}
+
+\textbf{Hoy una parte enorme del colegio ocurre en pantallas, y ahí se levantan barreras nuevas sin que nadie lo note.} \emph{Un aviso importante puesto solo como \textbf{imagen} no lo puede leer un lector de pantalla; un video sin subtítulos deja por fuera a quien no oye ---y también a quien no tiene audífonos---; un PDF que es una foto de un texto no se puede buscar ni ampliar.} \textbf{Y la buena noticia es la misma de siempre:} \emph{arreglarlo es gratis} ---escribir el texto además de la imagen, poner subtítulos, describir las fotos---. \textbf{Cultivar, aquí, significa que la información del curso llegue completa a todos los del curso.} \emph{Empezando por el grupo de chat, que también es una puerta.}
+
+\textbf{Los avisos importantes de mi curso, ¿llegan de una forma que todos puedan recibir?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres son citas textuales y llevan su referencia debajo. Puedes remitir a la obra en clase.
+\end{infoband}
+
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
+
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Calidad de la auditoría & \milcopcion{Encontré barreras de los tres tipos y propuse ajustes concretos que no cuestan plata.} & \milcopcion{Identifico rampas y escaleras, pero no las barreras de comunicación ni de método.} & \milcopcion{Sigo pensando que el problema lo tiene la persona y no el lugar.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Dos cosas. \textbf{Primero, entreguen la lista} y traigan \textbf{qué respondieron}. \emph{Y cada uno, por su cuenta, aplique \textbf{un} ajuste de la lista durante la semana ---hablar de frente, escribir lo que se dice, avisar los cambios--- y anote si alguien lo notó.} \textbf{Segundo, pregunta en tu casa qué pasaba antes:} averigua con alguien mayor \textbf{si en su colegio había algún niño que no viera, no oyera, no caminara o aprendiera distinto}, \textbf{qué se hacía con él} ---si iba a clase, si lo mandaban a otro lado, si no iba a estudiar--- y \textbf{qué se decía de esa persona}. \textbf{Trae:} la respuesta a la lista y lo que te contaron. \emph{Prepárate para una respuesta que se repite mucho y que dice más que cualquier estadística: «no había ninguno». Casi nunca era verdad que no existieran. Es que no estaban ahí.}
+\end{infoband}
+
+\end{document}

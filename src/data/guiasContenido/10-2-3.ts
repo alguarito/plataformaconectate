@@ -70,11 +70,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuántas herramientas profesionales clave tiene Google Docs?',
           opciones: [
             '1',
-            '5',
             '20',
+            '5',
             '100'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Exacto. 5: estilos de título, índice automático, numeración, citas y pie de figura.',
           feedbackIncorrecto: 'Son 5. Usarlas convierte el documento de tarea escolar en pieza profesional.'
         },
@@ -82,11 +82,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cómo se genera la tabla de contenido automática?',
           opciones: [
             'Se escribe a mano',
-            'Insertar → Tabla de contenidos (a partir de estilos de título)',
             'No se puede',
-            'Hay que pagar'
+            'Hay que pagar',
+            'Insertar → Tabla de contenidos (a partir de estilos de título)'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Correcto. Insertar → Tabla de contenidos. Se genera de los estilos y se actualiza con un clic.',
           feedbackIncorrecto: 'Insertar → Tabla de contenidos. Lo hace solo a partir de los estilos de título aplicados.'
         },
@@ -105,12 +105,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: '¿Por qué los pies de figura deben estar numerados?',
           opciones: [
-            'Por costumbre',
             'Para poder referenciarlos en el texto sin ambigüedad',
+            'Por costumbre',
             'Para que se vea bonito',
             'No importa'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Correcto. La numeración permite escribir "ver Figura 2" sin que el lector se pierda.',
           feedbackIncorrecto: 'Para referenciarlas en el texto sin ambigüedad. "Figura 2" es claro; "la imagen de arriba" no.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Qué diferencia un documento "tarea escolar" de uno "profesional" en Docs?',
           opciones: [
             'El idioma',
-            'Usar los 5 elementos (estilos, índice, numeración, citas, pie de figura)',
             'Solo el título',
-            'Solo la portada'
+            'Solo la portada',
+            'Usar los 5 elementos (estilos, índice, numeración, citas, pie de figura)'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Exacto. Aplicar los 5 elementos cambia la sensación del documento aunque el contenido sea el mismo.',
           feedbackIncorrecto: 'Los 5 elementos profesionales. Aplicarlos consistentemente da aire profesional al documento.'
         }

@@ -70,23 +70,23 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuál es la relación entre tejer un canasto y programar un computador?',
           opciones: [
             'Ninguna, son cosas totalmente distintas.',
-            'Ambos siguen un algoritmo: secuencia, repetición, condicionales, contadores.',
             'Tejer es más difícil.',
-            'Programar es solo para genios; tejer es para abuelas.'
+            'Programar es solo para genios; tejer es para abuelas.',
+            'Ambos siguen un algoritmo: secuencia, repetición, condicionales, contadores.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. Tejer es algoritmia cultural. Las abuelas hacen mentalmente lo que un programa hace en código: secuencia, repetición, condicionales, contadores. Mismo pensamiento, distinto medio.',
           feedbackIncorrecto: 'Tejer y programar comparten estructura algorítmica. Las abuelas son programadoras culturales: secuencia, repetición, condicional, variable. Mismo pensamiento.'
         },
         {
           enunciado: '¿Es necesario ser muy bueno en matemáticas para programar?',
           opciones: [
-            'Sí, sin matemáticas no se puede.',
             'La mate ayuda pero no es requisito. La habilidad central es pensar paso a paso.',
+            'Sí, sin matemáticas no se puede.',
             'Solo álgebra es necesaria.',
             'La programación es lo mismo que matemáticas.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Bien. Pensar paso a paso es la habilidad central. La mate ayuda pero no decide. Hay programadores excelentes que no son fuertes en mate.',
           feedbackIncorrecto: 'Pensar paso a paso es la habilidad central. Mate ayuda pero no es requisito. Las abuelas tejedoras programan algoritmos sin saber álgebra avanzada.'
         },
@@ -94,11 +94,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu primer programa en Scratch no funciona. ¿Qué haces?',
           opciones: [
             'Me rindo, no soy bueno para esto.',
-            'Lo reviso con calma (acuerdo 3) e intento de nuevo modificando algo (acuerdo 4).',
             'Borro Scratch.',
+            'Lo reviso con calma (acuerdo 3) e intento de nuevo modificando algo (acuerdo 4).',
             'Le pago a alguien para que lo arregle.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Acuerdos 3 y 4: revisar errores con calma + intentar de nuevo. Los errores son información, no fracaso. Programadores expertos pasan más tiempo depurando que escribiendo.',
           feedbackIncorrecto: 'Acuerdos 3 y 4: revisar con calma, intentar de nuevo. Los errores son tu maestro. Sin error no aprendes a depurar (encontrar y corregir).'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuántas sesiones tiene el periodo 2?',
           opciones: [
             '5 sesiones.',
-            '10 sesiones organizadas en 3 bloques (algoritmo y diagramas + componentes + Scratch).',
             '30 sesiones.',
-            'Solo 2 sesiones.'
+            'Solo 2 sesiones.',
+            '10 sesiones organizadas en 3 bloques (algoritmo y diagramas + componentes + Scratch).'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. 10 sesiones en 3 bloques: (1) algoritmo + diagramas, (2) variables + condicionales + bucles, (3) Scratch. Cada bloque te prepara para el siguiente.',
           feedbackIncorrecto: '10 sesiones, 3 bloques: algoritmos y diagramas (S2-S4), componentes de programación (S5-S7), Scratch (S8-S10). Cada uno te prepara para el siguiente.'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿En mi familia hay alguien que "programa" sin saberlo (cocina con receta exacta, teje, hace algo paso a paso)? ¿Qué les podría enseñar el pensamiento computacional explícito?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador del pensamiento paso a paso)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Quien aprende a pensar paso a paso domina cualquier oficio. La paciencia con el orden es el secreto del trabajo bien hecho."',
       preguntaEspejo: '¿Tiendo a apurarme cuando un problema es difícil, o sé descomponer paso a paso?'

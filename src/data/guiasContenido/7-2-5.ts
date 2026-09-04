@@ -70,11 +70,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuál de estos nombres de variable SIGUE las 5 reglas?',
           opciones: [
             'x',
-            'cantidadMonedasGanadas',
             'Cantidad Monedas',
+            'cantidadMonedasGanadas',
             '1edad'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. cantidadMonedasGanadas: minúscula inicial, camelCase, descriptivo, sin espacios, no empieza con número. Cumple las 5 reglas.',
           feedbackIncorrecto: 'cantidadMonedasGanadas cumple las 5 reglas. \'x\' no es descriptivo; \'Cantidad Monedas\' tiene espacio; \'1edad\' empieza con número.'
         },
@@ -93,12 +93,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'Tu algoritmo cuenta cuántas veces se repite algo. ¿Qué variable creas?',
           opciones: [
-            'Un texto.',
             'Una variable numérica (entera) que empieza en 0 y se suma 1 cada vez.',
+            'Un texto.',
             'Un booleano.',
             'Ninguna.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Variable numérica entera como contador. Empieza en 0 y se incrementa (suma 1) cada repetición. Es patrón clásico de programación.',
           feedbackIncorrecto: 'Variable numérica entera (contador). Empieza en 0. Se suma 1 cada repetición. Es patrón fundamental. Lo verás en bucles (S7).'
         },
@@ -106,11 +106,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Escribes \'edad = 13\'. Después escribes \'edad = edad + 1\'. ¿Qué pasa?',
           opciones: [
             'Da error.',
-            'La variable edad ahora vale 14 (cambió de 13 a 14).',
             'Crea una nueva variable.',
-            'Borra la variable.'
+            'Borra la variable.',
+            'La variable edad ahora vale 14 (cambió de 13 a 14).'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Bien. = es asignación. \'edad + 1\' calcula 14 (porque edad valía 13), y ese 14 se asigna a la variable edad. Ahora edad vale 14.',
           feedbackIncorrecto: 'Edad ahora vale 14. La operación \'edad + 1\' lee el valor actual (13) y calcula 14. Después el = asigna 14 a la variable edad.'
         },
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Cuántas cosas en mi vida tengo sin nombrar bien y que por eso me confunden?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador que valoraba la precisión del lenguaje)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"La palabra exacta resuelve confusiones que las explicaciones largas no logran."',
       preguntaEspejo: '¿Cuando escribo (texto, código, listas), mi yo del futuro lee con claridad o tiene que adivinar?'
@@ -154,7 +154,7 @@ const contenido: ContenidoGuia = {
     floridi: {
       autor: 'Luciano Floridi (filósofo italiano del oficio de programar)',
       lente: 'lente de la infoesfera',
-      cita: '"El 50% del oficio de programar es nombrar bien. El otro 50% es lógica. Los buenos programadores invierten en ambos."',
+      cita: '"El 50 % del oficio de programar es nombrar bien. El otro 50 % es lógica. Los buenos programadores invierten en ambos."',
       preguntaEspejo: '¿Voy a ser un programador (o pensador) que nombra bien, o uno que mete x en todas partes?'
     }
   },

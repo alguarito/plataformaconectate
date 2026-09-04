@@ -69,12 +69,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'Un amigo nuevo de un juego te dice: \'No le cuentes a tus papás que hablamos, ellos no entienden estas cosas\'. ¿Qué señal es?',
           opciones: [
-            'Ninguna, solo está siendo amable.',
             'Es señal de grooming: te pide secreto y te aleja de tus adultos.',
+            'Ninguna, solo está siendo amable.',
             'Es señal de buen amigo: respeta tu privacidad.',
             'Es señal de que es un niño igual a ti.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Pedir secreto + alejarte de adultos son 2 señales clarísimas. Una persona honesta jamás te pide guardar secretos de tus papás.',
           feedbackIncorrecto: 'Es alerta grande. Pedir secreto + alejarte de tu familia es la señal más clara de grooming. Cuéntale a un adulto YA.'
         },
@@ -82,11 +82,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Un grupo de tu salón te manda memes burlándose de tu pelo cada día. ¿Es eso ciberacoso?',
           opciones: [
             'No, es solo broma entre amigos.',
-            'Sí, es ciberacoso. Aunque parezca broma, lo repetitivo y burlón hace daño.',
             'Solo sería ciberacoso si te golpean en persona.',
+            'Sí, es ciberacoso. Aunque parezca broma, lo repetitivo y burlón hace daño.',
             'Es tu culpa por peinarte así.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. El ciberacoso se reconoce por ser repetido y por hacerte sentir mal. La broma sana no se repite todos los días.',
           feedbackIncorrecto: 'Es ciberacoso. Algo repetido que te hace sentir mal NO es broma. Cuenta a un adulto, guarda capturas, bloquea al grupo.'
         },
@@ -106,11 +106,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Llegó un reto viral: \'aguanta la respiración hasta desmayarte\'. Tus amigos te dicen flojo si no lo haces. ¿Qué decides?',
           opciones: [
             'Lo hago, no quiero quedar como flojo.',
-            'No lo hago. Mi salud es más importante que su opinión. Y le aviso a un adulto.',
             'Lo hago a medias para que se calmen.',
-            'Le respondo con otro reto peor.'
+            'Le respondo con otro reto peor.',
+            'No lo hago. Mi salud es más importante que su opinión. Y le aviso a un adulto.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Exacto. Los retos peligrosos no se hacen aunque te digan cualquier cosa. Tu salud vale más que cualquier opinión. Avisa.',
           feedbackIncorrecto: 'Tu salud es lo primero. Los retos peligrosos no se hacen, aunque te digan flojo. Avisa al profe o a un adulto.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Pasó algo en internet que te asustó. ¿Cuáles son las 3 acciones de oro?',
           opciones: [
             'Respondo, peleo, y borro la conversación.',
-            'Respiro/no respondo, capturo evidencia, cuento a un adulto de confianza.',
             'Lo guardo para mí, mañana se olvida.',
+            'Respiro/no respondo, capturo evidencia, cuento a un adulto de confianza.',
             'Bloqueo al usuario y nunca lo cuento.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Las 3 acciones de oro: respirar y no responder, capturar evidencia, contarle a un adulto. En ese orden y los 3 juntos.',
           feedbackIncorrecto: 'Las 3 acciones: NO responder, capturar evidencia, contar a un adulto de confianza. Las 3 son necesarias, no una sola.'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Estoy creyendo el mito de que "si pido ayuda parezco débil"? ¿O ya entendí que pedir ayuda es lo más valiente?'
     },
     estoico: {
-      autor: 'Séneca (filósofo romano que escribió sobre el miedo)',
+      autor: 'Séneca',
       lente: 'lente del cuidado interior',
       cita: '"Lo que te asusta de noche, en silencio, pierde fuerza cuando se lo cuentas a otra persona."',
       preguntaEspejo: '¿Estoy cargando algo solo en silencio? Si lo cuento, ¿quién está listo para escucharme?'

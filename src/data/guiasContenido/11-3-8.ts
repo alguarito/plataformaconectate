@@ -69,12 +69,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'Tu MVP recoge correos de usuarios. ¿Qué te obliga la Ley 1581?',
           opciones: [
-            'Nada, son solo correos.',
             'Tener política de privacidad visible, pedir consentimiento explícito, permitir borrado a solicitud.',
+            'Nada, son solo correos.',
             'Pagarle al gobierno.',
             'Tener oficina física.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Ley 1581 (Habeas Data colombiano) protege datos personales. Política + consentimiento + derecho a borrar son obligaciones legales.',
           feedbackIncorrecto: 'Ley 1581 obliga: política visible, consentimiento, derecho a borrar. Para CUALQUIER dato personal, no solo "datos sensibles".'
         },
@@ -94,11 +94,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuáles son las 4 preguntas éticas de Floridi?',
           opciones: [
             '¿Es bonito? ¿Es viral? ¿Es rentable? ¿Es legal?',
-            '¿A quién beneficia? ¿A quién perjudica/excluye? ¿Qué datos recoge? ¿Y si se masificara?',
             '¿Es ético? ¿Es legal? ¿Es bueno? ¿Es malo?',
-            '¿Es grande? ¿Es pequeño? ¿Es medio? ¿Es muy?'
+            '¿Es grande? ¿Es pequeño? ¿Es medio? ¿Es muy?',
+            '¿A quién beneficia? ¿A quién perjudica/excluye? ¿Qué datos recoge? ¿Y si se masificara?'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. Beneficia + perjudica/excluye + datos + masificación. Marco ético claro de Floridi para impacto en la infosfera.',
           feedbackIncorrecto: '4 preguntas Floridi: beneficia + excluye + qué datos + escala. Marco operativo, no abstracto. Aplicable a cualquier proyecto digital.'
         },
@@ -106,11 +106,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Después de las 4 preguntas éticas, ¿qué entregas?',
           opciones: [
             'Solo respuestas.',
-            'Compromiso firmado: qué mantengo, qué ajusto, qué descarto por razones éticas.',
             'Solo un párrafo de reflexión.',
+            'Compromiso firmado: qué mantengo, qué ajusto, qué descarto por razones éticas.',
             'Una camiseta del proyecto.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Compromiso firmado convierte reflexión en acción. Mantener + ajustar + descartar con responsabilidad real, no solo papel.',
           feedbackIncorrecto: 'Compromiso firmado: mantengo + ajusto + descarto. Sin firma, queda en buenas intenciones. Con firma, hay responsabilidad real.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Pregunta de Floridi: \'¿Y si se masificara?\'. ¿Por qué importa?',
           opciones: [
             'No importa, solo es mi MVP.',
-            'Si funciona y se masifica, ¿qué cambia? ¿Beneficia a más o excluye a más? La escala revela impactos invisibles a pequeña escala.',
             'Solo para entrar a Silicon Valley.',
-            'Para impresionar.'
+            'Para impresionar.',
+            'Si funciona y se masifica, ¿qué cambia? ¿Beneficia a más o excluye a más? La escala revela impactos invisibles a pequeña escala.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. La escala revela impactos invisibles. Lo que ayuda a 10 puede dañar a 10 millones por efectos sistémicos. Pensar en escala desde el inicio.',
           feedbackIncorrecto: 'Pensar en escala revela impactos invisibles. Una app que excluye al 1% de usuarios afecta 100K personas si tiene 10M. La escala importa éticamente.'
         }

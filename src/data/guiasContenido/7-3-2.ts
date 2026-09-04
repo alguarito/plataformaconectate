@@ -70,11 +70,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Quién propuso el Test de Turing en 1950?',
           opciones: [
             'Steve Jobs.',
-            'Alan Turing, matemático inglés.',
             'Bill Gates.',
+            'Alan Turing, matemático inglés.',
             'Mark Zuckerberg.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Alan Turing, en 1950. Su artículo \'Computing Machinery and Intelligence\' propuso el famoso Test de Turing y abrió el campo de la IA. 76 años de historia.',
           feedbackIncorrecto: 'Alan Turing en 1950. Matemático inglés que también rompió el código nazi en la Segunda Guerra Mundial. Padre de la informática y la IA.'
         },
@@ -94,23 +94,23 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Es \'inteligente\' la IA como nosotros?',
           opciones: [
             'Sí, piensa exactamente como nosotros.',
-            'No. Procesa datos a gran escala, pero no tiene conciencia ni emociones reales.',
             'Sí, y tiene emociones.',
-            'Solo si es premium.'
+            'Solo si es premium.',
+            'No. Procesa datos a gran escala, pero no tiene conciencia ni emociones reales.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Bien. La IA procesa datos, no piensa con conciencia. Es muy poderosa para muchas tareas, pero no es \'inteligencia\' al modo humano. Diferencia clave.',
           feedbackIncorrecto: 'No es \'inteligente\' como nosotros. Procesa datos masivos y encuentra patrones. Útil pero distinto. Tener clara esa diferencia te ahorra confusiones.'
         },
         {
           enunciado: '¿Cuántos momentos al día interactúas con IA aproximadamente?',
           opciones: [
-            '0 (no la uso).',
             'Decenas, probablemente más de 50 si usas celular regularmente.',
+            '0 (no la uso).',
             '1 sola vez al día.',
             'Solo si uso ChatGPT.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Cada video de TikTok = 1 decisión de IA. Cada sugerencia de Google = otra. Cada autocompletado = otra. En un día normal, 50-100 fácilmente.',
           feedbackIncorrecto: 'Decenas o cientos. TikTok, Google, WhatsApp, Maps, traductor, Spotify: todos usan IA constantemente. Ya conviven contigo desde hace años.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu hermano dice \'la IA es totalmente nueva, salió este año\'. ¿Cómo lo corriges?',
           opciones: [
             'Tiene razón, es nueva.',
-            'La IA conversacional masiva sí es de 2022, pero el campo de la IA tiene 76 años (desde 1950).',
             'Solo lleva 2 años.',
+            'La IA conversacional masiva sí es de 2022, pero el campo de la IA tiene 76 años (desde 1950).',
             'Mejor no opinar.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Bien. Hay matiz importante: la IA conversacional masiva (ChatGPT) es de 2022, pero el CAMPO de la IA arrancó en 1950 con Turing. 76 años, no 4.',
           feedbackIncorrecto: 'El campo tiene 76 años (1950 Turing). La conversacional masiva es de 2022. Saber la diferencia te coloca en lugar de criterio en debates sobre IA.'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Cuántas otras cosas en mi vida cotidiana funcionan sin que sepa su nombre o cómo operan?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador que se preguntaba por la naturaleza de las cosas)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Antes de juzgar si algo es bueno o malo, conoce su naturaleza. La IA no es magia ni monstruo: es matemática a gran escala."',
       preguntaEspejo: '¿Estoy en el grupo del miedo, en el de la adoración, o en el del conocimiento sereno?'

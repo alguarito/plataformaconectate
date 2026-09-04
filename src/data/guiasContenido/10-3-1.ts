@@ -69,12 +69,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: '¿Qué función nueva tiene Google Sheets desde 2025?',
           opciones: [
-            '=SUMA()',
             '=GEMINI()',
+            '=SUMA()',
             '=PRINT()',
             '=GUARDAR()'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Exacto. =GEMINI() permite consultar IA directamente desde una celda.',
           feedbackIncorrecto: 'Es =GEMINI(). Integra IA generativa dentro de Sheets para análisis y propuestas.'
         },
@@ -82,11 +82,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuál herramienta es ideal para trabajar offline sin nube?',
           opciones: [
             'Solo Google Sheets',
-            'LibreOffice descargable',
             'WhatsApp',
+            'LibreOffice descargable',
             'Solo apps de pago'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Correcto. LibreOffice funciona offline y no requiere cuenta de nube.',
           feedbackIncorrecto: 'LibreOffice. Paquete gratuito descargable que funciona offline.'
         },
@@ -106,11 +106,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuál es el rol correcto de la IA en ofimática?',
           opciones: [
             'Reemplazar al usuario',
-            'Copiloto que acelera; el usuario decide',
             'Ser piloto sin supervisión',
-            'No tiene rol'
+            'No tiene rol',
+            'Copiloto que acelera; el usuario decide'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Correcto. La IA acelera tareas; el usuario decide con criterio.',
           feedbackIncorrecto: 'Es copiloto, no piloto. La IA acelera y propone; el usuario decide y firma.'
         },
@@ -119,10 +119,10 @@ const contenido: ContenidoGuia = {
           opciones: [
             'ChatGPT',
             'Gemini',
-            'Bing Copilot',
-            'Una IA inventada'
+            'Una IA inventada',
+            'Bing Copilot'
           ],
-          respuestaIndex: 3,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Exacto. Los 3 primeros son gratuitos y generales; el cuarto no existe en la sesión.',
           feedbackIncorrecto: 'ChatGPT, Gemini, Bing Copilot y Claude.ai son los 4 asistentes gratuitos mencionados.'
         }

@@ -69,12 +69,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: '¿Cuáles son los componentes mínimos del programa de cosecha?',
           opciones: [
-            'Solo un sprite que se mueve.',
             '2 variables + 2 condicionales + 1 bucle + interactividad + múltiples escenas/sprites.',
+            'Solo un sprite que se mueve.',
             'Solo bucles.',
             'Solo un cuento sin programación.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. La cosecha integra 4 conceptos clave del periodo: variables (S5), condicionales (S6), bucles (S7) e interactividad (S9). Si te falta alguno, la cosecha está incompleta.',
           feedbackIncorrecto: '2 variables + 2 condicionales + 1 bucle + interactividad. Esos son los mínimos que demuestran que aprendiste todo el periodo. Falta alguno = cosecha incompleta.'
         },
@@ -82,11 +82,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Qué pesa MÁS, según la rúbrica de 10 criterios?',
           opciones: [
             'Solo el programa.',
-            'Funcionamiento real Y sustentación oral Y documentación: cada uno tiene su peso.',
             'Solo la sustentación.',
-            'Solo el diagrama.'
+            'Solo el diagrama.',
+            'Funcionamiento real Y sustentación oral Y documentación: cada uno tiene su peso.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. La rúbrica evalúa 10 criterios distintos, cada uno con su peso. Funcionamiento, sustentación y documentación son todos importantes. No se trata solo del programa.',
           feedbackIncorrecto: '10 criterios = 10 dimensiones evaluadas. Programa funcionando, sustentación oral, documentación, diagrama, todo cuenta. Cada uno aporta a la nota final.'
         },
@@ -106,23 +106,23 @@ const contenido: ContenidoGuia = {
           enunciado: 'Antes de la sustentación, ¿qué deberías hacer?',
           opciones: [
             'Nada, llegar directo.',
-            'Autoevaluación con los 10 criterios + probar el programa 5 veces + ensayar la presentación.',
             'Dormir mucho.',
+            'Autoevaluación con los 10 criterios + probar el programa 5 veces + ensayar la presentación.',
             'Borrar el cuaderno.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Autoevaluación + pruebas + ensayo. Llegar a sustentar sin preparación es desperdiciar el trabajo de 10 sesiones. Prepararse es respeto al esfuerzo.',
           feedbackIncorrecto: 'Autoevaluación con rúbrica + probar programa 5 veces + ensayar presentación. La preparación cierra el ciclo del oficio. Improvisar al final daña todo lo anterior.'
         },
         {
           enunciado: 'Durante 10 sesiones aprendiste a programar. ¿Cómo te sentís ahora?',
           opciones: [
-            'Como cuando empezaste.',
             'Diferente: ahora soy creador digital, no solo usuario. Esa transformación es real y permanente.',
+            'Como cuando empezaste.',
             'Exactamente igual.',
             'Sin cambio.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Programar tu primer programa completo es rito de paso. Tu identidad digital cambió: ya no solo consumes apps; ahora puedes crear con código. No hay vuelta atrás.',
           feedbackIncorrecto: 'Eres creador digital ahora. Antes consumías apps; ahora puedes crearlas. Esa transformación de identidad te acompaña al resto de tu vida. Es lo más valioso del periodo.'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Estoy mostrando mis obras (académicas y personales) o las guardo solo para mí?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador del trabajo cumplido)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Termina lo que empezaste con la misma atención con que empezaste. La obra cumplida da paz; la inconclusa pesa siempre."',
       preguntaEspejo: '¿Cuántas cosas empecé este año y dejé incompletas? ¿Qué pasaría si las terminara una a una?'

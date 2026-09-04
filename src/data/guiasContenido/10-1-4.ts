@@ -69,12 +69,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: '¿Cuál es la regla profesional sobre el primer borrador?',
           opciones: [
-            'Es siempre el definitivo',
             'El primer borrador nunca es el definitivo',
+            'Es siempre el definitivo',
             'Hay que publicarlo tal cual',
             'Solo importa el primer borrador'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Exacto. El primer borrador nunca es el definitivo, ni siquiera para autores humanos veteranos.',
           feedbackIncorrecto: 'El primer borrador nunca es el definitivo. Esto es más cierto con IA, no menos.'
         },
@@ -82,11 +82,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuántas versiones tiene una iteración profesional típica?',
           opciones: [
             '1',
-            '3',
             '10',
+            '3',
             '100'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Correcto. 3 versiones, cada una con propósito distinto.',
           feedbackIncorrecto: 'Son 3: V1 borrador inicial, V2 revisión editorial, V3 versión con voz propia.'
         },
@@ -95,10 +95,10 @@ const contenido: ContenidoGuia = {
           opciones: [
             'V1',
             'V2',
-            'V3',
-            'Ninguna'
+            'Ninguna',
+            'V3'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Exacto. V3 nunca se genera completamente con IA. La intervención humana es irrenunciable.',
           feedbackIncorrecto: 'En V3. Al menos 20-30% del texto final debe tener intervención humana directa.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Qué porcentaje mínimo de intervención humana exige V3?',
           opciones: [
             '0%',
-            '20-30%',
             '100%',
+            '20-30%',
             '1%'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Exacto. Mínimo 20-30%. Sin esa firma humana, V3 deja de ser tuyo.',
           feedbackIncorrecto: 'Mínimo 20-30%. Es lo que distingue tu libro de un libro 100% generado por IA.'
         }
@@ -135,7 +135,7 @@ const contenido: ContenidoGuia = {
     cierre: 'Al terminar podrás: (1) identificar en qué partes del primer borrador hay material útil y en qué partes hay relleno generativo (frases vacías, clichés, repeticiones); (2) aplicar prompts de revisión específicos para que la IA mejore el borrador en aspectos concretos; (3) analizar…'
   },
   saberAncestral: {
-    saber: 'En los talleres de carpintería del barrio Obrero, hay un gesto que cualquier aprendiz aprende el primer mes: el ebanista nunca lija una pieza con una sola lija. Cuando termina de cortar y armar las uniones, la pieza queda áspera. El ebanista toma la primera lija, grano grueso (~80), y pasa firme. La pieza queda mejor pero aún áspera. Toma la segunda, grano medio (~150), y vuelve a pasar: ya se siente más suave. Toma la tercera, grano fino (~220), y pasa una última vez. Recién entonces la superficie está lista para el barniz. Si el ebanista se salta una lija, la pieza queda con marcas visibles. Si insiste con la gruesa, daña la madera. Cada lija quita lo justo y revela lo que el grano anterior dejó. La sabiduría es ancestral: ninguna superficie buena se logra en un solo paso. Iterar texto con IA es esa disciplina aplicada a las palabras: el primer borrador es áspero, el segundo más suave, el tercero está listo para firmar.',
+    saber: 'En los talleres de carpintería del barrio Obrero, hay un gesto que cualquier aprendiz aprende el primer mes: el ebanista nunca lija una pieza con una sola lija. Cuando termina de cortar y armar las uniones, la pieza queda áspera. El ebanista toma la primera lija, grano grueso ( 80), y pasa firme. La pieza queda mejor pero aún áspera. Toma la segunda, grano medio ( 150), y vuelve a pasar: ya se siente más suave. Toma la tercera, grano fino ( 220), y pasa una última vez. Recién entonces la superficie está lista para el barniz. Si el ebanista se salta una lija, la pieza queda con marcas visibles. Si insiste con la gruesa, daña la madera. Cada lija quita lo justo y revela lo que el grano anterior dejó. La sabiduría es ancestral: ninguna superficie buena se logra en un solo paso. Iterar texto con IA es esa disciplina aplicada a las palabras: el primer borrador es áspero, el segundo más suave, el tercero está listo para firmar.',
     preguntaPuente: '¿Qué sabía el ebanista al pasar 3 lijas distintas en orden, que el usuario novato olvida cuando entrega el primer borrador de ChatGPT como capítulo final? ¿Y por qué V3 es donde el libro empieza a sonar a ti, no a la IA?'
   },
   triangulo: {

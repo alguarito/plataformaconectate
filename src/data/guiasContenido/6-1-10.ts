@@ -81,12 +81,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'Te paras al frente. ¿Cómo debe ser tu postura?',
           opciones: [
-            'Encorvado, así me ven más tranquilo.',
             'De pie, pies firmes, manos relajadas.',
+            'Encorvado, así me ven más tranquilo.',
             'Apoyado en una pared, así no me canso.',
             'Sentado, así no se nota si tiemblo.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Bien. De pie, pies firmes a la anchura de los hombros, manos relajadas. La postura comunica seguridad antes de hablar.',
           feedbackIncorrecto: 'De pie, pies firmes, manos relajadas. Encorvarte o apoyarte comunica duda. La postura habla antes que tú.'
         },
@@ -106,23 +106,23 @@ const contenido: ContenidoGuia = {
           enunciado: 'La hoja de soporte debería tener...',
           opciones: [
             'El texto completo de los 2 minutos, palabra por palabra.',
-            '4-5 palabras clave por cada momento, no texto seguido.',
             'Solo el título \'Mi presentación\'.',
-            'Toda la guía resumida.'
+            'Toda la guía resumida.',
+            '4-5 palabras clave por cada momento, no texto seguido.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Bien. Palabras clave (no oraciones completas). La hoja es bastón, no muleta: la miras de vez en cuando, no la lees toda.',
           feedbackIncorrecto: 'Palabras clave, no texto completo. Si escribes oraciones enteras vas a terminar leyendo, y la audiencia se pierde.'
         },
         {
           enunciado: 'Te equivocas en una palabra durante el pitch. ¿Qué haces?',
           opciones: [
+            'Sigo. Una palabra no daña la presentación; un parón sí.',
             'Paro y pido disculpas.',
             'Empiezo de nuevo desde el inicio.',
-            'Sigo. Una palabra no daña la presentación; un parón sí.',
             'Salgo de la clase corriendo.'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Exacto. Equivocarse en una palabra es normal. Seguir es lo profesional. La audiencia ya olvidó la palabra al segundo siguiente.',
           feedbackIncorrecto: 'Sigues. Una palabra mal dicha es invisible si tú no le das importancia. Parar y disculparte hace el error 10 veces más grande.'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Estoy guardando lo que sé para mí, o lo estoy compartiendo para hacerlo realmente mío?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador romano que escribió sobre la voz propia)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Habla más de lo que has hecho que de lo que vas a hacer. Lo hecho ya te respalda."',
       preguntaEspejo: '¿Estoy hablando de lo que hice (con respaldo) o solo de lo que prometo hacer?'

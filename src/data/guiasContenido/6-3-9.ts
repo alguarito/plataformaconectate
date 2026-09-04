@@ -69,12 +69,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'Necesitas información sobre Simón Bolívar para una tarea. ¿Qué fuente es más confiable?',
           opciones: [
-            'Un blog personal anónimo.',
             'La página del Ministerio de Educación o un libro de universidad.',
+            'Un blog personal anónimo.',
             'Un meme de Instagram.',
             'Un video aleatorio de TikTok.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Autoridad: gobierno o universidad tienen credibilidad académica. Blogs anónimos, memes y TikToks no son fuentes para tareas formales.',
           feedbackIncorrecto: 'Para tareas: Ministerio de Educación, universidades, museos. Blogs anónimos y redes sociales NO son fuentes académicas, aunque sean entretenidas.'
         },
@@ -94,11 +94,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Lees una página que dice \'INCREÍBLE: ESCÁNDALO MUNDIAL!!!!\' con muchos signos. ¿Qué señal es?',
           opciones: [
             'Es información seria por la urgencia.',
-            'Bandera roja: lenguaje exagerado. Es estrategia para asustar, vender o ganar clics. Desconfía.',
             'Es buen periodismo.',
-            'Solo es escándalo si tiene fotos.'
+            'Solo es escándalo si tiene fotos.',
+            'Bandera roja: lenguaje exagerado. Es estrategia para asustar, vender o ganar clics. Desconfía.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. El lenguaje exagerado (mayúsculas, signos, palabras emocionales) es señal de manipulación. Las fuentes serias usan tono neutral.',
           feedbackIncorrecto: 'Lenguaje exagerado = bandera roja. Las fuentes serias usan tono neutro. Cuando ves "INCREÍBLE!!!!", el propósito ya no es informar, es manipular.'
         },
@@ -106,11 +106,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Wikipedia, ¿es buena fuente para una tarea?',
           opciones: [
             'Sí, siempre.',
-            'Sí como punto de partida; pero cita la fuente original que Wikipedia referencia al final.',
             'No, Wikipedia es mentira.',
+            'Sí como punto de partida; pero cita la fuente original que Wikipedia referencia al final.',
             'Solo en inglés.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Bien. Wikipedia es buen mapa: encuentras el tema rápido y al final cita sus fuentes. Vas a esas fuentes originales y las citas en tu tarea. Wikipedia como punto de inicio, no como destino final.',
           feedbackIncorrecto: 'Wikipedia es buen punto de partida pero no fuente final. Al final del artículo hay referencias: ve a esas y úsalas como fuente. Wikipedia te orienta; las fuentes originales son las que citas.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Acabas de leer una afirmación impactante. ¿Qué deberías hacer antes de creerla?',
           opciones: [
             'Compartirla en redes sociales rapidísimo.',
-            'Verificar en al menos otra fuente confiable. Si las 2 coinciden, probable verdadero. Si contradice, busca una 3a.',
             'Memorizar la información.',
+            'Verificar en al menos otra fuente confiable. Si las 2 coinciden, probable verdadero. Si contradice, busca una 3a.',
             'Olvidarla.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. La verificación cruzada es clave. Si 2 fuentes confiables coinciden, probable verdad. Si contradicen, busca una 3a o duda hasta verificar.',
           feedbackIncorrecto: 'Verificación cruzada: busca la misma info en otra fuente confiable. 2 que coinciden = probable verdad. Compartir sin verificar te hace cómplice de desinformación.'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Estoy en la cómoda actitud de creer todo lo que leo, o tengo la disciplina de verificar antes?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador que escribía solo lo verificable)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Antes de afirmar, pregunta: ¿esto es cierto? Si no puedes responder, calla hasta saber."',
       preguntaEspejo: '¿Estoy entregando información que no he verificado, o me esfuerzo en confirmar antes de afirmar?'

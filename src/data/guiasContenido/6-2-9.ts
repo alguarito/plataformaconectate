@@ -69,12 +69,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'Llevas 25 minutos jugando Roblox en el celular. ¿Qué haces según la regla 20-20-20?',
           opciones: [
-            'Sigo jugando, son solo 25 minutos.',
             'Hago una pausa de 20 segundos mirando algo a 6 metros de distancia (al árbol, a la calle).',
+            'Sigo jugando, son solo 25 minutos.',
             'Cierro el juego para siempre.',
             'Sigo pero pongo brillo más bajo.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Cada 20 minutos, miras 20 segundos a 20 pies de distancia. Descansa los músculos del ojo. No paras de jugar; solo haces pausa breve.',
           feedbackIncorrecto: 'La regla 20-20-20: cada 20 minutos, 20 segundos mirando algo lejano (6 metros). Pausa breve, no abandonar. Es prevención.'
         },
@@ -82,11 +82,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Te sientas en el computador a hacer tarea. ¿Cómo deberían quedar tus codos?',
           opciones: [
             'Doblados a más de 90 grados (cerca del cuerpo).',
-            'A 90 grados aproximadamente, con muñecas rectas.',
             'Estirados completamente.',
-            'Hacia atrás.'
+            'Hacia atrás.',
+            'A 90 grados aproximadamente, con muñecas rectas.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Bien. Codos a 90 grados + muñecas rectas. Si las muñecas se doblan, ajustas altura de silla o pones cojín. Eso previene túnel carpiano.',
           feedbackIncorrecto: 'Codos a 90 grados, muñecas rectas. Si están dobladas, ajusta silla. Doblar muñecas años causa dolor crónico en adultos.'
         },
@@ -106,23 +106,23 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu silla es muy alta y tus pies cuelgan. ¿Qué haces?',
           opciones: [
             'Lo acepto, así es la silla.',
-            'Pongo un libro grueso o una caja debajo para que mis pies se apoyen.',
             'Me siento al borde de la silla.',
+            'Pongo un libro grueso o una caja debajo para que mis pies se apoyen.',
             'Doblar las piernas hacia arriba.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Exacto. Pies colgando = mala circulación = piernas pesadas. Una caja o un libro grueso resuelve el problema rápido.',
           feedbackIncorrecto: 'Pies colgando es mala circulación. Pon un libro grueso o caja debajo para que se apoyen. Solución barata y efectiva.'
         },
         {
           enunciado: 'Llevas 2 horas seguidas en el computador sin parar. ¿Qué deberías hacer?',
           opciones: [
-            'Seguir, falta poco para terminar.',
             'Hacer pausa de 3-5 minutos para caminar, estirar y tomar agua. Después regreso.',
+            'Seguir, falta poco para terminar.',
             'Comer chocolate para tener más energía.',
             'Bajar el brillo de la pantalla.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Bien. Cada 60 minutos: pausa de 3-5 minutos. Caminar, estirar, agua. Resetea postura y circulación. Vuelves más enfocado.',
           feedbackIncorrecto: 'Cada hora, pausa de 3-5 min: caminar, estirar, agua. No es perder tiempo; es ganar concentración después. Tu cuerpo descansa.'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Estoy cuidando hoy el cuerpo que mi yo de 40 años necesitará para vivir bien?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador que cuidó su cuerpo para gobernar 20 años)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"El cuerpo es la única casa que tendrás durante toda tu vida. Cuídala como cuidarías una casa de piedra que no se puede reemplazar."',
       preguntaEspejo: '¿Si solo pudiera cuidar UNA cosa de mi vida con esmero, no debería ser mi cuerpo?'

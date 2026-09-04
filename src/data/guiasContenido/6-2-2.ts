@@ -70,23 +70,23 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tocas la pantalla del celular para abrir TikTok. ¿Qué función es?',
           opciones: [
             'Salida, porque la pantalla muestra el resultado.',
-            'Entrada, porque tú le estás dando información al celular.',
             'Proceso, porque el celular está pensando.',
-            'Almacenamiento, porque guarda tu toque.'
+            'Almacenamiento, porque guarda tu toque.',
+            'Entrada, porque tú le estás dando información al celular.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. Cuando tú le DAS algo al celular (tocar, escribir, hablar), eso es entrada. La pantalla táctil es entrada cuando tocas y salida cuando muestra.',
           feedbackIncorrecto: 'Es entrada. La pantalla táctil cumple las 2 funciones: entrada (cuando tocas) y salida (cuando muestra). En este caso tú estás tocando.'
         },
         {
           enunciado: 'TikTok busca un video que coincida con lo que escribiste. ¿Qué función es?',
           opciones: [
+            'Proceso, porque la CPU está buscando y comparando.',
             'Entrada, porque hay un teclado.',
             'Salida, porque va a mostrar el video.',
-            'Proceso, porque la CPU está buscando y comparando.',
             'Almacenamiento, porque guarda lo que buscaste.'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Bien. Buscar, comparar, calcular: todo eso es proceso. La pieza que lo hace es la CPU, el cerebro del celular.',
           feedbackIncorrecto: 'Es proceso. Cuando el celular está pensando, buscando o comparando, eso lo hace la CPU. Esa es la función \'proceso\'.'
         },
@@ -94,11 +94,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Apagas el celular y al prenderlo de nuevo, ¿qué se mantiene y qué se pierde?',
           opciones: [
             'Todo se pierde, hay que volver a configurar.',
-            'Todo queda, el celular nunca olvida.',
             'Lo que estaba en RAM se pierde; lo del disco duro queda.',
+            'Todo queda, el celular nunca olvida.',
             'Depende del color del celular.'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 1,
           feedbackCorrecto: 'Sí. RAM es memoria temporal (se borra al apagar). Disco duro es memoria permanente (queda). Las 2 son almacenamiento pero hacen cosas distintas.',
           feedbackIncorrecto: 'RAM se borra al apagar (temporal). Disco duro queda (permanente). Por eso tus fotos no se borran pero la app que tenías abierta sí se cierra.'
         },
@@ -117,12 +117,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'Tu celular, una caja registradora y un cajero electrónico tienen en común que...',
           opciones: [
-            'Son todos del mismo color.',
             'Tienen las mismas 4 funciones básicas (entrada, proceso, almacenamiento, salida).',
+            'Son todos del mismo color.',
             'Funcionan solo cuando hay internet.',
             'Solo sirven para una cosa.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Exacto. Cualquier máquina inteligente sigue el mismo patrón: entrada, proceso, almacenamiento, salida. Si lo entiendes, entiendes cualquier máquina nueva.',
           feedbackIncorrecto: 'Todas siguen las mismas 4 funciones. Por eso si entiendes este modelo, entiendes celulares, cajeros, registradoras y cualquier máquina nueva que aparezca.'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Quiero seguir siendo mago con las máquinas (apretar y esperar), o quiero ser relojero (entender y decidir)?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador que escribió sobre conocer las cosas a fondo)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Pregunta siempre qué es la cosa en sí misma, no qué te parece que es. Esa pregunta separa al sabio del distraído."',
       preguntaEspejo: '¿Me conformo con saber qué hace una cosa, o también me pregunto qué es por dentro?'

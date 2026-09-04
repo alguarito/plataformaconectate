@@ -81,12 +81,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: '¿Cuántas respuestas mínimas pide la encuesta cuantitativa?',
           opciones: [
-            '1',
             '15-20',
+            '1',
             '1000',
             '10000'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Correcto. 15-20 respuestas mínimas dan base para detectar patrones.',
           feedbackIncorrecto: 'Son 15-20. Suficientes para análisis sin esfuerzo desproporcionado.'
         },
@@ -94,11 +94,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Qué pasa con un microemprendimiento sin estudio de mercado previo?',
           opciones: [
             'Tiene mejor suerte',
-            'No sobrevive a competencia básica',
             'No hay diferencia',
+            'No sobrevive a competencia básica',
             'Llega más rápido'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Exacto. Sin estudio, las decisiones se toman a ciegas y la competencia básica lo derrota.',
           feedbackIncorrecto: 'No sobrevive a competencia básica. El estudio previo es regla profesional.'
         },
@@ -106,23 +106,23 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Quién hace la decisión final del estudio?',
           opciones: [
             'La IA',
-            'El emprendedor con los datos en la mano',
             'El cliente',
-            'Nadie'
+            'Nadie',
+            'El emprendedor con los datos en la mano'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Correcto. La IA acelera análisis; la decisión final es del emprendedor responsable.',
           feedbackIncorrecto: 'El emprendedor decide. La IA acelera análisis, pero la decisión y la firma son humanas.'
         },
         {
           enunciado: '¿Cuáles son las 4 piezas del estudio profesional?',
           opciones: [
-            'Solo la encuesta',
             'Encuesta cuantitativa, análisis cualitativo auditado, síntesis y decisión razonada',
+            'Solo la encuesta',
             'Solo el Canvas',
             'Solo el balance'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Exacto. Las 4 juntas convierten la curiosidad en decisión sustentada.',
           feedbackIncorrecto: 'Las 4: encuesta cuantitativa, análisis cualitativo auditado, síntesis y decisión razonada.'
         }

@@ -1,6 +1,9 @@
 /**
  * Contenido enriquecido para Grado 8 · Período 2 · Sesión 7
- * (sesión global 17 — Depuración de lógica de control).
+ * (sesión global 17).
+ *
+ * Auto-generado desde content/guias/8/8-2-7.yaml por
+ * scripts/build-guias-web-ts.py. Edita el YAML, no este archivo.
  */
 import type { ContenidoGuia } from './_schema';
 
@@ -8,93 +11,163 @@ const contenido: ContenidoGuia = {
   grado: 8,
   periodo: 2,
   sesion: 7,
-  resumen:
-    'Como el ojo del mecánico de pueblo: buscar dónde, probar, ajustar, probar de nuevo. Aprendes método sistemático de depuración con casos esperados, contrarios y de límite.',
+  titulo: 'Depuración — buscar el error como el relojero busca el tic-tac',
+  resumen: 'Como el ojo del mecánico de pueblo: buscar dónde, probar, ajustar, probar de nuevo. Aprendes método sistemático de depuración con casos esperados, contrarios y de límite.',
   duracionMin: 90,
   subtema: 'Depuración · Hipótesis · Pruebas · Bitácora',
-
   preLectura: {
-    porQueImporta:
-      'Saber depurar es lo que distingue un programador novato de uno profesional. En cualquier proyecto futuro (web, móvil, IoT) los bugs son inevitables — el método sistemático los encuentra.',
+    porQueImporta: 'Saber depurar es lo que distingue un programador novato de uno profesional. En cualquier proyecto futuro (web, móvil, IoT) los bugs son inevitables — el método sistemático los encuentra.',
     preguntaDetonante: '¿Qué del ojo del mecánico de pueblo — su método disciplinado de buscar la falla — podemos llevar a la depuración de código?',
-    activacion: { titulo: 'El bug detective', descripcion: 'En 5 minutos: en parejas recuerden una falla técnica reciente (app que falla, sensor que no responde, video que no carga). Formulen 3 hipótesis distintas de la causa.', duracionMin: 5 },
-    conexion: { anterior: 'En la sesión 16 calibraste sensores y aprendiste sobre umbrales.', siguiente: 'En la sesión 18 simularás un sistema de alerta ambiental completo.' },
+    activacion: {
+      titulo: 'El bug detective',
+      descripcion: 'En 5 minutos: en parejas recuerden una falla técnica reciente (app que falla, sensor que no responde, video que no carga). Formulen 3 hipótesis distintas de la causa.',
+      duracionMin: 5
+    },
+    conexion: {
+      anterior: 'En la sesión 16 calibraste sensores y aprendiste sobre umbrales.',
+      siguiente: 'En la sesión 18 simularás un sistema de alerta ambiental completo.'
+    }
   },
-
   conceptosClave: [
-    { categoria: '🐛 Diagnóstico', termino: 'Bug', definicion: 'Error en el código o lógica que produce comportamiento no esperado. Puede ser de sintaxis (no compila), lógica (compila pero da resultado incorrecto) o de borde (falla en casos extremos).', ejemplo: 'Un AND que debió ser OR. Un umbral mal calibrado. Una variable no inicializada. Cualquiera produce un bug.', emoji: '🐛' },
-    { categoria: '🐛 Diagnóstico', termino: 'Caso esperado', definicion: 'La entrada normal o típica que el programa debe procesar correctamente. Es el escenario para el que se diseñó el código.', ejemplo: 'Para alarma de movimiento: caso esperado es "alguien camina cerca". El programa debe detectarlo y activar.', emoji: '✅' },
-    { categoria: '🐛 Diagnóstico', termino: 'Caso contrario', definicion: 'Lo opuesto al caso esperado. Si el esperado es activar, el contrario es NO activar. Ambos deben funcionar correctamente.', ejemplo: 'Caso contrario para alarma: NADIE camina. La alarma debe quedarse silenciosa. Si se activa sola, hay bug.', emoji: '⛔' },
-    { categoria: '🐛 Diagnóstico', termino: 'Caso límite', definicion: 'Valor extremo o frontera que rompe suposiciones. Programadores expertos siempre prueban estos casos porque ahí viven la mayoría de los bugs.', ejemplo: 'Para alarma: ¿qué pasa con movimiento muy lento (1mm)? ¿muy rápido (cubre todo)? ¿valor 0 exacto del sensor?', emoji: '🎯' },
-    { categoria: '🔧 Resolución', termino: 'Hipótesis', definicion: 'Suposición específica sobre la causa del bug. Debe ser falseable: una prueba debe poder confirmar o descartar.', ejemplo: 'Hipótesis: "la alarma se activa con sombras porque no filtro ruido". Falseable: si agrego promediado y deja de activarse con sombras, confirmada.', emoji: '💡' },
-    { categoria: '🔧 Resolución', termino: 'Prueba aislada', definicion: 'Test específico para validar UNA hipótesis a la vez. Cambiar una sola cosa en el código, verificar el efecto, antes de cambiar otra.', ejemplo: 'Para probar "es por falta de filtro": agregar SOLO el promediado, mantener el resto igual. Si funciona, era el filtro.', emoji: '🧪' },
-    { categoria: '🔧 Resolución', termino: 'Corrección', definicion: 'El cambio mínimo en el código que arregla el bug confirmado. Si tu corrección requiere muchos cambios, probablemente no encontraste la causa raíz.', ejemplo: 'Si el bug era falta de filtro, la corrección es agregar líneas de promediado. NO reescribir todo el programa.', emoji: '🔨' },
-    { categoria: '🔧 Resolución', termino: 'Re-test completo', definicion: 'Después de corregir, probar de nuevo TODOS los casos: esperado, contrario y límite. La corrección puede arreglar un caso y romper otro.', ejemplo: 'Agregar promediado arregló el caso "sombra" (contrario). Pero ahora el caso esperado tarda 3 segundos en responder. Hay que ajustar.', emoji: '🔁' },
+    {
+      termino: 'Bug',
+      definicion: 'Pieza del programa que no funciona como se esperaba. Puede ser una condición invertida, una variable mal inicializada, una pausa olvidada.',
+      ejemplo: 'El programa muestra ícono feliz cuando debería mostrar triste. Síntoma claro de un if con condición invertida.',
+      emoji: '🐛',
+      categoria: 'Diagnóstico'
+    },
+    {
+      termino: 'Reproducir el bug',
+      definicion: 'Primer paso de la depuración. Identificar exactamente qué entrada produce el error, para poder investigarlo con método.',
+      ejemplo: 'El error aparece solo cuando la temperatura está por debajo de 18. Con esa pista, ya sabes dónde mirar.',
+      emoji: '🔁'
+    },
+    {
+      termino: 'Hipótesis',
+      definicion: 'Explicación posible del origen del bug, formulada antes de tocar el código. Se ordena por probabilidad y se prueba una a una.',
+      ejemplo: 'Hipótesis 1, la condición está invertida. Hipótesis 2, los íconos están cambiados de rama. Pruebas la más probable primero.',
+      emoji: '💡',
+      categoria: 'Resolución'
+    },
+    {
+      termino: 'Una hipótesis una prueba',
+      definicion: 'Regla de oro del oficio. Cambiar UNA sola cosa por prueba. Si cambias varias, no sabrás cuál arregló (o empeoró) el problema.',
+      ejemplo: 'Cambias el operador menor por mayor. Compilas. Pruebas. Si funciona, hipótesis confirmada. Sin tocar nada más.',
+      emoji: '🎯'
+    },
+    {
+      termino: 'Print debugging',
+      definicion: 'Técnica de insertar mostrar variable en puntos del código para ver qué valor tiene cada variable en cada momento. La más vieja y eficaz.',
+      ejemplo: 'Insertas mostrar nivel_luz justo antes del if. Si imprime 200 cuando esperabas 50, sabes que el sensor no está leyendo bien.',
+      emoji: '🖨️'
+    }
   ],
-
-  laboratorios: [{
-    tipo: 'quiz',
-    titulo: 'Quiz · Depuración sistemática',
-    instrucciones: '5 preguntas tipo ICFES sobre método de depuración con hipótesis y pruebas.',
-    preguntas: [
-      { enunciado: 'Una "hipótesis falseable" en depuración es:', opciones: ['Una afirmación que siempre es verdadera', 'Una suposición que se puede confirmar o descartar con UNA prueba específica', 'Una idea sin sustento', 'Un sinónimo de error'], respuestaIndex: 1, feedbackCorrecto: '✅ Correcto. Una hipótesis útil debe ser FALSEABLE: una prueba específica la confirma o la descarta. "El bug es porque el código está mal" NO es falseable. "El bug es por falta de filtro" SÍ.', feedbackIncorrecto: '❌ Falseable significa que se puede PROBAR si es falsa. Una hipótesis útil para depurar permite diseñar UN test específico que la confirma o descarta. "El código está mal" no se puede probar; "falta filtro" sí.' },
-      { enunciado: 'Si tu alarma se activa siempre que pasa una sombra, ¿qué tipo de caso debes probar?', opciones: ['Solo el caso esperado (alguien camina)', 'Casos esperado, contrario (nadie camina) Y límite (sombra momentánea)', 'Solo casos extremos', 'Solo cuando funciona bien'], respuestaIndex: 1, feedbackCorrecto: '✅ Sí. La depuración profesional requiere los TRES tipos de casos: esperado (que funcione), contrario (que NO funcione cuando no debe), y límite (que filtre situaciones momentáneas).', feedbackIncorrecto: '❌ Probar solo el caso esperado deja bugs vivos. Los bugs viven en los CONTRARIOS (situaciones donde NO debería activarse) y los LÍMITES (valores extremos). Hay que probar los tres.' },
-      { enunciado: 'Si cambias 5 cosas a la vez en tu código y el bug desaparece, ¿qué problema tiene esto?', opciones: ['Ninguno, lo importante es que funciona', 'No sabes cuál de los 5 cambios arregló el bug; podría volver a aparecer', 'El programa será más rápido', 'El bug fue siempre cosmético'], respuestaIndex: 1, feedbackCorrecto: '✅ Excelente. La regla dorada de la depuración: cambiar UNA cosa a la vez. Si cambias 5, no puedes saber cuál fue. Si el bug vuelve, no sabes qué desencadenó la corrección. La disciplina es UNO a la vez.', feedbackIncorrecto: '❌ "Funciona" no es suficiente. Si cambiaste 5 cosas y no sabes cuál fue la causa, el bug puede volver y no sabrás cómo. La regla profesional: UN cambio a la vez, prueba, registra.' },
-      { enunciado: 'Después de corregir un bug, ¿qué debe hacer un programador profesional?', opciones: ['Borrar el código viejo y olvidarlo', 'Re-test completo con casos esperado, contrario y límite + documentar la lección', 'Avisar a todo el mundo del bug', 'Pasar al siguiente bug inmediatamente'], respuestaIndex: 1, feedbackCorrecto: '✅ Correcto. Re-test completo (no solo el caso del bug) + documentar la lección aprendida. La corrección puede romper otros casos. La documentación evita que el bug regrese o que otros caigan en el mismo error.', feedbackIncorrecto: '❌ Borrar y olvidar es irresponsable. Avisar a todos sin verificar es alarmista. Pasar al siguiente sin re-testear ni documentar pierde el aprendizaje. Lo correcto: re-test + documentar la lección.' },
-      { enunciado: 'La famosa primera "bug" real (1947) fue:', opciones: ['Un error de cálculo en NASA', 'Una polilla atrapada en un relé del computador Mark II', 'Un virus informático', 'Un fallo de Windows'], respuestaIndex: 1, feedbackCorrecto: '✅ Correcto. Grace Hopper documentó la polilla pegándola en su bitácora con la nota "First actual case of bug being found". El término "debugging" viene literalmente de quitar bichos del hardware.', feedbackIncorrecto: '❌ La primera "bug" documentada fue real: una polilla atrapada en el computador Mark II en 1947. Grace Hopper la pegó en su bitácora. De ahí viene la palabra "debugging" — quitar bichos del código.' },
-    ],
-  }],
-
+  laboratorios: [
+    {
+      tipo: 'quiz',
+      titulo: '¿Sabes depurar como el relojero?',
+      instrucciones: '5 preguntas para verificar que aplicas el método de una hipótesis a la vez.',
+      preguntas: [
+        {
+          enunciado: 'Cambias 5 cosas a la vez y el programa empieza a funcionar. ¿Qué problema hay?',
+          opciones: [
+            'Ninguno, ya funciona',
+            'No sabes cuál de los 5 cambios arregló el bug',
+            'El programa va más rápido',
+            'El programa va más lento'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Exacto. Sin saber qué cambio arregló el problema, no hay aprendizaje. El próximo bug te tomará el mismo tiempo.',
+          feedbackIncorrecto: 'El problema es que no sabes cuál de los 5 cambios fue el bueno. La depuración profesional exige una hipótesis a la vez.'
+        },
+        {
+          enunciado: '¿Cuál es el primer paso del método profesional de depuración?',
+          opciones: [
+            'Reproducir el bug',
+            'Cambiar el código',
+            'Reiniciar el computador',
+            'Eliminar el programa'
+          ],
+          respuestaIndex: 0,
+          feedbackCorrecto: 'Correcto. Sin reproducir el bug, no puedes investigarlo. Identificar qué entrada lo dispara es el inicio.',
+          feedbackIncorrecto: 'Primero se reproduce. Sin saber qué entrada genera el bug, cualquier cambio es a ciegas.'
+        },
+        {
+          enunciado: 'La técnica de insertar mostrar variable en puntos del código se llama...',
+          opciones: [
+            'Compilación',
+            'Aislar el problema',
+            'Print debugging',
+            'Búsqueda binaria'
+          ],
+          respuestaIndex: 2,
+          feedbackCorrecto: 'Exacto. Print debugging. Es la técnica más vieja y la más eficaz en cualquier lenguaje.',
+          feedbackIncorrecto: 'Se llama print debugging. Aunque suene básica, es la herramienta más usada por programadores profesionales.'
+        },
+        {
+          enunciado: '¿Por qué se documenta el proceso de depuración en una bitácora?',
+          opciones: [
+            'Por costumbre',
+            'Porque lo exige MakeCode',
+            'Para hacer más larga la tarea',
+            'Para no repetir pruebas y para que otro pueda heredar el código'
+          ],
+          respuestaIndex: 3,
+          feedbackCorrecto: 'Correcto. La bitácora evita pruebas repetidas y permite que un compañero entienda qué pasó sin reabrir la investigación.',
+          feedbackIncorrecto: 'La razón es práctica: la bitácora evita bucles de pruebas repetidas y permite que otro hereden el código con contexto.'
+        },
+        {
+          enunciado: 'Tu primera hipótesis se descarta tras probarla. ¿Qué sigue?',
+          opciones: [
+            'Cambiar de proyecto',
+            'Hacer 5 cambios a la vez',
+            'Borrar el programa',
+            'Volver al código original y probar la siguiente hipótesis'
+          ],
+          respuestaIndex: 3,
+          feedbackCorrecto: 'Exacto. Vuelves al código original (sin acumular cambios) y pruebas la siguiente hipótesis ordenada por probabilidad.',
+          feedbackIncorrecto: 'Vuelves al código original y pruebas la siguiente hipótesis. Acumular cambios o cambiar de proyecto no es depurar.'
+        }
+      ]
+    }
+  ],
   postLectura: {
     reflexion: 'La depuración disciplinada es habilidad transferible: encontrar la causa raíz se aplica a problemas técnicos, sociales, personales. ¿En qué situación de tu vida sería útil aplicar el método "hipótesis-prueba-corrección-re-test"?',
     transferencia: 'Esta semana: cuando algo te falle (app, dispositivo, plan), aplica el método: 3 hipótesis distintas, prueba aislada, corrección mínima, verificación. Documenta el proceso.',
-    cierre: 'El ojo del mecánico y el debugger digital comparten método: paciencia disciplinada, no fuerza bruta. La sabiduría artesanal sobrevive en la depuración profesional.',
+    cierre: 'El ojo del mecánico y el debugger digital comparten método: paciencia disciplinada, no fuerza bruta. La sabiduría artesanal sobrevive en la depuración profesional.'
   },
-
   saberAncestral: {
-    saber:
-      'El mecánico del pueblo del Valle no abría el motor a desarmarlo cuando un carro no encendía. Primero escuchaba: ¿prende y se apaga? ¿no prende del todo? ¿hace ruido raro? Después olía: ¿gasolina derramada? ¿caucho quemado? Después tocaba: ¿la batería está caliente? Cada paso era una hipótesis verificada antes de abrir nada. Eliminaba causas con orden, no con fuerza. La depuración digital hereda ese método: hipótesis, prueba aislada, corrección mínima, re-verificación.',
+    saber: 'En el centro histórico de Cartago, en la carrera 5 cerca de la galería, hubo durante décadas un taller de relojería donde un señor mayor de gafas gruesas atendía las piezas que ningún otro mecánico se atrevía a reparar: relojes de pared antiguos heredados de los abuelos, relojes de cuerda traídos de Suiza, despertadores de hojalata de los años 60. El relojero tenía un método que cualquier aprendiz de cualquier oficio podría reconocer como sabiduría profesional: nunca tocaba dos piezas al mismo tiempo. Cuando un reloj llegaba averiado, primero escuchaba: ¿el tic-tac sonaba bien o cojeaba? ¿había un engranaje que rozaba? ¿la cuerda estaba forzada? Después formulaba una hipótesis ("creo que es el escape", decía). Después ajustaba una sola pieza, no varias. Después escuchaba de nuevo: si el tic-tac se corrigió, había encontrado el error; si no, volvía a la pieza original y formulaba otra hipótesis. Una hipótesis, una prueba, un resultado: ese era el método silencioso del relojero, y es exactamente el método profesional de la depuración digital moderna.',
     fuente: 'Oficio del mecánico de pueblo en el Valle del Cauca',
-    preguntaPuente:
-      '¿Qué hacía el mecánico antes de abrir el motor? ¿Y qué pasa cuando un programador novato modifica el código sin probar primero qué falla exactamente?',
+    preguntaPuente: '¿Qué sabía el relojero al cambiar una sola pieza a la vez, que el programador novato olvida cuando toca 5 líneas de código simultáneamente y luego no sabe cuál arregló el problema? ¿Y por qué print debugging es la técnica más vieja y más eficaz del oficio?'
   },
-
   triangulo: {
     dussel: {
       autor: 'Enrique Dussel',
       lente: 'lente del nosotros',
-      cita: 'La depuración disciplinada es democratización del oficio — cualquiera puede aprenderla con paciencia.',
-      preguntaEspejo:
-        '¿Aplico depuración disciplinada en mi vida (técnica y no técnica) o tiendo a tirar el problema y empezar de cero?',
+      cita: 'Un bug ignorado afecta a quien usa el sistema; documentar la depuración es respeto por la cadena de usuarios futuros.',
+      preguntaEspejo: '¿Mi bitácora permitiría que otro programador entienda qué hice y por qué, o solo yo sé qué pasó?'
     },
     estoico: {
       autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
-      cita: 'Aislar la causa raíz exige paciencia — la fuerza bruta es atajo que cuesta más al final.',
-      preguntaEspejo:
-        'Cuando algo falla en mi vida, ¿busco la causa raíz o aplico parche tras parche hasta agotarme?',
+      cita: 'Una hipótesis a la vez es disciplina; tocar varias piezas simultáneas es vanidad disfrazada de eficiencia.',
+      preguntaEspejo: '¿Estoy probando una hipótesis a la vez, o cambiando varias cosas esperando que algo funcione?'
     },
     floridi: {
       autor: 'Luciano Floridi',
       lente: 'lente de la infoesfera',
-      cita: 'La depuración rigurosa es la primera línea contra la entropía de los sistemas informacionales.',
-      preguntaEspejo:
-        '¿Estoy entrenando hábitos de depuración en mi vida digital o solo cuando me obligan en el examen?',
-    },
+      cita: 'La depuración rigurosa es la nueva ética profesional del oficio digital en la era del software ubicuo.',
+      preguntaEspejo: '¿Mi depuración tiene el rigor que tendría si este código fuera para un sistema crítico, o me conformo con que parezca funcionar?'
+    }
   },
-
   cincoDimensiones: {
-    personal:
-      'Aprendiste un método transferible: hipótesis, prueba, corrección, verificación. Sirve para código, dispositivos, conflictos, decisiones.',
-    emocional:
-      'Resististe la tentación de la fuerza bruta — entendiste que la paciencia disciplinada es virtud, no debilidad.',
-    ciudadana:
-      'La capacidad de depurar problemas sistemáticamente es habilidad democrática: pensar antes de actuar es ciudadanía adulta.',
-    local:
-      'Heredaste el ojo del mecánico de pueblo: oír primero, tocar después, abrir solo cuando es necesario.',
-    intergeneracional:
-      'El método artesanal de diagnóstico y el debugger moderno comparten lógica. Lo que cambia es el medio, no la paciencia.',
-  },
+    personal: 'Aprendiste un método transferible: hipótesis, prueba, corrección, verificación. Sirve para código, dispositivos, conflictos, decisiones.',
+    emocional: 'Resististe la tentación de la fuerza bruta — entendiste que la paciencia disciplinada es virtud, no debilidad.',
+    ciudadana: 'La capacidad de depurar problemas sistemáticamente es habilidad democrática: pensar antes de actuar es ciudadanía adulta.',
+    local: 'Heredaste el ojo del mecánico de pueblo: oír primero, tocar después, abrir solo cuando es necesario.',
+    intergeneracional: 'El método artesanal de diagnóstico y el debugger moderno comparten lógica. Lo que cambia es el medio, no la paciencia.'
+  }
 };
 
 export default contenido;

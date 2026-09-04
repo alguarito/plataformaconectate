@@ -82,23 +82,23 @@ const contenido: ContenidoGuia = {
           enunciado: 'Le pides a un LLM \'cita una obra de Borges sobre Cartago\' y te da un título. ¿Confías?',
           opciones: [
             'Sí, suena seguro.',
-            'No. Verifico en Google o biblioteca. Los LLMs alucinan títulos falsos a veces.',
             'Solo si paga premium.',
+            'No. Verifico en Google o biblioteca. Los LLMs alucinan títulos falsos a veces.',
             'Sí, es Borges.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Verificas siempre. Los LLMs alucinan: inventan datos con seguridad. Acuerdo 1 del uso responsable. Para citas y datos importantes, verifica en otra fuente.',
           feedbackIncorrecto: 'Verifica. Los LLMs alucinan en datos específicos: nombres, fechas, citas. Buscar en otra fuente toma 30 segundos y te ahorra citar mentiras.'
         },
         {
           enunciado: 'Le preguntas a ChatGPT \'¿quién ganó las elecciones presidenciales del año pasado?\'. ¿Puede responder?',
           opciones: [
-            'Sí, sabe todo lo que pasa en el mundo.',
             'Depende. En versión sin acceso a internet, su conocimiento se detiene en la fecha de entrenamiento (cutoff). Versiones con búsqueda web sí pueden.',
+            'Sí, sabe todo lo que pasa en el mundo.',
             'Sí, siempre.',
             'No, las IAs no saben de política.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Bien. Los LLMs gratuitos tienen \'cutoff\' (fecha límite de su conocimiento). No tienen información en tiempo real salvo versiones con búsqueda web (premium o específicas).',
           feedbackIncorrecto: 'Tienen \'cutoff\' (fecha límite). Versión gratuita típicamente no tiene info reciente. Las versiones con búsqueda web (algunas, premium) sí. Pregunta siempre la fecha de cutoff.'
         },
@@ -106,11 +106,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Le pides al LLM redactar un correo formal y te lo da. ¿Lo copias y envías?',
           opciones: [
             'Sí, está perfecto.',
-            'No. Lo leo, lo adapto a mi voz, cambio detalles que no son míos. Acuerdo 5 (voz propia).',
             'Sí, ahorra tiempo.',
-            'Lo envío tal cual al rector.'
+            'Lo envío tal cual al rector.',
+            'No. Lo leo, lo adapto a mi voz, cambio detalles que no son míos. Acuerdo 5 (voz propia).'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. Acuerdo 5: voz propia. El LLM da borrador; tú adaptas. Si copias tal cual, pierdes el aprendizaje y a veces se nota que no es tu voz.',
           feedbackIncorrecto: 'Adapta a tu voz. El borrador del LLM es punto de partida, no producto final. Adaptarlo te entrena en escribir bien. Copiar tal cual te quita el aprendizaje.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Para qué tarea SÍ es útil un LLM como ChatGPT?',
           opciones: [
             'Para calcular \'6738 × 9281\' con precisión exacta.',
-            'Para explicar conceptos difíciles, estructurar texto, traducir, resumir.',
             'Para saber qué pasa en las noticias de hoy.',
+            'Para explicar conceptos difíciles, estructurar texto, traducir, resumir.',
             'Para hacer la tarea sin pensar.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Las 5 capacidades clave: explicar, estructurar, traducir, resumir, generar ideas. Para cálculos exactos largos usa calculadora; para noticias usa medios reales.',
           feedbackIncorrecto: 'Las 5 fortalezas: explicar, estructurar, traducir, resumir, generar ideas. Cálculos exactos largos NO; noticias de hoy NO (sin búsqueda web); tarea sin pensar NO ético.'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Voy a entrenar mi pensamiento crítico al usar IA, o a dejar que la IA piense por mí?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador del juicio sereno)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Cuando recibas una respuesta, antes de aceptarla, pregúntate: ¿es verdadera? ¿es útil para mí en mi situación? El sabio juzga antes de seguir."',
       preguntaEspejo: '¿Estoy aplicando estos 2 filtros (verdad + utilidad propia) o acepto respuestas sin pasar por ellos?'

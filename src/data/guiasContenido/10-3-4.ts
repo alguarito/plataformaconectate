@@ -70,23 +70,23 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuál es la fórmula del punto de equilibrio?',
           opciones: [
             'Costos totales / 2',
-            'Costos fijos / (Precio unitario - Costo variable unitario)',
             'Ventas + Ganancias',
-            'No tiene fórmula'
+            'No tiene fórmula',
+            'Costos fijos / (Precio unitario - Costo variable unitario)'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Exacto. Costos fijos / (Precio - Costo variable). Da unidades mínimas para no perder.',
           feedbackIncorrecto: 'Es Costos fijos / (Precio unitario - Costo variable unitario). Da unidades mínimas a vender.'
         },
         {
           enunciado: 'Los costos que ocurren cada mes existan o no ventas se llaman...',
           opciones: [
-            'Variables',
             'Fijos',
+            'Variables',
             'Imaginarios',
             'Opcionales'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Correcto. Fijos. Arriendo, suscripciones, sueldos.',
           feedbackIncorrecto: 'Costos fijos. Existan o no ventas, hay que cubrirlos cada mes.'
         },
@@ -106,11 +106,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu PE es 200 ventas/mes y vendes 50. ¿Qué indica?',
           opciones: [
             'Negocio rentable',
-            '',
             'Ya está bien',
+            '',
             'No importa'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Correcto. Si el PE supera mucho las ventas reales, el modelo necesita ajuste.',
           feedbackIncorrecto: 'Indica problema estructural. Hay que reducir costos fijos, subir precio o cambiar producto.'
         },

@@ -71,10 +71,10 @@ const contenido: ContenidoGuia = {
           opciones: [
             '10%',
             '25%',
-            '50%',
-            '90%'
+            '90%',
+            '50%'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Exacto. El Acto 2 ocupa el 50%. Es la zona más larga del libro y la de mayor responsabilidad.',
           feedbackIncorrecto: 'Son 50%. El desarrollo es la zona más larga; ahí se juega la mayor parte de la obra.'
         },
@@ -82,11 +82,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuántos capítulos pivote tiene un libro bien estructurado?',
           opciones: [
             '1',
-            '3',
             '10',
+            '3',
             '30'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Correcto. 3 pivotes: primero, mitad y último. Merecen más reescritura que los demás.',
           feedbackIncorrecto: 'Son 3: el primero, el de la mitad y el último. Si esos funcionan, el libro funciona.'
         },
@@ -105,12 +105,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: '¿Qué pasa si todos los capítulos pesan lo mismo?',
           opciones: [
-            'El libro está perfecto',
             'Pierde ritmo y peso editorial',
+            'El libro está perfecto',
             'Es más fácil de leer',
             'No tiene consecuencias'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Correcto. Pesos iguales aplanan el ritmo. La estructura profesional asigna pesos según función.',
           feedbackIncorrecto: 'Pierde ritmo. Pesos iguales aplanan; la estructura profesional asigna pesos según función de cada capítulo.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'El último capítulo de un libro bien diseñado...',
           opciones: [
             'Tiene que dar un final feliz cerrado',
-            'Cierra o deja inconforme; merece ser pivote y reescribirse más',
             'Es opcional',
+            'Cierra o deja inconforme; merece ser pivote y reescribirse más',
             'Se copia del primero'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Exacto. El último es pivote. Cierra o decepciona; por eso pide más reescritura.',
           feedbackIncorrecto: 'Es pivote. Cierra o decepciona al lector, por eso merece más cuidado y reescritura.'
         }

@@ -93,12 +93,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'Tu computador se calienta mucho cuando lo usas en la cama. ¿Por qué?',
           opciones: [
-            'Es normal, todos los computadores calientan.',
             'La cama ahoga la ventilación. Hay que ponerlo en superficie firme con espacio para que ventile.',
+            'Es normal, todos los computadores calientan.',
             'Le falta antivirus.',
             'Está dañado, hay que cambiarlo.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. La cama o el cojín tapan las salidas de aire de la ventilación. El equipo se calienta y se daña. Mesa firme + 15 cm atrás.',
           feedbackIncorrecto: 'La cama ahoga la ventilación. El portátil se calienta y se daña con el tiempo. Siempre en mesa firme con espacio detrás para ventilar.'
         },
@@ -106,11 +106,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Cuándo debes hacer copia de seguridad de tus archivos?',
           opciones: [
             'Cuando se dañe el disco.',
-            'Cada semana, antes de que algo malo pase.',
             'Una vez al año, suficiente.',
-            'Nunca, mis archivos no son importantes.'
+            'Nunca, mis archivos no son importantes.',
+            'Cada semana, antes de que algo malo pase.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Exacto. Cada semana. Si esperas a que falle el disco, ya es tarde. La copia es prevención, no rescate.',
           feedbackIncorrecto: 'Cada semana. Si esperas a que algo se dañe, ya perdiste todo. Backup semanal te salva del 100% de los disgustos.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu mamá dice \'el antivirus consume RAM, mejor lo desinstalo\'. ¿Qué le respondes?',
           opciones: [
             'Tiene razón, sin antivirus va más rápido.',
-            'Sin antivirus en 1 mes te entran 20 virus. Mejor mantenerlo y limpiarlo en cambio.',
             'Da lo mismo, los virus ya no existen.',
-            'Mejor instalo 3 antivirus, así protege más.'
+            'Mejor instalo 3 antivirus, así protege más.',
+            'Sin antivirus en 1 mes te entran 20 virus. Mejor mantenerlo y limpiarlo en cambio.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Bien. Sin antivirus es mucho peor. Y solo se usa UNO; varios chocan. Windows Defender es bueno y ya viene incluido.',
           feedbackIncorrecto: 'Sin antivirus el equipo se llena de virus rápido. Solo un antivirus a la vez (Windows Defender viene incluido y es bueno).'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Trato mis cosas como bienes que duran o como objetos desechables?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador que practicaba la disciplina diaria)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"El que cuida lo pequeño cada día, evita lo grande mañana."',
       preguntaEspejo: '¿Qué pequeña acción de mantenimiento estoy postergando que después se convertirá en un problema grande?'

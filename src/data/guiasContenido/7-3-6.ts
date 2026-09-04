@@ -82,23 +82,23 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu prompt es \'Bolívar\'. ¿Qué le falta según CTRF?',
           opciones: [
             'Nada, está bien.',
-            'Todo: contexto, tarea específica, restricciones, formato.',
             'Solo el formato.',
+            'Todo: contexto, tarea específica, restricciones, formato.',
             'Solo el contexto.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. \'Bolívar\' es prompt de 1 palabra. Falta TODO: no dice quién eres, qué quieres saber, cómo debe responder, en qué formato. Es prompt basura.',
           feedbackIncorrecto: 'Le faltan las 4 partes de CTRF. \'Bolívar\' es palabra sola sin contexto, tarea, restricciones ni formato. Necesita los 4 para ser útil.'
         },
         {
           enunciado: 'Recibes una respuesta del LLM muy larga. ¿Qué haces?',
           opciones: [
-            'La acepto tal cual.',
             'Itero: pido \'resúmela en 3 puntos\' o \'hazla más corta\'.',
+            'La acepto tal cual.',
             'Cierro el chat.',
             'Le pago más al LLM.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Iteración: pides ajustes. La conversación es ida y vuelta. 2-3 iteraciones suelen dar respuesta excelente. Aceptar la primera sin pensar es perderse el oficio del prompting.',
           feedbackIncorrecto: 'Iteras. Pides ajustes: \'más corta\', \'con ejemplo\', \'más simple\'. La conversación es ida y vuelta. Quien itera obtiene respuestas mejores que quien acepta la primera.'
         },
@@ -106,11 +106,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Eres estudiante de 7°. ¿Qué prompt funciona mejor?',
           opciones: [
             '\'Hazme la tarea de ciencias\'.',
-            '\'Soy estudiante de 7° en Colombia. Explícame el ciclo del agua con ejemplo del río Cauca, en 3 párrafos sencillos. No me hagas la tarea, ayúdame a entender\'.',
             '\'Tarea de ciencias por favor\'.',
-            '\'Ciencia\'.'
+            '\'Ciencia\'.',
+            '\'Soy estudiante de 7° en Colombia. Explícame el ciclo del agua con ejemplo del río Cauca, en 3 párrafos sencillos. No me hagas la tarea, ayúdame a entender\'.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. CTRF aplicado completo + acuerdo ético (no me hagas la tarea, ayúdame a entender). Es prompt de profesional. Las respuestas que da son útiles y respetan tu aprendizaje.',
           feedbackIncorrecto: 'CTRF completo + ética. Contexto (estudiante 7°), Tarea (explicar ciclo del agua), Restricciones (ejemplo Cauca, sencillo), Formato (3 párrafos). + acuerdo ético de no hacer la tarea por ti.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Sin aprender prompting, ¿cómo será tu uso de IA en 5 años?',
           opciones: [
             'Igual que con prompting.',
-            'Limitado: recibirás respuestas pobres porque no sabrás formularlas bien. Como buscar en Google sin saber qué palabras usar.',
             'Mejor sin prompting.',
+            'Limitado: recibirás respuestas pobres porque no sabrás formularlas bien. Como buscar en Google sin saber qué palabras usar.',
             'No habrá IA en 5 años.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Sin prompting, respuestas pobres. Como usar Google sin saber qué buscar. Aprender prompting en 7° te da años de ventaja sobre adultos que apenas empiezan.',
           feedbackIncorrecto: 'Sin prompting recibes basura. Quien sabe formular preguntas, obtiene oro. Quien no, recibe respuestas pobres y genéricas. Es habilidad clave del siglo XXI.'
         }
@@ -135,7 +135,7 @@ const contenido: ContenidoGuia = {
     cierre: 'Al terminar la clase: (1) podrás identificar prompts buenos vs malos; (2) sabrás aplicar la fórmula CTRF (Contexto + Tarea + Restricciones + Formato); (3) podrás evaluar la mejora entre un prompt antes y uno después; (4) habrás creado 10 prompts mejorados probados con un LLM real…'
   },
   saberAncestral: {
-    saber: 'Doña Mercedes la maestra rural del Valle del Cauca enseñaba a los niños a preguntarle bien al consejero del barrio. "No vayan donde don Lucho con un `dígame algo\' al aire", les decía. "Vayan con la pregunta concreta: `Don Lucho, mi papá quiere vender la finca, ¿qué debería considerar antes de decidir?\' Así él les responde algo útil". Doña Mercedes sabía que la calidad de la respuesta depende de la calidad de la pregunta. Si llegabas vago, recibías consejo vago. Si llegabas específico, recibías consejo específico. Aprender a formular bien una pregunta era habilidad que se enseñaba desde niño: "contextualicen su situación, sean claros, díganle qué necesitan exactamente". Hoy con la IA pasa lo mismo. Un prompt (pregunta a la IA) bien formulado te da respuesta valiosa. Un prompt vago te da basura. Aprender a preguntar bien es 50% del oficio de usar IA con criterio.',
+    saber: 'Doña Mercedes la maestra rural del Valle del Cauca enseñaba a los niños a preguntarle bien al consejero del barrio. "No vayan donde don Lucho con un `dígame algo\' al aire", les decía. "Vayan con la pregunta concreta: `Don Lucho, mi papá quiere vender la finca, ¿qué debería considerar antes de decidir?\' Así él les responde algo útil". Doña Mercedes sabía que la calidad de la respuesta depende de la calidad de la pregunta. Si llegabas vago, recibías consejo vago. Si llegabas específico, recibías consejo específico. Aprender a formular bien una pregunta era habilidad que se enseñaba desde niño: "contextualicen su situación, sean claros, díganle qué necesitan exactamente". Hoy con la IA pasa lo mismo. Un prompt (pregunta a la IA) bien formulado te da respuesta valiosa. Un prompt vago te da basura. Aprender a preguntar bien es 50 % del oficio de usar IA con criterio.',
     preguntaPuente: 'Si tu profe te dice "dime algo" sin contexto ni especifico, ¿qué le respondes? ¿Y si te dice "cuéntame 3 cosas que aprendiste hoy en clase de mate"? La diferencia es prompting — así pasa también con la IA.'
   },
   triangulo: {
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Estoy aprendiendo solo a hablar con IA, o también a pensar con más precisión en todas mis conversaciones?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador de las preguntas exactas)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Pregunta lo que necesitas saber, no lo que crees que debes preguntar. La diferencia es respeto por tu propio tiempo y el del que responde."',
       preguntaEspejo: '¿Pregunto lo que realmente necesito o lo que creo que "está bien preguntar"?'

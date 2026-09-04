@@ -69,12 +69,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: '¿Cuáles son las 4 técnicas avanzadas de prompting?',
           opciones: [
-            'CTRF, copy, paste, paste.',
             'Role + Few-shot + Chain-of-Thought + Iteración explícita.',
+            'CTRF, copy, paste, paste.',
             'Pregunta, respuesta, escucha, decide.',
             'Solo CTRF basta.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Role + Few-shot + Chain-of-Thought + Iteración explícita. Cada una se puede combinar con otra para resultados aún mejores.',
           feedbackIncorrecto: 'Role + Few-shot + CoT + Iteración explícita. CTRF es la base; estas 4 son las técnicas avanzadas. La combinación con criterio es donde está la maestría.'
         },
@@ -82,11 +82,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Le pides al LLM \'actúa como un profesor paciente que enseña a niños de 12 años\'. ¿Qué técnica usaste?',
           opciones: [
             'Few-shot.',
-            'Role Prompting.',
             'Chain-of-Thought.',
+            'Role Prompting.',
             'CTRF.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Role Prompting: asignas a la IA un rol específico. El LLM ajusta tono, vocabulario y profundidad. Útil para explicaciones, escritura creativa.',
           feedbackIncorrecto: 'Role Prompting. \'Actúa como X\' es la fórmula básica. El LLM adapta su respuesta al rol. Para enseñar a niños sale más simple; para expertos sale más técnico.'
         },
@@ -94,35 +94,35 @@ const contenido: ContenidoGuia = {
           enunciado: 'Quieres que el LLM resuelva un problema de mate mostrando TODOS los pasos. ¿Qué técnica?',
           opciones: [
             'Role.',
-            'Chain-of-Thought.',
             'Few-shot.',
-            'Iteración.'
+            'Iteración.',
+            'Chain-of-Thought.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Bien. Chain-of-Thought: pedir al LLM mostrar pasos del razonamiento. En matemáticas, lógica y análisis, las respuestas son más precisas porque el LLM \'piensa en voz alta\'.',
           feedbackIncorrecto: 'Chain-of-Thought. Le pides mostrar pasos del razonamiento. Especialmente útil en matemáticas donde mostrar pasos mejora precisión y entendimiento.'
         },
         {
           enunciado: 'Para clasificar canciones por género, le das al LLM 2 ejemplos resueltos y pides que clasifique uno nuevo. ¿Qué técnica?',
           opciones: [
-            'Few-shot.',
             'Chain-of-Thought.',
+            'Few-shot.',
             'Iteración.',
             'Sin técnica.'
           ],
-          respuestaIndex: 0,
+          respuestaIndex: 1,
           feedbackCorrecto: 'Sí. Few-shot: dar ejemplos para que el LLM aprenda el patrón. Útil para clasificaciones, traducciones especiales, formatos específicos.',
           feedbackIncorrecto: 'Few-shot. Le muestras 1-3 ejemplos, el LLM aprende el patrón y lo aplica al caso nuevo. Mucho más preciso que solo explicar el patrón con palabras.'
         },
         {
           enunciado: '¿Cuál es el peligro de usar demasiadas técnicas en un solo prompt?',
           opciones: [
-            'Ningún peligro, mientras más mejor.',
             'Prompts muy largos (500+ palabras) confunden al LLM. Mejor combinar 2-3 técnicas máximo.',
+            'Ningún peligro, mientras más mejor.',
             'El LLM se enoja.',
             'La pantalla se traba.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Prompts muy largos confunden al LLM. La combinación inteligente de 2-3 técnicas es óptima. Más técnicas no siempre = mejor respuesta.',
           feedbackIncorrecto: 'Combinar 2-3 técnicas es óptimo. Más allá, el LLM se confunde. La calidad viene de combinar con criterio, no de acumular técnicas sin sentido.'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Estoy combinando las herramientas con criterio, o usándolas una por una sin pensar?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador de las habilidades refinadas)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"El sabio no se conforma con saber lo básico. Profundiza hasta dominar las sutilezas. Ahí está la diferencia con los demás."',
       preguntaEspejo: '¿En qué áreas de mi vida me conformo con lo básico cuando podría profundizar?'

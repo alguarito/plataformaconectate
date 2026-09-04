@@ -82,35 +82,35 @@ const contenido: ContenidoGuia = {
           enunciado: 'La regla "la IA propone, el humano dispone" significa que...',
           opciones: [
             'La IA decide todo',
-            'El humano audita, valida y corrige la propuesta inicial de la IA',
             'El humano hace todo',
-            'No hay diferencia'
+            'No hay diferencia',
+            'El humano audita, valida y corrige la propuesta inicial de la IA'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Correcto. La IA acelera; el humano sostiene rigor con auditoría.',
           feedbackIncorrecto: 'El humano audita la propuesta de la IA. Acelera pero no decide finalmente.'
         },
         {
           enunciado: '¿Qué pasa si la IA clasifica un sarcasmo como respuesta literal?',
           opciones: [
-            'No importa',
             'El análisis pierde precisión; el humano debe corregir',
+            'No importa',
             'Mejora el análisis',
             'Es más rápido'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Exacto. El sarcasmo escapa a la IA. Sin auditoría humana, el análisis introduce error.',
           feedbackIncorrecto: 'El análisis pierde precisión. Por eso la auditoría humana es irrenunciable.'
         },
         {
           enunciado: '¿Cuál es UN área donde la IA falla?',
           opciones: [
-            'Modismos locales colombianos',
             'Patrones obvios',
             'Resúmenes',
+            'Modismos locales colombianos',
             'Agrupación simple'
           ],
-          respuestaIndex: 0,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Correcto. Modismos como "planchao" o "embalado" pueden confundir a la IA.',
           feedbackIncorrecto: 'Falla con modismos locales. "Estoy embalado" en Cartago significa muy ocupado, no en una caja.'
         },

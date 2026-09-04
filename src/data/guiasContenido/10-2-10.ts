@@ -70,11 +70,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuántos minutos dura la sustentación del periodo?',
           opciones: [
             '1',
-            '5',
             '30',
-            '60'
+            '60',
+            '5'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Exacto. 5 minutos de exposición + 5 de Q&A.',
           feedbackIncorrecto: 'Son 5 minutos de exposición + 5 de Q&A. Tiempo controlado obliga a destilar.'
         },
@@ -94,23 +94,23 @@ const contenido: ContenidoGuia = {
           enunciado: 'Ante una pregunta dura de la audiencia, ¿qué haces?',
           opciones: [
             'Inventas una respuesta',
-            'Reconoces lo no resuelto y muestras el camino que tomarías',
             'Cambias de tema',
+            'Reconoces lo no resuelto y muestras el camino que tomarías',
             'Te quedas callado'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Exacto. La honestidad gana respeto profesional. Reconocer límites es señal de oficio.',
           feedbackIncorrecto: 'Reconoces lo no resuelto y muestras el camino. Ocultarlo erosiona la credibilidad.'
         },
         {
           enunciado: 'La regla "lo que no se cuenta en 5 minutos, no se domina" significa que...',
           opciones: [
-            'Hay que hablar muy rápido',
             'La síntesis revela el dominio del tema',
+            'Hay que hablar muy rápido',
             'Solo se puede hablar 5 minutos',
             '5 minutos es el límite legal'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Correcto. Si no logras condensar en 5 minutos, todavía falta procesar la pieza.',
           feedbackIncorrecto: 'La síntesis revela el dominio. Cuando no logras condensar, el tema aún no está afinado en tu cabeza.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Qué pieza obligatoria forma parte de la sustentación, distinta del informe tradicional?',
           opciones: [
             'El saludo',
-            'La declaración honesta del uso de IA',
             'La firma del rector',
-            'El número de páginas'
+            'El número de páginas',
+            'La declaración honesta del uso de IA'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Exacto. La declaración honesta de IA es la pieza nueva que define el estándar profesional contemporáneo.',
           feedbackIncorrecto: 'La declaración honesta del uso de IA. Pieza nueva del modelo profesional transparente.'
         }

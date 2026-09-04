@@ -70,23 +70,23 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Qué es un MVP?',
           opciones: [
             'Producto final perfecto.',
-            'Versión más simple que aún permite probar la hipótesis principal.',
             'Prototipo sin usuarios.',
+            'Versión más simple que aún permite probar la hipótesis principal.',
             'Una idea sin construir.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. MVP = versión mínima en manos de usuarios reales para aprender. Acuñado por Eric Ries. Lo opuesto al producto final pulido.',
           feedbackIncorrecto: 'MVP = mínima versión real para usuarios reales. Ni prototipo (sin usuarios) ni producto final (perfecto). Punto medio que permite aprender rápido.'
         },
         {
           enunciado: 'Antes de construir el MVP, ¿qué defines?',
           opciones: [
-            'Solo la idea general.',
             'Criterios EXPLÍCITOS de éxito y falla (qué se considera \'funcionó\' o \'falló\').',
+            'Solo la idea general.',
             'El precio.',
             'El logo.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Criterios definidos antes de medir. Sin esto, todo resultado se interpreta como éxito (sesgo de confirmación). Define éxito numérico.',
           feedbackIncorrecto: 'Criterios de éxito y falla antes de construir. Ejemplo: éxito = 10 formularios, falla = <5. Sin meta clara, la medición se sesga.'
         },
@@ -94,11 +94,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Qué dice Reid Hoffman sobre la primera versión de tu producto?',
           opciones: [
             'Debe ser perfecta.',
-            'Si no te avergüenza la primera versión, lanzaste tarde.',
             'Nunca lances algo imperfecto.',
-            'Espera 2 años a perfeccionar.'
+            'Espera 2 años a perfeccionar.',
+            'Si no te avergüenza la primera versión, lanzaste tarde.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. Imperfecto pero real > perfecto imaginario nunca lanzado. El MVP debe avergonzarte un poco para que estés aprendiendo.',
           feedbackIncorrecto: 'Reid Hoffman: si no avergüenza, tardaste demasiado. Lanzar imperfecto y aprender > perfeccionar sin lanzar. Filosofía del MVP.'
         },

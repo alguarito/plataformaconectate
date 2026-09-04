@@ -82,11 +82,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu programa NO arranca al hacer clic en bandera verde. ¿Qué falta?',
           opciones: [
             'Nada falta, debe arrancar solo.',
-            'Probablemente falta el bloque amarillo \'Al hacer clic en bandera verde\' al inicio.',
             'Hay que reiniciar el computador.',
-            'Scratch está dañado.'
+            'Scratch está dañado.',
+            'Probablemente falta el bloque amarillo \'Al hacer clic en bandera verde\' al inicio.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. Sin bloque de evento (sombrero amarillo) al inicio, los bloques no se ejecutan cuando haces clic en la bandera. Siempre arranca con un evento.',
           feedbackIncorrecto: 'Falta el bloque amarillo \'Al hacer clic en bandera verde\'. Sin él, los bloques no se conectan al botón START (la bandera). Es como olvidar el botón POWER.'
         },
@@ -94,23 +94,23 @@ const contenido: ContenidoGuia = {
           enunciado: 'Quieres que tu sprite repita una acción 10 veces. ¿Qué bloque usas?',
           opciones: [
             'Un bloque de movimiento.',
-            'Un bloque naranja \'Repetir 10 veces\' (Control).',
             '10 bloques iguales en fila.',
+            'Un bloque naranja \'Repetir 10 veces\' (Control).',
             'Un bloque de sonido.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Bucle FOR de la S7, ahora en Scratch. Bloque naranja \'Repetir 10 veces\'. Adentro pones los bloques que se repetirán. Mucho mejor que 10 bloques iguales.',
           feedbackIncorrecto: '\'Repetir 10 veces\' (Control naranja). El bloque abraza otros bloques que se repiten N veces. Es el bucle FOR de la S7 aplicado en Scratch.'
         },
         {
           enunciado: 'El sprite por defecto en Scratch es...',
           opciones: [
-            'Un dragón.',
             'El gato amarillo.',
+            'Un dragón.',
             'Un robot.',
             'Mickey Mouse.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. El gato amarillo (llamado Scratch Cat) es el sprite por defecto. Puedes cambiarlo por otro de la biblioteca o subir el tuyo propio.',
           feedbackIncorrecto: 'El gato amarillo (Scratch Cat) es el sprite por defecto. Puedes cambiarlo con el botón \'Elegir un sprite\' abajo a la derecha. Hay biblioteca grande.'
         },
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Estoy aprovechando este acceso al saber que generaciones anteriores no tuvieron?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador de los hábitos diarios)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"El que practica una habilidad 30 minutos al día durante 1 año, llega lejos. Scratch te da las herramientas para esa práctica."',
       preguntaEspejo: '¿Qué pasaría si practicara Scratch 20 minutos cada día en lugar de solo en clase?'

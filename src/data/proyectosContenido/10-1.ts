@@ -20,7 +20,7 @@ const contenido: ContenidoProyecto = {
   estrategia: 'Oficio editorial + Prompting profesional + Iteración V1→V2→V3',
   duracionSemanas: 6,
   modalidad: 'equipo',
-  reto: 'Concebir, escribir e ilustrar un libro publicable de al menos 80 páginas sobre un tema de tu elección, con IA como escritor asistente y con mínimo 30% del texto editado a mano (V3 con voz propia). Al cerrar el periodo entregas el PDF compilado + tu firma de editor responsable + la declaración honesta de cómo se hizo.',
+  reto: 'Concebir, escribir e ilustrar un libro publicable de al menos 80 páginas sobre un tema de tu elección, con IA como escritor asistente y con mínimo 30~% del texto editado a mano (V3 con voz propia). Al cerrar el periodo entregas el PDF compilado + tu firma de editor responsable + la declaración honesta de cómo se hizo.',
   insumos: [
     'Acceso a IA generativa: Claude, Gemini o ChatGPT',
     'Plantilla de prompt profesional 5 partes (rol+contexto+tarea+formato+restricciones)',
@@ -100,7 +100,7 @@ const contenido: ContenidoProyecto = {
     {
       numero: 2,
       titulo: 'Libro PDF compilado de mínimo 80 páginas',
-      queEntregas: 'PDF compilado con: portada generada con IA + página de créditos con declaración de IA + tabla de contenidos + 8-12 capítulos diagramados + sustentación del editor (1 página). El libro debe tener al menos 30% de texto editado a mano sobre el borrador inicial de IA (V3 con voz propia). Acompañado de la bitácora de iteraciones de al menos 3 capítulos mostrando V1→V2→V3.',
+      queEntregas: 'PDF compilado con: portada generada con IA + página de créditos con declaración de IA + tabla de contenidos + 8-12 capítulos diagramados + sustentación del editor (1 página). El libro debe tener al menos 30~% de texto editado a mano sobre el borrador inicial de IA (V3 con voz propia). Acompañado de la bitácora de iteraciones de al menos 3 capítulos mostrando V1→V2→V3.',
       comoSeHace: [
         'Generar V1 de cada capítulo con prompt profesional',
         'V2: pedir a la IA mejorar puntos específicos (apertura, clichés, tono)',

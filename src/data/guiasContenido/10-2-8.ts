@@ -70,11 +70,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuántos elementos obligatorios tiene un correo profesional?',
           opciones: [
             '1',
-            '5',
             '20',
-            '100'
+            '100',
+            '5'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Exacto. 5: asunto, saludo, cuerpo, cierre y firma.',
           feedbackIncorrecto: 'Son 5: asunto claro, saludo apropiado, cuerpo conciso, cierre cordial y firma con datos.'
         },
@@ -93,12 +93,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: '¿Cuál es el límite recomendado de palabras para revisar si el correo está depurado?',
           opciones: [
-            '10',
             '200',
+            '10',
             '1000',
             '10000'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Exacto. 200 palabras. Si pasas el límite, revisas si todo el contenido es necesario.',
           feedbackIncorrecto: 'Son 200 palabras. Más, revisar qué sobra. La síntesis es respeto por el lector.'
         },
@@ -106,23 +106,23 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuál es el rol de la IA en correos profesionales?',
           opciones: [
             'Reemplazar al editor humano',
-            'Asistente que ayuda a redactar borrador inicial; el humano decide tono y matices',
             'No tiene rol',
+            'Asistente que ayuda a redactar borrador inicial; el humano decide tono y matices',
             'Solo traducir'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Correcto. La IA asiste; el humano edita tono, pedido y matices culturales.',
           feedbackIncorrecto: 'Es asistente, no reemplazo. La IA da borrador; el humano ajusta tono, matices y firma.'
         },
         {
           enunciado: '¿Qué incluye la firma profesional?',
           opciones: [
-            'Solo el nombre',
             'Nombre, cargo o rol, institución y contacto si aplica',
+            'Solo el nombre',
             'Solo el correo',
             'Una imagen'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Exacto. Nombre completo, cargo o rol (estudiante grado 10°), institución y contacto.',
           feedbackIncorrecto: 'Nombre completo, rol, institución y contacto. Sin esos datos, el destinatario no sabe quién escribe.'
         }

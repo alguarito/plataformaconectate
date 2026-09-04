@@ -70,23 +70,23 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuál de estas herramientas es gratuita y basada en DALL-E 3?',
           opciones: [
             'Photoshop',
-            'Bing Image Creator',
             'Word',
+            'Bing Image Creator',
             'WhatsApp'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Exacto. Bing Image Creator usa DALL-E 3 con cuenta Microsoft, gratis.',
           feedbackIncorrecto: 'Es Bing Image Creator (bing.com/images/create). Gratis, basado en DALL-E 3.'
         },
         {
           enunciado: '¿Qué importa más en un prompt para imagen?',
           opciones: [
-            'La gramática perfecta',
             'Descriptores visuales (estilo, paleta, composición, atmósfera)',
+            'La gramática perfecta',
             'El idioma latín',
             'El tamaño de letra'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Correcto. El prompt visual gira en torno a descriptores visuales, no en narrativa larga.',
           feedbackIncorrecto: 'Importan los descriptores visuales: estilo, paleta, composición, atmósfera, encuadre.'
         },
@@ -106,11 +106,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Qué término sirve para describir atmósfera dramática en un prompt visual?',
           opciones: [
             'bonita',
-            'moody / cinematic',
             'bueno',
-            'normal'
+            'normal',
+            'moody / cinematic'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Correcto. "Moody" o "cinematic" son descriptores estándar que entienden los generadores.',
           feedbackIncorrecto: 'Términos como "moody" o "cinematic" funcionan mucho mejor que adjetivos vagos como "bonita".'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Antes de usar la portada generada comercialmente, ¿qué hay que revisar?',
           opciones: [
             'Nada',
-            'Los términos de uso de la herramienta',
             'El idioma de la imagen',
-            'El precio'
+            'El precio',
+            'Los términos de uso de la herramienta'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Exacto. Cada herramienta tiene sus condiciones. Hay que leer antes de comercializar.',
           feedbackIncorrecto: 'Hay que leer los términos de uso. Algunas herramientas exigen atribución o limitan uso comercial.'
         }

@@ -69,12 +69,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'Tu compañero escribió un párrafo confuso. ¿Cuál comentario es ÚTIL?',
           opciones: [
-            'Está mal.',
             'Este párrafo confunde porque mezclas 2 ideas. Sugiero separarlo en 2 párrafos cortos.',
+            'Está mal.',
             'Reescribe todo.',
             'No entiendo nada.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Cumple la fórmula: observación (confunde) + razón (mezclas 2 ideas) + propuesta (separarlo). El comentario que aporta vale 10 veces más que los vagos.',
           feedbackIncorrecto: 'Fórmula del comentario útil: observación + razón + propuesta. \'Está mal\' falla las 3 partes. El útil dice qué, por qué y qué hacer.'
         },
@@ -82,11 +82,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu compañero te dejó un comentario que no entiendes. ¿Qué haces?',
           opciones: [
             'Me enojo y respondo con otro insulto.',
-            'Le pregunto: \'¿podrías explicarme qué quisiste decir?\'',
             'Ignoro el comentario.',
-            'Borro el documento.'
+            'Borro el documento.',
+            'Le pregunto: \'¿podrías explicarme qué quisiste decir?\''
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Bien. Preguntar cuando no entiendes es señal de madurez. La conversación clara resuelve. Ignorar o reaccionar mal cierra puertas.',
           feedbackIncorrecto: 'Pregunta sin pena. Si no entiendes, mejor preguntar que asumir mala intención. La comunicación clara es la base de la crítica útil.'
         },
@@ -106,11 +106,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu compañero te dejó 5 comentarios. Algunos te molestan. ¿Qué haces?',
           opciones: [
             'Borro los comentarios sin leer.',
-            'Los leo todos, decido cuáles aceptar y cuáles responder con respeto. Agradezco la revisión.',
             'Le respondo con insulto.',
+            'Los leo todos, decido cuáles aceptar y cuáles responder con respeto. Agradezco la revisión.',
             'Cambio el archivo de carpeta.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Madurez: leer todos, decidir con criterio, responder con respeto, agradecer. Recibir crítica bien es disciplina de adulto. Reaccionar mal cierra el equipo.',
           feedbackIncorrecto: 'Madurez: leer, decidir, responder con respeto. La crítica del compañero (aunque duela) muchas veces te ayuda a mejorar. Agradecerla es señal de fuerza, no de debilidad.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuál de estos comentarios es más útil para un compañero?',
           opciones: [
             'Tu trabajo es horrible.',
-            'Eres un mal escritor.',
             'Buena introducción. En el párrafo 3, la idea X queda perdida; te sugiero moverla al inicio del párrafo.',
+            'Eres un mal escritor.',
             'No tienes futuro como escritor.'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 1,
           feedbackCorrecto: 'Bien. Cumple las 5 reglas: empieza por lo positivo (buena introducción), comenta el trabajo (no a la persona), es específico (párrafo 3), sugiere (no impone), y es 1 comentario claro.',
           feedbackIncorrecto: 'El útil empieza positivo, comenta el trabajo (no la persona), es específico y sugiere con respeto. Los otros son ataques personales que no ayudan a mejorar el trabajo.'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Cuando crítico a otros, mi tono comunica cuidado o violencia?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador que recibía consejos diariamente)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Quien sabe recibir crítica es más libre que quien solo sabe darla. Las dos disciplinas son necesarias."',
       preguntaEspejo: '¿Cómo reacciono cuando me critican? ¿Con apertura o con defensa inmediata?'

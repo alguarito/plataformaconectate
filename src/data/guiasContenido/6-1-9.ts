@@ -94,23 +94,23 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu compañero te dice algo que te molesta. ¿Cómo le respondes con la fórmula yo-siento?',
           opciones: [
             'Eres un grosero, siempre haces lo mismo.',
-            'Yo me siento mal cuando me dices eso, porque no es justo conmigo.',
             'Cállate, no me hables más.',
+            'Yo me siento mal cuando me dices eso, porque no es justo conmigo.',
             'Voy a contarles a todos lo que dijiste.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Bien. La fórmula \'yo siento... cuando... porque...\' no pone al otro a la defensiva. Cuida la relación.',
           feedbackIncorrecto: 'La fórmula es \'yo siento... cuando... porque...\'. Eso explica sin atacar y deja espacio para que el otro escuche.'
         },
         {
           enunciado: 'En un chat empiezan a burlarse de Sara. ¿Qué hace un upstander?',
           opciones: [
+            'Le escribe en privado a Sara: \'¿estás bien? vi lo que pasa.\'',
             'Se suma a las burlas para que no se metan con él.',
             'Calla y mira sin escribir nada.',
-            'Le escribe en privado a Sara: \'¿estás bien? vi lo que pasa.\'',
             'Cierra el chat y se va.'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Upstander es el que actúa. Escribir en privado a la víctima la sostiene. No tienes que pelear; solo no callar.',
           feedbackIncorrecto: 'Upstander es el que NO calla. Lo mínimo es escribir en privado a la víctima. Eso ya cambia la situación.'
         },
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Estoy confundiendo "decir lo que pienso" con violencia? ¿Cómo puedo decir lo mismo con cuidado?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador romano que escribió sobre la palabra)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"El que habla pensando, manda dos veces. El que habla sin pensar, se arrepiente dos veces."',
       preguntaEspejo: '¿Estoy ahorrándome arrepentimientos al pensar antes, o estoy gastando energía borrando lo que dije sin pensar?'

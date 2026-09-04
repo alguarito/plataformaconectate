@@ -70,11 +70,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Vas a hacer una presentación oral de 15 diapositivas para Sociales. ¿Qué app usas?',
           opciones: [
             'Word con saltos de página.',
-            'Excel con celdas grandes.',
             'PowerPoint.',
+            'Excel con celdas grandes.',
             'Outlook.'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 1,
           feedbackCorrecto: 'Sí. PowerPoint está diseñado para diapositivas con texto, imágenes, transiciones, notas del orador. Word podría servir pero no tiene las herramientas específicas.',
           feedbackIncorrecto: 'PowerPoint es la app de presentaciones. Word es para textos largos; Excel para cálculos; Outlook para correo. Cada herramienta para su uso.'
         },
@@ -82,11 +82,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Vas a calcular el promedio de calificaciones de 30 compañeros. ¿Qué app?',
           opciones: [
             'Word.',
-            'Excel.',
             'OneNote.',
-            'Teams.'
+            'Teams.',
+            'Excel.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Bien. Excel tiene fórmulas (=PROMEDIO()) que hacen el cálculo automático. Word no tiene cálculos automáticos; OneNote tampoco.',
           feedbackIncorrecto: 'Excel: fórmulas + tablas + gráficos. =PROMEDIO(A1:A30) te da el promedio en 1 segundo. Word puede hacer tabla pero sin cálculos automáticos.'
         },
@@ -94,23 +94,23 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu equipo necesita reunión virtual con cámara y compartir pantalla. ¿Qué app?',
           opciones: [
             'WhatsApp.',
-            'Teams.',
             'Outlook.',
+            'Teams.',
             'Word.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Teams es la app de Microsoft para reuniones virtuales: video, audio, compartir pantalla, chat, grabación. Mucho mejor que WhatsApp para uso académico/profesional.',
           feedbackIncorrecto: 'Teams es la app de reuniones virtuales en Microsoft 365. Tiene video, audio, pantalla compartida, chat, grabación. WhatsApp es informal, no profesional.'
         },
         {
           enunciado: 'Quieres hacer una encuesta a los 30 compañeros de la clase. ¿Qué app?',
           opciones: [
-            'Word.',
             'Forms.',
+            'Word.',
             'Excel.',
             'PowerPoint.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Bien. Forms hace encuestas en línea, recoge respuestas automáticamente, te las muestra en gráfico. En 30 minutos lo que en papel tomaría 2 horas.',
           feedbackIncorrecto: 'Forms: encuestas online + gráficos automáticos. Cada compañero responde por celular, las respuestas llegan a Forms y se grafican solas.'
         },
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Estoy aprendiendo las herramientas que me darán libertad en mi vida adulta?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador que entendía sus herramientas de gobierno)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Cada herramienta tiene su uso. Forzarla a otro le quita eficacia y dignidad. Conoce primero su naturaleza."',
       preguntaEspejo: '¿Estoy usando cada herramienta para lo que sirve, o forzando una a hacer trabajo de otra?'

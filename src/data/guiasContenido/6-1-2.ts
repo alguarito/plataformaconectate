@@ -69,12 +69,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'Tu primo lejano te busca en internet por primera vez. ¿Qué encuentra de ti?',
           opciones: [
-            'Mi nombre real, mi colegio y mi dirección.',
             'Las cosas que yo decidí compartir: apodo, gustos, comentarios.',
+            'Mi nombre real, mi colegio y mi dirección.',
             'Solo mi cara en una cámara apagada.',
             'Mi número de cédula y el de mi mamá.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Tu identidad digital es lo que TÚ decides compartir. Por eso esta sesión es importante: tú eliges.',
           feedbackIncorrecto: 'Tu identidad digital no debería incluir tu dirección ni datos sensibles. Es lo que tú decides compartir con criterio.'
         },
@@ -83,10 +83,10 @@ const contenido: ContenidoGuia = {
           opciones: [
             'Tu dirección exacta de la casa.',
             'Tu colegio con el número del aula.',
-            'Tu apodo y las cosas que te gusta hacer.',
-            'Los horarios en que estás solo en casa.'
+            'Los horarios en que estás solo en casa.',
+            'Tu apodo y las cosas que te gusta hacer.'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Bien. Apodo + gustos sí van. Dirección, colegio exacto y horarios cuando estás solo NUNCA en internet.',
           feedbackIncorrecto: 'Lo que sí va: apodo y gustos. Lo que NO: dirección, colegio exacto, horarios solo. Esos son datos sensibles.'
         },
@@ -106,11 +106,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu mejor amigo te pide tu contraseña de Roblox para entrar un rato. ¿Qué haces?',
           opciones: [
             'Se la doy porque es mi mejor amigo.',
-            'Le digo que no, pero le presto el celular mientras juega.',
             'Le digo que sí pero le cambio la contraseña al día siguiente.',
+            'Le digo que no, pero le presto el celular mientras juega.',
             'Le digo que sí porque no tiene importancia.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Correcto. Contraseña NO se comparte aunque la amistad sea fuerte. La amistad cambia, la contraseña queda.',
           feedbackIncorrecto: 'La regla es clara: contraseña no se comparte. Si tu amigo quiere jugar, le prestas el celular mientras lo miras.'
         },
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Estoy intentando parecer alguien más en internet, o estoy contando quién soy de verdad?'
     },
     estoico: {
-      autor: 'Marco Aurelio (un emperador romano que escribió cartas sobre cómo vivir bien)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Lo que escribes hoy queda. Escribe entonces como si lo fueras a leer dentro de 10 años."',
       preguntaEspejo: '¿Lo que voy a escribir aguanta el paso del tiempo, o me daría pena dentro de unos años?'

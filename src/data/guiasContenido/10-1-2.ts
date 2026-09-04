@@ -70,35 +70,35 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuáles son las 4 piezas obligatorias de la concepción editorial?',
           opciones: [
             'Título, autor, fecha, precio',
-            'Género específico, tema, audiencia y propósito',
             'Solo el género',
+            'Género específico, tema, audiencia y propósito',
             'Solo el título'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Exacto. Género específico, tema, audiencia y propósito. Sin las 4 cerradas, la producción se desordena.',
           feedbackIncorrecto: 'Son género específico, tema, audiencia y propósito. Las 4 sostienen toda la producción posterior.'
         },
         {
           enunciado: '¿Cuál de estas formulaciones de género es la más profesional?',
           opciones: [
+            'Manual práctico paso a paso de cocina vallecaucana para jóvenes',
             'Ficción',
             'Cosas',
-            'Manual práctico paso a paso de cocina vallecaucana para jóvenes',
             'Libro de letras'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Correcto. Cuanto más específico el género, mejor guía la producción.',
           feedbackIncorrecto: 'La más específica es la profesional. "Ficción" es demasiado amplio para guiar decisiones.'
         },
         {
           enunciado: '¿Qué pieza falta si solo defines "audiencia adolescente"?',
           opciones: [
-            'Edad concreta + contexto cultural + nivel de conocimiento previo',
             'Nada, está completo',
             'Solo el precio',
-            'Solo el título'
+            'Solo el título',
+            'Edad concreta + contexto cultural + nivel de conocimiento previo'
           ],
-          respuestaIndex: 0,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Exacto. La audiencia profesional incluye edad concreta, contexto y conocimiento previo. "Adolescente" es vago.',
           feedbackIncorrecto: 'Falta edad concreta, contexto cultural y nivel previo. Sin esos detalles, el tono y los ejemplos son ciegos.'
         },

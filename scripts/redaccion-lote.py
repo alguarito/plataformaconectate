@@ -125,7 +125,9 @@ def archivos(rutas: list[str]) -> list[Path]:
     out = []
     for d, glob in ALCANCE:
         if d.exists():
-            out.extend(sorted(d.glob(glob)))
+            # Los bancos (_banco-citas.yaml, _SCHEMA…) guardan citas textuales
+            # cotejadas: no se les corrige la ortografía.
+            out.extend(sorted(f for f in d.glob(glob) if not f.name.startswith("_")))
     return out
 
 

@@ -50,7 +50,7 @@ const contenido: ContenidoGuia = {
     {
       termino: 'Bitácora de calibración',
       definicion: 'Tabla con 4 columnas (momento, lectura, condición real, observación) que respalda la decisión del umbral con datos.',
-      ejemplo: 'Fila 1, 7am, lectura 120, aula con cortinas abiertas, día nublado. Cinco filas como esa dan baseline.',
+      ejemplo: 'Fila 1, 7 a. m., lectura 120, aula con cortinas abiertas, día nublado. Cinco filas como esa dan baseline.',
       emoji: '📓'
     },
     {

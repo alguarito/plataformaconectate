@@ -50,13 +50,13 @@ const contenido: ContenidoGuia = {
     {
       termino: 'Hallazgo',
       definicion: 'Patrón detectado al releer la bitácora al final del período. No se ve durante una medición individual, solo al mirar el conjunto.',
-      ejemplo: 'El aula supera 28 grados todos los días entre 1pm y 3pm. Hallazgo que justifica una propuesta de ventilación.',
+      ejemplo: 'El aula supera 28 grados todos los días entre 1 p. m. y 3 p. m.. Hallazgo que justifica una propuesta de ventilación.',
       emoji: '🔍'
     },
     {
       termino: 'Propuesta razonada',
       definicion: 'Acción concreta derivada del hallazgo, no opinión libre. El dato sostiene la propuesta y la propuesta dice qué hacer.',
-      ejemplo: 'Hallazgo, calor entre 1 y 3 pm. Propuesta, abrir ventanas opuestas a las 12:30 para generar corriente cruzada antes del pico.',
+      ejemplo: 'Hallazgo, calor entre 1 y 3 p. m.. Propuesta, abrir ventanas opuestas a las 12:30 para generar corriente cruzada antes del pico.',
       emoji: '📝'
     }
   ],
@@ -135,7 +135,7 @@ const contenido: ContenidoGuia = {
     cierre: 'El logos campesino y el proyecto digital comparten propósito: leer el mundo para cuidarlo. La tecnología que sirve es la que se calibra al territorio y a la comunidad.'
   },
   saberAncestral: {
-    saber: 'En los barrios populares de Cartago y en los corregimientos del Valle del Cauca había una figura que sostenía la seguridad del lugar sin que nadie le pagara salario formal: el vigía nocturno, también llamado sereno en algunos pueblos. El vigía no tenía celular, ni cámara, ni dispositivo electrónico: tenía un pito de hojalata, una linterna de baterías, un cuaderno cuadriculado y una rutina inquebrantable. Su oficio era simple en apariencia, complejo en disciplina: recorrer el barrio una vez por hora durante toda la noche, escuchar lo que sonaba, contar lo que veía, y anotar todo en su cuaderno. "11:30 pm, calle 8: 2 perros ladrando esquina norte". "12:30 am, calle 8: tranquilo". "1:30 am, calle 8: motocicleta blanca pasó dos veces". Esa bitácora del vigía no era trámite: era conocimiento acumulado del barrio. Al final de la semana, releyendo las páginas, el vigía podía decir: "la motocicleta blanca pasó tres noches seguidas a la misma hora", y eso ya era una pista. El vigía monitoreaba con disciplina y producía conocimiento, no por intuición sino por anotación continua. Esa práctica ancestral es la misma que el monitoreo digital moderno formaliza con sensores.',
+    saber: 'En los barrios populares de Cartago y en los corregimientos del Valle del Cauca había una figura que sostenía la seguridad del lugar sin que nadie le pagara salario formal: el vigía nocturno, también llamado sereno en algunos pueblos. El vigía no tenía celular, ni cámara, ni dispositivo electrónico: tenía un pito de hojalata, una linterna de baterías, un cuaderno cuadriculado y una rutina inquebrantable. Su oficio era simple en apariencia, complejo en disciplina: recorrer el barrio una vez por hora durante toda la noche, escuchar lo que sonaba, contar lo que veía, y anotar todo en su cuaderno. "11:30 p. m., calle 8: 2 perros ladrando esquina norte". "12:30 a. m., calle 8: tranquilo". "1:30 a. m., calle 8: motocicleta blanca pasó dos veces". Esa bitácora del vigía no era trámite: era conocimiento acumulado del barrio. Al final de la semana, releyendo las páginas, el vigía podía decir: "la motocicleta blanca pasó tres noches seguidas a la misma hora", y eso ya era una pista. El vigía monitoreaba con disciplina y producía conocimiento, no por intuición sino por anotación continua. Esa práctica ancestral es la misma que el monitoreo digital moderno formaliza con sensores.',
     fuente: 'Lectores del cielo campesinos en haciendas, veredas y resguardos colombianos',
     preguntaPuente: '¿Qué sabía el vigía nocturno al anotar cada hora aunque "no pasara nada", que el novato olvida cuando hace una medición ocasional y cree que ya monitoreó? ¿Y por qué 30 mediciones bien tomadas valen más que 100 mediciones sin disciplina temporal?'
   },

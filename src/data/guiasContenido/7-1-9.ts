@@ -50,7 +50,7 @@ const contenido: ContenidoGuia = {
     {
       termino: 'Reunión programada en Teams',
       definicion: 'Evento de videollamada con hora, fecha, lista de invitados y enlace que todos abren al mismo tiempo. Se programa desde el calendario de Teams. Los invitados reciben correo con el enlace y se les agrega al calendario.',
-      ejemplo: 'Programas reunión \'Trabajo grupal G7\' miércoles 4pm, 30 min, con 2 compañeros. Ellos reciben invitación. A las 4pm cada uno hace clic en el enlace, se conectan los 3.',
+      ejemplo: 'Programas reunión \'Trabajo grupal G7\' miércoles 4 p. m., 30 min, con 2 compañeros. Ellos reciben invitación. A las 4 p. m. cada uno hace clic en el enlace, se conectan los 3.',
       emoji: '📅'
     },
     {
@@ -120,7 +120,7 @@ const contenido: ContenidoGuia = {
             'Programar sin agenda.',
             'Agregar agenda con 3 puntos claros para que los participantes sepan qué se discutirá.',
             'No invitar a nadie.',
-            'Hacerlo a las 3 am.'
+            'Hacerlo a las 3 a. m..'
           ],
           respuestaIndex: 1,
           feedbackCorrecto: 'Sí. Reunión sin agenda pierde tiempo. Con agenda clara, los participantes llegan preparados y la reunión es eficaz. Profesional.',

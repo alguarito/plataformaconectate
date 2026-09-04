@@ -81,12 +81,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: '¿Cuál de estos medios es el más antiguo?',
           opciones: [
-            'Televisión',
             'Telégrafo',
+            'Televisión',
             'Radio',
             'Teléfono celular'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Bien. El telégrafo (1844) llegó antes que la radio, la TV y el celular. Era cables y código Morse.',
           feedbackIncorrecto: 'El telégrafo (1844) es el más antiguo de la lista. Después vino el teléfono, la radio, la TV y el celular.'
         },
@@ -94,11 +94,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Qué tienen en común el telégrafo y los mensajes de chat de hoy?',
           opciones: [
             'Los dos viajan por cables submarinos.',
-            'Los dos usan abreviaciones porque hay que ser breves.',
             'Los dos cuestan dinero por cada letra.',
-            'Los dos los maneja un operador en una oficina.'
+            'Los dos los maneja un operador en una oficina.',
+            'Los dos usan abreviaciones porque hay que ser breves.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. El telégrafo enseñó a abreviar porque cada palabra costaba. Hoy abrevias en chats por costumbre de esa misma idea.',
           feedbackIncorrecto: 'Los dos abrevian. El telégrafo lo hacía porque cada palabra costaba dinero. Los chats heredaron ese hábito.'
         },
@@ -106,11 +106,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu bisabuela quiere entender qué es WhatsApp. ¿Cómo se lo explicas mejor?',
           opciones: [
             'Es magia, abuela, no te preocupes.',
-            'Es como mandar muchas cartitas rápido por el aire, en vez de mula.',
             'Es algo que solo entendemos los jóvenes.',
+            'Es como mandar muchas cartitas rápido por el aire, en vez de mula.',
             'Es un programa que se inventó solo.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Bien. Saber comparar lo nuevo con lo antiguo te ayuda a entenderlo tú y a explicarlo a quien no lo conoce.',
           feedbackIncorrecto: 'Comparar lo nuevo con lo antiguo es la mejor explicación: WhatsApp es cartas rápidas por el aire, igual de simple.'
         },
@@ -132,7 +132,7 @@ const contenido: ContenidoGuia = {
   postLectura: {
     reflexion: '¿Uso las herramientas digitales con criterio, o dejo que ellas me usen a mí porque no sé de dónde vienen?',
     transferencia: 'Esta semana, observa: ¿cuántos medios distintos usaste en un día?',
-    cierre: 'Al terminar la clase: (1) podrás identificar 8 medios de comunicación importantes en orden cronológico; (2) sabrás analizar qué cambió y qué se conservó entre dos medios; (3) habrás creado una línea de tiempo personal con dibujos y conexiones; (4) podrás explicar a tu bisabuela q…'
+    cierre: 'Al terminar la clase: (1) podrás identificar 8 medios de comunicación importantes en orden cronológico; (2) sabrás analizar qué cambió y qué se conservó entre dos medios; (3) habrás creado una línea de tiempo personal con dibujos y conexiones; (4) podrás evaluar con criterios cuá…'
   },
   saberAncestral: {
     saber: 'Tu bisabuela escuchaba radio — y antes de la radio escuchaba al pregonero. Si pudieras viajar al Cartago de 1920, no había radio en cada casa. Había el pregonero en el centro, había el periódico (El Diario del Valle) que pasaba el cartero los lunes, y había las cartas familiares que viajaban semanas. Después, en los años 40, llegó la radio: la gente se reunía alrededor del aparato a oír noticias y radionovelas. En los años 60 entró la televisión en blanco y negro, y las familias del barrio se juntaban en la casa del único vecino que la tenía. En los 90 llegó internet a los café-internet. En el 2010 explotó WhatsApp. Cada paso de esa historia trajo algo nuevo, pero también guardó algo del paso anterior. La radio guardó la voz del pregonero. WhatsApp guarda el saludo de la carta. Internet no nació de la nada: es el último capítulo de una historia muy larga.',
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Uso las herramientas digitales con criterio, o dejo que ellas me usen a mí porque no sé de dónde vienen?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador que escribió sobre lo que cambia y lo que no)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Las formas cambian rápido. Lo que cuenta — el saludo, la honestidad, el respeto — es lo mismo desde hace milenios."',
       preguntaEspejo: '¿Estoy aprendiendo lo que dura, o solo lo que está de moda esta semana?'

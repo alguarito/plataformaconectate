@@ -69,12 +69,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'Tu versión final del MVP es...',
           opciones: [
-            'Solo el último prototipo.',
             'Síntesis de aprendizajes de las 10 sesiones, con cada decisión rastreada a su sesión origen.',
+            'Solo el último prototipo.',
             'Una nueva idea distinta.',
             'Una copia del primero.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Síntesis con trazabilidad. Cada decisión tiene rastro a la sesión que la motivó. Eso convierte el MVP en versión INTEGRADA, no solo iteración.',
           feedbackIncorrecto: 'Versión final = síntesis integrada de los 10 aprendizajes. Cada decisión rastreada. Sin esa integración, es solo otro prototipo.'
         },
@@ -94,11 +94,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu MVP pasó el checklist de 12 puntos. ¿Está listo?',
           opciones: [
             'Sí, listo para sustentar.',
-            'Casi: falta la carta abierta firmada como cierre.',
             'No, falta meses.',
-            'Mejor empiezo de cero.'
+            'Mejor empiezo de cero.',
+            'Casi: falta la carta abierta firmada como cierre.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. Checklist + carta abierta firmada. La carta es el compromiso público; sin ella, el proyecto no está cerrado formalmente.',
           feedbackIncorrecto: 'Checklist + carta firmada. La carta implica que defiendes públicamente. Sin firma, queda en buenas intenciones, no compromiso.'
         },
@@ -106,11 +106,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu carta abierta debe decir... (escoge lo más completo)',
           opciones: [
             'Solo el nombre del proyecto.',
-            'Qué construí, por qué, qué aprendí, qué defiendo públicamente. Firmado con nombre y fecha.',
             'Solo agradecimientos.',
+            'Qué construí, por qué, qué aprendí, qué defiendo públicamente. Firmado con nombre y fecha.',
             'Solo el slogan.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. 4 elementos: qué + por qué + aprendí + defiendo. Firma con nombre y fecha. La carta es declaración pública de autoría.',
           feedbackIncorrecto: 'Carta abierta = qué + por qué + aprendí + defiendo + firma. Sin esos elementos, es decoración. Con ellos, declaración pública de responsabilidad.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Decides agregar una función nueva en V4 sin registrarla en bitácora. ¿Qué pasa después?',
           opciones: [
             'Nada, da igual.',
-            'En 1 mes no recordarás por qué la agregaste. Si falla, no sabes a qué decisión revertir. La bitácora es memoria operativa.',
             'Te dan más nota.',
+            'En 1 mes no recordarás por qué la agregaste. Si falla, no sabes a qué decisión revertir. La bitácora es memoria operativa.',
             'Es mejor improvisar.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Bien. Sin bitácora, pierdes razón de las decisiones. La bitácora es disciplina adulta de profesional, no burocracia.',
           feedbackIncorrecto: 'Sin bitácora, las decisiones se vuelven misterios. Cada cambio + razón + sesión origen. Es 30 segundos por decisión que te ahorra horas de re-aprendizaje.'
         }

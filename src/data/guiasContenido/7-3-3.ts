@@ -70,11 +70,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Existe AGI (Artificial General Intelligence) en 2026?',
           opciones: [
             'Sí, ChatGPT es AGI.',
-            'No. Las IAs actuales son estrechas (especialistas en una tarea). La AGI aún no existe.',
             'Sí, salió el año pasado.',
+            'No. Las IAs actuales son estrechas (especialistas en una tarea). La AGI aún no existe.',
             'Sí, solo en China.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. La AGI aún no existe en 2026. Las IAs actuales son estrechas: cada una experta en su dominio. ChatGPT es excelente en texto pero limitado fuera.',
           feedbackIncorrecto: 'AGI aún NO existe. ChatGPT y otras son IAs estrechas: especialistas en su tarea. Confundir IA estrecha con AGI lleva a esperar lo imposible.'
         },
@@ -93,12 +93,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'ChatGPT puede conversar de muchos temas. ¿Es AGI por eso?',
           opciones: [
-            'Sí, claramente.',
             'No. Es excelente generando texto plausible, pero técnicamente es IA estrecha (especialista en lenguaje).',
+            'Sí, claramente.',
             'Solo si pago premium.',
             'Sí desde 2024.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. ChatGPT es IA estrecha (LLM). Excelente en texto plausible, pero no es AGI: no tiene sentido común profundo ni intenciones, ni puede aprender de 1 sola experiencia.',
           feedbackIncorrecto: 'ChatGPT es LLM (IA estrecha). Genera texto plausible pero no tiene sentido común profundo. Confundirlo con AGI es error común. Es asistente impresionante, no inteligencia general.'
         },
@@ -107,22 +107,22 @@ const contenido: ContenidoGuia = {
           opciones: [
             'AGI.',
             'Sistema de recomendación.',
-            'Visión por computador (procesa imágenes).',
-            'Modelo de lenguaje.'
+            'Modelo de lenguaje.',
+            'Visión por computador (procesa imágenes).'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Bien. Visión por computador. La IA procesa la imagen de tu cara y la compara con la registrada. Reconoce patrones visuales. Tipo 2 de los 5.',
           feedbackIncorrecto: 'Visión por computador. Procesa imágenes y reconoce patrones (tu cara vs la registrada). Tipo 2 de los 5. Otros ejemplos: Google Lens, DALL-E.'
         },
         {
           enunciado: 'Tu hermano dice \'mi computador tiene IA\'. ¿Qué le preguntas para entender mejor?',
           opciones: [
-            'Nada, da igual.',
             '¿De qué tipo? ¿LLM, visión, recomendador, predicción, sistema experto?',
+            'Nada, da igual.',
             '¿Cuánto te costó?',
             '¿Es de China?'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Bien. Saber distinguir tipos es la diferencia entre conversación adulta sobre IA y comentarios vagos. Ahora puedes preguntar y entender.',
           feedbackIncorrecto: 'Pregunta el tipo. Te coloca en lugar de criterio: ya no piensas en \'IA\' como cosa genérica, sino en tipo específico con sus capacidades y limitaciones.'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Antes de hoy, qué tan "mezcladas" tenía las IAs en mi cabeza?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador del análisis sereno)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Lo que la IA no puede hacer hoy, importa tanto como lo que sí puede. Conocer ambos límites es sabiduría."',
       preguntaEspejo: '¿Tiendo a sobreestimar la IA (esperar que pueda todo) o a subestimarla (no aprovechar lo que puede)?'

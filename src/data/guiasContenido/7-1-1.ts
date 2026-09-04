@@ -69,12 +69,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: '¿Por qué se compara Microsoft 365 con la minga tradicional?',
           opciones: [
-            'Porque las dos son aburridas.',
             'Porque ambas permiten que muchas personas trabajen juntas en una misma obra sin estorbarse.',
+            'Porque las dos son aburridas.',
             'Porque las dos usan internet.',
             'Porque las dos son colombianas.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. La minga y Microsoft 365 comparten el principio: muchas personas trabajando en la misma obra al tiempo. Solo cambia la herramienta (canasta vs computador).',
           feedbackIncorrecto: 'Las dos permiten trabajo colectivo simultáneo en una misma obra. La minga era para café o construcción; Microsoft 365 es para documentos y proyectos.'
         },
@@ -82,11 +82,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu equipo de 3 va a escribir un trabajo en Word en línea. ¿Cómo se organizan según el principio \'división sin choque\'?',
           opciones: [
             'Los 3 escriben en el mismo párrafo al tiempo, a ver qué sale.',
-            'Cada uno toma una sección distinta del documento.',
             'Solo escribe uno; los otros 2 miran.',
-            'Hacen 3 documentos separados y los pegan al final.'
+            'Hacen 3 documentos separados y los pegan al final.',
+            'Cada uno toma una sección distinta del documento.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. Cada uno en su sección, sin estorbarse. En la minga, cada quien tomaba un surco distinto del cafetal. En digital es igual.',
           feedbackIncorrecto: 'División sin choque: cada uno en su sección. Si todos en el mismo párrafo, se borran entre sí. Si uno solo, los demás aprenden de nada.'
         },
@@ -106,23 +106,23 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu compañero no aporta al trabajo grupal. ¿Qué haces según los 5 acuerdos?',
           opciones: [
             'Hago yo todo, después le digo al profe que no aportó.',
-            'Hablo con él con respeto, le digo qué necesito de su parte. Si no responde, hablo con el profe.',
             'Lo insulto en el chat del grupo.',
+            'Hablo con él con respeto, le digo qué necesito de su parte. Si no responde, hablo con el profe.',
             'Ignoro la situación.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Comunicación clara con respeto. Primero le dices a él; si no responde, hablas con el profe. Hacer todo solo o callar son extremos malos.',
           feedbackIncorrecto: 'Comunicación clara con respeto. Hablar primero con el compañero, después con el profe si no funciona. Ni hacer todo solo ni callarse.'
         },
         {
           enunciado: '¿Cuántas sesiones tiene el periodo 1 de grado 7?',
           opciones: [
-            '5 sesiones.',
             '10 sesiones (S1 a S10), siendo S10 la cosecha integradora.',
+            '5 sesiones.',
             '30 sesiones.',
             'Solo 1.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. 10 sesiones organizadas: apertura (S1), Microsoft 365 + OneDrive + apps (S2-S4), compartir + coautoría + comentarios + versiones (S5-S8), comunicación profesional (S9), y cosecha (S10).',
           feedbackIncorrecto: '10 sesiones. Cada periodo tiene 10. La S1 es apertura, la S10 es cosecha integradora. Las del medio son contenido específico.'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Me he creído alguna vez la idea de que "mejor solo"? ¿De dónde viene esa idea?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador que coordinaba imperios)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"El que sabe trabajar solo es bueno. El que sabe trabajar con otros es indispensable."',
       preguntaEspejo: '¿Estoy entrenándome para ser "bueno solo" o "indispensable con otros"?'

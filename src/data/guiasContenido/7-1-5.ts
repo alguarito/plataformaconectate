@@ -82,11 +82,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu equipo de 3 va a escribir un trabajo grupal en un Word compartido. ¿Qué nivel?',
           opciones: [
             'Puede ver (todos pueden mirarlo).',
-            'Puede editar (todos pueden escribir).',
             'Puede comentar.',
-            'Solo 1 puede editar, los otros 2 solo ven.'
+            'Solo 1 puede editar, los otros 2 solo ven.',
+            'Puede editar (todos pueden escribir).'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Bien. Coautoría real = todos editores. Eso permite que los 3 escriban al mismo tiempo en sus secciones. Lo verás en S6 a fondo.',
           feedbackIncorrecto: 'Trabajo en grupo = puede editar para todos. Solo así pueden escribir en paralelo. Lo verás a fondo en S6 (coautoría asincrónica).'
         },
@@ -94,23 +94,23 @@ const contenido: ContenidoGuia = {
           enunciado: 'Antes de entregar, quieres que un compañero revise tu ensayo y te diga errores. ¿Qué nivel?',
           opciones: [
             'Puede editar (que corrija él directamente).',
-            'Puede comentar (revisa y agrega sugerencias sin cambiar).',
             'Puede ver (solo mira).',
+            'Puede comentar (revisa y agrega sugerencias sin cambiar).',
             'Lo dejas sin compartir.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Exacto. \'Puede comentar\' es ideal para revisión: el otro lee, sugiere al margen, pero TÚ decides cambios. Sin riesgo de que él modifique sin permiso.',
           feedbackIncorrecto: '\'Puede comentar\' para revisión: él agrega notas al margen, tú decides aceptarlas. Si le das editor, podría cambiar cosas sin que tú lo apruebes.'
         },
         {
           enunciado: 'Compartiste un archivo con un compañero hace un mes. Ya no es de tu equipo. ¿Qué haces?',
           opciones: [
-            'Nada, da igual.',
             'Voy a Compartir → veo quién tiene acceso → revoco el acceso del compañero que ya no es del equipo.',
+            'Nada, da igual.',
             'Borro el archivo completo.',
             'Cambio mi contraseña.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Regla 4 del compartir: revoca acceso cuando ya no se necesite. En Compartir puedes ver y revocar accesos. Higiene digital básica.',
           feedbackIncorrecto: 'Revoca acceso cuando ya no se necesite. Higiene digital: no dejas la puerta abierta cuando los invitados ya se fueron. Va al panel de Compartir.'
         },
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Comparto con criterio o por comodidad?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador que decidía con cuidado)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Antes de dar, pregunta: ¿qué necesita esta persona específicamente? No lo que tú te imaginas; lo que ella requiere para hacer su parte."',
       preguntaEspejo: '¿Pienso en lo que la otra persona necesita o en lo que es más rápido para mí?'

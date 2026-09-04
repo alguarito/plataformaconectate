@@ -70,23 +70,23 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu amigo dice \'tengo una idea de app genial, vamos a hacerla\'. ¿Qué le respondes?',
           opciones: [
             'Vamos, programémosla ya.',
-            'Antes de programar: ¿qué problema resuelve? ¿A quién duele? ¿Entrevistamos primero?',
             'Pidamos plata a un inversionista.',
+            'Antes de programar: ¿qué problema resuelve? ¿A quién duele? ¿Entrevistamos primero?',
             'Subámosla a Instagram primero.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Enamorarse del problema, no de la idea. Primero validas que el problema existe y duele; después construyes.',
           feedbackIncorrecto: 'Antes de construir: observa y valida. Regla moderna: problema primero, solución después. Tu amigo se enamoró de la idea sin verificar.'
         },
         {
           enunciado: '¿Cuál es un problema BIEN definido?',
           opciones: [
-            'La gente pierde tiempo en el banco.',
             'Las abuelas (60+) del barrio La Merced pierden 45 min en cada visita al banco porque las filas no priorizan adultos mayores; lo asumen como inevitable.',
+            'La gente pierde tiempo en el banco.',
             'Internet es lento.',
             'Necesitamos una app.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Bien. Tiene las 5 partes: quién, qué duele, cuándo, por qué no resuelto, qué hacen hoy. Eso es problema bien definido.',
           feedbackIncorrecto: 'Un problema bien definido tiene 5 partes específicas: quién, qué duele medible, cuándo, por qué no resuelto, qué hacen hoy.'
         },
@@ -106,11 +106,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Qué tienen en común el ebanista de Cartago y un emprendedor digital?',
           opciones: [
             'Nada.',
-            'Ambos parten de necesidad real + oficio respondedor. No de \'idea genial\'.',
             'El ebanista usaba computador.',
-            'Es metáfora forzada.'
+            'Es metáfora forzada.',
+            'Ambos parten de necesidad real + oficio respondedor. No de \'idea genial\'.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Bien. La sabiduría del oficio campesino antecede al método moderno. El método Lean Startup redescubre lo que las abuelas ya sabían.',
           feedbackIncorrecto: 'Necesidad real + oficio respondedor = emprendimiento sano. Aplica al ebanista de 1950 y al emprendedor digital de 2026.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu ficha de oportunidad debe tener...',
           opciones: [
             'Solo el problema.',
-            'Problema + afectados + causa + consecuencia + hipótesis (5 campos).',
             'Solo la solución.',
+            'Problema + afectados + causa + consecuencia + hipótesis (5 campos).',
             'Solo la idea genial.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Los 5 campos te obligan a especificar. Una ficha incompleta produce entrevistas pobres.',
           feedbackIncorrecto: '5 campos: problema + afectados + causa + consecuencia + hipótesis. Saltar uno hace que el proyecto se construya sobre arenas movedizas.'
         }

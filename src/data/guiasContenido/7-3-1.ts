@@ -82,11 +82,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Le preguntas a ChatGPT algo y te da una respuesta con mucha seguridad. ¿Es 100% confiable?',
           opciones: [
             'Sí, si suena seguro es verdadero.',
-            'No. La IA puede \'alucinar\' (inventar info con seguridad). Verifica en otra fuente confiable.',
             'Sí, ChatGPT es perfecto.',
-            'Solo si paga premium.'
+            'Solo si paga premium.',
+            'No. La IA puede \'alucinar\' (inventar info con seguridad). Verifica en otra fuente confiable.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. Las IAs pueden inventar con seguridad (alucinación). Por eso el acuerdo 1 es VERIFICAR siempre en otra fuente confiable.',
           feedbackIncorrecto: 'La IA puede \'alucinar\' (inventar con seguridad). Verifica siempre. Acuerdo 1 del uso responsable: verificar antes de creer.'
         },
@@ -105,12 +105,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: '¿Cuándo salió ChatGPT por primera vez al público?',
           opciones: [
-            'Hace 50 años.',
             'A fines de 2022 (hace pocos años).',
+            'Hace 50 años.',
             'Hace 20 años.',
             'El año pasado no existía.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. ChatGPT salió a fines de 2022. Tu generación es la primera que crece con IA conversacional masiva. Eso te coloca en momento histórico clave.',
           feedbackIncorrecto: 'A fines de 2022. Tu generación es la primera que crece con IA conversacional masiva. Los hábitos que formes hoy te acompañan décadas.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu mamá usa IA para escribir un correo profesional. ¿Está bien?',
           opciones: [
             'Está mal, es trampa.',
-            'Está bien si verifica el resultado, mantiene su voz y no comparte datos personales.',
             'Solo si paga premium.',
+            'Está bien si verifica el resultado, mantiene su voz y no comparte datos personales.',
             'Solo si es para una empresa grande.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Bien. Usar IA como asistente está bien si se aplican los acuerdos: verificar, mantener voz propia, no datos sensibles. No es trampa; es asistente moderno.',
           feedbackIncorrecto: 'Está bien con criterio: verificar resultado, mantener voz propia, no datos sensibles. La IA como asistente es legítima cuando se usa con responsabilidad.'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿A quién considero mi "consejero del barrio" moderno? ¿Cómo combino consejo humano + IA con criterio?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador que pidió consejo a sabios diariamente)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"El que pide consejo no es débil; el que confía sin verificar sí lo es. La IA es consejo nuevo: trátalo con la sabiduría antigua."',
       preguntaEspejo: 'Cuando uso IA, ¿estoy decidiendo yo después de escuchar, o estoy delegando mi decisión a ella?'

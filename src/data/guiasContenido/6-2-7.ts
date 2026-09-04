@@ -70,11 +70,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Te llega un archivo llamado \'instalador-juego.exe\'. ¿Qué deberías hacer?',
           opciones: [
             'Abrirlo de una porque dice \'juego\'.',
-            'Verificar que viene de una fuente oficial confiable. Los .exe pueden ser virus.',
             'Borrarlo de una, todos los .exe son virus.',
+            'Verificar que viene de una fuente oficial confiable. Los .exe pueden ser virus.',
             'Renombrarlo a .docx para que sea seguro.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Los .exe instalan programas, así que pueden ser virus. Solo abre los que vengan de páginas oficiales del fabricante.',
           feedbackIncorrecto: 'Los .exe pueden ser virus. Solo abre los de fuentes oficiales (página del fabricante). Nunca de correos extraños o links sospechosos.'
         },
@@ -82,23 +82,23 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuál es el mejor nombre para una carpeta?',
           opciones: [
             'x1',
-            'Mi cumpleaños del año pasado',
             '2025-mi-cumple',
+            'Mi cumpleaños del año pasado',
             'kjfhjksdf'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 1,
           feedbackCorrecto: 'Bien. "2025-mi-cumple" cumple las 5 reglas: claro, sin espacios, sin acentos, con fecha, y tu yo del futuro lo entiende.',
           feedbackIncorrecto: '"2025-mi-cumple" es el mejor: claro, sin espacios, con fecha. "x1" no dice nada; "kjfhjksdf" tampoco; con espacios algunos programas se enredan.'
         },
         {
           enunciado: 'Borraste un archivo importante. ¿Qué haces?',
           opciones: [
-            'Lloro, ya no se recupera.',
             'Abro la papelera de reciclaje, busco el archivo, clic derecho, \'Restaurar\'.',
+            'Lloro, ya no se recupera.',
             'Reinicio el computador y vuelve.',
             'Cambio la extensión del archivo.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Exacto. La papelera es tu segunda oportunidad. Mientras no la hayas vaciado, el archivo sigue ahí y se recupera con \'Restaurar\'.',
           feedbackIncorrecto: 'Va a la papelera de reciclaje. Si no la has vaciado, el archivo está ahí. Clic derecho + \'Restaurar\' lo devuelve a su lugar.'
         },
@@ -107,22 +107,22 @@ const contenido: ContenidoGuia = {
           opciones: [
             '.jpg',
             '.docx',
-            '.zip',
-            '.mp4'
+            '.mp4',
+            '.zip'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. El .zip comprime varias cosas en una sola caja. Es más fácil enviar 1 archivo .zip que 20 .jpg sueltas.',
           feedbackIncorrecto: 'El .zip junta y comprime varios archivos en uno solo. Ideal para enviar muchas cosas en un solo correo o mensaje.'
         },
         {
           enunciado: 'Tu árbol de carpetas tiene 3 niveles. ¿Está bien organizado?',
           opciones: [
-            'Sí, 3 niveles es mucho.',
             'Depende. La profundidad ideal es 3-5 niveles. Muy poco = todo amontonado; muy mucho = te pierdes.',
+            'Sí, 3 niveles es mucho.',
             'Solo 1 nivel es mejor.',
             'Mínimo 10 niveles, sino no sirve.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Bien. La profundidad ideal es 3-5 niveles. Muy plano (1-2) amontona todo. Muy profundo (6+) te enredas al buscar. 3-5 es lo óptimo.',
           feedbackIncorrecto: 'Lo ideal es 3-5 niveles. Plano amontona todo en una sola carpeta. Muy profundo te hace dar muchos clics para encontrar algo. Equilibrio.'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Cuido mi trabajo digital como cuido las cosas que valoro físicamente?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador romano que vivía con disciplina diaria)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Cada cosa en su lugar; cada lugar con su propósito. Eso da paz al espíritu."',
       preguntaEspejo: '¿Cuánto tiempo gasto buscando archivos perdidos cada semana? ¿Qué haría con ese tiempo si lo ahorrara?'

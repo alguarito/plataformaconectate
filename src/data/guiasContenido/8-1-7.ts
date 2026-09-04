@@ -1,6 +1,9 @@
 /**
  * Contenido enriquecido para Grado 8 · Período 1 · Sesión 7
- * Tema: Gráficos básicos (barras, líneas, circulares).
+ * (sesión global 7).
+ *
+ * Auto-generado desde content/guias/8/8-1-7.yaml por
+ * scripts/build-guias-web-ts.py. Edita el YAML, no este archivo.
  */
 import type { ContenidoGuia } from './_schema';
 
@@ -8,199 +11,285 @@ const contenido: ContenidoGuia = {
   grado: 8,
   periodo: 1,
   sesion: 7,
-  resumen:
-    'Como el cuento gráfico del abuelo o las pictografías ancestrales: el dibujo cuenta lo que la cifra esconde. Aprendes a elegir el tipo de gráfico según la pregunta y a detectar gráficos engañosos.',
+  titulo: 'Gráficos que no engañan — barras, líneas y circular con el eje en cero',
+  resumen: 'Los mismos datos cuentan historias distintas según cómo se dibujen. Hoy haces tres gráficos honestos y desmontas uno engañoso de verdad, con la cerca de Riosucio como advertencia.',
   duracionMin: 90,
-  subtema: 'Excel · Gráficos · Comunicación visual honesta',
-
+  subtema: 'Análisis de datos con phronesis',
   preLectura: {
-    porQueImporta:
-      'Vivimos rodeados de gráficos: en redes, noticias, redes sociales. Saber leerlos críticamente y producirlos honestamente te protege de manipulación y te permite comunicar la verdad con claridad.',
-    preguntaDetonante:
-      '¿Qué del cuento gráfico del abuelo — la traducción de cifras a imagen viva — podemos llevar a un gráfico digital que cuente bien?',
+    porQueImporta: 'Casi todos los gráficos que ves en redes y en noticias tienen alguna decisión escondida. Saber dónde empieza el eje te protege de creer lo que alguien quiere que creas.',
+    preguntaDetonante: 'Cuando hagas un gráfico de las notas con el eje empezando en 3,0, ¿qué le estás mostrando a quien lo mira?',
     activacion: {
-      titulo: 'El gráfico engañoso',
-      descripcion:
-        'En 5 minutos: busca en tu celular un gráfico de redes o noticias. Identifica si el eje empieza en 0, si tiene título claro, si los colores tienen sentido. ¿Comunica honesto o engaña?',
-      duracionMin: 5,
+      titulo: 'El eje que empieza en 48',
+      descripcion: 'En 3 minutos, escribe dos valores en Excel, 50 y 52, haz un gráfico de barras y cambia el mínimo del eje a 48. ¿Qué tan grande parece ahora la diferencia? Vuelve a cero y compara.',
+      duracionMin: 5
     },
     conexion: {
-      anterior: 'En la sesión 6 aprendiste fórmulas compuestas con jerarquía PEMDAS.',
-      siguiente: 'En la sesión 8 aplicarás formato condicional y validación a tus tablas.',
-    },
+      anterior: 'En la sesión 6 escribiste fórmulas compuestas con paréntesis claros.',
+      siguiente: 'En la sesión 8 la hoja avisa sola con formato condicional y validación de datos.'
+    }
   },
-
   conceptosClave: [
     {
-      categoria: '📊 Cómo se elige el gráfico',
-      termino: 'Barras',
-      definicion:
-        'Gráfico para COMPARAR categorías independientes. Cada barra es una categoría. Las barras pueden ser verticales (col) o horizontales (especialmente si las etiquetas son largas).',
-      ejemplo:
-        'Comparar minutos de redes sociales por curso (8°A, 8°B, 8°C, 8°D): un gráfico de barras es ideal. Cada curso tiene su barra.',
-      emoji: '📊',
+      termino: 'Gráfico de barras',
+      definicion: 'Compara valores entre categorías. Responde quién tiene más o menos.',
+      ejemplo: 'Ventas de la tienda por día de la semana, una barra por día.',
+      categoria: 'Los tres tipos'
     },
     {
-      categoria: '📊 Cómo se elige el gráfico',
-      termino: 'Líneas',
-      definicion:
-        'Gráfico para mostrar EVOLUCIÓN en el tiempo. Cada punto representa un momento; la línea conecta. Solo tiene sentido si el eje X es temporal (días, meses, años).',
-      ejemplo:
-        'Mostrar la temperatura del aula cada hora durante un día: gráfico de líneas. La forma de la línea revela picos y caídas.',
-      emoji: '📈',
+      termino: 'Gráfico de líneas',
+      definicion: 'Muestra cómo cambia un valor en el tiempo. Los puntos van en orden cronológico.',
+      ejemplo: 'Temperatura de cada día del mes, unida por una línea.',
+      categoria: 'Los tres tipos'
     },
     {
-      categoria: '📊 Cómo se elige el gráfico',
-      termino: 'Circular (pie)',
-      definicion:
-        'Gráfico para mostrar PROPORCIÓN de un todo. Cada porción es un % del 100%. Solo funciona con 3-5 categorías; con más, los humanos no podemos comparar áreas visualmente.',
-      ejemplo:
-        'Mostrar % de tiempo dedicado a 4 redes (TikTok, Instagram, WhatsApp, otros): un pie funciona. Con 12 redes, mejor barras.',
-      emoji: '🥧',
+      termino: 'Gráfico circular',
+      definicion: 'Muestra qué parte del total es cada categoría. Solo sirve con pocas tajadas.',
+      ejemplo: 'En qué se fue la mesada, tienda, transporte y ahorro. Con diez tajadas ya no se lee.',
+      categoria: 'Los tres tipos'
     },
     {
-      categoria: '📊 Cómo se elige el gráfico',
-      termino: 'Tipo correcto',
-      definicion:
-        'La elección del tipo de gráfico ES decisión semántica. Un mismo dato comunica cosas distintas según el tipo. Elegir mal puede ser engaño involuntario.',
-      ejemplo:
-        'Mostrar evolución de notas con barras (en lugar de líneas) sugiere comparar momentos en lugar de ver tendencia. Cada elección tiene consecuencia.',
-      emoji: '🎯',
+      termino: 'Eje desde cero',
+      definicion: 'El eje vertical de las barras empieza en cero para que el tamaño de cada barra sea proporcional al valor.',
+      ejemplo: 'Con el eje en 48, la barra de 52 parece el doble de la de 50. Con el eje en cero, casi iguales.',
+      categoria: 'Honestidad'
     },
     {
-      categoria: '🎨 Cómo se diseña',
-      termino: 'Título',
-      definicion:
-        'Frase que describe qué muestra el gráfico, en una sola línea. NO "Datos del curso", SÍ "Minutos diarios en redes sociales del 8°A — abril 2026".',
-      ejemplo:
-        'Un buen título es autocontenido: alguien que ve solo el título entiende qué se está midiendo y a quién, sin leer más.',
-      emoji: '🏷️',
+      termino: 'Las seis trampas',
+      definicion: 'Eje que no empieza en cero, escalas distintas, 3D, demasiadas categorías, colores que sugieren orden, y sin título, unidades o fuente.',
+      ejemplo: 'Un circular en 3D con ocho tajadas usa dos trampas a la vez.',
+      categoria: 'Honestidad'
     },
     {
-      categoria: '🎨 Cómo se diseña',
-      termino: 'Ejes etiquetados',
-      definicion:
-        'El eje X y el eje Y deben tener nombre claro y unidad. Sin etiquetas, los números flotantes no comunican nada confiable.',
-      ejemplo:
-        'Eje X: "Curso", Eje Y: "Minutos por día". Si el eje no tiene unidad, el lector no sabe si son segundos, minutos u horas.',
-      emoji: '📐',
-    },
-    {
-      categoria: '🎨 Cómo se diseña',
-      termino: 'Color con sentido',
-      definicion:
-        'El color debe tener jerarquía: resaltar lo importante, no decorar. Un gráfico con 8 colores brillantes confunde. Una paleta limitada (2-4 colores con propósito) comunica mejor.',
-      ejemplo:
-        'Resaltar en rojo el curso con MIN, en verde el de MAX, y dejar los demás en gris. La mirada va inmediatamente a la información clave.',
-      emoji: '🎨',
-    },
-    {
-      categoria: '🎨 Cómo se diseña',
-      termino: 'Fuente del dato',
-      definicion:
-        'Pequeña anotación que indica de dónde vienen los datos: encuesta propia, fuente externa, entidad oficial. Sin fuente, el gráfico es opinión visual.',
-      ejemplo:
-        '"Fuente: Encuesta propia, 35 estudiantes del 8°A, abril 2026". Da credibilidad y permite verificación independiente.',
-      emoji: '📑',
-    },
+      termino: 'Las cinco reglas',
+      definicion: 'Tipo según la pregunta, eje desde cero, título, ejes con unidades y fuente de los datos.',
+      ejemplo: 'Un gráfico que cumple las cinco se entiende sin que nadie lo explique.',
+      categoria: 'Honestidad'
+    }
   ],
-
   laboratorios: [
     {
       tipo: 'quiz',
-      titulo: 'Quiz · Gráficos honestos',
-      instrucciones:
-        '5 preguntas tipo ICFES sobre selección de gráfico, diseño y detección de engaños visuales.',
+      titulo: '¿Sabes cuándo un gráfico engaña?',
+      instrucciones: 'Cinco preguntas para verificar que eliges el tipo correcto y reconoces las trampas. No va al cuaderno.',
       preguntas: [
         {
-          enunciado: 'Para mostrar cómo cambió la temperatura del aula durante un mes, el gráfico más apropiado es:',
-          opciones: ['Pie (circular)', 'Líneas', 'Barras horizontales', 'Una tabla simple'],
-          respuestaIndex: 1,
-          feedbackCorrecto: '✅ Sí. Las líneas son ideales para evolución TEMPORAL. Cada día es un punto, la línea conecta y revela tendencias (subida, bajada, picos).',
-          feedbackIncorrecto: '❌ Pie es para proporción de un todo. Barras es para comparación de categorías. Los datos temporales (cambio en el tiempo) requieren líneas.',
-        },
-        {
-          enunciado: 'Para comparar el consumo de internet de 4 cursos (8°A, 8°B, 8°C, 8°D), el mejor gráfico es:',
-          opciones: ['Barras', 'Líneas', 'Pie', 'Solo una tabla'],
-          respuestaIndex: 0,
-          feedbackCorrecto: '✅ Correcto. Barras es ideal para comparar categorías independientes. Cada curso tiene su barra, las alturas son comparables al primer vistazo.',
-          feedbackIncorrecto: '❌ Líneas no aplica (los cursos no son una secuencia temporal). Pie podría usarse pero solo si fuera proporción del total. Barras es la elección clara para comparación.',
-        },
-        {
-          enunciado: 'Para mostrar qué porcentaje del tiempo se usa cada red social (4 redes principales):',
-          opciones: ['Líneas', 'Barras horizontales con valores numéricos', 'Pie / Circular', 'Una columna numérica'],
+          enunciado: 'Quieres mostrar cómo cambió la temperatura de Cartago durante el mes. ¿Qué gráfico usas?',
+          opciones: [
+            'Circular, porque cada día es una parte del mes.',
+            'Barras, porque compara cada día con los demás.',
+            'Líneas, porque muestra el cambio en el tiempo.',
+            'Ninguno, porque la temperatura no se grafica.'
+          ],
           respuestaIndex: 2,
-          feedbackCorrecto: '✅ Sí. Pie funciona aquí porque son 4 categorías que suman 100%. Cada porción muestra la proporción visualmente. Con MÁS de 5 categorías, mejor barras.',
-          feedbackIncorrecto: '❌ Para PROPORCIÓN de un todo (suman 100%), pie es ideal — siempre que sean pocas categorías (3-5). Con muchas categorías, barras horizontales son mejores.',
+          feedbackCorrecto: 'Sí. Los cambios en el tiempo se ven en líneas, con los días en orden.',
+          feedbackIncorrecto: 'Los días tienen orden en el tiempo. Eso lo muestra el gráfico de líneas, no el circular ni las barras.'
         },
         {
-          enunciado: 'Un gráfico SIN título y SIN ejes etiquetados:',
-          opciones: ['Es elegante y minimalista', 'No comunica nada confiable: el lector no sabe qué mide', 'Es moderno y profesional', 'Está bien si los datos son obvios'],
-          respuestaIndex: 1,
-          feedbackCorrecto: '✅ Correcto. Sin título y ejes, el gráfico es una decoración con números — no informa. La regla profesional es: título descriptivo, ejes con nombre y unidad.',
-          feedbackIncorrecto: '❌ Un gráfico sin contexto NO es elegante ni moderno: es ininteligible. La forma profesional es título descriptivo, ejes con nombre, fuente del dato.',
+          enunciado: 'Dos barras muestran 50 y 52. Con el eje empezando en 48, ¿qué pasa?',
+          opciones: [
+            'La diferencia parece enorme, aunque es de solo dos puntos.',
+            'Las barras se ven iguales, porque el eje no cambia nada.',
+            'Excel muestra un error, porque el eje debe empezar en cero.',
+            'La barra de 50 desaparece del gráfico.'
+          ],
+          respuestaIndex: 0,
+          feedbackCorrecto: 'Exacto. Con el eje en 48, la barra de 52 parece el doble de la de 50. Es la trampa más común.',
+          feedbackIncorrecto: 'Excel no da error y las barras sí cambian. Con el eje en 48, dos puntos de diferencia parecen una montaña.'
         },
         {
-          enunciado: 'Carlos hace un gráfico de pie sobre "rendimiento académico" con 12 categorías de notas. ¿Cuál es el problema?',
-          opciones: ['Ninguno, mientras más categorías más completo', 'El pie se vuelve ilegible con tantas porciones; mejor barras horizontales con valores', 'Falta variedad de colores', 'Sobra información, hay que reducir a 3 categorías a la fuerza'],
-          respuestaIndex: 1,
-          feedbackCorrecto: '✅ Excelente. El ojo humano NO puede comparar áreas de 12 porciones. Con tantas categorías, el pie pierde su función. Barras horizontales con valores numéricos comunican mejor.',
-          feedbackIncorrecto: '❌ Más categorías NO es siempre mejor. El pie pierde efectividad con más de 5 categorías. La solución profesional: barras horizontales con valores numéricos visibles.',
+          enunciado: '¿Cuál de estos gráficos circulares se puede leer?',
+          opciones: [
+            'Uno con doce tajadas en 3D.',
+            'Uno con diez tajadas del mismo color.',
+            'Uno con cuatro tajadas, plano y con porcentajes.',
+            'Uno con veinte tajadas y una leyenda muy larga.'
+          ],
+          respuestaIndex: 2,
+          feedbackCorrecto: 'Correcto. Pocas tajadas, sin 3D y con porcentajes, ese circular sí se lee.',
+          feedbackIncorrecto: 'Con muchas tajadas o en 3D, nadie distingue las partes. El circular solo funciona con pocas categorías y plano.'
         },
-      ],
-    },
+        {
+          enunciado: 'Un gráfico de prensa no tiene título ni unidades en los ejes. ¿Qué regla rompe y qué pasa?',
+          opciones: [
+            'Rompe la regla del tipo, y el gráfico se ve feo.',
+            'Rompe la del eje en cero, y exagera las diferencias.',
+            'No rompe ninguna, porque el texto del artículo lo explica.',
+            'Rompe las de título y unidades, y cada lector interpreta lo que quiere.'
+          ],
+          respuestaIndex: 3,
+          feedbackCorrecto: 'Eso es. Sin título ni unidades, el gráfico deja de ser un dato y se vuelve una opinión de quien lo mira.',
+          feedbackIncorrecto: 'El artículo no reemplaza al gráfico. Sin título ni unidades, cada quien lee lo que quiere.'
+        },
+        {
+          enunciado: '¿Cuál de estas frases es una crítica con las reglas y no con el gusto?',
+          opciones: [
+            'Me parece que el gráfico se ve muy recargado.',
+            'El eje empieza en 2,5 y hace ver la diferencia más grande de lo que es.',
+            'Los colores no combinan con el resto de la página.',
+            'Yo habría usado un gráfico más bonito.'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Sí. Nombra la regla, describe el hecho y dice el efecto. Las otras son gustos.',
+          feedbackIncorrecto: '«Recargado», «no combinan» y «más bonito» son gustos. La crítica con reglas dice dónde empieza el eje y qué efecto tiene.'
+        }
+      ]
+    }
   ],
-
   postLectura: {
-    reflexion: 'Cada gráfico que produces es una decisión sobre cómo cuentas la verdad. ¿En qué situaciones la elección visual cambia la conclusión que el lector saca?',
-    transferencia: 'Esta semana: revisa 3 gráficos en redes o noticias. Identifica si el eje empieza en 0, si tiene fuente, si el tipo es apropiado. Comparte con un compañero los engaños que detectes.',
-    cierre: 'El cuento gráfico del abuelo y tu gráfico de Excel comparten propósito: hacer visible lo invisible. Cuidar el medio es cuidar la verdad.',
+    reflexion: '¿Qué gráfico de los que ves cada semana en redes revisarías ahora con las cinco reglas?',
+    transferencia: 'La próxima vez que un gráfico te alarme, busca dónde empieza el eje y cuántas categorías tiene antes de compartirlo.',
+    cierre: 'Los mismos datos, dos plazas. El eje en cero es la forma de quitar la cerca.'
   },
-
   saberAncestral: {
-    saber:
-      'Antes del gráfico de barras existieron las pictografías ancestrales: los petroglifos del Valle, los mapas en piedra de los Andes, los dibujos en arena de los pescadores afro-pacíficos para mostrar corrientes, los esquemas que la abuela trazaba en el suelo con un palo para explicar el patrón de la cosecha. Visualizar datos es un gesto humano antiguo — el software solo cambió el medio. La diferencia entre gráfico honesto y gráfico tramposo también es antigua: el comerciante que ajustaba la balanza tramposa tiene primo en el publicista que corta el eje y.',
-    fuente: 'Pictografías y esquemas tradicionales del Valle, los Andes y el Pacífico colombiano',
-    preguntaPuente:
-      '¿Qué hacía que el dibujo en arena del pescador afro-pacífico comunicara verdad a quien lo miraba? ¿Y qué hace que muchos gráficos de redes hoy comuniquen engaño aunque tengan números reales?',
+    saber: 'Riosucio, en Caldas, nació de dos pueblos que no se querían. Quiebralomo, de mineros blancos, negros y mulatos, y La Montaña, de indígenas. Cada uno puso su plaza y su iglesia a una cuadra del otro. Entre las dos levantaron una cerca que los separó durante más de veinte años; los días de mercado se insultaban de lado a lado (Ministerio de Cultura, 2011). En 1846 un decreto los fusionó, y de aquellos insultos salió el verso burlón que hoy es el Carnaval. Fíjate en la cerca. La misma ciudad, vista desde una plaza, era un pueblo; vista desde la otra, era otro. Un gráfico hace lo mismo con los datos. Los mismos números, con el eje empezando en cero, cuentan una historia; con el eje empezando en 50, cuentan otra. La cara de exclusión: el relato oficial del Eje Cafetero se contó como el de colonos blancos y respetables. Ese relato dejó por fuera a los indígenas y a los negros que ya estaban ahí (Appelbaum, 2007). Hoy vas a hacer gráficos que no levanten cercas: que dejen ver los datos como son.',
+    fuente: 'Riosucio (Caldas) · dos plazas y una cerca',
+    referencia: 'Ministerio de Cultura de Colombia. (2011). Plan Especial de Salvaguardia del Carnaval de Riosucio, pp. 12--13, 20 y 41.',
+    preguntaPuente: 'Desde cada plaza, Riosucio parecía otro pueblo. Cuando hagas un gráfico de las notas del salón con el eje empezando en 3,0, ¿qué pueblo le estás mostrando a quien lo mira? ¿Y cómo se vería con el eje en cero?'
   },
-
+  mapaRuta: [
+    {
+      numero: 1,
+      iconos: [
+        '🌱'
+      ],
+      titulo: 'Dos plazas y una cerca',
+      duracionMin: 10
+    },
+    {
+      numero: 2,
+      iconos: [
+        '👁',
+        '✏️'
+      ],
+      titulo: 'Actividad 1 · Tres gráficos, un solo dato',
+      duracionMin: 15
+    },
+    {
+      numero: 3,
+      iconos: [
+        '🔎',
+        '✏️'
+      ],
+      titulo: 'Actividad 2 · Tres gráficos honestos',
+      duracionMin: 30
+    },
+    {
+      numero: 4,
+      iconos: [
+        '✏️',
+        '✅'
+      ],
+      titulo: 'Actividad 3 · Un gráfico engañoso de verdad',
+      duracionMin: 25
+    },
+    {
+      numero: 5,
+      iconos: [
+        '💭'
+      ],
+      titulo: 'Tres ideas y tu compromiso',
+      duracionMin: 10
+    }
+  ],
+  actividades: [
+    {
+      numero: 1,
+      verbo: 'IDENTIFICA',
+      titulo: 'Tres gráficos, un solo dato',
+      tiempoMin: 15,
+      modalidad: 'individual',
+      pasos: [
+        'Mira los tres gráficos que proyecta tu docente. Son los mismos datos, dibujados de tres maneras.',
+        'Escribe cuál entiendes mejor a primera vista.',
+        'Escribe cuál parece exagerar las diferencias y por qué.',
+        'Escribe cuál confunde más que aclara.',
+        'Anota una regla que sacarías de lo que viste.'
+      ],
+      cuaderno: {
+        titulo: 'Tres gráficos, un solo dato',
+        formato: 'tabla de 3 filas y 2 columnas (gráfico / qué me hace ver o creer), más una regla propia',
+        extension: 'un tercio de página'
+      },
+      criterios: [
+        'Las tres filas están llenas.',
+        'Tu regla dice algo que un compañero podría aplicar.'
+      ]
+    },
+    {
+      numero: 2,
+      verbo: 'CREA',
+      titulo: 'Tres gráficos honestos sobre tu tabla',
+      tiempoMin: 30,
+      modalidad: 'parejas',
+      pasos: [
+        'Con tu pareja, abran la tabla limpia de la sesión 3 y elijan una columna numérica con su categoría.',
+        'Seleccionen el rango, Insertar, Gráfico, y hagan uno de barras.',
+        'Con los mismos datos hagan uno de líneas y uno circular.',
+        'A cada uno pónganle título que diga qué muestra, ejes con unidades y eje vertical desde cero.',
+        'Escriban un párrafo por gráfico, qué pregunta responde mejor y por qué.'
+      ],
+      cuaderno: {
+        titulo: 'Tres gráficos honestos',
+        formato: 'tres párrafos de tres líneas, uno por gráfico, con la pregunta que responde mejor, y una marca del mejor para esos datos',
+        extension: 'media página'
+      },
+      criterios: [
+        'Los tres gráficos cumplen las cinco reglas.',
+        'Los tres párrafos nombran una pregunta distinta.'
+      ]
+    },
+    {
+      numero: 3,
+      verbo: 'EVALÚA',
+      titulo: 'Un gráfico engañoso de verdad',
+      tiempoMin: 25,
+      modalidad: 'individual',
+      pasos: [
+        'Busca un gráfico en un periódico, una revista, una publicidad o una red social. Si no hay conexión, tu docente trae varios.',
+        'Pásalo por las cinco reglas y marca cuáles cumple y cuáles no.',
+        'Nombra la trampa, cuál de las seis usa, y escribe qué impresión falsa deja.',
+        'Propón la corrección, qué cambio pequeño lo haría honesto.',
+        'Revisa los tres gráficos de tu pareja con las cinco reglas y anota lo que falte.'
+      ],
+      cuaderno: {
+        titulo: 'Un gráfico engañoso de verdad',
+        formato: 'el gráfico pegado o dibujado, más tres líneas (trampa / impresión falsa / corrección), más las reglas que les faltan a los gráficos de tu pareja',
+        extension: 'media página'
+      },
+      criterios: [
+        'Nombraste la trampa con una de las seis y tu corrección cabe en una línea.',
+        'Tu pareja recibió al menos una regla que le faltaba.'
+      ]
+    }
+  ],
   triangulo: {
     dussel: {
-      autor: 'Enrique Dussel',
+      autor: 'Enrique Dussel · Filosofía de la liberación (1977), §4.2.5.4',
       lente: 'lente del nosotros',
-      cita: 'El gráfico engañoso es la balanza tramposa moderna — ambas explotan la confianza del que mira.',
-      preguntaEspejo:
-        '¿He compartido gráficos en redes sin verificar el eje, la fuente o el tipo? ¿A quién perjudicó esa difusión silenciosa?',
+      cita: 'Es ingenuo creer que la información se lee sola, como si no hubiera conflictos detrás de cada dato.',
+      preguntaEspejo: '¿Quién decidió dónde empieza el eje del gráfico que vi hoy, y qué ganaba con eso?'
     },
     estoico: {
-      autor: 'Marco Aurelio',
+      autor: 'Epicteto · Enquiridión, 45 (c. 125 d.C.)',
       lente: 'lente del cuidado interior',
-      cita: 'Comunicar bien es responsabilidad de quien emite, no solo capacidad de quien recibe.',
-      preguntaEspejo:
-        'Cuando produzco un gráfico, ¿pienso primero en mi audiencia o en lo que quiero impresionar? ¿Cuál de las dos cosas dura más en la confianza?',
+      cita: 'Cuando alguien se baña rápido, no digas que se baña mal: di que se baña rápido. Describe el hecho antes de juzgarlo.',
+      preguntaEspejo: '¿Describí el gráfico antes de juzgarlo, o juzgué primero y describí después?'
     },
     floridi: {
-      autor: 'Luciano Floridi',
+      autor: 'The Onlife Initiative (ed. Luciano Floridi) · The Onlife Manifesto (2015), Prefacio',
       lente: 'lente de la infoesfera',
-      cita: 'La visualización honesta es la primera línea de defensa contra la degradación informacional.',
-      preguntaEspejo:
-        '¿Mis gráficos aportan claridad a la infoesfera o le suman ruido? ¿Estoy entrenando mi ojo para detectar el engaño visual?',
+      cita: 'Tememos y rechazamos aquello a lo que no logramos darle sentido.',
+      preguntaEspejo: '¿Mi gráfico le da sentido al dato, o solo lo hace ver grande?'
     },
+    modo: 'ideas'
   },
-
   cincoDimensiones: {
-    personal:
-      'Aprendiste a elegir el tipo de gráfico según la pregunta — habilidad de comunicador honesto, no decorador de datos.',
-    emocional:
-      'Reconociste la tentación del gráfico vistoso que oculta — y elegiste claridad sobre espectáculo.',
-    ciudadana:
-      'Tu ojo crítico ante gráficos de noticias y publicidad es defensa contra la desinformación visual cotidiana.',
-    local:
-      'Heredaste la lógica de la pictografía ancestral: hacer visible lo invisible con honestidad, no con efecto.',
-    intergeneracional:
-      'El dibujo en arena del pescador y tu gráfico de Excel comparten ética: el medio es responsable de la verdad que comunica.',
-  },
+    personal: 'Aprendiste a mirar dónde empieza el eje antes de creerle a un gráfico. Es una defensa que se vuelve costumbre.',
+    emocional: 'Un gráfico exagerado produce alarma. Describirlo antes de reaccionar es la pausa que te deja pensar.',
+    ciudadana: 'Las cifras públicas llegan casi siempre en gráficos. Saber nombrar la trampa es poder pedir el dato como es.',
+    local: 'Riosucio vivió veinte años con una cerca entre dos plazas. Un eje mal puesto es una cerca entre el dato y quien lo mira.',
+    intergeneracional: 'El Carnaval de Riosucio convirtió los insultos de la cerca en verso. Tus gráficos honestos también son una forma de dejar el relato limpio para quien venga.'
+  }
 };
 
 export default contenido;

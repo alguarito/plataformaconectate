@@ -81,12 +81,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'La idea del proyecto debe estar...',
           opciones: [
-            'Inventada',
             'Validada por estudio de mercado con datos verificables',
+            'Inventada',
             'Copiada',
             'Sin estudiar'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Correcto. Validación con datos del estudio de mercado, no opinión personal.',
           feedbackIncorrecto: 'Validada por estudio con datos. Sin esa base, la idea es opinión disfrazada de propuesta.'
         },
@@ -94,11 +94,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'El plan de validación incluye conversar con...',
           opciones: [
             'Nadie',
-            '5 personas reales en 2-3 semanas',
             'Solo amigos',
-            '1000 personas'
+            '1000 personas',
+            '5 personas reales en 2-3 semanas'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Exacto. 5 personas reales para verificar supuestos críticos del Canvas.',
           feedbackIncorrecto: 'Son 5 personas reales. Conversaciones cortas pero específicas, no encuestas masivas.'
         },
@@ -106,23 +106,23 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Qué declara la bitácora del año?',
           opciones: [
             'Solo lo bueno',
-            'Reflexión honesta sobre lo aprendido en los 3 periodos',
             'Solo lo malo',
+            'Reflexión honesta sobre lo aprendido en los 3 periodos',
             'Nada'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Correcto. Reflexión honesta sobre los 3 periodos. Cierra el grado con autoevaluación.',
           feedbackIncorrecto: 'Reflexión honesta. Lo que aprendiste, lo que costó, qué llevas al grado 11°.'
         },
         {
           enunciado: 'La regla "este proyecto no es ejercicio escolar; es preparación seria" significa que...',
           opciones: [
-            'Es opcional',
             'Es base para el proyecto emprendedor del grado 11° o microempresa real',
+            'Es opcional',
             'Es solo para nota',
             'No tiene importancia'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Exacto. Es puente al grado 11° o base para microempresa real fuera del colegio.',
           feedbackIncorrecto: 'Es preparación seria para el grado 11° o microempresa real. No es ejercicio desechable.'
         }

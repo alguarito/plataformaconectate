@@ -81,12 +81,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'Quieres buscar SOLO en Wikipedia sobre Colombia. ¿Cómo lo haces?',
           opciones: [
-            'Wikipedia Colombia',
             'site:es.wikipedia.org Colombia',
+            'Wikipedia Colombia',
             'Colombia Wikipedia.com',
             'WIKIPEDIA Colombia'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Bien. site:es.wikipedia.org limita la búsqueda a ese dominio. Resultados solo de Wikipedia, excluye todo lo demás.',
           feedbackIncorrecto: 'site:es.wikipedia.org Colombia limita a Wikipedia. El operador "site:" + dominio te da resultados de ese sitio únicamente.'
         },
@@ -94,11 +94,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Necesitas un PDF del himno nacional. ¿Cómo buscas?',
           opciones: [
             'himno nacional',
-            'himno nacional Colombia filetype:pdf',
             'imprime el himno',
+            'himno nacional Colombia filetype:pdf',
             'PDF de Colombia'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. filetype:pdf le dice a Google que solo te muestre PDFs. Útil para tareas que necesitan documentos formales.',
           feedbackIncorrecto: 'filetype:pdf filtra solo archivos PDF. Útil para descargar documentos formales en lugar de páginas web.'
         },
@@ -106,23 +106,23 @@ const contenido: ContenidoGuia = {
           enunciado: 'Quieres recetas de arepas COLOMBIANAS pero te aparecen las VENEZOLANAS. ¿Cómo lo arreglas?',
           opciones: [
             'Buscar \'arepas\' solo.',
-            'Buscar \'arepas paisas\' (con comillas) o \'arepas -venezolanas\' (excluye).',
             'Cambiar de buscador.',
-            'Buscar en inglés.'
+            'Buscar en inglés.',
+            'Buscar \'arepas paisas\' (con comillas) o \'arepas -venezolanas\' (excluye).'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. El guion (-) excluye. "arepas -venezolanas" elimina los resultados venezolanos. O usar comillas con la palabra específica como "arepas paisas".',
           feedbackIncorrecto: 'Usa el guion para excluir: arepas -venezolanas. O sé específico con comillas: "arepas paisas". Los 2 trucos funcionan.'
         },
         {
           enunciado: 'Buscas en Google y los primeros resultados son anuncios. ¿Qué haces?',
           opciones: [
-            'Hago clic en el primero, debe ser el mejor.',
             'Bajo hasta los resultados orgánicos (los que no son anuncios). Los anuncios se marcan como \'Anuncio\' o \'Patrocinado\'.',
+            'Hago clic en el primero, debe ser el mejor.',
             'Reinicio el computador.',
             'Cambio a Bing.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Los primeros 2-4 resultados suelen ser anuncios (vienen marcados). Pasa de largo hasta los resultados orgánicos: esos son los más relevantes.',
           feedbackIncorrecto: 'Los primeros suelen ser anuncios pagados (marcados). Baja a los resultados orgánicos: los reales, los que Google encontró por relevancia, no por pago.'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Estoy entrenado en preguntar bien o solo confío en que la primera respuesta sea la correcta?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador que reflexionaba antes de actuar)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Lo que cuesta 30 segundos pensar antes, ahorra 30 minutos buscar después."',
       preguntaEspejo: '¿Hago el ejercicio de pensar antes de buscar, o salto al teclado y espero suerte?'

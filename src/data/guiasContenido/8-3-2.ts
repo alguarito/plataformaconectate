@@ -1,6 +1,9 @@
 /**
  * Contenido enriquecido para Grado 8 · Período 3 · Sesión 2
- * (sesión global 22 — Animaciones e hipervínculos).
+ * (sesión global 22).
+ *
+ * Auto-generado desde content/guias/8/8-3-2.yaml por
+ * scripts/build-guias-web-ts.py. Edita el YAML, no este archivo.
  */
 import type { ContenidoGuia } from './_schema';
 
@@ -8,91 +11,161 @@ const contenido: ContenidoGuia = {
   grado: 8,
   periodo: 3,
   sesion: 2,
+  titulo: 'Animaciones e hipervínculos — narrativa interactiva',
   resumen: 'Como el movimiento del titiritero: cada figura entra, gesticula, sale en su tiempo. Aprendes a usar animaciones e hipervínculos con propósito (no decoración) en presentaciones digitales.',
   duracionMin: 90,
   subtema: 'Animaciones · Hipervínculos · Narrativa interactiva',
-
   preLectura: {
     porQueImporta: 'Saber crear presentaciones interactivas te diferencia profesionalmente: cuando alguien navega tu presentación según interés, en lugar de seguir un orden lineal, demuestras dominio del medio.',
     preguntaDetonante: '¿Qué del titiritero —su disciplina de mover una figura a la vez— podemos llevar a las animaciones digitales?',
-    activacion: { titulo: 'La presentación interactiva', descripcion: 'En 5 minutos: en parejas exploran una presentación interactiva (en Canva o YouTube). Identifiquen 3 animaciones con propósito y 3 sin propósito. ¿Qué las distingue?', duracionMin: 5 },
-    conexion: { anterior: 'En la sesión 21 aplicaste principios visuales a 5 diapositivas.', siguiente: 'En la sesión 23 construirás presentación de alto impacto con narrativa.' },
+    activacion: {
+      titulo: 'La presentación interactiva',
+      descripcion: 'En 5 minutos: en parejas exploran una presentación interactiva (en Canva o YouTube). Identifiquen 3 animaciones con propósito y 3 sin propósito. ¿Qué las distingue?',
+      duracionMin: 5
+    },
+    conexion: {
+      anterior: 'En la sesión 21 aplicaste principios visuales a 5 diapositivas.',
+      siguiente: 'En la sesión 23 construirás presentación de alto impacto con narrativa.'
+    }
   },
-
   conceptosClave: [
-    { categoria: '🎬 Tipos de animación', termino: 'Entrada', definicion: 'Animación que marca cómo aparece un elemento. Aparecer, deslizar, desvanecerse. Las simples son elegantes; las rebuscadas distraen.', ejemplo: 'Aparecer (0.5s) para texto principal. Deslizar desde arriba para imagen clave. Evita "rebote" o "espiral".', emoji: '⏬' },
-    { categoria: '🎬 Tipos de animación', termino: 'Énfasis', definicion: 'Animación sutil que destaca un elemento sin moverlo de su lugar. Cambio de color, pequeño zoom, parpadeo discreto.', ejemplo: 'Una cifra clave (40%) cambia de gris a rojo cuando se menciona. Resalta sin distraer del flujo.', emoji: '✨' },
-    { categoria: '🎬 Tipos de animación', termino: 'Salida', definicion: 'Animación que marca cómo desaparece un elemento. Suele ser silenciosa y rápida para no distraer del siguiente contenido.', ejemplo: 'Desvanecerse (0.3s) para texto que ya cumplió su función. NO usar salidas dramáticas.', emoji: '⏫' },
-    { categoria: '🎬 Tipos de animación', termino: 'Trayectoria', definicion: 'Camino visual que un elemento recorre durante la animación. Lo simple (recto) es elegante; lo complejo (espiral, rebote) es distractor.', ejemplo: 'Imagen aparece deslizando recto desde la derecha (OK). Imagen rebotando 5 veces (mal — distrae del contenido).', emoji: '➡️' },
-    { categoria: '🔗 Hipervínculos', termino: 'Vínculo interno', definicion: 'Hipervínculo que salta a otra diapositiva dentro de la misma presentación. Crea menús, índices, navegación no lineal.', ejemplo: 'En la diapositiva de menú, click en "Sección 2" salta a la slide 5. Click en "Volver" regresa al menú.', emoji: '🔗' },
-    { categoria: '🔗 Hipervínculos', termino: 'Vínculo externo', definicion: 'Hipervínculo que abre una página web fuera de la presentación. Útil para referencias, ejemplos, recursos adicionales.', ejemplo: 'Click en "Ver el código completo" abre el repositorio GitHub en el navegador. Útil para mostrar evidencia técnica.', emoji: '🌐' },
-    { categoria: '🔗 Hipervínculos', termino: 'Botón de acción', definicion: 'Elemento gráfico clickeable que combina hipervínculo + animación de feedback. Se siente más profesional que texto subrayado.', ejemplo: 'Botón "Volver al menú" con efecto hover (cambio de color al pasar el mouse) + click que regresa.', emoji: '🔘' },
-    { categoria: '🔗 Hipervínculos', termino: 'Diapositiva de menú', definicion: 'Slide especial al inicio que ofrece opciones navegables. Permite a la audiencia elegir el camino según interés.', ejemplo: 'Slide de menú con 3 botones: "Problema", "Solución", "Implementación". Cada uno lleva a su sección.', emoji: '📋' },
+    {
+      termino: 'Presentación interactiva',
+      definicion: 'Secuencia de slides que no se recorre linealmente. El lector elige caminos, regresa, salta entre secciones según hipervínculos.',
+      ejemplo: 'Una historia con 3 finales posibles. El lector elige al final de cada acto y la presentación salta al desenlace correspondiente.',
+      emoji: '🔀'
+    },
+    {
+      termino: 'Hipervínculo interno',
+      definicion: 'Texto o botón que al hacer clic lleva a otra slide dentro de la misma presentación. Permite ramificar la narrativa.',
+      ejemplo: 'En Google Slides, clic derecho sobre el texto → Insertar enlace → seleccionar slide destino.',
+      emoji: '🔗'
+    },
+    {
+      termino: 'Animación',
+      definicion: 'Efecto que aparece, se mueve o cambia según un disparador (clic, carga, tiempo). Debe apoyar la comprensión, no decorar.',
+      ejemplo: 'Un mapa que se llena por regiones a medida que el presentador habla. Cada región aparece al hacer clic.',
+      emoji: '✨'
+    },
+    {
+      termino: 'Disparador (trigger)',
+      definicion: 'Acción que activa la animación: clic del lector, carga de la slide, transcurso de tiempo, hover sobre un objeto.',
+      ejemplo: 'Una animación con disparador "al hacer clic" da control al lector; "al cargar" la activa automáticamente.',
+      emoji: '🎬'
+    },
+    {
+      termino: 'Plataforma de slides',
+      definicion: 'Herramienta para construir presentaciones. Las más usadas y gratuitas: Google Slides, Canva, Genially, PowerPoint escolar.',
+      ejemplo: 'Genially es muy potente para interactividad; Google Slides es simple y colaborativo en tiempo real.',
+      emoji: '🖼️'
+    }
   ],
-
-  laboratorios: [{
-    tipo: 'quiz',
-    titulo: 'Quiz · Animaciones e interactividad',
-    instrucciones: '5 preguntas tipo ICFES sobre uso disciplinado de animaciones e hipervínculos.',
-    preguntas: [
-      { enunciado: 'Para una diapositiva profesional, ¿cuántas animaciones diferentes son apropiadas?', opciones: ['8+ para impresionar', '2-3 con propósito comunicativo', '0, las animaciones son siempre malas', 'Depende del software'], respuestaIndex: 1, feedbackCorrecto: '✅ Correcto. La regla profesional: 2-3 animaciones máximo POR DIAPOSITIVA, todas con propósito. 8+ es sobrecarga; 0 puede dejar la presentación rígida; 2-3 da variedad sin distraer.', feedbackIncorrecto: '❌ 8+ animaciones es sobrecarga (Carlos del caso de estudio). 0 es rígido. La regla profesional: 2-3 con propósito comunicativo claro.' },
-      { enunciado: 'La duración apropiada para una animación de entrada en una diapositiva profesional es:', opciones: ['Más de 3 segundos para que la audiencia la note bien', 'Entre 0.5 y 1 segundo (corta y respetuosa)', 'Lo más larga posible', '5 segundos exactos'], respuestaIndex: 1, feedbackCorrecto: '✅ Sí. Animaciones de 0.5-1s son rápidas, profesionales y no aburren. Más de 3s es molesto y pierde la atención.', feedbackIncorrecto: '❌ Animaciones largas (>3s) son molestas. La regla profesional: 0.5-1 segundo. Suficiente para captar atención, no tanto para irritar a la audiencia.' },
-      { enunciado: 'Un hipervínculo INTERNO sirve para:', opciones: ['Abrir páginas web fuera de la presentación', 'Saltar a otra diapositiva DENTRO de la misma presentación', 'Reproducir un sonido', 'Cambiar el tema'], respuestaIndex: 1, feedbackCorrecto: '✅ Correcto. Vínculo INTERNO = navegación entre diapositivas (ej: ir al menú, saltar a una sección). Vínculo EXTERNO = abrir URL fuera. Ambos son útiles para distintos propósitos.', feedbackIncorrecto: '❌ Vínculo INTERNO conecta diapositivas dentro de la misma presentación. Vínculo EXTERNO abre URL afuera. Son herramientas distintas para usos distintos.' },
-      { enunciado: 'Si tienes una presentación con menú navegable, ¿qué debe tener cada sección secundaria?', opciones: ['Nada especial', 'Botón de "Volver al menú" claramente visible', 'Animaciones agresivas para captar', 'Música de fondo'], respuestaIndex: 1, feedbackCorrecto: '✅ Sí. Sin botón de retorno, la audiencia se pierde en la presentación interactiva. La regla profesional: cada sección tiene retorno claro al menú.', feedbackIncorrecto: '❌ Sin botón de retorno la presentación interactiva pierde funcionalidad. Animaciones agresivas distraen. Música de fondo molesta. La regla: BOTÓN VOLVER VISIBLE en cada sección.' },
-      { enunciado: 'La regla profesional sobre animaciones es:', opciones: ['Más es mejor', 'Si no agrega claridad, no la pongas', 'Solo en presentaciones casuales', 'Las animaciones son obsoletas'], respuestaIndex: 1, feedbackCorrecto: '✅ Excelente. Cada animación debe AGREGAR CLARIDAD al mensaje (revelar paso a paso, destacar dato clave, marcar transición). Si no agrega claridad, distrae. Es regla universal de UX.', feedbackIncorrecto: '❌ "Más es mejor" es la receta de presentaciones malas. Las animaciones NO son obsoletas, son útiles CON PROPÓSITO. La regla profesional: si no agrega CLARIDAD, no la pongas.' },
-    ],
-  }],
-
+  laboratorios: [
+    {
+      tipo: 'quiz',
+      titulo: '¿Dominas la narrativa interactiva?',
+      instrucciones: '5 preguntas para verificar que diseñas presentaciones con propósito comunicativo.',
+      preguntas: [
+        {
+          enunciado: '¿Cuál es el criterio profesional para usar animaciones?',
+          opciones: [
+            'Que sean llamativas',
+            'Que apoyen la comprensión, no que decoren',
+            'Que sean muchas',
+            'Que reboten siempre'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Exacto. La animación bien usada revela información en el momento justo. La decorativa cansa al lector.',
+          feedbackIncorrecto: 'El criterio es que apoye la comprensión. La decoración por decoración cansa y resta foco.'
+        },
+        {
+          enunciado: 'En Google Slides, ¿cómo insertas un hipervínculo a otra slide?',
+          opciones: [
+            'Solo se puede a páginas web',
+            'Hay que editar HTML',
+            'Clic derecho → Insertar enlace → seleccionar slide',
+            'No es posible'
+          ],
+          respuestaIndex: 2,
+          feedbackCorrecto: 'Correcto. Clic derecho sobre el texto u objeto → Insertar enlace → elegir slide destino.',
+          feedbackIncorrecto: 'En Google Slides se hace con clic derecho sobre el texto y luego Insertar enlace, eligiendo el slide destino.'
+        },
+        {
+          enunciado: '¿Qué es un "disparador" de animación?',
+          opciones: [
+            'Un error en la presentación',
+            'El final del slide',
+            'Una herramienta externa',
+            'La acción que activa la animación (clic, carga, hover)'
+          ],
+          respuestaIndex: 3,
+          feedbackCorrecto: 'Exacto. El disparador define cuándo se ejecuta la animación: al clic, al cargar, al tiempo, al hover.',
+          feedbackIncorrecto: 'Es la acción que activa la animación. Define si el lector controla el ritmo o si avanza sola.'
+        },
+        {
+          enunciado: '¿Cuál de estas plataformas permite construir narrativa interactiva con hipervínculos internos?',
+          opciones: [
+            'Google Slides, Canva, Genially y PowerPoint',
+            'Solo PowerPoint pago',
+            'Solo Adobe Illustrator',
+            'Solo herramientas de pago'
+          ],
+          respuestaIndex: 0,
+          feedbackCorrecto: 'Correcto. Las 4 plataformas mencionadas son gratuitas o accesibles y soportan hipervínculos internos.',
+          feedbackIncorrecto: 'Las 4 (Google Slides, Canva, Genially, PowerPoint escolar) lo permiten y son accesibles para estudiantes.'
+        },
+        {
+          enunciado: 'Tu presentación tiene animaciones que entran rebotando sin razón. ¿Qué problema tiene?',
+          opciones: [
+            'Las animaciones decorativas cansan y restan foco al mensaje',
+            'Ninguno, es estilo personal',
+            'Va a ser más rápida',
+            'Va a tener mejor nota automáticamente'
+          ],
+          respuestaIndex: 0,
+          feedbackCorrecto: 'Exacto. Las animaciones decorativas distraen del mensaje y cansan al lector tras unos pocos slides.',
+          feedbackIncorrecto: 'El problema es que cansan. Cada animación debe tener propósito comunicativo, no ser adorno.'
+        }
+      ]
+    }
+  ],
   postLectura: {
     reflexion: 'El minimalismo en animaciones es señal de profesionalismo. ¿En qué otros ámbitos de tu vida (decoración, vestimenta, hábitos) "menos es más"?',
     transferencia: 'Esta semana: en una presentación tuya, cuenta cuántas animaciones tienes. Si son más de 3 por diapositiva, recorta hasta dejar solo las que agreguen claridad real.',
-    cierre: 'El titiritero y el animador digital comparten oficio: mover lo justo, en el momento justo. La disciplina del movimiento es elegancia.',
+    cierre: 'El titiritero y el animador digital comparten oficio: mover lo justo, en el momento justo. La disciplina del movimiento es elegancia.'
   },
-
   saberAncestral: {
-    saber:
-      'El oficio del titiritero en las plazas del Valle y el Caribe colombiano era disciplina del movimiento: cada figura entraba en su tiempo, gesticulaba lo justo, salía sin alargar la escena. Si el titiritero hacía bailar a todas las figuras a la vez, el público se perdía y la historia se rompía. Las animaciones e hipervínculos digitales heredan esa disciplina: mover lo necesario, cuando es necesario, sin sobrecargar al espectador. Un slide con 15 animaciones por minuto es un escenario con 10 títeres bailando simultáneamente.',
+    saber: 'En las noches de fogón del Pacífico colombiano y en los corredores de las casas de los abuelos del Valle, había una práctica que cualquier nieto reconoce: el cuentero del fogón. El abuelo o la abuela no contaba la historia como aparece en los libros: lineal, principio-medio-fin. La contaba con ramas, saltos, regresos: "Y entonces el tigre dijo... pero antes les cuento de la vez que mi abuelo fue al monte... y eso me hace acordar de cuando llovió tan fuerte que el río arrastró la mula...". El cuento iba y volvía. El nieto, lejos de aburrirse, prestaba más atención: la narrativa con ramas obligaba a seguir el hilo activamente. Cuando volvía al tigre, ya había aprendido cosas que el cuento lineal nunca le habría enseñado. El cuento del fogón no era una línea recta: era un mapa, y el nieto navegaba ese mapa con la guía del cuentero. Mucho antes de que existieran los hipervínculos, el oficio del cuentero ancestral practicaba el hipertexto: textos conectados que el lector recorre eligiendo caminos. La narrativa interactiva digital es esa práctica antigua formalizada con clics.',
     fuente: 'Oficio del titiritero en plazas del Valle y el Caribe colombiano',
-    preguntaPuente:
-      '¿Qué hacía que la función del titiritero del pueblo enganchara al público durante horas? ¿Y qué hace que una presentación con muchas animaciones canse en 5 minutos?',
+    preguntaPuente: '¿Qué sabía el cuentero del fogón al contar la historia con ramas y regresos, que el novato en presentaciones olvida cuando hace 20 slides lineales en orden estricto? ¿Y por qué una presentación con 3 ramas bien pensadas es más comunicativa que una lineal con 30 slides?'
   },
-
   triangulo: {
     dussel: {
       autor: 'Enrique Dussel',
       lente: 'lente del nosotros',
-      cita: 'Toda animación gratuita es ruido — respeta la atención del que mira como respetarías su tiempo.',
-      preguntaEspejo:
-        '¿Las animaciones de mi presentación sirven a la historia o son adorno que distrae?',
+      cita: 'La narrativa que ofrece caminos respeta al lector como sujeto; la que impone orden lo somete como objeto pasivo.',
+      preguntaEspejo: '¿Mi presentación ofrece caminos o impone uno?'
     },
     estoico: {
       autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
-      cita: 'Mover lo justo en el momento justo es virtud — el espectáculo continuo es síntoma de inseguridad.',
-      preguntaEspejo:
-        'Cuando dudo de mi contenido, ¿agrego animaciones para llenar ese vacío? ¿Qué cambia si confío en lo dicho sin decorarlo?',
+      cita: 'La animación que aporta es virtud; la que solo decora es vanidad del autor.',
+      preguntaEspejo: '¿Mis animaciones aportan comprensión, o solo decoran porque sí?'
     },
     floridi: {
       autor: 'Luciano Floridi',
       lente: 'lente de la infoesfera',
-      cita: 'El minimalismo en animaciones es respeto al ancho de banda atencional del espectador moderno.',
-      preguntaEspejo:
-        '¿Mis presentaciones digitales respetan el tiempo y atención del que las recibe, o las saturan con efectos?',
-    },
+      cita: 'El hipertexto bien diseñado es infraestructura cognitiva que respeta cómo el cerebro humano explora información.',
+      preguntaEspejo: '¿Mi presentación respeta cómo piensan los lectores, o solo cómo yo organicé el contenido?'
+    }
   },
-
   cincoDimensiones: {
-    personal:
-      'Aprendiste que la disciplina del movimiento es elegancia — mover lo justo es decisión madura.',
-    emocional:
-      'Resististe la tentación de "compensar contenido débil con efectos llamativos" — elegiste sustancia sobre espectáculo.',
-    ciudadana:
-      'Respetar la atención del espectador es ciudadanía digital concreta en una era de saturación visual.',
-    local:
-      'Heredaste el oficio del titiritero: cada figura en su tiempo, ninguna por demás.',
-    intergeneracional:
-      'El titiritero de la plaza y el animador digital comparten ética. Lo que cambia es la herramienta, no la disciplina del movimiento.',
-  },
+    personal: 'Aprendiste que la disciplina del movimiento es elegancia — mover lo justo es decisión madura.',
+    emocional: 'Resististe la tentación de "compensar contenido débil con efectos llamativos" — elegiste sustancia sobre espectáculo.',
+    ciudadana: 'Respetar la atención del espectador es ciudadanía digital concreta en una era de saturación visual.',
+    local: 'Heredaste el oficio del titiritero: cada figura en su tiempo, ninguna por demás.',
+    intergeneracional: 'El titiritero de la plaza y el animador digital comparten ética. Lo que cambia es la herramienta, no la disciplina del movimiento.'
+  }
 };
 
 export default contenido;

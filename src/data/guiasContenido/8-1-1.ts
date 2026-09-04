@@ -89,10 +89,10 @@ const contenido: ContenidoGuia = {
           opciones: [
             'Excel cuenta cada «ausente» como un cero y el promedio del grupo baja.',
             'Excel muestra un mensaje de error y se niega a calcular el promedio.',
-            'Excel salta esas celdas sin avisar y promedia a menos estudiantes.',
-            'Tres celdas no cambian nada en un grupo de 30.'
+            'Tres celdas no cambian nada en un grupo de 30.',
+            'Excel salta esas celdas sin avisar y promedia a menos estudiantes.'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Exacto. Excel salta el texto en silencio. El promedio sale de 27 estudiantes, no de 30, y nadie te avisa. Por eso miras antes.',
           feedbackIncorrecto: 'Excel no avisa ni cuenta el texto como cero. Simplemente lo salta, y el promedio queda hecho con menos estudiantes de los que crees.'
         },
@@ -112,11 +112,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Una encuesta de tiempo de pantalla la respondieron 12 estudiantes, todos amigos de quien la hizo. ¿Cuál frase es honesta?',
           opciones: [
             'Con 12 respuestas ya se sabe lo que pasa en todo el colegio.',
+            'Describe solo a esos 12, que además son amigos.',
             'Los datos hablan solos; no hace falta explicar nada.',
-            'Mejor no decir cuántos respondieron para que el trabajo no se vea flojo.',
-            'Describe solo a esos 12, que además son amigos.'
+            'Mejor no decir cuántos respondieron para que el trabajo no se vea flojo.'
           ],
-          respuestaIndex: 3,
+          respuestaIndex: 1,
           feedbackCorrecto: 'Correcto. Decir cuántos fueron y que son un grupo cerrado es declarar la limitación. Eso es honestidad con datos.',
           feedbackIncorrecto: 'La frase honesta declara la muestra, doce personas y amigas entre sí. Esconderlo o generalizar es engañar al lector.'
         },
@@ -124,23 +124,23 @@ const contenido: ContenidoGuia = {
           enunciado: 'En la columna «precio» aparece «dos mil» escrito con letras. ¿Qué haces?',
           opciones: [
             'Se suma igual; Excel entiende el texto.',
-            'Es un error de tipo; se corrige o se deja fuera, y se anota.',
             'Se borra la fila completa sin anotar nada en la ficha.',
+            'Es un error de tipo; se corrige o se deja fuera, y se anota.',
             'Se pasan todos los precios a texto para que queden iguales entre sí.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Eso es. Texto donde va un número es un error de tipo. Lo corriges si sabes el valor, o lo dejas fuera y lo escribes en «dejo fuera».',
           feedbackIncorrecto: 'Excel no suma palabras, y borrar sin anotar esconde el problema. La respuesta prudente es reconocer el error de tipo y decir qué hiciste con él.'
         },
         {
           enunciado: '¿Qué hace la tendera que muestra phronesis con su cuaderno del fiado?',
           opciones: [
+            'Revisa renglón por renglón y sabe a quién no le fía.',
             'Cobra de memoria para no perder tiempo con el cuaderno.',
             'Suma rápido para atender al siguiente cliente de la fila.',
-            'Revisa renglón por renglón y sabe a quién no le fía.',
             'Le fía a todo el mundo para tener más datos.'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Revisar antes de sumar y saber quién no está en el cuaderno, eso es preguntar antes de calcular.',
           feedbackIncorrecto: 'La phronesis no es rapidez ni memoria. Es revisar el registro antes de sacar la cuenta y saber quién quedó fuera.'
         }

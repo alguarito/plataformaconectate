@@ -81,12 +81,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'Tu algoritmo dice \'SI edad ≥ 13 ENTONCES mostrar bienvenida\'. ¿Qué operador es \'≥\'?',
           opciones: [
-            'Igual a.',
             'Mayor o igual a.',
+            'Igual a.',
             'Distinto a.',
             'Menor que.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. ≥ es \'mayor o igual a\'. Si edad es 13, 14, 15, ... la condición es verdadera. Si edad es 12 o menos, falsa. Útil para \'desde tal edad\'.',
           feedbackIncorrecto: '≥ = \'mayor o igual a\'. Incluye el valor exacto. Si edad ≥ 13, edades válidas: 13, 14, 15... Si fuera > 13 (sin igual), solo desde 14.'
         },
@@ -94,11 +94,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu condicional dice \'SI nombre = María\'. ¿Qué falla?',
           opciones: [
             'Nada.',
-            'Falta poner María entre comillas: \'SI nombre = "María"\' (texto va entre comillas).',
             'Hay que escribir el nombre en mayúsculas.',
+            'Falta poner María entre comillas: \'SI nombre = "María"\' (texto va entre comillas).',
             'El nombre debería ser número.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Texto entre comillas. Sin comillas, programa cree que \'María\' es otra variable. Con comillas, sabe que es texto literal a comparar.',
           feedbackIncorrecto: 'Texto entre comillas: nombre = \'María\'. Sin comillas, programa busca una variable llamada María, no compara con el texto María.'
         },
@@ -106,11 +106,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu algoritmo necesita decidir entre 3 opciones según el semáforo. ¿Cómo lo escribes?',
           opciones: [
             'Un solo condicional simple.',
-            'Condicionales anidados: SI verde ENTONCES seguir. SI NO, SI amarillo ENTONCES disminuir. SI NO ENTONCES detenerse.',
             '10 condicionales separados.',
-            'Sin condicionales.'
+            'Sin condicionales.',
+            'Condicionales anidados: SI verde ENTONCES seguir. SI NO, SI amarillo ENTONCES disminuir. SI NO ENTONCES detenerse.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. Para 3 opciones: anidación. SI verde → SI NO SI amarillo → SI NO (rojo). Estructura escalonada. Clásico ejemplo del semáforo.',
           feedbackIncorrecto: 'Anidación: SI verde ENTONCES seguir. SI NO (no es verde), SI amarillo ENTONCES disminuir. SI NO (no es ni verde ni amarillo, es rojo) ENTONCES detenerse.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'En un diagrama de flujo, ¿qué símbolo representa un condicional?',
           opciones: [
             'Rectángulo.',
-            'Rombo (con 2 flechas SÍ/NO saliendo).',
             'Óvalo.',
+            'Rombo (con 2 flechas SÍ/NO saliendo).',
             'Paralelogramo.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Bien. Rombo para condicionales. Adentro la pregunta, 2 flechas saliendo etiquetadas SÍ y NO. Cada flecha lleva a una acción distinta.',
           feedbackIncorrecto: 'Rombo. La pregunta adentro, 2 flechas saliendo: SÍ y NO. Cada flecha a una acción distinta. Es lo aprendido en S4.'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Cuáles son las condicionales éticas que rigen mis decisiones diarias? ¿Las he hecho explícitas?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador de las decisiones diarias)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"El sabio no decide por impulso. Pregunta: SI hago esto, ¿qué pasa? SI no, ¿qué pasa? Y elige con criterio."',
       preguntaEspejo: 'Antes de tomar decisiones importantes, ¿hago el ejercicio mental del condicional (SI esto, entonces tal; SI no, tal otro)?'

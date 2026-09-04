@@ -69,12 +69,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: '¿Cuántas páginas mínimas pide la producción final del libro?',
           opciones: [
-            '10',
             '80',
+            '10',
             '500',
             '1000'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Exacto. 80 páginas mínimas. Es escala que obliga a sostener voz, estructura y oficio editorial.',
           feedbackIncorrecto: 'Son 80 páginas mínimas. Es la escala que demuestra capacidad editorial sostenida.'
         },
@@ -82,11 +82,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Qué componente NUEVO introduce esta sesión, distinto del libro tradicional?',
           opciones: [
             'El índice',
-            'La carta del editor firmada',
             'La portada',
-            'La contraportada'
+            'La contraportada',
+            'La carta del editor firmada'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Correcto. La carta del editor declara proceso, uso de IA y postura. Es transparencia editorial contemporánea.',
           feedbackIncorrecto: 'La carta del editor. Pieza esencial que declara honestamente el proceso y el uso de IA.'
         },
@@ -106,11 +106,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'La página de créditos debe incluir...',
           opciones: [
             'Solo el autor',
-            'Año, autor, licencia y declaración de uso de IA',
             'Solo el precio',
+            'Año, autor, licencia y declaración de uso de IA',
             'Solo el ISBN'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Correcto. La transparencia editorial pide declarar año, autor, licencia y uso de IA.',
           feedbackIncorrecto: 'Año, autor, licencia y declaración de uso de IA. Es transparencia editorial irrenunciable.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'La regla "el libro no se entrega antes de pasar checklist" significa que...',
           opciones: [
             'Hay que ahorrar tiempo saltando el checklist',
-            'El checklist es paso obligado de calidad antes de circular',
             'El checklist es opcional',
-            'Solo hay que revisar la portada'
+            'Solo hay que revisar la portada',
+            'El checklist es paso obligado de calidad antes de circular'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Exacto. El checklist es paso obligado. Saltarlo produce libros con detalles sueltos que dañan el oficio.',
           feedbackIncorrecto: 'El checklist es obligatorio antes de entregar. Saltarlo produce libros con detalles sueltos que dañan la pieza.'
         }

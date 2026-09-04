@@ -1,6 +1,9 @@
 /**
  * Contenido enriquecido para Grado 8 · Período 1 · Sesión 6
- * Tema: Fórmulas compuestas: operadores, porcentajes y orden de cálculo.
+ * (sesión global 6).
+ *
+ * Auto-generado desde content/guias/8/8-1-6.yaml por
+ * scripts/build-guias-web-ts.py. Edita el YAML, no este archivo.
  */
 import type { ContenidoGuia } from './_schema';
 
@@ -8,199 +11,275 @@ const contenido: ContenidoGuia = {
   grado: 8,
   periodo: 1,
   sesion: 6,
-  resumen:
-    'Como el cálculo de la chicha del abuelo: 3 partes de maíz, 1 de panela, después se multiplica por porciones, después se suman especias. El ORDEN no es negociable. Aprendes jerarquía PEMDAS y cálculo de porcentajes correctamente.',
+  titulo: 'Fórmulas compuestas — el orden de las operaciones y los paréntesis que lo dicen',
+  resumen: 'Excel calcula en un orden fijo y una fórmula con varias operaciones solo da bien si respetas ese orden o lo cambias con paréntesis. Hoy escribes fórmulas reales que cualquiera puede leer, como la tejedora wounaan que cierra el canasto vuelta por vuelta.',
   duracionMin: 90,
-  subtema: 'Excel · Fórmulas compuestas · Jerarquía PEMDAS',
-
+  subtema: 'Análisis de datos con phronesis',
   preLectura: {
-    porQueImporta:
-      'Saber escribir fórmulas correctas te servirá para presupuestos, descuentos, IVA, intereses, promedios ponderados. Una fórmula mal hecha en una nómina o cuota escolar afecta a personas reales — cuidar el orden es ética del cálculo.',
-    preguntaDetonante:
-      '¿Qué de la receta de la chicha del abuelo — el orden no negociable de pasos — podemos llevar a las fórmulas compuestas?',
+    porQueImporta: 'Un IVA mal ordenado en una fórmula cobra de más o de menos y nadie lo nota hasta que alguien revisa la cuenta. Saber el orden de las operaciones te sirve en Excel, en la calculadora y en cualquier programa.',
+    preguntaDetonante: 'Cuando escribas =B2*1+19 % para el IVA, ¿qué calculó Excel primero? ¿Era lo que querías?',
     activacion: {
-      titulo: 'Calcula sin fórmulas',
-      descripcion:
-        'En 3 minutos: en parejas calculen sin Excel un descuento del 15% sobre $500.000. Comparen las dos respuestas. Si difieren, ¿por qué? El orden importa antes de Excel.',
-      duracionMin: 5,
+      titulo: 'Catorce o veinte',
+      descripcion: 'En 2 minutos, escribe en Excel =2+3*4 y al lado =(2+3)*4. ¿Por qué no dan lo mismo? Explícalo en una frase.',
+      duracionMin: 5
     },
     conexion: {
-      anterior: 'En la sesión 5 aprendiste a anclar referencias con $ para fórmulas reusables.',
-      siguiente: 'En la sesión 7 representarás los datos con gráficos: barras, líneas, circulares.',
-    },
+      anterior: 'En la sesión 5 copiaste fórmulas sin romperlas con referencias relativas y absolutas.',
+      siguiente: 'En la sesión 7 graficas lo que calculaste y aprendes cuándo un gráfico engaña.'
+    }
   },
-
   conceptosClave: [
     {
-      categoria: '🧮 Cómo se opera',
-      termino: 'Operadores aritméticos',
-      definicion:
-        'Símbolos de operación: + (suma), − (resta), * (multiplicación), / (división). Funcionan igual que en matemáticas, pero Excel los aplica en jerarquía estricta.',
-      ejemplo:
-        '=10+5*2 da 20 (no 30) porque la multiplicación va antes que la suma.',
-      emoji: '➕',
+      termino: 'Orden de las operaciones',
+      definicion: 'La secuencia fija en que Excel calcula, paréntesis, potencias, multiplicar y dividir, sumar y restar. Dentro de cada nivel va de izquierda a derecha.',
+      ejemplo: 'En =2+3*4, Excel multiplica 3*4 primero y después suma 2. Da 14.',
+      categoria: 'El orden'
     },
     {
-      categoria: '🧮 Cómo se opera',
-      termino: 'Porcentaje',
-      definicion:
-        'El símbolo % en Excel divide entre 100. Escribir 15% es lo mismo que 0.15. Para descontar 15% multiplicas por (1−15%) o sea por 0.85.',
-      ejemplo:
-        '=500*15% = 75. Para descontar: =500*(1−15%) = 425. Errores frecuentes: =500−15% da 499.85, no 425.',
-      emoji: '💯',
-    },
-    {
-      categoria: '🧮 Cómo se opera',
-      termino: 'Potencia',
-      definicion:
-        'El operador ^ eleva un número a la potencia indicada. Útil para áreas, volúmenes, intereses compuestos.',
-      ejemplo:
-        '=2^3 = 8 (dos al cubo). =A1^2 calcula el cuadrado del valor en A1. Útil para áreas: =radio^2*PI().',
-      emoji: '⏫',
-    },
-    {
-      categoria: '🧮 Cómo se opera',
       termino: 'Paréntesis',
-      definicion:
-        'Los paréntesis ( ) fuerzan que las operaciones internas se calculen primero, rompiendo la jerarquía. Útiles cuando el orden natural NO da el resultado correcto.',
-      ejemplo:
-        '=(10+5)*2 da 30 (suma primero). Sin paréntesis =10+5*2 da 20. Cambian el resultado completo.',
-      emoji: '📐',
+      definicion: 'Lo que está entre paréntesis se calcula primero. Sirven para cambiar el orden y para dejarlo claro a quien lee.',
+      ejemplo: '=(2+3)*4 suma primero y da 20.',
+      categoria: 'El orden'
     },
     {
-      categoria: '🎯 Cómo se ordena el cálculo',
-      termino: 'Jerarquía PEMDAS',
-      definicion:
-        'Orden de operaciones: Paréntesis → Exponentes → Multiplicación/División → Adición/Sustracción. Operaciones del mismo nivel: izquierda a derecha. Universal en matemáticas y Excel.',
-      ejemplo:
-        '=2+3*4^2 → primero potencia (4^2=16) → luego mult (3*16=48) → luego suma (2+48=50). PEMDAS al pie de la letra.',
-      emoji: '🔢',
+      termino: 'De izquierda a derecha',
+      definicion: 'Multiplicar y dividir tienen el mismo nivel; también sumar y restar. Entre iguales, Excel va de izquierda a derecha.',
+      ejemplo: '10/2*5 es 25, porque divide primero y multiplica después.',
+      categoria: 'El orden'
     },
     {
-      categoria: '🎯 Cómo se ordena el cálculo',
-      termino: 'Fórmula encadenada',
-      definicion:
-        'Combinación de varias operaciones en una sola fórmula. Útil pero peligrosa: una fórmula larga puede tener un error oculto.',
-      ejemplo:
-        '=A1*0.4+B1*0.3+C1*0.3 calcula nota ponderada con 3 porcentajes. Una buena práctica: descomponer en pasos para verificar.',
-      emoji: '🧮',
+      termino: 'Fórmula compuesta',
+      definicion: 'Fórmula con dos o más operadores o funciones. El orden en que se calculan decide el resultado.',
+      ejemplo: 'La nota final ponderada =(B2*0,3)+(C2*0,3)+(D2*0,4) combina tres multiplicaciones y dos sumas.',
+      categoria: 'Fórmulas compuestas'
     },
     {
-      categoria: '🎯 Cómo se ordena el cálculo',
-      termino: 'Resultado parcial',
-      definicion:
-        'Calcular paso a paso en celdas separadas para verificar antes de combinar todo. Reduce errores y facilita encontrar el problema.',
-      ejemplo:
-        'En lugar de =A1*0.4+B1*0.3+C1*0.3 directo, calcular en D1=A1*0.4, E1=B1*0.3, F1=C1*0.3, y luego =D1+E1+F1. Si algo falla, sabes dónde.',
-      emoji: '🏷️',
-    },
-    {
-      categoria: '🎯 Cómo se ordena el cálculo',
-      termino: 'Trampa del orden',
-      definicion:
-        'Errores frecuentes al saltarse paréntesis o aplicar mal porcentajes. La verificación con cálculo simple a mano evita propagación de errores.',
-      ejemplo:
-        '=500−15% NO descuenta 15% — da 499.85. La forma correcta: =500*(1−15%) o =500−(500*15%). El % sin contexto engaña.',
-      emoji: '🐞',
-    },
+      termino: 'Caso de prueba',
+      definicion: 'Un valor cuyo resultado ya conoces, para comprobar que la fórmula está bien ordenada.',
+      ejemplo: 'Con 3,0 en las tres notas, la nota final debe dar 3,0. Si da otra cosa, la fórmula está mal.',
+      categoria: 'Fórmulas compuestas'
+    }
   ],
-
   laboratorios: [
     {
       tipo: 'quiz',
-      titulo: 'Quiz · Fórmulas y orden de cálculo',
-      instrucciones:
-        '5 preguntas tipo ICFES sobre operadores, porcentajes, jerarquía y paréntesis.',
+      titulo: '¿Sabes en qué orden calcula Excel?',
+      instrucciones: 'Cinco preguntas para verificar que dominas el orden de las operaciones y el uso de paréntesis. No va al cuaderno.',
       preguntas: [
         {
-          enunciado: 'El resultado de =10+5*2 en Excel es:',
-          opciones: ['30 (suma primero)', '20 (multiplica primero por jerarquía)', '17', '25'],
+          enunciado: '¿Cuánto da =2+3*4 en Excel, y por qué?',
+          opciones: [
+            '20, porque Excel calcula de izquierda a derecha siempre.',
+            '14, porque Excel multiplica antes de sumar.',
+            '24, porque Excel suma los tres números y luego multiplica.',
+            '9, porque Excel ignora el asterisco en las sumas.'
+          ],
           respuestaIndex: 1,
-          feedbackCorrecto: '✅ Exacto. Por jerarquía PEMDAS, la multiplicación va ANTES que la suma. 5*2 = 10, luego 10+10 = 20. Si quisieras 30, deberías escribir =(10+5)*2.',
-          feedbackIncorrecto: '❌ La jerarquía PEMDAS dice: multiplicación antes que suma. =10+5*2 → primero 5*2=10 → luego 10+10=20. Para 30 necesitas paréntesis: =(10+5)*2.',
+          feedbackCorrecto: 'Sí. Multiplicar va antes que sumar. Para que dé 20 hay que escribir =(2+3)*4.',
+          feedbackIncorrecto: 'Excel no va siempre de izquierda a derecha. Primero multiplica 3*4 y después suma 2. Da 14.'
         },
         {
-          enunciado: 'Para descontar 15% de $500.000 en Excel, ¿cuál es la fórmula correcta?',
-          opciones: ['=500000−15%', '=500000*(1−15%) o =500000−(500000*15%)', '=15−500000%', '=500000/15'],
-          respuestaIndex: 1,
-          feedbackCorrecto: '✅ Correcto. =500000*(1−15%) calcula el 85% (lo que queda después del descuento) = 425.000. =500000−(500000*15%) hace lo mismo paso a paso. Ambas son válidas.',
-          feedbackIncorrecto: '❌ =500000−15% da 499.999.85 (Excel resta 0.15 unidades, no 15% del total). El % sin multiplicación NO descuenta proporcionalmente. La forma correcta es multiplicar por (1−15%) o restar (500000*15%).',
-        },
-        {
-          enunciado: 'El orden correcto de operaciones (jerarquía PEMDAS) es:',
-          opciones: ['Suma → resta → multiplicación → división', 'Paréntesis → potencias → mult/div → sum/rest', 'Izquierda a derecha siempre, sin jerarquía', 'No hay orden, depende de la fórmula'],
-          respuestaIndex: 1,
-          feedbackCorrecto: '✅ Sí. PEMDAS es universal: Paréntesis primero, luego Exponentes, luego Multiplicación/División (juntas, izq a der), luego Adición/Sustracción (juntas, izq a der).',
-          feedbackIncorrecto: '❌ La jerarquía SÍ existe y es universal. PEMDAS: Paréntesis → Exponentes → Multiplicación/División → Adición/Sustracción. No es izquierda a derecha sin más.',
-        },
-        {
-          enunciado: '¿Qué da =(20+10)*2 en Excel?',
-          opciones: ['40', '30', '60', '50'],
+          enunciado: 'Quieres restar B2 de A2 y dividir el resultado entre C2. ¿Qué fórmula escribes?',
+          opciones: [
+            '=A2-B2/C2, porque el orden ya es el correcto.',
+            '=A2-(B2/C2), para que reste al final.',
+            '=(A2-B2)/C2, para que reste primero y divida después.',
+            '=A2/(B2-C2), para que la división vaya adelante.'
+          ],
           respuestaIndex: 2,
-          feedbackCorrecto: '✅ Correcto. Los paréntesis fuerzan la suma primero: (20+10)=30. Luego multiplicación: 30*2=60. Sin paréntesis daría 40 (=20+10*2 → primero 10*2=20 → luego 20+20=40).',
-          feedbackIncorrecto: '❌ Los paréntesis CAMBIAN el orden. =(20+10)*2 → suma primero (30) → luego multiplica (60). Si quieres 40 sería =20+10*2 (sin paréntesis: 10*2=20, luego 20+20=40).',
+          feedbackCorrecto: 'Correcto. Sin paréntesis, Excel divide primero. Con (A2-B2) la resta va primero, como querías.',
+          feedbackIncorrecto: 'Dividir va antes que restar. Para restar primero, la resta va entre paréntesis, =(A2-B2)/C2.'
         },
         {
-          enunciado: 'Para calcular un descuento del 20% sobre un precio que ya tiene 10% de IVA incluido:',
-          opciones: ['Multiplicar el precio original por 0.7 (sumar descuentos)', 'Restar 30% directamente', 'Aplicar IVA primero, luego descontar 20% del total con IVA', 'Multiplicar por -0.3'],
-          respuestaIndex: 2,
-          feedbackCorrecto: '✅ Excelente. Los descuentos NO se suman porcentualmente. Si el precio sin IVA es P, con IVA es P*1.10. Con descuento 20%: P*1.10*0.80. Es secuencial, no aditivo.',
-          feedbackIncorrecto: '❌ Los porcentajes en cadena NO se suman. Aplicar 10% IVA y luego 20% descuento NO equivale a "sumar/restar 30%". Es: precio * (1+10%) * (1−20%) = secuencial.',
+          enunciado: 'Un compañero escribió =B2*1+19 % para el IVA de un precio de 1.000 pesos. ¿Qué obtiene?',
+          opciones: [
+            '1.190 pesos, el precio con IVA.',
+            '190 pesos, solo el IVA.',
+            'Un error, porque no se puede sumar un porcentaje.',
+            '1.000,19 pesos, porque suma 0,19 al final.'
+          ],
+          respuestaIndex: 3,
+          feedbackCorrecto: 'Exacto. Excel multiplica B2*1 y después suma 19 %, que vale 0,19. Lo correcto es =B2*(1+19 %).',
+          feedbackIncorrecto: 'Excel no da error, pero tampoco 1.190. Multiplica primero y suma 0,19 al final. El paréntesis en (1+19 %) lo arregla.'
         },
-      ],
-    },
+        {
+          enunciado: '¿Cuánto da =10/2*5?',
+          opciones: [
+            '25, porque divide 10 entre 2 y luego multiplica por 5.',
+            '1, porque multiplica 2*5 primero y luego divide 10 entre 10.',
+            '50, porque suma los tres números y multiplica.',
+            '7, porque resta el dos y multiplica.'
+          ],
+          respuestaIndex: 0,
+          feedbackCorrecto: 'Sí. Dividir y multiplicar tienen el mismo nivel, así que Excel va de izquierda a derecha, 10/2=5 y 5*5=25.',
+          feedbackIncorrecto: 'Entre operaciones del mismo nivel, Excel va de izquierda a derecha. Divide primero, después multiplica. Da 25.'
+        },
+        {
+          enunciado: '¿Para qué sirve probar una fórmula con un caso cuyo resultado ya conoces?',
+          opciones: [
+            'Para que Excel guarde la fórmula como plantilla.',
+            'Para descubrir un orden equivocado antes de que llegue a un gráfico.',
+            'Para que la fórmula se copie sola a las demás filas.',
+            'Para que el formato de la celda cambie a número.'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Eso es. Si con 3,0 en las tres notas la final no da 3,0, el orden está mal y lo ves antes de graficar.',
+          feedbackIncorrecto: 'El caso de prueba no cambia la fórmula ni el formato. Sirve para detectar un orden equivocado a tiempo.'
+        }
+      ]
+    }
   ],
-
   postLectura: {
-    reflexion: 'Pensar el orden antes de calcular es disciplina ancestral. ¿En qué otras decisiones de tu vida el ORDEN cambia el resultado (no solo en fórmulas)?',
-    transferencia: 'Esta semana revisa una factura, un recibo o una cuenta de cafetería. ¿Los descuentos están bien calculados? ¿Hay algún error de orden? Aplica PEMDAS en la vida real.',
-    cierre: 'La receta de la chicha y la fórmula de Excel comparten algo: el orden no es negociable. Equivocarse cuesta dinero, tiempo o sabor.',
+    reflexion: '¿Cuál de las tres fórmulas rotas te habría engañado si no la hubieras probado con un caso conocido?',
+    transferencia: 'La próxima vez que uses la calculadora del celular para varias operaciones, pregúntate en qué orden las hizo. Prueba con 2+3*4.',
+    cierre: 'El orden es el diseño. Los paréntesis son la forma de escribirlo para que otro lo lea.'
   },
-
   saberAncestral: {
-    saber:
-      'La chicha del abuelo en el Valle se hacía con orden: germinar el maíz, molerlo, cocer, fermentar, colar. Cada paso depende del anterior. Saltarse un paso o cambiar el orden no daba "chicha distinta" — daba algo incomible. Las recetas heredadas son algoritmos con jerarquía estricta. PEMDAS en Excel es lo mismo: paréntesis, exponentes, multiplicación/división, adición/sustracción. El orden no es preferencia — es estructura.',
-    fuente: 'Receta tradicional de la chicha de maíz en el Valle del Cauca',
-    preguntaPuente:
-      '¿Qué pasa cuando la abuela cambia el orden de pasos de una receta heredada? ¿Y qué pasa cuando Excel calcula con PEMDAS sin que te des cuenta?',
+    saber: 'En las selvas del Chocó, en el litoral del río San Juan, las mujeres wounaan tejen canastos con la fibra de la palma de werregue. La técnica es el rollo en espiral: se empieza por el centro y cada vuelta se cose sobre la anterior, hasta que el canasto cierra. Los diseños cuentan la vida cotidiana, la naturaleza y las creencias del pueblo (Universidad del Rosario, 2023). Fíjate en el orden. No se puede tejer la vuelta de afuera antes que la del centro. No se puede volver a la del medio cuando ya cerraste la de arriba. Cada vuelta depende de la anterior, y el diseño solo aparece si el orden se respeta. Eso es una fórmula compuesta: varias operaciones que solo dan el resultado correcto en un orden. La cara de exclusión: la técnica se enseña hoy en talleres universitarios de Bogotá. La página del taller nombra al pueblo y a la técnica, pero a ninguna tejedora. Hoy vas a escribir fórmulas donde el orden importa tanto como en el canasto, y vas a usar los paréntesis para dejarlo claro.',
+    fuente: 'Tejedoras wounaan · el werregue, vuelta sobre vuelta',
+    referencia: 'Universidad del Rosario, Facultad de Creación. (2023). Saberes artesanales: taller de tejeduría en werregue.',
+    preguntaPuente: 'La tejedora wounaan no puede cerrar la vuelta de afuera antes que la del centro. Cuando escribas =B2*1+19 % para el IVA, ¿qué vuelta cerró Excel primero? ¿Era la que tú querías?'
   },
-
+  mapaRuta: [
+    {
+      numero: 1,
+      iconos: [
+        '🌱'
+      ],
+      titulo: 'El werregue, vuelta sobre vuelta',
+      duracionMin: 10
+    },
+    {
+      numero: 2,
+      iconos: [
+        '✏️'
+      ],
+      titulo: 'Actividad 1 · A mano y en Excel',
+      duracionMin: 15
+    },
+    {
+      numero: 3,
+      iconos: [
+        '🔎',
+        '✏️'
+      ],
+      titulo: 'Actividad 2 · Cinco fórmulas con paréntesis',
+      duracionMin: 30
+    },
+    {
+      numero: 4,
+      iconos: [
+        '✏️',
+        '✅'
+      ],
+      titulo: 'Actividad 3 · Tres fórmulas rotas y una prueba real',
+      duracionMin: 25
+    },
+    {
+      numero: 5,
+      iconos: [
+        '💭'
+      ],
+      titulo: 'Tres ideas y tu compromiso',
+      duracionMin: 10
+    }
+  ],
+  actividades: [
+    {
+      numero: 1,
+      verbo: 'IDENTIFICA',
+      titulo: 'A mano y en Excel',
+      tiempoMin: 15,
+      modalidad: 'individual',
+      pasos: [
+        'Calcula a mano estas tres expresiones, 2+3*4, (2+3)*4 y 20-6/2, y anota tus respuestas.',
+        'Abre Excel y escribe las tres como fórmulas, con el signo igual adelante.',
+        'Compara tus respuestas con las de Excel.',
+        'Si alguna no coincide, escribe cuál y qué crees que calculó Excel primero.'
+      ],
+      cuaderno: {
+        titulo: 'A mano y en Excel',
+        formato: 'tabla de 3 filas y 3 columnas (expresión / mi resultado / resultado de Excel)',
+        extension: 'un tercio de página'
+      },
+      criterios: [
+        'Las tres filas están llenas.',
+        'Escribiste en una línea qué calcula Excel primero.'
+      ]
+    },
+    {
+      numero: 2,
+      verbo: 'APLICA',
+      titulo: 'Cinco fórmulas reales con paréntesis',
+      tiempoMin: 30,
+      modalidad: 'parejas',
+      pasos: [
+        'Con tu pareja, escriban tres notas parciales en B2, C2 y D2 y calculen la nota final, =(B2*0,3)+(C2*0,3)+(D2*0,4). Con 3,0 en las tres debe dar 3,0.',
+        'Escriban un precio en B5, un descuento en D5 y el IVA en E5, y calculen el precio final, =B5*(1-D5)*(1+E5).',
+        'Escriban cinco valores en B8:F8 y calculen el promedio sin el menor, =(SUMA(B8:F8)-MIN(B8:F8))/4.',
+        'Inventen dos fórmulas más de su vida real, con al menos dos operadores y paréntesis, y pruébenlas con un caso que ya sepan.'
+      ],
+      cuaderno: {
+        titulo: 'Cinco fórmulas con paréntesis',
+        formato: 'tabla de 5 filas y 3 columnas (qué calcula / fórmula escrita / caso de prueba y resultado)',
+        extension: 'media página'
+      },
+      criterios: [
+        'Las cinco fórmulas tienen su caso de prueba.',
+        'Las cinco dieron lo esperado.'
+      ]
+    },
+    {
+      numero: 3,
+      verbo: 'EVALÚA',
+      titulo: 'Tres fórmulas rotas y una prueba real',
+      tiempoMin: 25,
+      modalidad: 'individual',
+      pasos: [
+        'Copia las tres fórmulas mal escritas de la guía y escribe al lado qué calculó Excel primero y por qué salió mal.',
+        'Corrígelas con paréntesis y comprueba el resultado.',
+        'Haz una prueba real, un cálculo de tu vida con al menos dos operadores. Escribe primero la frase y después la fórmula.',
+        'Lee la fórmula de tu pareja y di en voz alta qué se calcula primero. Anota si acertaste.'
+      ],
+      cuaderno: {
+        titulo: 'Tres fórmulas rotas y una prueba real',
+        formato: 'tabla de 3 filas y 3 columnas (fórmula rota / qué calculó Excel primero / fórmula corregida), más la prueba real en palabras y en fórmula',
+        extension: 'media página'
+      },
+      criterios: [
+        'Las tres corregidas dan el resultado esperado.',
+        'Tu pareja leyó tu prueba real sin adivinar el orden.'
+      ]
+    }
+  ],
   triangulo: {
     dussel: {
-      autor: 'Enrique Dussel',
+      autor: 'Enrique Dussel · Filosofía de la liberación (1977), §4.3.2.4',
       lente: 'lente del nosotros',
-      cita: 'Las jerarquías ocultas en las herramientas técnicas no son neutras — saberlas es defenderse.',
-      preguntaEspejo:
-        '¿Qué jerarquías invisibles en mis cálculos cotidianos (descuentos, intereses) decidieron por mí sin que yo lo notara?',
+      cita: 'La tecnología no es teoría aplicada: es un oficio que se piensa mientras se hace.',
+      preguntaEspejo: '¿Qué entendí hoy porque una fórmula me salió mal, y no porque me lo dijeron?'
     },
     estoico: {
-      autor: 'Marco Aurelio',
+      autor: 'Epicteto · Enquiridión, 33 (c. 125 d.C.)',
       lente: 'lente del cuidado interior',
-      cita: 'El orden de las acciones decide el resultado tanto como las acciones mismas.',
-      preguntaEspejo:
-        'En las fórmulas de mi vida, ¿estoy aplicando el orden correcto o sumando descuentos que en realidad se aplican en secuencia?',
+      cita: 'Guarda silencio cuando puedas y di solo lo necesario, con pocas palabras.',
+      preguntaEspejo: '¿Mis paréntesis dicen lo necesario, o puse de más porque no estaba seguro?'
     },
     floridi: {
-      autor: 'Luciano Floridi',
+      autor: 'The Onlife Initiative (ed. Luciano Floridi) · The Onlife Manifesto (2015), § 4.6',
       lente: 'lente de la infoesfera',
-      cita: 'PEMDAS es la gramática silenciosa de la infoesfera matemática — sin ella, calcular es adivinar.',
-      preguntaEspejo:
-        '¿Estoy aprendiendo PEMDAS como gramática para no ser engañado, o solo como regla del examen?',
+      cita: 'Las configuraciones por defecto de una tecnología deberían respetar a la persona que la usa.',
+      preguntaEspejo: '¿En qué otra herramienta acepto un «por defecto» que no elegí?'
     },
+    modo: 'ideas'
   },
-
   cincoDimensiones: {
-    personal:
-      'Aprendiste que el orden importa tanto como las operaciones — habilidad cognitiva que aplica a Excel, a la vida, a la cocina.',
-    emocional:
-      'Resististe la tentación de sumar porcentajes (10% + 20% = 30%) porque entendiste que la matemática real es secuencial, no aditiva.',
-    ciudadana:
-      'Verificar el orden de cálculo en facturas y promociones es defensa del consumidor. Sabes leer lo que la promoción esconde.',
-    local:
-      'Heredaste el orden riguroso de la receta de la chicha — cocinar y calcular comparten la misma lógica algorítmica.',
-    intergeneracional:
-      'La abuela cocinera, el abuelo herrero y tu Excel comparten gramática del orden. Lo que cambia es el medio, no la ley.',
-  },
+    personal: 'Aprendiste que el orden en que haces las cosas cambia el resultado, y que decirlo con paréntesis evita adivinar.',
+    emocional: 'Una fórmula que da 14 en vez de 20 frustra. Averiguar por qué, en vez de borrarla, es la calma que se entrena.',
+    ciudadana: 'Un IVA mal ordenado cobra de más sin que nadie lo vea. Saber leer una fórmula es poder revisar una cuenta.',
+    local: 'La tejedora wounaan cierra el canasto vuelta sobre vuelta; tú escribiste fórmulas que se calculan en orden. El mismo cuidado.',
+    intergeneracional: 'Una fórmula con paréntesis claros la puede corregir quien la herede. Es lo que hace un oficio cuando se enseña.'
+  }
 };
 
 export default contenido;

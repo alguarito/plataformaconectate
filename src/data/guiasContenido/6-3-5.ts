@@ -70,11 +70,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Vas a mostrar los 5 ríos más importantes de Colombia con su longitud, departamento de nacimiento y desembocadura. ¿Cómo lo presentas?',
           opciones: [
             '5 párrafos, uno por río.',
-            'Una tabla de 5 filas × 4 columnas.',
             '5 imágenes pegadas.',
+            'Una tabla de 5 filas × 4 columnas.',
             'Solo un párrafo grande.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Datos comparables en categorías = tabla. 5 ríos × 4 columnas (nombre, longitud, nace, desemboca). Se lee en 30 segundos.',
           feedbackIncorrecto: 'Para datos comparables: tabla. Las 5 filas son los ríos, las 4 columnas los datos de cada uno. En párrafo se vuelve denso.'
         },
@@ -94,23 +94,23 @@ const contenido: ContenidoGuia = {
           enunciado: 'Necesitas una foto de árbol para tu documento. ¿De dónde la sacas?',
           opciones: [
             'De Google sin verificar.',
-            'De Pixabay, Pexels o Unsplash (gratis y legal).',
             'Robo una de Instagram.',
-            'Hago un dibujo a mano.'
+            'Hago un dibujo a mano.',
+            'De Pixabay, Pexels o Unsplash (gratis y legal).'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Bien. Pixabay, Pexels y Unsplash ofrecen imágenes gratis y de uso libre. Google muchas veces tiene copyright. Usar lo de otros sin permiso puede ser ilegal.',
           feedbackIncorrecto: 'Para imágenes libres: pixabay.com, pexels.com, unsplash.com. Google no es libre por defecto; muchas imágenes tienen copyright.'
         },
         {
           enunciado: 'Tu tabla tiene 4 columnas pero ninguna está en negrita. ¿Qué falta?',
           opciones: [
-            'Nada, así está bien.',
             'Falta el encabezado en negrita para identificar qué es cada columna.',
+            'Nada, así está bien.',
             'Falta cambiar el color del fondo.',
             'Falta agregar más filas.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. La primera fila debe ir en negrita: es el encabezado que dice qué dato muestra cada columna. Sin él, el lector no sabe qué es qué.',
           feedbackIncorrecto: 'La fila de encabezado va en negrita siempre. Identifica las columnas y se ve profesional. Sin encabezado en negrita, la tabla se ve incompleta.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Insertas una imagen y NO le pones pie de foto. ¿Está bien?',
           opciones: [
             'Sí, las imágenes hablan solas.',
-            'No, el pie de foto en cursiva tamaño 10 le da contexto al lector.',
             'Solo necesita pie si es color.',
+            'No, el pie de foto en cursiva tamaño 10 le da contexto al lector.',
             'El pie es opcional para imágenes pequeñas.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Bien. El pie indica qué muestra la imagen y le da contexto. Sin él, el lector se pregunta \'¿qué es esto?\'. Va en cursiva tamaño 10.',
           feedbackIncorrecto: 'Toda imagen profesional tiene pie: en cursiva tamaño 10, debajo. Ejemplo: \'Figura 1: vista del río Cauca\'. Da contexto al lector.'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Estoy usando la herramienta correcta para cada idea que quiero comunicar?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador que documentaba con orden)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Una tabla bien hecha vale lo que dos páginas de palabras. Eso es economía de pensamiento."',
       preguntaEspejo: '¿Qué cosa que escribí en párrafo se entendería mejor en tabla?'

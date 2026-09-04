@@ -70,11 +70,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Te dan un problema grande y abrumador. ¿Cuál es la PRIMERA técnica que aplicas?',
           opciones: [
             'Pensar todo de una.',
-            'Descomposición: dividir el problema en sub-problemas manejables.',
             'Rendirse.',
-            'Buscar en internet la solución completa.'
+            'Buscar en internet la solución completa.',
+            'Descomposición: dividir el problema en sub-problemas manejables.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. Descomposición es la primera técnica. Sin dividir, el problema sigue grande. Con división, cada parte se vuelve manejable. La parálisis se rompe así.',
           feedbackIncorrecto: 'Descomposición primero. Sin dividir, el problema te paraliza. Dividir en sub-problemas hace que cada parte sea manejable. Después vienen las otras 3 técnicas.'
         },
@@ -82,11 +82,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Estás organizando una fiesta y notas que \'invitar amigos\' e \'invitar familia\' son parecidos. ¿Qué técnica aplicaste?',
           opciones: [
             'Descomposición.',
-            'Patrones (reconociste similitudes para usar la misma estrategia).',
             'Abstracción.',
+            'Patrones (reconociste similitudes para usar la misma estrategia).',
             'Algoritmo.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Patrones = reconocer similitudes. Si dos sub-problemas son parecidos, usas la misma estrategia. Ahorras tiempo y mantienes coherencia.',
           feedbackIncorrecto: 'Patrones. Reconocer que dos sub-problemas son parecidos te permite reusar la solución. Es la 2da técnica del pensamiento computacional.'
         },
@@ -94,23 +94,23 @@ const contenido: ContenidoGuia = {
           enunciado: 'Planeando la fiesta, te dices \'el color de los manteles lo decido después\'. ¿Qué técnica?',
           opciones: [
             'Descomposición.',
-            'Patrones.',
             'Abstracción (dejar detalles no esenciales fuera del momento actual).',
+            'Patrones.',
             'Algoritmo.'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 1,
           feedbackCorrecto: 'Bien. Abstracción: dejar afuera lo no esencial para enfocarse en lo importante. No es ignorar para siempre; es enfocar correctamente.',
           feedbackIncorrecto: 'Abstracción. Dejas afuera detalles que vendrán después (color de manteles) para enfocarte en lo importante ahora (lista de invitados, presupuesto).'
         },
         {
           enunciado: 'Quién definió el pensamiento computacional moderno?',
           opciones: [
-            'Steve Jobs.',
             'Jeannette Wing (Carnegie Mellon, 2006).',
+            'Steve Jobs.',
             'Bill Gates.',
             'Marco Aurelio.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Jeannette Wing (científica computacional) lo definió formalmente en 2006. Sus 4 técnicas son hoy estándar mundial en educación computacional.',
           feedbackIncorrecto: 'Jeannette Wing, científica de Carnegie Mellon, 2006. Sus 4 técnicas (descomposición, patrones, abstracción, algoritmo) son hoy estándar en educación computacional mundial.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Las 4 técnicas se aplican solo en programación?',
           opciones: [
             'Sí, solo sirven para programar.',
-            'No. Se aplican en cualquier problema complejo: organizar eventos, estudiar, planear viajes, vivir.',
             'Solo en matemáticas.',
-            'Solo en juegos.'
+            'Solo en juegos.',
+            'No. Se aplican en cualquier problema complejo: organizar eventos, estudiar, planear viajes, vivir.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Bien. Las 4 técnicas son universales. Sirven para programar, sí, pero también para organizar tu vida adulta. Es alfabetización del pensamiento, no solo del software.',
           feedbackIncorrecto: 'Universales. Sirven para cualquier problema complejo: programar, organizar eventos, estudiar, criar hijos, dirigir empresas. Por eso vale la pena dominarlas.'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Qué problema actual mío se ha vuelto abrumador porque no lo he descompuesto?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador que dominaba problemas inmensos)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"El imperio se gobierna provincia por provincia. La vida se vive día por día. Los problemas se resuelven sub-problema por sub-problema."',
       preguntaEspejo: '¿Estoy intentando resolver problemas grandes de un solo golpe? ¿Cómo cambiaría si los dividiera?'

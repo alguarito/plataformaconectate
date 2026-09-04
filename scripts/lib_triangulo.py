@@ -53,6 +53,10 @@ def nombre_limpio(autor: str) -> str:
     «Luciano Floridi (filósofo italiano del trabajo digital)» → «Luciano Floridi»
     """
     nombre = (autor or "").split("·")[0]
+    # El Onlife Manifesto es colectivo y lo editó Floridi: en los rótulos se
+    # nombra a los dos, para que el estudiante sepa de quién es la lente.
+    if nombre.strip().startswith("The Onlife Initiative"):
+        return "Luciano Floridi y la Onlife Initiative"
     nombre = _DESCRIPTOR_INVENTADO.sub("", nombre)
     return nombre.strip(" ,;·") or "el autor"
 

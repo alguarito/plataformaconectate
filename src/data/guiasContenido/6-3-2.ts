@@ -70,11 +70,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuál es la principal diferencia entre Word y Google Docs?',
           opciones: [
             'Word es más bonito que Docs.',
-            'Word funciona sin internet y guarda en disco. Docs necesita internet y guarda en la nube.',
             'Docs es más complicado que Word.',
-            'Son lo mismo, solo cambia el color.'
+            'Son lo mismo, solo cambia el color.',
+            'Word funciona sin internet y guarda en disco. Docs necesita internet y guarda en la nube.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. Word: sin internet, guarda en tu disco. Docs: con internet, guarda en Drive. Cada uno conviene en situaciones distintas.',
           feedbackIncorrecto: 'Word: sin internet, guarda en disco. Docs: con internet, guarda en la nube. Por eso Docs te deja entrar desde cualquier computador con tu cuenta.'
         },
@@ -94,23 +94,23 @@ const contenido: ContenidoGuia = {
           enunciado: 'Vas a hacer una tarea en grupo con 3 compañeros desde sus casas. ¿Cuál procesador conviene más?',
           opciones: [
             'Word, porque es el más completo.',
-            'Google Docs, porque permite que varios escriban al mismo tiempo.',
             'LibreOffice, porque es gratis.',
+            'Google Docs, porque permite que varios escriban al mismo tiempo.',
             'Ningún procesador, mejor manuscrito.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Exacto. Google Docs es perfecto para trabajos en grupo: todos en el mismo documento, ven en vivo lo que escriben los demás. Ahorra tiempo.',
           feedbackIncorrecto: 'Google Docs gana para trabajo en grupo: varios escriben a la vez, todos ven los cambios. Word colaborativo también existe (Office 365) pero menos común en colegio.'
         },
         {
           enunciado: '¿Cuál es el mejor nombre para tu documento de tarea de historia sobre la independencia?',
           opciones: [
+            '2026-historia-independencia.docx',
             'tarea1.docx',
             'Mi tarea de historia 2026.docx',
-            '2026-historia-independencia.docx',
             'documento.docx'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Sigue las 5 reglas: sin espacios (guion), sin acentos, claro, con fecha. Tu yo del próximo año encuentra el archivo solo leyendo el nombre.',
           feedbackIncorrecto: 'El bueno es "2026-historia-independencia.docx". Sin espacios, sin acentos, claro, con fecha. "tarea1" no dice nada; "Mi tarea" tiene espacios.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Doña Mercedes te diría que antes de escribir digital, hay que...',
           opciones: [
             'Encender el computador rápido.',
-            'Pensar y ordenar las ideas en el cuaderno primero.',
             'Buscar en Google y copiar.',
-            'Tomar fotos del tema.'
+            'Tomar fotos del tema.',
+            'Pensar y ordenar las ideas en el cuaderno primero.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Bien. Pensar primero, escribir después. Doña Mercedes lo decía hace 40 años; sigue siendo verdad. Lo digital sirve, pero el orden de las ideas viene antes.',
           feedbackIncorrecto: 'Primero piensas y ordenas en cuaderno. Después escribes en digital. El procesador no piensa por ti; eres tú quien organiza las ideas.'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Estoy escribiendo con mi voz o con voces prestadas que aún no sé reconocer como mías?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador que escribía sus reflexiones diarias)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Escribir es pensar despacio. Hablar es pensar rápido. Los dos son necesarios; el lento construye más."',
       preguntaEspejo: '¿Estoy aprovechando la escritura para pensar despacio, o solo escribo por obligación?'

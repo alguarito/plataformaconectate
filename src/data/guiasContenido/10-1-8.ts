@@ -82,11 +82,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuántos principios fundamentales de maquetación cubren el 80% del oficio?',
           opciones: [
             '1',
-            '4',
             '20',
+            '4',
             '100'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Correcto. 4: tipografía coherente, jerarquía visual, espacios respirables, numeración automática.',
           feedbackIncorrecto: 'Son 4. Si los aplicas, la diagramación funciona aunque la herramienta sea modesta.'
         },
@@ -106,11 +106,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Por qué importa la tipografía coherente?',
           opciones: [
             'Porque es bonito',
-            'Porque cambios de fuente cansan al lector y dan apariencia amateur',
             'Porque ahorra papel',
-            'No importa'
+            'No importa',
+            'Porque cambios de fuente cansan al lector y dan apariencia amateur'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Correcto. Cambios injustificados de fuente cansan al lector y dan apariencia amateur al libro.',
           feedbackIncorrecto: 'Cambios de fuente injustificados cansan al lector y restan profesionalismo.'
         },

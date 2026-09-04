@@ -1,6 +1,9 @@
 /**
  * Contenido enriquecido para Grado 8 · Período 1 · Sesión 5
- * Tema: Referencias relativas y absolutas en Excel.
+ * (sesión global 5).
+ *
+ * Auto-generado desde content/guias/8/8-1-5.yaml por
+ * scripts/build-guias-web-ts.py. Edita el YAML, no este archivo.
  */
 import type { ContenidoGuia } from './_schema';
 
@@ -8,242 +11,279 @@ const contenido: ContenidoGuia = {
   grado: 8,
   periodo: 1,
   sesion: 5,
-  resumen:
-    'Como la fórmula heredada del abuelo: lo que no se negocia se ancla, lo que cambia con el día se deja libre. Aprendes a escribir UNA fórmula que se copia a 100 celdas y calcula bien cada caso.',
+  titulo: 'Referencias relativas y absolutas — fija la rejilla, repite la puntada',
+  resumen: 'Una fórmula bien escrita se copia a cien celdas sin romperse. Hoy aprendes qué fija el signo $ y qué deja libre, como la caladora que fija la rejilla y repite la puntada.',
   duracionMin: 90,
-  subtema: 'Excel · Referencias relativas y absolutas',
-
+  subtema: 'Análisis de datos con phronesis',
   preLectura: {
-    porQueImporta:
-      'Saber anclar una celda con $ es la diferencia entre escribir UNA fórmula reutilizable y escribir 100 fórmulas a mano. Esta habilidad ahorra horas y reduce errores en cualquier hoja: notas, presupuestos, inventarios, nómina.',
-    preguntaDetonante:
-      '¿Qué de la fórmula del abuelo — el ancla heredada que no se negocia — podemos llevar a las referencias absolutas de Excel?',
+    porQueImporta: 'La diferencia entre escribir cien fórmulas a mano y escribir una sola que se copia es la diferencia entre perder una tarde y ganarla. Y entre un error escondido y ninguno.',
+    preguntaDetonante: 'Cuando copies una fórmula a diez filas, ¿qué parte debe quedarse quieta y qué parte debe moverse?',
     activacion: {
-      titulo: 'La receta multiplicada',
-      descripcion:
-        'En 5 minutos: piensa en una receta de tu casa (sancocho, arepa, jugo) que se multiplique según porciones. ¿Qué cantidades son FIJAS por porción y cuáles VARÍAN con el número de porciones? Eso es relativo vs absoluto antes de Excel.',
-      duracionMin: 5,
+      titulo: 'La fórmula que se rompió',
+      descripcion: 'En 3 minutos, escribe 19 % en E1 y un precio en B2. En C2 escribe =B2*E1 sin signos y arrástrala tres filas. ¿Qué salió en C3 y C4? ¿Por qué?',
+      duracionMin: 5
     },
     conexion: {
-      anterior: 'En la sesión 4 aplicaste 4 funciones estadísticas a datos reales.',
-      siguiente: 'En la sesión 6 aprenderás fórmulas compuestas con operadores y orden de cálculo.',
-    },
+      anterior: 'En la sesión 4 escribiste SUMA, PROMEDIO, MAX y MIN sobre tu tabla limpia.',
+      siguiente: 'En la sesión 6 combinas operadores en una sola fórmula y aprendes el orden en que calcula Excel.'
+    }
   },
-
   conceptosClave: [
     {
-      categoria: '⚓ Cómo se ancla',
       termino: 'Referencia relativa',
-      definicion:
-        'Notación A1 sin signos $. Al copiar la fórmula, ambas dimensiones (fila y columna) se ajustan automáticamente. Es la opción por defecto.',
-      ejemplo:
-        '=A1*B1 en C1, al copiar a C2 se vuelve =A2*B2. Útil cuando ambos datos están en la misma fila relativa.',
-      emoji: '🔄',
+      definicion: 'Dirección que se mueve con la copia. B2 se vuelve B3 al copiar una fila abajo.',
+      ejemplo: 'En =B2*$E$1, el precio B2 es relativo, cada fila lee su propio precio.',
+      categoria: 'Las tres referencias'
     },
     {
-      categoria: '⚓ Cómo se ancla',
       termino: 'Referencia absoluta',
-      definicion:
-        'Notación $A$1 con signos $ en fila y columna. Al copiar, NUNCA cambia. Útil para constantes (impuestos, porcentajes únicos, factores fijos).',
-      ejemplo:
-        '=A1*$E$1 al copiar mantiene siempre la celda E1. Útil cuando todos los datos se multiplican por el MISMO porcentaje.',
-      emoji: '🔒',
+      definicion: 'Dirección que queda fija al copiar gracias al signo $ en la columna y en la fila.',
+      ejemplo: '$E$1 sigue apuntando al IVA aunque copies la fórmula a cien filas.',
+      categoria: 'Las tres referencias'
     },
     {
-      categoria: '⚓ Cómo se ancla',
-      termino: 'Referencia mixta (fila)',
-      definicion:
-        'Notación A$1 con $ solo en la fila. Al copiar verticalmente la fila se mantiene; al copiar horizontalmente la columna varía. Útil para encabezados horizontales fijos.',
-      ejemplo:
-        '=A2*B$1 al copiar hacia abajo mantiene siempre la fila 1 (encabezados). Al copiar hacia el lado, B se vuelve C, D, E.',
-      emoji: '↕️',
+      termino: 'Referencia mixta',
+      definicion: 'Fija solo la columna ($A2) o solo la fila (B$1). Sirve cuando copias en dos direcciones.',
+      ejemplo: '=$A2*B$1 construye la tabla de multiplicar completa desde una sola celda.',
+      categoria: 'Las tres referencias'
     },
     {
-      categoria: '⚓ Cómo se ancla',
-      termino: 'Referencia mixta (columna)',
-      definicion:
-        'Notación $A1 con $ solo en la columna. Al copiar horizontalmente la columna se mantiene; al copiar verticalmente la fila varía. Útil para etiquetas verticales fijas.',
-      ejemplo:
-        '=$A2*B$1 es el patrón clásico de tabla de multiplicar: columna A fija (multiplicando), fila 1 fija (multiplicador).',
-      emoji: '↔️',
-    },
-    {
-      categoria: '🛠️ Cómo se construye fórmula compleja',
-      termino: 'Anclaje correcto',
-      definicion:
-        'Identificar qué celda(s) NO deben cambiar al copiar la fórmula. Lo que es constante en TODAS las filas/columnas, se ancla con $.',
-      ejemplo:
-        'Para calcular nota_final = nota * porcentaje: la nota varía por estudiante (relativa), el porcentaje es fijo (absoluto). Fórmula: =B2*$E$1.',
-      emoji: '⚓',
-    },
-    {
-      categoria: '🛠️ Cómo se construye fórmula compleja',
-      termino: 'Fórmula reusable',
-      definicion:
-        'UNA sola fórmula con anclaje correcto que se copia a 30, 100 o 1000 celdas y calcula bien cada caso. Diseño que ahorra horas.',
-      ejemplo:
-        'Una fórmula de cálculo de IVA bien hecha se aplica a 1000 productos sin cambiar nada. La misma fórmula mal anclada falla en la fila 2.',
-      emoji: '📋',
-    },
-    {
-      categoria: '🛠️ Cómo se construye fórmula compleja',
-      termino: 'Errores #DIV/0! y #REF!',
-      definicion:
-        '#DIV/0! aparece cuando se divide entre cero o entre celda vacía. #REF! aparece cuando la fórmula referencia una celda que fue eliminada o movida fuera de rango.',
-      ejemplo:
-        'Si tu fórmula =A1/B1 da #DIV/0!, B1 está vacío o es 0. Si da #REF!, alguien eliminó la columna A o B y la referencia se rompió.',
-      emoji: '🐛',
-    },
-    {
-      categoria: '🛠️ Cómo se construye fórmula compleja',
       termino: 'Tecla F4',
-      definicion:
-        'Atajo de Excel que rota entre los 4 tipos de referencia (relativa → absoluta → mixta fila → mixta columna → relativa). Te ahorra escribir signos $ a mano.',
-      ejemplo:
-        'Posiciona el cursor sobre A1 en una fórmula y presiona F4: A1 → $A$1 → A$1 → $A1 → A1. Útil para experimentar y elegir el anclaje correcto.',
-      emoji: '⌨️',
+      definicion: 'Con el cursor sobre una referencia en la barra de fórmulas, F4 alterna entre B2, $B$2, B$2 y $A2.',
+      ejemplo: 'Escribe =B2*E1, pon el cursor sobre E1 y presiona F4 una vez, queda $E$1.',
+      categoria: 'El oficio'
     },
+    {
+      termino: 'Verificar al final del rango',
+      definicion: 'Mirar la fórmula de la última celda copiada. Si apunta a donde debe, la copia quedó bien.',
+      ejemplo: 'En K11 la fórmula debe decir =$A11*K$1 y mostrar 100.',
+      categoria: 'El oficio'
+    }
   ],
-
   laboratorios: [
     {
       tipo: 'quiz',
-      titulo: 'Quiz · Anclaje y fórmulas reusables',
-      instrucciones:
-        '5 preguntas tipo ICFES sobre tipos de referencia, anclaje correcto y diagnóstico de errores en fórmulas.',
+      titulo: '¿Sabes qué fija el signo $?',
+      instrucciones: 'Cinco preguntas para verificar que distingues las referencias y sabes cuál usar. No va al cuaderno.',
       preguntas: [
         {
-          enunciado:
-            'Si la fórmula =A1*B1 está en C1 y la copias a C2, ¿en qué se convierte?',
+          enunciado: 'Escribes =B2*$E$1 en C2 y la arrastras hasta C11. ¿Qué cambia y qué no?',
           opciones: [
-            'Sigue siendo =A1*B1 (idéntica)',
-            'Se vuelve =A2*B2 (ambas referencias avanzan una fila)',
-            'Se borra automáticamente',
-            'Da error #REF!',
+            'B2 cambia a B3, B4 y así; E1 queda fija en todas las filas.',
+            'Las dos cambian, porque arrastrar mueve toda la fórmula.',
+            'Ninguna cambia, porque la fórmula se copia tal cual.',
+            'E1 cambia a E2, E3 y así; B2 queda fija en todas.'
           ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            '✅ Exacto. Las referencias relativas (sin $) se ajustan automáticamente al copiar. C1: =A1*B1 → C2: =A2*B2. Cada fila usa sus propios datos.',
-          feedbackIncorrecto:
-            '❌ Las referencias SIN $ son relativas: se ajustan al copiar. =A1*B1 en C1 al copiarse a C2 SÍ cambia automáticamente a =A2*B2. No hay error ni borrado.',
+          respuestaIndex: 0,
+          feedbackCorrecto: 'Sí. El precio B2 es relativo y baja con la copia; el IVA $E$1 es absoluto y no se mueve.',
+          feedbackIncorrecto: 'El $ fija E1. Lo que baja fila por fila es B2, que no tiene $.'
         },
         {
-          enunciado:
-            '=A1*$B$1 al copiar de C1 a C2 se convierte en:',
+          enunciado: 'Tienes el descuento en E2 y quieres el precio con descuento de cincuenta productos. ¿Qué escribes en D2 para arrastrar?',
           opciones: [
-            '=A2*B2 (ambas avanzan)',
-            '=A2*$B$1 (A1 avanza, $B$1 se ancla)',
-            '=A1*$B$2 (A1 fija, B avanza)',
-            '=$A$2*$B$2 (todo se ancla)',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            '✅ Correcto. A1 (relativa) avanza a A2. $B$1 (absoluta) se mantiene fijo. La fórmula resultante es =A2*$B$1. Patrón clásico de "30 datos × 1 constante".',
-          feedbackIncorrecto:
-            '❌ La $ ANCLA la celda al copiar. $B$1 NO cambia nunca. A1 sin $ SÍ cambia. Resultado: =A2*$B$1. Es el patrón típico de cálculo con porcentaje fijo.',
-        },
-        {
-          enunciado:
-            'Para multiplicar 30 notas (columna A) por un MISMO porcentaje (celda E1), ¿cuál fórmula escribirías en C2 para luego copiarla?',
-          opciones: [
-            '=A2*E1',
-            '=A2*$E$1',
-            '=$A2*E1',
-            '=$A$2*$E$1',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            '✅ Sí. =A2*$E$1 es la fórmula reusable. A2 relativa (cambia con cada nota: A3, A4, A5...). $E$1 absoluta (mantiene el porcentaje fijo). UNA fórmula, 30 cálculos.',
-          feedbackIncorrecto:
-            '❌ =A2*E1 falla: al copiar a C3, E1 se vuelve E2 (vacío). $A$2 ancla la fila de la nota (todas usarían A2). La correcta: A2 (relativa) × $E$1 (absoluta).',
-        },
-        {
-          enunciado:
-            'Si recibes el error #REF! en una fórmula, ¿qué significa?',
-          opciones: [
-            'Falta espacio en el archivo',
-            'La celda referenciada fue eliminada o movida fuera de rango',
-            'El número es muy grande para Excel',
-            'Hay texto donde debería haber número',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            '✅ Correcto. #REF! aparece cuando una fórmula apunta a una celda que ya no existe (eliminada, columna borrada, hoja eliminada). Hay que reconstruir la referencia.',
-          feedbackIncorrecto:
-            '❌ "Falta espacio" o "número muy grande" no producen #REF!. El error de texto en cálculo da #VALUE!. #REF! es específicamente cuando la celda referenciada fue ELIMINADA o movida.',
-        },
-        {
-          enunciado:
-            '¿Cuándo conviene usar referencias mixtas (A$1 o $A1) en lugar de absolutas?',
-          opciones: [
-            'Nunca, siempre usar $A$1',
-            'Siempre, son más modernas',
-            'Cuando una dimensión debe variar y la otra mantenerse al copiar (ej: tabla de multiplicar con encabezados fijos)',
-            'Solo en gráficos',
+            '=B2*(1-E2), y arrastras hasta la fila 51.',
+            '=$B$2*(1-$E$2), y arrastras hasta la fila 51.',
+            '=B2*(1-$E$2), y arrastras hasta la fila 51.',
+            '=B$2*(1-E$2), y arrastras hasta la fila 51.'
           ],
           respuestaIndex: 2,
-          feedbackCorrecto:
-            '✅ Excelente. Ejemplo clásico: tabla de multiplicar. La columna A tiene multiplicandos (1-10), la fila 1 tiene multiplicadores (1-10). Fórmula =$A2*B$1 en B2 se copia a toda la matriz.',
-          feedbackIncorrecto:
-            '❌ Las mixtas son útiles cuando UNA dimensión debe quedarse fija (ej. encabezado de fila) y otra debe variar. Tabla de multiplicar es el caso clásico. No son "modernas" — son ESPECÍFICAS para casos donde sirven.',
+          feedbackCorrecto: 'Correcto. El precio se mueve fila por fila; el descuento queda fijo con $E$2.',
+          feedbackIncorrecto: 'Sin $ el descuento se desplaza y apunta a celdas vacías. Con $ en el precio, todas las filas calculan el mismo producto. Solo el descuento lleva $.'
         },
-      ],
-    },
+        {
+          enunciado: '¿Qué hace la tecla F4 mientras editas una fórmula?',
+          opciones: [
+            'Copia la fórmula a la celda de abajo automáticamente.',
+            'Alterna la referencia entre B2, $B$2, B$2 y $B2.',
+            'Borra el signo $ de todas las referencias de la hoja.',
+            'Convierte la fórmula en su resultado numérico.'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Eso es. Cada toque de F4 cambia el tipo de referencia sin escribir los signos a mano.',
+          feedbackIncorrecto: 'F4 no copia ni borra. Alterna la referencia seleccionada entre relativa, absoluta y las dos mixtas.'
+        },
+        {
+          enunciado: 'Para una tabla de multiplicar del 1 al 10, con factores en A2:A11 y en B1:K1, ¿qué única fórmula va en B2?',
+          opciones: [
+            '=A2*B1, y se arrastra en las dos direcciones.',
+            '=$A$2*$B$1, y se arrastra en las dos direcciones.',
+            '=A$2*$B1, y se arrastra en las dos direcciones.',
+            '=$A2*B$1, y se arrastra en las dos direcciones.'
+          ],
+          respuestaIndex: 3,
+          feedbackCorrecto: 'Sí. $A2 fija la columna de factores de fila; B$1 fija la fila de factores de columna. Una fórmula, cien resultados.',
+          feedbackIncorrecto: 'Hay que fijar la columna A y la fila 1, no al revés ni las dos coordenadas. La fórmula es =$A2*B$1.'
+        },
+        {
+          enunciado: 'Tu pareja escribió =B2*E1 para el IVA y la arrastró diez filas. Tu veredicto:',
+          opciones: [
+            'Funciona, porque Excel entiende que E1 es el IVA.',
+            'Funciona solo en la primera fila; de la segunda en adelante lee celdas vacías.',
+            'Funciona, pero el resultado sale con signo negativo en cada fila.',
+            'No funciona en ninguna fila, porque falta el signo igual.'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Exacto. Sin $, E1 se convierte en E2, E3… y esas celdas están vacías. Solo la primera fila da bien.',
+          feedbackIncorrecto: 'La fórmula sí tiene signo igual y Excel no adivina constantes. Sin $, el IVA se desplaza fila por fila hacia celdas vacías.'
+        }
+      ]
+    }
   ],
-
   postLectura: {
-    reflexion:
-      '"Lo que no se negocia se ancla". Más allá de Excel, ¿qué constantes éticas o personales anclas tú con $ en tu vida — lo que no copias de otros, lo que no varía con la presión social?',
-    transferencia:
-      'Esta semana arma una hoja con UNA fórmula reusable: cálculo de descuento, IVA, promedio ponderado. Que UNA sola línea calcule 20 casos. Documenta qué anclaste y por qué.',
-    cierre:
-      'La fórmula del abuelo — el ancla heredada — sigue viva en cada $ que escribes. Es disciplina técnica y, también, soberanía cultural.',
+    reflexion: '¿En qué momento entendiste qué fija el $? ¿Fue en el experimento, en el IVA o en la tabla de multiplicar?',
+    transferencia: 'La próxima vez que copies algo muchas veces, una fórmula, una plantilla, un mensaje, pregúntate qué parte debe quedarse igual y qué parte debe cambiar.',
+    cierre: 'Fija la rejilla, repite la puntada. Una fórmula bien pensada se copia cien veces sin romperse.'
   },
-
   saberAncestral: {
-    saber:
-      'En cocinas, talleres y oficios del Valle, las "fórmulas heredadas" eran instrucciones precisas con elementos fijos y variables. La receta del sancocho tenía base fija (sal, ajo, comino) y variable (qué carne, qué tubérculos según temporada). La receta del herrero para templar el acero tenía temperatura fija pero tiempo variable. Los abuelos sabían anclar lo no negociable y dejar libre lo contextual. Esa misma lógica vive en las referencias absolutas ($) y relativas de Excel — el oficio de la fórmula reusable tiene siglos.',
-    fuente: 'Recetas y fórmulas heredadas de oficios colombianos (cocina, herrería, sastrería)',
-    preguntaPuente:
-      '¿Qué de la receta heredada de tu familia se mantiene siempre igual y qué cambia según el contexto? ¿Cómo decidían tus mayores qué anclar y qué dejar libre?',
+    saber: 'En Ansermanuevo y Cartago hay un oficio que trabaja quitando en vez de poniendo: el calado. La caladora tensa la tela y retira hilos de la trama y de la urdimbre, de uno en uno. «Si tratas de deshilar dos hilos a la vez, ellos no te dejan, se pegan entre sí», cuenta Olivia, caladora de 65 años (Pérez-Bustos, 2019). Lo que queda no es un hueco: es una rejilla regular. Esa rejilla se fija primero y no se toca más. Solo entonces empieza la puntada, que se repite celda por celda, siempre igual, hasta llenar el diseño. Dos cosas, entonces: una que queda fija para toda la pieza, la rejilla, y otra que se copia y se mueve, la puntada. Si cambias el orden, la tela se arruina. La cara de exclusión del oficio: es un saber que se transmite en casa y sin título, y la caladora experta no aparece en ningún registro oficial. En Excel vas a hacer hoy lo mismo: fijar lo que no cambia con el signo $, y dejar libre lo que sí se mueve al copiar.',
+    fuente: 'Caladoras de Ansermanuevo y Cartago · la rejilla fija y la puntada que se repite',
+    referencia: 'Cuéllar Barona, M., Sánchez-Aldana, E. y Pérez-Bustos, T. (Eds.). (2019). Papel de Colgadura, 18. Universidad Icesi.',
+    preguntaPuente: 'La caladora fija la rejilla una vez y después repite la misma puntada en cada celda. Cuando copies una fórmula a diez filas, ¿qué parte de ella es la rejilla, la que no debe moverse? ¿Y qué parte es la puntada, la que debe cambiar en cada fila?'
   },
-
+  mapaRuta: [
+    {
+      numero: 1,
+      iconos: [
+        '🌱'
+      ],
+      titulo: 'La rejilla fija y la puntada que se repite',
+      duracionMin: 10
+    },
+    {
+      numero: 2,
+      iconos: [
+        '🔎',
+        '✏️'
+      ],
+      titulo: 'Actividad 1 · El experimento de fijar una celda',
+      duracionMin: 15
+    },
+    {
+      numero: 3,
+      iconos: [
+        '📖',
+        '🔎'
+      ],
+      titulo: 'Actividad 2 · IVA y descuento con una fórmula',
+      duracionMin: 30
+    },
+    {
+      numero: 4,
+      iconos: [
+        '✏️',
+        '✅'
+      ],
+      titulo: 'Actividad 3 · Cien celdas con una fórmula',
+      duracionMin: 25
+    },
+    {
+      numero: 5,
+      iconos: [
+        '💭'
+      ],
+      titulo: 'Tres ideas y tu compromiso',
+      duracionMin: 10
+    }
+  ],
+  actividades: [
+    {
+      numero: 1,
+      verbo: 'IDENTIFICA',
+      titulo: 'El experimento de fijar una celda',
+      tiempoMin: 15,
+      modalidad: 'individual',
+      pasos: [
+        'En Excel escribe 10 en B2 y 20 en C2. En D2 escribe =B2*C2. Debe dar 200.',
+        'Escribe 30 en B3 y 40 en C3. Arrastra la fórmula de D2 hasta D3. Debe dar 1200.',
+        'En E2 escribe =B2*$C$2 y arrastra hasta E3. Da 600, porque C2 quedó fija.',
+        'Haz clic en D3 y en E3 y mira la fórmula en la barra. ¿Qué cambió en cada una?',
+        'Escribe en una línea la diferencia entre la columna D y la columna E.'
+      ],
+      cuaderno: {
+        titulo: 'El experimento de fijar una celda',
+        formato: 'ficha con los cuatro pasos, los cuatro resultados y una línea sobre la diferencia entre D y E',
+        extension: 'media página'
+      },
+      criterios: [
+        'Los cuatro resultados coinciden con los de la guía.',
+        'Puedes explicarle a un compañero qué hace el $ con este ejemplo.'
+      ]
+    },
+    {
+      numero: 2,
+      verbo: 'APLICA',
+      titulo: 'IVA y descuento con una fórmula que se copia',
+      tiempoMin: 30,
+      modalidad: 'parejas',
+      pasos: [
+        'Con tu pareja, escriban en la columna A diez productos de la tienda escolar y en la B sus precios.',
+        'En E1 escriban 19 % y en E2 escriban 10 %. Son el IVA y el descuento.',
+        'En C2 escriban =B2*$E$1 y arrastren hasta C11. Es el IVA de cada producto.',
+        'En D2 escriban =B2*(1-$E$2) y arrastren hasta D11. Es el precio con descuento.',
+        'Cambien el IVA de E1 a 21 % y miren la columna C. Si las diez filas cambiaron solas, la referencia quedó bien.'
+      ],
+      cuaderno: {
+        titulo: 'IVA y descuento con una fórmula',
+        formato: 'las dos fórmulas escritas tal cual, y una tabla de 2 filas y 2 columnas (qué fijamos con $ / qué dejamos libre)',
+        extension: 'media página'
+      },
+      criterios: [
+        'Al cambiar el IVA en E1, las diez filas de la columna C cambian solas.',
+        'La tabla dice qué se fijó y por qué.'
+      ]
+    },
+    {
+      numero: 3,
+      verbo: 'EVALÚA',
+      titulo: 'Cien celdas con una sola fórmula, y la fórmula de tu pareja',
+      tiempoMin: 25,
+      modalidad: 'individual',
+      pasos: [
+        'En una hoja nueva escribe del 1 al 10 en B1 hasta K1, y del 1 al 10 en A2 hasta A11.',
+        'En B2 escribe =$A2*B$1.',
+        'Arrastra B2 hacia la derecha hasta K2. Después selecciona B2:K2 y arrastra hacia abajo hasta la fila 11.',
+        'Haz clic en K11 y mira la barra. Debe decir =$A11*K$1 y mostrar 100.',
+        'Intercambia la hoja con tu pareja y revisa su fórmula de B2. ¿Se rompería al copiarla? Escribe tu veredicto en una línea.'
+      ],
+      cuaderno: {
+        titulo: 'Cien celdas con una fórmula',
+        formato: 'la fórmula =$A2*B$1 explicada en dos líneas (qué fija cada $), más el veredicto sobre la fórmula de tu pareja con su razón',
+        extension: 'media página'
+      },
+      criterios: [
+        'K11 muestra 100 y puedes decir qué fija cada $ de la fórmula.',
+        'Tu veredicto sobre la fórmula ajena tiene razón escrita.'
+      ]
+    }
+  ],
   triangulo: {
     dussel: {
-      autor: 'Enrique Dussel',
+      autor: 'Enrique Dussel · Filosofía de la liberación (1977), §2.6.7.1',
       lente: 'lente del nosotros',
-      cita: 'Lo que no se negocia es el principio ético; lo que varía es la aplicación al contexto.',
-      preguntaEspejo:
-        '¿Qué constantes éticas no negocio en mi vida (las anclo con "$") y qué decisiones dejo abiertas al contexto?',
+      cita: 'No hay liberación sin una tecnología con rostro humano, diseñada desde la historia de la gente que la usa.',
+      preguntaEspejo: '¿Quién va a usar mi hoja después de mí, y le dejé una fórmula que puede corregir?'
     },
     estoico: {
-      autor: 'Marco Aurelio',
+      autor: 'Epicteto · Enquiridión, 1 (c. 125 d.C.)',
       lente: 'lente del cuidado interior',
-      cita: 'La sabiduría consiste en saber qué depende de ti (anclas) y qué no (variables).',
-      preguntaEspejo:
-        'En las fórmulas de mi vida, ¿qué he confundido — anclando lo que debería variar o variando lo que debería anclar?',
+      cita: 'Hay cosas que dependen de nosotros y cosas que no. Saber cuáles son cuáles es el primer trabajo.',
+      preguntaEspejo: 'En mi fórmula, ¿qué fijé porque no depende de la fila, y qué dejé libre porque sí?'
     },
     floridi: {
-      autor: 'Luciano Floridi',
+      autor: 'Luciano Floridi · Big data and their epistemological challenge (2012)',
       lente: 'lente de la infoesfera',
-      cita: 'Una fórmula bien diseñada es código reusable; reusable es ético — no obliga a reinventar lo ya pensado.',
-      preguntaEspejo:
-        '¿Mis fórmulas resuelven UN problema o son patrones reusables que sirven a otros casos? ¿Estoy contribuyendo a una infoesfera más cooperativa?',
+      cita: 'Ganan quienes saben preguntar y responder, y por eso saben qué datos buscar.',
+      preguntaEspejo: '¿Me hice la pregunta antes de arrastrar, o arrastré y después miré qué salió?'
     },
+    modo: 'ideas'
   },
-
   cincoDimensiones: {
-    personal:
-      'Aprendiste a anclar lo no negociable y dejar libre lo contextual — habilidad cognitiva que aplica a Excel y a la vida.',
-    emocional:
-      'Resististe la tentación de copiar fórmulas sin pensar — entendiste que el criterio precede a la técnica.',
-    ciudadana:
-      'Las fórmulas reusables son cooperación silenciosa: el que las escribe bien le facilita la vida al que las hereda.',
-    local:
-      'Heredaste el oficio de la receta colombiana: ancla lo esencial, varía lo contextual, transmite la lógica.',
-    intergeneracional:
-      'La receta del sancocho de tu abuela y la fórmula $A$1 de Excel comparten lógica. Hoy heredas en formato digital lo que el oficio enseñó por siglos.',
-  },
+    personal: 'Aprendiste a pensar qué se mueve y qué no antes de copiar. Es la diferencia entre trabajar una vez y trabajar cien.',
+    emocional: 'Dejaste que tu pareja juzgara tu fórmula y le diste un veredicto a la suya, con razón. Evaluar sin herir se practica.',
+    ciudadana: 'Una hoja con fórmulas bien fijadas la puede corregir cualquiera. Un cálculo público que nadie puede revisar es un cálculo que hay que desconfiar.',
+    local: 'La caladora de Ansermanuevo fija la rejilla y repite la puntada. Tú fijaste el IVA con $ y dejaste libre el precio. Es el mismo pensamiento.',
+    intergeneracional: 'El calado se aprende en casa, mirando. Tu fórmula bien escrita también se aprende mirando, por eso la revisó tu pareja.'
+  }
 };
 
 export default contenido;

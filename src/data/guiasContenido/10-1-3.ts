@@ -70,11 +70,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Qué significa "garbage in, garbage out"?',
           opciones: [
             'La IA siempre da respuestas mediocres',
-            'Si tu prompt es vago, la respuesta es vaga',
             'Hay que limpiar el computador',
+            'Si tu prompt es vago, la respuesta es vaga',
             'No tiene relación con prompts'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Exacto. La calidad de entrada determina la calidad de salida. Prompt vago, respuesta vaga.',
           feedbackIncorrecto: 'Significa que la calidad del prompt define la calidad de la respuesta. Prompt vago, respuesta vaga.'
         },
@@ -82,11 +82,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuántas partes obligatorias tiene un prompt profesional?',
           opciones: [
             '1',
-            '5',
             '10',
-            '20'
+            '20',
+            '5'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Correcto. 5: rol, contexto, tarea, formato y restricciones.',
           feedbackIncorrecto: 'Son 5: rol, contexto, tarea, formato y restricciones. Cada una aporta precisión al resultado.'
         },
@@ -105,24 +105,24 @@ const contenido: ContenidoGuia = {
         {
           enunciado: '¿Qué falta en este prompt: \'escríbeme algo sobre salud mental\'?',
           opciones: [
-            'Nada, está completo',
             'Rol, contexto, tarea precisa, formato y restricciones',
+            'Nada, está completo',
             'Solo el saludo',
             'Solo el punto final'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Correcto. Falta todo el marco profesional. Por eso ese tipo de prompt produce texto genérico inservible.',
           feedbackIncorrecto: 'Falta el marco completo: rol, contexto, tarea precisa, formato y restricciones.'
         },
         {
           enunciado: 'La parte "restricciones" del prompt sirve para...',
           opciones: [
-            'Bloquear la IA',
             'Decirle qué evitar (clichés, tono, longitud)',
+            'Bloquear la IA',
             'Hacer la respuesta más larga',
             'Decir gracias'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Exacto. Las restricciones evitan que la IA caiga en clichés, tono inadecuado o longitud excesiva.',
           feedbackIncorrecto: 'Sirve para decirle qué evitar. Sin restricciones, la IA cae en clichés y frases hechas.'
         }

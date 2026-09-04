@@ -70,23 +70,23 @@ const contenido: ContenidoGuia = {
           enunciado: 'Quieres validar tu hipótesis de proyecto. ¿Qué haces primero?',
           opciones: [
             'Programo el MVP.',
-            'Entrevisto a 5+ personas afectadas por el problema con un guion de 7 preguntas.',
             'Subo a Instagram para ver likes.',
-            'Pido permiso a un inversionista.'
+            'Pido permiso a un inversionista.',
+            'Entrevisto a 5+ personas afectadas por el problema con un guion de 7 preguntas.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. Hablar antes de construir. 5 entrevistas suelen ser suficientes para detectar si la hipótesis sobrevive. Cada hora de entrevista ahorra semanas de desarrollo equivocado.',
           feedbackIncorrecto: 'Entrevistas primero. Sin validación con usuarios reales, construir es apostar. 5+ entrevistas con guion de 7 preguntas mínimo.'
         },
         {
           enunciado: '¿Cuál pregunta en entrevista produce MENOS sesgo?',
           opciones: [
-            '¿No te encantaría una app que resuelva esto?',
             '¿Cómo resuelves esto hoy?',
+            '¿No te encantaría una app que resuelva esto?',
             '¿Verdad que mi idea es buena?',
             '¿Me ayudarías comprando mi producto?'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Bien. Pregunta abierta sin sugerir respuesta. El entrevistado describe la realidad sin tu influencia. Sesgo de confirmación minimizado.',
           feedbackIncorrecto: 'Preguntas abiertas neutras dan datos reales. Las preguntas que sugieren respuesta ("¿no te gustaría...?") sesgan al sí y dan datos falsos.'
         },
@@ -94,11 +94,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Después de 5 entrevistas, ¿qué entregas?',
           opciones: [
             'Solo los audios.',
-            'Síntesis de 4 bloques: confirmé / descarté / inesperado / decisión seguir-pivotar.',
             'Solo un párrafo de impresiones.',
+            'Síntesis de 4 bloques: confirmé / descarté / inesperado / decisión seguir-pivotar.',
             'Una infografía bonita.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. 4 bloques estructurados convierten datos crudos en decisión. Sin esa síntesis, las entrevistas se vuelven anécdotas perdidas.',
           feedbackIncorrecto: 'Síntesis estructurada en 4 bloques. Confirmar + descartar + inesperado + decidir. Sin esa estructura, las entrevistas no producen decisión.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu entrevistado dice algo que no esperabas. ¿Qué haces?',
           opciones: [
             'Lo ignoro, no encaja con mi idea.',
-            'Lo anoto en el bloque \'lo que no esperaba\'. Suele ser el hallazgo más valioso.',
             'Le digo que está equivocado.',
-            'Cambio de tema.'
+            'Cambio de tema.',
+            'Lo anoto en el bloque \'lo que no esperaba\'. Suele ser el hallazgo más valioso.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. Lo inesperado es oro. Las hipótesis se cumplen o no; lo inesperado abre dimensiones nuevas del problema. Anótalo.',
           feedbackIncorrecto: 'Lo inesperado es el hallazgo más valioso. Si lo ignoras, pierdes la dimensión nueva. Anota y revisa después si abre una pista para pivotar.'
         }

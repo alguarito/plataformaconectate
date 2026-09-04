@@ -26,20 +26,22 @@ from __future__ import annotations
 
 import concurrent.futures
 import re
-import subprocess
 import sys
 from pathlib import Path
 
 # Presentación honesta del triángulo: ver scripts/lib_triangulo.py
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from lib_triangulo import atribucion, cita_presentada, nota_docente  # noqa: E402
+# Compilación XeLaTeX compartida (lee el .log, falla con Overfull \vbox):
+# ver scripts/lib_xelatex.py
+from lib_xelatex import XELATEX, compilar, texto_pdf  # noqa: E402,F401
 
 import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
 TEMPLATE = ROOT / "scripts/generadores/template-milc-v3.tex"
 OUT_DIR = ROOT / "public/guias-mejoras"
-XELATEX = "/Library/TeX/texbin/xelatex"
+# XELATEX viene de lib_xelatex: el del PATH o, si no hay, el de MacTeX.
 
 # El grado activo se elige con la variable de entorno GRADO (default 11).
 import os
@@ -293,7 +295,9 @@ def recursos_a_tex(guia: dict, sesion_global: int, grado: int) -> dict[str, str]
         if ext in EXT_DIAGRAMA_TEX:
             por_seccion[donde].append(f"\\guiaDiagrama{{{destino}}}{{{pie}}}")
         elif ext in EXT_IMAGEN:
-            por_seccion[donde].append(f"\\guiaFigura{{{destino}}}{{{pie}}}")
+            # El alt va al PDF etiquetado (/Alt); entre llaves por si trae «]».
+            alt = (asset.get("alt") or "").strip()
+            por_seccion[donde].append(f"\\guiaFigura[{{{alt}}}]{{{destino}}}{{{pie}}}")
         else:
             AVISOS_RECURSOS.append(
                 f"{archivo}: extensión '{ext}' no soportada en PDF "
@@ -364,6 +368,22 @@ ROTULOS_POR_DEFECTO = {
 }
 
 
+def saber_ancestral_tex(apertura: dict) -> str:
+    """Saber ancestral más, si el YAML la declara, su referencia (APA 7).
+
+    Contrato v3.1: `apertura.fuente` es la referencia completa de la práctica
+    documentada. Se imprime en cuerpo pequeño bajo el texto, dentro del mismo
+    bloque, para que el lector vea de dónde sale lo que acaba de leer."""
+    texto = apertura["saber_ancestral"]
+    fuente = (apertura.get("fuente") or "").strip()
+    if not fuente:
+        return texto
+    return (
+        f"{texto}\\par\\smallskip{{\\footnotesize\\textcolor{{milcNegro!70}}"
+        f"{{\\textbf{{Fuente.}} {fuente}}}}}"
+    )
+
+
 def yaml_a_placeholders(guia: dict) -> dict[str, str]:
     """Aplana el dict YAML a las claves uppercase que espera el template."""
     periodo = guia["periodo"]
@@ -409,10 +429,12 @@ def yaml_a_placeholders(guia: dict) -> dict[str, str]:
         "GUIA_NUMERO": str(sesion_global),
         "TITULO_GUIA": guia["titulo"],
         "TITULO_GUIA_PORTADA": titulo_portada_tex,
+        # Metadatos del PDF: título en texto plano.
+        "PDF_TITULO": texto_pdf(guia["titulo"]),
         "PRODUCTO_FINAL": guia["producto_final"],
 
-        # Apertura
-        "SABER_ANCESTRAL": apertura["saber_ancestral"],
+        # Apertura (la fuente APA, si existe, va como pie del bloque)
+        "SABER_ANCESTRAL": saber_ancestral_tex(apertura),
         "SABER_CONTEMPORANEO": apertura["saber_contemporaneo"],
         "PREGUNTA_PUENTE": apertura["pregunta_puente"],
         "SABER_HACER": apertura["saber_hacer"],
@@ -477,8 +499,14 @@ def yaml_a_placeholders(guia: dict) -> dict[str, str]:
 # Compilación
 # ─────────────────────────────────────────────────────────────────────────────
 
-def compilar_guia(guia: dict, template_text: str) -> tuple[bool, str]:
-    """Genera .tex + 2 pasadas de xelatex + limpia auxiliares."""
+def compilar_guia(guia: dict, template_text: str) -> tuple[bool, str, list[str]]:
+    """Llena el template, compila (2 pasadas), valida el .log y limpia auxiliares.
+
+    Devuelve (ok, mensaje, avisos): avisos de recursos + `Overfull \\hbox`.
+    """
+    # AVISOS_RECURSOS es global al proceso: se vacía por guía para que cada
+    # resultado lleve solo los suyos.
+    AVISOS_RECURSOS.clear()
     periodo = guia["periodo"]
     sesion = guia["sesion"]
     sesion_global = (periodo - 1) * 10 + sesion
@@ -493,29 +521,16 @@ def compilar_guia(guia: dict, template_text: str) -> tuple[bool, str]:
     remaining = re.findall(r"<<<[A-Z_0-9]+>>>", contenido)
     if remaining:
         sample = sorted(set(remaining))[:5]
-        return False, f"placeholders sin reemplazar: {sample}{'…' if len(set(remaining)) > 5 else ''}"
+        return False, f"placeholders sin reemplazar: {sample}{'…' if len(set(remaining)) > 5 else ''}", list(AVISOS_RECURSOS)
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     out_tex.write_text(contenido, encoding="utf-8")
 
-    # 2 pasadas de xelatex (indispensables para el TikZ overlay de la portada).
-    for i in (1, 2):
-        result = subprocess.run(
-            [XELATEX, "-interaction=nonstopmode", "-halt-on-error", out_tex.name],
-            cwd=out_tex.parent,
-            capture_output=True,
-            text=True,
-        )
-        if result.returncode != 0:
-            return False, f"xelatex pasada {i} falló (revisa {out_tex.with_suffix('.log').name})"
-
-    # Limpiar auxiliares.
-    for ext in (".aux", ".log", ".out"):
-        aux = out_tex.with_suffix(ext)
-        if aux.exists():
-            aux.unlink()
-
-    return True, f"{out_pdf.name} ({out_pdf.stat().st_size:,} bytes)"
+    avisos = list(AVISOS_RECURSOS)
+    # 2 pasadas, lectura del .log (Overfull box = guía fallida) y limpieza
+    # de auxiliares solo si todo salió bien: ver lib_xelatex.compilar.
+    ok, msg = compilar(out_tex, avisos)
+    return ok, msg, avisos
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -526,10 +541,10 @@ def _compilar_una(args: tuple) -> tuple:
     """Envoltorio para el pool: recibe y devuelve solo datos serializables."""
     clave, guia, template_text = args
     try:
-        ok, msg = compilar_guia(guia, template_text)
+        ok, msg, avisos = compilar_guia(guia, template_text)
     except Exception as exc:                      # noqa: BLE001
-        ok, msg = False, f"excepción: {exc}"
-    return clave, ok, msg
+        ok, msg, avisos = False, f"excepción: {exc}", []
+    return clave, ok, msg, avisos
 
 
 def _jobs() -> int:
@@ -588,15 +603,15 @@ def main(argv: list[str]) -> int:
     if porCompilar:
         if jobs == 1:
             for tarea in porCompilar:
-                clave, ok, msg = _compilar_una(tarea)
-                resultados[clave] = (ok, msg)
+                clave, ok, msg, avisos = _compilar_una(tarea)
+                resultados[clave] = (ok, msg, avisos)
         else:
             with concurrent.futures.ProcessPoolExecutor(max_workers=jobs) as pool:
-                for clave, ok, msg in pool.map(_compilar_una, porCompilar):
-                    resultados[clave] = (ok, msg)
+                for clave, ok, msg, avisos in pool.map(_compilar_una, porCompilar):
+                    resultados[clave] = (ok, msg, avisos)
 
     for clave, guia, _ in porCompilar:
-        ok, msg = resultados[clave]
+        ok, msg, avisos = resultados[clave]
         global_n = (guia["periodo"] - 1) * 10 + guia["sesion"]
         if ok:
             lineas[clave] = f"  ✓  {clave}  (G{global_n:02d})  OK          {msg}"
@@ -604,6 +619,9 @@ def main(argv: list[str]) -> int:
         else:
             lineas[clave] = f"  ✗  {clave}  (G{global_n:02d})  ERROR       {msg}"
             errores.append(clave)
+        # Avisos (recursos omitidos, Overfull \hbox) bajo la línea de la guía.
+        for a in avisos:
+            lineas[clave] += f"\n       ⚠  {a}"
 
     for clave in seleccion:
         if clave in lineas:

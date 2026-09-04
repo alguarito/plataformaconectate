@@ -1,9 +1,10 @@
 % TEMPLATE-MILC-v3.tex - plantilla maestra UNICA de las guias MILC v3.
 %
-% La usan las tres familias de guias, cada una con su driver:
-%   · Grados 6-11  -> scripts/build-guias-g11.py
-%   · Bebras       -> scripts/build-guias-bebras.py
-%   · Semillero    -> scripts/build-guias-semillero.py
+% La usan las cuatro familias de guias, cada una con su driver:
+%   · Grados 6-11          -> scripts/build-guias-g11.py
+%   · Bebras               -> scripts/build-guias-bebras.py
+%   · Semillero            -> scripts/build-guias-semillero.py
+%   · Territorio interior  -> scripts/build-guias-territorio-interior.py
 %
 % Antes habia tres copias casi identicas (~400 lineas iguales, 6 distintas):
 % cada mejora habia que aplicarla tres veces, y en la practica no se hacia
@@ -18,12 +19,26 @@
 %   PORTADA_SERIE     linea de serie de la portada
 %   PORTADA_ID        identificador de la guia en la portada
 %   PORTADA_CIRCULO   el circulito de grado (°), o vacio si no aplica
+%   PDF_TITULO        titulo en texto plano (sin \textbf ni comillas TeX) para
+%                     los metadatos del PDF (/Title); lo produce lib_xelatex.texto_pdf
 %
+% Composicion (auditoria 2026-09-03): las bandas de estacion piden espacio
+% (\Needspace*) y prohiben el salto justo despues (\nopagebreak), asi no quedan
+% huerfanas al pie; las cajas largas (softbox, drawbox, infoband, puentebox) son
+% `breakable`, asi una caja de media pagina ya no arrastra todo a la siguiente
+% dejando la anterior al 40 %. Todo texto sobre mostaza o verde va en milcNegro
+% (blanco sobre #E5B400 da 1,93:1 y sobre #58A923 2,95:1; ninguno pasa WCAG AA).
 % El resto de claves las documenta content/guias/_SCHEMA.md. El script valida
 % que no queden placeholders sin reemplazar antes de escribir el archivo final.
 
+% Etiquetado PDF (latex-lab): /Lang, estructura y texto alternativo de las
+% figuras, para lectores de pantalla. Debe ir ANTES de \documentclass.
+\DocumentMetadata{lang=es-CO,tagging=on}
 \documentclass[11pt,letterpaper]{article}
-\usepackage[margin=2.0cm]{geometry}
+% headheight=24pt: la cabecera derecha lleva dos lineas (identidad de la guia
+% y estacion actual). headsep se acorta en la misma medida para que el bloque
+% de texto quede exactamente donde estaba con headheight=12pt.
+\usepackage[margin=2.0cm,headheight=24pt,headsep=13pt]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{fontspec}
 \usepackage[spanish]{babel}
@@ -50,6 +65,16 @@
 \usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
 \usepackage{enumitem}
 \usepackage{microtype}
+\usepackage{etoolbox}
+\usepackage{needspace}
+% hyperref al final del preambulo: metadatos del PDF (titulo, autor, idioma,
+% familia), marcadores por estacion (\pdfbookmark) y enlaces sin recuadro.
+\usepackage[hidelinks,
+  pdftitle={Identidad visual — del grafismo ancestral a la paleta propia},
+  pdfauthor={PhD. Álvaro Cárdenas Orozco},
+  pdfsubject={Tecnología e Informática · Grado 11 · Guía 2 · MILC v3},
+  pdflang={es-CO},
+  bookmarksopen=true,bookmarksnumbered=false]{hyperref}
 
 % Helvetica Neue no trae la flecha U+2192, asi que cada «→» escrito literalmente
 % en el YAML se compilaba a NADA, en silencio (462 flechas en 61 guias: rutas del
@@ -102,10 +127,21 @@
 
 \pagestyle{fancy}
 \fancyhf{}
-\lhead{\small Tecnología e Informática · Grado 11}
-\rhead{\small Guía 2 · MILC v3}
+% Cabecera de dos lineas: identidad de la guia arriba y, a la derecha y en
+% gris, la estacion en curso (\markright desde \milcestacion). Antes de la
+% primera estacion la segunda linea va vacia; el \strut mantiene la altura
+% para que la linea de arriba no baile entre paginas.
+\lhead{\small Tecnología e Informática · Grado 11\\[-1pt]{\footnotesize\strut}}
+\rhead{\small Guía 2 · MILC v3\\[-1pt]{\footnotesize\strut\color{milcNegro!65}\rightmark}}
 \cfoot{\small\thepage}
 \renewcommand{\headrulewidth}{0pt}
+
+% Sobre mostaza (#E5B400) y verde (#58A923) el texto va en milcNegro; sobre el
+% resto de la paleta, en blanco. Se usa dentro de fonttitle/fontupper, donde un
+% \color posterior manda sobre coltitle.
+\newcommand{\milctintasobre}[1]{%
+  \ifboolexpr{test{\ifstrequal{#1}{milcMostaza}} or test{\ifstrequal{#1}{milcVerde}}}%
+    {\color{milcNegro}}{\color{white}}}
 
 \newtcolorbox{titlebox}[1]{
   enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
@@ -115,25 +151,27 @@
 }
 
 \newtcolorbox{softbox}[3]{
-  enhanced,colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  enhanced,breakable,pad at break=3mm,
+  colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
   arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
   before skip=6pt,after skip=8pt,title={#3},coltitle=white,
-  colbacktitle=#1,fonttitle=\sffamily\bfseries,fontupper=\RaggedRight,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries\milctintasobre{#1},fontupper=\RaggedRight,
   attach boxed title to top left={xshift=3mm,yshift=-2mm},
   boxed title style={arc=2mm, boxrule=0pt}
 }
 
 \newtcolorbox{drawbox}[2]{
-  enhanced,colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  enhanced,breakable,pad at break=4mm,
+  colback=white,colframe=#1,arc=4mm,boxrule=1pt,
   left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
-  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries\milctintasobre{#1},
   fontupper=\RaggedRight,
   attach boxed title to top left={xshift=4mm,yshift=-2mm},
   boxed title style={arc=3mm, boxrule=0pt}
 }
 
 \newtcolorbox{infoband}[1]{
-  enhanced,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  enhanced,breakable,pad at break=2mm,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
   left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
   fontupper=\small\RaggedRight
 }
@@ -142,7 +180,7 @@
 % Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
 % Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
 \newtcolorbox{puentebox}{
-  enhanced,colback=milcGradeSoft,colframe=milcGradeDark,
+  enhanced,breakable,pad at break=2mm,colback=milcGradeSoft,colframe=milcGradeDark,
   borderline west={3pt}{0pt}{milcGradeDark},
   arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
   before skip=4pt,after skip=8pt,
@@ -162,6 +200,24 @@
 \newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
 \newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
 
+% ─── Listas aireadas para las guías socioemocionales ────────────────────
+% Componer las verificaciones como «\checkbox texto\\» deja el texto que salta
+% de línea debajo del cuadrito y apelmaza el bloque. Estos entornos alinean la
+% continuación y airean los ítems. Los usa Territorio Interior; cualquier
+% familia puede hacerlo.
+\newlist{checklista}{itemize}{1}
+\setlist[checklista]{
+  label=\textcolor{milcGradeDark}{\fbox{\phantom{x}}},
+  leftmargin=9mm, labelsep=3.2mm, itemsep=2.4mm,
+  topsep=2.5mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+\newlist{pasoslista}{enumerate}{1}
+\setlist[pasoslista]{
+  label=\textcolor{milcGradeDark}{\sffamily\bfseries\arabic*.},
+  leftmargin=8mm, labelsep=3mm, itemsep=2.8mm,
+  topsep=1mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+
 \newcommand{\phasecard}[4]{
 \begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
 {\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
@@ -172,16 +228,32 @@
 % ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
 % Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
 % dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+% Nunca huerfana: pide 9 lineas libres (o salta de pagina rellenando con
+% \vfill) y prohibe el salto justo despues de la banda. Nueve y no seis:
+% la caja partible que sigue necesita ~80pt (titulo adosado, relleno y dos
+% lineas) para arrancar en la misma pagina; con menos, tcolorbox la manda
+% entera a la siguiente y la banda se queda sola. El penalty 10000 va
+% en `after`, ANTES del espacio posterior: un `after skip` (aunque sea 0pt)
+% es un \vskip tras la caja, y ese glue es un punto de corte legal que un
+% \nopagebreak escrito despues de \end{tcolorbox} ya no cierra. Cada banda
+% deja marcador PDF y actualiza la cabecera derecha.
+\newcounter{milcestacion}
 \newcommand{\milcestacion}[2]{%
+\Needspace*{9\baselineskip}%
+\stepcounter{milcestacion}%
+\pdfbookmark[1]{#2}{milcestacion\themilcestacion}%
+\markright{#2}%
 \begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
-  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,after skip=7pt]
-{\sffamily\bfseries\fontsize{15}{18}\selectfont\color{white}#2}
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,
+  after={\par\nopagebreak\vskip7pt}]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\milctintasobre{#1}#2}
 \end{tcolorbox}}
 
 % Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
 % eran formato de consulta docente, no de estudiante. El numero va en un
 % circulo sobre el borde para que la secuencia se lea de un vistazo.
 \newcommand{\milcpaso}[3]{%
+\Needspace{4\baselineskip}%
 \begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
   left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
   fontupper=\RaggedRight,
@@ -212,11 +284,12 @@
 % \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
 % \guiaDiagrama → fuente TikZ/circuitikz (.tex) incrustada como vector:
 %                 es la vía para circuitos y esquemáticos editables.
-% #1 = ruta relativa al .tex · #2 = pie (puede ir vacío)
-\newcommand{\guiaFigura}[2]{%
+% [#1] = texto alternativo (alt) · #2 = ruta relativa al .tex · #3 = pie
+% El alt llega al PDF etiquetado (/Alt) y lo lee el lector de pantalla.
+\newcommand{\guiaFigura}[3][]{%
 \begin{center}
-\includegraphics[width=0.88\linewidth,height=0.38\textheight,keepaspectratio]{#1}\\[1.5mm]
-{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\includegraphics[width=0.88\linewidth,height=0.38\textheight,keepaspectratio,alt={#1}]{#2}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#3}}
 \end{center}
 }
 

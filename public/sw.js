@@ -7,6 +7,7 @@
  *  - Astro hashed assets→ cache-first (URL contiene hash, nunca cambia)
  *  - PDFs locales       → cache-first (no se modifican)
  *  - Imágenes           → cache-first
+ *  - /data/*.json       → stale-while-revalidate (índice del buscador)
  *  - Inter font CDN     → cache-first
  *  - Sitemap/manifest   → network-first (puede cambiar entre deploys)
  *  - Drive / 3rd party  → no se cachea (passthrough)
@@ -31,7 +32,7 @@
  * ─────────────────────────────────────────────────────────────────────────
  */
 
-const VERSION = 'v65';
+const VERSION = 'v66';
 const BASE_PATH = '/plataformaconectate';
 
 const CACHE_SHELL = `conectate-shell-${VERSION}`;
@@ -122,6 +123,14 @@ self.addEventListener('fetch', (event) => {
   // Audio/video pesado: passthrough · NO se cachea (evita llenar el caché offline
   // con archivos de decenas de MB; los <audio>/<video> usan preload="none").
   if (/\.(m4a|mp3|mp4|m4v|webm|ogg|wav)$/i.test(url.pathname)) {
+    return;
+  }
+
+  // Datos JSON estáticos (índice del buscador, densidad, etc.): stale-while-revalidate.
+  // Se sirve al instante desde caché y se refresca en segundo plano; el índice
+  // cambia con cada deploy y pesa ~1,4 MB, así que no lo bloqueamos con network-first.
+  if (url.pathname.startsWith(`${BASE_PATH}/data/`) && url.pathname.endsWith('.json')) {
+    event.respondWith(staleWhileRevalidate(request, CACHE_ASSETS));
     return;
   }
 

@@ -1,6 +1,9 @@
 /**
  * Contenido enriquecido para Grado 8 · Período 2 · Sesión 6
- * (sesión global 16 — Variables, umbrales y calibración).
+ * (sesión global 16).
+ *
+ * Auto-generado desde content/guias/8/8-2-6.yaml por
+ * scripts/build-guias-web-ts.py. Edita el YAML, no este archivo.
  */
 import type { ContenidoGuia } from './_schema';
 
@@ -8,93 +11,161 @@ const contenido: ContenidoGuia = {
   grado: 8,
   periodo: 2,
   sesion: 6,
-  resumen:
-    'Como el reloj de sol del campesino: calibrar al lugar y a la estación. Aprendes a usar variables, definir umbrales con criterio y calibrar sensores al ambiente real.',
+  titulo: 'Sensores con variables, umbrales y calibración',
+  resumen: 'Como el reloj de sol del campesino: calibrar al lugar y a la estación. Aprendes a usar variables, definir umbrales con criterio y calibrar sensores al ambiente real.',
   duracionMin: 90,
   subtema: 'Sensores · Variables · Umbrales · Calibración',
-
   preLectura: {
-    porQueImporta:
-      'Saber calibrar es lo que distingue un sensor confiable de uno que da falsas alarmas. Te servirá en cualquier proyecto futuro: huertas inteligentes, alarmas, automatización, IoT.',
+    porQueImporta: 'Saber calibrar es lo que distingue un sensor confiable de uno que da falsas alarmas. Te servirá en cualquier proyecto futuro: huertas inteligentes, alarmas, automatización, IoT.',
     preguntaDetonante: '¿Qué del reloj de sol del campesino — su disciplina de calibrar al lugar y la estación — podemos llevar a los sensores que programamos?',
-    activacion: { titulo: 'El sensor mal calibrado', descripcion: 'En 5 minutos: piensa en un dispositivo del entorno (alarma, sensor de movimiento de luces, detector) que dé falsas alarmas o no responde cuando debe. ¿Qué umbral está mal calibrado?', duracionMin: 5 },
-    conexion: { anterior: 'En la sesión 15 aprendiste actuadores y respuestas multi-actuador.', siguiente: 'En la sesión 17 depurarás lógica de control con casos esperados, contrarios y límites.' },
+    activacion: {
+      titulo: 'El sensor mal calibrado',
+      descripcion: 'En 5 minutos: piensa en un dispositivo del entorno (alarma, sensor de movimiento de luces, detector) que dé falsas alarmas o no responde cuando debe. ¿Qué umbral está mal calibrado?',
+      duracionMin: 5
+    },
+    conexion: {
+      anterior: 'En la sesión 15 aprendiste actuadores y respuestas multi-actuador.',
+      siguiente: 'En la sesión 17 depurarás lógica de control con casos esperados, contrarios y límites.'
+    }
   },
-
   conceptosClave: [
-    { categoria: '📊 Cómo se lee', termino: 'Variable de lectura', definicion: 'Espacio nombrado que guarda la lectura del sensor para usarla. Cada vez que el bucle se ejecuta, la variable se actualiza.', ejemplo: 'nivel_luz = leer_sensor_luz(). Ahora la variable guarda el valor actual y la podemos comparar con el umbral.', emoji: '📊' },
-    { categoria: '📊 Cómo se lee', termino: 'Rango del sensor', definicion: 'Conjunto de valores posibles que el sensor entrega. Cada modelo tiene su rango específico (0-255, 0-1023, -40 a 85°C).', ejemplo: 'Sensor de luz del micro:bit: 0 (oscuridad total) a 255 (máxima luz). Si tu lectura es 300, hay error.', emoji: '📏' },
-    { categoria: '📊 Cómo se lee', termino: 'Ruido', definicion: 'Fluctuaciones momentáneas en la lectura por causas externas (sombras, vibraciones, interferencias). Genera falsas alarmas si no se filtra.', ejemplo: 'Sensor de luz baja a 30 cuando pasa una sombra, sube a 80 al instante. La sombra es ruido; el cuarto sigue iluminado.', emoji: '〰️' },
-    { categoria: '📊 Cómo se lee', termino: 'Promediado', definicion: 'Técnica de filtrar ruido tomando el promedio de varias lecturas seguidas. Una sombra momentánea no afecta el promedio de 5 lecturas.', ejemplo: 'En lugar de comparar UNA lectura con el umbral, comparas el promedio de las últimas 5. Filtra ruido sin perder respuesta.', emoji: '➗' },
-    { categoria: '⚖️ Cómo se calibra', termino: 'Umbral inicial', definicion: 'Primer valor que pruebas como punto de corte. Suele ser un valor central del rango y se ajusta con pruebas reales.', ejemplo: 'Para sensor de luz (rango 0-255), umbral inicial 50 separa "oscuro" de "con luz". Después se calibra con pruebas reales en TU ambiente.', emoji: '🎯' },
-    { categoria: '⚖️ Cómo se calibra', termino: 'Ajuste por contexto', definicion: 'Modificar el umbral según las condiciones reales del lugar donde el sensor opera. Cuarto oscuro vs salón iluminado tienen umbrales distintos.', ejemplo: 'En un cuarto con cortinas: umbral de oscuridad = 40. En un salón con ventanas: umbral = 100. Mismo sensor, distinto umbral.', emoji: '🌍' },
-    { categoria: '⚖️ Cómo se calibra', termino: 'Histéresis', definicion: 'Técnica de usar dos umbrales (uno para activar, otro para desactivar) para evitar oscilaciones cuando la lectura está cerca del límite.', ejemplo: 'Activar alarma si luz < 30. Desactivar si luz > 60. La diferencia (30-60) evita que la alarma parpadee con valores cercanos al umbral.', emoji: '🔁' },
-    { categoria: '⚖️ Cómo se calibra', termino: 'Validación con casos', definicion: 'Probar el sensor calibrado con escenarios extremos para confirmar que responde bien. Caso normal, caso límite, caso fuera de rango.', ejemplo: 'Probar con luz directa (255), oscuridad total (0), día nublado (60), cuarto interior (40). Verificar que la respuesta es la esperada en cada caso.', emoji: '✅' },
+    {
+      termino: 'Variable',
+      definicion: 'Espacio nombrado en memoria donde guardas un valor para usarlo después. En MakeCode se crea desde la categoría Variables.',
+      ejemplo: 'establecer nivel_luz a (nivel de luz). Luego puedes comparar nivel_luz con un umbral en un if.',
+      emoji: '📦'
+    },
+    {
+      termino: 'Umbral',
+      definicion: 'Valor que separa dos zonas de acción del programa. Si la lectura está por encima o por debajo, el sistema reacciona distinto.',
+      ejemplo: 'umbral_oscuro = 100. Si nivel_luz menor a 100, mostrar luna; sino, mostrar sol.',
+      emoji: '📏'
+    },
+    {
+      termino: 'Calibración',
+      definicion: 'Proceso de tomar mediciones reales antes de fijar un umbral. Garantiza que el programa reacciona al contexto, no a un número inventado.',
+      ejemplo: 'Antes de fijar umbral_oscuro, mides la luz del aula en 5 momentos del día y decides el valor según el rango observado.',
+      emoji: '🎯'
+    },
+    {
+      termino: 'Bitácora de calibración',
+      definicion: 'Tabla con 4 columnas (momento, lectura, condición real, observación) que respalda la decisión del umbral con datos.',
+      ejemplo: 'Fila 1, 7am, lectura 120, aula con cortinas abiertas, día nublado. Cinco filas como esa dan baseline.',
+      emoji: '📓'
+    },
+    {
+      termino: 'Nombre descriptivo',
+      definicion: 'Identificador de variable que dice qué guarda (nivel_luz, umbral_oscuro), no letras sueltas (x, y, z). Hace el código legible.',
+      ejemplo: 'En lugar de a = nivel de luz, escribir nivel_luz = nivel de luz. Cualquier lector entiende sin explicación.',
+      emoji: '🏷️'
+    }
   ],
-
-  laboratorios: [{
-    tipo: 'quiz',
-    titulo: 'Quiz · Variables, umbrales y calibración',
-    instrucciones: '5 preguntas tipo ICFES sobre interpretación de sensores y calibración.',
-    preguntas: [
-      { enunciado: 'Si el sensor de luz del micro:bit tiene rango 0-255, ¿qué valor es razonable como umbral inicial para "está oscuro"?', opciones: ['Umbral = 200', 'Umbral = 30 o 50', 'Umbral = 0 exactamente', 'Umbral = 256'], respuestaIndex: 1, feedbackCorrecto: '✅ Correcto. Para oscuridad necesitas valor BAJO. 30 o 50 captura la mayoría de oscuridades sin falsas alarmas. 0 exacto es muy restrictivo, 256 está fuera de rango.', feedbackIncorrecto: '❌ Oscuridad = valor bajo. 200 es para detectar mucha luz (al revés). 0 exacto no captura oscuridades reales (siempre hay algo de luz). 256 está fuera de rango. ~30-50 es razonable.' },
-      { enunciado: 'Tu alarma se activa con cada sombra momentánea (paso de mano). El problema más probable es:', opciones: ['Sensor dañado', 'Falta filtro de ruido (sin promediado)', 'Programa muy lento', 'Bucle forever incorrecto'], respuestaIndex: 1, feedbackCorrecto: '✅ Sí. Una lectura puntual responde a una sombra. Promediar 5 lecturas seguidas filtra el ruido: la sombra es momentánea, el promedio sigue alto.', feedbackIncorrecto: '❌ El sensor probablemente está bien. La causa más común es FALTA DE FILTRO: una lectura puntual responde a sombras momentáneas. Solución: promediar varias lecturas seguidas.' },
-      { enunciado: 'La "histéresis" en calibración significa:', opciones: ['Usar UN solo umbral muy preciso', 'Usar DOS umbrales: uno para activar, otro para desactivar', 'Eliminar el umbral y usar promedio', 'Aumentar la frecuencia de lectura'], respuestaIndex: 1, feedbackCorrecto: '✅ Correcto. Histéresis = dos umbrales con un rango entre ellos. Activar al cruzar el primero, desactivar al cruzar el segundo. Evita oscilaciones cerca del límite.', feedbackIncorrecto: '❌ Histéresis no es un umbral preciso ni eliminar el umbral. Es usar DOS umbrales con un rango de "incertidumbre" entre ellos para evitar que el sistema oscile cuando la lectura está justo en el límite.' },
-      { enunciado: 'Si calibras tu sensor en tu cuarto y luego lo llevas al colegio donde hay más luz, ¿qué probable que pase?', opciones: ['El umbral seguirá siendo correcto', 'El umbral del cuarto activará con sombras normales del colegio', 'El sensor se daña', 'El programa borra el umbral automáticamente'], respuestaIndex: 1, feedbackCorrecto: '✅ Sí. Cada ambiente tiene su rango de luz. El umbral calibrado para tu cuarto (oscuro) podría considerar "oscuridad" lo que en el colegio es luz normal. Necesitas re-calibrar.', feedbackIncorrecto: '❌ Los umbrales son específicos al ambiente. Lo que es "oscuridad" en tu cuarto es "luz normal" en un salón con ventanas. La calibración NO es transferible automáticamente — debe reajustarse al lugar.' },
-      { enunciado: '¿Por qué documentar lo que representa el umbral en código?', opciones: ['Para que el archivo sea más grande', 'Para que tu yo del próximo mes (u otro programador) entienda por qué pusiste 50', 'Para encriptar el umbral', 'No es necesario'], respuestaIndex: 1, feedbackCorrecto: '✅ Correcto. "umbral=50" sin contexto es opaco. "umbral=50 (oscuridad razonable en cuarto interior)" es claro. La documentación es ética del código colaborativo.', feedbackIncorrecto: '❌ La documentación NO es para llenar espacio. Es para que TÚ (en 3 meses) o un compañero entiendan tu razón. "umbral=50" sin contexto se vuelve magia incomprensible. Documenta el por qué.' },
-    ],
-  }],
-
+  laboratorios: [
+    {
+      tipo: 'quiz',
+      titulo: '¿Dominas variables, umbrales y calibración?',
+      instrucciones: '5 preguntas para verificar que decides umbrales con calibración, no con números inventados.',
+      preguntas: [
+        {
+          enunciado: 'Tienes 5 lecturas de luz en el aula a distintas horas (65, 120, 180, 195, 210). ¿Cuál umbral de "oscuro" tiene más sentido?',
+          opciones: [
+            '',
+            '',
+            '',
+            ''
+          ],
+          respuestaIndex: 2,
+          feedbackCorrecto: 'Exacto. 100 queda justo debajo del menor valor normal (120) y por encima del único valor oscuro (65). Separa bien las zonas.',
+          feedbackIncorrecto: 'Con esas lecturas, 100 es la mejor opción: queda debajo del rango normal (120-210) y solo activa la alerta cuando la luz baja claramente.'
+        },
+        {
+          enunciado: '¿Por qué se recomienda usar nombres como nivel_luz en lugar de x para las variables?',
+          opciones: [
+            'Porque hace el código legible para quien lo lea después',
+            'Porque x está reservada por MakeCode',
+            'Porque ahorra memoria',
+            'Porque corre más rápido'
+          ],
+          respuestaIndex: 0,
+          feedbackCorrecto: 'Correcto. Los nombres descriptivos son la diferencia entre código profesional y código que solo entiende quien lo escribió.',
+          feedbackIncorrecto: 'La razón es la legibilidad. x no dice nada; nivel_luz dice qué guarda. El código se lee más veces de las que se escribe.'
+        },
+        {
+          enunciado: 'Inventas el umbral sin medir nada y el programa reacciona en momentos equivocados. ¿Qué paso saltaste?',
+          opciones: [
+            'Compilar',
+            'Guardar el archivo',
+            'Conectar el cable USB',
+            'Calibración'
+          ],
+          respuestaIndex: 3,
+          feedbackCorrecto: 'Exacto. Sin calibración, los umbrales son números al azar. La calibración con 5 mediciones reales evita ese error.',
+          feedbackIncorrecto: 'Saltaste la calibración. Los umbrales se decantan a partir de mediciones reales, no se inventan.'
+        },
+        {
+          enunciado: '¿Cuántas mediciones mínimas recomienda la guía para una bitácora de calibración útil?',
+          opciones: [
+            '1',
+            '5',
+            '2',
+            '100'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Correcto. 5 mediciones en condiciones distintas dan baseline suficiente sin ser carga excesiva.',
+          feedbackIncorrecto: 'Son 5 mediciones mínimas. Menos no da baseline; muchas más son carga sin necesidad para el aula.'
+        },
+        {
+          enunciado: 'Tu programa tiene 3 umbrales (oscuro, normal, brillante). ¿Qué decisión es señal de programa profesional?',
+          opciones: [
+            'Usar 3 alertas claramente distinguibles',
+            'Usar las 3 mismas alertas para distinguir',
+            'Mostrar siempre el mismo ícono',
+            'No mostrar nada'
+          ],
+          respuestaIndex: 0,
+          feedbackCorrecto: 'Exacto. Si las 3 alertas no se distinguen, el usuario no sabe qué zona está activa. La distinción es parte del diseño.',
+          feedbackIncorrecto: 'Las 3 alertas deben distinguirse a primera vista u oído. Si todas son iguales, los umbrales pierden sentido.'
+        }
+      ]
+    }
+  ],
   postLectura: {
     reflexion: 'Calibrar es disciplina de adaptar al territorio. ¿En qué otros ámbitos de tu vida (estudio, deporte, alimentación) sería útil "calibrar" en lugar de aplicar reglas genéricas?',
     transferencia: 'Esta semana: en MakeCode programa un sensor con umbral inicial, prueba en 3 ambientes distintos (casa, colegio, exterior) y documenta cómo ajustaste el umbral en cada uno.',
-    cierre: 'El reloj de sol y el sensor digital comparten el mismo principio: la tecnología útil se calibra al lugar. La universalidad genérica es enemiga de la utilidad real.',
+    cierre: 'El reloj de sol y el sensor digital comparten el mismo principio: la tecnología útil se calibra al lugar. La universalidad genérica es enemiga de la utilidad real.'
   },
-
   saberAncestral: {
-    saber:
-      'El reloj de sol del campesino del Valle se construía calibrándolo al lugar: latitud específica, dirección del norte verdadero, marca de la hora del almuerzo según la sombra real. Un reloj de sol llevado de un pueblo a otro requería re-calibración — la universalidad genérica no servía. El sensor digital hereda esa lógica: medir luz, temperatura o movimiento sin calibrar al ambiente real produce datos basura. La calibración no es opcional — es la diferencia entre dato útil y ruido.',
+    saber: 'En las comunidades del Pacífico colombiano, las curanderas y parteras tenían un instrumento de diagnóstico que las antecede por siglos: su propia mano convertida en termómetro. La mano de una curandera experimentada distinguía con precisión 3 estados del cuerpo: normal (frente tibia, no más caliente que la propia mano), fiebre leve (frente claramente más caliente que la mano, pero la persona habla con claridad), fiebre fuerte (frente como brasa, respiración acelerada, mirada perdida). Esa diferenciación no era arbitraria: era el resultado de calibración constante. La curandera había puesto su mano en cientos de frentes a lo largo de su vida: niños sanos, niños enfermos, mujeres en parto, ancianos. Esa colección de toques producía un baseline personal: "así se siente lo normal en mi mano". A partir de ese baseline, podía decir con certeza cuándo había cruzado el umbral hacia la alarma. Esa práctica es ancestral pero rigurosa: el umbral es marca personal calibrada con la experiencia, no número arbitrario. La medicina basada en evidencia formaliza después lo que la curandera practicó siempre.',
     fuente: 'Relojes de sol campesinos en haciendas y veredas del Valle del Cauca',
-    preguntaPuente:
-      '¿Por qué el reloj de sol funcionaba mejor que un reloj de bolsillo en algunos contextos rurales? ¿Y qué cambia cuando trasladas un umbral de sensor de un ambiente al otro sin recalibrarlo?',
+    preguntaPuente: '¿Qué sabía la curandera al construir su termómetro personal con años de práctica, que el programador novato olvida cuando inventa un umbral con un número al azar ("si luz menor a 100, alarma")? ¿Y por qué calibrar antes de decidir el umbral ahorra horas de programa que reacciona en momentos equivocados?'
   },
-
   triangulo: {
     dussel: {
       autor: 'Enrique Dussel',
       lente: 'lente del nosotros',
-      cita: 'La tecnología genérica colonizadora desprecia el lugar — la tecnología situada lo honra.',
-      preguntaEspejo:
-        '¿Mi sensor está calibrado al territorio donde se va a usar, o al "ambiente promedio" que ningún lugar real es?',
+      cita: 'Un sistema que se ajusta al contexto del usuario es liberador; uno que impone su umbral universal es opresor.',
+      preguntaEspejo: '¿Mis umbrales reflejan el contexto real del aula, o son números copiados que ignoran el lugar?'
     },
     estoico: {
       autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
-      cita: 'Adaptar la herramienta al contexto es virtud — copiarla sin ajuste es pereza disfrazada de método.',
-      preguntaEspejo:
-        '¿Cuánto tiempo invierto calibrando mis herramientas al contexto real, o las aplico tal cual vienen?',
+      cita: 'Calibrar antes de decidir es virtud; inventar umbrales sin medir es vanidad disfrazada de seguridad.',
+      preguntaEspejo: '¿Mis umbrales se basan en mediciones reales, o son números que sonaban bien?'
     },
     floridi: {
       autor: 'Luciano Floridi',
       lente: 'lente de la infoesfera',
-      cita: 'Un sensor mal calibrado produce ruido informacional — y el ruido es peor que la ausencia de dato.',
-      preguntaEspejo:
-        '¿Cuántas decisiones cotidianas tomo con datos no calibrados? ¿Qué cambia si reconozco que algunos son ruido y no señal?',
-    },
+      cita: 'Los sistemas contextuales son la nueva ética del oficio digital frente a los sistemas que asumen un usuario universal.',
+      preguntaEspejo: '¿Mi programa se ajusta al contexto del aula, o asume un aula universal que no existe?'
+    }
   },
-
   cincoDimensiones: {
-    personal:
-      'Aprendiste que calibrar no es paso opcional — es lo que separa dato útil de ruido. Habilidad transferible a cualquier herramienta de la vida.',
-    emocional:
-      'Resististe la tentación de "ya está, está midiendo, sigamos". Entendiste que medir bien exige paciencia previa.',
-    ciudadana:
-      'Diseñar tecnología calibrada al territorio respeta a las comunidades que la usan. Es soberanía técnica práctica.',
-    local:
-      'Heredaste el oficio del relojero de sol: cada herramienta se hace para un lugar específico, no para un genérico ideal.',
-    intergeneracional:
-      'El reloj de sol del abuelo y el sensor digital comparten la lógica del lugar. La técnica que sirve es la que se calibra.',
-  },
+    personal: 'Aprendiste que calibrar no es paso opcional — es lo que separa dato útil de ruido. Habilidad transferible a cualquier herramienta de la vida.',
+    emocional: 'Resististe la tentación de "ya está, está midiendo, sigamos". Entendiste que medir bien exige paciencia previa.',
+    ciudadana: 'Diseñar tecnología calibrada al territorio respeta a las comunidades que la usan. Es soberanía técnica práctica.',
+    local: 'Heredaste el oficio del relojero de sol: cada herramienta se hace para un lugar específico, no para un genérico ideal.',
+    intergeneracional: 'El reloj de sol del abuelo y el sensor digital comparten la lógica del lugar. La técnica que sirve es la que se calibra.'
+  }
 };
 
 export default contenido;

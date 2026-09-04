@@ -70,11 +70,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Qué gráfico usarías para mostrar evolución del balance a lo largo de 12 semanas?',
           opciones: [
             'Circular',
-            'Líneas',
             'Barras 3D rotativas',
+            'Líneas',
             'Ninguno'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Exacto. El gráfico de líneas muestra evolución en el tiempo de forma clara.',
           feedbackIncorrecto: 'Líneas. El gráfico de líneas es el indicado para tendencia temporal.'
         },
@@ -82,11 +82,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Por qué el eje Y debe partir de cero en barras?',
           opciones: [
             'Por costumbre',
-            'Porque eje no nulo exagera las diferencias visuales',
             'Porque ahorra tinta',
-            'Porque es obligatorio legal'
+            'Porque es obligatorio legal',
+            'Porque eje no nulo exagera las diferencias visuales'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Correcto. Si el eje no parte de cero, las diferencias se inflan visualmente y engañan al lector.',
           feedbackIncorrecto: 'Eje desde cero evita exagerar diferencias. Es regla de honestidad visual.'
         },

@@ -70,11 +70,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuál de estos es periférico de ENTRADA?',
           opciones: [
             'Monitor',
-            'Impresora',
             'Micrófono',
+            'Impresora',
             'Altavoz'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 1,
           feedbackCorrecto: 'Sí. El micrófono es entrada: tú le hablas al computador. Monitor, impresora y altavoz son salida (el computador te muestra algo).',
           feedbackIncorrecto: 'El micrófono es entrada (tú le hablas). Monitor, impresora y altavoz son salida (te muestran algo).'
         },
@@ -95,34 +95,34 @@ const contenido: ContenidoGuia = {
           opciones: [
             'USB.',
             'Jack 3.5mm.',
-            'HDMI.',
-            'Bluetooth.'
+            'Bluetooth.',
+            'HDMI.'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. HDMI es el cable estándar para monitor o proyector. Lleva imagen + sonido en un solo cable. USB es para teclado/ratón.',
           feedbackIncorrecto: 'El monitor usa HDMI (lleva imagen + sonido). USB es para teclado y ratón. El jack es para audio. Bluetooth no es cable.'
         },
         {
           enunciado: 'Unos audífonos con micrófono incorporado (los gamer) son periférico de...',
           opciones: [
+            'Mixto: salida (sonido) + entrada (voz).',
             'Solo entrada (porque tienen micrófono).',
             'Solo salida (porque oyes).',
-            'Mixto: salida (sonido) + entrada (voz).',
             'Almacenamiento (porque guardan canciones).'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Bien. Los audífonos gamer son mixtos: oyes el juego (salida) y hablas con tu equipo (entrada). Audífonos sin micrófono son solo salida.',
           feedbackIncorrecto: 'Audífonos con micrófono son mixtos: salida (escuchar) + entrada (hablar). Si no tienen micrófono, son solo salida.'
         },
         {
           enunciado: 'Estás jugando Roblox en computador. Nombra los 4 periféricos principales que estás usando.',
           opciones: [
-            'Solo el ratón.',
             'Teclado y ratón (entrada) + monitor y altavoz (salida).',
+            'Solo el ratón.',
             'Solo el monitor.',
             'Impresora y cámara web.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Exacto. Cuando juegas Roblox usas teclado y ratón para controlar (entrada), y ves el juego en monitor + lo oyes en altavoces (salida).',
           feedbackIncorrecto: 'Al jugar Roblox usas 4 periféricos: teclado + ratón (entrada para controlar) y monitor + altavoz (salida para ver y oír).'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Cuál es el periférico que uso más cada día? ¿Lo escogí yo o me lo asignaron?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador que practicaba el cuidado de las herramientas)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Cuidar la herramienta es prolongar su utilidad y la nuestra."',
       preguntaEspejo: '¿Trato mis periféricos como herramientas valiosas o como cosas desechables que pronto reemplazaré?'

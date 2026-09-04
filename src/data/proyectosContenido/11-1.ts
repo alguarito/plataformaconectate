@@ -20,7 +20,7 @@ const contenido: ContenidoProyecto = {
   estrategia: 'Design Thinking + ABP + IA como asistente editorial',
   duracionSemanas: 5,
   modalidad: 'equipo',
-  reto: 'Diseñar y publicar tu presencia digital profesional como editor responsable: un portafolio en línea + manual de marca personal + pieza de red, con la IA como asistente y con al menos el 30% del contenido editado a mano. La pieza final debe poder mostrarse el día de la sustentación a un empleador o universidad.',
+  reto: 'Diseñar y publicar tu presencia digital profesional como editor responsable: un portafolio en línea + manual de marca personal + pieza de red, con la IA como asistente y con al menos el 30~% del contenido editado a mano. La pieza final debe poder mostrarse el día de la sustentación a un empleador o universidad.',
   insumos: [
     'Plantilla HTML/CSS responsive (entrega el docente) o acceso a Astro/Next starter',
     'Cuenta gratuita Netlify, Vercel o GitHub Pages para deploy',
@@ -212,7 +212,7 @@ const contenido: ContenidoProyecto = {
       '30 seg · Plan de v2: qué corregirías en los próximos 3 meses'
     ]
   },
-  declaracionIa: 'Tu carta firmada de 1 página debe declarar honestamente: (1) Modelos usados durante el periodo (Claude, Gemini, ChatGPT, etc.). (2) Porcentaje aproximado del contenido total que se generó con IA (sé honesto, no maquilles). (3) Porcentaje editado a mano sobre lo generado (mínimo 30% para que el contenido sea legítimamente tuyo). (4) Una decisión concreta que tomaste tú —sin IA— sobre el proyecto, y por qué (ej. "decidí no traducir mi sitio al inglés porque mi audiencia es local").',
+  declaracionIa: 'Tu carta firmada de 1 página debe declarar honestamente: (1) Modelos usados durante el periodo (Claude, Gemini, ChatGPT, etc.). (2) Porcentaje aproximado del contenido total que se generó con IA (sé honesto, no maquilles). (3) Porcentaje editado a mano sobre lo generado (mínimo 30~% para que el contenido sea legítimamente tuyo). (4) Una decisión concreta que tomaste tú —sin IA— sobre el proyecto, y por qué (ej. "decidí no traducir mi sitio al inglés porque mi audiencia es local").',
   cierre: 'Cierras el periodo 1 con tu firma pública en el oficio digital. El periodo 2 (Automatización y procesos) te pedirá llevar esta misma disciplina a procesos repetitivos que automatizarás con IA. El maestro fotógrafo se va contigo a programar Zapier.',
   pdf: 'proyecto-1-11-TIC.pdf'
 };

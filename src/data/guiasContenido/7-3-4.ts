@@ -70,11 +70,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cómo aprende una IA moderna?',
           opciones: [
             'Le programan reglas una por una.',
-            'Le muestran miles o millones de ejemplos y ajusta automáticamente su modelo.',
             'Lee libros como un humano.',
+            'Le muestran miles o millones de ejemplos y ajusta automáticamente su modelo.',
             'Le rezan.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Aprende de ejemplos masivos (entrenamiento). Un algoritmo ajusta el modelo. No le programan reglas explícitas; extrae patrones de los datos.',
           feedbackIncorrecto: 'De ejemplos masivos. Le muestran miles de ejemplos, el algoritmo ajusta el modelo. Es como enseñar a un niño con muchas palabras, no con reglas gramaticales.'
         },
@@ -94,23 +94,23 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Es la IA \'neutral\' por naturaleza?',
           opciones: [
             'Sí, no tiene prejuicios.',
-            'No. Refleja decisiones humanas sobre qué datos usar y cómo entrenar.',
             'Sí, los matemáticos las hacen objetivas.',
-            'Solo si es premium.'
+            'Solo si es premium.',
+            'No. Refleja decisiones humanas sobre qué datos usar y cómo entrenar.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Bien. La IA NO es neutral. Refleja los datos con que la entrenaron + las decisiones de sus diseñadores. Toda IA tiene sesgos potenciales.',
           feedbackIncorrecto: 'NO es neutral. Toda IA refleja decisiones humanas: qué datos, qué algoritmo, qué métricas. La neutralidad pura no existe. Reconocerlo es paso clave.'
         },
         {
           enunciado: 'Quieres detectar si una IA tiene sesgo. ¿Qué haces?',
           opciones: [
-            'Confiar ciegamente.',
             'Aplicar las 5 reglas: preguntar datos, probar con distintos grupos, buscar caso propio, leer documentación, no asumir neutralidad.',
+            'Confiar ciegamente.',
             'No usar IA.',
             'Solo usar IA china.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Las 5 reglas. Aplicarlas te entrena como crítico de IA, no consumidor pasivo. Es habilidad clave del ciudadano digital.',
           feedbackIncorrecto: '5 reglas: datos, grupos, caso propio, documentación, no asumir. Aplícalas a cualquier IA que uses regularmente. Te coloca en lugar de criterio.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Una IA aprende de qué tipos de datos NO le mostraste. ¿Es responsable?',
           opciones: [
             'Sí, la IA debió saber sola.',
-            'No. La IA solo sabe lo que le mostraron. Si faltaron datos, faltó la perspectiva en sus diseñadores. La responsabilidad es humana.',
             'Solo si paga premium.',
-            'Depende del año.'
+            'Depende del año.',
+            'No. La IA solo sabe lo que le mostraron. Si faltaron datos, faltó la perspectiva en sus diseñadores. La responsabilidad es humana.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. La IA no inventa; reproduce. Si los datos faltaron, faltó la perspectiva de quien los recolectó. La responsabilidad es de los humanos que diseñaron y entrenaron.',
           feedbackIncorrecto: 'La responsabilidad es humana. La IA reproduce datos. Si faltan grupos, faltó visión en los diseñadores. Por eso diversificar quien crea IAs es justicia.'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Las IAs que uso fueron creadas pensando en mí, mi familia, mi región?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador del análisis sereno)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Saber cómo aprende la IA te quita el asombro mágico. Lo mágico cede paso a lo analítico, y eso es ganancia."',
       preguntaEspejo: '¿Antes veía la IA como magia? ¿Cómo cambia mi relación al saber cómo aprende?'

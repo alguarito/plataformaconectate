@@ -70,11 +70,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu MVP recibe 100 visitas y 7 formularios. Tu meta era 15 conversiones. ¿Es éxito?',
           opciones: [
             'Sí, recibí formularios.',
-            'No. 7 < 15. Es por debajo de meta. Hay que ajustar.',
             'Depende del clima.',
+            'No. 7 < 15. Es por debajo de meta. Hay que ajustar.',
             'Solo si me siento bien.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Bien. Meta definida antes (S4) = decisión clara después. 7 < 15, está por debajo. Hay que ajustar (cambiar mensaje, precio, audiencia) antes de seguir.',
           feedbackIncorrecto: '7 < 15 (meta). Datos por debajo de meta = no éxito. Sin criterios previos cae en sesgo del optimista. Con criterios, decisión clara.'
         },
@@ -93,24 +93,24 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'Después de medir, las 4 decisiones posibles son...',
           opciones: [
-            'Sigo, ajusto, pivoto, descarto.',
             'Sigo o me rindo.',
             'Espero a ver.',
-            'Solo sigo.'
+            'Solo sigo.',
+            'Sigo, ajusto, pivoto, descarto.'
           ],
-          respuestaIndex: 0,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. Las 4 con sus criterios: sigo (datos confirman), ajusto (cambios menores), pivoto (cambio mayor), descarto (no es problema real).',
           feedbackIncorrecto: '4 decisiones: SIGO + AJUSTO + PIVOTO + DESCARTO. Cada una basada en datos. Documentar la decisión con su razón y referencia a datos.'
         },
         {
           enunciado: '¿Cuál es \'dato\' y no \'anécdota\'?',
           opciones: [
-            'Una persona me dijo que sí.',
             '8 de 10 entrevistados pagarían entre $20-30K.',
+            'Una persona me dijo que sí.',
             'Mi mamá cree en mi idea.',
             'Sentí buena vibra.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Dato = números agregados con muestra. Anécdota = caso aislado memorable. Las decisiones serias se basan en datos, no anécdotas.',
           feedbackIncorrecto: 'Dato agregado con muestra (8/10) > anécdota individual. Anécdotas son memorables pero sesgan. Datos agregados con números son la base de decisión.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Cómo describes tu medición: \'algunos tenderos respondieron interés\'. ¿Está bien?',
           opciones: [
             'Sí, suena suficiente.',
-            'No. Mejor: \'12 visitaron landing, 4 dejaron correo, 2 ofrecieron pagar $25K\'. Números exactos.',
             'Solo si es viernes.',
-            'Da igual.'
+            'Da igual.',
+            'No. Mejor: \'12 visitaron landing, 4 dejaron correo, 2 ofrecieron pagar $25K\'. Números exactos.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Bien. Números exactos con fecha. "Algunos" es vago y sesga. La medición seria cuenta cada dato. Conteo riguroso es práctica adulta.',
           feedbackIncorrecto: 'Conteo exacto, no "algunos" o "varios". 12 visitaron, 4 formularios, 2 ofrecimientos. Sin números, la medición se vuelve interpretación.'
         }

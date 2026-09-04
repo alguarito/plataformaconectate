@@ -82,11 +82,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Vas a escribir los 7 pasos para preparar arepas. ¿Qué tipo de lista?',
           opciones: [
             'Con viñetas, así parece más casual.',
-            'Numerada, porque el orden de los pasos es crítico.',
             'Multinivel con 7 niveles.',
-            'En un solo párrafo masivo.'
+            'En un solo párrafo masivo.',
+            'Numerada, porque el orden de los pasos es crítico.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. Si cambias el orden de los pasos (mezclar antes que medir, por ejemplo), no funciona. Por eso numerada: el orden es información.',
           feedbackIncorrecto: 'Pasos = numerada. Si el orden importa para que algo funcione, es numerada. Viñetas perdería el orden y la receta se rompería.'
         },
@@ -105,12 +105,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'Hiciste una lista de 2 ítems. ¿Cuál es la regla?',
           opciones: [
-            'Está bien, 2 ítems siempre son lista.',
             'Mejor en párrafo. Las listas se justifican desde 3 ítems.',
+            'Está bien, 2 ítems siempre son lista.',
             'Solo 1 ítem es válido en listas.',
             'Hay que duplicar el ítem para tener 4.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Mínimo 3 ítems para que valga la pena la lista. Con 2 se ve forzado. En párrafo se ve natural: \'Las dos cosas que llevé fueron X y Y\'.',
           feedbackIncorrecto: 'Mínimo 3 ítems para hacer una lista. Menos = mejor en párrafo. Una lista de 2 se ve forzada.'
         },
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Cuál fue la lista que más me costó hacer? ¿Por qué creo que me costó?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador que ordenaba sus pensamientos diarios)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Cuando algo te abruma, hazlo una lista. Lo que parece imposible junto, se vuelve posible en 5 pasos numerados."',
       preguntaEspejo: '¿Qué cosa que tengo pendiente sentiría más ligera si la convirtiera en lista?'

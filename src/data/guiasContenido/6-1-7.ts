@@ -70,11 +70,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuál de estos es un dato privado (que casi nadie debería saber)?',
           opciones: [
             'Tu nombre de pila',
-            'La ciudad donde vives',
             'Tu contraseña del correo institucional',
+            'La ciudad donde vives',
             'El grado escolar en que estás'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 1,
           feedbackCorrecto: 'Sí. La contraseña es dato privado: solo tú la sabes. Si la das, alguien puede entrar a tu correo y hacerse pasar por ti.',
           feedbackIncorrecto: 'La contraseña es dato privado. Nombre, ciudad y grado son públicos. Los datos privados no se comparten con nadie.'
         },
@@ -82,23 +82,23 @@ const contenido: ContenidoGuia = {
           enunciado: 'Una app de linterna pide acceso a tu ubicación, micrófono y contactos. ¿Qué piensas?',
           opciones: [
             'Le doy todo, debe necesitarlo.',
-            'Le niego los permisos porque una linterna no necesita eso. Si insiste, mejor busco otra app.',
             'Le doy solo la ubicación, los otros no.',
+            'Le niego los permisos porque una linterna no necesita eso. Si insiste, mejor busco otra app.',
             'Le doy todo pero solo por un día.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Bien. Regla del mínimo necesario: si la app pide más de lo que su función necesita, sospecha y di que no.',
           feedbackIncorrecto: 'Una linterna NO necesita ubicación, micrófono ni contactos. Niégalo. Si la app insiste, busca otra que respete el mínimo.'
         },
         {
           enunciado: 'Tu compañero te pide tu cédula para \'apuntarte a un sorteo\'. ¿Qué haces?',
           opciones: [
-            'Se la doy, es mi compañero.',
             'No se la doy. La cédula es dato privado, ni a un amigo.',
+            'Se la doy, es mi compañero.',
             'Se la doy a medias, solo los primeros números.',
             'Se la digo en voz baja para que nadie más oiga.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Correcto. La cédula es dato privado. Ni a un amigo se la das. Los sorteos legales no piden cédula a menores.',
           feedbackIncorrecto: 'La cédula es dato privado, no se comparte con nadie aparte de papás. Los sorteos legales no piden cédula a niños.'
         },
@@ -106,11 +106,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Acabas de instalar Instagram. ¿Cómo deberían estar los ajustes por defecto?',
           opciones: [
             'Abiertos para todos, así me encuentran rápido.',
-            'Cerrados (cuenta privada), y los abro solo si decido.',
             'Solo con foto de perfil bloqueada.',
-            'Da igual, los ajustes no cambian nada.'
+            'Da igual, los ajustes no cambian nada.',
+            'Cerrados (cuenta privada), y los abro solo si decido.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. La regla es \'por defecto privado\': empiezas cerrado y abres con criterio. Es más fácil abrir después que cerrar después.',
           feedbackIncorrecto: 'La regla es \'por defecto privado\'. Empieza con la cuenta cerrada, y abres a más gente solo si tú decides.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Una empresa te llamó porque \'compró tu número\'. ¿Qué puedes hacer?',
           opciones: [
             'Aceptar la llamada, ya tienen mi número.',
-            'Pedirles que borren mis datos. La Ley 1581 de Colombia me respalda.',
             'Cambiarme de número urgente.',
-            'Bloquearlos sin decir nada.'
+            'Bloquearlos sin decir nada.',
+            'Pedirles que borren mis datos. La Ley 1581 de Colombia me respalda.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Bien. En Colombia la Ley 1581 te respalda. Tienes derecho a pedir que borren tus datos. No es opcional para la empresa.',
           feedbackIncorrecto: 'La Ley 1581 de 2012 te da derecho a pedirle a cualquier empresa que borre tus datos. Es tu derecho legal.'
         }
@@ -135,7 +135,7 @@ const contenido: ContenidoGuia = {
     cierre: 'Al terminar la clase: (1) podrás identificar los 3 niveles de datos personales con ejemplos; (2) sabrás aplicar las 4 reglas del dato personal; (3) habrás configurado la privacidad de 2 apps que usas; (4) podrás evaluar si una app o sitio respeta tu privacidad.'
   },
   saberAncestral: {
-    saber: 'En el patio de tu abuela había muros, no por miedo: por respeto. Si alguna vez fuiste a la casa de campo de un abuelo, viste que el patio tenía un cerco bajito, una verja, una puerta. No estaba ahí porque la abuela tuviera miedo. Estaba ahí porque cada espacio tenía sus reglas: el zaguán era para los vecinos, la sala para las visitas, el patio para la familia, el cuarto sólo para ella. Tres niveles distintos de quién puede entrar. Cuando llegaba un desconocido, lo atendían en el zaguán; cuando llegaba un amigo, pasaba a la sala; cuando llegaba un hijo, iba directo al patio. Era una arquitectura de la confianza: las puertas decían quién entra y hasta dónde. En internet pasa lo mismo, solo que las puertas no son de madera, son ajustes de configuración en tus apps. Si no las cierras tú, todo el mundo entra hasta tu cuarto.',
+    saber: 'En el patio de tu abuela había muros, no por miedo: por respeto. Si alguna vez fuiste a la casa de campo de un abuelo, viste que el patio tenía un cerco bajito, una verja, una puerta. No estaba ahí porque la abuela tuviera miedo. Estaba ahí porque cada espacio tenía sus reglas: el zaguán era para los vecinos, la sala para las visitas, el patio para la familia, el cuarto solo para ella. Tres niveles distintos de quién puede entrar. Cuando llegaba un desconocido, lo atendían en el zaguán; cuando llegaba un amigo, pasaba a la sala; cuando llegaba un hijo, iba directo al patio. Era una arquitectura de la confianza: las puertas decían quién entra y hasta dónde. En internet pasa lo mismo, solo que las puertas no son de madera, son ajustes de configuración en tus apps. Si no las cierras tú, todo el mundo entra hasta tu cuarto.',
     preguntaPuente: '¿Tu nombre real se puede saber en internet? ¿Tu número de celular? ¿Tu dirección exacta? Si los 3 están al mismo nivel, hay un problema. ¿Cuál es?'
   },
   triangulo: {
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Estoy decidiendo yo qué se sabe de mí, o estoy dejando que las apps lo decidan por mí?'
     },
     estoico: {
-      autor: 'Epicteto (filósofo romano que estudió qué depende de ti y qué no)',
+      autor: 'Epicteto',
       lente: 'lente del cuidado interior',
       cita: '"Cuida lo que depende de ti — tu palabra, tu casa, tu cuerpo, tus datos. Lo que no depende de ti, suéltalo."',
       preguntaEspejo: '¿Estoy quejándome de cosas que no controlo, o estoy actuando sobre las que sí?'

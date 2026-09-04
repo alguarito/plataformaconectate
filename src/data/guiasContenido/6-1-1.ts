@@ -82,23 +82,23 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu compañero te dice \'no llevemos cuaderno de Tecnología, usemos el de Sociales\'. ¿Qué le respondes?',
           opciones: [
             'Tienes razón, ahorramos plata.',
-            'Mejor cuaderno propio para Tecnología. Si se mezcla con Sociales, no encontramos nada después y se desorganiza.',
             'Da igual, ningún cuaderno sirve.',
+            'Mejor cuaderno propio para Tecnología. Si se mezcla con Sociales, no encontramos nada después y se desorganiza.',
             'Mejor usar el del año pasado.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Bien. El cuaderno propio para Tecnología es regla 1. Mezclar materias hace perder apuntes y desorganiza. Pequeña disciplina, gran ahorro.',
           feedbackIncorrecto: 'Cuaderno propio para Tecnología. Si lo mezclas con otra materia, las páginas se desordenan y no encuentras nada en marzo. Cuaderno separado es regla.'
         },
         {
           enunciado: 'El método MILC tiene 3 partes principales en cada guía. ¿Cuáles?',
           opciones: [
-            'Solo lectura de texto.',
             'Saber ancestral + 3 actividades + triángulo de pensamiento.',
+            'Solo lectura de texto.',
             'Solo ver videos.',
             'Solo el computador.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Saber ancestral (cómo se hacía antes) + 3 actividades (identificar, explicar, hacer) + triángulo (3 filósofos). Esa estructura se repite en cada sesión.',
           feedbackIncorrecto: 'MILC = saber ancestral + 3 actividades + triángulo. Cada sesión tiene esa estructura. Conocerla te hace aprovecharla mejor.'
         },
@@ -106,11 +106,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Qué es la \'pregunta-radar\' del periodo?',
           opciones: [
             'Una pregunta de examen difícil.',
-            'Una pregunta personal que tú escoges y esperas responder durante las 10 sesiones. Funciona como brújula.',
             'Una pregunta de la profesora a la clase.',
-            'Una pregunta para Google.'
+            'Una pregunta para Google.',
+            'Una pregunta personal que tú escoges y esperas responder durante las 10 sesiones. Funciona como brújula.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Bien. Tu pregunta-radar te orienta. Ejemplo: \'¿cómo me protejo en internet?\' Las sesiones del periodo la responden. Tener pregunta personal hace el aprendizaje activo.',
           feedbackIncorrecto: 'Pregunta-radar = la pregunta que TÚ escoges al inicio del periodo. Las 10 sesiones la responden poco a poco. Es tu brújula del aprendizaje.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Acabas de firmar el compromiso. ¿Qué cambió?',
           opciones: [
             'Nada, fue un trámite.',
-            'Asumiste 5 acuerdos: cuaderno, asistencia, respeto, esfuerzo, ayuda mutua. Ahora hay claridad de lo que se espera de ti.',
             'El cuaderno te lo regalan.',
+            'Asumiste 5 acuerdos: cuaderno, asistencia, respeto, esfuerzo, ayuda mutua. Ahora hay claridad de lo que se espera de ti.',
             'El profe ya no te puede regañar.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Firmar es declarar \'asumo estos 5 acuerdos\'. Te da claridad de qué se espera y a ti te sostiene cuando algo se ponga difícil. No es trámite: es pacto.',
           feedbackIncorrecto: 'Firmar el compromiso es asumir los 5 acuerdos conscientemente. No es decoración: es un pacto que te sostiene cuando algo se ponga difícil en el año.'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Llegué hoy como persona que aprende, o como persona que pasa por la sala?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador que escribió sobre cómo empezar cada año)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Cada principio importa. El que empieza bien camina largo. El que empieza distraído, llega tarde toda la temporada."',
       preguntaEspejo: '¿Le di a hoy la importancia que tiene, o lo traté como un día cualquiera?'

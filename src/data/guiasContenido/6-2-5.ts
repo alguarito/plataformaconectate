@@ -81,12 +81,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'Tu hermano te dice \'la pantalla del celular se rajó\'. ¿Qué se dañó, hardware o software?',
           opciones: [
-            'Hardware: la pantalla es física, se tocó (cuando se cayó).',
             'Software: las imágenes que mostraba la pantalla.',
             'Ninguno, las pantallas rajadas no son tecnología.',
-            'Las 2 cosas al tiempo.'
+            'Las 2 cosas al tiempo.',
+            'Hardware: la pantalla es física, se tocó (cuando se cayó).'
           ],
-          respuestaIndex: 0,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Bien. La pantalla es hardware (se toca, se daña físicamente). Cambiarla no afecta las fotos porque las fotos son software guardado en el disco duro.',
           feedbackIncorrecto: 'La pantalla es hardware: se daña físicamente. Las fotos no se pierden porque son software guardado en otra pieza (el disco).'
         },
@@ -94,23 +94,23 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu tía borra una foto de su celular por accidente. ¿Qué perdió, hardware o software?',
           opciones: [
             'Hardware: la foto era una pieza física.',
-            'Software: la foto era un archivo (información).',
             'Las 2 cosas, porque la foto y la pantalla son lo mismo.',
+            'Software: la foto era un archivo (información).',
             'No perdió nada, la foto sigue ahí pero invisible.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Las fotos son archivos (software). Tu tía borró información del disco duro. El hardware (el celular) sigue intacto.',
           feedbackIncorrecto: 'Las fotos son software (archivos). Tu tía borró información del disco duro. El hardware (celular y pantalla) está bien.'
         },
         {
           enunciado: 'Tu computador tarda mucho en abrir programas. Tu papá compra una memoria USB nueva. ¿Le ayudó o no?',
           opciones: [
-            'Sí, porque la memoria USB hace que los programas vayan más rápido.',
             'No tiene sentido: el problema es de hardware interno (RAM o disco), no se arregla con un periférico externo.',
+            'Sí, porque la memoria USB hace que los programas vayan más rápido.',
             'Sí, porque la memoria USB es software.',
             'No, porque el problema es de software.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Exacto. La memoria USB es hardware externo para llevar archivos. Para que el equipo abra rápido, hace falta más RAM o cambiar el disco a SSD.',
           feedbackIncorrecto: 'La memoria USB es para llevar archivos, no para acelerar el computador. La velocidad la dan RAM y disco duro (hardware interno) y un buen mantenimiento.'
         },
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Cuál de mis 2 manos (la del hardware o la del software) tengo más entrenada hoy?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador que reflexionó sobre lo material e inmaterial)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Cuida el cuerpo. Cuida la palabra. Lo que está adentro y lo que está afuera son uno."',
       preguntaEspejo: '¿Cuido mi computador como un todo (hardware + software) o cuido solo lo que se ve?'

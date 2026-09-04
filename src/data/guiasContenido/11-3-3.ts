@@ -81,12 +81,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: '¿Cuál NO es un bloque del Canvas?',
           opciones: [
+            'Color del logo.',
             'Propuesta de valor.',
             'Segmento de clientes.',
-            'Color del logo.',
             'Fuentes de ingreso.'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Bien. El color del logo no es modelo de negocio: es identidad visual. El Canvas captura cómo el negocio crea, entrega y captura valor.',
           feedbackIncorrecto: 'El color del logo no es Canvas. Los 9 bloques: segmento, propuesta, canales, relación, ingresos, recursos, actividades, socios, costos.'
         },
@@ -94,11 +94,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Qué hace una buena propuesta de valor?',
           opciones: [
             'Suena cool.',
-            'Cabe en 1 frase clara: para QUIÉN, qué PROBLEMA, qué SOLUCIÓN, qué BENEFICIO único.',
             'Tiene muchos adjetivos.',
-            'Es muy general.'
+            'Es muy general.',
+            'Cabe en 1 frase clara: para QUIÉN, qué PROBLEMA, qué SOLUCIÓN, qué BENEFICIO único.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. Para QUIÉN + qué PROBLEMA + qué SOLUCIÓN + qué BENEFICIO único. Si no cabe en 1 frase clara, no es propuesta sino slogan.',
           feedbackIncorrecto: 'La propuesta tiene 4 partes: para quién, qué problema, qué solución, qué beneficio único. En 1 frase clara. Sin esa precisión, es publicidad vacía.'
         },
@@ -106,23 +106,23 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Por qué identificar \'supuestos críticos\' del modelo?',
           opciones: [
             'Para llenar el Canvas.',
-            'Porque si esos supuestos fallan, todo el modelo falla. Te dice qué verificar PRIMERO.',
             'Para impresionar al profe.',
+            'Porque si esos supuestos fallan, todo el modelo falla. Te dice qué verificar PRIMERO.',
             'Para parecer técnico.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Los supuestos críticos priorizan la validación. Si el precio crítico falla, todo el modelo financiero cambia. Verificar primero esos.',
           feedbackIncorrecto: 'Supuestos críticos = los que si fallan, todo cae. Identificarlos te dice qué validar PRIMERO. Sin esto, validas cosas menos importantes.'
         },
         {
           enunciado: 'Defines tu segmento como \'comerciantes\'. ¿Está bien?',
           opciones: [
-            'Sí, es general y abarca mucho.',
             'No. Demasiado general. Mejor: \'tenderos hombres 35-55 del barrio La Merced, con tienda propia, sin estudios técnicos\'.',
+            'Sí, es general y abarca mucho.',
             'Solo si hay 1000 clientes.',
             'Da igual la precisión.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Bien. Más específico = mejor. Un segmento bien definido te dice exactamente a quién entrevistar, dónde encontrarlo, cómo hablarle.',
           feedbackIncorrecto: 'Segmento específico es regla. "Comerciantes" no te dice nada. "Tenderos hombres 35-55 La Merced sin Excel" te orienta a entrevistas precisas.'
         }

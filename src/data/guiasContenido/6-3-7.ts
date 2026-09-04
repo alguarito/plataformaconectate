@@ -70,23 +70,23 @@ const contenido: ContenidoGuia = {
           enunciado: 'Le das play a un video de YouTube. ¿Dónde está realmente ese video?',
           opciones: [
             'En tu celular, guardado para siempre.',
-            'En un servidor de Google, posiblemente en California.',
             'En las nubes del cielo.',
+            'En un servidor de Google, posiblemente en California.',
             'En tu casa, en el módem.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Los videos viven en servidores físicos de Google (en centros de datos). Tu celular solo los descarga y reproduce. Por eso necesitas internet para verlos.',
           feedbackIncorrecto: 'Los videos viven en servidores físicos de Google. Tu celular los descarga en streaming. Por eso sin internet no puedes verlos.'
         },
         {
           enunciado: '¿Qué es un \'paquete\' en internet?',
           opciones: [
-            'Una caja con productos comprados.',
             'Pedacito de información que viaja entre dispositivos.',
+            'Una caja con productos comprados.',
             'Un programa que instalas.',
             'Un sobre de papel.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. La info grande (videos, fotos) se divide en miles de paquetes que viajan por separado. En el destino se rejuntan. Es como un rompecabezas de información.',
           feedbackIncorrecto: 'Un paquete es un pedacito de información digital. La información grande se divide en miles de paquetes que viajan separados.'
         },
@@ -94,11 +94,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu prima en España te manda una foto por WhatsApp. ¿Por dónde viaja principalmente?',
           opciones: [
             'Por el aire directamente.',
-            'Por cables (submarinos y terrestres) que conectan los continentes.',
             'Por aves entrenadas.',
-            'Solo por wifi.'
+            'Solo por wifi.',
+            'Por cables (submarinos y terrestres) que conectan los continentes.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. La mayoría de internet viaja por cables submarinos de fibra óptica. El wifi es solo el último tramo. Aves no, satélites algunos.',
           feedbackIncorrecto: 'Por cables submarinos de fibra óptica. Internet entre continentes va por cables en el fondo del mar. Wifi y celular son solo el último tramo a tu casa.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu wifi de casa es lento. ¿De qué depende la velocidad real de internet?',
           opciones: [
             'Solo del wifi que tengas.',
-            'Del plan de banda ancha que pagas al proveedor (Claro, Movistar, etc.).',
             'Del color del router.',
+            'Del plan de banda ancha que pagas al proveedor (Claro, Movistar, etc.).',
             'De la cantidad de wifi vecinos.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. La velocidad real depende del plan que pagas a tu proveedor (banda ancha). El wifi distribuye esa velocidad en tu casa. Más wifi sin más banda ancha no ayuda.',
           feedbackIncorrecto: 'La velocidad la da el plan de banda ancha que pagas. El wifi solo distribuye esa velocidad dentro de tu casa. Tener mejor wifi sin mejor plan no sirve.'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Quiero seguir siendo usuario dependiente o quiero ser ciudadano de la red?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador que se preguntaba por la naturaleza de las cosas)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Cada cosa cotidiana esconde un mundo si te detienes a preguntarla. Internet es un mundo entero detrás de un clic."',
       preguntaEspejo: '¿Qué otras cosas cotidianas escondo mundos que no he querido conocer?'

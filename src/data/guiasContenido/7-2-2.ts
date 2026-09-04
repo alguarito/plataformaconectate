@@ -82,11 +82,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Una receta dice \'cocinar a fuego medio\'. ¿Qué característica falla?',
           opciones: [
             'No es finita.',
-            'No es clara (¿qué es \'medio\'? ¿qué fuego? ¿cuánto tiempo?).',
             'No tiene orden.',
-            'No tiene entrada.'
+            'No tiene entrada.',
+            'No es clara (¿qué es \'medio\'? ¿qué fuego? ¿cuánto tiempo?).'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Bien. \'Fuego medio\' es ambiguo. Para un algoritmo claro: \'fuego a temperatura 5/10 durante 15 minutos\'. Lo claro elimina ambigüedad.',
           feedbackIncorrecto: 'Falla la claridad. \'Fuego medio\' es ambiguo. Lo claro especificaría temperatura exacta y tiempo exacto. Sin claridad, el algoritmo se ejecuta distinto cada vez.'
         },
@@ -94,23 +94,23 @@ const contenido: ContenidoGuia = {
           enunciado: '¿De dónde viene la palabra \'algoritmo\'?',
           opciones: [
             'Del inglés \'algorithm\'.',
-            'Del matemático persa Al-Juarismi del siglo IX.',
             'Es palabra moderna inventada con la computación.',
+            'Del matemático persa Al-Juarismi del siglo IX.',
             'Del griego antiguo.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Al-Juarismi (Muhammad ibn Musa al-Khwarizmi) fue matemático persa del siglo IX. Su nombre latinizado dio \'algoritmo\'. Su trabajo del 800 d.C. sigue vivo hoy.',
           feedbackIncorrecto: 'De Al-Juarismi (siglo IX). Su trabajo en matemática sistemática llegó a Europa, su nombre se latinizó \'algoritmus\' y de ahí \'algoritmo\'. 1200 años de historia.'
         },
         {
           enunciado: 'Tu algoritmo tiene 6 pasos pero el orden está mal (paso 5 va antes que paso 3 lógicamente). ¿Qué característica falla?',
           opciones: [
-            'No es finito.',
             'No es ordenado.',
+            'No es finito.',
             'No tiene entrada.',
             'Es demasiado largo.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Orden incorrecto = falla la característica \'ordenado\'. Los pasos correctos en mal orden no resuelven el problema. Reorganiza.',
           feedbackIncorrecto: 'Característica ORDENADO. Los pasos correctos en mal orden no producen el resultado. Secar antes de enjuagar deja manos con jabón. Orden importa.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Un algoritmo \'tirar moneda y decidir\' siempre da resultado distinto. ¿Es determinista?',
           opciones: [
             'Sí, porque tiene pasos.',
-            'No, porque no produce el mismo resultado con la misma entrada (tirar moneda).',
             'Sí, porque siempre lanzas moneda.',
-            'Depende de la moneda.'
+            'Depende de la moneda.',
+            'No, porque no produce el mismo resultado con la misma entrada (tirar moneda).'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. Determinista = mismo input → mismo output siempre. Tirar moneda da cara o sello al azar, así que NO es determinista. Los algoritmos buenos sí lo son.',
           feedbackIncorrecto: 'NO determinista. Determinista = predecible (mismo input → mismo output). Tirar moneda es aleatorio. Los algoritmos de programación son deterministas (no usan azar).'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: 'Si yo enseñara algo que sé hacer a un primo más pequeño, ¿lo enseñaría con la claridad de doña Mercedes, o con vaguedad?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador del orden disciplinado)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Pasos en orden, palabras exactas, fin claro. Esa es la trinidad del trabajo bien hecho."',
       preguntaEspejo: '¿Qué problema actual de mi vida podría resolver mejor si lo pensara como algoritmo?'

@@ -69,12 +69,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'Tu compañero te pregunta algo en el grupo de WhatsApp del salón a las 11 de la noche. ¿Qué haces?',
           opciones: [
-            'Le respondo de inmediato porque vi el mensaje.',
             'No respondo. A las 11 ya nadie debería estar escribiendo. Le contesto mañana.',
+            'Le respondo de inmediato porque vi el mensaje.',
             'Le mando 5 mensajes para que no me olvide.',
             'Le mando un audio gritando.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Bien. Hay horarios y hay sueño. Lo del grupo se contesta al otro día. La amistad no se mide por la rapidez nocturna.',
           feedbackIncorrecto: 'A las 11 de la noche se respeta el sueño. Responder al día siguiente está bien. No es altanería, es netiqueta.'
         },
@@ -82,11 +82,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu mejor amigo se cayó en el descanso y le tomaste una foto graciosa. ¿La subes al estado?',
           opciones: [
             'Sí, porque es gracioso y todos se van a reír.',
-            'Sí, pero le tapo la cara con un emoji.',
             'Primero le pregunto si está bien que la suba. Si dice no, no la subo.',
+            'Sí, pero le tapo la cara con un emoji.',
             'Sí, porque mi amigo no se va a dar cuenta.'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 1,
           feedbackCorrecto: 'Correcto. Antes de subir la foto de otro, le preguntas. Eso es respeto básico, aunque sea tu mejor amigo.',
           feedbackIncorrecto: 'Antes de subir la foto de otro, le pides permiso. Aunque sea tu mejor amigo. Aunque crees que no se entera. Es la regla.'
         },
@@ -95,10 +95,10 @@ const contenido: ContenidoGuia = {
           opciones: [
             'Le respondo con otro insulto fuerte para que se calle.',
             'Le digo que es un perdedor y le mando emojis burlones.',
-            'Bloqueo al jugador y sigo jugando. Si vuelve, le aviso a un adulto.',
-            'Me pongo a llorar y dejo el juego para siempre.'
+            'Me pongo a llorar y dejo el juego para siempre.',
+            'Bloqueo al jugador y sigo jugando. Si vuelve, le aviso a un adulto.'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. Bloquear es lo más sano. Si el problema es grande, aviso a un adulto. Responder con otro insulto solo enciende.',
           feedbackIncorrecto: 'La salida sana es bloquear. Si vuelve o asusta más, le cuentas a un adulto. Insultar de vuelta enciende más.'
         },
@@ -117,12 +117,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'Un desconocido en TikTok te empieza a pedir fotos en ropa de calle. ¿Qué haces?',
           opciones: [
+            'Bloqueo, no respondo, y le cuento a un adulto de confianza ya.',
             'Le mando una foto rápida porque no quiero ser grosero.',
             'Le digo que no me joda y sigo hablando con él.',
-            'Bloqueo, no respondo, y le cuento a un adulto de confianza ya.',
             'Le pido que primero me mande él una foto.'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Bloquear + contar a un adulto. No estás solo. Estas cosas son serias y los adultos sabemos qué hacer.',
           feedbackIncorrecto: 'La salida es bloquear y avisar a un adulto de confianza. Estas cosas son serias. No respondas, no te quedes callado.'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: 'Cuando escribo en línea, ¿recuerdo que el del otro lado es una persona o trato a las personas como si fueran nombres en una pantalla?'
     },
     estoico: {
-      autor: 'Epicteto (un esclavo romano que se hizo famoso enseñando a vivir con calma)',
+      autor: 'Epicteto',
       lente: 'lente del cuidado interior',
       cita: '"No es lo que te dicen lo que te hace daño, es cómo respondes a lo que te dicen."',
       preguntaEspejo: 'Cuando algo me molesta en línea, ¿respondo de una vez o tomo un momento antes de escribir?'

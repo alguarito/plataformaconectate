@@ -69,12 +69,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: '¿Cuál es diferencia entre costo FIJO y VARIABLE?',
           opciones: [
-            'El fijo cambia, el variable no.',
             'El fijo NO cambia con usuarios (renta, dominio). El variable SÍ crece con usuarios (servidor, soporte).',
+            'El fijo cambia, el variable no.',
             'Son lo mismo.',
             'El variable es siempre más grande.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Fijo = constante mes a mes. Variable = crece con uso. Distinguirlos es clave para escalar bien.',
           feedbackIncorrecto: 'Fijo = no cambia con usuarios. Variable = crece con usuarios. Diferencia fundamental para entender qué pasa cuando creces.'
         },
@@ -82,11 +82,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu costo fijo es $300K/mes, variable $5K/usuario, precio $30K/usuario. ¿Cuál es punto de equilibrio?',
           opciones: [
             '1 usuario.',
-            '12 usuarios (12 × ($30K - $5K) = $300K, iguala fijo).',
             '300 usuarios.',
-            'No se puede calcular.'
+            'No se puede calcular.',
+            '12 usuarios (12 × ($30K - $5K) = $300K, iguala fijo).'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. (Precio - costo variable) × cantidad = costos fijos. ($30K - $5K) × X = $300K → X = 12 usuarios. Por encima ganas; por debajo pierdes.',
           feedbackIncorrecto: 'Punto de equilibrio: 12 usuarios. Fórmula: costos fijos ÷ (precio - costo variable) = 300K ÷ 25K = 12. Sin este número vuelas a ciegas.'
         },
@@ -94,11 +94,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Por qué proyectar 3 escenarios (pesimista, realista, optimista)?',
           opciones: [
             'Para llenar páginas.',
-            'Porque si solo proyectas optimista, te sorprende la realidad. 3 escenarios = decisión con piso, techo y centro.',
             'Para impresionar.',
+            'Porque si solo proyectas optimista, te sorprende la realidad. 3 escenarios = decisión con piso, techo y centro.',
             'Por moda.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. 3 escenarios te protegen del optimismo emprendedor. Pesimista (piso seguro), realista (apuesta), optimista (techo posible). Decides con los 3.',
           feedbackIncorrecto: '3 escenarios protegen contra el optimismo natural. Si solo proyectas optimista, la realidad es decepción. Con piso definido, decides con seguridad.'
         },
@@ -117,12 +117,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'Tu análisis muestra escenario realista en negativo el mes 3. ¿Qué haces?',
           opciones: [
-            'Sigo igual, ya veré.',
             'Pivotar el modelo: bajar costos, subir precios, cambiar segmento o postergar lanzamiento.',
+            'Sigo igual, ya veré.',
             'Pedir más crédito.',
             'Cerrar todo.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Pivotar antes de quebrar. El presupuesto detecta el problema en papel; pivotar en papel es barato; pivotar en operación es caro.',
           feedbackIncorrecto: 'Pivotar el modelo antes de quebrar. Bajar costos, subir precios, cambiar segmento. El presupuesto es la oportunidad de detectar problemas antes de operar.'
         }

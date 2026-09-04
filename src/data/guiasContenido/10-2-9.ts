@@ -70,11 +70,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuántas respuestas mínimas pide la encuesta del mini-proyecto?',
           opciones: [
             '1',
-            '15-20',
             '1000',
+            '15-20',
             '10000'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Exacto. 15-20 respuestas mínimas. Suficientes para análisis serio sin exigir esfuerzo desproporcionado.',
           feedbackIncorrecto: 'Son 15-20. Menos no permite análisis; muchas más son carga innecesaria.'
         },
@@ -93,12 +93,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: '¿Qué hace la carta del autor firmada?',
           opciones: [
-            'Es decoración',
             'Declara el proceso y compromete al autor con la propuesta',
+            'Es decoración',
             'Es opcional',
             'Solo lleva el nombre'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Exacto. La carta firmada compromete al autor con la propuesta y el proceso.',
           feedbackIncorrecto: 'Declara proceso, uso de IA, logros y compromiso. Es la firma personal de la pieza.'
         },
@@ -106,23 +106,23 @@ const contenido: ContenidoGuia = {
           enunciado: 'La maquetación del mini-proyecto se hace en...',
           opciones: [
             'Cualquier app',
-            'Google Docs con estilos, TOC, citas APA y pie de figura',
             'Solo Word pago',
-            'Notas del celular'
+            'Notas del celular',
+            'Google Docs con estilos, TOC, citas APA y pie de figura'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Correcto. Google Docs con los 5 elementos profesionales aprendidos en S3.',
           feedbackIncorrecto: 'Google Docs con estilos, TOC, citas APA y pie de figura. Aplicas todo lo de S3.'
         },
         {
           enunciado: '¿Cuántos componentes obligatorios tiene el mini-proyecto?',
           opciones: [
-            '1',
             '6',
+            '1',
             '20',
             '100'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Exacto. 6: tema con destinatario, datos reales, estructura completa, maquetación, declaración IA, carta firmada.',
           feedbackIncorrecto: 'Son 6 componentes obligatorios. Faltar a uno deja el mini-proyecto incompleto.'
         }

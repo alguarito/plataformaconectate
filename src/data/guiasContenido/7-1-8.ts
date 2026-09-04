@@ -70,11 +70,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Borraste por error un párrafo importante de tu Word y guardaste. ¿Está perdido?',
           opciones: [
             'Sí, sin esperanza.',
-            'No. Abro el historial de versiones de OneDrive, busco una versión anterior, copio el párrafo o restauro la versión completa.',
             'Solo si pagué premium.',
-            'Solo si era una USB.'
+            'Solo si era una USB.',
+            'No. Abro el historial de versiones de OneDrive, busco una versión anterior, copio el párrafo o restauro la versión completa.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. El historial de versiones es tu salvavidas. OneDrive guarda 25 versiones durante 30 días. Restauras o copias lo que necesites.',
           feedbackIncorrecto: 'OneDrive guarda historial automático. Abres Archivo → Información → Historial. Encuentras versión con el párrafo, lo copias y lo pegas. O restauras toda la versión.'
         },
@@ -82,11 +82,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuánto tiempo guarda OneDrive las versiones anteriores?',
           opciones: [
             '1 año.',
-            'Hasta 25 versiones durante 30 días aproximadamente.',
             'Para siempre.',
+            'Hasta 25 versiones durante 30 días aproximadamente.',
             '1 hora.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Bien. 25 versiones × 30 días. Después se borran las viejas. Para trabajos críticos (tesis), además del historial conviene tener backup manual.',
           feedbackIncorrecto: '25 versiones durante 30 días. Para lo crítico (proyecto final), backup manual adicional en USB o Google Drive. Doble seguro.'
         },
@@ -105,12 +105,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: '¿Cuál es la diferencia entre HISTORIAL y PAPELERA en OneDrive?',
           opciones: [
-            'Son lo mismo.',
             'Historial = versiones de un archivo que aún existe. Papelera = archivos completos borrados (recuperables 30 días).',
+            'Son lo mismo.',
             'Historial solo en Word; Papelera solo en Excel.',
             'Papelera se borra cada hora.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Historial = cambios DENTRO del archivo. Papelera = archivo COMPLETO borrado. Las dos son herramientas distintas que se complementan.',
           feedbackIncorrecto: 'Historial: cambios DENTRO de un archivo activo. Papelera: archivos completos borrados (30 días para restaurar). Las dos te protegen pero en distintos escenarios.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu compañero (con permiso editor) borró sin querer toda tu sección del trabajo grupal. ¿Qué haces?',
           opciones: [
             'Me enojo y le digo al profe.',
-            'Abro el historial, encuentro la versión donde mi sección estaba, restauro o copio mi sección desde ahí.',
             'Reescribo todo desde cero.',
+            'Abro el historial, encuentro la versión donde mi sección estaba, restauro o copio mi sección desde ahí.',
             'Borro el archivo.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Bien. El historial salva trabajo perdido por errores ajenos. Restauras o copias la parte borrada. Después hablas con el compañero sobre los cuidados al editar.',
           feedbackIncorrecto: 'Historial al rescate. Restauras o copias tu sección desde una versión anterior. La coautoría se vuelve segura cuando sabes que nada se pierde permanentemente.'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Estoy aprovechando el archivo automático que OneDrive me da, o lo ignoro?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador que documentaba sus decisiones)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Quien registra su trabajo no teme el olvido. Quien no registra, depende de la memoria, que es traidora."',
       preguntaEspejo: '¿Confío más en mi memoria que en mis archivos, sabiendo que la memoria falla?'

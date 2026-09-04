@@ -81,12 +81,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'Borras tu archivo de tarea por error. ¿Se perdió para siempre?',
           opciones: [
-            'Sí, los archivos borrados nunca vuelven.',
             'No, primero va a la papelera de reciclaje. Si no la vaciaste, puedes recuperarlo.',
+            'Sí, los archivos borrados nunca vuelven.',
             'Solo si reinicias el computador.',
             'Solo si el archivo era pequeño.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Bien. La papelera de reciclaje es tu segunda oportunidad: el archivo está ahí hasta que vacíes la papelera o pasen muchos días.',
           feedbackIncorrecto: 'Va primero a la papelera. Si no la has vaciado, abrís la papelera, clic derecho en el archivo, "Restaurar" y vuelve a su lugar.'
         },
@@ -94,11 +94,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu mamá compra un computador Mac y tú estás acostumbrado a Windows. ¿Qué pasa?',
           opciones: [
             'No vas a poder usarlo, los Mac son totalmente distintos.',
-            'Al principio te confundes, pero los conceptos son los mismos (escritorio, ventanas, archivos).',
             'Tienes que aprender a programar para usarlo.',
+            'Al principio te confundes, pero los conceptos son los mismos (escritorio, ventanas, archivos).',
             'El Mac no tiene escritorio.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Mac es un SO distinto (macOS) pero los conceptos son los mismos: escritorio, ventanas, archivos, papelera. Cambia el estilo, no la idea.',
           feedbackIncorrecto: 'Todos los SO de escritorio tienen los mismos conceptos. Cambia el estilo (Mac arriba, Windows abajo), no la idea. En 1 semana te acostumbras.'
         },
@@ -107,10 +107,10 @@ const contenido: ContenidoGuia = {
           opciones: [
             'Android.',
             'Windows.',
-            'Microsoft Word.',
-            'Linux.'
+            'Linux.',
+            'Microsoft Word.'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Exacto. Microsoft Word es un programa para escribir. Android, Windows y Linux son sistemas operativos (coordinan todo el equipo).',
           feedbackIncorrecto: 'Microsoft Word no es SO; es un programa. SO: Android, Windows, Linux, macOS, iOS, ChromeOS. Word corre dentro de un SO.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Encender el computador tarda varios segundos antes de mostrar el escritorio. ¿Qué hace el computador en ese tiempo?',
           opciones: [
             'Está descansando.',
-            'El SO está cargándose: prepara el hardware, los archivos, los programas, el escritorio. Eso toma tiempo.',
             'Espera órdenes del usuario.',
-            'Verifica que tienes wifi.'
+            'Verifica que tienes wifi.',
+            'El SO está cargándose: prepara el hardware, los archivos, los programas, el escritorio. Eso toma tiempo.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Bien. En esos segundos el SO carga drivers de hardware, prepara la memoria, organiza archivos y arma el escritorio. No es lento; está trabajando.',
           feedbackIncorrecto: 'El SO se está cargando: prepara hardware, archivos, programas y el escritorio. Por eso tarda unos segundos al encender. Es trabajo invisible pero necesario.'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Uso el SO que me asignaron porque me lo asignaron, o ya he probado otro para decidir cuál prefiero?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador que estudió cómo coordinar muchas cosas a la vez)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Lo invisible es lo más importante. Lo que no se ve sostiene lo que se ve."',
       preguntaEspejo: '¿A qué cosas invisibles de mi vida les he dejado de poner atención porque "siempre funcionan"?'

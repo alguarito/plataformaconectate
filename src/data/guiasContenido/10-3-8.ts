@@ -70,11 +70,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuántas piezas obligatorias tiene la comunicación empresarial básica?',
           opciones: [
             '1',
-            '3',
             '100',
-            '0'
+            '0',
+            '3'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Exacto. 3: propuesta comercial breve, correo de presentación, publicación visual.',
           feedbackIncorrecto: 'Son 3 piezas básicas. Coherentes entre sí.'
         },
@@ -94,23 +94,23 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cómo termina una propuesta comercial breve?',
           opciones: [
             'Con una despedida',
-            'Con llamada a la acción (CTA)',
             'Sin terminar',
+            'Con llamada a la acción (CTA)',
             'Con un poema'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Exacto. Con CTA específica. Sin pedido claro, la propuesta queda sin propósito.',
           feedbackIncorrecto: 'Con CTA clara. "Reserva el lunes en este link" es ejemplo de CTA concreto.'
         },
         {
           enunciado: '¿Cuál es el rol correcto de la IA en estas piezas?',
           opciones: [
-            'Reemplazar al emprendedor',
             'Acelerar redacción; el humano ajusta tono y coherencia',
+            'Reemplazar al emprendedor',
             'No tiene rol',
             'Decidir el precio'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Correcto. La IA acelera, el emprendedor ajusta tono local, coherencia y firma.',
           feedbackIncorrecto: 'Acelera redacción; el humano ajusta tono, coherencia y compromiso.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Qué herramienta gratuita es ideal para la publicación visual?',
           opciones: [
             'Solo Photoshop pago',
-            'Canva',
             'Calculadora',
+            'Canva',
             'WhatsApp Web'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Exacto. Canva tiene plantillas listas para post de redes sociales.',
           feedbackIncorrecto: 'Es Canva. Plantillas listas, drag-and-drop, exportación a JPG o PNG.'
         }

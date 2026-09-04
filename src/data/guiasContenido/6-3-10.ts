@@ -70,23 +70,23 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu documento tiene contenido, pero no tiene portada. ¿Cumple los 10 elementos?',
           opciones: [
             'Sí, la portada es opcional.',
-            'No, falta el elemento 8 (marco completo). La portada es parte del marco profesional.',
             'Sí, si el título es grande.',
-            'No tiene importancia.'
+            'No tiene importancia.',
+            'No, falta el elemento 8 (marco completo). La portada es parte del marco profesional.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. La portada separada es parte del marco profesional. Sin portada falta uno de los 10. Agrégala antes de entregar.',
           feedbackIncorrecto: 'La portada es elemento 8 del marco. Sin portada falta un elemento. Agrega 1 página al inicio con título grande, nombre, grado, fecha.'
         },
         {
           enunciado: 'Citaste solo 1 fuente al final del documento. ¿Cumple?',
           opciones: [
-            'Sí, 1 es suficiente.',
             'No, mínimo 3 fuentes con evaluación CRAAP.',
+            'Sí, 1 es suficiente.',
             'Solo si la fuente es muy buena.',
             'Sí, si la fuente es Wikipedia.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Mínimo 3 fuentes citadas para evitar depender de una sola perspectiva. Cada una con CRAAP rápido.',
           feedbackIncorrecto: 'Mínimo 3 fuentes citadas con CRAAP. Una sola fuente te hace depender de su perspectiva. Verificar en varias fuentes es buena práctica.'
         },
@@ -94,11 +94,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu lista de 3 ítems empieza así: \'Lavar las verduras, Cortar todo, La cocción final\'. ¿Está bien?',
           opciones: [
             'Sí, perfecto.',
-            'No, no tiene formato gramatical paralelo. Mejor: Lavar, Cortar, Cocer (todos en infinitivo).',
             'Sí, los 3 son ítems válidos.',
+            'No, no tiene formato gramatical paralelo. Mejor: Lavar, Cortar, Cocer (todos en infinitivo).',
             'Solo falta el cuarto.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Bien. Formato paralelo: todos los ítems con la misma estructura gramatical. Si arrancas con verbo en infinitivo, todos en infinitivo.',
           feedbackIncorrecto: 'Falla el formato paralelo. Si el primero es verbo (Lavar), todos verbo. La mezcla "Lavar las verduras / La cocción" se ve descuidada.'
         },
@@ -117,12 +117,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'Aplicaste 7 de los 10 elementos. ¿Está OK para entregar?',
           opciones: [
-            'Sí, es suficiente.',
             'Mejor revisa los 3 que faltan y trata de aplicarlos. El objetivo es 8-10 de 10.',
+            'Sí, es suficiente.',
             'Solo si los 3 que faltan son fáciles.',
             '10 son obligatorios siempre.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Bien. 7/10 es regular. Tu objetivo es 8-10 para entrega. Revisa los 3 que faltan: probablemente son cosas rápidas que se completan en 10 minutos.',
           feedbackIncorrecto: 'La meta es 8-10 de 10. Los faltantes suelen tomar minutos extra. Antes de entregar, revisa qué te falta y complétalo.'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Cuántos elementos integré sin pensar y cuántos tuve que volver a revisar? Eso me dice qué tan asentado está el oficio.'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador que valoraba el trabajo terminado)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Lo terminado vale más que lo perfecto. Termina bien lo que empieces; perfecciona en el siguiente."',
       preguntaEspejo: '¿Voy a entregar lo terminado, o me voy a quedar esperando perfeccionarlo sin entregar nada?'

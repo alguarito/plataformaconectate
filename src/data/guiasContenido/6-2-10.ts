@@ -70,11 +70,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu primo va a comprar un computador y dice \'voy a llevar el más caro\'. ¿Qué le dices?',
           opciones: [
             'Buena idea, así te dura más.',
-            'El más caro tiene componentes que tal vez no usas. Primero pensar tu perfil, después comprar.',
             'Compra mejor el más barato.',
+            'El más caro tiene componentes que tal vez no usas. Primero pensar tu perfil, después comprar.',
             'Compra cualquiera, todos son iguales.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. El más caro tiene componentes para perfiles avanzados (gamer, creador pro). Si solo haces tareas, pagas por lo que no usas.',
           feedbackIncorrecto: 'El más caro suele tener componentes que no usarás. Primero piensas tu perfil, después eliges según necesidad. Decisión con criterio.'
         },
@@ -94,23 +94,23 @@ const contenido: ContenidoGuia = {
           enunciado: 'Vas a jugar Roblox con shaders y Minecraft con mods pesados. ¿Cuál perfil eres?',
           opciones: [
             'Ofimática.',
-            'Gamer (juegos pesados).',
             'Creador profesional.',
-            'Edición media.'
+            'Edición media.',
+            'Gamer (juegos pesados).'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Exacto. Juegos pesados = perfil gamer. Necesitas GPU dedicada, RAM 16 GB+, SSD rápido. Rango $4-7 millones.',
           feedbackIncorrecto: 'Eres perfil gamer. Roblox con shaders y mods exigentes requieren GPU dedicada + RAM 16 GB+ + SSD rápido.'
         },
         {
           enunciado: '¿Qué es más importante en un computador para ofimática: SSD o HDD?',
           opciones: [
-            'HDD, porque guarda más.',
             'SSD, porque hace que el equipo prenda y abra programas rápido.',
+            'HDD, porque guarda más.',
             'Da lo mismo, son iguales.',
             'Solo HDD, los SSD son para gamers.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. SSD hace toda la diferencia: prende en 10s en vez de 60s, abre Word en segundos. Para ofimática, SSD es la mejor inversión.',
           feedbackIncorrecto: 'SSD es lo más importante. Prende rápido, abre rápido. HDD es más barato y guarda más, pero lento. Para principal, siempre SSD.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tus papás te dan $2.500.000 pesos para tu primer computador y tu perfil es ofimática + estudiante. ¿Qué pides?',
           opciones: [
             'Computador gamer con RTX 4090.',
-            'Portátil con Intel i5, 8-16 GB RAM, SSD 256 GB, sin GPU dedicada.',
             'El más barato posible para guardar el resto.',
-            'Computador de creador profesional.'
+            'Computador de creador profesional.',
+            'Portátil con Intel i5, 8-16 GB RAM, SSD 256 GB, sin GPU dedicada.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Bien. Para ofimática + colegio con 2.5 millones: i5 + 16 GB RAM + SSD 256 GB es el dulce punto. Te durará 5-6 años bien.',
           feedbackIncorrecto: 'Para tu perfil + presupuesto: i5 + 16 GB RAM + SSD 256 GB. Gastas todo el dinero en componentes útiles, sin pagar lo innecesario.'
         }
@@ -146,7 +146,7 @@ const contenido: ContenidoGuia = {
       preguntaEspejo: '¿Las cosas que quiero comprar las necesito, o me las quieren vender porque están de moda?'
     },
     estoico: {
-      autor: 'Marco Aurelio (emperador que decidía con criterio)',
+      autor: 'Marco Aurelio',
       lente: 'lente del cuidado interior',
       cita: '"Mide cada decisión por su propósito, no por el ruido a su alrededor."',
       preguntaEspejo: 'Mis últimas 3 compras importantes, ¿las decidí por mi propósito o por el ruido?'

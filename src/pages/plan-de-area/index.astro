@@ -21,6 +21,7 @@ import {
   pipelineMilc,
   valoracionPorContrato,
   valoracionPorDensidad,
+  ecosistemaFormativo,
 } from '../../data/planArea';
 
 const base = import.meta.env.BASE_URL;
@@ -42,6 +43,7 @@ const seccionesPlanArea = [
   { id: 'rubricas',           titulo: 'Rúbricas operativas · 5D, proyecto y SEL',         emoji: '📋' },
   { id: 'referentes',         titulo: 'Marco teórico · 7 referentes',                     emoji: '📚' },
   { id: 'recursos',           titulo: 'Recursos curriculares 2026',                       emoji: '🧩' },
+  { id: 'ecosistema',         titulo: 'Ecosistema formativo · 4 espacios',                emoji: '🌐' },
   { id: 'mallas',             titulo: 'Mallas curriculares por grado',                    emoji: '🎒' },
   { id: 'descarga',           titulo: 'Descarga del documento completo',                  emoji: '📥' },
   { id: 'triangulo',          titulo: 'Triángulo de pensamiento',                          emoji: '🔺' },
@@ -54,7 +56,7 @@ const seccionesPlanArea = [
 
 <BaseLayout
   title={`Plan de Área 2026 · ${planArea.area} — ConectaTE`}
-  description={`${planArea.area} ${planArea.ano} · ${planArea.cobertura}. Modelo MILC: Escucha, Sistematización, Praxis y Evaluación liberadora. ${planArea.recursos.guias} guías + ${planArea.recursos.proyectos} proyectos integradores + ${planArea.recursos.examenes} exámenes.`}
+  description={`${planArea.area} ${planArea.ano} · ${planArea.cobertura}. Modelo MILC: Escucha, Sistematización, Praxis y Evaluación liberadora. ${planArea.recursos.nucleo.guias} guías + ${planArea.recursos.nucleo.proyectos} proyectos integradores + ${planArea.recursos.nucleo.examenes} exámenes, más ${planArea.recursos.ampliaciones.total} piezas en Territorio Interior, Semillero y Bebras.`}
   ogType="article"
   imagen="/og/plan-de-area.png"
 >
@@ -418,34 +420,86 @@ const seccionesPlanArea = [
       <!-- RECURSOS CURRICULARES -->
       <div id="recursos" class="bento-card mb-10">
         <span class="chip-bento mb-3">Recursos curriculares 2026</span>
-        <h2 class="heading-huge mb-2 leading-tight">El plan vivo, en 216 piezas.</h2>
+        <h2 class="heading-huge mb-2 leading-tight">El núcleo, en {planArea.recursos.nucleo.total} piezas.</h2>
         <p class="text-sm md:text-base mb-8 leading-relaxed" style="color: var(--fg-muted);">
           Plan, guía, proyecto y examen forman partes de una misma arquitectura
-          pedagógica con identidad visual y editorial común.
+          pedagógica con identidad visual y editorial común. Esto es lo que cursa
+          todo estudiante de 6° a 11°.
         </p>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
           <div class="bento-card-color bg-bento-blue flex flex-col justify-between min-h-[180px]">
             <span class="text-xs font-bold uppercase tracking-widest opacity-80">Guías</span>
             <div>
-              <div class="text-7xl font-black tracking-tighter leading-none">{planArea.recursos.guias}</div>
+              <div class="text-7xl font-black tracking-tighter leading-none">{planArea.recursos.nucleo.guias}</div>
               <div class="text-sm font-bold mt-2">de aprendizaje · 30 por grado</div>
             </div>
           </div>
           <div class="bento-card-color bg-bento-pink flex flex-col justify-between min-h-[180px]">
             <span class="text-xs font-bold uppercase tracking-widest opacity-80">Proyectos</span>
             <div>
-              <div class="text-7xl font-black tracking-tighter leading-none">{planArea.recursos.proyectos}</div>
+              <div class="text-7xl font-black tracking-tighter leading-none">{planArea.recursos.nucleo.proyectos}</div>
               <div class="text-sm font-bold mt-2">integradores · 1 por período</div>
             </div>
           </div>
           <div class="bento-card-color bg-bento-cyan flex flex-col justify-between min-h-[180px]">
             <span class="text-xs font-bold uppercase tracking-widest opacity-80">Exámenes</span>
             <div>
-              <div class="text-7xl font-black tracking-tighter leading-none">{planArea.recursos.examenes}</div>
+              <div class="text-7xl font-black tracking-tighter leading-none">{planArea.recursos.nucleo.examenes}</div>
               <div class="text-sm font-bold mt-2">de síntesis · 1 por período</div>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- ECOSISTEMA FORMATIVO -->
+      <div id="ecosistema" class="bento-card mb-10">
+        <span class="chip-bento mb-3">Ecosistema formativo</span>
+        <h2 class="heading-huge mb-2 leading-tight">
+          El área no termina en el aula: {planArea.recursos.total} piezas en cuatro espacios.
+        </h2>
+        <p class="text-sm md:text-base mb-8 leading-relaxed" style="color: var(--fg-muted);">
+          Este plan declara dos ejes transversales —pensamiento computacional y
+          habilidades socioemocionales— y una apuesta por la investigación
+          escolar. No son enunciados: cada uno tiene un espacio que lo
+          implementa, con guías propias y producto verificable. Aquí está cuál
+          responde a qué.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+          {ecosistemaFormativo.map((e) => (
+            <a
+              href={`${base}${e.ruta}`}
+              class="bento-card flex flex-col gap-3 hover:scale-[1.01] active:scale-[0.99] transition-transform"
+            >
+              <div class="flex items-start justify-between gap-3">
+                <span class="text-4xl leading-none">{e.emoji}</span>
+                <span
+                  class="text-[0.65rem] font-black uppercase tracking-widest px-2 py-1 rounded-full shrink-0"
+                  style={
+                    e.obligatorio
+                      ? 'background: var(--fg); color: var(--bg);'
+                      : 'border: 1.5px solid var(--fg-muted); color: var(--fg-muted);'
+                  }
+                >
+                  {e.obligatorio ? 'Obligatorio' : 'Por interés'}
+                </span>
+              </div>
+              <div>
+                <h3 class="text-xl font-black tracking-tight leading-tight">{e.nombre}</h3>
+                <p class="text-xs font-bold mt-1" style="color: var(--fg-muted);">{e.piezas}</p>
+              </div>
+              <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">
+                {e.descripcion}
+              </p>
+              <p class="text-sm leading-relaxed pt-3 mt-auto" style="border-top: 1.5px solid var(--border); color: var(--fg);">
+                <span class="font-black uppercase tracking-widest text-[0.65rem] block mb-1" style="color: var(--fg-muted);">
+                  Responde a
+                </span>
+                {e.responde}
+              </p>
+            </a>
+          ))}
         </div>
       </div>
 

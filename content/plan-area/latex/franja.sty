@@ -1,0 +1,103 @@
+% =====================================================================
+%  franja.sty — Identidad visual institucional I.E. Sor María Juliana
+%  Aplicable a: informes institucionales y documento rector del Plan de Área.
+%  NO rige guías, exámenes, proyectos, libros MILC ni la plataforma web.
+%
+%  Requiere XeLaTeX o LuaLaTeX (usa fontspec).
+%
+%  Uso mínimo:
+%     \usepackage{franja}
+%  Con las fuentes en otra ruta:
+%     \usepackage[fuentes=./franja/fuentes/]{franja}
+%
+%  Los colores NO se definen aquí: vienen de franja-colores.sty, que genera
+%  build-tokens.mjs a partir de tokens.json. Si un color se ve mal, se
+%  corrige en el origen y se regenera. Nunca aquí.
+% =====================================================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{franja}[2026/09/07 v1.0 Identidad visual institucional SMJ]
+
+\RequirePackage{kvoptions}
+\SetupKeyvalOptions{family=franja, prefix=franja@}
+\DeclareStringOption[./fuentes/]{fuentes}
+\DeclareBoolOption[true]{tipografia}   % \usepackage[tipografia=false]{franja} deja las fuentes como estén
+\ProcessKeyvalOptions*
+
+% --- Paleta generada -------------------------------------------------
+\RequirePackage{franja-colores}
+
+% --- Tipografía ------------------------------------------------------
+% Newsreader para el texto corrido, Bricolage Grotesque para lo que se lee
+% de un vistazo. Ambas con cortes reales: aquí no se sintetiza ni una
+% negrita ni una cursiva.
+\iffranja@tipografia
+  \RequirePackage{fontspec}
+  \setmainfont{Newsreader16pt-Regular.ttf}[
+    Path            = \franja@fuentes ,
+    BoldFont        = Newsreader16pt-SemiBold.ttf ,
+    ItalicFont      = Newsreader16pt-Italic.ttf ,
+    BoldItalicFont  = Newsreader16pt-SemiBoldItalic.ttf ,
+    Numbers         = OldStyle ]
+  \setsansfont{BricolageGrotesque-Regular.otf}[
+    Path            = \franja@fuentes ,
+    BoldFont        = BricolageGrotesque-Bold.otf ]
+  % Cortes con nombre propio, para titulares y cifras.
+  \newfontfamily\franjaSemi{BricolageGrotesque-SemiBold.otf}[Path=\franja@fuentes]
+  \newfontfamily\franjaNegra{BricolageGrotesque-ExtraBold.otf}[Path=\franja@fuentes]
+\fi
+
+% --- Alias de compatibilidad -----------------------------------------
+% El Plan de Área venía con su propia paleta, y su «vino institucional»
+% (#6B1237) no era el de la institución (#6B1A2A). Estos alias corrigen el
+% color sin obligar a tocar las 113 páginas del cuerpo: el documento sigue
+% escribiendo \color{vinoInst} y ahora sale el vino correcto.
+\colorlet{vinoInst}{smjVinoProfundo}
+\colorlet{vinoClaro}{smjVinoSuave}
+\colorlet{azulInst}{smjTinta}
+\colorlet{azulClaro}{smjTealSuave}
+\colorlet{grisClaro}{smjPapel2}
+\colorlet{dorado}{smjDorado}
+
+% --- Rótulo, cifra y filete ------------------------------------------
+% Los tres gestos que dan al sistema su aire editorial.
+
+% \rotulo{TEXTO} — versalita espaciada en sans, para etiquetas.
+\newcommand{\rotulo}[1]{%
+  {\sffamily\bfseries\footnotesize\color{smjTinta3}\MakeUppercase{#1}}}
+
+% \cifraFranja{N}{glosa} — número grande con su glosa debajo.
+\newcommand{\cifraFranja}[2]{%
+  \begin{minipage}[t]{0.23\linewidth}
+    {\franjaNegra\fontsize{30}{30}\selectfont\color{smjVino}#1}\\[2pt]
+    {\sffamily\bfseries\scriptsize\color{smjTinta3}\MakeUppercase{#2}}
+  \end{minipage}}
+
+% \filete y \fileteGrueso — divisorias del sistema.
+\newcommand{\filete}{{\color{smjFilete}\rule{\linewidth}{0.4pt}}}
+\newcommand{\fileteGrueso}{{\color{smjTinta}\rule{\linewidth}{1.2pt}}}
+
+% --- Cajas -----------------------------------------------------------
+% `most` se pasa por adelantado: así da igual si el documento carga
+% tcolorbox antes o después de este paquete, no hay choque de opciones.
+\PassOptionsToPackage{most}{tcolorbox}
+\RequirePackage{tcolorbox}
+
+% Advertencia: lo que el lector no debe pasar por alto.
+\newtcolorbox{franjaAviso}[1]{
+  colback=smjVinoSuave, colframe=smjVinoProfundo, coltitle=white,
+  colbacktitle=smjVinoProfundo, fonttitle=\sffamily\bfseries\small,
+  title={#1}, breakable, enhanced, arc=2pt, boxrule=0.8pt}
+
+% Nota: contexto útil que no interrumpe.
+\newtcolorbox{franjaNota}[1]{
+  colback=smjTealSuave, colframe=smjTeal, coltitle=white,
+  colbacktitle=smjTeal, fonttitle=\sffamily\bfseries\small,
+  title={#1}, breakable, enhanced, arc=2pt, boxrule=0.8pt}
+
+% Destacado: la idea que sostiene la sección.
+\newtcolorbox{franjaDestacado}[1]{
+  colback=smjPapel2, colframe=smjTinta, coltitle=white,
+  colbacktitle=smjTinta, fonttitle=\sffamily\bfseries\small,
+  title={#1}, breakable, enhanced, arc=2pt, boxrule=0.8pt}
+
+\endinput

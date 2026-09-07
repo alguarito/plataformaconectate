@@ -11,160 +11,280 @@ const contenido: ContenidoGuia = {
   grado: 8,
   periodo: 2,
   sesion: 6,
-  titulo: 'Sensores con variables, umbrales y calibración',
-  resumen: 'Como el reloj de sol del campesino: calibrar al lugar y a la estación. Aprendes a usar variables, definir umbrales con criterio y calibrar sensores al ambiente real.',
+  titulo: 'Variables y umbrales — calibrar antes de programar',
+  resumen: 'Un umbral es la frontera desde la que el programa actúa, y no se inventa: se calibra con mediciones reales. Hoy guardas lecturas en variables y disparas tres alertas, como los mayores nasa de Toribío que ajustan lo que esperan de una señal cuando el mundo cambia.',
   duracionMin: 90,
-  subtema: 'Sensores · Variables · Umbrales · Calibración',
+  subtema: 'Lógica y micro:bit',
   preLectura: {
-    porQueImporta: 'Saber calibrar es lo que distingue un sensor confiable de uno que da falsas alarmas. Te servirá en cualquier proyecto futuro: huertas inteligentes, alarmas, automatización, IoT.',
-    preguntaDetonante: '¿Qué del reloj de sol del campesino — su disciplina de calibrar al lugar y la estación — podemos llevar a los sensores que programamos?',
+    porQueImporta: 'Cada alarma, termostato y sensor que te rodea tiene un umbral que alguien decidió. Saber calibrarlo es saber por qué una alarma suena a tiempo y otra molesta.',
+    preguntaDetonante: 'Si tu alarma de «falta luz» sonara a mediodía con el sol entrando, ¿qué habría fallado, el sensor o el umbral que pusiste?',
     activacion: {
-      titulo: 'El sensor mal calibrado',
-      descripcion: 'En 5 minutos: piensa en un dispositivo del entorno (alarma, sensor de movimiento de luces, detector) que dé falsas alarmas o no responde cuando debe. ¿Qué umbral está mal calibrado?',
+      titulo: 'Un número, tres salones',
+      descripcion: 'En 3 minutos, piensa en tres lugares del colegio: el patio, tu salón y el laboratorio con cortinas. Escribe para cada uno un número entre 0 y 255 que te parezca «normal» de luz. ¿Te sirve el mismo umbral de «oscuro» en los tres?',
       duracionMin: 5
     },
     conexion: {
-      anterior: 'En la sesión 15 aprendiste actuadores y respuestas multi-actuador.',
-      siguiente: 'En la sesión 17 depurarás lógica de control con casos esperados, contrarios y límites.'
+      anterior: 'En la sesión 5 el micro:bit se expresó con luces y sonido en versiones.',
+      siguiente: 'En la sesión 7 buscas el error cuando el programa no hace lo esperado.'
     }
   },
   conceptosClave: [
     {
+      termino: 'Lectura',
+      definicion: 'El número que entrega el sensor en un instante. Luz, de 0 a 255; temperatura, en grados Celsius.',
+      ejemplo: 'A las 5 p. m. el sensor de luz del aula dio 65.',
+      categoria: 'Medir'
+    },
+    {
       termino: 'Variable',
-      definicion: 'Espacio nombrado en memoria donde guardas un valor para usarlo después. En MakeCode se crea desde la categoría Variables.',
-      ejemplo: 'establecer nivel_luz a (nivel de luz). Luego puedes comparar nivel_luz con un umbral en un if.',
-      emoji: '📦'
-    },
-    {
-      termino: 'Umbral',
-      definicion: 'Valor que separa dos zonas de acción del programa. Si la lectura está por encima o por debajo, el sistema reacciona distinto.',
-      ejemplo: 'umbral_oscuro = 100. Si nivel_luz menor a 100, mostrar luna; sino, mostrar sol.',
-      emoji: '📏'
-    },
-    {
-      termino: 'Calibración',
-      definicion: 'Proceso de tomar mediciones reales antes de fijar un umbral. Garantiza que el programa reacciona al contexto, no a un número inventado.',
-      ejemplo: 'Antes de fijar umbral_oscuro, mides la luz del aula en 5 momentos del día y decides el valor según el rango observado.',
-      emoji: '🎯'
-    },
-    {
-      termino: 'Bitácora de calibración',
-      definicion: 'Tabla con 4 columnas (momento, lectura, condición real, observación) que respalda la decisión del umbral con datos.',
-      ejemplo: 'Fila 1, 7 a. m., lectura 120, aula con cortinas abiertas, día nublado. Cinco filas como esa dan baseline.',
-      emoji: '📓'
+      definicion: 'Un cajón con nombre donde el programa guarda un valor para usarlo después.',
+      ejemplo: '«Establecer nivel_luz a (nivel de luz)» guarda la lectura en nivel_luz.',
+      categoria: 'Medir'
     },
     {
       termino: 'Nombre descriptivo',
-      definicion: 'Identificador de variable que dice qué guarda (nivel_luz, umbral_oscuro), no letras sueltas (x, y, z). Hace el código legible.',
-      ejemplo: 'En lugar de a = nivel de luz, escribir nivel_luz = nivel de luz. Cualquier lector entiende sin explicación.',
-      emoji: '🏷️'
+      definicion: 'El nombre de la variable dice qué guarda. Se entiende sin explicación semanas después.',
+      ejemplo: 'temperatura_aula en vez de t; umbral_oscuro en vez de x.',
+      categoria: 'Medir'
+    },
+    {
+      termino: 'Umbral',
+      definicion: 'El valor que separa una zona de acción de otra. Por debajo pasa una cosa, por encima otra.',
+      ejemplo: 'Oscuro si la luz es menor de 100; brillante si es mayor de 220.',
+      categoria: 'Decidir'
+    },
+    {
+      termino: 'Calibración',
+      definicion: 'Tomar varias lecturas en condiciones reales antes de decidir el umbral, y ajustarlo después de probar.',
+      ejemplo: 'Cinco lecturas, mesa, ventana, lámpara, mano y bolso, antes de fijar los umbrales.',
+      categoria: 'Decidir'
+    },
+    {
+      termino: 'Bitácora de calibración',
+      definicion: 'Tabla de cuatro columnas, momento, lectura, condición real y observación, con al menos cinco filas.',
+      ejemplo: '«Bajo la lámpara · 240 · muy iluminado · la lámpara a 20 cm».',
+      categoria: 'Decidir'
     }
   ],
   laboratorios: [
     {
       tipo: 'quiz',
-      titulo: '¿Dominas variables, umbrales y calibración?',
-      instrucciones: '5 preguntas para verificar que decides umbrales con calibración, no con números inventados.',
+      titulo: '¿Sabes calibrar un umbral?',
+      instrucciones: 'Cinco preguntas para verificar que dominas lecturas, variables, umbrales y calibración. No va al cuaderno.',
       preguntas: [
         {
-          enunciado: 'Tienes 5 lecturas de luz en el aula a distintas horas (65, 120, 180, 195, 210). ¿Cuál umbral de "oscuro" tiene más sentido?',
+          enunciado: 'Las lecturas de luz de un aula fueron 65, 120, 180, 195 y 210. ¿Cuál es un umbral razonable de «oscuro» para una alarma de falta de luz?',
           opciones: [
-            '',
-            '',
-            '',
-            ''
+            'Menos de 100, porque queda por debajo de la lectura normal más baja.',
+            'Menos de 200, porque así la alarma suena casi todo el día y no se pierde nada.',
+            'Exactamente 120, porque es la primera lectura de la mañana.',
+            'Menos de 210, porque es la lectura más alta y así se cubre todo.'
+          ],
+          respuestaIndex: 0,
+          feedbackCorrecto: 'Sí. El rango normal va de 120 a 210. El umbral de oscuro va por debajo de 120, y 100 deja margen.',
+          feedbackIncorrecto: 'Con 200 o 210 la alarma sonaría en momentos normales. El umbral de oscuro va por debajo de la lectura normal más baja, que es 120.'
+        },
+        {
+          enunciado: '¿Para qué sirve el bloque «establecer nivel_luz a (nivel de luz)»?',
+          opciones: [
+            'Para cambiar cuánta luz emite la pantalla del micro:bit.',
+            'Para fijar el umbral de oscuro de una vez por todas.',
+            'Para guardar la lectura del sensor en una variable y compararla después.',
+            'Para encender el sensor de luz, que viene apagado.'
           ],
           respuestaIndex: 2,
-          feedbackCorrecto: 'Exacto. 100 queda justo debajo del menor valor normal (120) y por encima del único valor oscuro (65). Separa bien las zonas.',
-          feedbackIncorrecto: 'Con esas lecturas, 100 es la mejor opción: queda debajo del rango normal (120-210) y solo activa la alerta cuando la luz baja claramente.'
+          feedbackCorrecto: 'Correcto. La variable guarda el número que dio el sensor en ese instante, y con ese número decides.',
+          feedbackIncorrecto: 'El bloque no enciende nada ni fija el umbral. Guarda la lectura en una variable para poder compararla.'
         },
         {
-          enunciado: '¿Por qué se recomienda usar nombres como nivel_luz en lugar de x para las variables?',
+          enunciado: 'Tu compañero decidió el umbral de «brillante» sin medir, y la alerta de sol sale en un día nublado. ¿Qué pasó?',
           opciones: [
-            'Porque hace el código legible para quien lo lea después',
-            'Porque x está reservada por MakeCode',
-            'Porque ahorra memoria',
-            'Porque corre más rápido'
-          ],
-          respuestaIndex: 0,
-          feedbackCorrecto: 'Correcto. Los nombres descriptivos son la diferencia entre código profesional y código que solo entiende quien lo escribió.',
-          feedbackIncorrecto: 'La razón es la legibilidad. x no dice nada; nivel_luz dice qué guarda. El código se lee más veces de las que se escribe.'
-        },
-        {
-          enunciado: 'Inventas el umbral sin medir nada y el programa reacciona en momentos equivocados. ¿Qué paso saltaste?',
-          opciones: [
-            'Compilar',
-            'Guardar el archivo',
-            'Conectar el cable USB',
-            'Calibración'
-          ],
-          respuestaIndex: 3,
-          feedbackCorrecto: 'Exacto. Sin calibración, los umbrales son números al azar. La calibración con 5 mediciones reales evita ese error.',
-          feedbackIncorrecto: 'Saltaste la calibración. Los umbrales se decantan a partir de mediciones reales, no se inventan.'
-        },
-        {
-          enunciado: '¿Cuántas mediciones mínimas recomienda la guía para una bitácora de calibración útil?',
-          opciones: [
-            '1',
-            '5',
-            '2',
-            '100'
+            'El sensor de luz del micro:bit está dañado y hay que cambiarlo.',
+            'El umbral fue una opinión, no una medición, y quedó muy bajo.',
+            'MakeCode cambió el valor del umbral al cargar el programa.',
+            'Los días nublados siempre dan lecturas altas de luz.'
           ],
           respuestaIndex: 1,
-          feedbackCorrecto: 'Correcto. 5 mediciones en condiciones distintas dan baseline suficiente sin ser carga excesiva.',
-          feedbackIncorrecto: 'Son 5 mediciones mínimas. Menos no da baseline; muchas más son carga sin necesidad para el aula.'
+          feedbackCorrecto: 'Eso es. Sin calibrar, el umbral es una opinión. La prueba mostró que quedó muy bajo, y toca subirlo y anotar por qué.',
+          feedbackIncorrecto: 'No es el sensor ni MakeCode. El umbral se inventó sin medir y quedó muy bajo. Se calibra con lecturas reales.'
         },
         {
-          enunciado: 'Tu programa tiene 3 umbrales (oscuro, normal, brillante). ¿Qué decisión es señal de programa profesional?',
+          enunciado: '¿Por qué la bitácora pide al menos cinco mediciones en condiciones distintas?',
           opciones: [
-            'Usar 3 alertas claramente distinguibles',
-            'Usar las 3 mismas alertas para distinguir',
-            'Mostrar siempre el mismo ícono',
-            'No mostrar nada'
+            'Porque MakeCode exige cinco valores para crear una variable.',
+            'Porque el sensor solo se estabiliza después de la quinta lectura.',
+            'Porque el micro:bit guarda un máximo de cinco números a la vez.',
+            'Porque con pocas lecturas no se ve dónde está el rango normal.'
           ],
-          respuestaIndex: 0,
-          feedbackCorrecto: 'Exacto. Si las 3 alertas no se distinguen, el usuario no sabe qué zona está activa. La distinción es parte del diseño.',
-          feedbackIncorrecto: 'Las 3 alertas deben distinguirse a primera vista u oído. Si todas son iguales, los umbrales pierden sentido.'
+          respuestaIndex: 3,
+          feedbackCorrecto: 'Sí. Con una o dos lecturas no sabes qué es normal. Cinco, en condiciones distintas, dejan ver el rango.',
+          feedbackIncorrecto: 'No es un límite de MakeCode ni del sensor. Sin varias lecturas no se ve el rango normal, y el umbral queda inventado.'
+        },
+        {
+          enunciado: '¿Por qué el umbral de «oscuro» de tu salón puede no servir en el laboratorio?',
+          opciones: [
+            'Porque cada micro:bit trae umbrales de fábrica diferentes.',
+            'Porque el laboratorio tiene otra luz y otro rango normal.',
+            'Porque los umbrales se borran al cambiar de lugar.',
+            'Porque en el laboratorio el sensor mide en grados y no en luz.'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Exacto. El umbral depende del contexto. Otro lugar, otro rango normal, otra calibración.',
+          feedbackIncorrecto: 'Los umbrales no vienen de fábrica ni se borran. Dependen de la luz del lugar, y cada lugar se calibra.'
         }
       ]
     }
   ],
   postLectura: {
-    reflexion: 'Calibrar es disciplina de adaptar al territorio. ¿En qué otros ámbitos de tu vida (estudio, deporte, alimentación) sería útil "calibrar" en lugar de aplicar reglas genéricas?',
-    transferencia: 'Esta semana: en MakeCode programa un sensor con umbral inicial, prueba en 3 ambientes distintos (casa, colegio, exterior) y documenta cómo ajustaste el umbral en cada uno.',
-    cierre: 'El reloj de sol y el sensor digital comparten el mismo principio: la tecnología útil se calibra al lugar. La universalidad genérica es enemiga de la utilidad real.'
+    reflexion: '¿Cuál de tus dos umbrales tuviste que mover después de probar, y qué te dijo la prueba?',
+    transferencia: 'La próxima vez que un aparato de tu casa avise «demasiado» o «nunca», pregúntate dónde tiene el umbral y quién lo calibró.',
+    cierre: 'La señal se lee con un umbral, y el umbral se ajusta cuando el mundo cambia. Don Luis lo hace con el sapo; tú, con la bitácora.'
   },
   saberAncestral: {
-    saber: 'En las comunidades del Pacífico colombiano, las curanderas y parteras tenían un instrumento de diagnóstico que las antecede por siglos: su propia mano convertida en termómetro. La mano de una curandera experimentada distinguía con precisión 3 estados del cuerpo: normal (frente tibia, no más caliente que la propia mano), fiebre leve (frente claramente más caliente que la mano, pero la persona habla con claridad), fiebre fuerte (frente como brasa, respiración acelerada, mirada perdida). Esa diferenciación no era arbitraria: era el resultado de calibración constante. La curandera había puesto su mano en cientos de frentes a lo largo de su vida: niños sanos, niños enfermos, mujeres en parto, ancianos. Esa colección de toques producía un baseline personal: "así se siente lo normal en mi mano". A partir de ese baseline, podía decir con certeza cuándo había cruzado el umbral hacia la alarma. Esa práctica es ancestral pero rigurosa: el umbral es marca personal calibrada con la experiencia, no número arbitrario. La medicina basada en evidencia formaliza después lo que la curandera practicó siempre.',
-    fuente: 'Relojes de sol campesinos en haciendas y veredas del Valle del Cauca',
-    preguntaPuente: '¿Qué sabía la curandera al construir su termómetro personal con años de práctica, que el programador novato olvida cuando inventa un umbral con un número al azar ("si luz menor a 100, alarma")? ¿Y por qué calibrar antes de decidir el umbral ahorra horas de programa que reacciona en momentos equivocados?'
+    saber: 'En Toribío, en el norte del Cauca, los mayores nasa leen el tiempo en señales que pocos saben interpretar. Si las hormigas arrieras salen al aire libre a recoger comida, va a llover. Si el sapo croa, va a llover. Y la luna avisa con su color: nus ate, la luna de lluvia, se ve pálida y blanca; sek ate, la luna de sol, se ve amarillenta (Ramos García, Tenorio y Muñoz Yule, 2011). Cada señal es un sensor con un umbral: no basta con ver la luna, hay que saber a partir de qué tono anuncia agua. Y ese umbral se vuelve a ajustar. Don Luis Ardo Ascué lo cuenta así: antes, apenas el sapo croaba, caía un torrente; ahora solo cae una llovizna. La señal sigue ahí, pero ya no anuncia lo mismo. La cara de exclusión: los autores del capítulo advierten que no buscan probar si las señales aciertan, sino entender cómo ve el mundo un pueblo. Y Toribío lee esas señales en medio de un conflicto armado que las marca. Hoy vas a hacer lo mismo: medir varias veces antes de decidir el umbral, y volver a mirarlo cuando la realidad cambie.',
+    fuente: 'Pueblo nasa de Toribío (Cauca) · las señales para predecir el tiempo',
+    referencia: 'Ramos García, C., Tenorio, A. D. y Muñoz Yule, F. (2011). Ciclos naturales, ciclos culturales: percepción y conocimientos tradicionales de los nasas frente al cambio climático en Toribío, Cauca, Colombia. En A. Ulloa (Ed.), Perspectivas culturales del clima (pp. 247--274). Universidad Nacional de Colombia.',
+    preguntaPuente: 'Don Luis notó que el sapo ya no anuncia el torrente de antes y ajustó lo que espera de esa señal. Si tu alarma de «falta luz» sonara a mediodía con el sol entrando, ¿qué habría fallado: el sensor o el umbral que tú pusiste?'
   },
+  mapaRuta: [
+    {
+      numero: 1,
+      iconos: [
+        '🌱'
+      ],
+      titulo: 'Las señales del tiempo en Toribío',
+      duracionMin: 10
+    },
+    {
+      numero: 2,
+      iconos: [
+        '✏️'
+      ],
+      titulo: 'Actividad 1 · El umbral sobre cinco lecturas',
+      duracionMin: 15
+    },
+    {
+      numero: 3,
+      iconos: [
+        '🔎',
+        '✏️'
+      ],
+      titulo: 'Actividad 2 · Cinco mediciones reales',
+      duracionMin: 30
+    },
+    {
+      numero: 4,
+      iconos: [
+        '🔎',
+        '✅'
+      ],
+      titulo: 'Actividad 3 · Tres umbrales, tres alertas',
+      duracionMin: 25
+    },
+    {
+      numero: 5,
+      iconos: [
+        '💭'
+      ],
+      titulo: 'Tres ideas y tu compromiso',
+      duracionMin: 10
+    }
+  ],
+  actividades: [
+    {
+      numero: 1,
+      verbo: 'IDENTIFICA',
+      titulo: 'El umbral sobre cinco lecturas',
+      tiempoMin: 15,
+      modalidad: 'individual',
+      pasos: [
+        'Copia en el cuaderno estas lecturas de luz de un aula, 7 a. m. = 120; 9:30 a. m. = 180; 12 m. = 210; 2 p. m. = 195; 5 p. m. = 65.',
+        'Escribe qué pasaría en cada momento con una alarma de «falta luz» si el umbral fuera 100, y luego si fuera 150.',
+        'Decide tu umbral y escribe en dos líneas por qué.',
+        'Anota qué lectura te haría dudar de tu umbral.'
+      ],
+      cuaderno: {
+        titulo: 'El umbral sobre cinco lecturas',
+        formato: 'las cinco lecturas con su hora, dos filas de «qué pasa» (umbral 100 y 150) y tu umbral con su justificación',
+        extension: 'media página'
+      },
+      criterios: [
+        'Escribiste qué pasa en los cinco momentos con los dos umbrales.',
+        'Tu umbral tiene una justificación de dos líneas.'
+      ]
+    },
+    {
+      numero: 2,
+      verbo: 'APLICA',
+      titulo: 'Cinco mediciones reales',
+      tiempoMin: 30,
+      modalidad: 'parejas',
+      pasos: [
+        'Con tu pareja, en MakeCode, pongan «mostrar número (nivel de luz)» dentro de «para siempre» y carguen el programa.',
+        'Dibujen la bitácora de cuatro columnas, momento, lectura, condición real y observación.',
+        'Tomen cinco lecturas en condiciones distintas, sobre la mesa, junto a la ventana, bajo la lámpara, tapado con la mano, dentro del bolso, y anoten cada fila.',
+        'Ordenen las cinco lecturas de menor a mayor y marquen cuáles son «normales».'
+      ],
+      cuaderno: {
+        titulo: 'Cinco mediciones reales',
+        formato: 'la bitácora de cuatro columnas con cinco filas llenas, y las lecturas ordenadas con el rango normal marcado',
+        extension: 'media página'
+      },
+      criterios: [
+        'Las cinco filas tienen lectura y observación.',
+        'Está marcada la lectura normal más baja y la más alta.'
+      ]
+    },
+    {
+      numero: 3,
+      verbo: 'EVALÚA',
+      titulo: 'Tres umbrales, tres alertas',
+      tiempoMin: 25,
+      modalidad: 'individual',
+      pasos: [
+        'Con tu bitácora, decide tres zonas y escribe los dos umbrales que las separan, con una línea de justificación cada uno.',
+        'En MakeCode, dentro de «para siempre», guarda la lectura con «establecer nivel_luz a (nivel de luz)».',
+        'Agrega un «si… si no, si… si no» con tres ramas y un ícono distinto en cada una, luna, sol y equis.',
+        'Prueba tapando el micro:bit y bajo la luz. Si una alerta sale cuando no toca, mueve el umbral y anota el cambio.'
+      ],
+      cuaderno: {
+        titulo: 'Tres umbrales, tres alertas',
+        formato: 'los dos umbrales con su justificación, el dibujo de las tres ramas con su ícono, y la nota del ajuste si lo hubo',
+        extension: 'media página'
+      },
+      criterios: [
+        'Al tapar sale la luna y bajo la lámpara sale el sol.',
+        'Cada umbral tiene su porqué escrito.'
+      ]
+    }
+  ],
   triangulo: {
     dussel: {
-      autor: 'Enrique Dussel',
+      autor: 'Enrique Dussel · Filosofía de la liberación (1977), §4.2.5.4',
       lente: 'lente del nosotros',
-      cita: 'Un sistema que se ajusta al contexto del usuario es liberador; uno que impone su umbral universal es opresor.',
-      preguntaEspejo: '¿Mis umbrales reflejan el contexto real del aula, o son números copiados que ignoran el lugar?'
+      cita: 'Es ingenuo creer que la información se lee sola, sin conflictos ni contexto.',
+      preguntaEspejo: '¿Qué número leí esta semana como si hablara solo, sin preguntar de dónde salió?'
     },
     estoico: {
-      autor: 'Marco Aurelio',
+      autor: 'Epicteto · Enquiridión, 5 (c. 125 d.C.)',
       lente: 'lente del cuidado interior',
-      cita: 'Calibrar antes de decidir es virtud; inventar umbrales sin medir es vanidad disfrazada de seguridad.',
-      preguntaEspejo: '¿Mis umbrales se basan en mediciones reales, o son números que sonaban bien?'
+      cita: 'No nos inquietan las cosas, sino las opiniones que tenemos sobre ellas.',
+      preguntaEspejo: '¿Cuál de mis umbrales de hoy era una opinión antes de medir?'
     },
     floridi: {
-      autor: 'Luciano Floridi',
+      autor: 'The Onlife Initiative (ed. Luciano Floridi) · The Onlife Manifesto (2015), § 4.6',
       lente: 'lente de la infoesfera',
-      cita: 'Los sistemas contextuales son la nueva ética del oficio digital frente a los sistemas que asumen un usuario universal.',
-      preguntaEspejo: '¿Mi programa se ajusta al contexto del aula, o asume un aula universal que no existe?'
-    }
+      cita: 'El diseño de nuestras tecnologías, empezando por sus valores por defecto, debería proteger la capacidad de atención de las personas.',
+      preguntaEspejo: '¿Qué alerta de mi celular suena tanto que ya no la miro?'
+    },
+    modo: 'ideas'
   },
   cincoDimensiones: {
-    personal: 'Aprendiste que calibrar no es paso opcional — es lo que separa dato útil de ruido. Habilidad transferible a cualquier herramienta de la vida.',
-    emocional: 'Resististe la tentación de "ya está, está midiendo, sigamos". Entendiste que medir bien exige paciencia previa.',
-    ciudadana: 'Diseñar tecnología calibrada al territorio respeta a las comunidades que la usan. Es soberanía técnica práctica.',
-    local: 'Heredaste el oficio del relojero de sol: cada herramienta se hace para un lugar específico, no para un genérico ideal.',
-    intergeneracional: 'El reloj de sol del abuelo y el sensor digital comparten la lógica del lugar. La técnica que sirve es la que se calibra.'
+    personal: 'Mediste cinco veces antes de decidir. Esa paciencia sirve para cualquier decisión que dependa de un número.',
+    emocional: 'Ver que tu alarma suena cuando no toca da rabia. Mover el umbral y anotar por qué es lo que la arregla, no insistir.',
+    ciudadana: 'Una alarma mal calibrada enseña a la gente a ignorar las alarmas. Calibrar bien es cuidar la atención de los demás.',
+    local: 'Los mayores nasa de Toribío ajustan lo que esperan de una señal cuando la lluvia cambia. Tu umbral también se vuelve a mirar.',
+    intergeneracional: 'Una bitácora de calibración le dice a quien siga tu programa de dónde salió cada número. Sin ella, tendrá que medir de nuevo.'
   }
 };
 

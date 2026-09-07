@@ -11,160 +11,273 @@ const contenido: ContenidoGuia = {
   grado: 8,
   periodo: 2,
   sesion: 10,
-  titulo: 'Sustentación del proyecto técnico — honestidad del oficio',
-  resumen: 'Como el mostrador del artesano: mostrar el oficio con honestidad, mostrar evidencia, reconocer límites. Aprendes a sustentar un proyecto técnico de 5 minutos con phronesis.',
+  titulo: 'Sustentación del proyecto — decir qué funciona y qué no',
+  resumen: 'Sustentar un proyecto técnico es mostrarlo funcionando, decir qué falla y responder con honestidad. Hoy presentas tu monitoreo en cinco minutos con el micro:bit en vivo, como el CRIC que vuelve ante su gente a decir cuáles mandatos se cumplieron y cuáles no.',
   duracionMin: 90,
-  subtema: 'Sustentación · Honestidad técnica · Mejoras futuras',
+  subtema: 'Lógica y micro:bit',
   preLectura: {
-    porQueImporta: 'Saber sustentar honestamente un proyecto técnico te servirá toda la vida: defender una propuesta de empleo, presentar resultados a un cliente, sustentar una tesis. La honestidad construye credibilidad.',
-    preguntaDetonante: '¿Qué del mostrador del artesano — su disciplina de mostrar el oficio con honestidad — podemos llevar a la sustentación digital?',
+    porQueImporta: 'Todo proyecto termina frente a alguien que pregunta. Saber presentar lo que funciona y declarar lo que no es lo que hace confiable a quien lo construyó.',
+    preguntaDetonante: 'Cuando muestres tu proyecto, ¿qué te cuesta más, enseñar lo que funciona o decir en voz alta lo que todavía falla?',
     activacion: {
-      titulo: 'La sustentación memorable',
-      descripcion: 'En 5 minutos: en parejas recuerden la mejor sustentación que han visto (un compañero, un emprendedor, un profesor). ¿Qué la hizo memorable? ¿Tenía honestidad sobre limitaciones?',
+      titulo: 'La falla que dirías primero',
+      descripcion: 'En 3 minutos, piensa en algo que hiciste esta semana y no salió del todo bien. Escribe cómo lo contarías en una frase que empiece por «lo que todavía falla es…». ¿Cambia algo si lo dices tú antes de que lo noten?',
       duracionMin: 5
     },
     conexion: {
-      anterior: 'En la sesión 19 ejecutaste tu proyecto MILC integrador.',
-      siguiente: 'Cierre del periodo 2. En el periodo 3 entrarás a multimedia, ciberseguridad y estética de la liberación.'
+      anterior: 'En la sesión 9 el micro:bit midió tres jornadas y encontraste un patrón con cifra.',
+      siguiente: 'En el periodo 3 empiezas con diseño visual y jerarquía de información.'
     }
   },
   conceptosClave: [
     {
       termino: 'Sustentación técnica',
-      definicion: 'Presentación pública del proyecto con demo en vivo, explicación del problema y declaración honesta de límites. No es show, es entrega de oficio.',
-      ejemplo: '5 minutos donde muestras el problema, el sensor, los datos, la propuesta y respondes preguntas de la audiencia.',
-      emoji: '🎤'
+      definicion: 'Presentar un proyecto ante personas que pueden preguntar, en cinco minutos, con problema, solución, datos y propuesta.',
+      ejemplo: 'Cinco láminas, un guion de 700 palabras y el micro:bit en vivo.',
+      categoria: 'La presentación'
     },
     {
       termino: 'Demo en vivo',
-      definicion: 'Mostrar el sistema funcionando frente a la audiencia, no una captura de pantalla. Distingue al proyecto sólido del proyecto inflado.',
-      ejemplo: 'Sacas el micro:bit, lo conectas, dejas que la audiencia vea la lectura del sensor cambiando en tiempo real.',
-      emoji: '🛠️'
+      definicion: 'El sistema funcionando frente al grupo. Una captura de pantalla no demuestra nada.',
+      ejemplo: 'Tapas el sensor y el micro:bit muestra la luna.',
+      categoria: 'La presentación'
     },
     {
-      termino: 'Declaración de limitaciones',
-      definicion: 'Reconocer públicamente qué del sistema aún no funciona y por qué. Gana confianza profesional; ocultarlo la pierde.',
-      ejemplo: '"Esto funciona bien. Esto otro aún falla con humedad alta y la razón es que no calibré el sensor en condiciones de lluvia."',
-      emoji: '🪞'
+      termino: 'Guion',
+      definicion: 'Lo que vas a decir, escrito y ensayado con cronómetro. Unas 700 palabras son cinco minutos.',
+      ejemplo: 'Dos ensayos, el primero de 6:10 y el segundo de 4:55.',
+      categoria: 'La presentación'
     },
     {
-      termino: 'Honestidad técnica',
-      definicion: 'Ética del oficio que valora reconocer lo no resuelto por encima de aparentar perfección. Origen del respeto profesional.',
-      ejemplo: 'Una pregunta dura de la audiencia detecta un error. Reconocerlo de frente es mejor que inventar excusas.',
-      emoji: '🤝'
+      termino: 'Limitación declarada',
+      definicion: 'Una cosa que falla, dicha por ti antes de que la pregunten, con causa y mejora.',
+      ejemplo: '«El umbral de luz dispara falsas alarmas cuando pasa una nube; lo subiría de 100 a 80».',
+      categoria: 'La honestidad'
     },
     {
-      termino: 'Autoevaluación',
-      definicion: 'Cierre donde nombras 1 fortaleza y 1 mejora concreta para futuras sustentaciones. Convierte la presentación en aprendizaje.',
-      ejemplo: 'Fortaleza, expliqué bien el problema. Mejora, debo cronometrar mejor la demo para no extenderme.',
-      emoji: '🪜'
+      termino: 'Responder con datos',
+      definicion: 'Contestar una pregunta con la cifra de la bitácora, o con «no lo resolví» y su porqué.',
+      ejemplo: '«¿Es factible?» «Subió de 24 a 28 los tres días; abrir ventanas cuesta cero».',
+      categoria: 'La honestidad'
+    },
+    {
+      termino: 'Autoevaluación concreta',
+      definicion: 'Una fortaleza y una mejora que otra persona pudo ver en tu sustentación.',
+      ejemplo: '«Me pasé 40 segundos en los datos; recorto el gráfico».',
+      categoria: 'La honestidad'
     }
   ],
   laboratorios: [
     {
       tipo: 'quiz',
-      titulo: '¿Sustentas como el relojero entrega el reloj?',
-      instrucciones: '5 preguntas para verificar que entiendes la honestidad del oficio.',
+      titulo: '¿Sabes sustentar un proyecto técnico?',
+      instrucciones: 'Cinco preguntas para verificar que dominas láminas, demo, limitaciones y preguntas. No va al cuaderno.',
       preguntas: [
         {
-          enunciado: '¿Por qué la demo en vivo importa más que una captura de pantalla?',
+          enunciado: 'Tu micro:bit está listo y también tienes una captura de pantalla del simulador. ¿Qué muestras en la sustentación?',
           opciones: [
-            'Porque queda más bonita',
-            'Porque demuestra que el sistema realmente funciona',
-            'Porque dura más tiempo',
-            'Porque ocupa menos memoria'
+            'La captura, porque es más segura y se ve mejor en el proyector.',
+            'Las dos, primero la captura y después el micro:bit si alcanza el tiempo.',
+            'El micro:bit en vivo, porque es lo que demuestra que funciona.',
+            'Ninguna, porque las láminas ya describen el sistema completo.'
           ],
-          respuestaIndex: 1,
-          feedbackCorrecto: 'Exacto. La demo en vivo es la prueba real. La captura puede ser de un momento favorable, la demo no engaña.',
-          feedbackIncorrecto: 'La razón es la prueba real. Una captura puede esconder fallas; la demo en vivo las expone si las hay.'
+          respuestaIndex: 2,
+          feedbackCorrecto: 'Sí. La demo en vivo es lo que sustenta «funciona». La captura no demuestra nada.',
+          feedbackIncorrecto: 'La captura no prueba que funcione hoy, y las láminas tampoco. El micro:bit en vivo es la demostración.'
         },
         {
-          enunciado: 'La audiencia detecta un bug en tu sistema. ¿Cuál es la respuesta profesional?',
+          enunciado: 'Sabes que tu umbral de luz dispara falsas alarmas cuando pasa una nube. ¿Cuándo lo dices?',
           opciones: [
-            'Reconocerlo y explicar la causa o el plan para resolverlo',
-            'Negar que existe',
-            'Cambiar de tema',
-            'Salir del salón'
+            'En la lámina cinco, antes de las preguntas, con causa y mejora.',
+            'Solo si alguien lo pregunta durante la ronda, para no perder puntos.',
+            'Nunca, porque el grupo no puede saberlo desde sus sillas.',
+            'Después de la sustentación, en privado, al docente.'
           ],
           respuestaIndex: 0,
-          feedbackCorrecto: 'Correcto. La honestidad técnica gana respeto profesional; ocultar el bug lo pierde.',
-          feedbackIncorrecto: 'Lo profesional es reconocer el bug, explicar la causa probable o el plan para resolverlo. Ocultarlo daña más que el bug mismo.'
+          feedbackCorrecto: 'Correcto. Declarada por ti, es honestidad. Descubierta por otro, es algo que escondiste.',
+          feedbackIncorrecto: 'Callarla es apostar a que nadie la vea. Se declara en la lámina de límites, con su causa y su mejora.'
         },
         {
-          enunciado: '¿Cuál de estos elementos NO debe faltar en la sustentación?',
+          enunciado: 'Te preguntan «¿tu propuesta de abrir ventanas es factible?». ¿Cuál es la mejor respuesta?',
           opciones: [
-            'Animaciones de transición elegantes',
-            'Música de fondo',
-            'Demo en vivo + declaración de limitaciones',
-            'Disfraces'
-          ],
-          respuestaIndex: 2,
-          feedbackCorrecto: 'Exacto. Demo en vivo y declaración de limitaciones son irrenunciables. El resto es decorado opcional.',
-          feedbackIncorrecto: 'Los elementos no negociables son la demo en vivo y la declaración de limitaciones. El resto es decoración.'
-        },
-        {
-          enunciado: '¿Para qué sirve la autoevaluación final?',
-          opciones: [
-            'Para alargar la sustentación',
-            'Para ganar más nota',
-            'Para llenar tiempo',
-            'Para convertir la presentación en aprendizaje (1 fortaleza + 1 mejora)'
+            '«Sí, claro, es lo más lógico que se puede hacer».',
+            '«No sé, eso lo decide el rector y no yo».',
+            '«Depende de muchas cosas del colegio que yo no puedo controlar».',
+            '«Subió de 24 a 28 los tres días; abrir ventanas cuesta cero».'
           ],
           respuestaIndex: 3,
-          feedbackCorrecto: 'Correcto. La autoevaluación honesta es lo que diferencia una entrega cerrada de un aprendizaje que sigue.',
-          feedbackIncorrecto: 'La autoevaluación convierte la sustentación en aprendizaje. Nombrar 1 fortaleza y 1 mejora concreta marca el siguiente paso.'
+          feedbackCorrecto: 'Eso es. Una pregunta se responde con la cifra de la bitácora, no con una opinión.',
+          feedbackIncorrecto: 'Sin cifra es una opinión contra otra. La bitácora tiene el dato que hace factible la propuesta.'
         },
         {
-          enunciado: 'El relojero del oficio decía "marca bien pero el minutero se atrasa un minuto cada semana". Eso es ejemplo de...',
+          enunciado: 'Tu guion tiene 1.200 palabras y el ensayo duró ocho minutos. ¿Qué haces?',
           opciones: [
-            'Modestia falsa',
-            'Inseguridad',
-            'Honestidad técnica',
-            'Mal trabajo'
+            'Hablas más rápido para que quepa en cinco minutos.',
+            'Quitas la lámina de lo que falla, que es la menos importante de las cinco.',
+            'Recortas el guion a 700 palabras y ensayas de nuevo.',
+            'Pides seis minutos extra al docente antes de empezar.'
           ],
           respuestaIndex: 2,
-          feedbackCorrecto: 'Exacto. Honestidad técnica. Declarar la limitación es la firma del oficio profesional.',
-          feedbackIncorrecto: 'Es honestidad técnica. El cliente sabe qué lleva y qué cuidar; esa transparencia construye confianza a largo plazo.'
+          feedbackCorrecto: 'Sí. Cinco minutos son unas 700 palabras. Se recorta y se ensaya de nuevo con cronómetro.',
+          feedbackIncorrecto: 'Hablar rápido no se entiende y la lámina de límites no se quita. Se recorta el guion a 700 palabras y se ensaya otra vez.'
+        },
+        {
+          enunciado: '¿Cuál de estas autoevaluaciones es concreta?',
+          opciones: [
+            '«Me pasé 40 segundos en los datos; la próxima recorto el gráfico».',
+            '«Debo prepararme más y hablar mejor la próxima vez».',
+            '«Creo que todo salió bien y no cambiaría nada».',
+            '«Estuve muy nervioso todo el tiempo y por eso no salió como quería».'
+          ],
+          respuestaIndex: 0,
+          feedbackCorrecto: 'Exacto. Dice qué pasó, cuánto, y qué vas a cambiar. Alguien más pudo verlo.',
+          feedbackIncorrecto: '«Prepararme más» y «hablar mejor» no dicen qué cambiar. La concreta tiene el dato, 40 segundos, y la acción.'
         }
       ]
     }
   ],
   postLectura: {
-    reflexion: 'La honestidad técnica es habilidad que se entrena. ¿En qué situación de tu vida (académica, familiar, social) te ha sido difícil reconocer limitaciones honestamente?',
-    transferencia: 'Mañana sustenta tu proyecto en 5 minutos cronometrados. Reconoce 2 limitaciones reales y propón 2 mejoras futuras. Recibe la crítica con apertura.',
-    cierre: 'El mostrador del artesano y la sustentación digital comparten un principio: mostrar honestamente lo que se hizo, lo que falta, lo que se aprendió. La honestidad construye oficio. Cierre del periodo 2.'
+    reflexion: '¿Qué pregunta del grupo te mostró algo de tu proyecto que no habías visto, y qué respondiste?',
+    transferencia: 'La próxima vez que entregues algo, di primero lo que falta. Quien lo recibe confía más en lo que sí está.',
+    cierre: 'Un mandato vale porque se vuelve a mirar. Tu proyecto vale porque lo mostraste funcionando y dijiste qué falla.'
   },
   saberAncestral: {
-    saber: 'Cuando el relojero del centro de Cartago entregaba un reloj reparado al cliente, lo ponía sobre el mostrador con un gesto silencioso y siempre el mismo discurso: "Vea, ya marca bien, lo probé toda la noche", decía señalando el péndulo en movimiento estable. Pero el relojero nunca prometía perfección absoluta. Después de mostrar lo que funcionaba, siempre agregaba la declaración honesta: "El minutero a veces se atrasa un minuto cada semana; eso es de la cuerda vieja, pero no se puede arreglar sin cambiar pieza", o "si se cae al piso, la espiral va a romper", o "la campanada del difunto sigue sonando un poco apagada, eso es del badajo, hay que mandar a hacer otro". El cliente entonces sabía exactamente qué llevaba y qué cuidar. Esa honestidad no era debilidad: era la firma del oficio profesional. El relojero que prometía perfección absoluta perdía clientes en cuanto el reloj fallaba; el relojero honesto los conservaba durante décadas, porque el cliente sabía que podía confiar en su palabra. La sabiduría era simple: declara lo que funciona, declara lo que aún no, promete mejorar lo que se puede mejorar.',
-    fuente: 'Mostrador del artesano en talleres del Valle, el Pacífico y la Guajira',
-    preguntaPuente: '¿Qué sabía el relojero al declarar lo que aún no funcionaba al entregar la pieza, que el sustentante novato olvida cuando esconde los bugs y promete perfección? ¿Y por qué la honestidad técnica gana respeto profesional que la inflación de logros nunca gana?'
+    saber: 'En la sesión 3 del periodo 1 viste que los pueblos indígenas del Cauca no escriben sus normas desde una oficina. Salen de un congreso: la gente de los resguardos llega, discute durante días y de ahí nacen los mandatos. El XV Congreso del CRIC se reunió en Río Blanco, Sotará, del 25 al 30 de junio de 2017 (Consejo Regional Indígena del Cauca, 2017). Lo que importa hoy es lo que pasa después. La organización tiene que volver ante la misma gente y decir, en público, cuáles mandatos se cumplieron y cuáles no. Y la propia organización reporta que el cumplimiento es incompleto. No lo esconde: lo dice. Un mandato no vale por estar escrito; vale porque quienes lo hicieron vuelven a mirarlo. La cara de exclusión: un mandato es un acto de gobierno de un pueblo que se disputa con el Estado y con actores armados; no es una dinámica de convivencia escolar. Lo que tú haces hoy es mucho más pequeño y aprende de eso: presentar tu proyecto ante tu grupo y decir, con los datos en la mano, qué funcionó y qué todavía no.',
+    fuente: 'Pueblos del CRIC en el Cauca · los mandatos de los congresos y la rendición de su cumplimiento',
+    referencia: 'Consejo Regional Indígena del Cauca. (2017). Avanza el XV congreso regional del CRIC en el resguardo de Rioblanco Sotará del pueblo indígena yanacona.',
+    preguntaPuente: 'El CRIC vuelve ante su gente y dice cuáles mandatos no se cumplieron. Cuando muestres tu proyecto, ¿qué te cuesta más: enseñar lo que funciona o decir en voz alta lo que todavía falla?'
   },
+  mapaRuta: [
+    {
+      numero: 1,
+      iconos: [
+        '🌱'
+      ],
+      titulo: 'Los mandatos y la rendición de cuentas',
+      duracionMin: 10
+    },
+    {
+      numero: 2,
+      iconos: [
+        '✏️'
+      ],
+      titulo: 'Actividad 1 · El inventario honesto',
+      duracionMin: 15
+    },
+    {
+      numero: 3,
+      iconos: [
+        '🔎',
+        '✏️'
+      ],
+      titulo: 'Actividad 2 · Cinco láminas y un ensayo',
+      duracionMin: 30
+    },
+    {
+      numero: 4,
+      iconos: [
+        '🔎',
+        '✅'
+      ],
+      titulo: 'Actividad 3 · Sustentar con el micro:bit en vivo',
+      duracionMin: 35
+    }
+  ],
+  actividades: [
+    {
+      numero: 1,
+      verbo: 'ANALIZA',
+      titulo: 'El inventario honesto',
+      tiempoMin: 15,
+      modalidad: 'individual',
+      pasos: [
+        'Abre tu bitácora y tu programa de la sesión 9, y escribe tres cosas que funcionaron con evidencia en la bitácora.',
+        'Escribe dos cosas que fallan o son frágiles, el umbral, las horas no cumplidas, las filas perdidas, la batería.',
+        'Para cada falla, escribe en una línea por qué crees que pasa.',
+        'Elige la falla que vas a declarar en la sustentación y escribe cómo la mejorarías.'
+      ],
+      cuaderno: {
+        titulo: 'El inventario honesto',
+        formato: 'dos columnas, «funciona» con tres filas y «falla» con dos, cada una con una línea de porqué, y la falla elegida con su mejora',
+        extension: 'media página'
+      },
+      criterios: [
+        'Cada cosa que funciona se puede señalar en la bitácora.',
+        'Cada falla tiene una causa y no una excusa.'
+      ]
+    },
+    {
+      numero: 2,
+      verbo: 'CREA',
+      titulo: 'Cinco láminas y un ensayo',
+      tiempoMin: 30,
+      modalidad: 'parejas',
+      pasos: [
+        'Reduce tu proyecto a cinco láminas de máximo veinticinco palabras, problema, solución, datos con patrón y cifra, propuesta, y lo que falla con su mejora.',
+        'Escribe el guion hablado de unas 700 palabras y prepara la demo, micro:bit con batería, código cargado y una forma de producir la alerta en vivo.',
+        'Ensaya frente a tu pareja con cronómetro.',
+        'Tu pareja te hace dos preguntas difíciles y te dice qué no entendió. Cambien de rol.'
+      ],
+      cuaderno: {
+        titulo: 'Cinco láminas y un ensayo',
+        formato: 'el texto de las cinco láminas, el guion, el tiempo de los dos ensayos y las dos preguntas de tu pareja con lo que no entendió',
+        extension: 'una página'
+      },
+      criterios: [
+        'El ensayo cabe en cinco minutos.',
+        'La lámina de lo que falla tiene una causa y una mejora.'
+      ]
+    },
+    {
+      numero: 3,
+      verbo: 'EVALÚA',
+      titulo: 'Sustentar con el micro:bit en vivo',
+      tiempoMin: 35,
+      modalidad: 'individual',
+      pasos: [
+        'Sustenta frente al grupo con cronómetro visible, cinco minutos, y haz la demo produciendo la alerta en vivo.',
+        'Declara la falla que elegiste antes de que te la pregunten.',
+        'Responde de tres a cinco preguntas. Si no sabes, di «no lo resolví» y por qué.',
+        'Mientras escuchas a otros, evalúa con los seis criterios y escribe una pregunta para cada uno.',
+        'Escribe tu autoevaluación, una fortaleza y una mejora concretas.'
+      ],
+      cuaderno: {
+        titulo: 'Sustentar con el micro:bit en vivo',
+        formato: 'las preguntas que te hicieron con tu respuesta en una línea, tu evaluación de dos compañeros con los seis criterios, y tu autoevaluación',
+        extension: 'una página'
+      },
+      criterios: [
+        'La falla se declaró antes de las preguntas.',
+        'La fortaleza y la mejora son cosas que alguien más pudo ver.'
+      ]
+    }
+  ],
   triangulo: {
     dussel: {
-      autor: 'Enrique Dussel',
+      autor: 'Enrique Dussel · Filosofía de la liberación (1977), §2.4.4.2',
       lente: 'lente del nosotros',
-      cita: 'El sustentante que declara lo que aún no funciona devuelve oficio a la comunidad; el que lo esconde reproduce la lógica del fraude técnico.',
-      preguntaEspejo: '¿Mi sustentación devuelve oficio honesto, o presenta un proyecto inflado?'
+      cita: 'El otro se muestra como otro cuando, desde fuera de mi sistema, me interpela con su rostro y su reclamo.',
+      preguntaEspejo: '¿Qué pregunta de hoy me mostró algo de mi proyecto que yo no había visto?'
     },
     estoico: {
-      autor: 'Epicteto',
+      autor: 'Marco Aurelio · Meditaciones X, 16 (c. 175 d.C.)',
       lente: 'lente del cuidado interior',
-      cita: 'Declarar lo que no funciona es disciplina del carácter; esconderlo es debilidad disfrazada de competencia.',
-      preguntaEspejo: '¿Estoy declarando lo que aún no funciona, o lo escondo esperando que nadie lo note?'
+      cita: 'Deja de discutir cómo debería ser una buena persona y procura serlo.',
+      preguntaEspejo: '¿Qué afirmé hoy con palabras que habría podido mostrar con el micro:bit?'
     },
     floridi: {
-      autor: 'Luciano Floridi',
+      autor: 'Luciano Floridi · Big data and their epistemological challenge (2012)',
       lente: 'lente de la infoesfera',
-      cita: 'La transparencia técnica es la nueva ética del oficio en la era de los sistemas complejos.',
-      preguntaEspejo: '¿Mi sustentación contribuye a la cultura de la transparencia técnica, o la erosiona ocultando limitaciones?'
-    }
+      cita: 'La mitad de nuestros datos no sirve; el problema es que no sabemos cuál mitad.',
+      preguntaEspejo: '¿Cuáles de mis treinta filas no me atrevería a defender, y lo dije?'
+    },
+    modo: 'ideas'
   },
   cincoDimensiones: {
-    personal: 'Cerraste el periodo con sustentación honesta — habilidad rara en el mundo adulto, entrenada aquí.',
-    emocional: 'Sentiste el nervio de mostrar limitaciones en público y lo sostuviste — eso entrena humildad madura, no sumisa.',
-    ciudadana: 'La sustentación con honestidad técnica es base de la deliberación democrática: defender y reconocer límites a la vez.',
-    local: 'Heredaste el ritual del mostrador del artesano: presentar la pieza con sus aciertos y sus límites visibles.',
-    intergeneracional: 'El artesano frente a su maestro y tú frente al curso comparten gramática: defender el oficio sin esconder lo que falta.'
+    personal: 'Declaraste una falla en voz alta y no pasó nada malo. Esa experiencia sirve para cada proyecto que venga.',
+    emocional: 'Presentar frente al grupo con el micro:bit que puede fallar da nervios. Haberlo probado dos veces antes es lo que los baja.',
+    ciudadana: 'Rendir cuentas es decir qué se cumplió y qué no ante quienes te lo encargaron. Lo hace el CRIC con sus mandatos; lo hiciste tú con tu proyecto.',
+    local: 'Los pueblos del CRIC vuelven ante su gente a reportar el cumplimiento, incluso incompleto. Tu lámina cinco aprende de eso, en pequeño.',
+    intergeneracional: 'Tus láminas y tu guion quedan como evidencia del periodo. Quien vea tu proyecto el año que viene sabrá qué funcionó y qué faltó.'
   }
 };
 

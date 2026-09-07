@@ -32,7 +32,7 @@
  * ─────────────────────────────────────────────────────────────────────────
  */
 
-const VERSION = 'v74';
+const VERSION = 'v75';
 const BASE_PATH = '/plataformaconectate';
 
 const CACHE_SHELL = `conectate-shell-${VERSION}`;

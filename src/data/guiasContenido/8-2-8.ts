@@ -11,161 +11,280 @@ const contenido: ContenidoGuia = {
   grado: 8,
   periodo: 2,
   sesion: 8,
-  titulo: 'Alertas con lógica compuesta — validación con escenarios',
-  resumen: 'Como las señales de los pájaros antes de la lluvia: sistema de alerta natural. Aprendes a diseñar y simular un sistema de alerta ambiental con lectura, lógica compuesta y respuesta escalonada.',
+  titulo: 'Alertas con lógica compuesta — la tabla antes que el código',
+  resumen: 'Una alerta real combina señales con Y, O y NO, y se prueba en todas sus combinaciones antes de darla por buena. Hoy escribes la tabla de ocho escenarios antes de programar, como los mayores nasa que leen las golondrinas junto con la hora del día.',
   duracionMin: 90,
-  subtema: 'Alertas · Lógica compuesta · Validación con escenarios',
+  subtema: 'Lógica y micro:bit',
   preLectura: {
-    porQueImporta: 'Saber diseñar sistemas de alerta es habilidad de quien protege: alarmas de incendio, sensores de humedad para huertas, monitoreo de salud. La lógica de alerta salva proyectos, recursos y a veces vidas.',
-    preguntaDetonante: '¿Qué de las señales de los pájaros antes de la lluvia — el sistema de alerta natural — podemos llevar a un sistema digital?',
+    porQueImporta: 'Las alarmas que te rodean, del carro, de la casa, del celular, combinan señales. Saber por qué una suena de más y otra no suena es saber leer su lógica.',
+    preguntaDetonante: 'Golondrinas y mañana es lluvia; golondrinas y tarde es problema. ¿Qué segunda señal necesita tu alarma de «aula oscura ocupada» para no sonar en el salón vacío?',
     activacion: {
-      titulo: 'La falsa alarma del lobo',
-      descripcion: 'En 5 minutos: en parejas recuerden la fábula del pastor que gritaba lobo. ¿Qué pasa cuando un sistema de alerta da muchas falsas alarmas? ¿Cómo se evita técnicamente?',
+      titulo: 'Y, O y NO en tu casa',
+      descripcion: 'En 3 minutos, escribe una regla de tu casa que use Y, otra que use O y otra que use NO. Por ejemplo, «puedo salir si terminé la tarea Y no está lloviendo». ¿Qué pasa si cambias el Y por un O?',
       duracionMin: 5
     },
     conexion: {
-      anterior: 'En la sesión 17 aprendiste depuración sistemática con hipótesis y casos.',
-      siguiente: 'En la sesión 19 construirás el proyecto MILC integrador del periodo.'
+      anterior: 'En la sesión 7 buscaste errores con una hipótesis y una prueba.',
+      siguiente: 'En la sesión 9 el micro:bit mide durante tres jornadas con bitácora.'
     }
   },
   conceptosClave: [
     {
-      termino: 'Lógica compuesta',
-      definicion: 'Combinación de 2 o más condiciones con AND, OR, NOT para tomar una decisión más fina que con una sola variable.',
-      ejemplo: 'Alarma de incendio = humo AND temperatura alta. Necesita las dos para evitar falsos positivos por cocina.',
-      emoji: '🧩',
-      categoria: 'Diseño'
+      termino: 'Y (AND)',
+      definicion: 'Verdadero solo si las dos condiciones lo son. Sirve para evitar alarmas falsas.',
+      ejemplo: 'Alarma si humo Y temperatura alta, para que cocinar no la dispare.',
+      categoria: 'Los bloques'
     },
     {
-      termino: 'Niveles de alerta',
-      definicion: 'Diferenciar la respuesta en función de la gravedad. No todo es alarma máxima; hay advertencias leves, moderadas, críticas.',
-      ejemplo: 'Luz baja sola = advertencia. Luz baja Y ventana abierta = alerta moderada. Luz baja Y ventana abierta Y horario nocturno = alarma.',
-      emoji: '🚦'
+      termino: 'O (OR)',
+      definicion: 'Verdadero si al menos una condición lo es. Sirve para no dejar casos por fuera.',
+      ejemplo: 'Aviso si la puerta está abierta O la ventana está abierta.',
+      categoria: 'Los bloques'
+    },
+    {
+      termino: 'NO (NOT)',
+      definicion: 'Invierte el valor. Verdadero se vuelve falso y al revés.',
+      ejemplo: 'Riego si tierra seca Y NO está lloviendo.',
+      categoria: 'Los bloques'
+    },
+    {
+      termino: 'Escenario',
+      definicion: 'Una combinación de valores de los sensores. Con tres sensores de sí o no hay ocho.',
+      ejemplo: 'Luz baja V, movimiento F, botón V es el escenario VFV.',
+      categoria: 'La prueba'
     },
     {
       termino: 'Tabla de escenarios',
-      definicion: 'Tabla con todas las combinaciones posibles de entradas y la salida esperada. Para n condiciones binarias hay 2^n filas.',
-      ejemplo: 'Con 3 sensores binarios hay 8 filas. Cada una contrasta salida esperada vs. salida real del programa.',
-      emoji: '📊'
+      definicion: 'Una fila por combinación, con la salida esperada escrita antes de programar y la real anotada al probar.',
+      ejemplo: 'Ocho filas, cinco columnas, ninguna vacía.',
+      categoria: 'La prueba'
     },
     {
-      termino: 'Falso positivo',
-      definicion: 'El sistema dispara alerta cuando no debía. Síntoma de umbrales muy permisivos o de lógica con OR donde debía ir AND.',
-      ejemplo: 'La alarma de incendio se activa cada vez que cocinan, aunque no haya fuego. Falso positivo por usar OR en lugar de AND.',
-      emoji: '⚠️'
-    },
-    {
-      termino: 'Validación por escenarios',
-      definicion: 'Pasar el sistema por las 2^n combinaciones de entrada y verificar que cada salida real coincida con la esperada.',
-      ejemplo: 'Recorres las 8 filas de la tabla. Si una sola falla, ajustas la lógica antes de entregar el sistema.',
-      emoji: '✅'
+      termino: 'Alarma falsa y alarma muda',
+      definicion: 'Falsa, suena cuando no debe, suele ser un O donde iba un Y. Muda, no suena cuando debería, suele ser un Y donde iba un O.',
+      ejemplo: 'Suena en la fila FFF, es falsa. Calla en la fila VVV, es muda.',
+      categoria: 'La prueba'
     }
   ],
   laboratorios: [
     {
       tipo: 'quiz',
-      titulo: '¿Diseñas alertas con lógica compuesta?',
-      instrucciones: '5 preguntas para verificar que combinas sensores y validas el sistema por escenarios.',
+      titulo: '¿Sabes combinar señales y probarlas?',
+      instrucciones: 'Cinco preguntas para verificar que dominas Y, O, NO y la tabla de escenarios. No va al cuaderno.',
       preguntas: [
         {
-          enunciado: '¿Cuántas combinaciones de entrada hay que probar con 3 sensores binarios?',
+          enunciado: 'Quieres que la alarma de incendio no suene cada vez que alguien cocina. ¿Qué lógica usas?',
           opciones: [
-            '3',
-            '6',
-            '9',
-            '8'
-          ],
-          respuestaIndex: 3,
-          feedbackCorrecto: 'Exacto. 2^3 = 8 combinaciones. Validar todas es la diferencia entre un sistema profesional y uno escolar.',
-          feedbackIncorrecto: 'Son 2^3 = 8 combinaciones. Cada sensor binario duplica los casos a probar.'
-        },
-        {
-          enunciado: 'Quieres una alarma de incendio que evite activarse por la cocina. ¿Qué operador conecta humo y temperatura alta?',
-          opciones: [
-            'OR',
-            'NOT',
-            'AND',
-            'Ninguno'
-          ],
-          respuestaIndex: 2,
-          feedbackCorrecto: 'Correcto. AND exige las dos cosas (humo Y temperatura alta), filtrando la cocina que solo tiene humo.',
-          feedbackIncorrecto: 'Es AND. Necesitas las dos condiciones a la vez para evitar falsas alarmas por humo de cocina.'
-        },
-        {
-          enunciado: 'Tu sistema de riego se activa también cuando llueve. ¿Qué operador estabas olvidando?',
-          opciones: [
-            'AND con humedad baja',
-            'NOT con "está lloviendo"',
-            'OR con horario',
-            'Ninguno, no se puede arreglar'
+            'Humo O temperatura alta, para que cualquiera de las dos la dispare.',
+            'Humo Y temperatura alta, para que haga falta las dos señales.',
+            'NO humo, para que solo suene cuando el aire esté limpio.',
+            'Solo humo, porque la temperatura no tiene nada que ver con el fuego.'
           ],
           respuestaIndex: 1,
-          feedbackCorrecto: 'Exacto. La condición correcta incluye NOT está lloviendo. Sin esa negación, el sistema riega en plena lluvia.',
-          feedbackIncorrecto: 'Faltaba NOT está lloviendo. El sistema solo debe regar si la humedad es baja Y no está lloviendo.'
+          feedbackCorrecto: 'Sí. Con Y hacen falta las dos señales, y el humo de la cocina sin calor alto no la dispara.',
+          feedbackIncorrecto: 'Con O el humo de la cocina bastaría. Con Y hacen falta las dos señales, y por eso evita la alarma falsa.'
         },
         {
-          enunciado: '¿Para qué sirve la tabla de escenarios?',
+          enunciado: 'Tu sistema suena en la fila FFF, donde nada debería pasar. ¿Qué tipo de error es y dónde lo buscas primero?',
           opciones: [
-            'Para verificar que cada combinación da la salida esperada',
-            'Para hacer más larga la entrega',
-            'Para conectar el micro:bit',
-            'Para escoger los colores del programa'
+            'Alarma muda, y se busca en el bloque de pausa.',
+            'Alarma falsa, y se busca un O donde debía ir un Y.',
+            'Error de calibración, y se busca en la bitácora de la sesión 6.',
+            'No es un error, porque la fila FFF nunca ocurre en la realidad.'
           ],
-          respuestaIndex: 0,
-          feedbackCorrecto: 'Correcto. Recorres las 2^n filas y comparas salida esperada con salida real. Si alguna no coincide, ajustas la lógica.',
-          feedbackIncorrecto: 'La tabla sirve para validar. Recorres las 2^n combinaciones y verificas que el programa da la salida esperada.'
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Correcto. Suena cuando no debe, es falsa. Un O demasiado permisivo es la primera hipótesis.',
+          feedbackIncorrecto: 'Sonar cuando no debe es alarma falsa, no muda, y la fila FFF sí ocurre. La primera hipótesis es un O donde iba un Y.'
         },
         {
-          enunciado: 'Un falso positivo en una alarma de incendio significa que...',
+          enunciado: '¿Por qué con tres sensores de sí o no la tabla tiene ocho filas?',
           opciones: [
-            'La alarma se activa cuando no hay incendio',
-            'La alarma no se activa cuando hay incendio',
-            'La alarma no funciona nunca',
-            'La alarma cambia de color'
+            'Porque MakeCode permite un máximo de ocho ramas en un «si».',
+            'Porque ocho es el número de íconos que tiene el micro:bit.',
+            'Porque cada sensor tiene dos estados y dos por dos por dos es ocho.',
+            'Porque cada sensor aporta tres filas y sobran dos de reserva.'
+          ],
+          respuestaIndex: 2,
+          feedbackCorrecto: 'Eso es. Dos estados por sensor, tres sensores, ocho combinaciones. Con cuatro sensores serían dieciséis.',
+          feedbackIncorrecto: 'No es un límite de MakeCode ni de íconos. Cada sensor tiene dos estados, y dos por dos por dos da ocho.'
+        },
+        {
+          enunciado: '¿Por qué la tabla de escenarios se escribe antes de programar y no después?',
+          opciones: [
+            'Porque escrita después tiendes a confirmar lo que ya programaste.',
+            'Porque MakeCode no deja programar sin una tabla previa.',
+            'Porque después no hay tiempo en la sesión para dibujarla.',
+            'Porque los sensores cambian de estado cuando el programa ya existe.'
           ],
           respuestaIndex: 0,
-          feedbackCorrecto: 'Exacto. Falso positivo es alerta cuando no debía. Suele venir de usar OR donde debía ir AND.',
-          feedbackIncorrecto: 'Falso positivo es activarse cuando no debía. Es síntoma de lógica permisiva (OR donde debía ir AND) o umbrales mal calibrados.'
+          feedbackCorrecto: 'Sí. Escrita antes, la lógica se piensa sin el programa encima, y el programa tiene que cumplirla.',
+          feedbackIncorrecto: 'MakeCode no la exige y los sensores no cambian. Escrita después, la tabla solo confirma lo que ya hiciste en vez de probarlo.'
+        },
+        {
+          enunciado: 'Probaste las filas VVV y FFF y las dos funcionan. ¿Puedes dar el sistema por listo?',
+          opciones: [
+            'Sí, porque si funcionan los extremos, las demás filas funcionan también.',
+            'Sí, porque dos pruebas son suficientes para un sistema de tres sensores.',
+            'No, porque el micro:bit exige probar cada fila para grabar el programa.',
+            'No, porque los errores suelen vivir en las filas mixtas como VFV o FVF.'
+          ],
+          respuestaIndex: 3,
+          feedbackCorrecto: 'Exacto. Las filas obvias casi siempre funcionan. Las mixtas son las que muestran un Y confundido con un O.',
+          feedbackIncorrecto: 'Los extremos no garantizan las mixtas, y el micro:bit no exige nada. Los errores viven en filas como VFV, y hay que probarlas todas.'
         }
       ]
     }
   ],
   postLectura: {
-    reflexion: 'Un sistema de alerta confiable se construye con disciplina: combinaciones lógicas, filtros, validación. ¿Qué situación de tu colegio o casa se beneficiaría de un sistema de alerta diseñado con estos principios?',
-    transferencia: 'Esta semana: en MakeCode programa un sistema con 2 variables, lógica compuesta y filtro temporal. Valida con 3 escenarios (normal, alerta, falsa alarma) y documenta los resultados.',
-    cierre: 'Las señales de los pájaros y el sistema digital de alerta comparten un principio: la naturaleza no avisa siempre, pero cuando avisa, hay que escuchar. La precisión es ética del cuidado.'
+    reflexion: '¿Cuál fila de tu tabla falló, y qué te dijo sobre la diferencia entre Y y O?',
+    transferencia: 'La próxima vez que una regla tenga dos condiciones, escribe las cuatro combinaciones antes de decidir. Casi siempre hay una que no habías pensado.',
+    cierre: 'La golondrina con la hora es una alerta; sola, es solo un pájaro. Dos señales y una tabla completa hacen un sistema.'
   },
   saberAncestral: {
-    saber: 'En los puertos del Pacífico colombiano (Buenaventura, Tumaco, Bahía Solano) existía una figura silenciosa que sostenía la seguridad del comercio marino: el centinela del puerto. Sentado en la torre de vigilancia, con un catalejo viejo y un cuaderno cuadriculado, el centinela tenía la responsabilidad de combinar varias observaciones simultáneas para decidir qué nivel de alerta dar a la población costera. No era un trabajo de una sola variable: exigía lógica compuesta de oficio profesional. El centinela conocía sus reglas: "Si veo barco grande Y bandera roja, alerta máxima" (las dos cosas: AND). "Si veo niebla O lluvia fuerte, alerta moderada" (cualquiera de las dos: OR). "Si NO hay viento favorable, alerta de retraso" (la ausencia de algo: NOT). Esas combinaciones no eran arbitrarias: la práctica del oficio había decantado cuáles condiciones, juntas, justificaban cuál nivel de alerta. La sabiduría del centinela era doble: (1) no dar alerta máxima por una sola señal sospechosa (eso producía falsas alarmas y los marineros dejaban de creer). (2) no esperar muchas señales para dar alerta moderada (eso producía respuestas demasiado tardías). La lógica compuesta vivía en la observación combinada, mucho antes de que se llamara así en computación.',
-    fuente: 'Lectura de señales naturales en el campo colombiano',
-    preguntaPuente: '¿Qué sabía el centinela del puerto al combinar varias observaciones para decidir el nivel de alerta, que el programador novato olvida cuando hace un sistema de alarma con un solo sensor? ¿Y por qué probar 8 escenarios es la diferencia entre un sistema profesional y uno escolar?'
+    saber: 'En la sesión 6 viste que los mayores nasa de Toribío leen la lluvia en el sapo, las hormigas y la luna. Hay una señal que no se lee sola. Las golondrinas, cuenta don Luis Ardo Ascué, dependen de la hora: si pasan en la mañana, hacia las 8, 9 o 10, es porque va a llover. Si pasan en la tarde, a partir de la una, anuncian otra cosa: problemas sociales, un caso inesperado, un conflicto (Ramos García, Tenorio y Muñoz Yule, 2011). La misma golondrina, con otra hora, es otra alerta. Eso es una condición compuesta: golondrinas y mañana significa lluvia; golondrinas y tarde significa problema. Un sensor solo no decide; decide junto con otro. La cara de exclusión: en Toribío las golondrinas de la tarde han anunciado el asesinato de líderes. El conflicto armado forma parte de lo que ese pueblo lee en el cielo. Los autores advierten que no se trata de probar si aciertan, sino de entender cómo un pueblo ve el mundo. Hoy vas a construir alertas que combinan dos o tres señales. Y una tabla que revise todas las combinaciones antes de dar el sistema por bueno.',
+    fuente: 'Pueblo nasa de Toribío (Cauca) · las golondrinas de la mañana y las de la tarde',
+    referencia: 'Ramos García, C., Tenorio, A. D. y Muñoz Yule, F. (2011). Ciclos naturales, ciclos culturales: percepción y conocimientos tradicionales de los nasas frente al cambio climático en Toribío, Cauca, Colombia. En A. Ulloa (Ed.), Perspectivas culturales del clima (pp. 247--274). Universidad Nacional de Colombia.',
+    preguntaPuente: 'Golondrinas y mañana es lluvia; golondrinas y tarde es problema. Si tu alarma de «aula oscura ocupada» se dispara con luz baja, ¿qué segunda señal necesitas para que no suene en el salón vacío?'
   },
+  mapaRuta: [
+    {
+      numero: 1,
+      iconos: [
+        '🌱'
+      ],
+      titulo: 'Las golondrinas y la hora del día',
+      duracionMin: 10
+    },
+    {
+      numero: 2,
+      iconos: [
+        '✏️'
+      ],
+      titulo: 'Actividad 1 · El problema y sus señales',
+      duracionMin: 15
+    },
+    {
+      numero: 3,
+      iconos: [
+        '🔎',
+        '✏️'
+      ],
+      titulo: 'Actividad 2 · La tabla de ocho escenarios',
+      duracionMin: 30
+    },
+    {
+      numero: 4,
+      iconos: [
+        '🔎',
+        '✅'
+      ],
+      titulo: 'Actividad 3 · Programar y probar las ocho filas',
+      duracionMin: 25
+    },
+    {
+      numero: 5,
+      iconos: [
+        '💭'
+      ],
+      titulo: 'Tres ideas y tu compromiso',
+      duracionMin: 10
+    }
+  ],
+  actividades: [
+    {
+      numero: 1,
+      verbo: 'IDENTIFICA',
+      titulo: 'El problema y sus señales',
+      tiempoMin: 15,
+      modalidad: 'individual',
+      pasos: [
+        'Elige un problema del colegio que necesite más de una señal, aula oscura con gente, salón abierto de noche, sala de sistemas caliente y ocupada.',
+        'Escribe qué dos o tres sensores del micro:bit usarías y la condición en palabras con Y, O y NO.',
+        'Define tres niveles, alarma, alerta y aviso, y qué combinación produce cada uno.',
+        'Escribe una combinación en la que tu sistema no debería hacer nada.'
+      ],
+      cuaderno: {
+        titulo: 'El problema y sus señales',
+        formato: 'el problema en una línea, los sensores, la condición en palabras con Y, O y NO, y los tres niveles con su combinación',
+        extension: 'media página'
+      },
+      criterios: [
+        'Puedes decir qué combinación dispara cada nivel.',
+        'Tienes una combinación que no dispara nada.'
+      ]
+    },
+    {
+      numero: 2,
+      verbo: 'CREA',
+      titulo: 'La tabla de ocho escenarios',
+      tiempoMin: 30,
+      modalidad: 'parejas',
+      pasos: [
+        'Con tu pareja, dibujen una tabla de ocho filas y cinco columnas, tres sensores, salida esperada y salida real.',
+        'Llenen las columnas de sensores con las ocho combinaciones de V y F, VVV, VVF, VFV, VFF, FVV, FVF, FFV, FFF.',
+        'Escriban la salida esperada de cada fila, alarma, alerta, aviso o nada, y revisen que ninguna quedó vacía.',
+        'Marquen las dos filas más difíciles de decidir y escriban por qué.'
+      ],
+      cuaderno: {
+        titulo: 'La tabla de ocho escenarios',
+        formato: 'la tabla de ocho filas y cinco columnas con sensores y salida esperada llenas, salida real vacía, y las dos filas difíciles marcadas',
+        extension: 'media página'
+      },
+      criterios: [
+        'Las ocho filas tienen salida esperada.',
+        'Ninguna combinación de V y F se repite.'
+      ]
+    },
+    {
+      numero: 3,
+      verbo: 'EVALÚA',
+      titulo: 'Programar y probar las ocho filas',
+      tiempoMin: 25,
+      modalidad: 'individual',
+      pasos: [
+        'En MakeCode, guarda cada lectura en una variable y compárala con su umbral de la sesión 6.',
+        'Arma un «si… si no, si… si no» con tres ramas usando «y», «o» y «no» según tu tabla, con un ícono por nivel.',
+        'Produce cada una de las ocho combinaciones en el simulador y anota la salida real.',
+        'Si una fila no coincide, aplica hipótesis, un cambio y prueba, y anota qué fila falló y qué cambiaste.'
+      ],
+      cuaderno: {
+        titulo: 'Programar y probar las ocho filas',
+        formato: 'la tabla completa con la columna de salida real llena, y la nota de ajustes con la fila que falló, el cambio y el porqué',
+        extension: 'media página'
+      },
+      criterios: [
+        'Las ocho filas tienen salida real y coinciden con la esperada.',
+        'Anotaste qué cambiaste si alguna falló.'
+      ]
+    }
+  ],
   triangulo: {
     dussel: {
-      autor: 'Enrique Dussel',
+      autor: 'Enrique Dussel · Filosofía de la liberación (1977), §5.3.1',
       lente: 'lente del nosotros',
-      cita: 'Una alarma que protege a quien depende de ella es liberadora; una que falla en silencio es traición técnica.',
-      preguntaEspejo: 'Si mi sistema de alerta protegiera a alguien real, ¿confiaría en él tal como está, o falta verificación?'
+      cita: 'Toda persona y todo pueblo están siempre más allá del sistema que intenta abarcarlos.',
+      preguntaEspejo: '¿Qué situación real no cabe en ninguna fila de mi tabla?'
     },
     estoico: {
-      autor: 'Marco Aurelio',
+      autor: 'Séneca · Cartas a Lucilio, 13 (c. 64 d.C.)',
       lente: 'lente del cuidado interior',
-      cita: 'Probar todos los escenarios es disciplina; declarar funcional con pruebas parciales es soberbia.',
-      preguntaEspejo: '¿Estoy probando los 8 escenarios completos o me detuve en los obvios?'
+      cita: 'Son más las cosas que nos asustan que las que de verdad nos aprietan.',
+      preguntaEspejo: '¿Qué alerta me asustó esta semana por algo que al final no apretaba?'
     },
     floridi: {
-      autor: 'Luciano Floridi',
+      autor: 'The Onlife Initiative (ed. Luciano Floridi) · The Onlife Manifesto (2015), § 2.3',
       lente: 'lente de la infoesfera',
-      cita: 'Los sistemas de alerta confiables son la infraestructura ética del oficio digital en la era de los riesgos automatizados.',
-      preguntaEspejo: '¿Mi sistema podría ser revisado por un auditor con la tabla de escenarios sin necesidad de mi explicación?'
-    }
+      cita: 'La abundancia de información también produce sobrecarga, distracción y olvido.',
+      preguntaEspejo: '¿Cuál de mis alertas debería callarse para que las otras se oigan?'
+    },
+    modo: 'ideas'
   },
   cincoDimensiones: {
-    personal: 'Aprendiste a combinar señales antes de actuar — habilidad cognitiva que aplica al código y a las decisiones humanas.',
-    emocional: 'Resististe la tentación de la alerta fácil — entendiste que la precisión cuida a quien recibe el mensaje.',
-    ciudadana: 'Diseñar alertas comunitarias con lógica compuesta (huerta, salón, casa) es ciudadanía técnica concreta.',
-    local: 'Heredaste la lectura del campesino: cruzar varias señales naturales antes de decidir cosecha o espera.',
-    intergeneracional: 'Las señales de los pájaros y los sistemas digitales de alerta comparten ética: precisión como cuidado.'
+    personal: 'Escribiste las ocho filas antes de programar. Pensar todos los casos antes de actuar sirve mucho más allá del micro:bit.',
+    emocional: 'Una fila que no coincide frustra. Es también la única forma de saber que tu sistema tenía un hueco antes de que alguien lo encontrara.',
+    ciudadana: 'Una alarma que suena por todo enseña a ignorarla, y una que calla cuando importa deja a la gente sola. Probar todas las filas es responsabilidad.',
+    local: 'Los mayores nasa de Toribío no leen la golondrina sola, la leen con la hora. Tu sistema tampoco decide con una sola señal.',
+    intergeneracional: 'Quien herede tu sistema puede leer la tabla y saber qué hace en cada caso, sin abrir el programa.'
   }
 };
 

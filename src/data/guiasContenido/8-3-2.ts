@@ -11,160 +11,280 @@ const contenido: ContenidoGuia = {
   grado: 8,
   periodo: 3,
   sesion: 2,
-  titulo: 'Animaciones e hipervínculos — narrativa interactiva',
-  resumen: 'Como el movimiento del titiritero: cada figura entra, gesticula, sale en su tiempo. Aprendes a usar animaciones e hipervínculos con propósito (no decoración) en presentaciones digitales.',
+  titulo: 'Presentaciones interactivas — caminos que vuelven al menú',
+  resumen: 'Una presentación interactiva deja elegir el camino y siempre permite volver. Hoy construyes menú, ramas, glosario y regresos, como la décima glosada del Pacífico, donde cada rama termina regresando a la copla inicial.',
   duracionMin: 90,
-  subtema: 'Animaciones · Hipervínculos · Narrativa interactiva',
+  subtema: 'Multimedia y ciberética',
   preLectura: {
-    porQueImporta: 'Saber crear presentaciones interactivas te diferencia profesionalmente: cuando alguien navega tu presentación según interés, en lugar de seguir un orden lineal, demuestras dominio del medio.',
-    preguntaDetonante: '¿Qué del titiritero —su disciplina de mover una figura a la vez— podemos llevar a las animaciones digitales?',
+    porQueImporta: 'Los sitios, las apps y los cursos en línea son pantallas conectadas por enlaces. Saber diseñar caminos con retorno es saber que nadie se pierda en lo que haces.',
+    preguntaDetonante: 'Si tu presentación tiene un botón que entra a una sección y ninguno que vuelva, ¿qué le pasa a quien hizo clic?',
     activacion: {
-      titulo: 'La presentación interactiva',
-      descripcion: 'En 5 minutos: en parejas exploran una presentación interactiva (en Canva o YouTube). Identifiquen 3 animaciones con propósito y 3 sin propósito. ¿Qué las distingue?',
+      titulo: 'El botón que no vuelve',
+      descripcion: 'En 3 minutos, recuerda una app o página donde te quedaste atrapado y no sabías cómo volver. ¿Qué botón faltaba? ¿Dónde lo habrías puesto?',
       duracionMin: 5
     },
     conexion: {
-      anterior: 'En la sesión 21 aplicaste principios visuales a 5 diapositivas.',
-      siguiente: 'En la sesión 23 construirás presentación de alto impacto con narrativa.'
+      anterior: 'En la sesión 1 diseñaste una pieza que se entiende en tres segundos.',
+      siguiente: 'En la sesión 3 cuentas algo en tres minutos con tu voz.'
     }
   },
   conceptosClave: [
     {
       termino: 'Presentación interactiva',
-      definicion: 'Secuencia de slides que no se recorre linealmente. El lector elige caminos, regresa, salta entre secciones según hipervínculos.',
-      ejemplo: 'Una historia con 3 finales posibles. El lector elige al final de cada acto y la presentación salta al desenlace correspondiente.',
-      emoji: '🔀'
+      definicion: 'Pantallas conectadas por enlaces que dejan elegir el camino, entrar, volver y saltar.',
+      ejemplo: 'Un menú de cuatro botones y cuatro secciones, cada una con regreso.',
+      categoria: 'Los caminos'
     },
     {
       termino: 'Hipervínculo interno',
-      definicion: 'Texto o botón que al hacer clic lleva a otra slide dentro de la misma presentación. Permite ramificar la narrativa.',
-      ejemplo: 'En Google Slides, clic derecho sobre el texto → Insertar enlace → seleccionar slide destino.',
-      emoji: '🔗'
+      definicion: 'Un texto o botón que lleva a otra pantalla de la misma presentación.',
+      ejemplo: 'Clic derecho sobre el botón, «Insertar enlace», y elegir la diapositiva 3.',
+      categoria: 'Los caminos'
     },
     {
-      termino: 'Animación',
-      definicion: 'Efecto que aparece, se mueve o cambia según un disparador (clic, carga, tiempo). Debe apoyar la comprensión, no decorar.',
-      ejemplo: 'Un mapa que se llena por regiones a medida que el presentador habla. Cada región aparece al hacer clic.',
-      emoji: '✨'
+      termino: 'Menú',
+      definicion: 'La pantalla índice que lleva la esencia, como la copla inicial de la décima. Un botón por sección.',
+      ejemplo: '«¿Qué es?», «¿Cómo funciona?», «¿Para qué sirve?», «¿Qué falla?».',
+      categoria: 'Los caminos'
     },
     {
-      termino: 'Disparador (trigger)',
-      definicion: 'Acción que activa la animación: clic del lector, carga de la slide, transcurso de tiempo, hover sobre un objeto.',
-      ejemplo: 'Una animación con disparador "al hacer clic" da control al lector; "al cargar" la activa automáticamente.',
-      emoji: '🎬'
+      termino: 'Retorno',
+      definicion: 'El botón «volver al menú» que va en todas las pantallas menos el menú. Sin él, quien entra queda atrapado.',
+      ejemplo: 'Cada décima vuelve a un verso de la copla; cada sección vuelve al menú.',
+      categoria: 'Las reglas'
     },
     {
-      termino: 'Plataforma de slides',
-      definicion: 'Herramienta para construir presentaciones. Las más usadas y gratuitas: Google Slides, Canva, Genially, PowerPoint escolar.',
-      ejemplo: 'Genially es muy potente para interactividad; Google Slides es simple y colaborativo en tiempo real.',
-      emoji: '🖼️'
+      termino: 'Glosario',
+      definicion: 'Una palabra enlazada a su definición, con un enlace que devuelve a donde estabas.',
+      ejemplo: '«Umbral» subrayada lleva a la definición y vuelve a la sección 2.',
+      categoria: 'Las reglas'
+    },
+    {
+      termino: 'Prueba de quitar',
+      definicion: 'Una animación es útil solo si al quitarla se pierde algo para entender.',
+      ejemplo: 'Revelar la respuesta después de la pregunta pasa la prueba; un título que gira, no.',
+      categoria: 'Las reglas'
     }
   ],
   laboratorios: [
     {
       tipo: 'quiz',
-      titulo: '¿Dominas la narrativa interactiva?',
-      instrucciones: '5 preguntas para verificar que diseñas presentaciones con propósito comunicativo.',
+      titulo: '¿Sabes diseñar caminos que vuelven?',
+      instrucciones: 'Cinco preguntas para verificar que dominas menú, enlaces, retornos y animaciones útiles. No va al cuaderno.',
       preguntas: [
         {
-          enunciado: '¿Cuál es el criterio profesional para usar animaciones?',
+          enunciado: 'Tu pareja entra a la sección 3 de tu presentación y no sabe cómo seguir. ¿Qué falta?',
           opciones: [
-            'Que sean llamativas',
-            'Que apoyen la comprensión, no que decoren',
-            'Que sean muchas',
-            'Que reboten siempre'
+            'Un botón «volver al menú» enlazado al inicio.',
+            'Una animación que le muestre claramente que la sección ya terminó.',
+            'Más texto en la sección para que no se aburra.',
+            'Una transición distinta para que note el cambio.'
           ],
-          respuestaIndex: 1,
-          feedbackCorrecto: 'Exacto. La animación bien usada revela información en el momento justo. La decorativa cansa al lector.',
-          feedbackIncorrecto: 'El criterio es que apoye la comprensión. La decoración por decoración cansa y resta foco.'
+          respuestaIndex: 0,
+          feedbackCorrecto: 'Sí. Es una rama sin retorno. Cada sección necesita su botón de regreso.',
+          feedbackIncorrecto: 'Ni animaciones ni texto ni transiciones la sacan de ahí. Falta el retorno al menú.'
         },
         {
-          enunciado: 'En Google Slides, ¿cómo insertas un hipervínculo a otra slide?',
+          enunciado: '¿Cuál de estos menús lleva la esencia, como la copla inicial de la décima?',
           opciones: [
-            'Solo se puede a páginas web',
-            'Hay que editar HTML',
-            'Clic derecho → Insertar enlace → seleccionar slide',
-            'No es posible'
-          ],
-          respuestaIndex: 2,
-          feedbackCorrecto: 'Correcto. Clic derecho sobre el texto u objeto → Insertar enlace → elegir slide destino.',
-          feedbackIncorrecto: 'En Google Slides se hace con clic derecho sobre el texto y luego Insertar enlace, eligiendo el slide destino.'
-        },
-        {
-          enunciado: '¿Qué es un "disparador" de animación?',
-          opciones: [
-            'Un error en la presentación',
-            'El final del slide',
-            'Una herramienta externa',
-            'La acción que activa la animación (clic, carga, hover)'
+            '«Sección 1 · Sección 2 · Sección 3 · Sección 4».',
+            '«Inicio · Siguiente · Anterior · Fin».',
+            '«Diapositiva A · Diapositiva B · Diapositiva C · Diapositiva D · Diapositiva E».',
+            '«¿Qué es? · ¿Cómo se programa? · ¿Qué sensores tiene? · ¿Qué falla?».'
           ],
           respuestaIndex: 3,
-          feedbackCorrecto: 'Exacto. El disparador define cuándo se ejecuta la animación: al clic, al cargar, al tiempo, al hover.',
-          feedbackIncorrecto: 'Es la acción que activa la animación. Define si el lector controla el ritmo o si avanza sola.'
+          feedbackCorrecto: 'Correcto. Con solo leer el menú ya sabes de qué trata todo y eliges por dónde entrar.',
+          feedbackIncorrecto: '«Sección 1» o «Diapositiva A» no dicen nada. El menú lleva la esencia cuando cada botón dice el tema de su sección.'
         },
         {
-          enunciado: '¿Cuál de estas plataformas permite construir narrativa interactiva con hipervínculos internos?',
+          enunciado: 'Tienes un título que entra girando y una respuesta que aparece después de la pregunta. ¿Cuál pasa la prueba de quitar?',
           opciones: [
-            'Google Slides, Canva, Genially y PowerPoint',
-            'Solo PowerPoint pago',
-            'Solo Adobe Illustrator',
-            'Solo herramientas de pago'
+            'Las dos, porque toda animación ayuda a mantener la atención.',
+            'Ninguna, porque las animaciones siempre distraen.',
+            'La respuesta que aparece después, porque sin ella se pierde el orden.',
+            'El título que gira, porque es la primera pantalla y debe llamar la atención de todos.'
           ],
-          respuestaIndex: 0,
-          feedbackCorrecto: 'Correcto. Las 4 plataformas mencionadas son gratuitas o accesibles y soportan hipervínculos internos.',
-          feedbackIncorrecto: 'Las 4 (Google Slides, Canva, Genially, PowerPoint escolar) lo permiten y son accesibles para estudiantes.'
+          respuestaIndex: 2,
+          feedbackCorrecto: 'Eso es. Revelar la respuesta después de la pregunta ayuda a entender. El título girando se puede quitar sin perder nada.',
+          feedbackIncorrecto: 'No todas ayudan ni todas distraen. La que revela la respuesta después de la pregunta se pierde si la quitas; la que gira, no.'
         },
         {
-          enunciado: 'Tu presentación tiene animaciones que entran rebotando sin razón. ¿Qué problema tiene?',
+          enunciado: '¿Para qué sirve dibujar el mapa en papel antes de abrir la herramienta?',
           opciones: [
-            'Las animaciones decorativas cansan y restan foco al mensaje',
-            'Ninguno, es estilo personal',
-            'Va a ser más rápida',
-            'Va a tener mejor nota automáticamente'
+            'Para cumplir el requisito del cuaderno.',
+            'Para ver nodos y regresos antes de enlazar, sin ramas sueltas.',
+            'Para que la presentación tenga más diapositivas y se vea más completa.',
+            'Para elegir los colores de cada pantalla.'
           ],
-          respuestaIndex: 0,
-          feedbackCorrecto: 'Exacto. Las animaciones decorativas distraen del mensaje y cansan al lector tras unos pocos slides.',
-          feedbackIncorrecto: 'El problema es que cansan. Cada animación debe tener propósito comunicativo, no ser adorno.'
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Sí. En el papel se ve de una vez qué sección no tiene regreso. En la herramienta se descubre tarde.',
+          feedbackIncorrecto: 'No es por el cuaderno ni por los colores. El mapa muestra ramas y regresos antes de enlazar, y evita dejar caminos sin vuelta.'
+        },
+        {
+          enunciado: 'Un decimero de Guapi cambia dos versos de una décima que aprendió de su abuelo. ¿Qué dice eso de la décima?',
+          opciones: [
+            'Que la décima quedó dañada y ya no vale.',
+            'Que el decimero no se la aprendió bien.',
+            'Que las décimas tienen un autor único y original que hay que respetar siempre.',
+            'Que la décima es de todos y cada quien añade o cambia partes.'
+          ],
+          respuestaIndex: 3,
+          feedbackCorrecto: 'Exacto. Oslender lo registra: cada decimero añade o cambia, y así la décima se vuelve de todos.',
+          feedbackIncorrecto: 'No está dañada ni mal aprendida. Las décimas del Pacífico no tienen autoría fija; cada decimero las cambia y siguen siendo válidas.'
         }
       ]
     }
   ],
   postLectura: {
-    reflexion: 'El minimalismo en animaciones es señal de profesionalismo. ¿En qué otros ámbitos de tu vida (decoración, vestimenta, hábitos) "menos es más"?',
-    transferencia: 'Esta semana: en una presentación tuya, cuenta cuántas animaciones tienes. Si son más de 3 por diapositiva, recorta hasta dejar solo las que agreguen claridad real.',
-    cierre: 'El titiritero y el animador digital comparten oficio: mover lo justo, en el momento justo. La disciplina del movimiento es elegancia.'
+    reflexion: '¿En qué pantalla se quedó tu pareja durante la prueba del minuto, y qué botón faltaba?',
+    transferencia: 'La próxima vez que armes algo con partes, un trabajo, un video, una carpeta, escribe primero el menú. Si el menú no dice de qué trata todo, todavía no está listo.',
+    cierre: 'La copla lleva la esencia y cada décima vuelve a ella. El menú lleva la esencia y cada sección vuelve. Nadie se pierde.'
   },
   saberAncestral: {
-    saber: 'En las noches de fogón del Pacífico colombiano y en los corredores de las casas de los abuelos del Valle, había una práctica que cualquier nieto reconoce: el cuentero del fogón. El abuelo o la abuela no contaba la historia como aparece en los libros: lineal, principio-medio-fin. La contaba con ramas, saltos, regresos: "Y entonces el tigre dijo... pero antes les cuento de la vez que mi abuelo fue al monte... y eso me hace acordar de cuando llovió tan fuerte que el río arrastró la mula...". El cuento iba y volvía. El nieto, lejos de aburrirse, prestaba más atención: la narrativa con ramas obligaba a seguir el hilo activamente. Cuando volvía al tigre, ya había aprendido cosas que el cuento lineal nunca le habría enseñado. El cuento del fogón no era una línea recta: era un mapa, y el nieto navegaba ese mapa con la guía del cuentero. Mucho antes de que existieran los hipervínculos, el oficio del cuentero ancestral practicaba el hipertexto: textos conectados que el lector recorre eligiendo caminos. La narrativa interactiva digital es esa práctica antigua formalizada con clics.',
-    fuente: 'Oficio del titiritero en plazas del Valle y el Caribe colombiano',
-    preguntaPuente: '¿Qué sabía el cuentero del fogón al contar la historia con ramas y regresos, que el novato en presentaciones olvida cuando hace 20 slides lineales en orden estricto? ¿Y por qué una presentación con 3 ramas bien pensadas es más comunicativa que una lineal con 30 slides?'
+    saber: 'En Guapi y en los ríos de la costa caucana, los decimeros recitan de memoria poemas de 44 versos: las décimas glosadas. La estructura es estricta. Primero va una copla de cuatro versos que «lleva la esencia». Después vienen cuatro décimas de diez versos. Cada décima tiene que terminar en el verso correspondiente de la copla inicial (Oslender, 2003, citando a Pedrosa y Vanín, 1994). Es decir: el poema abre con un menú de cuatro líneas y desarrolla cada una por su lado. Cada desarrollo vuelve al menú antes de pasar al siguiente. Nadie se pierde porque cada rama regresa. Y las décimas no tienen autoría fija: cada decimero añade o cambia partes, y así se vuelven de todos. La cara de exclusión: Oslender llama a estas décimas «discursos ocultos de resistencia». Las comunidades negras del Pacífico las usan para contar lo que la historia oficial calla y para reclamar su territorio. Y los decimeros son mayores a los que cada vez se escucha menos. Hoy vas a construir una presentación como una décima glosada: un menú que lleva la esencia y ramas que siempre vuelven.',
+    fuente: 'Decimeros del Pacífico caucano (Guapi, río Saija) · la décima glosada',
+    referencia: 'Oslender, U. (2003). «Discursos ocultos de resistencia»: tradición oral y cultura política en comunidades negras de la costa pacífica colombiana. Revista Colombiana de Antropología, 39, 203--236.',
+    preguntaPuente: 'En la décima glosada, cada rama termina volviendo a un verso de la copla inicial. Si tu presentación tiene un botón que entra a una sección y ninguno que vuelva, ¿qué le pasa a quien hizo clic?'
   },
+  mapaRuta: [
+    {
+      numero: 1,
+      iconos: [
+        '🌱'
+      ],
+      titulo: 'La décima glosada, ramas que vuelven',
+      duracionMin: 10
+    },
+    {
+      numero: 2,
+      iconos: [
+        '✏️'
+      ],
+      titulo: 'Actividad 1 · El mapa en papel',
+      duracionMin: 15
+    },
+    {
+      numero: 3,
+      iconos: [
+        '🔎',
+        '✏️'
+      ],
+      titulo: 'Actividad 2 · El menú y las ramas',
+      duracionMin: 30
+    },
+    {
+      numero: 4,
+      iconos: [
+        '🔎',
+        '✅'
+      ],
+      titulo: 'Actividad 3 · Regresos, animaciones y la prueba del minuto',
+      duracionMin: 25
+    },
+    {
+      numero: 5,
+      iconos: [
+        '💭'
+      ],
+      titulo: 'Tres ideas y tu compromiso',
+      duracionMin: 10
+    }
+  ],
+  actividades: [
+    {
+      numero: 1,
+      verbo: 'IDENTIFICA',
+      titulo: 'El mapa en papel',
+      tiempoMin: 15,
+      modalidad: 'individual',
+      pasos: [
+        'Elige un tema escolar con partes y dibuja cinco círculos, uno es el menú y los otros cuatro son secciones.',
+        'Traza flechas del menú a cada sección.',
+        'Traza las flechas de regreso, de cada sección al menú, con otro color.',
+        'Marca con una estrella la sección que necesita una palabra explicada.'
+      ],
+      cuaderno: {
+        titulo: 'El mapa en papel',
+        formato: 'el mapa de cinco nodos con flechas de ida en un color y de regreso en otro, y la estrella del glosario',
+        extension: 'media página'
+      },
+      criterios: [
+        'Cada sección tiene flecha de ida y de regreso.',
+        'Desde cualquier nodo se puede seguir una flecha de vuelta al menú.'
+      ]
+    },
+    {
+      numero: 2,
+      verbo: 'CREA',
+      titulo: 'El menú y las ramas',
+      tiempoMin: 30,
+      modalidad: 'parejas',
+      pasos: [
+        'Con tu pareja, creen cinco diapositivas con el título de cada una según el mapa.',
+        'En la primera, el menú, escriban cuatro botones, uno por sección, y enlacen cada uno a su diapositiva con clic derecho, «Insertar enlace».',
+        'En cada sección pongan el contenido en pocas palabras, con la jerarquía de la sesión 1.',
+        'Prueben en modo presentación entrando desde el menú a las cuatro secciones.'
+      ],
+      cuaderno: {
+        titulo: 'El menú y las ramas',
+        formato: 'el texto de los cuatro botones, la lista de secciones con su contenido en una línea, y el enlace de la presentación',
+        extension: 'media página'
+      },
+      criterios: [
+        'Los cuatro botones del menú enlazan a su sección.',
+        'Ningún botón falla al probar.'
+      ]
+    },
+    {
+      numero: 3,
+      verbo: 'EVALÚA',
+      titulo: 'Regresos, animaciones y la prueba del minuto',
+      tiempoMin: 25,
+      modalidad: 'individual',
+      pasos: [
+        'Pon en cada sección un botón «volver al menú» y arma el glosario, la palabra difícil enlazada a su definición y de regreso.',
+        'Agrega tres animaciones, una que revela, una que resalta y una que mueve, y a cada una hazle la prueba de quitar.',
+        'Pásale el computador a tu pareja sin decir nada y cronometra un minuto, debe entrar a dos secciones y volver al menú.',
+        'Escribe la nota de cinco líneas, por qué estos caminos y no una secuencia.'
+      ],
+      cuaderno: {
+        titulo: 'Regresos, animaciones y la prueba del minuto',
+        formato: 'las tres animaciones con qué se pierde sin cada una, el resultado de la prueba del minuto y la nota de cinco líneas',
+        extension: 'una página'
+      },
+      criterios: [
+        'Tu pareja volvió al menú sola.',
+        'Las tres animaciones tienen escrito qué se perdería sin ellas.'
+      ]
+    }
+  ],
   triangulo: {
     dussel: {
-      autor: 'Enrique Dussel',
+      autor: 'Enrique Dussel · Filosofía de la liberación (1977), §3.3.9.4',
       lente: 'lente del nosotros',
-      cita: 'La narrativa que ofrece caminos respeta al lector como sujeto; la que impone orden lo somete como objeto pasivo.',
-      preguntaEspejo: '¿Mi presentación ofrece caminos o impone uno?'
+      cita: 'El maestro que libera sabe oír en silencio a la juventud y al pueblo, en vez de imponer su orden.',
+      preguntaEspejo: '¿Qué de lo que hice esta semana obligaba a los demás a ir en mi orden?'
     },
     estoico: {
-      autor: 'Marco Aurelio',
+      autor: 'Séneca · De la brevedad de la vida, I (c. 49 d.C.)',
       lente: 'lente del cuidado interior',
-      cita: 'La animación que aporta es virtud; la que solo decora es vanidad del autor.',
-      preguntaEspejo: '¿Mis animaciones aportan comprensión, o solo decoran porque sí?'
+      cita: 'La vida no es corta; nosotros la hacemos corta derrochando el tiempo.',
+      preguntaEspejo: '¿Qué animación puse porque se veía bonita y no porque ayudara?'
     },
     floridi: {
-      autor: 'Luciano Floridi',
+      autor: 'Luciano Floridi · Big data and their epistemological challenge (2012)',
       lente: 'lente de la infoesfera',
-      cita: 'El hipertexto bien diseñado es infraestructura cognitiva que respeta cómo el cerebro humano explora información.',
-      preguntaEspejo: '¿Mi presentación respeta cómo piensan los lectores, o solo cómo yo organicé el contenido?'
-    }
+      cita: 'Ganan quienes saben preguntar y responder, y por eso saben qué merece recogerse y cuidarse.',
+      preguntaEspejo: '¿Los botones de mi menú son preguntas que alguien se haría, o solo nombres?'
+    },
+    modo: 'ideas'
   },
   cincoDimensiones: {
-    personal: 'Aprendiste que la disciplina del movimiento es elegancia — mover lo justo es decisión madura.',
-    emocional: 'Resististe la tentación de "compensar contenido débil con efectos llamativos" — elegiste sustancia sobre espectáculo.',
-    ciudadana: 'Respetar la atención del espectador es ciudadanía digital concreta en una era de saturación visual.',
-    local: 'Heredaste el oficio del titiritero: cada figura en su tiempo, ninguna por demás.',
-    intergeneracional: 'El titiritero de la plaza y el animador digital comparten ética. Lo que cambia es la herramienta, no la disciplina del movimiento.'
+    personal: 'Dibujaste el mapa antes de abrir la herramienta. Planear en papel primero sirve para cualquier cosa que tenga partes.',
+    emocional: 'Ver a tu pareja atrapada en una pantalla sin saber volver incomoda. Ese momento te dice exactamente qué botón falta.',
+    ciudadana: 'Un camino con regresos respeta a quien lo recorre. Una app que no deja volver atrás atrapa a la gente a propósito.',
+    local: 'Los decimeros del Pacífico caucano abren con una copla que lleva la esencia y cada rama vuelve a ella. Tu menú y tus retornos hacen lo mismo.',
+    intergeneracional: 'Una presentación con menú la puede ampliar el grupo del año siguiente agregando una sección. Una en línea recta hay que rehacerla.'
   }
 };
 

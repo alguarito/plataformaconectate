@@ -25,16 +25,97 @@ export const planArea = {
     'Un estudiante capaz de comprender la tecnología, usarla críticamente, crear con ella y evaluar sus efectos en la vida común.',
 
   pdf: 'plan-de-area-2026.pdf',
-  paginas: 112,
+  paginas: 113,
 
-  // Recursos curriculares activos (216 piezas vivas)
+  // Recursos curriculares activos (277 piezas vivas)
+  //
+  // El núcleo es obligatorio y cubre los grados 6° a 11°. Las ampliaciones son
+  // espacios abiertos por interés, no por matrícula: implementan los dos ejes
+  // transversales que este plan declara —pensamiento computacional y
+  // habilidades socioemocionales— y la investigación escolar.
   recursos: {
-    guias: 180, // 30 × 6 grados
-    proyectos: 18, // 3 × 6 grados (entregable-céntrico MILC v3)
-    examenes: 18, // 3 × 6 grados (formal + banco práctica)
-    total: 216,
+    nucleo: {
+      guias: 180, // 30 × 6 grados
+      proyectos: 18, // 3 × 6 grados (entregable-céntrico MILC v3)
+      examenes: 18, // 3 × 6 grados (formal + banco práctica)
+      total: 216,
+    },
+    ampliaciones: {
+      territorioInterior: 39, // de 60 previstos (10 momentos × 6 grados)
+      semillero: 12, // de 20 previstos (5 líneas × 4 módulos)
+      bebras: 10,
+      total: 61,
+    },
+    total: 277,
   },
 };
+
+/**
+ * Ecosistema formativo del área.
+ *
+ * El núcleo curricular no agota lo que el área ofrece. Alrededor de él operan
+ * tres espacios que este plan ya sostiene doctrinalmente —los ejes transversales
+ * de pensamiento computacional y de habilidades socioemocionales, y la
+ * investigación escolar— pero que hasta la edición anterior no estaban
+ * nombrados. Cada espacio declara aquí a qué parte del plan responde: eso es lo
+ * que convierte un inventario en un argumento.
+ */
+export interface EspacioFormativo {
+  nombre: string;
+  emoji: string;
+  descripcion: string;
+  piezas: string;
+  ruta: string;
+  responde: string;
+  obligatorio: boolean;
+}
+
+export const ecosistemaFormativo: EspacioFormativo[] = [
+  {
+    nombre: 'Núcleo curricular',
+    emoji: '📚',
+    descripcion:
+      'Las guías, proyectos y exámenes de los grados 6° a 11°, organizados en tres periodos por grado según la malla curricular.',
+    piezas: '216 piezas · 180 guías, 18 proyectos, 18 exámenes',
+    ruta: '/grado-6',
+    responde:
+      'Los 4 componentes MEN y las 4 fases MILC, desplegados en la malla de cada grado.',
+    obligatorio: true,
+  },
+  {
+    nombre: 'Territorio Interior',
+    emoji: '🧠',
+    descripcion:
+      'Programa de educación socioemocional con diez momentos por grado, anclados en saberes situados del territorio y de los pueblos originarios.',
+    piezas: '39 de 60 momentos · grados 8° y 9° completos',
+    ruta: '/explora/territorio-interior',
+    responde:
+      'El eje transversal de Habilidades Socioemocionales y los Lineamientos SEL del marco legal.',
+    obligatorio: false,
+  },
+  {
+    nombre: 'Semillero de Investigación',
+    emoji: '🔬',
+    descripcion:
+      'Cinco líneas de investigación de cuatro módulos cada una, uno por fase MILC, abiertas a estudiantes de cualquier grado.',
+    piezas: '12 de 20 módulos · astronomía, robótica y algoritmia completas',
+    ruta: '/semillero',
+    responde:
+      'La fase de Praxis del modelo MILC llevada fuera del aula: investigación escolar con producto público.',
+    obligatorio: false,
+  },
+  {
+    nombre: 'Pruebas Bebras',
+    emoji: '🦫',
+    descripcion:
+      'Desafíos internacionales de pensamiento computacional que se resuelven con lógica y patrones, sin escribir una línea de código.',
+    piezas: '10 guías de preparación',
+    ruta: '/explora/bebras',
+    responde:
+      'El eje transversal de Pensamiento Computacional y la meta 2026 de participación en Bebras.',
+    obligatorio: false,
+  },
+];
 
 /**
  * Las 4 fases del Modelo MILC (Modelo de Investigación Liberadora y Científica).

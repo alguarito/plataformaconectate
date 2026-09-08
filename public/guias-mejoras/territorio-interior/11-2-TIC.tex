@@ -1,0 +1,611 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra UNICA de las guias MILC v3.
+%
+% La usan las cuatro familias de guias, cada una con su driver:
+%   · Grados 6-11          -> scripts/build-guias-g11.py
+%   · Bebras               -> scripts/build-guias-bebras.py
+%   · Semillero            -> scripts/build-guias-semillero.py
+%   · Territorio interior  -> scripts/build-guias-territorio-interior.py
+%
+% Antes habia tres copias casi identicas (~400 lineas iguales, 6 distintas):
+% cada mejora habia que aplicarla tres veces, y en la practica no se hacia
+% (el motor de recursos vivia solo en dos de ellas). Lo que varia entre
+% familias esta parametrizado en 6 placeholders que cada driver llena
+% (se nombran aqui SIN su sintaxis real: el builder reemplaza por texto plano,
+% tambien dentro de los comentarios, y un valor multilinea rompe el preambulo):
+%
+%   HEADER_IZQ        encabezado izquierdo de pagina
+%   HEADER_DER        encabezado derecho de pagina
+%   PORTADA_ETIQUETA  rotulo sobre el numero grande (GRADO/MOMENTO/MODULO)
+%   PORTADA_SERIE     linea de serie de la portada
+%   PORTADA_ID        identificador de la guia en la portada
+%   PORTADA_CIRCULO   el circulito de grado (°), o vacio si no aplica
+%   PDF_TITULO        titulo en texto plano (sin \textbf ni comillas TeX) para
+%                     los metadatos del PDF (/Title); lo produce lib_xelatex.texto_pdf
+%
+% Composicion (auditoria 2026-09-03): las bandas de estacion piden espacio
+% (\Needspace*) y prohiben el salto justo despues (\nopagebreak), asi no quedan
+% huerfanas al pie; las cajas largas (softbox, drawbox, infoband, puentebox) son
+% `breakable`, asi una caja de media pagina ya no arrastra todo a la siguiente
+% dejando la anterior al 40 %. Todo texto sobre mostaza o verde va en milcNegro
+% (blanco sobre #E5B400 da 1,93:1 y sobre #58A923 2,95:1; ninguno pasa WCAG AA).
+% El resto de claves las documenta content/guias/_SCHEMA.md. El script valida
+% que no queden placeholders sin reemplazar antes de escribir el archivo final.
+
+% Etiquetado PDF (latex-lab): /Lang, estructura y texto alternativo de las
+% figuras, para lectores de pantalla. Debe ir ANTES de \documentclass.
+\DocumentMetadata{lang=es-CO,tagging=on}
+\documentclass[11pt,letterpaper]{article}
+% headheight=24pt: la cabecera derecha lleva dos lineas (identidad de la guia
+% y estacion actual). headsep se acorta en la misma medida para que el bloque
+% de texto quede exactamente donde estaba con headheight=12pt.
+\usepackage[margin=2.0cm,headheight=24pt,headsep=13pt]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+% Librerías TikZ para los diagramas de las guías (bloque `recursos:`):
+%  · babel  → babel en español vuelve activos caracteres como «>», y TikZ los usa
+%             en sus opciones (>=stealth, ->). Sin esta librería, cualquier
+%             diagrama con flechas revienta con «\language@active@arg> has an
+%             extra }». Debe ir ANTES de que se dibuje nada.
+%  · positioning        → sintaxis «below left=2pt and 3pt».
+%  · decorations.pathreplacing → llaves ({brace}) para señalar rangos.
+\usetikzlibrary{babel,positioning,decorations.pathreplacing}
+\usepackage{graphicx}
+% Circuitos: el trabajo de electrónica se hace hoy con micro:bit y sus sensores
+% integrados (MakeCode, sin cableado), así que no se necesitan esquemáticos.
+% Si algún día entran montajes con protoboard, basta descomentar esta línea:
+% los diagramas .tex/.tikz declarados en `recursos:` ya se incrustan solos.
+% \usepackage{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{etoolbox}
+\usepackage{needspace}
+% hyperref al final del preambulo: metadatos del PDF (titulo, autor, idioma,
+% familia), marcadores por estacion (\pdfbookmark) y enlaces sin recuadro.
+\usepackage[hidelinks,
+  pdftitle={La trampa de compararse: quién puso la vara con que te mides},
+  pdfauthor={PhD. Álvaro Cárdenas Orozco},
+  pdfsubject={Territorio interior · Educación socioemocional · Grado 11° · Momento 2 · MILC v3},
+  pdflang={es-CO},
+  bookmarksopen=true,bookmarksnumbered=false]{hyperref}
+
+% Helvetica Neue no trae la flecha U+2192, asi que cada «→» escrito literalmente
+% en el YAML se compilaba a NADA, en silencio (462 flechas en 61 guias: rutas del
+% tipo «paleta → tipografia → lockup» salian rotas). Mapeamos el caracter a su
+% version matematica, que si tiene glifo. Asi el autor puede seguir escribiendo
+% «→» comodamente en el YAML.
+\usepackage{newunicodechar}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0D9488}
+\definecolor{milcGradeDark}{HTML}{115E59}
+\definecolor{milcGradeSoft}{HTML}{CCFBF1}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+% Cabecera de dos lineas: identidad de la guia arriba y, a la derecha y en
+% gris, la estacion en curso (\markright desde \milcestacion). Antes de la
+% primera estacion la segunda linea va vacia; el \strut mantiene la altura
+% para que la linea de arriba no baile entre paginas.
+\lhead{\small Territorio interior · Educación socioemocional\\[-1pt]{\footnotesize\strut}}
+\rhead{\small Grado 11° · Momento 2 · MILC v3\\[-1pt]{\footnotesize\strut\color{milcNegro!65}\rightmark}}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+% Sobre mostaza (#E5B400) y verde (#58A923) el texto va en milcNegro; sobre el
+% resto de la paleta, en blanco. Se usa dentro de fonttitle/fontupper, donde un
+% \color posterior manda sobre coltitle.
+\newcommand{\milctintasobre}[1]{%
+  \ifboolexpr{test{\ifstrequal{#1}{milcMostaza}} or test{\ifstrequal{#1}{milcVerde}}}%
+    {\color{milcNegro}}{\color{white}}}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,breakable,pad at break=3mm,
+  colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries\milctintasobre{#1},fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,breakable,pad at break=4mm,
+  colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries\milctintasobre{#1},
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,breakable,pad at break=2mm,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,breakable,pad at break=2mm,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+% La flecha va en modo matematico a proposito: Helvetica Neue NO tiene el glifo
+% U+2192, asi que \textrightarrow se compilaba a NADA («Missing character: There
+% is no → in font Helvetica Neue») y el puente salia sin flecha. En modo
+% matematico la flecha viene de la fuente matematica y si se dibuja.
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{$\rightarrow$}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+% ─── Listas aireadas para las guías socioemocionales ────────────────────
+% Componer las verificaciones como «\checkbox texto\\» deja el texto que salta
+% de línea debajo del cuadrito y apelmaza el bloque. Estos entornos alinean la
+% continuación y airean los ítems. Los usa Territorio Interior; cualquier
+% familia puede hacerlo.
+\newlist{checklista}{itemize}{1}
+\setlist[checklista]{
+  label=\textcolor{milcGradeDark}{\fbox{\phantom{x}}},
+  leftmargin=9mm, labelsep=3.2mm, itemsep=2.4mm,
+  topsep=2.5mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+\newlist{pasoslista}{enumerate}{1}
+\setlist[pasoslista]{
+  label=\textcolor{milcGradeDark}{\sffamily\bfseries\arabic*.},
+  leftmargin=8mm, labelsep=3mm, itemsep=2.8mm,
+  topsep=1mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+% Nunca huerfana: pide 9 lineas libres (o salta de pagina rellenando con
+% \vfill) y prohibe el salto justo despues de la banda. Nueve y no seis:
+% la caja partible que sigue necesita ~80pt (titulo adosado, relleno y dos
+% lineas) para arrancar en la misma pagina; con menos, tcolorbox la manda
+% entera a la siguiente y la banda se queda sola. El penalty 10000 va
+% en `after`, ANTES del espacio posterior: un `after skip` (aunque sea 0pt)
+% es un \vskip tras la caja, y ese glue es un punto de corte legal que un
+% \nopagebreak escrito despues de \end{tcolorbox} ya no cierra. Cada banda
+% deja marcador PDF y actualiza la cabecera derecha.
+\newcounter{milcestacion}
+\newcommand{\milcestacion}[2]{%
+\Needspace*{9\baselineskip}%
+\stepcounter{milcestacion}%
+\pdfbookmark[1]{#2}{milcestacion\themilcestacion}%
+\markright{#2}%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,
+  after={\par\nopagebreak\vskip7pt}]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\milctintasobre{#1}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\Needspace{4\baselineskip}%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
+% ── Recursos visuales de la guía ──────────────────────────────────────
+% Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
+% \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
+% \guiaDiagrama → fuente TikZ/circuitikz (.tex) incrustada como vector:
+%                 es la vía para circuitos y esquemáticos editables.
+% [#1] = texto alternativo (alt) · #2 = ruta relativa al .tex · #3 = pie
+% El alt llega al PDF etiquetado (/Alt) y lo lee el lector de pantalla.
+\newcommand{\guiaFigura}[3][]{%
+\begin{center}
+\includegraphics[width=0.88\linewidth,height=0.38\textheight,keepaspectratio,alt={#1}]{#2}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#3}}
+\end{center}
+}
+
+\newcommand{\guiaDiagrama}[2]{%
+\begin{center}
+\input{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\begin{document}
+\thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
+\begin{tikzpicture}[remember picture,overlay]
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont MOMENTO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont TERRITORIO INTERIOR · SOCIOEMOCIONAL};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
+
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 2};
+  % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
+  % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  
+
+  \node[anchor=west,text=milcGradeText,text width=11.4cm,align=left] at ([xshift=1.5cm,yshift=0.5cm]gradonum.east)
+    {
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Territorio interior · Socioemocional}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont\setlength{\baselineskip}{27pt}La trampa de\\[4pt]compararse\\[4pt]quién puso la vara}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Grado 11° · Momento 2}
+    };
+\end{tikzpicture}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Tu mapa de contingencias: los cuatro dominios de los que hoy depende tu valor, con quién puso la vara de cada uno, cuáles dependen de la aprobación ajena, y una vara propia escrita con su forma de comprobarla.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · Apertura ancestral · Comparación y valor propio · Triángulo Dussel-Estoicismo-Floridi}}
+
+\newpage
+
+\section*{Apertura: La trampa de compararse: quién puso la vara con que te mides}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+Entre \textbf{1949 y 1953}, un joven sociólogo llamado \textbf{Orlando Fals Borda} vivió en \textbf{Saucío}, una vereda de Chocontá (Cundinamarca), mientras trabajaba para la empresa que construía la represa del Sisga. \emph{Iba a hacer lo que hacía la sociología de la época:} \textbf{medir} ---aplicar a una comunidad campesina las categorías y las escalas que traía de la universidad---. \textbf{De ahí salió \emph{Campesinos de los Andes}}, su tesis de maestría, presentada en la Universidad de Florida en \textbf{1955} y traducida al español en \textbf{1961}. \emph{Pero lo interesante no es el libro: es lo que le pasó a él haciéndolo.} \textbf{Fals Borda terminó dedicando su vida a inventar otra cosa ---la \emph{investigación acción participativa}---,} \emph{cuyo principio es una relación \textbf{horizontal} entre el saber académico y el saber popular:} \textbf{la comunidad no es el objeto que se mide, es quien participa en la investigación.} \emph{Ese método es hoy parte del currículo en unas 2.500 universidades en cinco continentes.} \textbf{Guarda el movimiento completo, porque es el de esta guía:} \emph{alguien llega con una vara hecha en otra parte, la aplica, y descubre que lo que de verdad importaba \textbf{no cabía en la vara}.}
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+Cuando alguien se compara y sale perdiendo, la explicación habitual es «tiene baja autoestima». \textbf{La investigación dice que la pregunta está mal hecha.} \textbf{Jennifer Crocker} y \textbf{Connie Wolfe} señalaron que los estudios se habían concentrado casi exclusivamente en el \textbf{nivel} de autoestima, descuidando algo más importante: \textbf{las \emph{contingencias} sobre las que esa autoestima se apoya} (Crocker y Wolfe, 2001). \emph{La idea viene de lejos ---ya William James, hace más de un siglo, decía que la autoestima sube y baja según los éxitos y fracasos \textbf{en los dominios donde uno se ha jugado su valor}---.} \textbf{Y ahí está el giro:} \emph{lo decisivo no es cuánta autoestima tienes, sino \textbf{qué crees que necesitas ser o hacer para valer como persona}}. \textbf{Esas contingencias son dos cosas a la vez, y por eso son tramposas:} \emph{son \textbf{fuentes de motivación} ---uno se esfuerza donde se juega el valor--- y \textbf{zonas de vulnerabilidad psicológica} ---ahí es donde un fracaso duele de más---.} \textbf{Y hay una en particular que cobra caro:} \emph{cuando el valor propio depende de la \textbf{aprobación de otros}, oponerse a algo ---decir que no, reclamar, poner un límite--- no cuesta solo una conversación incómoda: amenaza el valor mismo.}
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{Fals Borda llegó a Saucío con una vara hecha en otra parte y terminó inventando un método para \textbf{no medir a la gente desde afuera}. \textbf{¿En qué dominios te estás jugando hoy tu valor} \ldots \textbf{y quién decidió que fueran esos}?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar podrás: (1) \textbf{entender} que lo decisivo no es el nivel de autoestima sino los dominios de los que uno hace depender su valor; (2) \textbf{reconocer} que esas contingencias motivan y vuelven vulnerable al mismo tiempo; (3) \textbf{identificar} cuáles de tus varas dependen de la aprobación ajena, y qué te cuesta eso; (4) \textbf{formular} una vara propia ---con su forma concreta de comprobarla--- para al menos un dominio importante de tu vida.
+\end{softbox}
+
+
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Comprende los fenómenos que afectan a su territorio, regula sus emociones ante ellos y acompaña a otros con empatía (transversal 6°--11°, articulado con la política «Escuela, territorio de vida» del MEN, Resolución 006519 de 2025, y la Ley 1620 de 2013)\\
+Referentes & Primera ayuda psicológica (OMS, 2011/2012) · Directrices IASC (2007) · USGS y Servicio Geológico Colombiano · Pueblo nasa y la minga (CRIC) · Dussel · Estoicismo · Floridi\\
+Producto final & Tu mapa de contingencias: los cuatro dominios de los que hoy depende tu valor, con quién puso la vara de cada uno, cuáles dependen de la aprobación ajena, y una vara propia escrita con su forma de comprobarla.\\
+\end{tabularx}
+\normalsize
+
+\puente{En el momento 1 miraste lo que haces sin público. \textbf{Hoy miras lo contrario:} \emph{lo que haces \textbf{por} el público, y de qué depende que te sientas alguien}.}
+
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Sé de qué depende mi valor.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Primero, honestamente: con quién te comparas y en qué. \emph{Y si hoy te alcanzó o no te alcanzó.}}
+
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- Con quién me comparo.} \textbf{Nadie va a leer esta página.} \textbf{Primera parte.} Escribe \textbf{cinco comparaciones} que hayas hecho esta semana: \emph{con quién y en qué}. \textbf{Todo cuenta:} notas, cuerpo, plata, ropa, amigos, novia o novio, a dónde va a estudiar alguien, cuántos seguidores, quién ya sabe qué va a hacer con su vida. \textbf{Segunda parte.} Al frente de cada una: \emph{¿de dónde salió esa comparación?} \textbf{Redes, el salón, la casa, un profesor, tú solo.} \textbf{Tercera parte, la que hace el trabajo.} Completa cuatro veces esta frase: \emph{«yo valgo si \_\_\_\_»}. \textbf{Sin pensarlo mucho y sin ponerlo bonito} ---si lo que sale es «si me va bien en el ICFES», «si soy flaca», «si les caigo bien», «si mi mamá está orgullosa», escríbelo así---. \textbf{Y la última:} \emph{de esas cuatro, ¿cuál te haría sentir peor si mañana fallara?}
+\end{softbox}
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Escribiste cinco comparaciones concretas, con quién y en qué.}
+\milccheckrow{Anotaste de dónde salió cada una.}
+\milccheckrow{Completaste cuatro veces «yo valgo si\ldots», sin adornarlo.}
+
+\begin{infoband}{milcVerde}
+
+
+\textbf{En tu cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1. Con quién me comparo». \textbf{Formato:} las cinco comparaciones con su origen + las cuatro frases «yo valgo si\ldots» + cuál dolería más. \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} tienes \textbf{las cuatro frases} escritas. Esta página es tuya: \textbf{nadie más tiene que leerla si tú no quieres}.
+\end{infoband}
+
+\puente{Ya lo tienes. Ahora, por qué la pregunta no es cuánta autoestima tienes sino de qué depende, y quién puso cada vara.}
+
+\milcestacion{milcTurquesa}{Fase 2 · Sistematización: entender la vara}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro claves sobre compararse}
+Cuatro claves para dejar de preguntarse «¿por qué me comparo tanto?» y empezar a mirar de qué hiciste depender tu valor.
+\end{softbox}
+
+\milcpaso{1}{milcTurquesa}{\textbf{No es cuánta autoestima tienes: es de qué depende.} \emph{La investigación sobre autoestima se concentró mucho tiempo en el \textbf{nivel} ---alta o baja--- y descuidó lo más importante: las \textbf{contingencias} sobre las que se apoya} (Crocker y Wolfe, 2001). \textbf{Es decir: qué crees que necesitas ser o hacer para valer como persona.} \emph{Y eso cambia el diagnóstico por completo.} \textbf{Dos personas con la misma «autoestima» pueden estar en situaciones opuestas:} \emph{una que se juega el valor en algo que controla ---esforzarse, cumplir su palabra--- y otra que se lo juega en algo que no controla ---gustarle a la gente, ganar siempre---.} \textbf{La segunda vive más frágil, aunque desde afuera se vea igual de segura.}}
+\milcpaso{2}{milcTurquesa}{\textbf{Motivación y fragilidad son la misma cosa vista de dos lados.} \emph{Las contingencias no son un defecto:} \textbf{son fuentes de motivación} ---uno se esfuerza justamente donde se juega el valor---. \emph{El que se lo juega en las notas estudia; el que se lo juega en el deporte entrena.} \textbf{Pero exactamente ahí está también la \textbf{zona de vulnerabilidad}:} \emph{es donde un fracaso no se siente como un fracaso sino como una sentencia sobre quién eres}. \textbf{Por eso la misma nota duele distinto en dos personas del mismo salón:} \emph{para una es un dato, para la otra es una definición.} \emph{Y por eso no se trata de dejar de importarle nada a uno ---se trata de saber \textbf{dónde} está apostando---.}}
+\milcpaso{3}{milcTurquesa}{\textbf{La vara la puso alguien, y casi nunca fuiste tú.} \emph{Vuelve a tus cuatro frases y hazte la pregunta de Fals Borda:} \textbf{¿quién decidió que esa fuera la medida?} \emph{Una nota la definió un sistema; una talla la definió una industria ---eso ya lo viste en el momento 7 del grado 8---; «tener claro qué vas a estudiar a los diecisiete» lo definió una costumbre que ni siquiera es tan vieja.} \textbf{Y lo que le pasó a Fals Borda es la lección:} \emph{llegó a Saucío con las escalas de la universidad y terminó inventando un método donde la comunidad \textbf{no es medida desde afuera} sino que participa}. \emph{No cambió de vara: cambió de \textbf{relación} con la vara.} \textbf{Preguntar quién la puso no es rebeldía ---es el primer paso de cualquier investigación seria---.}}
+\milcpaso{4}{milcTurquesa}{\textbf{El reloj social, que a los diecisiete aprieta más que nunca.} \emph{Hay una comparación específica de esta edad y conviene nombrarla:} \textbf{sentir que uno va \emph{atrasado}} ---que otros ya saben qué van a estudiar, ya tienen con quién, ya viajaron, ya empezaron---. \emph{Ese reloj no existe:} \textbf{es un promedio inventado a partir de los pocos casos que uno alcanza a ver}, y casi siempre los más visibles. \emph{Y funciona como el feed del momento 7 del grado 8:} \textbf{uno compara su proceso completo ---con sus dudas--- contra el resultado ya editado de otro}. \emph{Además, buena parte de lo que hoy parece decidido no lo está:} \textbf{la mayoría de la gente cambia de rumbo, y el que «lo tenía claro» a los diecisiete muchas veces lo tenía claro por presión, no por certeza.}}
+
+\begin{drawbox}{milcTurquesa}{Cómo se examina una vara}
+\begin{pasoslista}
+\item \textbf{¿Quién la puso?} \emph{Un sistema, una industria, una costumbre, mi familia, yo.}
+\item \textbf{¿Depende de la aprobación de alguien más?} \emph{Si sí, cada vez que quiera poner un límite va a costarme el doble.}
+\item \textbf{¿Está en mi poder?} \emph{Esforzarme, sí. Ganar siempre, no. \emph{(Momento 2 del grado 10.)}}
+\item \textbf{¿Cómo sabría que la cumplí sin preguntarle a nadie?}
+\item \textbf{Y la última:} \emph{si mañana fallara en esto, ¿sería un dato o sería una sentencia sobre quién soy?}
+\end{pasoslista}
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{«Es que tengo baja autoestima»:} la pregunta no es cuánta, sino de qué depende. \textbf{Querer no importarle nada a uno:} las contingencias también motivan; se trata de escoger dónde. \textbf{Jugarse el valor en algo que no se controla:} gustarle a todos, ganar siempre. \textbf{Creer en el reloj social:} es un promedio hecho con los casos más visibles. \textbf{Comparar tu proceso con el resultado editado de otro:} nunca vas a ganar esa. \textbf{Cambiar de vara ajena por otra vara ajena:} el cambio es de relación, no de medida. \textbf{Una vara que otro tiene que aprobar:} sigue siendo suya.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+
+
+\textbf{En tu cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2. Motivación y fragilidad». \textbf{Formato:} toma dos de tus «yo valgo si\ldots» y escribe, para cada uno, \textbf{en qué te ha hecho esforzarte} y \textbf{dónde te ha hecho frágil}. \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} puedes explicar por qué \textbf{la misma nota duele distinto en dos personas del mismo salón}.
+\end{infoband}
+
+\puente{Ya sabes dónde mirar. Es hora de separar las varas ajenas de las propias, y de escribir al menos una que sea tuya.}
+
+\milcestacion{milcMagenta}{Fase 3 · Praxis: cambiar de vara}
+
+\begin{softbox}{milcMagenta}{milcGris}{Cómo se cambia una vara ajena por una propia}
+No se trata de dejar de compararse ---eso ya lo intentaste y no funciona---. Se trata de saber en qué estás apostando, y de tener al menos una apuesta tuya.
+\end{softbox}
+
+\milcpaso{1}{milcMagenta}{\textbf{Los cuatro dominios (7 min).} Pasa en limpio tus cuatro frases y ponles nombre de dominio: \emph{estudio, apariencia, aprobación de otros, familia, deporte, plata, ser buena persona, ser competente en algo.} \textbf{Ordénalos del que más pesa al que menos.}}
+\milcpaso{2}{milcMagenta}{\textbf{Quién puso cada vara (8 min).} Al frente de cada dominio escribe \textbf{quién decidió la medida} y \textbf{desde cuándo la usas}. \emph{Presta atención a las que no puedas fechar:} \textbf{esas son las que vienen de más lejos y las que menos has examinado.}}
+\milcpaso{3}{milcMagenta}{\textbf{La prueba de la aprobación (8 min).} Marca \textbf{cuáles dependen de que alguien te apruebe}. \emph{Y para cada una responde la pregunta que más incomoda:} \textbf{«¿qué me ha costado esto?»} ---qué no dijiste, qué aguantaste, a qué dijiste que sí sin querer---. \emph{Esa es la factura de la que hablan Crocker y Wolfe, y casi nunca se calcula.}}
+\milcpaso{4}{milcMagenta}{\textbf{La vara propia (12 min).} Escoge \textbf{un dominio importante} y escribe una vara tuya, con \textbf{tres condiciones}: \emph{que dependa de algo que está en tu poder} ---esforzarte, cumplir, aprender, no de ganar ni de gustar---; \emph{que puedas comprobarla \textbf{sin preguntarle a nadie}}; y \emph{que puedas decir en qué se notaría esta semana}. \textbf{Ejemplo de la forma:} \emph{en vez de «yo valgo si saco buenas notas», «yo valgo si estudio lo que me propuse, y lo sé porque llevo el registro»}. \emph{No es una frase bonita: es una medida verificable por ti.}}
+
+\begin{drawbox}{milcMagenta}{Antes de cerrar tu mapa}
+\begin{checklista}
+\item Tus cuatro dominios están ordenados por peso.
+\item Cada uno tiene \textbf{quién puso la vara} y desde cuándo.
+\item Marcaste los que dependen de la aprobación ajena.
+\item Calculaste \textbf{qué te ha costado} cada uno de esos.
+\item Tu vara propia depende de algo \textbf{en tu poder}.
+\item Puedes comprobarla \textbf{sin preguntarle a nadie} y sabes en qué se nota esta semana.
+\end{checklista}
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{La frase.} \emph{«Yo valgo si \_\_\_\_.»} ---cuatro veces, sin adornar---. \\[1mm]
+\textbf{El examen.} \emph{«¿Quién puso esta vara? · ¿Depende de que alguien me apruebe? · ¿Está en mi poder? · ¿Cómo sé que la cumplí?»} \\[1mm]
+\textbf{Mi vara.} \emph{«Yo valgo si \_\_\_\_, y lo sé porque \_\_\_\_.»} ---sin preguntarle a nadie---.
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+
+
+\textbf{En tu cuaderno (Actividad 3 · CREA).} Título: «Actividad 3. Mi mapa de contingencias». \textbf{Formato:} los cuatro dominios ordenados + quién puso cada vara + las que dependen de aprobación con su costo + la vara propia con su forma de comprobarla. \textbf{Extensión:} una página. \textbf{Sabes que terminaste cuando} tu vara propia tiene un \textbf{«lo sé porque\ldots»}.
+\end{infoband}
+
+\puente{El producto es una vara con forma de comprobarla. \emph{Una vara que no se puede verificar es un deseo, y los deseos no sostienen a nadie.}}
+
+\milcestacion{milcMostaza}{Producto de la sesión}
+\textbf{Mapa de contingencias: los dominios donde se juega el valor, quién puso cada vara y una vara propia verificable}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) Los dominios están formulados con las palabras propias y ordenados por peso. (2) Cada vara tiene identificado quién la puso y desde cuándo se usa. (3) Se marcan las contingencias que dependen de aprobación ajena y se calcula su costo concreto. (4) La vara propia depende de algo que está en poder de quien la escribe. (5) Incluye una forma de comprobarla que no requiere el juicio de otra persona.
+\end{softbox}
+
+\puente{Antes de cerrar, revisa lo decisivo: si tu vara propia necesita que alguien la apruebe para saber si la cumpliste, sigue siendo ajena.}
+
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con tres voces: el que siempre está más allá de la totalidad, la diferencia entre la cosa y la opinión, y los patrones pequeños con que se arma un juicio.}
+
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{«Analéctico quiere indicar el hecho real humano por el que todo hombre, todo grupo o pueblo se sitúa siempre más allá (aná-) del horizonte de la totalidad.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Enrique Dussel · Filosofía de la liberación (1977), §2.4}
+
+Una vara es una totalidad: \emph{pretende decir, con un número o una imagen, todo lo que alguien vale.} \textbf{Y Dussel sostiene que nadie cabe ahí ---que cualquier persona está siempre más allá---.} \emph{Fals Borda lo descubrió trabajando:} \textbf{llegó a Saucío con las escalas de la universidad y terminó inventando un método donde la comunidad no es medida sino que participa.} \emph{Fíjate en lo que eso significa para tu propia vida:} \textbf{el problema no era que tuviera malas escalas ---era la posición de estar afuera midiendo---.} \emph{Y con uno mismo pasa igual:} \textbf{mientras uno se mire desde la vara de otro, está afuera de su propia vida, evaluándose.}
+
+\textbf{¿Estoy viviendo mi vida o estoy evaluándola desde afuera?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Epicteto · Enquiridión, 5 (c. 125 d.C.) · cuidado interior}
+\textit{«No son las cosas las que perturban a los hombres, sino las opiniones sobre las cosas.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Epicteto · Enquiridión, 5 (c. 125 d.C.)}
+
+\textbf{Una comparación no es un hecho: es una opinión con forma de hecho.} \emph{«A él le fue mejor» describe un dato; «entonces yo valgo menos» es la opinión que uno le agrega ---y toda la perturbación está en la segunda parte---.} \textbf{Y aquí Epicteto se junta exactamente con Crocker y Wolfe:} \emph{lo que convierte un dato en una sentencia es la contingencia}, \textbf{es decir, haber decidido de antemano que tu valor dependía de ese dominio.} \emph{Y como es una decisión ---aunque casi siempre tomada sin darse cuenta y muy temprano---,} \textbf{se puede examinar y se puede cambiar.} \emph{Eso no lo hace fácil. Lo hace posible, que es distinto.}
+
+\textbf{De la última comparación que me dolió, ¿cuál era el dato y cuál la opinión que le agregué?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{«Los pequeños patrones solo pueden ser significativos si se agregan correctamente, se comparan y se procesan a tiempo.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Luciano Floridi · Big data and their epistemological challenge (2012)}
+
+\emph{Una comparación en redes es un patrón pequeño mal agregado.} \textbf{Ves un resultado ---la admisión, el viaje, la foto--- sin nada de lo que lo rodea:} \emph{cuántas veces esa persona lo intentó, quién le ayudó, con qué contaba, qué le está costando, qué no publicó.} \textbf{Y el error no es tuyo ---es de los datos---:} \emph{no se puede comparar bien con información recortada}, y todo lo que aparece en un feed está recortado por diseño. \emph{Además, hay algo que Floridi señala y que aquí se siente:} \textbf{«procesarse a tiempo».} \emph{Una comparación te llega en el segundo en que aparece; el contexto que la haría justa llegaría meses después, si es que llega.} \textbf{Por eso la única defensa razonable es sospechar de lo redondo.}
+
+\textbf{De la última vida que envidié en una pantalla, ¿qué parte no vi?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres son citas textuales y llevan su referencia debajo. Puedes remitir a la obra en clase.
+\end{infoband}
+
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
+
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Calidad del mapa & \milcopcion{Sé de qué dominios depende mi valor y cuáles están en manos de la aprobación ajena.} & \milcopcion{Reconozco que me comparo, pero creo que el problema es tener poca autoestima.} & \milcopcion{Sigo midiéndome con la vara de otros sin preguntarme quién la puso.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Dos cosas. \textbf{Primero, usa tu vara propia una semana} y trae \textbf{el registro} ---no cómo te sentiste: qué hiciste y si lo cumpliste---. \emph{Y haz algo más, incómodo y muy útil: cuando aparezca una comparación, escribe en una nota \textbf{qué parte no estás viendo}. Al final de la semana, léelas todas juntas.} \textbf{Segundo, pregunta en tu casa por la vara de antes:} averigua con alguien mayor \textbf{qué se esperaba de alguien de tu edad en su época} ---estudiar, trabajar, casarse, quedarse, irse--- , \textbf{quién ponía esa expectativa} y \textbf{qué pasó con quienes no la cumplieron}. \textbf{Trae:} tu registro y lo que te contaron. \emph{Vas a encontrar dos cosas que valen para todo el grado: la vara de esa época era distinta de la de ahora ---y se sentía igual de definitiva---, y casi siempre hay alguien en la familia que no la cumplió y le fue bien de otra manera. Esa persona es la prueba de que la vara no era la realidad.}
+\end{infoband}
+
+\end{document}

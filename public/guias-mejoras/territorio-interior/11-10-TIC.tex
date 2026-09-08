@@ -1,0 +1,611 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra UNICA de las guias MILC v3.
+%
+% La usan las cuatro familias de guias, cada una con su driver:
+%   · Grados 6-11          -> scripts/build-guias-g11.py
+%   · Bebras               -> scripts/build-guias-bebras.py
+%   · Semillero            -> scripts/build-guias-semillero.py
+%   · Territorio interior  -> scripts/build-guias-territorio-interior.py
+%
+% Antes habia tres copias casi identicas (~400 lineas iguales, 6 distintas):
+% cada mejora habia que aplicarla tres veces, y en la practica no se hacia
+% (el motor de recursos vivia solo en dos de ellas). Lo que varia entre
+% familias esta parametrizado en 6 placeholders que cada driver llena
+% (se nombran aqui SIN su sintaxis real: el builder reemplaza por texto plano,
+% tambien dentro de los comentarios, y un valor multilinea rompe el preambulo):
+%
+%   HEADER_IZQ        encabezado izquierdo de pagina
+%   HEADER_DER        encabezado derecho de pagina
+%   PORTADA_ETIQUETA  rotulo sobre el numero grande (GRADO/MOMENTO/MODULO)
+%   PORTADA_SERIE     linea de serie de la portada
+%   PORTADA_ID        identificador de la guia en la portada
+%   PORTADA_CIRCULO   el circulito de grado (°), o vacio si no aplica
+%   PDF_TITULO        titulo en texto plano (sin \textbf ni comillas TeX) para
+%                     los metadatos del PDF (/Title); lo produce lib_xelatex.texto_pdf
+%
+% Composicion (auditoria 2026-09-03): las bandas de estacion piden espacio
+% (\Needspace*) y prohiben el salto justo despues (\nopagebreak), asi no quedan
+% huerfanas al pie; las cajas largas (softbox, drawbox, infoband, puentebox) son
+% `breakable`, asi una caja de media pagina ya no arrastra todo a la siguiente
+% dejando la anterior al 40 %. Todo texto sobre mostaza o verde va en milcNegro
+% (blanco sobre #E5B400 da 1,93:1 y sobre #58A923 2,95:1; ninguno pasa WCAG AA).
+% El resto de claves las documenta content/guias/_SCHEMA.md. El script valida
+% que no queden placeholders sin reemplazar antes de escribir el archivo final.
+
+% Etiquetado PDF (latex-lab): /Lang, estructura y texto alternativo de las
+% figuras, para lectores de pantalla. Debe ir ANTES de \documentclass.
+\DocumentMetadata{lang=es-CO,tagging=on}
+\documentclass[11pt,letterpaper]{article}
+% headheight=24pt: la cabecera derecha lleva dos lineas (identidad de la guia
+% y estacion actual). headsep se acorta en la misma medida para que el bloque
+% de texto quede exactamente donde estaba con headheight=12pt.
+\usepackage[margin=2.0cm,headheight=24pt,headsep=13pt]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+% Librerías TikZ para los diagramas de las guías (bloque `recursos:`):
+%  · babel  → babel en español vuelve activos caracteres como «>», y TikZ los usa
+%             en sus opciones (>=stealth, ->). Sin esta librería, cualquier
+%             diagrama con flechas revienta con «\language@active@arg> has an
+%             extra }». Debe ir ANTES de que se dibuje nada.
+%  · positioning        → sintaxis «below left=2pt and 3pt».
+%  · decorations.pathreplacing → llaves ({brace}) para señalar rangos.
+\usetikzlibrary{babel,positioning,decorations.pathreplacing}
+\usepackage{graphicx}
+% Circuitos: el trabajo de electrónica se hace hoy con micro:bit y sus sensores
+% integrados (MakeCode, sin cableado), así que no se necesitan esquemáticos.
+% Si algún día entran montajes con protoboard, basta descomentar esta línea:
+% los diagramas .tex/.tikz declarados en `recursos:` ya se incrustan solos.
+% \usepackage{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{etoolbox}
+\usepackage{needspace}
+% hyperref al final del preambulo: metadatos del PDF (titulo, autor, idioma,
+% familia), marcadores por estacion (\pdfbookmark) y enlaces sin recuadro.
+\usepackage[hidelinks,
+  pdftitle={Devolver: el ciclo no cierra, abre otra pregunta},
+  pdfauthor={PhD. Álvaro Cárdenas Orozco},
+  pdfsubject={Territorio interior · Educación socioemocional · Grado 11° · Momento 10 · MILC v3},
+  pdflang={es-CO},
+  bookmarksopen=true,bookmarksnumbered=false]{hyperref}
+
+% Helvetica Neue no trae la flecha U+2192, asi que cada «→» escrito literalmente
+% en el YAML se compilaba a NADA, en silencio (462 flechas en 61 guias: rutas del
+% tipo «paleta → tipografia → lockup» salian rotas). Mapeamos el caracter a su
+% version matematica, que si tiene glifo. Asi el autor puede seguir escribiendo
+% «→» comodamente en el YAML.
+\usepackage{newunicodechar}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0D9488}
+\definecolor{milcGradeDark}{HTML}{115E59}
+\definecolor{milcGradeSoft}{HTML}{CCFBF1}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+% Cabecera de dos lineas: identidad de la guia arriba y, a la derecha y en
+% gris, la estacion en curso (\markright desde \milcestacion). Antes de la
+% primera estacion la segunda linea va vacia; el \strut mantiene la altura
+% para que la linea de arriba no baile entre paginas.
+\lhead{\small Territorio interior · Educación socioemocional\\[-1pt]{\footnotesize\strut}}
+\rhead{\small Grado 11° · Momento 10 · MILC v3\\[-1pt]{\footnotesize\strut\color{milcNegro!65}\rightmark}}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+% Sobre mostaza (#E5B400) y verde (#58A923) el texto va en milcNegro; sobre el
+% resto de la paleta, en blanco. Se usa dentro de fonttitle/fontupper, donde un
+% \color posterior manda sobre coltitle.
+\newcommand{\milctintasobre}[1]{%
+  \ifboolexpr{test{\ifstrequal{#1}{milcMostaza}} or test{\ifstrequal{#1}{milcVerde}}}%
+    {\color{milcNegro}}{\color{white}}}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,breakable,pad at break=3mm,
+  colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries\milctintasobre{#1},fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,breakable,pad at break=4mm,
+  colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries\milctintasobre{#1},
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,breakable,pad at break=2mm,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,breakable,pad at break=2mm,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+% La flecha va en modo matematico a proposito: Helvetica Neue NO tiene el glifo
+% U+2192, asi que \textrightarrow se compilaba a NADA («Missing character: There
+% is no → in font Helvetica Neue») y el puente salia sin flecha. En modo
+% matematico la flecha viene de la fuente matematica y si se dibuja.
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{$\rightarrow$}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+% ─── Listas aireadas para las guías socioemocionales ────────────────────
+% Componer las verificaciones como «\checkbox texto\\» deja el texto que salta
+% de línea debajo del cuadrito y apelmaza el bloque. Estos entornos alinean la
+% continuación y airean los ítems. Los usa Territorio Interior; cualquier
+% familia puede hacerlo.
+\newlist{checklista}{itemize}{1}
+\setlist[checklista]{
+  label=\textcolor{milcGradeDark}{\fbox{\phantom{x}}},
+  leftmargin=9mm, labelsep=3.2mm, itemsep=2.4mm,
+  topsep=2.5mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+\newlist{pasoslista}{enumerate}{1}
+\setlist[pasoslista]{
+  label=\textcolor{milcGradeDark}{\sffamily\bfseries\arabic*.},
+  leftmargin=8mm, labelsep=3mm, itemsep=2.8mm,
+  topsep=1mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+% Nunca huerfana: pide 9 lineas libres (o salta de pagina rellenando con
+% \vfill) y prohibe el salto justo despues de la banda. Nueve y no seis:
+% la caja partible que sigue necesita ~80pt (titulo adosado, relleno y dos
+% lineas) para arrancar en la misma pagina; con menos, tcolorbox la manda
+% entera a la siguiente y la banda se queda sola. El penalty 10000 va
+% en `after`, ANTES del espacio posterior: un `after skip` (aunque sea 0pt)
+% es un \vskip tras la caja, y ese glue es un punto de corte legal que un
+% \nopagebreak escrito despues de \end{tcolorbox} ya no cierra. Cada banda
+% deja marcador PDF y actualiza la cabecera derecha.
+\newcounter{milcestacion}
+\newcommand{\milcestacion}[2]{%
+\Needspace*{9\baselineskip}%
+\stepcounter{milcestacion}%
+\pdfbookmark[1]{#2}{milcestacion\themilcestacion}%
+\markright{#2}%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,
+  after={\par\nopagebreak\vskip7pt}]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\milctintasobre{#1}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\Needspace{4\baselineskip}%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
+% ── Recursos visuales de la guía ──────────────────────────────────────
+% Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
+% \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
+% \guiaDiagrama → fuente TikZ/circuitikz (.tex) incrustada como vector:
+%                 es la vía para circuitos y esquemáticos editables.
+% [#1] = texto alternativo (alt) · #2 = ruta relativa al .tex · #3 = pie
+% El alt llega al PDF etiquetado (/Alt) y lo lee el lector de pantalla.
+\newcommand{\guiaFigura}[3][]{%
+\begin{center}
+\includegraphics[width=0.88\linewidth,height=0.38\textheight,keepaspectratio,alt={#1}]{#2}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#3}}
+\end{center}
+}
+
+\newcommand{\guiaDiagrama}[2]{%
+\begin{center}
+\input{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\begin{document}
+\thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
+\begin{tikzpicture}[remember picture,overlay]
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont MOMENTO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont TERRITORIO INTERIOR · SOCIOEMOCIONAL};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
+
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 10};
+  % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
+  % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  
+
+  \node[anchor=west,text=milcGradeText,text width=11.4cm,align=left] at ([xshift=1.5cm,yshift=0.5cm]gradonum.east)
+    {
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Territorio interior · Socioemocional}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont\setlength{\baselineskip}{27pt}Devolver\\[4pt]el ciclo no cierra\\[4pt]abre otra pregunta}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Grado 11° · Momento 10}
+    };
+\end{tikzpicture}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Tu devolución hecha y contada: un acto público de cierre donde el curso entrega lo que hizo durante el año, tu escrito de una página sobre qué recibiste y qué devolviste, y la pregunta nueva con la que sales —escrita y con la primera cosa que vas a hacer con ella—.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · Apertura ancestral · Devolución y proyecto de vida · Triángulo Dussel-Estoicismo-Floridi}}
+
+\newpage
+
+\section*{Apertura: Devolver: el ciclo no cierra, abre otra pregunta}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+Este programa se hizo con una metodología que tiene cinco fases, y ustedes las han recorrido sesenta veces sin que se les dijera cada vez. \textbf{Escucha} ---atender lo que hay---. \textbf{Sistematización} ---convertir eso en algo que se pueda pensar---. \textbf{Praxis} ---hacer algo con ello---. \textbf{Evaluación liberadora} ---mirar qué pasó, sin maquillarlo---. \textbf{Y \emph{devolución}.} \emph{Fíjate en dónde está la devolución:} \textbf{es la \emph{quinta} fase, no la última cosa que pasa.} \emph{Porque después de la devolución viene algo más, y está escrito así en el modelo:} \textbf{una \textbf{nueva pregunta}.} \emph{El ciclo no cierra ---da vuelta---.} \textbf{Y eso no es un adorno del método:} \emph{es la diferencia entre aprender algo y quedarse con ello}. \textbf{Quien se guarda lo que aprendió termina el ciclo en la cuarta fase} ---evaluó, le sirvió, ahí quedó---. \emph{Quien lo devuelve descubre, casi siempre, que al explicarlo entendió lo que no había entendido, y que le aparecieron preguntas que no tenía.} \textbf{Por eso este momento no es una ceremonia de graduación:} \emph{es la fase del método que faltaba, y la que vuelve a empezar.}
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+¿Y le hace bien a alguien devolver? \textbf{Hay bastante investigación, y conviene contarla con su matiz.} \emph{Una revisión paraguas ---una revisión de revisiones--- reunió \textbf{28 revisiones} sobre los efectos del voluntariado y encontró beneficios en \textbf{los tres dominios}: social, mental y físico,} \textbf{siendo los efectos más grandes los de \emph{reducción de la mortalidad} y \emph{mejora del funcionamiento}}. \emph{Y encontró algo que interesa especialmente aquí:} \textbf{los beneficios aumentaban de manera más consistente con la edad mayor, con las motivaciones altruistas y ---esto es lo importante para hoy--- con \textbf{la reflexión}}: \emph{no basta con hacer; hace falta pensar lo que se hizo}. \textbf{Ahora el matiz, que esta guía no va a omitir:} \emph{los participantes de esas revisiones eran \textbf{principalmente adultos mayores}, en su mayoría de Estados Unidos}, \textbf{así que no se puede afirmar sin más que el mismo efecto aplique a alguien de diecisiete años en Cartago.} \emph{Y sin embargo el hallazgo sobre la reflexión sí orienta lo que sigue:} \textbf{una devolución que se hace y no se piensa deja bastante menos que una que se hace y se cuenta.} \emph{Por eso el producto de hoy tiene dos partes: un acto y una página escrita.}
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{En el MILC, después de devolver \textbf{viene una pregunta nueva}. \textbf{De todo lo que trabajaste estos años, ¿qué te llevas} \ldots \textbf{y qué pregunta te queda abierta}?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar podrás: (1) \textbf{entender} la devolución como quinta fase de un ciclo que no cierra sino que abre otra pregunta; (2) \textbf{explicar} por qué devolver en público y \textbf{reflexionar} sobre lo hecho cambia lo que queda; (3) \textbf{participar} en un acto de cierre donde el curso entrega lo que hizo; (4) \textbf{escribir} qué recibiste y qué devolviste, y salir con una pregunta propia y un primer paso.
+\end{softbox}
+
+
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Comprende los fenómenos que afectan a su territorio, regula sus emociones ante ellos y acompaña a otros con empatía (transversal 6°--11°, articulado con la política «Escuela, territorio de vida» del MEN, Resolución 006519 de 2025, y la Ley 1620 de 2013)\\
+Referentes & Primera ayuda psicológica (OMS, 2011/2012) · Directrices IASC (2007) · USGS y Servicio Geológico Colombiano · Pueblo nasa y la minga (CRIC) · Dussel · Estoicismo · Floridi\\
+Producto final & Tu devolución hecha y contada: un acto público de cierre donde el curso entrega lo que hizo durante el año, tu escrito de una página sobre qué recibiste y qué devolviste, y la pregunta nueva con la que sales —escrita y con la primera cosa que vas a hacer con ella—.\\
+\end{tabularx}
+\normalsize
+
+\puente{Este es el último momento del programa. \textbf{No trae herramienta nueva:} \emph{pone a trabajar los cincuenta y nueve anteriores, y los devuelve}.}
+
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Devuelvo y vuelvo a preguntar.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Primero, la memoria completa: qué recibiste en estos años, de quién, y qué hiciste con ello.}
+
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- Qué recibí en estos años.} \textbf{Primera parte.} Vuelve a tu cuaderno de Territorio Interior ---o a lo que recuerdes--- y escribe \textbf{tres momentos del programa que te sirvieron de verdad}. \emph{No los que más te gustaron: los que usaste.} \textbf{Y al frente de cada uno, \emph{dónde} lo usaste.} \textbf{Segunda parte.} Escribe \textbf{los nombres de tres personas} que te enseñaron algo en estos años ---dentro o fuera del colegio--- \emph{y qué te enseñó cada una}. \textbf{Sé concreto:} \emph{no «me apoyó», sino qué hizo.} \textbf{Tercera parte.} Responde: \emph{¿qué le dejas tú a este colegio?} \textbf{Piensa en lo hecho, no en lo sentido:} \emph{algo que quedó, algo que empezaste, alguien a quien acompañaste, algo que arreglaste, algo que enseñaste.} \textbf{Y la última:} \emph{si tuvieras que decirle una sola cosa a alguien que va a entrar a sexto el otro año, ¿cuál sería?}
+\end{softbox}
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Escogiste tres momentos que \textbf{usaste}, no los que más te gustaron.}
+\milccheckrow{Nombraste tres personas y \textbf{qué hizo} cada una.}
+\milccheckrow{Escribiste qué le dejas al colegio, en hechos.}
+
+\begin{infoband}{milcVerde}
+
+
+\textbf{En tu cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1. Qué recibí en estos años». \textbf{Formato:} los tres momentos con dónde los usaste + las tres personas y qué hizo cada una + qué dejas + la frase para alguien que entra a sexto. \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} tienes escrito \textbf{qué dejas, en hechos}.
+\end{infoband}
+
+\puente{Ya lo tienes. Ahora, por qué la devolución es una fase del método y no una ceremonia, y qué le agrega pensarla.}
+
+\milcestacion{milcTurquesa}{Fase 2 · Sistematización: entender la devolución}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro claves sobre devolver}
+Cuatro claves para que esto no sea una ceremonia de despedida.
+\end{softbox}
+
+\milcpaso{1}{milcTurquesa}{\textbf{Es la quinta fase, no la última.} \emph{El ciclo del MILC va así:} \textbf{Escucha → Sistematización → Praxis → Evaluación liberadora → \emph{Devolución} → nueva pregunta.} \emph{Léelo otra vez y fíjate en la flecha final:} \textbf{después de devolver no hay punto final, hay otra pregunta.} \emph{Y eso describe cómo funciona de verdad aprender algo:} \textbf{quien se guarda lo que aprendió cierra el ciclo antes de tiempo}, \emph{y quien lo devuelve descubre casi siempre dos cosas ---que al explicarlo entendió lo que no había entendido, y que le aparecieron preguntas que no tenía---.} \textbf{Por eso graduarse no es terminar:} \emph{es la primera vez que a uno le toca escoger solo la siguiente pregunta.}}
+\milcpaso{2}{milcTurquesa}{\textbf{Se devuelve en público, y no por vanidad.} \emph{Lo que se hace en privado se olvida, se relativiza y se puede negar después.} \textbf{Un acto público hace tres cosas que uno solo no puede hacer:} \emph{deja \textbf{registro} de que ocurrió, le da \textbf{reconocimiento} a quienes hicieron el trabajo ---sobre todo a los que trabajaron sin que se notara--- y \textbf{transmite}, porque los que vienen detrás ven que eso se hace aquí}. \emph{Es exactamente lo que hacen la minga, el convite y el levantamiento de tumba:} \textbf{cerrar delante de todos.} \emph{Y ojo con una tentación de esta época:} \textbf{publicar no es devolver}. \emph{Publicar deja el registro y se salta lo demás; devolver le entrega algo a alguien que estaba ahí.}}
+\milcpaso{3}{milcTurquesa}{\textbf{Devolver hace bien, y conviene decirlo con su matiz.} \emph{Una revisión de \textbf{28 revisiones} sobre voluntariado encontró beneficios en los tres dominios ---social, mental y físico---, con los efectos más grandes en \textbf{reducción de la mortalidad} y \textbf{mejora del funcionamiento}.} \textbf{Y lo que más subía los beneficios, de forma consistente, era la edad mayor, las motivaciones altruistas y \textbf{la reflexión}} ---pensar lo que se hizo---. \emph{Ahora el matiz, que esta guía no omite porque sería contradecir todo lo que enseñó:} \textbf{esos participantes eran principalmente adultos mayores, en su mayoría de Estados Unidos}, \emph{así que no se puede afirmar que el mismo efecto aplique a alguien de diecisiete años en Cartago.} \textbf{Lo que sí orienta es el hallazgo sobre la reflexión:} \emph{una devolución que se hace y no se piensa deja bastante menos que una que se hace y se cuenta.} \textbf{Por eso el producto de hoy tiene dos partes ---un acto y una página escrita---, y la segunda no es relleno.}}
+\milcpaso{4}{milcTurquesa}{\textbf{El proyecto de vida es un verbo, no un formulario.} \emph{A los diecisiete se pide un «proyecto de vida» y casi siempre sale un documento con una carrera, un carro y una casa.} \textbf{Este programa propone otra cosa, y es la tesis con la que cierra:} \emph{un proyecto de vida se entiende mejor como \textbf{a quién vas a cuidar y de qué te vas a hacer cargo}} \textbf{que como una lista de lo que vas a tener.} \emph{Y hay una razón práctica, no moral:} \textbf{lo que uno va a tener casi nunca sale como se planeó} ---eso lo trabajaste en el momento 3---, \textbf{mientras que de qué te haces cargo sí depende de ti} ---eso es el momento 2 del grado 10---. \emph{Y encaja con los sesenta momentos:} \textbf{pertenecer, negarse, mirar, avisar, reparar, decidir, acompañar, devolver.} \emph{Todos eran verbos.}}
+
+\begin{drawbox}{milcTurquesa}{Qué tiene un acto de devolución que sirva}
+\begin{pasoslista}
+\item \textbf{Se muestra lo que quedó hecho,} no lo que se sintió. \emph{Objetos, datos, resultados, personas acompañadas.}
+\item \textbf{Se nombra a quien trabajó,} sobre todo al que trabajó sin que se notara.
+\item \textbf{Se entrega a alguien concreto:} el curso que viene, la Junta, el colegio, la familia.
+\item \textbf{Se dice qué no salió,} porque una devolución que solo muestra lo bueno no es una evaluación liberadora.
+\item \textbf{Y se abre la pregunta siguiente,} en voz alta.
+\end{pasoslista}
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{Confundirlo con una despedida:} la devolución es una fase, no un final. \textbf{Mostrar solo lo bonito:} sin lo que no salió no hay evaluación liberadora. \textbf{Hablar de sentimientos y no de hechos:} lo que se devuelve es lo que quedó. \textbf{Publicar en vez de entregar:} publicar deja registro y se salta la entrega. \textbf{No nombrar a quien trabajó callado:} es justamente a quien hay que nombrar. \textbf{Un proyecto de vida como lista de bienes:} lo que se tiene casi nunca sale como se planeó. \textbf{Cerrar sin pregunta nueva:} ahí el ciclo se rompe.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+
+
+\textbf{En tu cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2. La quinta fase». \textbf{Formato:} escribe las cinco fases del MILC en orden, explica por qué la devolución no es la última y \textbf{da un ejemplo tuyo} de algo que entendiste mejor al explicárselo a alguien. \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} puedes explicar por qué \textbf{publicar no es devolver}.
+\end{infoband}
+
+\puente{Ya sabes qué se devuelve. Es hora de hacerlo en público ---que es como se devuelve--- y de escribirlo.}
+
+\milcestacion{milcMagenta}{Fase 3 · Praxis: hacer la devolución}
+
+\begin{softbox}{milcMagenta}{milcGris}{Cómo se cierra algo que no termina}
+El último producto del programa no se entrega en un cuaderno: se entrega delante de gente. Y después se escribe.
+\end{softbox}
+
+\milcpaso{1}{milcMagenta}{\textbf{Qué recibí (8 min).} Termina tu lista de la Actividad 1 y \textbf{escoge una persona de las tres} para hacer algo que casi nadie hace: \emph{decírselo}. \textbf{Búscala esta semana y dile qué te enseñó, concreto.} \emph{Acuérdate del cierre del momento 9: casi todo el mundo puede nombrar a alguien que lo acompañó en un momento decisivo, y casi nadie alcanzó a agradecérselo.} \textbf{Tú sí puedes.}}
+\milcpaso{2}{milcMagenta}{\textbf{El acto público (todo el curso, fuera de clase).} \textbf{Organicen un acto donde el curso entregue lo que hizo este año.} \emph{Reúnan lo que hay:} \textbf{las mingas del grado 8, las mentorías del momento 9, las auditorías de barreras, los acuerdos de aula, las devoluciones del momento 8, lo que cada quien sostuvo.} \textbf{Cuatro condiciones:} \emph{que se muestre \textbf{lo hecho} y no lo sentido; que se \textbf{nombre} a quien trabajó sin que se notara; que se \textbf{entregue} a alguien concreto ---el curso que viene, la Junta, el colegio---; y que se diga \textbf{qué no salió}.} \emph{Inviten a las familias y al curso que hereda lo que ustedes dejan.}}
+\milcpaso{3}{milcMagenta}{\textbf{La página escrita (después del acto).} \emph{La revisión sobre voluntariado encontró que \textbf{la reflexión} aumentaba los beneficios de manera consistente,} \textbf{así que esta parte no es relleno.} \textbf{Escribe \emph{una página}} con tres cosas: \emph{qué recibiste en estos años y de quién; qué devolviste ---en hechos---; y qué te queda por devolver}. \textbf{Sin fórmulas de despedida y sin agradecimientos generales:} \emph{nombres, hechos y fechas.}}
+\milcpaso{4}{milcMagenta}{\textbf{La pregunta nueva (10 min, y es el cierre del programa).} \textbf{Escribe \emph{una} pregunta} ---la que te queda abierta después de sesenta momentos---. \emph{Puede ser sobre ti, sobre tu lugar, sobre lo que vas a hacer, sobre algo que viste este año y no entendiste.} \textbf{Y debajo, \emph{la primera cosa que vas a hacer con ella}}, \emph{concreta y con fecha ---averiguar algo, hablar con alguien, empezar algo, ir a un lugar---.} \textbf{Porque una pregunta sin un primer paso es un buen deseo,} \emph{y a esta altura del programa ya saben la diferencia.}}
+
+\begin{drawbox}{milcMagenta}{Antes de cerrar el programa}
+\begin{checklista}
+\item Le dijiste a \textbf{una persona} qué te enseñó, concreto.
+\item En el acto se mostró \textbf{lo hecho} y se dijo \textbf{qué no salió}.
+\item Se \textbf{nombró} a quien trabajó sin que se notara.
+\item Se \textbf{entregó} a alguien concreto que va a seguir usándolo.
+\item Tu página tiene \textbf{nombres, hechos y fechas}, no fórmulas.
+\item Tu pregunta nueva tiene \textbf{un primer paso con fecha}.
+\end{checklista}
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Al agradecer.} \emph{«Quería decirte que \_\_\_\_ me enseñó \_\_\_\_, y lo usé cuando \_\_\_\_.»} \\[1mm]
+\textbf{En el acto.} \emph{«Esto es lo que hicimos. Esto no salió. Lo hizo \_\_\_\_. Se lo entregamos a \_\_\_\_.»} \\[1mm]
+\textbf{La pregunta.} \emph{«Me queda la pregunta de \_\_\_\_. Lo primero que voy a hacer con ella es \_\_\_\_, el \_\_\_\_.»}
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+
+
+\textbf{En tu cuaderno (Actividad 3 · CREA).} Título: «Actividad 3. Mi devolución». \textbf{Formato:} a quién le agradeciste y qué te dijo + qué se entregó en el acto y a quién + la página escrita + la pregunta nueva con su primer paso. \textbf{Extensión:} una página, más la página de la devolución. \textbf{Sabes que terminaste cuando} tienes \textbf{la pregunta y su primer paso con fecha}.
+\end{infoband}
+
+\puente{El producto tiene dos mitades: un acto y una página. \emph{Lo que se hace y no se piensa deja menos.}}
+
+\milcestacion{milcMostaza}{Producto de la sesión}
+\textbf{La devolución: el acto público del curso, la página escrita de lo recibido y lo devuelto, y una pregunta nueva con su primer paso}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) El acto muestra resultados concretos y también lo que no salió. (2) Se nombra explícitamente a quienes trabajaron sin visibilidad. (3) La entrega se hace a un destinatario concreto que seguirá usando lo entregado. (4) La página escrita usa nombres, hechos y fechas, no fórmulas de despedida. (5) La pregunta nueva está formulada y acompañada de un primer paso fechado.
+\end{softbox}
+
+\puente{Antes de cerrar, revisa lo que decide si esto sirvió: si tu página habla solo de cómo te sentiste, todavía no escribiste la devolución.}
+
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos el programa entero con tres voces: el rostro que reclama un derecho, la abeja y el enjambre, y el cuidado de lo que compartimos.}
+
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{«El otro se revela realmente como otro\ldots como el pobre, el oprimido; el que, a la vera del camino, fuera del sistema, muestra su rostro sufriente y sin embargo desafiante: «¡Tengo hambre!, ¡tengo derecho a comer!»»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Enrique Dussel · Filosofía de la liberación (1977)}
+
+\emph{Con esta cita empezó el programa y con ella termina, y ahora se puede leer completa.} \textbf{Durante sesenta momentos apareció la misma estructura:} \emph{alguien que queda por fuera ---del grupo, de la conversación, del aula, del sistema--- y alguien que puede hacer algo.} \textbf{Y la última palabra fue siempre la misma: \emph{derecho}.} \emph{No compasión, no favor, no caridad ---derecho---.} \textbf{Por eso una devolución bien entendida no es generosidad:} \emph{es hacerse cargo de una parte de lo que ya le corresponde a otros.} \textbf{Y por eso el programa no cierra pidiéndoles que sean buenas personas.} \emph{Cierra pidiéndoles algo más concreto y más exigente: que sepan mirar quién está afuera, y que hagan algo con eso ---el jueves, a una hora, con un nombre propio---.}
+
+\textbf{Cuando salga de aquí, ¿quién va a quedar por fuera de las cosas que yo dé por hechas?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · Meditaciones VI, 54 (c. 175 d.C.) · cuidado interior}
+\textit{«Lo que no beneficia al enjambre, tampoco beneficia a la abeja.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Marco Aurelio · Meditaciones VI, 54 (c. 175 d.C.)}
+
+\emph{Once palabras que aparecieron una y otra vez en estos años, y que ahora se pueden leer al derecho y al revés.} \textbf{Al derecho:} \emph{no hay bienestar propio construido sobre el desgaste de los demás} ---lo vieron en el grupo que cobra peaje, en el que carga solo, en el que cuida sin relevo---. \textbf{Al revés, y es la mitad que casi siempre se olvida:} \emph{tampoco hay enjambre que prospere quemando abejas.} \textbf{Un proyecto de vida que sirva tiene que aguantar las dos lecturas:} \emph{ni una vida buena a costa de otros, ni una entrega que acabe con quien la hace.} \emph{Y ese equilibrio no se resuelve de una vez ---se ajusta toda la vida---,} \textbf{que es justamente por qué el ciclo termina en una pregunta y no en una respuesta.}
+
+\textbf{Lo que quiero para mi vida, ¿aguanta las dos lecturas?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{«El florecimiento de las entidades informacionales y de toda la infoesfera debe promoverse preservando, cultivando y enriqueciendo sus propiedades.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Luciano Floridi · La ética de la información (2013; trad.)}
+
+\textbf{«Florecimiento» es la palabra con que este programa se despide, y conviene precisar qué significa.} \emph{No es estar bien todo el tiempo ---eso no existe y ningún momento de estos lo prometió---.} \textbf{Es que las cosas y las personas puedan crecer en vez de gastarse:} \emph{preservando lo que ya está, cultivando lo que necesita trabajo, enriqueciendo lo que se puede mejorar.} \emph{Y hay una advertencia final, que ustedes van a necesitar más que cualquier generación anterior:} \textbf{buena parte de lo que van a encontrar afuera está diseñada para lo contrario} ---para retener su atención, para compararlos, para venderles una vara, para que estén conectados y solos---. \emph{Frente a eso no sirve la buena voluntad.} \textbf{Sirve lo que trabajaron: saber nombrar lo que sienten, decidir en frío, poner límites, pedir ayuda, avisar, acompañar y devolver.} \emph{Eso no se lo puede quitar nadie.}
+
+\textbf{De todo lo que trabajé estos años, ¿qué voy a seguir usando cuando nadie me lo pida?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres son citas textuales y llevan su referencia debajo. Puedes remitir a la obra en clase.
+\end{infoband}
+
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
+
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Calidad de la devolución & \milcopcion{Hicimos el acto público, escribí lo que recibí y devolví, y salgo con una pregunta y un primer paso.} & \milcopcion{Participé en el acto, pero mi escrito habla de sentimientos y no de lo que quedó hecho.} & \milcopcion{Sigo pensando que esto se acabó y que el proyecto de vida es escoger una carrera.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para siempre, y esto no es una fórmula.} \textbf{Primero, haz el acto y escribe tu página.} \emph{Y guarda esa página en alguna parte donde la encuentres dentro de unos años: es el único documento que va a existir de lo que recibiste y lo que devolviste a los diecisiete.} \textbf{Segundo, da el primer paso de tu pregunta nueva} ---el que escribiste con fecha---. \emph{Porque el programa termina ahí: no en una respuesta, sino en alguien que sabe hacerse una pregunta y dar el primer paso.} \textbf{Y una última, que es la que cierra los sesenta momentos:} \emph{durante todos estos años, cada guía terminó pidiéndote que le preguntaras algo a alguien mayor de tu casa.} \textbf{Hoy la tarea es al revés.} \emph{Busca a la persona que más veces te respondió esas preguntas ---la que te contó del calado, de los nervios, de la roya, del velorio, de la Junta, de cómo se consiguió el agua--- y \textbf{cuéntale qué hiciste con lo que te contó}.} \textbf{Eso es una devolución.} \emph{Y si alguien te preguntara para qué sirvió todo esto, la respuesta cabe en una frase: aprendiste a mirar dónde estás parado, a nombrar lo que te pasa y a hacer algo con otros. El resto ---la carrera, la ciudad, el trabajo--- va a cambiar varias veces. Eso no.}
+\end{infoband}
+
+\end{document}

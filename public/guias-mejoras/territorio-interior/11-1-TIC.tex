@@ -1,0 +1,611 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra UNICA de las guias MILC v3.
+%
+% La usan las cuatro familias de guias, cada una con su driver:
+%   · Grados 6-11          -> scripts/build-guias-g11.py
+%   · Bebras               -> scripts/build-guias-bebras.py
+%   · Semillero            -> scripts/build-guias-semillero.py
+%   · Territorio interior  -> scripts/build-guias-territorio-interior.py
+%
+% Antes habia tres copias casi identicas (~400 lineas iguales, 6 distintas):
+% cada mejora habia que aplicarla tres veces, y en la practica no se hacia
+% (el motor de recursos vivia solo en dos de ellas). Lo que varia entre
+% familias esta parametrizado en 6 placeholders que cada driver llena
+% (se nombran aqui SIN su sintaxis real: el builder reemplaza por texto plano,
+% tambien dentro de los comentarios, y un valor multilinea rompe el preambulo):
+%
+%   HEADER_IZQ        encabezado izquierdo de pagina
+%   HEADER_DER        encabezado derecho de pagina
+%   PORTADA_ETIQUETA  rotulo sobre el numero grande (GRADO/MOMENTO/MODULO)
+%   PORTADA_SERIE     linea de serie de la portada
+%   PORTADA_ID        identificador de la guia en la portada
+%   PORTADA_CIRCULO   el circulito de grado (°), o vacio si no aplica
+%   PDF_TITULO        titulo en texto plano (sin \textbf ni comillas TeX) para
+%                     los metadatos del PDF (/Title); lo produce lib_xelatex.texto_pdf
+%
+% Composicion (auditoria 2026-09-03): las bandas de estacion piden espacio
+% (\Needspace*) y prohiben el salto justo despues (\nopagebreak), asi no quedan
+% huerfanas al pie; las cajas largas (softbox, drawbox, infoband, puentebox) son
+% `breakable`, asi una caja de media pagina ya no arrastra todo a la siguiente
+% dejando la anterior al 40 %. Todo texto sobre mostaza o verde va en milcNegro
+% (blanco sobre #E5B400 da 1,93:1 y sobre #58A923 2,95:1; ninguno pasa WCAG AA).
+% El resto de claves las documenta content/guias/_SCHEMA.md. El script valida
+% que no queden placeholders sin reemplazar antes de escribir el archivo final.
+
+% Etiquetado PDF (latex-lab): /Lang, estructura y texto alternativo de las
+% figuras, para lectores de pantalla. Debe ir ANTES de \documentclass.
+\DocumentMetadata{lang=es-CO,tagging=on}
+\documentclass[11pt,letterpaper]{article}
+% headheight=24pt: la cabecera derecha lleva dos lineas (identidad de la guia
+% y estacion actual). headsep se acorta en la misma medida para que el bloque
+% de texto quede exactamente donde estaba con headheight=12pt.
+\usepackage[margin=2.0cm,headheight=24pt,headsep=13pt]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+% Librerías TikZ para los diagramas de las guías (bloque `recursos:`):
+%  · babel  → babel en español vuelve activos caracteres como «>», y TikZ los usa
+%             en sus opciones (>=stealth, ->). Sin esta librería, cualquier
+%             diagrama con flechas revienta con «\language@active@arg> has an
+%             extra }». Debe ir ANTES de que se dibuje nada.
+%  · positioning        → sintaxis «below left=2pt and 3pt».
+%  · decorations.pathreplacing → llaves ({brace}) para señalar rangos.
+\usetikzlibrary{babel,positioning,decorations.pathreplacing}
+\usepackage{graphicx}
+% Circuitos: el trabajo de electrónica se hace hoy con micro:bit y sus sensores
+% integrados (MakeCode, sin cableado), así que no se necesitan esquemáticos.
+% Si algún día entran montajes con protoboard, basta descomentar esta línea:
+% los diagramas .tex/.tikz declarados en `recursos:` ya se incrustan solos.
+% \usepackage{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{etoolbox}
+\usepackage{needspace}
+% hyperref al final del preambulo: metadatos del PDF (titulo, autor, idioma,
+% familia), marcadores por estacion (\pdfbookmark) y enlaces sin recuadro.
+\usepackage[hidelinks,
+  pdftitle={Quién soy cuando nadie mira: el carácter no se delega en un truco},
+  pdfauthor={PhD. Álvaro Cárdenas Orozco},
+  pdfsubject={Territorio interior · Educación socioemocional · Grado 11° · Momento 1 · MILC v3},
+  pdflang={es-CO},
+  bookmarksopen=true,bookmarksnumbered=false]{hyperref}
+
+% Helvetica Neue no trae la flecha U+2192, asi que cada «→» escrito literalmente
+% en el YAML se compilaba a NADA, en silencio (462 flechas en 61 guias: rutas del
+% tipo «paleta → tipografia → lockup» salian rotas). Mapeamos el caracter a su
+% version matematica, que si tiene glifo. Asi el autor puede seguir escribiendo
+% «→» comodamente en el YAML.
+\usepackage{newunicodechar}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0D9488}
+\definecolor{milcGradeDark}{HTML}{115E59}
+\definecolor{milcGradeSoft}{HTML}{CCFBF1}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+% Cabecera de dos lineas: identidad de la guia arriba y, a la derecha y en
+% gris, la estacion en curso (\markright desde \milcestacion). Antes de la
+% primera estacion la segunda linea va vacia; el \strut mantiene la altura
+% para que la linea de arriba no baile entre paginas.
+\lhead{\small Territorio interior · Educación socioemocional\\[-1pt]{\footnotesize\strut}}
+\rhead{\small Grado 11° · Momento 1 · MILC v3\\[-1pt]{\footnotesize\strut\color{milcNegro!65}\rightmark}}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+% Sobre mostaza (#E5B400) y verde (#58A923) el texto va en milcNegro; sobre el
+% resto de la paleta, en blanco. Se usa dentro de fonttitle/fontupper, donde un
+% \color posterior manda sobre coltitle.
+\newcommand{\milctintasobre}[1]{%
+  \ifboolexpr{test{\ifstrequal{#1}{milcMostaza}} or test{\ifstrequal{#1}{milcVerde}}}%
+    {\color{milcNegro}}{\color{white}}}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,breakable,pad at break=3mm,
+  colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries\milctintasobre{#1},fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,breakable,pad at break=4mm,
+  colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries\milctintasobre{#1},
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,breakable,pad at break=2mm,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,breakable,pad at break=2mm,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+% La flecha va en modo matematico a proposito: Helvetica Neue NO tiene el glifo
+% U+2192, asi que \textrightarrow se compilaba a NADA («Missing character: There
+% is no → in font Helvetica Neue») y el puente salia sin flecha. En modo
+% matematico la flecha viene de la fuente matematica y si se dibuja.
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{$\rightarrow$}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+% ─── Listas aireadas para las guías socioemocionales ────────────────────
+% Componer las verificaciones como «\checkbox texto\\» deja el texto que salta
+% de línea debajo del cuadrito y apelmaza el bloque. Estos entornos alinean la
+% continuación y airean los ítems. Los usa Territorio Interior; cualquier
+% familia puede hacerlo.
+\newlist{checklista}{itemize}{1}
+\setlist[checklista]{
+  label=\textcolor{milcGradeDark}{\fbox{\phantom{x}}},
+  leftmargin=9mm, labelsep=3.2mm, itemsep=2.4mm,
+  topsep=2.5mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+\newlist{pasoslista}{enumerate}{1}
+\setlist[pasoslista]{
+  label=\textcolor{milcGradeDark}{\sffamily\bfseries\arabic*.},
+  leftmargin=8mm, labelsep=3mm, itemsep=2.8mm,
+  topsep=1mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+% Nunca huerfana: pide 9 lineas libres (o salta de pagina rellenando con
+% \vfill) y prohibe el salto justo despues de la banda. Nueve y no seis:
+% la caja partible que sigue necesita ~80pt (titulo adosado, relleno y dos
+% lineas) para arrancar en la misma pagina; con menos, tcolorbox la manda
+% entera a la siguiente y la banda se queda sola. El penalty 10000 va
+% en `after`, ANTES del espacio posterior: un `after skip` (aunque sea 0pt)
+% es un \vskip tras la caja, y ese glue es un punto de corte legal que un
+% \nopagebreak escrito despues de \end{tcolorbox} ya no cierra. Cada banda
+% deja marcador PDF y actualiza la cabecera derecha.
+\newcounter{milcestacion}
+\newcommand{\milcestacion}[2]{%
+\Needspace*{9\baselineskip}%
+\stepcounter{milcestacion}%
+\pdfbookmark[1]{#2}{milcestacion\themilcestacion}%
+\markright{#2}%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,
+  after={\par\nopagebreak\vskip7pt}]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\milctintasobre{#1}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\Needspace{4\baselineskip}%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
+% ── Recursos visuales de la guía ──────────────────────────────────────
+% Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
+% \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
+% \guiaDiagrama → fuente TikZ/circuitikz (.tex) incrustada como vector:
+%                 es la vía para circuitos y esquemáticos editables.
+% [#1] = texto alternativo (alt) · #2 = ruta relativa al .tex · #3 = pie
+% El alt llega al PDF etiquetado (/Alt) y lo lee el lector de pantalla.
+\newcommand{\guiaFigura}[3][]{%
+\begin{center}
+\includegraphics[width=0.88\linewidth,height=0.38\textheight,keepaspectratio,alt={#1}]{#2}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#3}}
+\end{center}
+}
+
+\newcommand{\guiaDiagrama}[2]{%
+\begin{center}
+\input{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\begin{document}
+\thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
+\begin{tikzpicture}[remember picture,overlay]
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont MOMENTO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont TERRITORIO INTERIOR · SOCIOEMOCIONAL};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
+
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 1};
+  % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
+  % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  
+
+  \node[anchor=west,text=milcGradeText,text width=11.4cm,align=left] at ([xshift=1.5cm,yshift=0.5cm]gradonum.east)
+    {
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Territorio interior · Socioemocional}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont\setlength{\baselineskip}{27pt}Quién soy\\[4pt]cuando nadie mira\\[4pt]el carácter no se delega}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Grado 11° · Momento 1}
+    };
+\end{tikzpicture}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Tu inventario de coherencia: tres cosas que haces distinto según quién mire, la lista de tus propias justificaciones con la que usas más, un compromiso verificable por ti mismo y la respuesta escrita a por qué un recordatorio no basta.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · Apertura ancestral · Carácter y coherencia · Triángulo Dussel-Estoicismo-Floridi}}
+
+\newpage
+
+\section*{Apertura: Quién soy cuando nadie mira: el carácter no se delega en un truco}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+Todo este programa empezó, en sexto, mirando una tela. \textbf{Termina mirando la misma tela, pero por el otro lado.} En Cartago el calado y el bordado se heredan \textbf{de abuela a nieta}: no se aprenden en un curso, se aprenden al lado de alguien, durante años. \emph{Y hay una cosa que toda caladora sabe y que ningún comprador ve.} \textbf{La calidad de una pieza se decide en el revés} ---en cómo quedaron los nudos, en si las puntas se remataron o se dejaron sueltas, en si el hilo se cortó donde debía---. \emph{Por el derecho, dos piezas pueden verse idénticas.} \textbf{Por el revés, una se va a deshacer en el primer lavado y la otra va a durar cincuenta años.} \emph{Y aquí está lo que importa:} \textbf{el revés no lo mira nadie.} \emph{No lo mira quien compra, no lo mira quien recibe el regalo, no lo mira quien la usa.} \textbf{Lo mira solo quien la hizo.} \emph{Por eso, cuando una abuela le enseña a una nieta, lo que le está enseñando no es una técnica ---es un criterio---:} \textbf{cómo se hace algo cuando la parte que decide si está bien hecho no la va a ver nadie más que tú.}
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+¿Y qué tan honesta es la gente cuando nadie mira? \textbf{Hay una teoría muy influyente y un experimento famoso, y conviene contar los dos ---y cómo terminó el segundo---.} La teoría se llama \textbf{mantenimiento del autoconcepto} y dice algo incómodo: \emph{la mayoría de la gente hace trampa \textbf{lo suficiente para ganar algo} pero \textbf{lo suficientemente poco para seguir creyéndose honesta}}. \textbf{Un poco de deshonestidad da el beneficio sin estropear la buena imagen de uno mismo} (Mazar, Amir y Ariely, 2008). \emph{No somos honestos ni tramposos: nos damos un margen.} \textbf{Y el experimento que hizo famosa esa idea proponía una solución elegante:} \emph{a unos participantes se les pedía recordar los Diez Mandamientos antes de una tarea donde podían hacer trampa, y a otros, diez libros que hubieran leído en el colegio}. \textbf{Los del recordatorio moral hicieron menos trampa.} \emph{Un truco sencillo para volver honesta a la gente.} \textbf{Y aquí viene lo que hay que saber:} en 2018, \textbf{19 laboratorios repitieron ese experimento con 4.674 participantes} y \textbf{el efecto no apareció} ---la diferencia fue de 0,11 matrices, con un intervalo de confianza que incluye el cero, y numéricamente \textbf{en dirección contraria}--- (Verschuere y otros, 2018).
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{El revés de un calado \textbf{lo mira solo quien lo hizo}, y ahí se decide si la pieza dura. \textbf{¿Qué haces distinto según quién esté mirando} \ldots \textbf{y qué te dices para que eso te parezca bien}?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar podrás: (1) \textbf{reconocer} el margen que uno se da ---hacer trampa lo justo para ganar algo sin dejar de creerse honesto--- y nombrar tus propias justificaciones; (2) \textbf{entender}, con el caso de los Diez Mandamientos, por qué el carácter no se delega en un truco ni en un recordatorio; (3) \textbf{distinguir} lo que se decide antes de lo que se improvisa en el momento; (4) \textbf{crear} un compromiso que solo tú puedas verificar, y sostenerlo una semana.
+\end{softbox}
+
+
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Comprende los fenómenos que afectan a su territorio, regula sus emociones ante ellos y acompaña a otros con empatía (transversal 6°--11°, articulado con la política «Escuela, territorio de vida» del MEN, Resolución 006519 de 2025, y la Ley 1620 de 2013)\\
+Referentes & Primera ayuda psicológica (OMS, 2011/2012) · Directrices IASC (2007) · USGS y Servicio Geológico Colombiano · Pueblo nasa y la minga (CRIC) · Dussel · Estoicismo · Floridi\\
+Producto final & Tu inventario de coherencia: tres cosas que haces distinto según quién mire, la lista de tus propias justificaciones con la que usas más, un compromiso verificable por ti mismo y la respuesta escrita a por qué un recordatorio no basta.\\
+\end{tabularx}
+\normalsize
+
+\puente{Este es el primer momento del último grado. \textbf{Los diez años anteriores trabajaron cómo estar con otros.} \emph{El grado 11 empieza por la única parte que no tiene testigos.}}
+
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Miro lo que hago sin público.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Primero, sin adornarlo: en qué eres distinto según quién esté delante.}
+
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- En qué soy distinto.} \textbf{Nadie va a leer esta página, y hoy eso importa más que nunca.} \textbf{Primera parte.} Escribe \textbf{tres cosas que haces distinto} según quién esté delante: \emph{con tus papás, con tus amigos, con un profesor, solo, en redes.} \textbf{Puede ser cómo hablas, qué opinas, qué cuentas, qué callas, cuánto te esfuerzas.} \textbf{Segunda parte, la que cuesta.} \emph{¿En cuál de esas versiones te sientes más tú?} \textbf{Y otra:} \emph{¿hay alguna que te avergonzaría que las otras personas vieran?} \textbf{Tercera parte.} Piensa en \textbf{algo pequeño que hayas hecho este año sabiendo que no estaba bien} ---copiar una respuesta, decir una mentira chiquita, quedarte con un vuelto, no devolver algo, dejar que otro cargara con la culpa---. \emph{Y escribe \textbf{qué te dijiste} para que te pareciera aceptable.} \textbf{Esa frase es el objeto de estudio de hoy}, y todo el mundo tiene una.
+\end{softbox}
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Escribiste tres diferencias concretas, no generalidades.}
+\milccheckrow{Respondiste en cuál versión te sientes más tú.}
+\milccheckrow{Anotaste textual \textbf{la frase} con que te justificaste algo pequeño.}
+
+\begin{infoband}{milcVerde}
+
+
+\textbf{En tu cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1. En qué soy distinto». \textbf{Formato:} las tres diferencias + en cuál te sientes más tú + lo pequeño que hiciste y la frase con que te lo justificaste. \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} tienes escrita \textbf{tu frase de justificación}. Esta página es tuya: \textbf{nadie más tiene que leerla si tú no quieres}.
+\end{infoband}
+
+\puente{Ya lo tienes. Ahora, el margen que todos nos damos, y la historia de un truco famoso que no resistió la prueba.}
+
+\milcestacion{milcTurquesa}{Fase 2 · Sistematización: entender la coherencia}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro claves sobre el carácter}
+Cuatro claves para dejar de hablar del carácter como si fuera una virtud y empezar a mirarlo como lo que es: una práctica sin público.
+\end{softbox}
+
+\milcpaso{1}{milcTurquesa}{\textbf{Todos nos damos un margen, y eso es más útil de saber que la indignación.} \emph{La teoría del mantenimiento del autoconcepto sostiene que la gente hace trampa \textbf{lo suficiente para ganar algo} y \textbf{lo suficientemente poco para seguir creyéndose honesta}} (Mazar, Amir y Ariely, 2008). \textbf{Un poco de deshonestidad da el beneficio sin estropear la imagen que uno tiene de sí mismo.} \emph{Fíjate en lo que eso implica:} \textbf{el problema no son «los deshonestos» ---es que casi nadie se ve a sí mismo así---.} \emph{Nadie copia un examen pensando «soy un tramposo»:} \textbf{piensa «era solo una», «todo el mundo lo hace», «el profesor puso algo que no explicó», «no le hice daño a nadie».} \emph{Esas frases son el mecanismo, y por eso la Actividad 1 te pidió la tuya.}}
+\milcpaso{2}{milcTurquesa}{\textbf{El truco que no funcionó, y por qué esto es lo más importante del momento.} \emph{El experimento famoso decía que recordar los Diez Mandamientos antes de una tarea reducía la trampa ---un atajo elegante para la honestidad---.} \textbf{En 2018, 19 laboratorios lo repitieron con 4.674 participantes y el efecto no apareció:} \emph{una diferencia de 0,11 matrices, con intervalo de confianza que incluye el cero y numéricamente en dirección contraria} (Verschuere y otros, 2018). \textbf{Guárdate dos lecciones de ahí, y las dos valen para toda la vida.} \emph{La primera es sobre la evidencia:} \textbf{un resultado famoso, elegante y muy citado puede no sostenerse ---por eso se replica---}. \emph{La segunda es la de esta guía:} \textbf{no hay recordatorio, frase motivadora ni cartel que te vuelva coherente.} \emph{El carácter no se delega en un truco.}}
+\milcpaso{3}{milcTurquesa}{\textbf{Se decide antes, no en el momento.} \emph{Si el atajo no existe, ¿qué queda?} \textbf{Queda algo menos vistoso y bastante más eficaz: decidir de antemano.} \emph{En el instante en que aparece la oportunidad ---el examen abierto al lado, el vuelto de más, la mentira que resuelve un problema--- hay dos segundos, ganas y una justificación lista.} \textbf{Ahí no se decide bien.} \emph{Es la misma lógica del repertorio del momento 2 del grado 8 y del límite del momento 4 del grado 9:} \textbf{lo que se decidió en frío se sostiene; lo que se decide en caliente se negocia.} \emph{Y hay una segunda parte:} \textbf{decidir antes también significa \emph{no ponerse} donde la decisión va a ser difícil} ---no llevar el papelito, no quedarse con la llave, no aceptar el favor que después cobra---.}
+\milcpaso{4}{milcTurquesa}{\textbf{La calidad está en el revés.} \emph{Vuelve a la tela:} \textbf{por el derecho dos piezas se ven iguales; por el revés, una dura cincuenta años y la otra se deshace en el primer lavado.} \emph{Y el revés lo mira solo quien la hizo.} \textbf{Traducido a una vida:} \emph{lo que sostiene a alguien con el tiempo no es lo que muestra ---es lo que hace cuando nadie lleva la cuenta---}: \textbf{si estudia cuando nadie revisa, si cumple lo que prometió cuando ya nadie se acuerda, si devuelve lo que le sobró.} \emph{Y hay una razón práctica, no moral, para que esto importe:} \textbf{el único testigo permanente de tu vida eres tú}, \emph{y con esa persona te toca convivir todos los días.}}
+
+\begin{drawbox}{milcTurquesa}{Las justificaciones más comunes, y qué esconde cada una}
+\begin{pasoslista}
+\item \textbf{«Era solo una vez»} → \emph{casi nunca es una, y la segunda cuesta menos que la primera.}
+\item \textbf{«Todo el mundo lo hace»} → \emph{traslada la decisión a un promedio que nadie ha contado.}
+\item \textbf{«No le hice daño a nadie»} → \emph{a veces es cierto, y no era esa la pregunta.}
+\item \textbf{«Se lo merecía» · «el sistema es injusto»} → \emph{puede que sí; sigue siendo tu decisión.}
+\item \textbf{La prueba de las tres:} \emph{¿lo contaría? ¿lo haría si me estuvieran viendo? ¿me molestaría que me lo hicieran a mí?}
+\end{pasoslista}
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{Creer que hay honestos y tramposos:} el margen se lo da casi todo el mundo. \textbf{Buscar un truco:} el de los Diez Mandamientos no resistió 19 laboratorios. \textbf{Decidir en el momento:} ahí hay dos segundos y una justificación lista. \textbf{Confundir reputación con carácter:} la reputación la ven otros; el carácter, el revés. \textbf{«Si nadie se entera, no cuenta»:} el testigo permanente eres tú. \textbf{Hacer un compromiso que otro pueda revisar:} eso es supervisión, no carácter. \textbf{Indignarse con los demás:} lo que se trabaja aquí es la propia frase.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+
+
+\textbf{En tu cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2. El truco que no funcionó». \textbf{Formato:} explica con tus palabras qué decía el experimento original, qué pasó en la réplica de 2018 y \textbf{qué se sigue de eso para tu propio carácter}. \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} puedes explicar por qué \textbf{un resultado famoso se replica}.
+\end{infoband}
+
+\puente{Ya sabes que no hay atajo. Es hora de lo único que sí funciona: decidir antes y hacerse verificable ante uno mismo.}
+
+\milcestacion{milcMagenta}{Fase 3 · Praxis: hacerse verificable}
+
+\begin{softbox}{milcMagenta}{milcGris}{Cómo se sostiene algo que nadie está mirando}
+Esta es la única actividad del programa cuyo resultado no lo puede verificar nadie más. Ese es el ejercicio.
+\end{softbox}
+
+\milcpaso{1}{milcMagenta}{\textbf{Las tres diferencias (7 min).} Termina tu lista y \textbf{escoge la que más te incomode}. \emph{Después responde una sola pregunta:} \textbf{¿esa diferencia es adaptarse o es esconderse?} \emph{Porque no todo cambio de registro es incoherencia ---uno no le habla igual a su abuela que a sus amigos, y eso está bien---.} \textbf{La incoherencia empieza cuando lo que cambia no es el tono sino \emph{lo que haces}.}}
+\milcpaso{2}{milcMagenta}{\textbf{Mis justificaciones (8 min).} Escribe \textbf{las tres frases que más usas} y, al frente de cada una, \emph{qué es lo que esconde}. \textbf{Después pásalas por la prueba de las tres preguntas} ---¿lo contaría?, ¿lo haría si me vieran?, ¿me molestaría que me lo hicieran?---. \emph{Casi ninguna sobrevive a la tercera.}}
+\milcpaso{3}{milcMagenta}{\textbf{El compromiso verificable (10 min).} Escribe \textbf{una cosa concreta} que vas a sostener una semana \textbf{y que nadie puede comprobar}: \emph{no copiar nada, devolver algo que tienes prestado, no mentir sobre por qué no hiciste algo, cumplir un horario de estudio, no mirar el celular en una clase.} \textbf{Dos condiciones:} \emph{que sea pequeña ---esto no se gana con hazañas---} y \emph{que solo tú puedas saber si la cumpliste}. \textbf{Y prepara la parte que decide:} \emph{escribe \textbf{en qué situación} va a ser difícil, y qué vas a hacer ahí}. \emph{Decidirlo hoy es la única ventaja que vas a tener.}}
+\milcpaso{4}{milcMagenta}{\textbf{La prueba del revés (5 min, y al final de la semana).} Al terminar los siete días, responde tres cosas en tu cuaderno: \emph{¿lo cumpliste? ¿en qué momento estuviste a punto de no hacerlo? ¿qué te dijiste?} \textbf{Y si no lo cumpliste, escríbelo igual}, \emph{porque anotar el fallo honestamente \textbf{es} el ejercicio ---y mentirse en un cuaderno que nadie va a leer sería exactamente lo que esta guía estudia---.}}
+
+\begin{drawbox}{milcMagenta}{Antes de cerrar tu inventario}
+\begin{checklista}
+\item Distinguiste \textbf{adaptarse} de \textbf{esconderse} en tus tres diferencias.
+\item Escribiste tus tres justificaciones y lo que esconde cada una.
+\item Las pasaste por las \textbf{tres preguntas}.
+\item Tu compromiso es \textbf{pequeño} y \textbf{nadie puede comprobarlo}.
+\item Escribiste de antemano \textbf{en qué situación va a ser difícil}.
+\item Sabes que si fallas, \textbf{anotarlo con honestidad es el ejercicio}.
+\end{checklista}
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{La prueba de las tres.} \emph{«¿Lo contaría? · ¿Lo haría si me estuvieran viendo? · ¿Me molestaría que me lo hicieran a mí?»} \\[1mm]
+\textbf{Mi compromiso.} \emph{«Esta semana voy a \_\_\_\_. Nadie puede comprobarlo. Va a ser difícil cuando \_\_\_\_, y ahí voy a \_\_\_\_.»} \\[1mm]
+\textbf{Al cerrar.} \emph{«¿Lo cumplí? ¿Cuándo estuve a punto de no hacerlo? ¿Qué me dije?»}
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+
+
+\textbf{En tu cuaderno (Actividad 3 · CREA).} Título: «Actividad 3. Mi inventario de coherencia». \textbf{Formato:} las tres diferencias clasificadas + las justificaciones con lo que esconden + el compromiso con su situación difícil + las tres respuestas del cierre. \textbf{Extensión:} una página. \textbf{Sabes que terminaste cuando} escribiste el cierre de la semana \textbf{diciendo la verdad}.
+\end{infoband}
+
+\puente{El producto no lo revisa nadie. \emph{Ese es exactamente el punto, y por eso es el más difícil del programa.}}
+
+\milcestacion{milcMostaza}{Producto de la sesión}
+\textbf{Inventario de coherencia: las diferencias según el público, las propias justificaciones y un compromiso que solo uno puede verificar}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) Se distingue adaptarse de esconderse, con criterio explícito. (2) Las justificaciones propias están escritas textualmente y analizadas. (3) El compromiso es pequeño, concreto y no verificable por terceros. (4) Se anticipa la situación difícil y la respuesta, decididas de antemano. (5) El cierre registra el resultado real, incluido el incumplimiento si lo hubo.
+\end{softbox}
+
+\puente{Antes de cerrar, revisa lo esencial: si tu compromiso lo puede comprobar otra persona, todavía no es de este momento.}
+
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con tres voces: la comunidad que se funda escuchando, la armonía entre palabras y acciones, y lo que queda registrado de nosotros.}
+
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{«Aquel que es capaz de escuchar silenciosamente al Otro como otro es el que puede constituir una comunidad y no una mera sociedad totalizada.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Enrique Dussel · Filosofía de la liberación (1977)}
+
+\emph{Podría parecer que este momento no tiene nada que ver con los otros ---aquí no hay nadie más---.} \textbf{Y tiene todo que ver, por una razón:} \emph{lo que uno hace sin público es lo que sostiene todo lo demás}. \textbf{Un curso donde cada quien cumple solo cuando lo vigilan no es una comunidad ---es una sociedad totalizada con vigilancia---,} \emph{y el trabajo en grupo, la minga, el acuerdo de aula y la ruta de aviso funcionan únicamente si la gente hace su parte sin que nadie revise.} \textbf{Fíjate en la palabra \emph{silenciosamente}:} \emph{lo que hace comunidad no es lo que se anuncia. Es lo que se sostiene sin ruido.}
+
+\textbf{De lo que me toca en los grupos donde estoy, ¿qué haría igual si supiera que nadie va a revisar?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Séneca · Cartas a Lucilio, 20 (c. 64 d.C.) · cuidado interior}
+\textit{«La filosofía enseña a obrar, no a hablar; quiere que cada uno viva a la manera que prescribe, que estén en armonía nuestras palabras con nuestras acciones.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Séneca · Cartas a Lucilio, 20 (c. 64 d.C.)}
+
+\textbf{«Que estén en armonía nuestras palabras con nuestras acciones».} \emph{Es la definición más corta de coherencia que existe, y es exactamente lo que el experimento de los Diez Mandamientos prometía conseguir gratis ---recordar la norma y comportarse mejor---.} \textbf{No funcionó, y Séneca ya lo había dicho dos mil años antes:} \emph{la filosofía no enseña a \textbf{hablar} ---enseña a \textbf{obrar}---.} \textbf{Saberse la norma no es cumplirla.} \emph{Y hay una versión escolar de ese fracaso que ustedes conocen bien:} \textbf{el manual de convivencia leído en formación no cambió nunca a nadie.} \emph{Lo que cambia algo es lo pequeño, sostenido y sin testigos.}
+
+\textbf{¿Cuál es la distancia más grande entre algo que digo y algo que hago?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{«Somos organismos informacionales ---inforgs--- que compartimos un entorno global hecho, en última instancia, de información: la infoesfera.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Luciano Floridi · La cuarta revolución (2014)}
+
+\emph{Hay una vuelta de tuerca que esta generación vive y las anteriores no:} \textbf{cada vez hay menos momentos en que de verdad no mira nadie}. \emph{Queda registro de casi todo ---lo que se escribe, lo que se busca, dónde se estuvo---,} \textbf{y eso podría parecer una buena noticia para la honestidad.} \emph{Pero produce el efecto contrario al que esta guía busca:} \textbf{si uno se porta bien porque queda registrado, eso no es carácter ---es vigilancia---,} \emph{y se cae en cuanto el registro falla.} \textbf{Y hay algo más, incómodo:} \emph{el registro empuja a cuidar \textbf{lo que se ve} ---la foto, el mensaje, la versión pública--- justo cuando lo que sostiene una vida es el revés.} \emph{Vale la pena buscar a propósito los ratos en que nadie mira. Ahí es donde se sabe quién es uno.}
+
+\textbf{¿Hago las cosas bien porque queda registro, o las haría igual si no quedara?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres son citas textuales y llevan su referencia debajo. Puedes remitir a la obra en clase.
+\end{infoband}
+
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
+
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Calidad del inventario & \milcopcion{Identifico dónde cambio según el público y tengo un compromiso que solo yo puedo verificar.} & \milcopcion{Reconozco las diferencias, pero creo que basta con proponérmelo.} & \milcopcion{Sigo pensando que si nadie se entera, no cuenta.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Dos cosas. \textbf{Primero, sostén tu compromiso los siete días} y trae el cierre escrito ---incluido el fallo, si lo hubo---. \emph{Y trae también algo que casi nadie anota: \textbf{en qué momento exacto estuviste a punto de no cumplirlo}, porque ahí está la información útil.} \textbf{Segundo, pregunta en tu casa por el revés del oficio:} averigua con alguien mayor \textbf{qué le enseñaron a hacer bien aunque nadie fuera a verlo} ---rematar una costura por dentro, lijar la parte de atrás de un mueble, limpiar donde no se ve, hacer bien una cuenta que nadie iba a revisar--- y \textbf{quién se lo enseñó y cómo}. \textbf{Trae:} tu cierre y lo que te contaron. \emph{Vas a encontrar algo que vale como apertura del último grado: casi todos los oficios tienen una parte que no se ve, casi todos los maestros insistían justamente en esa, y casi nadie sabe explicar por qué ---simplemente «así se hace»---. Esa insistencia sin explicación es una educación del carácter, y la recibiste sin darte cuenta.}
+\end{infoband}
+
+\end{document}

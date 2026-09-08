@@ -1,0 +1,610 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra UNICA de las guias MILC v3.
+%
+% La usan las cuatro familias de guias, cada una con su driver:
+%   · Grados 6-11          -> scripts/build-guias-g11.py
+%   · Bebras               -> scripts/build-guias-bebras.py
+%   · Semillero            -> scripts/build-guias-semillero.py
+%   · Territorio interior  -> scripts/build-guias-territorio-interior.py
+%
+% Antes habia tres copias casi identicas (~400 lineas iguales, 6 distintas):
+% cada mejora habia que aplicarla tres veces, y en la practica no se hacia
+% (el motor de recursos vivia solo en dos de ellas). Lo que varia entre
+% familias esta parametrizado en 6 placeholders que cada driver llena
+% (se nombran aqui SIN su sintaxis real: el builder reemplaza por texto plano,
+% tambien dentro de los comentarios, y un valor multilinea rompe el preambulo):
+%
+%   HEADER_IZQ        encabezado izquierdo de pagina
+%   HEADER_DER        encabezado derecho de pagina
+%   PORTADA_ETIQUETA  rotulo sobre el numero grande (GRADO/MOMENTO/MODULO)
+%   PORTADA_SERIE     linea de serie de la portada
+%   PORTADA_ID        identificador de la guia en la portada
+%   PORTADA_CIRCULO   el circulito de grado (°), o vacio si no aplica
+%   PDF_TITULO        titulo en texto plano (sin \textbf ni comillas TeX) para
+%                     los metadatos del PDF (/Title); lo produce lib_xelatex.texto_pdf
+%
+% Composicion (auditoria 2026-09-03): las bandas de estacion piden espacio
+% (\Needspace*) y prohiben el salto justo despues (\nopagebreak), asi no quedan
+% huerfanas al pie; las cajas largas (softbox, drawbox, infoband, puentebox) son
+% `breakable`, asi una caja de media pagina ya no arrastra todo a la siguiente
+% dejando la anterior al 40 %. Todo texto sobre mostaza o verde va en milcNegro
+% (blanco sobre #E5B400 da 1,93:1 y sobre #58A923 2,95:1; ninguno pasa WCAG AA).
+% El resto de claves las documenta content/guias/_SCHEMA.md. El script valida
+% que no queden placeholders sin reemplazar antes de escribir el archivo final.
+
+% Etiquetado PDF (latex-lab): /Lang, estructura y texto alternativo de las
+% figuras, para lectores de pantalla. Debe ir ANTES de \documentclass.
+\DocumentMetadata{lang=es-CO,tagging=on}
+\documentclass[11pt,letterpaper]{article}
+% headheight=24pt: la cabecera derecha lleva dos lineas (identidad de la guia
+% y estacion actual). headsep se acorta en la misma medida para que el bloque
+% de texto quede exactamente donde estaba con headheight=12pt.
+\usepackage[margin=2.0cm,headheight=24pt,headsep=13pt]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+% Librerías TikZ para los diagramas de las guías (bloque `recursos:`):
+%  · babel  → babel en español vuelve activos caracteres como «>», y TikZ los usa
+%             en sus opciones (>=stealth, ->). Sin esta librería, cualquier
+%             diagrama con flechas revienta con «\language@active@arg> has an
+%             extra }». Debe ir ANTES de que se dibuje nada.
+%  · positioning        → sintaxis «below left=2pt and 3pt».
+%  · decorations.pathreplacing → llaves ({brace}) para señalar rangos.
+\usetikzlibrary{babel,positioning,decorations.pathreplacing}
+\usepackage{graphicx}
+% Circuitos: el trabajo de electrónica se hace hoy con micro:bit y sus sensores
+% integrados (MakeCode, sin cableado), así que no se necesitan esquemáticos.
+% Si algún día entran montajes con protoboard, basta descomentar esta línea:
+% los diagramas .tex/.tikz declarados en `recursos:` ya se incrustan solos.
+% \usepackage{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{etoolbox}
+\usepackage{needspace}
+% hyperref al final del preambulo: metadatos del PDF (titulo, autor, idioma,
+% familia), marcadores por estacion (\pdfbookmark) y enlaces sin recuadro.
+\usepackage[hidelinks,
+  pdftitle={Ciudadanía emocional: discutir con quien piensa distinto y seguir en el mismo barrio},
+  pdfauthor={PhD. Álvaro Cárdenas Orozco},
+  pdfsubject={Territorio interior · Educación socioemocional · Grado 11° · Momento 7 · MILC v3},
+  pdflang={es-CO},
+  bookmarksopen=true,bookmarksnumbered=false]{hyperref}
+
+% Helvetica Neue no trae la flecha U+2192, asi que cada «→» escrito literalmente
+% en el YAML se compilaba a NADA, en silencio (462 flechas en 61 guias: rutas del
+% tipo «paleta → tipografia → lockup» salian rotas). Mapeamos el caracter a su
+% version matematica, que si tiene glifo. Asi el autor puede seguir escribiendo
+% «→» comodamente en el YAML.
+\usepackage{newunicodechar}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0D9488}
+\definecolor{milcGradeDark}{HTML}{115E59}
+\definecolor{milcGradeSoft}{HTML}{CCFBF1}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+% Cabecera de dos lineas: identidad de la guia arriba y, a la derecha y en
+% gris, la estacion en curso (\markright desde \milcestacion). Antes de la
+% primera estacion la segunda linea va vacia; el \strut mantiene la altura
+% para que la linea de arriba no baile entre paginas.
+\lhead{\small Territorio interior · Educación socioemocional\\[-1pt]{\footnotesize\strut}}
+\rhead{\small Grado 11° · Momento 7 · MILC v3\\[-1pt]{\footnotesize\strut\color{milcNegro!65}\rightmark}}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+% Sobre mostaza (#E5B400) y verde (#58A923) el texto va en milcNegro; sobre el
+% resto de la paleta, en blanco. Se usa dentro de fonttitle/fontupper, donde un
+% \color posterior manda sobre coltitle.
+\newcommand{\milctintasobre}[1]{%
+  \ifboolexpr{test{\ifstrequal{#1}{milcMostaza}} or test{\ifstrequal{#1}{milcVerde}}}%
+    {\color{milcNegro}}{\color{white}}}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,breakable,pad at break=3mm,
+  colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries\milctintasobre{#1},fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,breakable,pad at break=4mm,
+  colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries\milctintasobre{#1},
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,breakable,pad at break=2mm,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,breakable,pad at break=2mm,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+% La flecha va en modo matematico a proposito: Helvetica Neue NO tiene el glifo
+% U+2192, asi que \textrightarrow se compilaba a NADA («Missing character: There
+% is no → in font Helvetica Neue») y el puente salia sin flecha. En modo
+% matematico la flecha viene de la fuente matematica y si se dibuja.
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{$\rightarrow$}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+% ─── Listas aireadas para las guías socioemocionales ────────────────────
+% Componer las verificaciones como «\checkbox texto\\» deja el texto que salta
+% de línea debajo del cuadrito y apelmaza el bloque. Estos entornos alinean la
+% continuación y airean los ítems. Los usa Territorio Interior; cualquier
+% familia puede hacerlo.
+\newlist{checklista}{itemize}{1}
+\setlist[checklista]{
+  label=\textcolor{milcGradeDark}{\fbox{\phantom{x}}},
+  leftmargin=9mm, labelsep=3.2mm, itemsep=2.4mm,
+  topsep=2.5mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+\newlist{pasoslista}{enumerate}{1}
+\setlist[pasoslista]{
+  label=\textcolor{milcGradeDark}{\sffamily\bfseries\arabic*.},
+  leftmargin=8mm, labelsep=3mm, itemsep=2.8mm,
+  topsep=1mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+% Nunca huerfana: pide 9 lineas libres (o salta de pagina rellenando con
+% \vfill) y prohibe el salto justo despues de la banda. Nueve y no seis:
+% la caja partible que sigue necesita ~80pt (titulo adosado, relleno y dos
+% lineas) para arrancar en la misma pagina; con menos, tcolorbox la manda
+% entera a la siguiente y la banda se queda sola. El penalty 10000 va
+% en `after`, ANTES del espacio posterior: un `after skip` (aunque sea 0pt)
+% es un \vskip tras la caja, y ese glue es un punto de corte legal que un
+% \nopagebreak escrito despues de \end{tcolorbox} ya no cierra. Cada banda
+% deja marcador PDF y actualiza la cabecera derecha.
+\newcounter{milcestacion}
+\newcommand{\milcestacion}[2]{%
+\Needspace*{9\baselineskip}%
+\stepcounter{milcestacion}%
+\pdfbookmark[1]{#2}{milcestacion\themilcestacion}%
+\markright{#2}%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,
+  after={\par\nopagebreak\vskip7pt}]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\milctintasobre{#1}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\Needspace{4\baselineskip}%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
+% ── Recursos visuales de la guía ──────────────────────────────────────
+% Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
+% \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
+% \guiaDiagrama → fuente TikZ/circuitikz (.tex) incrustada como vector:
+%                 es la vía para circuitos y esquemáticos editables.
+% [#1] = texto alternativo (alt) · #2 = ruta relativa al .tex · #3 = pie
+% El alt llega al PDF etiquetado (/Alt) y lo lee el lector de pantalla.
+\newcommand{\guiaFigura}[3][]{%
+\begin{center}
+\includegraphics[width=0.88\linewidth,height=0.38\textheight,keepaspectratio,alt={#1}]{#2}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#3}}
+\end{center}
+}
+
+\newcommand{\guiaDiagrama}[2]{%
+\begin{center}
+\input{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\begin{document}
+\thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
+\begin{tikzpicture}[remember picture,overlay]
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont MOMENTO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont TERRITORIO INTERIOR · SOCIOEMOCIONAL};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
+
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 7};
+  % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
+  % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  
+
+  \node[anchor=west,text=milcGradeText,text width=11.4cm,align=left] at ([xshift=1.5cm,yshift=0.5cm]gradonum.east)
+    {
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Territorio interior · Socioemocional}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont\setlength{\baselineskip}{27pt}Ciudadanía\\[4pt]emocional\\[4pt]discutir sin destruirse}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Grado 11° · Momento 7}
+    };
+\end{tikzpicture}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Tu deliberación practicada: un desacuerdo real reconstruido con el mejor argumento del otro lado escrito por ti, la lista de lo que sí comparten, el ensayo de una conversación con las tres reglas, y la averiguación de dónde queda tu Junta de Acción Comunal.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · Apertura ancestral · Deliberación y diferencia · Triángulo Dussel-Estoicismo-Floridi}}
+
+\newpage
+
+\section*{Apertura: Ciudadanía emocional: discutir con quien piensa distinto y seguir en el mismo barrio}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+En Colombia existe una institución donde vecinos que no se escogieron entre sí ---y que casi nunca piensan igual--- tienen que decidir juntos cosas concretas: \textbf{la Junta de Acción Comunal}. \emph{Se discute lo que hay que discutir en un barrio o una vereda:} \textbf{el arreglo de una vía, el alumbrado, el acueducto, el salón comunal, quién administra qué.} \textbf{Y hay un dato de la \textbf{Ley 743 de 2002} que casi ningún estudiante de once conoce, y que cambia lo que puedes hacer desde mañana:} \emph{la junta está constituida por \textbf{personas naturales mayores de catorce años} que residan dentro de su territorio,} \textbf{y el acto de afiliación es simplemente \textbf{la inscripción directa en el libro de afiliados}.} \emph{Es decir: tú ya puedes afiliarte. Podías desde los catorce.} \textbf{Fíjate en lo que tiene de particular ese espacio.} \emph{Nadie escogió a sus vecinos ---están ahí---.} \textbf{Nadie se puede ir cuando la discusión se pone dura, porque al terminar la reunión todos vuelven a las mismas cuadras.} \emph{Y hay que decidir de todos modos, porque el hueco de la vía sigue ahí mientras se discute.} \textbf{Esas tres condiciones ---no escogerse, no poder irse, tener que decidir--- son exactamente las de la vida adulta en cualquier parte.}
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+¿Y sirve de algo tratar con gente distinta, o solo confirma lo que uno ya pensaba? \textbf{Es una de las preguntas mejor estudiadas de la psicología social, y la respuesta es clara.} \textbf{Thomas Pettigrew} y \textbf{Linda Tropp} reunieron \textbf{713 muestras independientes de 515 estudios} y encontraron que \emph{el \textbf{contacto intergrupal} típicamente \textbf{reduce el prejuicio}} (Pettigrew y Tropp, 2006). \textbf{Y se tomaron el trabajo de descartar las objeciones obvias:} \emph{varias pruebas indicaron que el hallazgo \textbf{no se debía} a que la gente prejuiciosa evitara el contacto ---selección--- ni a que solo se publicaran los estudios favorables ---sesgo de publicación---;} \textbf{y los estudios \textbf{más rigurosos} arrojaron efectos \emph{mayores}, no menores.} \emph{Además, los efectos \textbf{se generalizaban}:} \textbf{el trato con unas pocas personas de un grupo mejoraba la actitud hacia \emph{todo} el grupo, y en contextos muy distintos} ---la teoría, pensada para encuentros raciales y étnicos, funcionó también con otros grupos---. \emph{Traducido, y conectando con lo que ya sabes:} \textbf{en el grado 8 viste que basta una raya arbitraria para que aparezca un «ellos»; en el 9, que tomar perspectiva lo deshace.} \emph{Aquí está la tercera pieza: \textbf{el trato sostenido también lo deshace, y está medido en 515 estudios}.}
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{En una Junta \textbf{nadie escogió a sus vecinos y nadie se puede ir}. \textbf{¿Con quién dejaste de hablar este año por pensar distinto} \ldots \textbf{y qué pasaría si les tocara arreglar algo juntos}?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar podrás: (1) \textbf{explicar}, con evidencia, que el trato sostenido con quien es distinto reduce el prejuicio y que el efecto se generaliza; (2) \textbf{distinguir} deliberar de convencer, y saber para qué sirve cada uno; (3) \textbf{formular} el mejor argumento del otro lado ---no la caricatura--- y encontrar lo que sí comparten; (4) \textbf{averiguar} dónde queda tu Junta de Acción Comunal y qué se necesita para afiliarte.
+\end{softbox}
+
+
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Comprende los fenómenos que afectan a su territorio, regula sus emociones ante ellos y acompaña a otros con empatía (transversal 6°--11°, articulado con la política «Escuela, territorio de vida» del MEN, Resolución 006519 de 2025, y la Ley 1620 de 2013)\\
+Referentes & Primera ayuda psicológica (OMS, 2011/2012) · Directrices IASC (2007) · USGS y Servicio Geológico Colombiano · Pueblo nasa y la minga (CRIC) · Dussel · Estoicismo · Floridi\\
+Producto final & Tu deliberación practicada: un desacuerdo real reconstruido con el mejor argumento del otro lado escrito por ti, la lista de lo que sí comparten, el ensayo de una conversación con las tres reglas, y la averiguación de dónde queda tu Junta de Acción Comunal.\\
+\end{tabularx}
+\normalsize
+
+\puente{En el momento 6 armaste tu red. \textbf{Hoy toca la parte de la vida en común que no se escoge:} \emph{la gente con la que hay que decidir cosas aunque no piensen igual}.}
+
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Discuto y sigo conviviendo.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Primero, un desacuerdo real y reciente. \emph{Y una pregunta que casi nadie se hace: qué diría el otro si estuviera aquí.}}
+
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- Un desacuerdo real.} \textbf{Sin nombres: usa iniciales.} \textbf{Primera parte.} Escribe \textbf{un desacuerdo real y reciente} con alguien ---de tu casa, de tu curso, del barrio---. \emph{Puede ser sobre lo que sea:} \textbf{política, religión, algo del colegio, cómo se hacen las cosas en la casa, algo que pasó.} \textbf{Segunda parte.} Escribe \textbf{tu posición} y después \textbf{la de la otra persona}. \emph{Y aquí viene lo difícil:} \textbf{la del otro tienes que escribirla \emph{como él la escribiría}}, no como tú la resumes. \emph{Si al leerla suena tonta o egoísta, no es la suya ---es tu versión de la suya---.} \textbf{Tercera parte.} Responde: \emph{¿cómo terminó la conversación? ¿se hablan igual que antes?} \textbf{Y la última:} \emph{¿de cuánta gente te has alejado este año por diferencias de opinión?} \emph{Cuéntalas.}
+\end{softbox}
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Escogiste un desacuerdo real y reciente, no uno hipotético.}
+\milccheckrow{Escribiste la posición del otro \textbf{como él la escribiría}.}
+\milccheckrow{Contaste de cuánta gente te has alejado por diferencias.}
+
+\begin{infoband}{milcVerde}
+
+
+\textbf{En tu cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1. Un desacuerdo real». \textbf{Formato:} el desacuerdo + tu posición + la del otro en sus términos + cómo terminó + el conteo. \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} la posición del otro \textbf{no suena tonta}. Esta página es tuya: \textbf{nadie más tiene que leerla si tú no quieres}.
+\end{infoband}
+
+\puente{Ya lo tienes. Ahora, qué muestran 515 estudios sobre el contacto, y por qué discutir no es convencer.}
+
+\milcestacion{milcTurquesa}{Fase 2 · Sistematización: entender la deliberación}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro claves sobre deliberar}
+Cuatro claves para convivir con quien no piensa como uno, que es casi todo el mundo.
+\end{softbox}
+
+\milcpaso{1}{milcTurquesa}{\textbf{El contacto sí funciona, y está medido en grande.} \emph{713 muestras independientes de 515 estudios:} \textbf{el contacto intergrupal típicamente reduce el prejuicio} (Pettigrew y Tropp, 2006). \emph{Y las objeciones obvias se probaron y no explicaban el resultado:} \textbf{no era que los menos prejuiciosos buscaran más contacto, ni que solo se publicaran los estudios favorables ---y los estudios más rigurosos daban efectos \emph{mayores}---.} \emph{Además el efecto \textbf{se generaliza}:} \textbf{tratar a unas pocas personas de un grupo mejora la actitud hacia todo el grupo.} \emph{Junta esto con lo que ya sabes:} \textbf{grado 8, basta una raya para que aparezca un «ellos»; grado 9, tomar perspectiva lo deshace; y ahora: el trato sostenido también.} \emph{Lo que separa se instala solo; lo que une hay que ponerlo ---pero funciona---.}}
+\milcpaso{2}{milcTurquesa}{\textbf{Discutir no es convencer, y confundirlos arruina las dos cosas.} \emph{Cuando uno entra a una conversación a \textbf{ganar}, hace tres cosas que la dañan:} \textbf{escucha solo para encontrar el error, exagera la posición del otro para tumbarla más fácil, y trata cada concesión como una derrota.} \emph{Y el otro hace lo mismo, así que nadie se mueve.} \textbf{Deliberar es otra cosa:} \emph{es averiguar qué piensa el otro y por qué, decir lo que uno piensa y por qué, y \textbf{buscar qué se hace} ---que es distinto de quién tiene razón---.} \emph{Fíjate en lo que se necesita para eso y en lo que no:} \textbf{no hace falta que cambien de opinión; hace falta que puedan decidir algo juntos y seguir tratándose después.}}
+\milcpaso{3}{milcTurquesa}{\textbf{La tarea común obliga, y por eso las juntas funcionan mejor que las discusiones.} \emph{En una Junta la conversación no es abstracta:} \textbf{hay un hueco en la vía, y hay que taparlo.} \emph{Nadie se puede quedar solo en tener razón, porque el hueco sigue ahí.} \textbf{Y eso reproduce exactamente lo que aprendiste en el momento 8 del grado 8:} \emph{lo que baja una cerca no es hablar bien del otro grupo ---es una tarea común donde el resultado depende de los dos---.} \emph{Por eso las discusiones políticas en un chat casi nunca cambian nada} \textbf{---no hay nada que sacar adelante juntos, solo posiciones---,} \emph{y por eso dos personas que se odiaban por opiniones terminan bien cuando les toca organizar algo.}}
+\milcpaso{4}{milcTurquesa}{\textbf{Y ya puedes afiliarte: eso no es teoría.} \emph{La Ley 743 de 2002 dice que la Junta la constituyen \textbf{personas naturales mayores de catorce años} que residan en el territorio,} \textbf{y que el acto de afiliación es la \textbf{inscripción directa en el libro de afiliados}.} \emph{No hay que ser mayor de edad, no hay que tener título, no hay que pedir permiso a nadie.} \textbf{Es probablemente el espacio de decisión colectiva más accesible que existe en Colombia, y casi ningún joven lo usa.} \emph{Y no se trata de que todos se vuelvan líderes comunales:} \textbf{se trata de saber que existe un lugar donde la gente de tu barrio decide cosas que te afectan}, \emph{y que llevas tres años pudiendo entrar.}}
+
+\begin{drawbox}{milcTurquesa}{Las tres reglas de una conversación difícil}
+\begin{pasoslista}
+\item \textbf{Primero, formula su posición} hasta que el otro diga «sí, eso es». \emph{Antes de eso no has entendido, solo has esperado tu turno.}
+\item \textbf{Discute la idea, no a la persona.} \emph{«Eso me parece equivocado porque\ldots» y no «tú eres un\ldots».}
+\item \textbf{Busca qué se hace, no quién tiene razón.} \emph{«¿En qué sí estamos de acuerdo y qué podemos decidir con eso?»}
+\item \textbf{Y una cuarta, para cuando se pone caliente:} \emph{«prefiero seguir esto mañana» ---la demora de Séneca---.}
+\end{pasoslista}
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{Entrar a ganar:} arruina la conversación y no convence a nadie. \textbf{Escribir la caricatura del otro:} si suena tonta, no es su posición. \textbf{Creer que el que piensa distinto está mal informado:} a veces sabe lo mismo y valora distinto. \textbf{Discutir sin tarea común:} las posiciones se endurecen. \textbf{Atacar a la persona:} garantiza que se atrinchere. \textbf{Cortar el trato por una opinión:} el contacto es justamente lo que reduce el prejuicio. \textbf{Creer que hay que llegar a un acuerdo:} basta con poder decidir algo y seguir tratándose.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+
+
+\textbf{En tu cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2. Deliberar y convencer». \textbf{Formato:} dos columnas con las diferencias y, debajo, explica qué encontraron Pettigrew y Tropp y por qué descartaron las objeciones. \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} puedes explicar por qué \textbf{una tarea común hace más que una buena discusión}.
+\end{infoband}
+
+\puente{Ya sabes que funciona. Es hora de practicarlo con reglas ---y de averiguar dónde queda el espacio donde ya puedes participar---.}
+
+\milcestacion{milcMagenta}{Fase 3 · Praxis: practicar el desacuerdo}
+
+\begin{softbox}{milcMagenta}{milcGris}{Cómo se discute con quien piensa distinto}
+Esto se practica sobre un desacuerdo real, con reglas, y termina averiguando dónde queda el lugar donde ya puedes participar.
+\end{softbox}
+
+\milcpaso{1}{milcMagenta}{\textbf{El mejor argumento del otro (10 min).} Reescribe la posición contraria \textbf{en su versión más fuerte} ---no la que te conviene refutar: la que usaría la persona más inteligente que piense así---. \emph{Y hazle la prueba:} \textbf{si pudieras, ¿esa persona diría «sí, eso es exactamente lo que pienso»?} \emph{Este ejercicio es incómodo y es el que entrena; casi todo el mundo descubre que llevaba discutiendo con una versión inventada.}}
+\milcpaso{2}{milcMagenta}{\textbf{Lo que sí compartimos (7 min).} Escribe \textbf{tres cosas en las que los dos están de acuerdo}, por debajo del desacuerdo. \emph{Casi siempre las hay:} \textbf{que el problema existe, que a alguien le está haciendo daño, que la solución actual no sirve, que les importa el mismo lugar o la misma persona.} \emph{Ese piso común es lo único desde donde se puede decidir algo.}}
+\milcpaso{3}{milcMagenta}{\textbf{Las tres reglas, ensayadas (12 min, en tríos).} Uno sostiene una posición, otro la contraria y el tercero \textbf{vigila las reglas} ---¿formuló bien la del otro antes de responder? ¿atacó la idea o a la persona? ¿buscó qué hacer o quién ganaba?---. \textbf{Usen un tema real pero no personal} ---algo del colegio, del barrio, del país---, \emph{y nunca un desacuerdo entre personas presentes.} \textbf{Roten.} \emph{Y al final, comparen: casi siempre el observador ve cosas que los dos que discutían no notaron.}}
+\milcpaso{4}{milcMagenta}{\textbf{Dónde queda mi Junta (fuera de clase).} \textbf{Averigua tres cosas de la Junta de Acción Comunal de tu barrio o vereda:} \emph{quién la preside, dónde y cuándo se reúne, y qué está discutiendo ahora}. \textbf{Y si te alcanza:} \emph{ve a una reunión}. \emph{No hay que hablar ---basta con oír cómo se decide algo entre gente que no se escogió---.} \textbf{Anota qué se discutió, quién habló y cómo se resolvió} ---o si no se resolvió, que también pasa y también enseña---.}
+
+\begin{drawbox}{milcMagenta}{Antes de cerrar tu deliberación}
+\begin{checklista}
+\item El argumento del otro está en \textbf{su versión más fuerte} y no suena tonto.
+\item Escribiste \textbf{tres cosas} que sí comparten.
+\item Ensayaste con un observador vigilando las tres reglas.
+\item Usaron un tema real pero \textbf{no un desacuerdo entre presentes}.
+\item Averiguaste \textbf{quién preside tu Junta, dónde y cuándo se reúne}.
+\item Sabes que puedes afiliarte \textbf{desde los catorce}, inscribiéndote en el libro.
+\end{checklista}
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Formular al otro.} \emph{«Lo que tú dices es \_\_\_\_, porque \_\_\_\_. ¿Es así?»} ---hasta que diga que sí---. \\[1mm]
+\textbf{El piso común.} \emph{«Los dos estamos de acuerdo en \_\_\_\_.»} \\[1mm]
+\textbf{Hacia la decisión.} \emph{«Con eso en común, ¿qué podemos hacer?»} · y si se calienta: \emph{«sigamos mañana».}
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+
+
+\textbf{En tu cuaderno (Actividad 3 · CREA).} Título: «Actividad 3. Mi deliberación». \textbf{Formato:} el mejor argumento del otro + las tres cosas compartidas + qué observó el tercero en el ensayo + los datos de tu Junta. \textbf{Extensión:} una página. \textbf{Sabes que terminaste cuando} tienes \textbf{el nombre de quien preside tu Junta}.
+\end{infoband}
+
+\puente{El producto incluye el mejor argumento del otro lado. \emph{Escribirlo bien es lo más difícil de esta guía, y lo único que de verdad entrena.}}
+
+\milcestacion{milcMostaza}{Producto de la sesión}
+\textbf{Deliberación practicada: el mejor argumento del otro, el piso común, las tres reglas ensayadas y los datos de la Junta}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) El argumento contrario está en su versión más fuerte y resistiría el reconocimiento de quien lo sostiene. (2) Se identifican al menos tres puntos de acuerdo por debajo del desacuerdo. (3) El ensayo contó con un observador que verificó las tres reglas. (4) Se usaron temas reales pero no desacuerdos entre personas presentes. (5) Se averiguaron datos concretos de la Junta de Acción Comunal correspondiente.
+\end{softbox}
+
+\puente{Antes de cerrar, revisa lo decisivo: si el argumento que escribiste del otro lado suena tonto, no escribiste el suyo ---escribiste tu caricatura de él---.}
+
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con tres voces: el otro que está más allá de la totalidad, la disposición a que te refuten, y las burbujas que hoy nos separan.}
+
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{«Analéctico quiere indicar el hecho real humano por el que todo hombre, todo grupo o pueblo se sitúa siempre más allá (aná-) del horizonte de la totalidad.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Enrique Dussel · Filosofía de la liberación (1977), §2.4}
+
+\emph{Cuando alguien piensa distinto, la reacción automática es explicarlo desde el propio horizonte:} \textbf{«está mal informado», «lo manipularon», «no ha pensado bien».} \emph{Dussel señala el error:} \textbf{el otro está \emph{más allá} de tu horizonte, y por eso muchas veces no es que sepa menos ---es que \textbf{valora distinto} o vivió otra cosa---.} \emph{Y hay una consecuencia práctica muy concreta:} \textbf{el mejor argumento del otro lado \emph{no lo puedes deducir tú}}. \emph{Hay que preguntarlo.} \textbf{Por eso el ejercicio de hoy empieza formulando su posición hasta que él diga «sí, eso es»:} \emph{es la única manera de saber que uno salió de su propio horizonte.}
+
+\textbf{La gente que piensa muy distinto de mí, ¿sabe menos, o vivió otra cosa?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · Meditaciones VI, 21 (c. 175 d.C.) · cuidado interior}
+\textit{«Si alguien puede refutarme y probar de modo concluyente que pienso o actúo incorrectamente, de buen grado cambiaré de proceder. Pues persigo la verdad, que no dañó nunca a nadie; en cambio, sí se daña el que persiste en su propio engaño e ignorancia.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Marco Aurelio · Meditaciones VI, 21 (c. 175 d.C.)}
+
+\textbf{Esta es la cita de la deliberación, y viene de un emperador ---alguien que no tenía ninguna necesidad de dejarse corregir---.} \emph{Fíjate en dos cosas.} \textbf{Primera: «de buen grado».} \emph{No dice que aguantará que lo refuten: dice que le va a gustar}, \textbf{porque lo que persigue es entender y no ganar.} \textbf{Segunda: «se daña el que persiste en su propio engaño».} \emph{El costo de no dejarse corregir no lo paga el que corrige ---lo paga uno---,} \textbf{y a los diecisiete conviene saberlo:} \emph{quien se rodea solo de gente que piensa igual no está más seguro de sus ideas ---está menos enterado de sus errores---.}
+
+\textbf{¿Cuándo fue la última vez que cambié de opinión por algo que me dijo alguien?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{«El florecimiento de las entidades informacionales y de toda la infoesfera debe promoverse preservando, cultivando y enriqueciendo sus propiedades.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Luciano Floridi · La ética de la información (2013; trad.)}
+
+\emph{Pettigrew y Tropp muestran que el contacto reduce el prejuicio.} \textbf{Y buena parte de lo digital está construido para reducir el contacto:} \emph{te muestra más de lo que ya miraste, y a quien piensa distinto lo encuentras casi siempre en su peor versión ---el comentario más extremo, el video más provocador, el recorte que indigna---.} \textbf{No estás tratando con el otro: estás tratando con su caricatura, seleccionada por su capacidad de enojarte.} \emph{Y eso hace exactamente lo contrario del contacto.} \textbf{Cultivar, aquí, es concreto y cuesta:} \emph{buscar a propósito la mejor versión de la posición contraria ---no la que circula---,} \textbf{y preferir una conversación con una persona real a mil discusiones con perfiles.} \emph{Una Junta de Acción Comunal, con todo lo lenta que es, hace algo que ningún chat logra: pone al otro en la misma sala.}
+
+\textbf{De lo que sé sobre «los que piensan distinto», ¿cuánto viene de haber hablado con alguno?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres son citas textuales y llevan su referencia debajo. Puedes remitir a la obra en clase.
+\end{infoband}
+
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
+
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Calidad de la deliberación & \milcopcion{Puedo escribir el mejor argumento del otro lado y discutir sin convertirlo en enemigo.} & \milcopcion{Escucho, pero solo para responder; no logro formular bien la posición contraria.} & \milcopcion{Sigo pensando que el que piensa distinto está mal informado o es mala persona.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Dos cosas. \textbf{Primero, averigua los datos de tu Junta} ---quién la preside, dónde y cuándo se reúne, qué está discutiendo--- \textbf{y, si puedes, ve a una reunión}. \emph{Y haz algo más difícil: busca a la persona del desacuerdo de la Actividad 1 y \textbf{pregúntale} si formulaste bien su posición. No para seguir discutiendo ---solo para comprobar si la habías entendido---. Anota qué te dijo, porque casi siempre corrige algo.} \textbf{Segundo, pregunta en tu casa por la acción comunal:} averigua con alguien mayor \textbf{si participó alguna vez en una Junta, un comité o una organización del barrio} ---qué se discutía, cómo se decidía, si se peleaba mucho, qué alcanzaron a hacer---. \textbf{Trae:} los datos de tu Junta y lo que te contaron. \emph{Vas a encontrar dos cosas: casi todo lo que existe en un barrio ---la vía, el salón, el parque, el acueducto veredal--- lo consiguió gente peleando en reuniones largas y aburridas; y casi nadie recuerda quién tenía razón en esas peleas. Recuerdan lo que quedó hecho.}
+\end{infoband}
+
+\end{document}

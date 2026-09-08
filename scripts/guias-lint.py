@@ -30,6 +30,8 @@ from __future__ import annotations
 import argparse
 import re
 import sys
+from collections.abc import Callable
+from dataclasses import dataclass
 from pathlib import Path
 
 import yaml
@@ -76,9 +78,12 @@ CAMPOS_TEXTO_LARGO = [
     ("compromiso", lambda d: d["compromiso"]),
 ]
 
-# Campos requeridos en la estructura
-REQUIRED_PATHS = [
-    "clave", "grado", "periodo", "sesion", "completo",
+# Campos requeridos en la estructura.
+# `periodo`/`sesion` son propios de las guías de grado; Territorio Interior
+# ordena por `momento`. Por eso el tronco común no los incluye y cada perfil
+# (ver PERFILES, más abajo) añade los suyos.
+REQUIRED_COMUN = [
+    "clave", "grado", "completo",
     "titulo", "producto_final",
     "apertura.saber_ancestral", "apertura.saber_contemporaneo",
     "apertura.pregunta_puente", "apertura.saber_hacer",
@@ -99,6 +104,15 @@ REQUIRED_PATHS = [
 ]
 # Los campos del triángulo que dependen del modo (contrato v3.1) se validan en
 # lint_triangulo: `citas` pide autor+cita, `ideas` autor+idea, `preguntas` pregunta.
+
+REQUIRED_GRADO = REQUIRED_COMUN + ["periodo", "sesion"]
+# Territorio Interior: `momento` en vez de periodo/sesion, más los rótulos de
+# portada y de fase que parametrizan su plantilla (presentes en las 56 guías).
+REQUIRED_TERRITORIO = REQUIRED_COMUN + [
+    "momento",
+    "etiquetas.franja_portada", "etiquetas.fase2_titulo", "etiquetas.fase3_titulo",
+]
+REQUIRED_PATHS = REQUIRED_GRADO  # alias histórico
 
 # Colors (ANSI)
 RESET = "\033[0m"
@@ -122,10 +136,10 @@ def _get(obj, path: str):
     return cur
 
 
-def lint_required_fields(g: dict) -> list[str]:
+def lint_required_fields(g: dict, required: list[str] | None = None) -> list[str]:
     """Devuelve lista de errores: campos faltantes."""
     errors = []
-    for path in REQUIRED_PATHS:
+    for path in (required if required is not None else REQUIRED_GRADO):
         v = _get(g, path)
         if v is None or v == "" or v == []:
             errors.append(f"falta o vacío: {path}")
@@ -381,15 +395,20 @@ def lint_latex_escapes(g: dict) -> list[str]:
     return errors
 
 
-def lint_assets(g: dict, grado: int) -> list[str]:
-    """Verifica que los assets declarados (recursos.imagenes/diagramas) existan."""
+def lint_assets(g: dict, grado: int, assets_dir: Path | None = None) -> list[str]:
+    """Verifica que los assets declarados (recursos.imagenes/diagramas) existan.
+
+    `assets_dir` lo fija el perfil; si no viene, se calcula como en las guías de
+    grado (sesión global + grado), que es el comportamiento histórico.
+    """
     errors = []
     recursos = g.get("recursos") or {}
     if not recursos:
         return errors
 
-    sg = (g["periodo"] - 1) * 10 + g["sesion"]
-    assets_dir = ROOT / "public" / "guias-mejoras" / "assets" / f"{sg}-{grado}"
+    if assets_dir is None:
+        sg = (g["periodo"] - 1) * 10 + g["sesion"]
+        assets_dir = ROOT / "public" / "guias-mejoras" / "assets" / f"{sg}-{grado}"
 
     for tipo in ("imagenes", "diagramas"):
         items = recursos.get(tipo) or []
@@ -729,66 +748,186 @@ def _walk_strings(x, path=""):
             yield from _walk_strings(v, f"{path}.{k}" if path else k)
 
 
+# ─── Perfiles de programa ────────────────────────────────────────────────────
+#
+# Un «programa» es un conjunto de guías con su propia estructura. Hoy hay dos:
+#
+#   · grado                → content/guias/{6..11}/, contrato v3.1 opt-in
+#   · territorio-interior  → content/guias/territorio-interior/, estándar propio
+#
+# Territorio Interior conserva su estructura y su triángulo en modo `citas` en
+# todos los grados: NO adopta la calibración por edad ni el bloque web de v3.1.
+# Lo que sí comparte es el control de redacción ---voz, frases plantilla, anclas
+# descartadas---, que es lo que aquí se llama reglas transversales.
+#
+# Añadir un programa nuevo (bebras, semillero) es añadir una entrada a PERFILES.
+
+# Las reglas se normalizan a la firma (g, ctx) -> (errores, warnings) para poder
+# agregarlas por identificador, que es lo que consume el informe de auditoría.
+
+def _r_err(fn):
+    """Adapta una regla que solo devuelve errores."""
+    return lambda g, ctx: (fn(g), [])
+
+
+def _r_warn(fn):
+    """Adapta una regla que solo devuelve warnings."""
+    return lambda g, ctx: ([], fn(g))
+
+
+def _r_par(fn):
+    """Adapta una regla que ya devuelve (errores, warnings)."""
+    return lambda g, ctx: fn(g)
+
+
+def _r_verbos(g, ctx):
+    _, e, w = lint_verbos(g)
+    return e, w
+
+
+def _r_assets(g, ctx):
+    return lint_assets(g, ctx["grado"], ctx["assets_dir"]), []
+
+
+# Registro único, EN EL ORDEN EN QUE SE EMITEN LOS HALLAZGOS. Ese orden es
+# parte de la salida del linter: cambiarlo altera todos los informes previos.
+REGLAS = [
+    ("verbos", _r_verbos),
+    ("triangulo", _r_err(lint_triangulo)),
+    ("latex", _r_err(lint_latex_escapes)),
+    ("assets", _r_assets),
+    ("ancestral-origen", _r_warn(lint_saber_ancestral)),
+    ("200-palabras", _r_warn(lint_200_palabras)),
+    ("citas-trazables", _r_warn(lint_citas_trazables)),
+    ("fuente-apertura", _r_par(lint_fuente_apertura)),
+    ("quiz-balance", _r_par(lint_quiz_balance)),
+    ("verbo-unico", _r_par(lint_verbo_unico)),
+    ("tiempo-modalidad", _r_par(lint_tiempo_modalidad)),
+    ("extension-cuaderno", _r_par(lint_extension_cuaderno)),
+    ("web-estructura", _r_par(lint_web_estructura)),
+    ("modo-triangulo", _r_par(lint_modo_triangulo)),
+    ("oraciones-largas", _r_par(lint_oraciones_largas)),
+    ("frases-plantilla", _r_par(lint_frases_plantilla)),
+    ("anclas-descartadas", _r_par(lint_anclas_prohibidas)),
+]
+
+# Estructurales de v3.1: presuponen `duracion_min`, `apertura.fuente`,
+# `triangulo.modo` y el bloque web completo. No aplican a Territorio Interior,
+# que tiene estándar propio; las demás sí, porque miden redacción y
+# trazabilidad y no dependen de la estructura.
+REGLAS_V31_ESTRUCTURALES = {
+    "fuente-apertura", "tiempo-modalidad", "web-estructura", "modo-triangulo",
+}
+REGLAS_TRANSVERSALES = [r for r in REGLAS if r[0] not in REGLAS_V31_ESTRUCTURALES]
+
+
+@dataclass(frozen=True)
+class Perfil:
+    nombre: str
+    etiqueta: str                      # cabecera del listado
+    contrato: str                      # "v3.1-optin" | "propio"
+    dir_rel: Callable[[int], Path]
+    required: list[str]
+    orden_key: Callable[[Path], tuple]
+    id_guia: Callable[[dict], str]
+    assets_dir: Callable[[dict], Path]
+    reglas: list[tuple[str, Callable]]
+
+
+PERFILES = {
+    "grado": Perfil(
+        nombre="grado",
+        etiqueta="Grado {grado}° · Lint contrato MILC v3",
+        contrato="v3.1-optin",
+        dir_rel=lambda grado: ROOT / "content" / "guias" / str(grado),
+        required=REQUIRED_GRADO,
+        orden_key=lambda p: tuple(int(x) for x in p.stem.split("-")[1:]),
+        id_guia=lambda g: f"G{(g['periodo'] - 1) * 10 + g['sesion']:02d}",
+        assets_dir=lambda g: (
+            ROOT / "public" / "guias-mejoras" / "assets"
+            / f"{(g['periodo'] - 1) * 10 + g['sesion']}-{g['grado']}"
+        ),
+        reglas=REGLAS,
+    ),
+    "territorio-interior": Perfil(
+        nombre="territorio-interior",
+        etiqueta="Territorio Interior · Lint transversal (estándar propio)",
+        contrato="propio",
+        dir_rel=lambda grado: ROOT / "content" / "guias" / "territorio-interior",
+        required=REQUIRED_TERRITORIO,
+        # 6-10 y 11-1 deben ordenar por (grado, momento); el split del perfil de
+        # grado los colapsaría a (10,) y (1,).
+        orden_key=lambda p: tuple(int(x) for x in p.stem.split("-")),
+        id_guia=lambda g: f"{g['grado']}·M{g['momento']}",
+        assets_dir=lambda g: (
+            ROOT / "public" / "guias-mejoras" / "territorio-interior" / "assets" / str(g["clave"])
+        ),
+        reglas=REGLAS_TRANSVERSALES,
+    ),
+}
+
+
 # ─── Reporte ─────────────────────────────────────────────────────────────────
 
-def lint_guia(g: dict, grado: int = 11) -> tuple[list[str], list[str]]:
-    """Corre todos los lints y devuelve (errores, warnings)."""
-    if not g.get("completo"):
-        return [], []  # outlines no se lintean
+def lint_guia_detallado(
+    g: dict, grado: int = 11, perfil: Perfil | None = None
+) -> dict[str, tuple[list[str], list[str]]]:
+    """Corre los lints del perfil y devuelve los hallazgos indexados por regla.
 
+    La clave `_requeridos` corta el resto: si la estructura básica falla, no
+    tiene sentido medir redacción sobre campos que no existen.
+    """
+    perfil = perfil or PERFILES["grado"]
+    if not g.get("completo"):
+        return {}  # outlines no se lintean
+
+    faltantes = lint_required_fields(g, perfil.required)
+    if faltantes:
+        return {"_requeridos": (faltantes, [])}
+
+    ctx = {"grado": grado, "assets_dir": perfil.assets_dir(g), "perfil": perfil}
+    out: dict[str, tuple[list[str], list[str]]] = {}
+    for rid, fn in perfil.reglas:
+        e, w = fn(g, ctx)
+        if e or w:
+            out[rid] = (e, w)
+    return out
+
+
+def lint_guia(
+    g: dict, grado: int = 11, perfil: Perfil | None = None
+) -> tuple[list[str], list[str]]:
+    """Corre todos los lints y devuelve (errores, warnings)."""
     errors: list[str] = []
     warnings: list[str] = []
-
-    errors += lint_required_fields(g)
-
-    # Solo seguimos si la estructura básica está OK
-    if errors:
-        return errors, warnings
-
-    _, verbo_errors, verbo_warnings = lint_verbos(g)
-    errors += verbo_errors
-    warnings += verbo_warnings
-
-    errors += lint_triangulo(g)
-    errors += lint_latex_escapes(g)
-    errors += lint_assets(g, grado)
-
-    warnings += lint_saber_ancestral(g)
-    warnings += lint_200_palabras(g)
-    warnings += lint_citas_trazables(g)
-
-    # Contrato v3.1 (error solo si la guía declara duracion_min)
-    for regla in (
-        lint_fuente_apertura,
-        lint_quiz_balance,
-        lint_verbo_unico,
-        lint_tiempo_modalidad,
-        lint_extension_cuaderno,
-        lint_web_estructura,
-        lint_modo_triangulo,
-        lint_oraciones_largas,
-        lint_frases_plantilla,
-        lint_anclas_prohibidas,
-    ):
-        e, w = regla(g)
+    for _rid, (e, w) in lint_guia_detallado(g, grado, perfil).items():
         errors += e
         warnings += w
-
     return errors, warnings
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Linter del contrato MILC v3 para guías YAML.")
     parser.add_argument("claves", nargs="*", help="Claves específicas (ej. 1-2 1-3). Vacío = todas.")
-    parser.add_argument("--grado", type=int, default=11)
+    parser.add_argument("--programa", choices=tuple(PERFILES), default="grado",
+                        help="Programa a lintear. Por defecto, las guías de grado.")
+    parser.add_argument("--grado", type=int, default=None,
+                        help="En 'grado' escoge el directorio; en otros programas filtra.")
     parser.add_argument("--strict", action="store_true", help="Tratar warnings como errores")
     args = parser.parse_args()
 
-    content_dir = ROOT / "content" / "guias" / str(args.grado)
-    paths = sorted(
-        content_dir.glob("*.yaml"),
-        key=lambda p: tuple(int(x) for x in p.stem.split("-")[1:]),
-    )
+    perfil = PERFILES[args.programa]
+    # En las guías de grado, --grado escoge el directorio (por defecto 11). En
+    # los demás programas todas las guías viven en una sola carpeta, así que
+    # --grado pasa a ser un filtro opcional.
+    grado = args.grado if args.grado is not None else 11
+    filtro_grado = args.grado if perfil.nombre != "grado" else None
+
+    content_dir = perfil.dir_rel(grado)
+    if not content_dir.is_dir():
+        print(f"\n  {RED}✗  no existe el directorio: {content_dir}{RESET}\n")
+        return 1
+    paths = sorted(content_dir.glob("*.yaml"), key=perfil.orden_key)
 
     seleccion = args.claves
     if not seleccion:
@@ -800,7 +939,7 @@ def main() -> int:
     n_con_warnings = 0
 
     print()
-    print(f"  Plataforma Conéctate · Grado {args.grado}° · Lint contrato MILC v3")
+    print(f"  Plataforma Conéctate · {perfil.etiqueta.format(grado=grado)}")
     print("  " + "─" * 70)
     print()
 
@@ -810,29 +949,31 @@ def main() -> int:
         clave = g["clave"]
         if seleccion and clave not in seleccion:
             continue
+        if filtro_grado is not None and int(g.get("grado") or 0) != filtro_grado:
+            continue
 
-        gnum = (g["periodo"] - 1) * 10 + g["sesion"]
+        ident = perfil.id_guia(g)
 
         if not g.get("completo"):
             n_outlines += 1
-            print(f"  {DIM}·  {clave}  (G{gnum:02d})  outline (no lint){RESET}")
+            print(f"  {DIM}·  {clave}  ({ident})  outline (no lint){RESET}")
             continue
 
         n_completas += 1
-        errors, warnings = lint_guia(g, args.grado)
+        errors, warnings = lint_guia(g, grado, perfil)
 
         if errors:
             n_con_errores += 1
-            print(f"  {RED}✗  {clave}  (G{gnum:02d})  {len(errors)} error(es){RESET}")
+            print(f"  {RED}✗  {clave}  ({ident})  {len(errors)} error(es){RESET}")
             for e in errors:
                 print(f"       {RED}✗{RESET} {e}")
         elif warnings:
             n_con_warnings += 1
-            print(f"  {YELLOW}⚠  {clave}  (G{gnum:02d})  {len(warnings)} warning(s){RESET}")
+            print(f"  {YELLOW}⚠  {clave}  ({ident})  {len(warnings)} warning(s){RESET}")
             for w in warnings:
                 print(f"       {YELLOW}⚠{RESET} {w}")
         else:
-            print(f"  {GREEN}✓  {clave}  (G{gnum:02d})  OK{RESET}")
+            print(f"  {GREEN}✓  {clave}  ({ident})  OK{RESET}")
 
     print()
     print(f"  Resumen: {GREEN}{n_completas - n_con_errores - n_con_warnings} OK{RESET} · "

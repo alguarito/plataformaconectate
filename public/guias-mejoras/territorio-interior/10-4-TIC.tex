@@ -1,0 +1,612 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra UNICA de las guias MILC v3.
+%
+% La usan las cuatro familias de guias, cada una con su driver:
+%   · Grados 6-11          -> scripts/build-guias-g11.py
+%   · Bebras               -> scripts/build-guias-bebras.py
+%   · Semillero            -> scripts/build-guias-semillero.py
+%   · Territorio interior  -> scripts/build-guias-territorio-interior.py
+%
+% Antes habia tres copias casi identicas (~400 lineas iguales, 6 distintas):
+% cada mejora habia que aplicarla tres veces, y en la practica no se hacia
+% (el motor de recursos vivia solo en dos de ellas). Lo que varia entre
+% familias esta parametrizado en 6 placeholders que cada driver llena
+% (se nombran aqui SIN su sintaxis real: el builder reemplaza por texto plano,
+% tambien dentro de los comentarios, y un valor multilinea rompe el preambulo):
+%
+%   HEADER_IZQ        encabezado izquierdo de pagina
+%   HEADER_DER        encabezado derecho de pagina
+%   PORTADA_ETIQUETA  rotulo sobre el numero grande (GRADO/MOMENTO/MODULO)
+%   PORTADA_SERIE     linea de serie de la portada
+%   PORTADA_ID        identificador de la guia en la portada
+%   PORTADA_CIRCULO   el circulito de grado (°), o vacio si no aplica
+%   PDF_TITULO        titulo en texto plano (sin \textbf ni comillas TeX) para
+%                     los metadatos del PDF (/Title); lo produce lib_xelatex.texto_pdf
+%
+% Composicion (auditoria 2026-09-03): las bandas de estacion piden espacio
+% (\Needspace*) y prohiben el salto justo despues (\nopagebreak), asi no quedan
+% huerfanas al pie; las cajas largas (softbox, drawbox, infoband, puentebox) son
+% `breakable`, asi una caja de media pagina ya no arrastra todo a la siguiente
+% dejando la anterior al 40 %. Todo texto sobre mostaza o verde va en milcNegro
+% (blanco sobre #E5B400 da 1,93:1 y sobre #58A923 2,95:1; ninguno pasa WCAG AA).
+% El resto de claves las documenta content/guias/_SCHEMA.md. El script valida
+% que no queden placeholders sin reemplazar antes de escribir el archivo final.
+
+% Etiquetado PDF (latex-lab): /Lang, estructura y texto alternativo de las
+% figuras, para lectores de pantalla. Debe ir ANTES de \documentclass.
+\DocumentMetadata{lang=es-CO,tagging=on}
+\documentclass[11pt,letterpaper]{article}
+% headheight=24pt: la cabecera derecha lleva dos lineas (identidad de la guia
+% y estacion actual). headsep se acorta en la misma medida para que el bloque
+% de texto quede exactamente donde estaba con headheight=12pt.
+\usepackage[margin=2.0cm,headheight=24pt,headsep=13pt]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+% Librerías TikZ para los diagramas de las guías (bloque `recursos:`):
+%  · babel  → babel en español vuelve activos caracteres como «>», y TikZ los usa
+%             en sus opciones (>=stealth, ->). Sin esta librería, cualquier
+%             diagrama con flechas revienta con «\language@active@arg> has an
+%             extra }». Debe ir ANTES de que se dibuje nada.
+%  · positioning        → sintaxis «below left=2pt and 3pt».
+%  · decorations.pathreplacing → llaves ({brace}) para señalar rangos.
+\usetikzlibrary{babel,positioning,decorations.pathreplacing}
+\usepackage{graphicx}
+% Circuitos: el trabajo de electrónica se hace hoy con micro:bit y sus sensores
+% integrados (MakeCode, sin cableado), así que no se necesitan esquemáticos.
+% Si algún día entran montajes con protoboard, basta descomentar esta línea:
+% los diagramas .tex/.tikz declarados en `recursos:` ya se incrustan solos.
+% \usepackage{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{etoolbox}
+\usepackage{needspace}
+% hyperref al final del preambulo: metadatos del PDF (titulo, autor, idioma,
+% familia), marcadores por estacion (\pdfbookmark) y enlaces sin recuadro.
+\usepackage[hidelinks,
+  pdftitle={Si alguien me lo dice: preguntar, quedarse y avisar},
+  pdfauthor={PhD. Álvaro Cárdenas Orozco},
+  pdfsubject={Territorio interior · Educación socioemocional · Grado 10° · Momento 4 · MILC v3},
+  pdflang={es-CO},
+  bookmarksopen=true,bookmarksnumbered=false]{hyperref}
+
+% Helvetica Neue no trae la flecha U+2192, asi que cada «→» escrito literalmente
+% en el YAML se compilaba a NADA, en silencio (462 flechas en 61 guias: rutas del
+% tipo «paleta → tipografia → lockup» salian rotas). Mapeamos el caracter a su
+% version matematica, que si tiene glifo. Asi el autor puede seguir escribiendo
+% «→» comodamente en el YAML.
+\usepackage{newunicodechar}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0D9488}
+\definecolor{milcGradeDark}{HTML}{115E59}
+\definecolor{milcGradeSoft}{HTML}{CCFBF1}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+% Cabecera de dos lineas: identidad de la guia arriba y, a la derecha y en
+% gris, la estacion en curso (\markright desde \milcestacion). Antes de la
+% primera estacion la segunda linea va vacia; el \strut mantiene la altura
+% para que la linea de arriba no baile entre paginas.
+\lhead{\small Territorio interior · Educación socioemocional\\[-1pt]{\footnotesize\strut}}
+\rhead{\small Grado 10° · Momento 4 · MILC v3\\[-1pt]{\footnotesize\strut\color{milcNegro!65}\rightmark}}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+% Sobre mostaza (#E5B400) y verde (#58A923) el texto va en milcNegro; sobre el
+% resto de la paleta, en blanco. Se usa dentro de fonttitle/fontupper, donde un
+% \color posterior manda sobre coltitle.
+\newcommand{\milctintasobre}[1]{%
+  \ifboolexpr{test{\ifstrequal{#1}{milcMostaza}} or test{\ifstrequal{#1}{milcVerde}}}%
+    {\color{milcNegro}}{\color{white}}}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,breakable,pad at break=3mm,
+  colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries\milctintasobre{#1},fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,breakable,pad at break=4mm,
+  colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries\milctintasobre{#1},
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,breakable,pad at break=2mm,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,breakable,pad at break=2mm,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+% La flecha va en modo matematico a proposito: Helvetica Neue NO tiene el glifo
+% U+2192, asi que \textrightarrow se compilaba a NADA («Missing character: There
+% is no → in font Helvetica Neue») y el puente salia sin flecha. En modo
+% matematico la flecha viene de la fuente matematica y si se dibuja.
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{$\rightarrow$}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+% ─── Listas aireadas para las guías socioemocionales ────────────────────
+% Componer las verificaciones como «\checkbox texto\\» deja el texto que salta
+% de línea debajo del cuadrito y apelmaza el bloque. Estos entornos alinean la
+% continuación y airean los ítems. Los usa Territorio Interior; cualquier
+% familia puede hacerlo.
+\newlist{checklista}{itemize}{1}
+\setlist[checklista]{
+  label=\textcolor{milcGradeDark}{\fbox{\phantom{x}}},
+  leftmargin=9mm, labelsep=3.2mm, itemsep=2.4mm,
+  topsep=2.5mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+\newlist{pasoslista}{enumerate}{1}
+\setlist[pasoslista]{
+  label=\textcolor{milcGradeDark}{\sffamily\bfseries\arabic*.},
+  leftmargin=8mm, labelsep=3mm, itemsep=2.8mm,
+  topsep=1mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+% Nunca huerfana: pide 9 lineas libres (o salta de pagina rellenando con
+% \vfill) y prohibe el salto justo despues de la banda. Nueve y no seis:
+% la caja partible que sigue necesita ~80pt (titulo adosado, relleno y dos
+% lineas) para arrancar en la misma pagina; con menos, tcolorbox la manda
+% entera a la siguiente y la banda se queda sola. El penalty 10000 va
+% en `after`, ANTES del espacio posterior: un `after skip` (aunque sea 0pt)
+% es un \vskip tras la caja, y ese glue es un punto de corte legal que un
+% \nopagebreak escrito despues de \end{tcolorbox} ya no cierra. Cada banda
+% deja marcador PDF y actualiza la cabecera derecha.
+\newcounter{milcestacion}
+\newcommand{\milcestacion}[2]{%
+\Needspace*{9\baselineskip}%
+\stepcounter{milcestacion}%
+\pdfbookmark[1]{#2}{milcestacion\themilcestacion}%
+\markright{#2}%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,
+  after={\par\nopagebreak\vskip7pt}]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\milctintasobre{#1}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\Needspace{4\baselineskip}%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
+% ── Recursos visuales de la guía ──────────────────────────────────────
+% Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
+% \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
+% \guiaDiagrama → fuente TikZ/circuitikz (.tex) incrustada como vector:
+%                 es la vía para circuitos y esquemáticos editables.
+% [#1] = texto alternativo (alt) · #2 = ruta relativa al .tex · #3 = pie
+% El alt llega al PDF etiquetado (/Alt) y lo lee el lector de pantalla.
+\newcommand{\guiaFigura}[3][]{%
+\begin{center}
+\includegraphics[width=0.88\linewidth,height=0.38\textheight,keepaspectratio,alt={#1}]{#2}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#3}}
+\end{center}
+}
+
+\newcommand{\guiaDiagrama}[2]{%
+\begin{center}
+\input{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\begin{document}
+\thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
+\begin{tikzpicture}[remember picture,overlay]
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont MOMENTO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont TERRITORIO INTERIOR · SOCIOEMOCIONAL};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
+
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 4};
+  % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
+  % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  
+
+  \node[anchor=west,text=milcGradeText,text width=11.4cm,align=left] at ([xshift=1.5cm,yshift=0.5cm]gradonum.east)
+    {
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Territorio interior · Socioemocional}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont\setlength{\baselineskip}{27pt}Si alguien\\[4pt]me lo dice\\[4pt]preguntar, quedarse, avisar}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Grado 10° · Momento 4}
+    };
+\end{tikzpicture}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Tu protocolo de tres pasos, escrito y ensayado en voz alta: la pregunta directa, la frase para quedarse y el aviso —con el nombre y el lugar del adulto a quien acudirías—, más la respuesta preparada para cuando te pidan que no cuentes.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · Apertura ancestral · Protocolo de aviso · Triángulo Dussel-Estoicismo-Floridi}}
+
+\newpage
+
+\section*{Apertura: Si alguien me lo dice: preguntar, quedarse y avisar}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+En el Cauca existe la \textbf{Guardia Indígena}, y su manera de trabajar enseña con precisión lo que hay que hacer en este momento. \textbf{Fíjate en tres rasgos.} \textbf{Primero: no porta armas.} \emph{Lo único que lleva es el bastón, que es una señal de autoridad, no una herramienta de fuerza.} \textbf{Segundo: su función principal no es resolver ---es \emph{alertar} y \emph{acompañar}---.} \emph{Cuando algo pasa, la guardia avisa a las autoridades de la comunidad y se queda con la gente.} \textbf{Tercero, y es el que más importa hoy: nunca actúa sola.} \emph{Van en grupo, y lo que uno ve lo sabe la comunidad.} \textbf{Piensa en lo que eso significa para un muchacho de quince años a quien un amigo le acaba de decir algo muy grave.} \emph{No hace falta tener herramientas ---no las tienen ellos tampoco---.} \textbf{No hace falta resolverlo ---ese no es el trabajo---.} \textbf{Y sobre todo: no hay que hacerlo solo.} \emph{Lo que sí hace falta es estar dispuesto a ver, a quedarse y a avisar. Eso es exactamente lo que se te va a pedir, y es todo lo que se te va a pedir.}
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+Hay un miedo que impide que la gente pregunte y hay que desmontarlo de entrada, porque está desmentido. \textbf{Mucha gente cree que preguntarle a alguien si ha pensado en quitarse la vida puede \emph{darle la idea}.} \textbf{No es así.} Un equipo de investigadores revisó los estudios que habían medido justamente eso: qué pasa cuando a alguien se le pregunta directamente por pensamientos suicidas. \textbf{Encontraron trece estudios, y \emph{ninguno} halló un aumento estadísticamente significativo de la ideación} entre quienes fueron preguntados; \emph{algunos encontraron incluso una \textbf{reducción}} (Dazzi, Gribble, Wessely y Fear, 2014). \textbf{La conclusión de la revisión es clara: reconocer el tema y hablar de él puede disminuir, y no aumentar, la ideación suicida.} \emph{Y tiene sentido si lo piensas:} \textbf{una persona que lleva semanas con eso en la cabeza no se entera de nada nuevo porque tú preguntes.} \emph{Lo que sí cambia es que, por primera vez, deja de estar sola con eso ---y que alguien le dio permiso de decirlo en voz alta---.} \textbf{Preguntar no siembra nada. Callar sí deja a alguien solo.}
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{La Guardia Indígena \textbf{no lleva armas, no resuelve sola y avisa siempre}. \textbf{Si un amigo te dijera hoy que ya no quiere estar aquí, ¿sabrías qué preguntarle} \ldots \textbf{y a quién avisarle antes de que termine el día}?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar podrás: (1) \textbf{saber} que preguntar directamente por la ideación suicida no la induce, y por qué eso está estudiado; (2) \textbf{ejecutar} un protocolo de tres pasos ---\textbf{preguntar}, \textbf{quedarse}, \textbf{avisar}--- sin intentar diagnosticar ni tratar a nadie; (3) \textbf{responder} a la petición de guardar el secreto sin mentir y sin romper el vínculo; (4) \textbf{identificar}, con nombre y lugar, al adulto a quien acudirías hoy mismo.
+\end{softbox}
+
+
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Comprende los fenómenos que afectan a su territorio, regula sus emociones ante ellos y acompaña a otros con empatía (transversal 6°--11°, articulado con la política «Escuela, territorio de vida» del MEN, Resolución 006519 de 2025, y la Ley 1620 de 2013)\\
+Referentes & Primera ayuda psicológica (OMS, 2011/2012) · Directrices IASC (2007) · USGS y Servicio Geológico Colombiano · Pueblo nasa y la minga (CRIC) · Dussel · Estoicismo · Floridi\\
+Producto final & Tu protocolo de tres pasos, escrito y ensayado en voz alta: la pregunta directa, la frase para quedarse y el aviso —con el nombre y el lugar del adulto a quien acudirías—, más la respuesta preparada para cuando te pidan que no cuentes.\\
+\end{tabularx}
+\normalsize
+
+\puente{En el momento 3 armaste la ruta. \textbf{Este es el momento en que esa ruta deja de ser un ejercicio,} y por eso es el único del programa que se ensaya en voz alta hasta que salga sin pensar.}
+
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Pregunto, me quedo y aviso.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Primero, lo que se cree y lo que se teme. \emph{Sin hablar de nadie en particular, nunca.}}
+
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- Lo que se cree.} \textbf{Regla que no se rompe: en esta actividad no se habla de ninguna persona concreta, ni con nombre ni sin él.} \textbf{Primera parte.} Escribe \textbf{lo que has oído decir} sobre este tema: «el que lo dice no lo hace», «eso es para llamar la atención», «mejor no preguntar porque le das la idea», «eso no se habla». \emph{Tal cual se dicen.} \textbf{Segunda parte.} Al frente de cada una, marca si crees que es \textbf{cierta} o \textbf{falsa}, y \textbf{escribe qué harías si te la creyeras}. \emph{Ese segundo dato es el que importa: cada una de esas frases produce una conducta, y casi siempre la conducta es callarse.} \textbf{Tercera parte.} \emph{¿Sabrías a quién acudir hoy?} Escribe \textbf{nombre y lugar}. \textbf{Y la última:} \emph{¿qué es lo que más miedo te daría de una conversación así?} \emph{Escríbelo, porque lo vamos a resolver: casi siempre el miedo es «no voy a saber qué decir», y resulta que no hay que saber decir nada ---hay que saber preguntar---.}
+\end{softbox}
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{No escribiste el nombre de ninguna persona.}
+\milccheckrow{Marcaste cada creencia como cierta o falsa y anotaste \textbf{qué conducta produce}.}
+\milccheckrow{Escribiste a quién acudirías, con nombre y lugar ---o «no sé»---.}
+
+\begin{infoband}{milcVerde}
+
+
+\textbf{En tu cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1. Lo que se cree». \textbf{Formato:} las creencias con su marca y la conducta que producen + a quién acudirías + qué te daría más miedo. \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} escribiste \textbf{qué es lo que más miedo te daría}. Esta página es tuya: \textbf{nadie más tiene que leerla si tú no quieres}.
+\end{infoband}
+
+\puente{Ya lo tienes. Ahora, la evidencia sobre preguntar, cuáles son tus tres pasos y por qué la reserva no se promete.}
+
+\milcestacion{milcTurquesa}{Fase 2 · Sistematización: entender el protocolo}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro claves para este momento}
+Cuatro claves. La primera desmonta el miedo que impide todo lo demás.
+\end{softbox}
+
+\milcpaso{1}{milcTurquesa}{\textbf{Preguntar no siembra la idea. Está estudiado.} La revisión de Dazzi y su equipo encontró \textbf{trece estudios} sobre exactamente esta pregunta, y \textbf{ninguno halló un aumento estadísticamente significativo de la ideación suicida} entre quienes fueron preguntados; \emph{algunos encontraron una reducción} (Dazzi y otros, 2014). \textbf{La conclusión de los autores es que hablar del tema puede \emph{disminuir}, y no aumentar, la ideación.} \emph{Piénsalo así:} \textbf{quien lleva semanas con eso en la cabeza no se entera de nada nuevo porque tú preguntes} ---lo único nuevo es que alguien se atrevió a nombrarlo---. \emph{Y hay otra creencia igual de dañina que conviene desmontar aquí:} \textbf{«el que lo dice no lo hace» es falso}. \emph{Cuando alguien lo dice, lo está diciendo. Eso se toma en serio siempre, sin excepción y sin medir si «será para llamar la atención» ---que además, si lo fuera, seguiría siendo alguien pidiendo atención de la peor manera que se le ocurrió---.}}
+\milcpaso{2}{milcTurquesa}{\textbf{Tu papel tiene tres pasos y ninguno es tratar a nadie.} \textbf{Preguntar:} directo, sin rodeos y sin eufemismos ---\emph{«¿has pensado en hacerte daño?», «¿has pensado en quitarte la vida?»}---. \emph{Los rodeos confunden y le dan al otro la salida de no entender.} \textbf{Quedarse:} \emph{no dejar sola a la persona}, escuchar sin corregir, sin discutirle si tiene razones ---nadie ha salido de ahí porque le ganaran una discusión--- y sin llenar el silencio. \textbf{Avisar:} \emph{a un adulto, hoy, sin excepción}. \textbf{Y eso es todo.} \emph{No te toca convencer a nadie de nada, ni prometer que todo va a estar bien, ni hacer terapia, ni resolverlo.} \textbf{Te toca lo que hace la Guardia: ver, quedarse, avisar.}}
+\milcpaso{3}{milcTurquesa}{\textbf{La reserva no se promete, y hay que saber decirlo de frente.} \emph{Casi siempre viene la frase «prométeme que no le vas a decir a nadie», y casi siempre se dice antes de contar lo grave.} \textbf{No se promete.} \emph{Y no porque uno sea desleal:} \textbf{porque es una promesa que no se puede cumplir sin poner en riesgo a alguien}, y prometerla te deja atrapado entre traicionar tu palabra o callarte algo que puede costar una vida. \textbf{Lo que sí se puede decir, y funciona:} \emph{«no te voy a prometer eso, pero sí te prometo que no lo voy a andar contando por ahí: se lo voy a decir solo a alguien que pueda ayudarte, y si quieres vamos juntos»}. \emph{Es honesto, deja claro el límite y no lo abandona.} \textbf{Y sí: existe la posibilidad de que esa persona se enoje contigo.} \emph{Es un costo real, y aun así es el correcto.}}
+\milcpaso{4}{milcTurquesa}{\textbf{Sin armas y sin resolver solo: dos cosas que hay que llevarse.} \emph{La Guardia Indígena no lleva armas y no le hace falta:} \textbf{su fuerza es la presencia y el aviso}. \emph{Aplícalo:} \textbf{no necesitas saber de psicología ---no es tu trabajo y no es lo que hace falta---.} \emph{Y la segunda, que es la que protege a los dos:} \textbf{esto no se carga solo}. \textbf{Si un amigo te cuenta algo así y tú te lo guardas, quedan \emph{dos} personas en problemas: la que está mal y tú, cargando algo que no te corresponde.} \emph{Avisar no es delatar a nadie:} \textbf{es hacer lo que hace la guardia ---traer a la comunidad---.}}
+
+\begin{drawbox}{milcTurquesa}{El protocolo, en tres pasos}
+\begin{pasoslista}
+\item \textbf{PREGUNTAR.} \emph{«¿Has pensado en hacerte daño?»} ---directo, sin eufemismos, y después \textbf{callarse} y esperar la respuesta---.
+\item \textbf{QUEDARSE.} \emph{No dejarla sola.} Escuchar sin corregir, sin discutir y sin llenar los silencios. \emph{«Te creo. No estás solo. Me quedo.»}
+\item \textbf{AVISAR.} \emph{A un adulto, hoy.} Orientación escolar, un docente, un adulto de la casa, la línea de atención de tu municipio.
+\item \textbf{Si hay riesgo inmediato:} \emph{no dejarla sola ni un momento} y buscar ayuda \textbf{ya}, aunque toque interrumpir una clase o llamar delante de ella.
+\item \textbf{Lo que NO te toca:} diagnosticar, tratar, convencer, prometer reserva ni resolverlo.
+\end{pasoslista}
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{«Le voy a dar la idea»:} trece estudios dicen que no. \textbf{«El que lo dice no lo hace»:} falso; se toma en serio siempre. \textbf{Preguntar con rodeos:} le da al otro la salida de no entender. \textbf{Prometer que no cuentas:} es la promesa que te deja atrapado. \textbf{Discutirle sus razones:} nadie sale de ahí perdiendo una discusión. \textbf{Cargarlo solo:} quedan dos personas en problemas. \textbf{Esperar a estar seguro:} contar lo que oíste no es diagnosticar. \textbf{Dejarla sola «un momentico»:} si hay riesgo inmediato, no.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+
+
+\textbf{En tu cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2. Preguntar no siembra». \textbf{Formato:} escribe con tus palabras qué encontró la revisión de Dazzi y su equipo, y vuelve a tus creencias de la Actividad 1 para corregir las que resultaron falsas. \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} puedes explicar por qué \textbf{no se promete reserva} sin que suene a deslealtad.
+\end{infoband}
+
+\puente{Ya sabes qué hacer. Es hora de ensayarlo, porque en el momento real no hay tiempo de recordar nada.}
+
+\milcestacion{milcMagenta}{Fase 3 · Praxis: ensayar los tres pasos}
+
+\begin{softbox}{milcMagenta}{milcGris}{Cómo se ensaya algo que ojalá no pase}
+Este es el único momento del programa que se ensaya en voz alta hasta que salga solo. No porque vaya a pasar, sino porque si pasa no habrá tiempo de recordar nada.
+\end{softbox}
+
+\milcpaso{1}{milcMagenta}{\textbf{La pregunta directa (8 min, en parejas).} Escríbela y \textbf{dila en voz alta}. \textbf{Condiciones:} \emph{directa, corta, sin eufemismos ---nada de «¿estás pensando en hacer una tontería?»---, y sin anunciarla con un discurso}. \textbf{Y ensaya lo más difícil, que no es la pregunta:} \emph{el silencio de después}. \textbf{Cuenta cinco segundos sin decir nada.} \emph{Casi todo el mundo llena ese silencio con un chiste o un consejo, y ahí se pierde la conversación.}}
+\milcpaso{2}{milcMagenta}{\textbf{La frase para quedarse (7 min).} Escribe \textbf{tres frases cortas} para después de que la persona responda que sí. \textbf{Prohibido:} \emph{consejos, «tienes tanto por vivir», «piensa en tu mamá», comparaciones, discusiones}. \textbf{Lo que sirve:} \emph{«te creo» · «gracias por decírmelo» · «no estás solo» · «me quedo contigo»}. \emph{Es la escucha del momento 1 del grado 7, en el caso extremo: escuchar, no arreglar.}}
+\milcpaso{3}{milcMagenta}{\textbf{El aviso (8 min).} Escribe \textbf{a quién} ---nombre, cargo, lugar--- y \textbf{qué le vas a decir}. \emph{Corto y con hechos:} \textbf{«necesito hablar con usted ahora. Un compañero me dijo que ha pensado en hacerse daño».} \textbf{Y prepara la versión de urgencia}, para cuando haya que interrumpir lo que sea. \emph{Anota también la línea de atención de tu municipio o departamento, del momento 3.}}
+\milcpaso{4}{milcMagenta}{\textbf{Cuando piden que no cuentes (10 min, en tríos).} Ensáyenlo, porque es lo que de verdad pasa. \textbf{Uno pide la promesa, otro responde, el tercero observa si la respuesta fue \emph{honesta} y \emph{no abandonó}.} \emph{La respuesta modelo:} \textbf{«no te puedo prometer eso. Lo que sí te prometo es que no lo voy a andar contando: se lo voy a decir solo a alguien que pueda ayudarte, y si quieres vamos juntos».} \textbf{Roten hasta que a todos les salga sin leer.} \emph{Y conversen una cosa al final: qué se siente decirlo, porque cuesta ---y saber que cuesta también es prepararse---.}}
+
+\begin{drawbox}{milcMagenta}{Antes de cerrar tu protocolo}
+\begin{checklista}
+\item Tu pregunta es \textbf{directa} y sin eufemismos.
+\item Ensayaste \textbf{el silencio de cinco segundos} después de preguntar.
+\item Tus tres frases para quedarte \textbf{no traen consejo} ni comparación.
+\item Tu aviso tiene \textbf{nombre, cargo y lugar}, y una versión de urgencia.
+\item Tienes anotada la \textbf{línea de atención} de tu municipio o departamento.
+\item Ensayaste, en voz alta, la respuesta a \textbf{«prométeme que no cuentas»}.
+\end{checklista}
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Preguntar.} \emph{«¿Has pensado en hacerte daño?»} ---y después, cinco segundos de silencio---. \\[1mm]
+\textbf{Quedarse.} \emph{«Te creo. Gracias por decírmelo. No estás solo. Me quedo contigo.»} \\[1mm]
+\textbf{Cuando piden reserva.} \emph{«No te puedo prometer eso. Sí te prometo que no lo voy a andar contando: se lo digo solo a alguien que pueda ayudarte, y si quieres vamos juntos.»} \\[1mm]
+\textbf{Avisar.} \emph{«Profe \_\_\_\_, necesito hablar con usted ahora.»}
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+
+
+\textbf{En tu cuaderno (Actividad 3 · CREA).} Título: «Actividad 3. Mi protocolo». \textbf{Formato:} la pregunta + las tres frases para quedarse + el aviso con nombre, cargo, lugar y la línea de atención + la respuesta a la petición de reserva. \textbf{Extensión:} media página, en una sola cara, para poder verla de un vistazo. \textbf{Sabes que terminaste cuando} \textbf{lo dijiste todo en voz alta} ---no cuando lo escribiste---.
+\end{infoband}
+
+\puente{El producto es un protocolo dicho en voz alta. \emph{Lo que no se ha dicho nunca no sale cuando hace falta.}}
+
+\milcestacion{milcMostaza}{Producto de la sesión}
+\textbf{Protocolo de tres pasos: preguntar, quedarse y avisar, ensayado en voz alta y con un adulto con nombre}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) La pregunta es directa, breve y sin eufemismos, y se practicó el silencio posterior. (2) Las frases para acompañar no dan consejo, no comparan y no discuten las razones de la persona. (3) El aviso identifica adulto, cargo y lugar, e incluye una versión de urgencia y una línea de atención. (4) La respuesta a la petición de reserva es honesta, marca el límite y no abandona a la persona. (5) Se reconoce con claridad qué no le corresponde al estudiante: diagnosticar, tratar, convencer o resolver.
+\end{softbox}
+
+\puente{Antes de cerrar, revisa lo esencial: si tu protocolo no incluye a un adulto con nombre, no es un protocolo.}
+
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con tres voces: el rostro que reclama un derecho, la abeja y el enjambre, y el cuidado de lo compartido.}
+
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{«El otro se revela realmente como otro\ldots como el pobre, el oprimido; el que, a la vera del camino, fuera del sistema, muestra su rostro sufriente y sin embargo desafiante: «¡Tengo hambre!, ¡tengo derecho a comer!»»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Enrique Dussel · Filosofía de la liberación (1977)}
+
+\emph{«El que, a la vera del camino\ldots muestra su rostro».} \textbf{Cuando alguien te dice algo así, eso es exactamente lo que está pasando: se está mostrando.} \emph{Y casi nunca es a un adulto ---es a un amigo, en un chat, de noche, y muchas veces medio en broma para poder retirarlo si sale mal---.} \textbf{Esa es la razón por la que este momento va dirigido a ti y no a los profesores:} \emph{el primero en enterarse casi siempre es alguien de tu edad}. \textbf{Y el final de la cita da el marco correcto:} \emph{lo que esa persona necesita no es tu compasión ---es que alguien la conecte con lo que ya le corresponde---.} \textbf{Tú no eres la ayuda. Eres el puente.}
+
+\textbf{Si un amigo me lo dijera en un chat a medianoche, ¿qué haría en los cinco minutos siguientes?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · Meditaciones VI, 54 (c. 175 d.C.) · cuidado interior}
+\textit{«Lo que no beneficia al enjambre, tampoco beneficia a la abeja.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Marco Aurelio · Meditaciones VI, 54 (c. 175 d.C.)}
+
+\emph{Aquí la frase cambia de sentido y se vuelve muy concreta.} \textbf{Guardarse un secreto así \emph{parece} lealtad ---parece que uno protege al amigo---.} \emph{Pero mira lo que produce:} \textbf{quedan dos personas solas con el problema, y ninguna de las dos puede hacer nada.} \emph{Eso no beneficia ni al enjambre ni a la abeja.} \textbf{La Guardia Indígena lo tiene resuelto en su forma de operar:} \emph{nunca va sola, y lo que uno ve lo sabe la comunidad}. \textbf{No porque desconfíen del individuo ---porque saben que una persona sola no alcanza---.} \emph{Avisar no rompe la lealtad: la reparte entre suficientes hombros para que aguante.}
+
+\textbf{Si me guardo algo así, ¿a quién estoy protegiendo de verdad?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{«El florecimiento de las entidades informacionales y de toda la infoesfera debe promoverse preservando, cultivando y enriqueciendo sus propiedades.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Luciano Floridi · La ética de la información (2013; trad.)}
+
+\textbf{Hoy esto casi siempre llega por una pantalla, y eso tiene consecuencias prácticas que conviene saber de antemano.} \emph{La buena:} \textbf{en un chat es más fácil decirlo}, así que muchas veces esa es la única forma en que alguien se atreve. \emph{La difícil:} \textbf{por escrito no puedes ver a la persona ni quedarte con ella,} y ese segundo paso ---quedarse--- es justo el que no se puede hacer a distancia. \textbf{Por eso, si te llega por chat, la regla es simple:} \emph{no lo resuelvas por chat}. \textbf{Llama, o ve, o consigue que un adulto vaya.} \emph{Y una advertencia más:} \textbf{hay contenido en redes que romantiza esto}. \emph{No es acompañamiento ---es lo contrario---, y a quien lo esté viendo hay que ayudarlo a salir de ahí y llevarlo a la ruta del momento 3.}
+
+\textbf{Si me llega por chat, ¿sé cómo pasar de la pantalla a una persona real en menos de una hora?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres son citas textuales y llevan su referencia debajo. Puedes remitir a la obra en clase.
+\end{infoband}
+
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
+
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Calidad del protocolo & \milcopcion{Puedo preguntar directo, sé qué decir para quedarme, y tengo a quién avisar con nombre y lugar.} & \milcopcion{Sé que hay que avisar, pero no sé cómo preguntar ni a quién acudir.} & \milcopcion{Sigo pensando que preguntar por eso puede darle la idea a alguien.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Dos cosas, y la primera no es opcional. \textbf{Deja tu protocolo escrito donde puedas encontrarlo en dos minutos} ---en el cuaderno y en una nota del celular, con el número de la línea de atención--- y \textbf{preséntate con la persona de orientación de tu colegio}. \emph{No hay que contar nada: basta con saber quién es y dónde queda.} \textbf{Y si mientras hacías esta guía pensaste en ti mismo, o en alguien concreto: no esperes a la próxima sesión.} \emph{Habla hoy con un adulto. Contar lo que uno oyó ---o lo que uno siente--- no es acusar a nadie ni exagerar: es exactamente para lo que existe la ruta.} \textbf{Segundo, y con cuidado: pregunta en tu casa cómo se acompañaba.} Averigua con alguien mayor \textbf{qué se hacía en su época cuando alguien de la familia o del barrio estaba muy mal} ---si se hablaba, si se callaba, si alguien se quedaba con esa persona, si se pedía ayuda a alguien---. \emph{No preguntes por casos concretos si no te los ofrecen.} \textbf{Trae:} tu protocolo y lo que te contaron. \emph{Vas a encontrar una cosa que se repite: casi nadie hablaba del tema, y casi todos recuerdan quién se quedó. Lo que salvaba no era la palabra correcta ---era la compañía---.}
+\end{infoband}
+
+\end{document}

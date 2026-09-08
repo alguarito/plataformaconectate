@@ -1,0 +1,610 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra UNICA de las guias MILC v3.
+%
+% La usan las cuatro familias de guias, cada una con su driver:
+%   · Grados 6-11          -> scripts/build-guias-g11.py
+%   · Bebras               -> scripts/build-guias-bebras.py
+%   · Semillero            -> scripts/build-guias-semillero.py
+%   · Territorio interior  -> scripts/build-guias-territorio-interior.py
+%
+% Antes habia tres copias casi identicas (~400 lineas iguales, 6 distintas):
+% cada mejora habia que aplicarla tres veces, y en la practica no se hacia
+% (el motor de recursos vivia solo en dos de ellas). Lo que varia entre
+% familias esta parametrizado en 6 placeholders que cada driver llena
+% (se nombran aqui SIN su sintaxis real: el builder reemplaza por texto plano,
+% tambien dentro de los comentarios, y un valor multilinea rompe el preambulo):
+%
+%   HEADER_IZQ        encabezado izquierdo de pagina
+%   HEADER_DER        encabezado derecho de pagina
+%   PORTADA_ETIQUETA  rotulo sobre el numero grande (GRADO/MOMENTO/MODULO)
+%   PORTADA_SERIE     linea de serie de la portada
+%   PORTADA_ID        identificador de la guia en la portada
+%   PORTADA_CIRCULO   el circulito de grado (°), o vacio si no aplica
+%   PDF_TITULO        titulo en texto plano (sin \textbf ni comillas TeX) para
+%                     los metadatos del PDF (/Title); lo produce lib_xelatex.texto_pdf
+%
+% Composicion (auditoria 2026-09-03): las bandas de estacion piden espacio
+% (\Needspace*) y prohiben el salto justo despues (\nopagebreak), asi no quedan
+% huerfanas al pie; las cajas largas (softbox, drawbox, infoband, puentebox) son
+% `breakable`, asi una caja de media pagina ya no arrastra todo a la siguiente
+% dejando la anterior al 40 %. Todo texto sobre mostaza o verde va en milcNegro
+% (blanco sobre #E5B400 da 1,93:1 y sobre #58A923 2,95:1; ninguno pasa WCAG AA).
+% El resto de claves las documenta content/guias/_SCHEMA.md. El script valida
+% que no queden placeholders sin reemplazar antes de escribir el archivo final.
+
+% Etiquetado PDF (latex-lab): /Lang, estructura y texto alternativo de las
+% figuras, para lectores de pantalla. Debe ir ANTES de \documentclass.
+\DocumentMetadata{lang=es-CO,tagging=on}
+\documentclass[11pt,letterpaper]{article}
+% headheight=24pt: la cabecera derecha lleva dos lineas (identidad de la guia
+% y estacion actual). headsep se acorta en la misma medida para que el bloque
+% de texto quede exactamente donde estaba con headheight=12pt.
+\usepackage[margin=2.0cm,headheight=24pt,headsep=13pt]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+% Librerías TikZ para los diagramas de las guías (bloque `recursos:`):
+%  · babel  → babel en español vuelve activos caracteres como «>», y TikZ los usa
+%             en sus opciones (>=stealth, ->). Sin esta librería, cualquier
+%             diagrama con flechas revienta con «\language@active@arg> has an
+%             extra }». Debe ir ANTES de que se dibuje nada.
+%  · positioning        → sintaxis «below left=2pt and 3pt».
+%  · decorations.pathreplacing → llaves ({brace}) para señalar rangos.
+\usetikzlibrary{babel,positioning,decorations.pathreplacing}
+\usepackage{graphicx}
+% Circuitos: el trabajo de electrónica se hace hoy con micro:bit y sus sensores
+% integrados (MakeCode, sin cableado), así que no se necesitan esquemáticos.
+% Si algún día entran montajes con protoboard, basta descomentar esta línea:
+% los diagramas .tex/.tikz declarados en `recursos:` ya se incrustan solos.
+% \usepackage{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{etoolbox}
+\usepackage{needspace}
+% hyperref al final del preambulo: metadatos del PDF (titulo, autor, idioma,
+% familia), marcadores por estacion (\pdfbookmark) y enlaces sin recuadro.
+\usepackage[hidelinks,
+  pdftitle={Tristeza, depresión y ayuda: dónde está la línea y a quién se le dice},
+  pdfauthor={PhD. Álvaro Cárdenas Orozco},
+  pdfsubject={Territorio interior · Educación socioemocional · Grado 10° · Momento 3 · MILC v3},
+  pdflang={es-CO},
+  bookmarksopen=true,bookmarksnumbered=false]{hyperref}
+
+% Helvetica Neue no trae la flecha U+2192, asi que cada «→» escrito literalmente
+% en el YAML se compilaba a NADA, en silencio (462 flechas en 61 guias: rutas del
+% tipo «paleta → tipografia → lockup» salian rotas). Mapeamos el caracter a su
+% version matematica, que si tiene glifo. Asi el autor puede seguir escribiendo
+% «→» comodamente en el YAML.
+\usepackage{newunicodechar}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0D9488}
+\definecolor{milcGradeDark}{HTML}{115E59}
+\definecolor{milcGradeSoft}{HTML}{CCFBF1}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+% Cabecera de dos lineas: identidad de la guia arriba y, a la derecha y en
+% gris, la estacion en curso (\markright desde \milcestacion). Antes de la
+% primera estacion la segunda linea va vacia; el \strut mantiene la altura
+% para que la linea de arriba no baile entre paginas.
+\lhead{\small Territorio interior · Educación socioemocional\\[-1pt]{\footnotesize\strut}}
+\rhead{\small Grado 10° · Momento 3 · MILC v3\\[-1pt]{\footnotesize\strut\color{milcNegro!65}\rightmark}}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+% Sobre mostaza (#E5B400) y verde (#58A923) el texto va en milcNegro; sobre el
+% resto de la paleta, en blanco. Se usa dentro de fonttitle/fontupper, donde un
+% \color posterior manda sobre coltitle.
+\newcommand{\milctintasobre}[1]{%
+  \ifboolexpr{test{\ifstrequal{#1}{milcMostaza}} or test{\ifstrequal{#1}{milcVerde}}}%
+    {\color{milcNegro}}{\color{white}}}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,breakable,pad at break=3mm,
+  colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries\milctintasobre{#1},fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,breakable,pad at break=4mm,
+  colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries\milctintasobre{#1},
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,breakable,pad at break=2mm,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,breakable,pad at break=2mm,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+% La flecha va en modo matematico a proposito: Helvetica Neue NO tiene el glifo
+% U+2192, asi que \textrightarrow se compilaba a NADA («Missing character: There
+% is no → in font Helvetica Neue») y el puente salia sin flecha. En modo
+% matematico la flecha viene de la fuente matematica y si se dibuja.
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{$\rightarrow$}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+% ─── Listas aireadas para las guías socioemocionales ────────────────────
+% Componer las verificaciones como «\checkbox texto\\» deja el texto que salta
+% de línea debajo del cuadrito y apelmaza el bloque. Estos entornos alinean la
+% continuación y airean los ítems. Los usa Territorio Interior; cualquier
+% familia puede hacerlo.
+\newlist{checklista}{itemize}{1}
+\setlist[checklista]{
+  label=\textcolor{milcGradeDark}{\fbox{\phantom{x}}},
+  leftmargin=9mm, labelsep=3.2mm, itemsep=2.4mm,
+  topsep=2.5mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+\newlist{pasoslista}{enumerate}{1}
+\setlist[pasoslista]{
+  label=\textcolor{milcGradeDark}{\sffamily\bfseries\arabic*.},
+  leftmargin=8mm, labelsep=3mm, itemsep=2.8mm,
+  topsep=1mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+% Nunca huerfana: pide 9 lineas libres (o salta de pagina rellenando con
+% \vfill) y prohibe el salto justo despues de la banda. Nueve y no seis:
+% la caja partible que sigue necesita ~80pt (titulo adosado, relleno y dos
+% lineas) para arrancar en la misma pagina; con menos, tcolorbox la manda
+% entera a la siguiente y la banda se queda sola. El penalty 10000 va
+% en `after`, ANTES del espacio posterior: un `after skip` (aunque sea 0pt)
+% es un \vskip tras la caja, y ese glue es un punto de corte legal que un
+% \nopagebreak escrito despues de \end{tcolorbox} ya no cierra. Cada banda
+% deja marcador PDF y actualiza la cabecera derecha.
+\newcounter{milcestacion}
+\newcommand{\milcestacion}[2]{%
+\Needspace*{9\baselineskip}%
+\stepcounter{milcestacion}%
+\pdfbookmark[1]{#2}{milcestacion\themilcestacion}%
+\markright{#2}%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,
+  after={\par\nopagebreak\vskip7pt}]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\milctintasobre{#1}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\Needspace{4\baselineskip}%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
+% ── Recursos visuales de la guía ──────────────────────────────────────
+% Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
+% \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
+% \guiaDiagrama → fuente TikZ/circuitikz (.tex) incrustada como vector:
+%                 es la vía para circuitos y esquemáticos editables.
+% [#1] = texto alternativo (alt) · #2 = ruta relativa al .tex · #3 = pie
+% El alt llega al PDF etiquetado (/Alt) y lo lee el lector de pantalla.
+\newcommand{\guiaFigura}[3][]{%
+\begin{center}
+\includegraphics[width=0.88\linewidth,height=0.38\textheight,keepaspectratio,alt={#1}]{#2}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#3}}
+\end{center}
+}
+
+\newcommand{\guiaDiagrama}[2]{%
+\begin{center}
+\input{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\begin{document}
+\thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
+\begin{tikzpicture}[remember picture,overlay]
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont MOMENTO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont TERRITORIO INTERIOR · SOCIOEMOCIONAL};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
+
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 3};
+  % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
+  % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  
+
+  \node[anchor=west,text=milcGradeText,text width=11.4cm,align=left] at ([xshift=1.5cm,yshift=0.5cm]gradonum.east)
+    {
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Territorio interior · Socioemocional}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont\setlength{\baselineskip}{27pt}Tristeza,\\[4pt]depresión y ayuda\\[4pt]a quién se le dice}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Grado 10° · Momento 3}
+    };
+\end{tikzpicture}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Tu ruta de salud mental de una página: la distinción escrita entre tristeza y depresión con sus criterios, la lista de lo que ha cambiado en ti o en alguien cercano, y los tres niveles de la ruta con nombres, lugares y números reales —averiguados, no supuestos—.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · Apertura ancestral · Depresión y ruta de ayuda · Triángulo Dussel-Estoicismo-Floridi}}
+
+\newpage
+
+\section*{Apertura: Tristeza, depresión y ayuda: dónde está la línea y a quién se le dice}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+Entre los \textbf{nasa}, en el Cauca, hay médicos tradicionales y hay una práctica que se llama \textbf{«refrescar»}: rituales con los que se \emph{limpia}, se \emph{refresca} y se \emph{cura} ---no solo a una persona, sino también \textbf{al territorio}--- (Drexler, 2004). \textbf{Fíjate en tres cosas de ese sistema, porque las tres le faltan a la manera en que hoy se habla de la salud mental.} \textbf{Primera: hay alguien a quien acudir, y todos saben quién es.} \emph{No hay que averiguar en una crisis: el médico tradicional tiene nombre y la comunidad sabe dónde encontrarlo.} \textbf{Segunda: el malestar no se trata como una falla de la persona.} \emph{Se habla de \textbf{desarmonía} ---algo que se desacomodó y hay que volver a acomodar---, y eso no avergüenza a nadie.} \textbf{Tercera, y es la más importante: el que se refresca no va solo.} \emph{El ritual es comunitario, se hace con otros y a la vista de otros.} \textbf{Compara eso con lo que suele pasar hoy:} \emph{alguien la está pasando muy mal, no sabe a quién decirle, le da pena decirlo, y lo que decide es aguantar en silencio.} \textbf{Las tres cosas que allá están resueltas ---quién, sin vergüenza, acompañado--- son exactamente las tres que aquí faltan.}
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+\textbf{Y en Colombia esto no es un favor que alguien hace: es un derecho escrito.} La \textbf{Ley 1616 de 2013}, la ley de salud mental, tiene por objeto \textbf{garantizar el ejercicio pleno del derecho a la salud mental} mediante promoción, prevención y \textbf{atención integral} ---que incluye diagnóstico, tratamiento y rehabilitación---, y lo hace \textbf{dando prioridad a los niños, niñas y adolescentes}. \emph{Lee eso otra vez, porque es tu caso.} La ley declara además que la salud mental es \textbf{un derecho fundamental}, \textbf{tema prioritario de salud pública} y \textbf{componente esencial del bienestar}, y establece la \textbf{obligación de las EPS, las IPS y los entes territoriales de conformar redes de atención} en todos los niveles. \textbf{Traducido a lo práctico:} \emph{tu EPS \textbf{está obligada} a atenderte, tu colegio tiene orientación escolar, y no estás pidiendo un favor cuando lo usas ---estás usando algo que ya es tuyo---.} \textbf{Y como la ley da prioridad a los adolescentes, la respuesta «eso es normal a tu edad, ya se te pasa» no es un criterio clínico: es una forma de no atender.}
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{Entre los nasa, \textbf{todos saben a quién acudir y nadie va solo}. \textbf{Si mañana no pudieras levantarte de la cama por tres semanas, ¿a quién le dirías} \ldots \textbf{y sabrías dónde encontrarlo}?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar podrás: (1) \textbf{distinguir} la tristeza de la depresión usando lo que \emph{cambió} y no la intensidad de lo que se siente; (2) \textbf{explicar} que la atención en salud mental es un derecho garantizado por la Ley 1616 de 2013, con prioridad para adolescentes; (3) \textbf{construir} una ruta de tres niveles con nombres, lugares y números reales de tu colegio y de tu EPS; (4) \textbf{escribir} la primera frase ---la más difícil--- para pedir ayuda o para acompañar a alguien.
+\end{softbox}
+
+
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Comprende los fenómenos que afectan a su territorio, regula sus emociones ante ellos y acompaña a otros con empatía (transversal 6°--11°, articulado con la política «Escuela, territorio de vida» del MEN, Resolución 006519 de 2025, y la Ley 1620 de 2013)\\
+Referentes & Primera ayuda psicológica (OMS, 2011/2012) · Directrices IASC (2007) · USGS y Servicio Geológico Colombiano · Pueblo nasa y la minga (CRIC) · Dussel · Estoicismo · Floridi\\
+Producto final & Tu ruta de salud mental de una página: la distinción escrita entre tristeza y depresión con sus criterios, la lista de lo que ha cambiado en ti o en alguien cercano, y los tres niveles de la ruta con nombres, lugares y números reales —averiguados, no supuestos—.\\
+\end{tabularx}
+\normalsize
+
+\puente{En los momentos 1 y 2 aprendiste a nombrar y a repartir. \textbf{Hoy toca lo que sigue cuando eso no alcanza:} \emph{a quién se le dice}.}
+
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Distingo y sé a quién decirle.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Primero, sin diagnosticar a nadie: qué se dice en tu entorno cuando alguien está muy mal.}
+
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- Lo que se dice y lo que no.} \textbf{Sin nombres, nunca.} \textbf{Primera parte.} Escribe \textbf{lo que se dice} en tu casa, tu curso o tu barrio cuando alguien está muy mal por dentro: «échele ganas», «eso es falta de Dios», «tiene todo y todavía se queja», «eso le pasa por estar en el teléfono», «son cosas de la edad». \emph{Tal cual se dicen.} \textbf{Segunda parte.} Al frente de cada una responde: \emph{¿esto invita a contar o invita a callarse?} \textbf{Tercera parte.} Piensa en \textbf{alguien ---tú o alguien cercano--- que la haya pasado mal por más de dos semanas} y escribe, sin nombres, \textbf{qué cambió}: si dejó de hacer cosas que le gustaban, si cambió el sueño, si cambió el apetito, si dejó de ver gente, si le costaba lo que antes hacía fácil. \textbf{Y la última:} ¿sabes \textbf{a quién} podrías acudir? \emph{Nombre y lugar. Si no lo sabes, escribe «no sé»: eso es lo que vamos a arreglar.}
+\end{softbox}
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Escribiste las frases tal cual, incluidas las bienintencionadas.}
+\milccheckrow{Respondiste si cada una invita a contar o a callarse.}
+\milccheckrow{Escribiste \textbf{qué cambió} en esa persona, sin nombrarla.}
+
+\begin{infoband}{milcVerde}
+
+
+\textbf{En tu cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1. Lo que se dice y lo que no». \textbf{Formato:} las frases con su efecto + la lista de lo que cambió + tu respuesta a «a quién acudiría». \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} tienes la lista de \textbf{lo que cambió}. Esta página es tuya: \textbf{nadie más tiene que leerla si tú no quieres}.
+\end{infoband}
+
+\puente{Ya lo tienes. Ahora, dónde está la línea, qué dice la ley y qué cosas de las que se dicen con buena intención no ayudan.}
+
+\milcestacion{milcTurquesa}{Fase 2 · Sistematización: entender la línea}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro claves sobre pedir ayuda}
+Cuatro claves para no confundir un mal día con algo que necesita ayuda, ni una enfermedad con falta de ganas.
+\end{softbox}
+
+\milcpaso{1}{milcTurquesa}{\textbf{Tristeza no es depresión, y confundirlas hace daño en las dos direcciones.} \emph{La tristeza es una emoción: tiene causa, tiene forma y se mueve ---sube, baja, deja ratos---.} \textbf{Es sana y no hay que quitarla:} quien pierde algo tiene que estar triste. \emph{La depresión es otra cosa:} \textbf{es un estado que se instala, no se mueve con lo que pasa alrededor y le apaga a la persona la capacidad de disfrutar}, incluso de lo que antes le gustaba. \textbf{Confundirlas hace daño en los dos sentidos:} \emph{llamar «depresión» a un mal día banaliza y deja sin palabra a quien sí la tiene; y llamar «tristeza» a una depresión de meses deja a alguien sin atención.} \emph{Y aquí conviene una advertencia:} \textbf{tú no tienes que diagnosticar a nadie ---ni a ti---.} \emph{Tu tarea es reconocer cuándo hay que contarlo.}}
+\milcpaso{2}{milcTurquesa}{\textbf{Lo que se mira no es la intensidad: es lo que cambió.} \emph{Preguntar «¿qué tan triste estás?» sirve de poco ---nadie sabe medirlo y todo el mundo se compara con quien está peor---.} \textbf{Las preguntas que sí informan son de conducta:} \emph{¿dejó de hacer cosas que antes le gustaban? ¿cambió el sueño ---duerme mucho o no duerme---? ¿cambió el apetito? ¿dejó de ver gente? ¿le cuesta lo que antes hacía fácil? ¿hace cuánto?} \textbf{Y hay un umbral que conviene tener en la cabeza:} \emph{cuando algo lleva \textbf{más de dos semanas}, ocurre \textbf{casi todos los días} y \textbf{cambió el funcionamiento} de la persona, eso ya no es un mal rato}. \textbf{Ese es el momento de contarlo ---no de decidir qué es---.}}
+\milcpaso{3}{milcTurquesa}{\textbf{Es un derecho, no un favor.} La \textbf{Ley 1616 de 2013} garantiza el derecho a la salud mental con \textbf{atención integral} y \textbf{prioridad para niños, niñas y adolescentes}, y obliga a \textbf{EPS, IPS y entes territoriales} a conformar redes de atención. \emph{Esto cambia por completo la conversación en la casa:} \textbf{pedir una cita en la EPS por salud mental no es un capricho ni un lujo ---es usar algo que la ley ya reconoció---.} \emph{Y sirve para responder a la frase más común:} \textbf{«eso es normal a tu edad, ya se te pasa» no es un criterio clínico.} \emph{Si lleva semanas y cambió tu vida, la ley dice que te tienen que atender ---y que tienes prioridad---.}}
+\milcpaso{4}{milcTurquesa}{\textbf{Lo que no ayuda, aunque se diga con cariño.} \emph{Casi todas estas frases las dice gente que quiere ayudar, y por eso hay que nombrarlas.} \textbf{«Échale ganas»} convierte una enfermedad en un problema de voluntad. \textbf{«Tienes todo para estar bien»} agrega culpa a lo que ya duele ---y de paso enseña que no hay derecho a estar mal si no hay una razón visible---. \textbf{«Eso le pasa por\ldots»} busca un culpable, y el culpable termina siendo la persona. \textbf{«A mí también me pasa y yo sigo»} compara y cierra la conversación. \emph{Y hay una que parece la mejor y no lo es:} \textbf{«cualquier cosa me avisas»} ---suena a apoyo y le deja todo el trabajo al que está mal---. \emph{Lo que sí sirve es más simple: \textbf{«te creo», «no estás solo», «vamos juntos»}.}}
+
+\begin{drawbox}{milcTurquesa}{Los tres niveles de la ruta}
+\begin{pasoslista}
+\item \textbf{Nivel 1 · alguien de confianza:} un adulto de tu casa, un docente, alguien mayor a quien le hables. \emph{Sirve para contar, no para resolver.}
+\item \textbf{Nivel 2 · el colegio:} orientación escolar. \emph{Tiene nombre y oficina, y su trabajo es exactamente este.}
+\item \textbf{Nivel 3 · el sistema de salud:} tu EPS ---está obligada--- y las líneas de atención de tu municipio o departamento.
+\item \textbf{Y una regla que no depende del nivel:} \emph{si hay riesgo para la vida, se avisa \textbf{ya} a un adulto y no se deja sola a la persona.} \emph{Eso es el momento 4.}
+\end{pasoslista}
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{Diagnosticar:} no es tu tarea; reconocer cuándo contarlo, sí. \textbf{Medir por intensidad:} lo que informa es lo que cambió. \textbf{«Échale ganas»:} vuelve la enfermedad un problema de voluntad. \textbf{«Cualquier cosa me avisas»:} le deja el trabajo al que está mal. \textbf{Esperar a estar peor:} el umbral de dos semanas existe para no esperar. \textbf{Creer que hace falta una razón grave:} no hace falta ninguna razón visible. \textbf{Ruta genérica:} «un profesor» y «el hospital» no son una ruta.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+
+
+\textbf{En tu cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2. Tristeza y depresión». \textbf{Formato:} dos columnas con las diferencias, y al lado la lista de \textbf{preguntas de conducta} que sí informan. \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} puedes explicar por qué \textbf{se mira lo que cambió y no lo que se siente}.
+\end{infoband}
+
+\puente{Ya sabes que es un derecho. Es hora de averiguar la ruta de verdad ---con nombres--- porque una ruta genérica no se usa nunca.}
+
+\milcestacion{milcMagenta}{Fase 3 · Praxis: armar la ruta}
+
+\begin{softbox}{milcMagenta}{milcGris}{Cómo se arma una ruta que sí se pueda usar}
+Esta guía se mide por una sola cosa: si al final tienes números y nombres reales escritos. Todo lo demás ya lo sabías.
+\end{softbox}
+
+\milcpaso{1}{milcMagenta}{\textbf{Los criterios (6 min).} Escribe las \textbf{preguntas de conducta} en tu cuaderno, tal como las vas a usar: \emph{¿dejó de hacer lo que le gustaba? ¿cambió el sueño? ¿cambió el apetito? ¿dejó de ver gente? ¿hace cuánto?} \textbf{Y el umbral:} \emph{más de dos semanas, casi todos los días, cambió el funcionamiento.}}
+\milcpaso{2}{milcMagenta}{\textbf{Lo que cambió (7 min).} Aplícalas a tu caso de la Actividad 1 ---tuyo o de alguien cercano, sin nombres--- y escribe la conclusión: \emph{¿esto es un mal rato o esto ya hay que contarlo?} \textbf{Sin diagnosticar nada.}}
+\milcpaso{3}{milcMagenta}{\textbf{Los tres niveles, con datos reales (15 min, y hay que ir a averiguar).} \textbf{Nivel 1:} el nombre de \textbf{una persona} concreta. \textbf{Nivel 2:} \emph{cómo se llama quien hace orientación en tu colegio, dónde queda la oficina y en qué horario}. \textbf{Nivel 3:} \emph{cuál es tu EPS, por dónde se pide una cita ---app, teléfono, presencial--- y qué líneas de atención en salud mental existen en tu municipio o departamento}. \emph{Averígualo de verdad y anótalo:} \textbf{una ruta que hay que buscar en una crisis no existe.}}
+\milcpaso{4}{milcMagenta}{\textbf{La primera frase (8 min, en parejas).} Escribe y \textbf{di en voz alta} dos frases: una para \textbf{pedir ayuda para ti} y otra para \textbf{acompañar a alguien}. \textbf{Condiciones de la primera:} corta, sin explicar todo, sin pedir permiso ---\emph{«necesito hablar con usted de algo que me está pasando»}---. \textbf{Condiciones de la segunda:} sin consejo y sin «cualquier cosa me avisas» ---\emph{«te creo, no estás solo, ¿vamos juntos a hablar con \_\_\_\_?»}---. \emph{Ensáyenlas: la dificultad no está en saber qué decir, está en decirlo.}}
+
+\begin{drawbox}{milcMagenta}{Antes de cerrar tu ruta}
+\begin{checklista}
+\item Tienes las \textbf{preguntas de conducta} escritas y el umbral de las dos semanas.
+\item Aplicaste los criterios a un caso real sin diagnosticar a nadie.
+\item Tu nivel 1 tiene \textbf{un nombre propio}.
+\item Tu nivel 2 tiene \textbf{nombre, oficina y horario} de orientación escolar.
+\item Tu nivel 3 tiene \textbf{tu EPS, cómo se pide la cita y una línea de atención}.
+\item Dijiste \textbf{en voz alta} las dos frases, y ninguna es «cualquier cosa me avisas».
+\end{checklista}
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{Las preguntas.} \emph{«¿Dejó de hacer lo que le gustaba? · ¿Cambió el sueño? · ¿El apetito? · ¿Dejó de ver gente? · ¿Hace cuánto?»} \\[1mm]
+\textbf{Para mí.} \emph{«Necesito hablar con usted de algo que me está pasando.»} ---corta, sin explicarlo todo---. \\[1mm]
+\textbf{Para otro.} \emph{«Te creo. No estás solo. ¿Vamos juntos a hablar con \_\_\_\_?»}
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+
+
+\textbf{En tu cuaderno (Actividad 3 · CREA).} Título: «Actividad 3. Mi ruta de salud mental». \textbf{Formato:} los criterios + la conclusión del caso + los tres niveles con nombres, lugares, horarios y números + las dos frases. \textbf{Extensión:} una página, en una sola cara. \textbf{Sabes que terminaste cuando} \textbf{hay al menos un número de teléfono} escrito.
+\end{infoband}
+
+\puente{El producto tiene números de teléfono adentro. \emph{Esa es la diferencia entre una guía y un papel.}}
+
+\milcestacion{milcMostaza}{Producto de la sesión}
+\textbf{Ruta de salud mental: los criterios de conducta y los tres niveles con nombres, lugares y números reales}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) La distinción entre tristeza y depresión se apoya en cambios de funcionamiento, no en intensidad. (2) Se aplica el umbral —más de dos semanas, casi todos los días, cambió el funcionamiento— sin emitir diagnósticos. (3) Los tres niveles contienen datos reales y verificados: nombre propio, oficina y horario, EPS y línea de atención. (4) La frase para pedir ayuda es breve y no exige explicarlo todo de entrada. (5) La frase para acompañar no da consejo ni delega el esfuerzo en quien está mal.
+\end{softbox}
+
+\puente{Antes de cerrar, revisa lo decisivo: si tu ruta dice «un profesor» o «el hospital», todavía no es una ruta.}
+
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos con tres voces: el rostro que reclama un derecho, la armonía entre palabras y acciones, y el cuidado de lo compartido.}
+
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{«El otro se revela realmente como otro\ldots como el pobre, el oprimido; el que, a la vera del camino, fuera del sistema, muestra su rostro sufriente y sin embargo desafiante: «¡Tengo hambre!, ¡tengo derecho a comer!»»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Enrique Dussel · Filosofía de la liberación (1977)}
+
+\textbf{«Tengo derecho».} \emph{Esa es exactamente la frase que le falta a casi todo el que está mal por dentro,} \textbf{porque el estigma consigue algo muy eficaz: convence a la persona de que pedir ayuda es pedir un favor}, y entonces no lo pide para no molestar. \emph{La Ley 1616 dice lo contrario en términos jurídicos ---derecho fundamental, atención integral, prioridad para adolescentes---.} \textbf{Y fíjate en el «fuera del sistema» de la cita:} \emph{el que sufre en silencio está literalmente por fuera ---no aparece en ninguna estadística, no ocupa ninguna cita, no le cuesta nada al sistema---.} \textbf{Aparecer es el primer paso, y por eso contarlo importa tanto.}
+
+\textbf{¿He pensado alguna vez que pedir ayuda por esto sería molestar a alguien?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Séneca · Cartas a Lucilio, 20 (c. 64 d.C.) · cuidado interior}
+\textit{«La filosofía enseña a obrar, no a hablar; quiere que cada uno viva a la manera que prescribe, que estén en armonía nuestras palabras con nuestras acciones.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Séneca · Cartas a Lucilio, 20 (c. 64 d.C.)}
+
+\emph{«Obrar, no hablar».} \textbf{Es el criterio con que hay que juzgar esta guía y también a quien acompaña.} \emph{Decir «puedes contar conmigo» es hablar; ir con alguien a la oficina de orientación es obrar.} \textbf{Y funciona en las dos direcciones.} \emph{Hacia el que acompaña:} \textbf{la ayuda que sirve casi siempre es logística ---pedir la cita, hacer la llamada, ir con la persona---}, porque el que está mal muchas veces no tiene fuerza para esos trámites. \emph{Hacia uno mismo:} \textbf{decidir pedir ayuda y no pedirla deja las palabras sin acción}, \emph{y eso es lo que convierte una decisión en una intención más.}
+
+\textbf{Lo último que dije que iba a hacer por alguien que estaba mal, ¿lo hice?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{«El florecimiento de las entidades informacionales y de toda la infoesfera debe promoverse preservando, cultivando y enriqueciendo sus propiedades.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Luciano Floridi · La ética de la información (2013; trad.)}
+
+\textbf{Hoy mucha gente le cuenta primero a una pantalla,} y eso tiene dos caras. \emph{La buena:} \textbf{en un chat cuesta menos empezar}, y a veces esa es la única puerta que alguien se atreve a abrir ---sirve para el nivel 1---. \emph{La mala, y hay que decirla claro:} \textbf{un buscador, un foro o un chatbot no son la ruta}; no pueden ver a la persona, no pueden acompañarla al médico y no responden si algo se pone grave. \emph{Y hay un riesgo particular:} \textbf{buscar los síntomas suele empeorar, y hay contenido en redes que romantiza el sufrimiento.} \textbf{Cultivar, aquí, es una regla simple:} \emph{lo digital puede ser el primer paso, nunca el único.}
+
+\textbf{Si estuviera muy mal, ¿mi primer impulso sería buscarlo en internet o contárselo a alguien?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres son citas textuales y llevan su referencia debajo. Puedes remitir a la obra en clase.
+\end{infoband}
+
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
+
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Calidad de la ruta & \milcopcion{Distingo tristeza de depresión por lo que cambió, y tengo la ruta con nombres y números reales.} & \milcopcion{Entiendo la diferencia, pero mi ruta dice «un profesor» y «el hospital».} & \milcopcion{Sigo pensando que pedir ayuda por esto es exagerar.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Dos cosas. \textbf{Primero, completa la ruta con datos reales y \emph{preséntate} con quien hace orientación en tu colegio.} \emph{No hace falta contar nada ---basta con saludar y saber dónde queda---.} \textbf{Es infinitamente más fácil pedir ayuda a alguien con quien ya hablaste una vez.} \emph{Y si al hacer esta guía reconociste que algo lleva más de dos semanas, en ti o en alguien cercano: úsala esta semana.} \textbf{Segundo, pregunta en tu casa qué se hacía:} averigua con alguien mayor \textbf{qué se hacía antes cuando alguien «se ponía mal de la cabeza» o «no quería levantarse»} ---si se llevaba a algún lado, si se hablaba del tema, si se decía que era pereza, si alguien la acompañaba---. \textbf{Trae:} la ruta con sus números y lo que te contaron. \emph{Vas a encontrar casi siempre las dos cosas juntas: mucho cuidado práctico ---alguien que cocinaba, que acompañaba, que se quedaba--- y muy poca palabra. Se cuidaba el cuerpo y se callaba lo demás. La parte que hay que conservar es la primera.}
+\end{infoband}
+
+\end{document}

@@ -1,0 +1,611 @@
+% TEMPLATE-MILC-v3.tex - plantilla maestra UNICA de las guias MILC v3.
+%
+% La usan las cuatro familias de guias, cada una con su driver:
+%   · Grados 6-11          -> scripts/build-guias-g11.py
+%   · Bebras               -> scripts/build-guias-bebras.py
+%   · Semillero            -> scripts/build-guias-semillero.py
+%   · Territorio interior  -> scripts/build-guias-territorio-interior.py
+%
+% Antes habia tres copias casi identicas (~400 lineas iguales, 6 distintas):
+% cada mejora habia que aplicarla tres veces, y en la practica no se hacia
+% (el motor de recursos vivia solo en dos de ellas). Lo que varia entre
+% familias esta parametrizado en 6 placeholders que cada driver llena
+% (se nombran aqui SIN su sintaxis real: el builder reemplaza por texto plano,
+% tambien dentro de los comentarios, y un valor multilinea rompe el preambulo):
+%
+%   HEADER_IZQ        encabezado izquierdo de pagina
+%   HEADER_DER        encabezado derecho de pagina
+%   PORTADA_ETIQUETA  rotulo sobre el numero grande (GRADO/MOMENTO/MODULO)
+%   PORTADA_SERIE     linea de serie de la portada
+%   PORTADA_ID        identificador de la guia en la portada
+%   PORTADA_CIRCULO   el circulito de grado (°), o vacio si no aplica
+%   PDF_TITULO        titulo en texto plano (sin \textbf ni comillas TeX) para
+%                     los metadatos del PDF (/Title); lo produce lib_xelatex.texto_pdf
+%
+% Composicion (auditoria 2026-09-03): las bandas de estacion piden espacio
+% (\Needspace*) y prohiben el salto justo despues (\nopagebreak), asi no quedan
+% huerfanas al pie; las cajas largas (softbox, drawbox, infoband, puentebox) son
+% `breakable`, asi una caja de media pagina ya no arrastra todo a la siguiente
+% dejando la anterior al 40 %. Todo texto sobre mostaza o verde va en milcNegro
+% (blanco sobre #E5B400 da 1,93:1 y sobre #58A923 2,95:1; ninguno pasa WCAG AA).
+% El resto de claves las documenta content/guias/_SCHEMA.md. El script valida
+% que no queden placeholders sin reemplazar antes de escribir el archivo final.
+
+% Etiquetado PDF (latex-lab): /Lang, estructura y texto alternativo de las
+% figuras, para lectores de pantalla. Debe ir ANTES de \documentclass.
+\DocumentMetadata{lang=es-CO,tagging=on}
+\documentclass[11pt,letterpaper]{article}
+% headheight=24pt: la cabecera derecha lleva dos lineas (identidad de la guia
+% y estacion actual). headsep se acorta en la misma medida para que el bloque
+% de texto quede exactamente donde estaba con headheight=12pt.
+\usepackage[margin=2.0cm,headheight=24pt,headsep=13pt]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\usepackage{tikz}
+% Librerías TikZ para los diagramas de las guías (bloque `recursos:`):
+%  · babel  → babel en español vuelve activos caracteres como «>», y TikZ los usa
+%             en sus opciones (>=stealth, ->). Sin esta librería, cualquier
+%             diagrama con flechas revienta con «\language@active@arg> has an
+%             extra }». Debe ir ANTES de que se dibuje nada.
+%  · positioning        → sintaxis «below left=2pt and 3pt».
+%  · decorations.pathreplacing → llaves ({brace}) para señalar rangos.
+\usetikzlibrary{babel,positioning,decorations.pathreplacing}
+\usepackage{graphicx}
+% Circuitos: el trabajo de electrónica se hace hoy con micro:bit y sus sensores
+% integrados (MakeCode, sin cableado), así que no se necesitan esquemáticos.
+% Si algún día entran montajes con protoboard, basta descomentar esta línea:
+% los diagramas .tex/.tikz declarados en `recursos:` ya se incrustan solos.
+% \usepackage{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage[document]{ragged2e}  % bandera a la derecha en todo el cuerpo
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{etoolbox}
+\usepackage{needspace}
+% hyperref al final del preambulo: metadatos del PDF (titulo, autor, idioma,
+% familia), marcadores por estacion (\pdfbookmark) y enlaces sin recuadro.
+\usepackage[hidelinks,
+  pdftitle={Cuidar al que cuida: acompañar no es cargar},
+  pdfauthor={PhD. Álvaro Cárdenas Orozco},
+  pdfsubject={Territorio interior · Educación socioemocional · Grado 10° · Momento 10 · MILC v3},
+  pdflang={es-CO},
+  bookmarksopen=true,bookmarksnumbered=false]{hyperref}
+
+% Helvetica Neue no trae la flecha U+2192, asi que cada «→» escrito literalmente
+% en el YAML se compilaba a NADA, en silencio (462 flechas en 61 guias: rutas del
+% tipo «paleta → tipografia → lockup» salian rotas). Mapeamos el caracter a su
+% version matematica, que si tiene glifo. Asi el autor puede seguir escribiendo
+% «→» comodamente en el YAML.
+\usepackage{newunicodechar}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+% Mismo problema con los simbolos de marca y vinetas: el «✓» de «una palomita ✓»
+% salia como cuadrito vacio en el PDF de todas las guias que lo usaban.
+\usepackage{pifont}
+\newunicodechar{✓}{\ding{51}}
+\newunicodechar{✗}{\ding{55}}
+\newunicodechar{✔}{\ding{52}}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
+
+\setmainfont{Helvetica Neue}
+\setsansfont{Helvetica Neue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+% Sin particion de palabras: en 6.º-7.º una palabra cortada por guion al final
+% de linea («Comuni-cacion») frena la lectura mucho mas que una linea corta.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\pretolerance=2000
+\tolerance=3000
+\setlength{\emergencystretch}{3em}
+\linespread{1.10}
+\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=5mm,itemsep=1mm,topsep=1mm}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\definecolor{milcMagenta}{HTML}{E6007E}
+\definecolor{milcVino}{HTML}{5A0038}
+\definecolor{milcTurquesa}{HTML}{0093A5}
+\definecolor{milcVerde}{HTML}{58A923}
+\definecolor{milcMostaza}{HTML}{E5B400}
+\definecolor{milcOcre}{HTML}{B86600}
+\definecolor{milcNegro}{HTML}{241816}
+\definecolor{milcGris}{HTML}{F7F7F4}
+\definecolor{milcLinea}{HTML}{E8E2DD}
+\definecolor{milcGradePrimary}{HTML}{0D9488}
+\definecolor{milcGradeDark}{HTML}{115E59}
+\definecolor{milcGradeSoft}{HTML}{CCFBF1}
+\definecolor{milcGradeAccent}{HTML}{CFE7FF}
+\definecolor{milcGradeText}{HTML}{FFFFFF}
+\color{milcNegro}
+
+\pagestyle{fancy}
+\fancyhf{}
+% Cabecera de dos lineas: identidad de la guia arriba y, a la derecha y en
+% gris, la estacion en curso (\markright desde \milcestacion). Antes de la
+% primera estacion la segunda linea va vacia; el \strut mantiene la altura
+% para que la linea de arriba no baile entre paginas.
+\lhead{\small Territorio interior · Educación socioemocional\\[-1pt]{\footnotesize\strut}}
+\rhead{\small Grado 10° · Momento 10 · MILC v3\\[-1pt]{\footnotesize\strut\color{milcNegro!65}\rightmark}}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+% Sobre mostaza (#E5B400) y verde (#58A923) el texto va en milcNegro; sobre el
+% resto de la paleta, en blanco. Se usa dentro de fonttitle/fontupper, donde un
+% \color posterior manda sobre coltitle.
+\newcommand{\milctintasobre}[1]{%
+  \ifboolexpr{test{\ifstrequal{#1}{milcMostaza}} or test{\ifstrequal{#1}{milcVerde}}}%
+    {\color{milcNegro}}{\color{white}}}
+
+\newtcolorbox{titlebox}[1]{
+  enhanced,colback=#1,colframe=#1,arc=7mm,boxrule=0pt,
+  left=7mm,right=7mm,top=3mm,bottom=3mm,
+  before skip=8pt,after skip=8pt,
+  fontupper=\sffamily\bfseries\Large\color{white}
+}
+
+\newtcolorbox{softbox}[3]{
+  enhanced,breakable,pad at break=3mm,
+  colback=#2,colframe=#1,borderline west={4pt}{0pt}{#1},
+  arc=2mm,boxrule=.4pt,left=4mm,right=4mm,top=3mm,bottom=3mm,
+  before skip=6pt,after skip=8pt,title={#3},coltitle=white,
+  colbacktitle=#1,fonttitle=\sffamily\bfseries\milctintasobre{#1},fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=2mm, boxrule=0pt}
+}
+
+\newtcolorbox{drawbox}[2]{
+  enhanced,breakable,pad at break=4mm,
+  colback=white,colframe=#1,arc=4mm,boxrule=1pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=8pt,after skip=8pt,
+  title={#2},coltitle=white,colbacktitle=#1,fonttitle=\sffamily\bfseries\milctintasobre{#1},
+  fontupper=\RaggedRight,
+  attach boxed title to top left={xshift=4mm,yshift=-2mm},
+  boxed title style={arc=3mm, boxrule=0pt}
+}
+
+\newtcolorbox{infoband}[1]{
+  enhanced,breakable,pad at break=2mm,colback=#1!8,colframe=#1!50,arc=2mm,boxrule=.5pt,
+  left=4mm,right=4mm,top=2mm,bottom=2mm,before skip=4pt,after skip=4pt,
+  fontupper=\small\RaggedRight
+}
+
+% Puente narrativo entre secciones (contrato editorial Conéctate).
+% Da continuidad: "Acabas de X. Ahora vas a Y porque Z."
+% Visualmente: banda izquierda en color del grado, texto en itálica pequeña.
+\newtcolorbox{puentebox}{
+  enhanced,breakable,pad at break=2mm,colback=milcGradeSoft,colframe=milcGradeDark,
+  borderline west={3pt}{0pt}{milcGradeDark},
+  arc=0mm,boxrule=0pt,left=5mm,right=4mm,top=2.5mm,bottom=2.5mm,
+  before skip=4pt,after skip=8pt,
+  fontupper=\itshape\small\color{milcNegro}\RaggedRight
+}
+% La flecha va en modo matematico a proposito: Helvetica Neue NO tiene el glifo
+% U+2192, asi que \textrightarrow se compilaba a NADA («Missing character: There
+% is no → in font Helvetica Neue») y el puente salia sin flecha. En modo
+% matematico la flecha viene de la fuente matematica y si se dibuja.
+\newcommand{\puente}[1]{%
+  \begin{puentebox}%
+    \textcolor{milcGradeDark}{$\rightarrow$}\hspace{2mm}#1%
+  \end{puentebox}%
+}
+
+\newcommand{\linead}[1]{\noindent\color{milcLinea}\rule{#1}{0.5pt}\color{milcNegro}}
+\newcommand{\respuesta}[1]{\par\vspace{2mm}\foreach \n in {1,...,#1}{\noindent\color{milcLinea}\rule{\linewidth}{0.5pt}\par\vspace{5mm}}\color{milcNegro}}
+\newcommand{\checkbox}{\textcolor{milcGradeDark}{\fbox{\phantom{x}}}\hspace{5pt}}
+
+% ─── Listas aireadas para las guías socioemocionales ────────────────────
+% Componer las verificaciones como «\checkbox texto\\» deja el texto que salta
+% de línea debajo del cuadrito y apelmaza el bloque. Estos entornos alinean la
+% continuación y airean los ítems. Los usa Territorio Interior; cualquier
+% familia puede hacerlo.
+\newlist{checklista}{itemize}{1}
+\setlist[checklista]{
+  label=\textcolor{milcGradeDark}{\fbox{\phantom{x}}},
+  leftmargin=9mm, labelsep=3.2mm, itemsep=2.4mm,
+  topsep=2.5mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+\newlist{pasoslista}{enumerate}{1}
+\setlist[pasoslista]{
+  label=\textcolor{milcGradeDark}{\sffamily\bfseries\arabic*.},
+  leftmargin=8mm, labelsep=3mm, itemsep=2.8mm,
+  topsep=1mm, parsep=0pt, partopsep=0pt, before=\RaggedRight
+}
+
+\newcommand{\phasecard}[4]{
+\begin{tcolorbox}[enhanced,colback=#3,colframe=#2,arc=3mm,boxrule=.5pt,height=3.05cm,valign=center,halign=center,left=1.5mm,right=1.5mm,top=2mm,bottom=2mm]
+{\sffamily\bfseries\fontsize{22}{24}\selectfont\textcolor{#2}{#1}}\par
+{\sffamily\bfseries\small #4}
+\end{tcolorbox}
+}
+
+% ── Piezas del rediseno 2026 (legibilidad 6.º-11.º) ───────────────────
+% Banda de estacion: reemplaza el titlebox macizo. Titulo a la izquierda,
+% dato practico (tiempo/modalidad) a la derecha, en una sola linea.
+% Nunca huerfana: pide 9 lineas libres (o salta de pagina rellenando con
+% \vfill) y prohibe el salto justo despues de la banda. Nueve y no seis:
+% la caja partible que sigue necesita ~80pt (titulo adosado, relleno y dos
+% lineas) para arrancar en la misma pagina; con menos, tcolorbox la manda
+% entera a la siguiente y la banda se queda sola. El penalty 10000 va
+% en `after`, ANTES del espacio posterior: un `after skip` (aunque sea 0pt)
+% es un \vskip tras la caja, y ese glue es un punto de corte legal que un
+% \nopagebreak escrito despues de \end{tcolorbox} ya no cierra. Cada banda
+% deja marcador PDF y actualiza la cabecera derecha.
+\newcounter{milcestacion}
+\newcommand{\milcestacion}[2]{%
+\Needspace*{9\baselineskip}%
+\stepcounter{milcestacion}%
+\pdfbookmark[1]{#2}{milcestacion\themilcestacion}%
+\markright{#2}%
+\begin{tcolorbox}[enhanced,colback=#1,colframe=#1,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=2.6mm,bottom=2.6mm,before skip=11pt,
+  after={\par\nopagebreak\vskip7pt}]
+{\sffamily\bfseries\fontsize{15}{18}\selectfont\milctintasobre{#1}#2}
+\end{tcolorbox}}
+
+% Tarjeta de paso numerada: sustituye las tablas «Pilar / Aplicacion», que
+% eran formato de consulta docente, no de estudiante. El numero va en un
+% circulo sobre el borde para que la secuencia se lea de un vistazo.
+\newcommand{\milcpaso}[3]{%
+\Needspace{4\baselineskip}%
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcLinea,arc=1.5mm,boxrule=.9pt,
+  left=14mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt,
+  fontupper=\RaggedRight,
+  overlay={\node[anchor=north west,circle,fill=#2,text=white,inner sep=0pt,
+    minimum size=7.4mm,font=\sffamily\bfseries\small]
+    at ([xshift=3.6mm,yshift=-3.2mm]frame.north west) {#1};}]
+#3
+\end{tcolorbox}}
+
+% Casilla marcable de tamano util con lapiz (la anterior era \fbox{\phantom{x}},
+% de alto variable segun el texto que la seguia).
+\newcommand{\milcmarca}{\framebox[3.8mm]{\rule{0pt}{3.4mm}}}
+
+% Fila marcable de lista suelta (checks de la estacion 1).
+\newcommand{\milccheckrow}[1]{%
+\par\vspace{1.8mm}\noindent
+\makebox[6.4mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-6.4mm\relax}{\RaggedRight #1}\par}
+
+% Celda marcable dentro de la rubrica (tabla de autoevaluacion). Misma
+% sangria francesa, pero pensada para vivir dentro de una columna X.
+\newcommand{\milcopcion}[1]{%
+\makebox[5.2mm][l]{\raisebox{-.55mm}{\textcolor{milcNegro}{\milcmarca}}}%
+\parbox[t]{\dimexpr\linewidth-5.2mm\relax}{\RaggedRight #1}}
+
+% ── Recursos visuales de la guía ──────────────────────────────────────
+% Declarados en el bloque `recursos:` del YAML y emitidos por el builder.
+% \guiaFigura   → imagen rasterizada o PDF (foto, carta celeste, montaje).
+% \guiaDiagrama → fuente TikZ/circuitikz (.tex) incrustada como vector:
+%                 es la vía para circuitos y esquemáticos editables.
+% [#1] = texto alternativo (alt) · #2 = ruta relativa al .tex · #3 = pie
+% El alt llega al PDF etiquetado (/Alt) y lo lee el lector de pantalla.
+\newcommand{\guiaFigura}[3][]{%
+\begin{center}
+\includegraphics[width=0.88\linewidth,height=0.38\textheight,keepaspectratio,alt={#1}]{#2}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#3}}
+\end{center}
+}
+
+\newcommand{\guiaDiagrama}[2]{%
+\begin{center}
+\input{#1}\\[1.5mm]
+{\footnotesize\itshape\textcolor{milcNegro!75}{#2}}
+\end{center}
+}
+
+\begin{document}
+\thispagestyle{empty}
+
+% ── Portada ───────────────────────────────────────────────────────────
+% Antes: un rectangulo de color a pagina completa. Se veia bien en pantalla,
+% pero en la fotocopiadora del colegio se comia el toner y salia gris sucio.
+% Ahora la banda ocupa el tercio superior y el resto va en blanco.
+\begin{tikzpicture}[remember picture,overlay]
+  \path[fill=milcGradePrimary]
+    (current page.north west) rectangle ([yshift=-10.6cm]current page.north east);
+
+  \node[anchor=north west,text=milcGradeText] at ([xshift=2.0cm,yshift=-1.55cm]current page.north west)
+    {\sffamily\bfseries\fontsize{12}{14}\selectfont MOMENTO};
+  \node[anchor=north west,text=milcGradeText,opacity=.85] at ([xshift=2.0cm,yshift=-2.35cm]current page.north west)
+    {\sffamily\bfseries\fontsize{8.5}{10}\selectfont TERRITORIO INTERIOR · SOCIOEMOCIONAL};
+  \node[anchor=north east,text=milcGradeText,opacity=.85,align=right] at ([xshift=-2.0cm,yshift=-1.55cm]current page.north east)
+    {\sffamily\bfseries\fontsize{9}{12}\selectfont I.E. Sor María Juliana\\Cartago, Valle del Cauca};
+
+  \node[anchor=west,text=milcGradeText] (gradonum) at ([xshift=1.85cm,yshift=-7.1cm]current page.north west)
+    {\sffamily\bfseries\fontsize{112}{112}\selectfont 10};
+  % El circulito de grado (°) solo aplica a las guias de grado («11°»); en
+  % Bebras y Semillero el numero grande es un momento/modulo, no un grado.
+  % Se posiciona relativo al nodo `gradonum`, no en coordenadas absolutas.
+  
+
+  \node[anchor=west,text=milcGradeText,text width=11.4cm,align=left] at ([xshift=1.5cm,yshift=0.5cm]gradonum.east)
+    {
+     {\sffamily\bfseries\fontsize{9}{11}\selectfont\MakeUppercase{Territorio interior · Socioemocional}}\\[3mm]
+     {\sffamily\bfseries\fontsize{21}{25}\selectfont\setlength{\baselineskip}{27pt}Cuidar\\[4pt]al que cuida\\[4pt]acompañar no es cargar}\\[3.5mm]
+     {\sffamily\bfseries\fontsize{15}{18}\selectfont Grado 10° · Momento 10}
+    };
+\end{tikzpicture}
+
+\vspace*{9.4cm}
+\vfill
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcGradeDark}{LO QUE TE LLEVAS HOY}}
+
+\begin{tcolorbox}[enhanced,colback=white,colframe=milcNegro,arc=2mm,boxrule=1.6pt,
+  left=5mm,right=5mm,top=4mm,bottom=4mm,before skip=3pt,after skip=12pt,
+  fontupper=\RaggedRight\fontsize{11}{15.5}\selectfont]
+Tu mapa de sostén: quién cuida a quién en tu entorno, la lista de lo que llevas cargado que no te corresponde, tus tres límites escritos, y una acción concreta de cuidado hacia alguien que sostiene a otros sin que nadie lo sostenga.
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=milcGris,colframe=milcGris,arc=2mm,boxrule=0pt,
+  left=5mm,right=5mm,top=3.5mm,bottom=3.5mm,after skip=12pt]
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{ESTA GUÍA ES DE}}\\[3mm]
+\begin{tabularx}{\linewidth}{X p{3.2cm} p{3.2cm}}
+\linead{\linewidth} & \linead{3.0cm} & \linead{3.0cm}\\[-1mm]
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Nombre completo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Grupo}} &
+{\fontsize{8.5}{10}\selectfont\textcolor{milcNegro!55}{Fecha}}\\
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+\noindent\textcolor{milcLinea}{\rule{\linewidth}{1pt}}\\[2mm]
+{\sffamily\bfseries\fontsize{9.5}{12}\selectfont Autor: Dr. Álvaro Cárdenas Orozco}\\[1mm]
+{\sffamily\fontsize{8.5}{11}\selectfont\textcolor{milcNegro!55}{Metodología MILC · Apertura ancestral · El desgaste de cuidar · Triángulo Dussel-Estoicismo-Floridi}}
+
+\newpage
+
+\section*{Apertura: Cuidar al que cuida: acompañar no es cargar}
+
+\begin{softbox}{milcGradeDark}{milcGradeSoft}{Saber ancestral}
+En el Pacífico, cuando alguien muere, hay quien sabe qué hacer: \textbf{las cantadoras de alabao}. \emph{Son especialistas ---se sabe a quién llamar, se sabe qué se canta según quién murió, y se sabe cuándo termina---, y su oficio es sostener a una familia entera en el peor momento de su vida.} \textbf{Ahora hazte la pregunta que casi nadie hace, y que es toda esta guía:} \emph{¿y a ellas quién las sostiene?} \textbf{Porque una cantadora no canta un velorio: canta \emph{los velorios} ---uno tras otro, durante años, en un territorio que ha tenido demasiados---.} \emph{Y en la mayoría de los oficios de cuidado ocurre lo mismo:} \textbf{la persona que sabe acompañar termina acompañando siempre, y a nadie se le ocurre preguntarle cómo está.} \textbf{Fíjate, sin embargo, en dos cosas que ese oficio sí tiene resueltas y que conviene copiar.} \textbf{Primera: no cantan solas.} \emph{Hay una voz que empieza y un coro que responde ---nadie sostiene el canto entero por su cuenta---.} \textbf{Segunda: el oficio tiene un final marcado.} \emph{Al noveno día se cierra, se desmonta el altar y se apagan las velas.} \emph{Se acompaña con todo, y después se para. Eso no es abandonar: es lo que permite volver la próxima vez.}
+\end{softbox}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Saber contemporáneo}
+¿Y cuánto cobra cuidar a alguien? \textbf{Se midió, y el resultado es de los más duros de la investigación en salud.} \textbf{Richard Schulz} y \textbf{Scott Beach} siguieron durante cuatro años a \textbf{392 personas cuidadoras} y a \textbf{427 no cuidadoras}, todas de \textbf{66 a 96 años} y conviviendo con sus cónyuges. \textbf{El hallazgo:} quienes estaban cuidando \textbf{y experimentaban sobrecarga} tuvieron un riesgo de mortalidad \textbf{63\,\% más alto} que quienes no cuidaban ---y eso después de ajustar por factores sociodemográficos, enfermedades previas y enfermedad cardiovascular subclínica--- (Schulz y Beach, 1999). \textbf{Fue el primer estudio que demostró que cuidar es un factor de riesgo de mortalidad.} \emph{Léelo con cuidado, porque el matiz importa:} \textbf{no era cuidar lo que mataba ---era cuidar \emph{con sobrecarga}, sin relevo y sin apoyo---.} \emph{Y eso cambia lo que hay que hacer:} \textbf{el problema no se arregla pidiéndole a nadie que cuide menos, sino repartiendo el peso.} \emph{Además, aunque el estudio fue con personas mayores, describe algo que verás en tu propia casa y a tu propia edad: el que sostiene a todos suele ser el que peor está y el último en decirlo.}
+\end{softbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Pregunta-puente}
+\textit{Las cantadoras \textbf{no cantan solas y su oficio tiene un final marcado}. \textbf{¿Quién sostiene a los demás en tu casa o en tu curso} \ldots \textbf{y cuándo fue la última vez que alguien le preguntó cómo estaba}?}
+\end{softbox}
+
+\begin{softbox}{milcVerde}{milcGris}{Saber y saber hacer}
+Al terminar podrás: (1) \textbf{reconocer} que cuidar con sobrecarga tiene un costo medido en salud, y que el problema es la sobrecarga y no el cuidado; (2) \textbf{distinguir} acompañar de cargar, y saber cuál de los dos estás haciendo; (3) \textbf{escribir} tres límites propios sin que eso signifique abandonar a nadie; (4) \textbf{hacer} una acción concreta de cuidado hacia alguien que sostiene a otros y a quien nadie está sosteniendo.
+\end{softbox}
+
+
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.0cm}Y}
+\rowcolor{milcGradePrimary!12}Autor & Dr. Álvaro Cárdenas Orozco\\
+DBA & Comprende los fenómenos que afectan a su territorio, regula sus emociones ante ellos y acompaña a otros con empatía (transversal 6°--11°, articulado con la política «Escuela, territorio de vida» del MEN, Resolución 006519 de 2025, y la Ley 1620 de 2013)\\
+Referentes & Primera ayuda psicológica (OMS, 2011/2012) · Directrices IASC (2007) · USGS y Servicio Geológico Colombiano · Pueblo nasa y la minga (CRIC) · Dussel · Estoicismo · Floridi\\
+Producto final & Tu mapa de sostén: quién cuida a quién en tu entorno, la lista de lo que llevas cargado que no te corresponde, tus tres límites escritos, y una acción concreta de cuidado hacia alguien que sostiene a otros sin que nadie lo sostenga.\\
+\end{tabularx}
+\normalsize
+
+\puente{Este es el último momento del grado, y cierra el bloque más difícil. \textbf{Los cinco anteriores te enseñaron a acompañar.} \emph{Este te enseña que quien acompaña también necesita compañía ---empezando por ti---.}}
+
+\milcestacion{milcGradeDark}{Ruta MILC: así vamos a aprender}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\phasecard{1}{milcVerde}{milcGris}{Escucha\\[-1mm]\small Observo, escucho y pregunto.} &
+\phasecard{2}{milcTurquesa}{milcGris}{Sistematización\\[-1mm]\small Sostengo y me dejo sostener.} &
+\phasecard{3}{milcMagenta}{milcGris}{Praxis\\[-1mm]\small Construyo y aplico.} &
+\phasecard{4}{milcVino}{milcGris}{Evaluación\\[-1mm]\small Reflexión liberadora.}
+\end{tabularx}
+
+
+\puente{Primero, el mapa: quién cuida a quién en tu entorno. \emph{Vas a ver que las flechas casi nunca van en las dos direcciones.}}
+
+\milcestacion{milcVerde}{Estación 1 de 3 · Escucha}
+
+\begin{softbox}{milcVerde}{milcGris}{Escena para escuchar}
+\textbf{Actividad 1 · IDENTIFICA --- Quién cuida a quién.} \textbf{Sin nombres: usa iniciales.} \textbf{Primera parte.} Dibuja tu entorno ---casa, curso, barrio--- y \textbf{traza flechas: quién cuida a quién}. \emph{Cuidar es todo esto:} \textbf{cocinar, estar pendiente, escuchar los problemas de otro, cuidar a un menor o a un enfermo, conseguir plata, resolver los líos, ser el que siempre está de buen genio.} \textbf{Segunda parte.} Mira las flechas y responde: \emph{¿hay alguien que reciba muchas flechas y no mande ninguna? ¿Y alguien que mande muchas y no reciba ninguna?} \textbf{Esa segunda persona es de la que trata esta guía.} \textbf{Tercera parte.} ¿Y tú? \emph{¿A quién sostienes?} \textbf{Escribe qué haces por esa persona y \textbf{cuánto tiempo o energía} te toma en una semana.} \textbf{Y la última:} \emph{¿hay algo que estés cargando que no te corresponde ---problemas de adultos, secretos que no son tuyos, el ánimo de alguien más---?}
+\end{softbox}
+
+{\sffamily\bfseries\fontsize{8}{10}\selectfont\textcolor{milcNegro!55}{MARCA CUANDO LO HAYAS HECHO}}
+\milccheckrow{Trazaste las flechas en las dos direcciones, no solo las que salen de ti.}
+\milccheckrow{Identificaste a quien manda muchas flechas y no recibe ninguna.}
+\milccheckrow{Escribiste cuánto tiempo o energía te toma sostener a alguien.}
+
+\begin{infoband}{milcVerde}
+
+
+\textbf{En tu cuaderno (Actividad 1 · IDENTIFICA).} Título: «Actividad 1. Quién cuida a quién». \textbf{Formato:} el mapa de flechas + quién no recibe ninguna + qué haces tú y cuánto te toma + lo que cargas y no te corresponde. \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} identificaste \textbf{a alguien que sostiene y no es sostenido}. Esta página es tuya: \textbf{nadie más tiene que leerla si tú no quieres}.
+\end{infoband}
+
+\puente{Ya lo tienes. Ahora, lo que cuesta cuidar cuando no hay relevo, y la diferencia entre acompañar y cargar.}
+
+\milcestacion{milcTurquesa}{Fase 2 · Sistematización: entender el desgaste}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Cuatro claves sobre cuidar}
+Cuatro claves para que cuidar no acabe con quien cuida.
+\end{softbox}
+
+\milcpaso{1}{milcTurquesa}{\textbf{Cuidar cobra, y está medido.} En el estudio de Schulz y Beach ---\textbf{392 cuidadores y 427 no cuidadores}, seguidos cuatro años--- quienes cuidaban \textbf{y sentían sobrecarga} tuvieron un riesgo de mortalidad \textbf{63\,\% más alto}, ajustando por edad, enfermedades previas y otros factores (Schulz y Beach, 1999). \emph{Fue el primer trabajo que mostró que cuidar es un factor de riesgo de mortalidad.} \textbf{Pero fíjate bien en la condición, porque lo cambia todo:} \emph{el riesgo aparecía en quienes cuidaban \textbf{con sobrecarga}}. \textbf{No es el cuidado lo que hace daño ---es cuidar sin relevo, sin apoyo y sin final---.} \emph{Y de ahí sale la conclusión práctica:} \textbf{la solución no es que alguien cuide menos: es que no cuide solo.}}
+\milcpaso{2}{milcTurquesa}{\textbf{Acompañar no es cargar, y hay cómo distinguirlos.} \emph{Acompañar es estar al lado de alguien mientras esa persona lleva lo suyo.} \textbf{Cargar es llevarlo tú.} \emph{Y la diferencia se nota en cuatro señales:} \textbf{si te sientes responsable del ánimo del otro; si te da culpa estar bien cuando él está mal; si dejaste cosas tuyas por sostenerlo; y si sientes que si tú faltas, todo se cae.} \emph{Ojo con esta última, porque se disfraza de virtud:} \textbf{creer que uno es imprescindible se siente bien y es una trampa} ---y es la misma que viste en el momento 9 del grado 8, cuando alguien coordina haciéndolo todo---. \emph{Además, cargar tiene un efecto que nadie espera:} \textbf{le quita al otro la oportunidad de hacer lo suyo}.}
+\milcpaso{3}{milcTurquesa}{\textbf{Al que cuida no le preguntan, y por eso no cuenta.} \emph{Hay un mecanismo silencioso y muy eficaz:} \textbf{la persona que siempre está bien deja de ser preguntada.} \emph{Como sostiene a todos, todos asumen que está entera ---y ella misma se lo cree---.} \textbf{Y hay algo peor:} \emph{el que cuida suele sentir que no tiene \textbf{derecho} a estar mal}, porque el que está mal es el otro. \emph{«¿Cómo me voy a quejar yo, si el enfermo es él?».} \textbf{Esa frase es la que hay que desarmar,} \emph{y se desarma con un dato: quien cuida con sobrecarga se muere antes.} \textbf{No es una queja: es un riesgo documentado.} \emph{Y tiene una consecuencia inmediata:} \textbf{preguntarle a quien cuida cómo está \emph{es} cuidar al que cuidan.}}
+\milcpaso{4}{milcTurquesa}{\textbf{El oficio se reparte, y tiene final.} \emph{Vuelve a las cantadoras y copia las dos cosas que resolvieron.} \textbf{Una: no cantan solas} ---hay una voz que empieza y un coro que responde---. \emph{Nadie sostiene el canto entero; el peso está repartido por diseño, no por generosidad.} \textbf{Dos: el oficio tiene un final marcado} ---al noveno día se cierra---. \emph{Eso permite entregarse por completo mientras dura, precisamente porque se sabe cuándo acaba.} \textbf{Traducido:} \emph{un límite no es abandonar a nadie} ---\textbf{es lo que hace posible volver mañana}---. \emph{Y aquí cierra el grado entero:} \textbf{quien no se cuida no puede cuidar mucho tiempo, y el que se quema no ayuda a nadie ---deja a dos personas sin sostén---.}}
+
+\begin{drawbox}{milcTurquesa}{Acompañar o cargar: cuatro señales}
+\begin{pasoslista}
+\item \textbf{¿Me siento responsable del ánimo del otro?} \emph{Acompañar no incluye garantizar cómo se siente alguien.}
+\item \textbf{¿Me da culpa estar bien cuando él está mal?} \emph{Esa culpa es la señal más clara.}
+\item \textbf{¿Dejé cosas mías por sostenerlo?} \emph{El costo se mide igual que en el momento 6: en lo que dejaste.}
+\item \textbf{¿Siento que si falto, todo se cae?} \emph{Si es verdad, el problema es el reparto, no tu resistencia.}
+\item \textbf{Y el límite que no se negocia:} \emph{lo que es de un profesional no lo sostiene un amigo.} \emph{Ahí se avisa ---momentos 3 y 4---.}
+\end{pasoslista}
+\end{drawbox}
+
+\begin{softbox}{milcMostaza}{milcGris}{Errores comunes y su corrección}
+\textbf{«Yo puedo con todo»:} el estudio dice que se paga en salud. \textbf{Sentirse imprescindible:} se disfraza de virtud y le quita al otro lo suyo. \textbf{«No tengo derecho a quejarme»:} el que cuida con sobrecarga se muere antes; no es queja. \textbf{Confundir límite con abandono:} el límite es lo que permite volver. \textbf{No preguntarle al que siempre está bien:} es justamente al que hay que preguntarle. \textbf{Sostener solo lo que es de un profesional:} eso se avisa. \textbf{Cuidar sin final:} lo que no tiene cierre no se puede sostener.
+\end{softbox}
+
+\begin{infoband}{milcTurquesa}
+
+
+\textbf{En tu cuaderno (Actividad 2 · EXPLICA).} Título: «Actividad 2. Acompañar o cargar». \textbf{Formato:} dos columnas con las diferencias y, al lado, las cuatro señales aplicadas a \textbf{tu} caso. \textbf{Extensión:} media página. \textbf{Sabes que terminaste cuando} puedes explicar por qué \textbf{el riesgo estaba en la sobrecarga y no en el cuidado}.
+\end{infoband}
+
+\puente{Ya sabes el costo. Es hora de escribir límites ---que es lo que hace posible seguir--- y de sostener a alguien que no está siendo sostenido.}
+
+\milcestacion{milcMagenta}{Fase 3 · Praxis: repartir el peso}
+
+\begin{softbox}{milcMagenta}{milcGris}{Cómo se sostiene a quien sostiene}
+Este grado cierra con dos gestos: uno hacia adentro ---poner límites--- y otro hacia afuera ---preguntarle a quien nadie le pregunta---.
+\end{softbox}
+
+\milcpaso{1}{milcMagenta}{\textbf{El mapa de quién cuida (7 min).} Termina las flechas. \emph{Y hazle una pregunta al mapa:} \textbf{¿las flechas van en las dos direcciones en alguna parte?} \emph{Casi nunca, y ese es el hallazgo:} \textbf{en la mayoría de los entornos hay dos o tres personas que sostienen a todas las demás, y suelen ser siempre las mismas.}}
+\milcpaso{2}{milcMagenta}{\textbf{Lo que no me corresponde (8 min).} Escribe \textbf{lo que estás cargando y no es tuyo}: \emph{problemas de adultos que te contaron, un secreto que no debiste recibir, el ánimo de alguien, la responsabilidad de que otro esté bien.} \textbf{Y al frente de cada uno:} \emph{¿de quién es en realidad?} \emph{Este ejercicio incomoda y por eso funciona.}}
+\milcpaso{3}{milcMagenta}{\textbf{Los tres límites (10 min).} Escribe \textbf{tres límites propios}, con esta forma: \emph{«puedo \_\_\_\_, no puedo \_\_\_\_»}. \textbf{Ejemplos:} \emph{«puedo escucharte, no puedo ser tu psicólogo»; «puedo acompañarte a hablar con alguien, no puedo guardarte esto»; «puedo estar contigo el sábado, no puedo contestar de madrugada».} \textbf{Condición:} \emph{que cada límite diga también \textbf{lo que sí}} ---un límite que solo niega suena a abandono, y uno que ofrece algo no---.}
+\milcpaso{4}{milcMagenta}{\textbf{La pregunta al que cuida (fuera de clase).} \textbf{Escoge a la persona de tu mapa que manda muchas flechas y no recibe ninguna} ---una mamá, un abuelo, un hermano mayor, un amigo que siempre escucha, un profesor--- \textbf{y hazle una sola pregunta, en serio:} \emph{«¿y tú cómo estás?»}. \textbf{Después quédate callado} ---la escucha del momento 1 del grado 7---. \emph{Y si puedes, agrega algo concreto:} \textbf{hazle una de las cosas que esa persona siempre hace por los demás.} \emph{Anota qué pasó; y prepárate, porque muchas veces la respuesta tarda en llegar: al que nunca le preguntan no está listo para contestar.}}
+
+\begin{drawbox}{milcMagenta}{Antes de cerrar tu mapa de sostén}
+\begin{checklista}
+\item Tu mapa tiene flechas en \textbf{las dos direcciones}, no solo las tuyas.
+\item Identificaste a alguien que \textbf{sostiene y no es sostenido}.
+\item Escribiste lo que cargas que \textbf{no te corresponde}, y de quién es.
+\item Tus tres límites dicen también \textbf{lo que sí puedes}.
+\item Le hiciste la pregunta a alguien y \textbf{te quedaste callado} después.
+\item Sabes qué cosas \textbf{no las sostiene un amigo} y cuál es la ruta.
+\end{checklista}
+\end{drawbox}
+
+\begin{softbox}{milcMagenta}{milcGris}{Plantilla de trabajo}
+\textbf{El límite.} \emph{«Puedo \_\_\_\_. No puedo \_\_\_\_.»} ---siempre las dos mitades---. \\[1mm]
+\textbf{La pregunta.} \emph{«¿Y tú cómo estás?»} ---y después, silencio---. \\[1mm]
+\textbf{El relevo.} \emph{«Hoy lo hago yo.»} ---una de las cosas que esa persona siempre hace---.
+\end{softbox}
+
+\begin{infoband}{milcMagenta}
+
+
+\textbf{En tu cuaderno (Actividad 3 · CREA).} Título: «Actividad 3. Mi mapa de sostén». \textbf{Formato:} el mapa de flechas + lo que cargas y no te corresponde + los tres límites + a quién le preguntaste y qué respondió. \textbf{Extensión:} una página. \textbf{Sabes que terminaste cuando} \textbf{ya le hiciste la pregunta a alguien}.
+\end{infoband}
+
+\puente{El producto termina en una acción hacia otro. \emph{Es la manera en que este grado cierra: mirando a quien nadie mira.}}
+
+\milcestacion{milcMostaza}{Producto de la sesión}
+\textbf{Mapa de sostén: quién cuida a quién, lo que no te corresponde, tres límites y una pregunta hecha}.
+\begin{softbox}{milcMostaza}{milcGris}{Criterios de calidad}
+(1) El mapa registra el cuidado en ambas direcciones e identifica a quien sostiene sin ser sostenido. (2) Se distingue lo que se carga sin que corresponda, y se nombra de quién es en realidad. (3) Los tres límites enuncian lo que sí se puede además de lo que no. (4) La pregunta se hizo de verdad, con silencio después, y se registró la respuesta. (5) Se reconoce qué situaciones no las sostiene un par y cuál es la ruta para ellas.
+\end{softbox}
+
+\puente{Antes de cerrar, revisa lo más difícil: si tus límites suenan a excusa, no son límites; y si no tienes ninguno, probablemente estás cargando.}
+
+\milcestacion{milcVino}{Evaluación liberadora · cinco dimensiones}
+
+\begin{softbox}{milcVino}{milcGris}{Sentido de la evaluación}
+Evaluar no es solo revisar una nota. Es reconocer qué aprendí, qué cambió en mí, qué emociones manejé, cómo me relaciono con la ciudad y la comunidad, y qué le dejaré a quien viene detrás.
+\end{softbox}
+
+\textbf{Mi reflexión liberadora en cinco dimensiones.} Completa cada frase iniciada:
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.4cm}Y>{\RaggedRight\arraybackslash}p{4.6cm}}
+\rowcolor{milcVino}\color{white}Dimensión & \color{white}\bfseries Mi respuesta (frame starter) & \color{white}\bfseries Algo que descubrí\\
+1. Personal & Lo que más cambió en mí fue \linead{6.5cm} & \linead{4.2cm}\\
+2. Emocional & La emoción más fuerte fue \linead{2.5cm} y la regulé \linead{3cm} & \linead{4.2cm}\\
+3. Ciudadana & En democracia esto importa porque \linead{6cm} & \linead{4.2cm}\\
+4. Local (Cartago) & En mi barrio sería útil para \linead{6.5cm} & \linead{4.2cm}\\
+5. Intergeneracional & A mi abuela/abuelo le diría \linead{6.5cm} & \linead{4.2cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcVino}
+\textbf{Para la próxima sustentación.} Vuelve a esta tabla en seis meses. Verás que las respuestas cambian — no porque lo aprendido cambie, sino porque tú cambias. La evaluación liberadora es una conversación contigo a través del tiempo.
+\end{infoband}
+
+
+\puente{Cerramos el grado con tres voces: la comunidad que se funda escuchando, la abeja y el enjambre, y el cuidado de lo compartido.}
+
+\milcestacion{milcGradeDark}{Triángulo de pensamiento · cierre filosófico}
+
+\begin{softbox}{milcVino}{milcGris}{Dussel · lente del nosotros}
+\textit{«Aquel que es capaz de escuchar silenciosamente al Otro como otro es el que puede constituir una comunidad y no una mera sociedad totalizada.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Enrique Dussel · Filosofía de la liberación (1977)}
+
+\emph{Fíjate en algo que se pasa por alto en esta frase:} \textbf{alguien tiene que escuchar \emph{al que escucha}.} \textbf{Una comunidad no es un grupo donde dos personas sostienen a veinte ---eso es una sociedad totalizada con dos aguantando---.} \emph{Es una donde el que sostiene también es escuchado como otro,} \textbf{es decir, como alguien con vida propia y no como una función.} \emph{Y ese es el error más común con quien cuida:} \textbf{se le agradece el papel y se le olvida la persona.} \emph{«Menos mal que tú estás» suena a elogio y funciona como encargo.} \textbf{Preguntarle cómo está es devolverle el lugar de otro, y no el de recurso.}
+
+\textbf{¿A quién le agradezco lo que hace por mí sin haberle preguntado nunca cómo está?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Estoicismo · Marco Aurelio · Meditaciones VI, 54 (c. 175 d.C.) · cuidado interior}
+\textit{«Lo que no beneficia al enjambre, tampoco beneficia a la abeja.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Marco Aurelio · Meditaciones VI, 54 (c. 175 d.C.)}
+
+\emph{Esta frase cierra el grado, y aquí funciona al revés de como se suele usar.} \textbf{Casi siempre se cita para pedirle a alguien que se sacrifique por el grupo.} \emph{Pero léela con cuidado: dice que lo que le sirve al enjambre le sirve a la abeja \textbf{y viceversa} ---que no hay beneficio del conjunto construido sobre el desgaste de sus miembros---.} \textbf{Un enjambre que quema a sus abejas no es un enjambre próspero: es uno que se está gastando.} \emph{Y el dato lo confirma:} \textbf{quien cuida con sobrecarga tiene 63\,\% más riesgo de morir}, \emph{y cuando esa persona falta, todos los que sostenía se quedan sin nada.} \textbf{Cuidar al que cuida no es un gesto amable: es cómo se protege al grupo entero.}
+
+\textbf{Si la persona que sostiene mi casa se enfermara mañana, ¿quién haría lo que hace?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcTurquesa}{milcGris}{Floridi · lente de la infoesfera}
+\textit{«El florecimiento de las entidades informacionales y de toda la infoesfera debe promoverse preservando, cultivando y enriqueciendo sus propiedades.»}
+
+{\footnotesize\itshape\color{milcNegro!70}--- Luciano Floridi · La ética de la información (2013; trad.)}
+
+\textbf{Hay una forma nueva de cargar y casi nadie la nombra: ser el amigo al que todos le escriben.} \emph{Antes, acompañar a alguien tenía un límite físico ---uno estaba o no estaba---.} \textbf{Ahora se está siempre:} \emph{los mensajes llegan a cualquier hora, se espera respuesta inmediata, y quien escucha bien termina escuchando a cinco personas al tiempo, de noche, sin que nadie sepa que lo está haciendo.} \emph{Eso es sobrecarga, aunque no lo parezca porque «solo es el teléfono».} \textbf{Cultivar, aquí, es muy concreto:} \emph{tener horario también para acompañar} ---«mañana te llamo» es una respuesta legítima---, \textbf{y no ser el único}. \emph{El coro de las cantadoras, aplicado a un grupo de chat.}
+
+\textbf{¿A cuántas personas escucho por mensaje? ¿Y quién me escucha a mí?}
+\end{softbox}
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{infoband}{milcNegro}
+\textbf{Nota para el docente.} Las tres son citas textuales y llevan su referencia debajo. Puedes remitir a la obra en clase.
+\end{infoband}
+
+\milcestacion{milcVino}{Mi autoevaluación · marca una casilla por fila}
+
+{\small
+\setlength{\extrarowheight}{2.2pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash\bfseries}p{3.0cm}YYY}
+\rowcolor{milcVino}\color{white}\bfseries Criterio & \color{white}\bfseries Lo logré & \color{white}\bfseries En proceso & \color{white}\bfseries Necesito apoyo\\[.6mm]
+Comprensión del tema & \milcopcion{Explico las ideas con mis palabras.} & \milcopcion{Reconozco las ideas, falta precisión.} & \milcopcion{Necesito repasar lo básico.}\\[.8mm]
+\rowcolor{milcGris}Calidad del mapa & \milcopcion{Distingo acompañar de cargar, tengo límites escritos y sé a quién nadie está sosteniendo.} & \milcopcion{Reconozco el desgaste, pero creo que poner límites es abandonar.} & \milcopcion{Sigo pensando que el que cuida aguanta porque es fuerte.}\\[.8mm]
+Aplicación y producto & \milcopcion{Mi producto cumple los criterios.} & \milcopcion{Está armado, con ajustes pendientes.} & \milcopcion{Aún está en construcción.}\\[.8mm]
+\rowcolor{milcGris}Reflexión 5 dimensiones & \milcopcion{Respondí cada una con honestidad.} & \milcopcion{Respondí algunas con detalle.} & \milcopcion{Mis respuestas son muy generales.}\\[.8mm]
+Triángulo de pensamiento & \milcopcion{Conecté las 3 voces con mi trabajo.} & \milcopcion{Conecté al menos una.} & \milcopcion{No las relaciono con mi proceso.}\\[.8mm]
+\end{tabularx}}
+
+\vspace{3mm}
+\textbf{Hoy entendí que:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\textbf{Mi compromiso para la próxima sesión es:}\\[1mm]
+\linead{\linewidth}\\[1mm]
+\linead{\linewidth}
+
+\begin{softbox}{milcMostaza}{milcGris}{Cita de despedida · Marco Aurelio}
+\textit{``El obstáculo en el camino se vuelve el camino. Lo que estorba al camino se vuelve camino.''}\\[1mm]
+Cada error de hoy, bien observado, se convierte en pieza del camino que pisarás mañana.
+\end{softbox}
+
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.6cm}Y}
+\rowcolor{milcGradeDark!12}Nombre completo: & \linead{10cm}\\
+Fecha: & \linead{4cm} \quad Curso/grupo: \linead{4cm}\\
+Mi firma: & \linead{9cm}\\
+\end{tabularx}
+\normalsize
+
+\begin{infoband}{milcGradeDark}
+\textbf{Para la próxima sesión.} Dos cosas, y con esto cierra el grado. \textbf{Primero, hazle la pregunta} ---«¿y tú cómo estás?»--- \textbf{a la persona de tu mapa que sostiene a todos}, y \textbf{quédate callado después}. \emph{Trae qué respondió, y también si no respondió nada: las dos cosas dicen mucho.} \textbf{Y usa uno de tus límites esta semana, aunque sea el más pequeño.} \emph{Anota qué se sintió, porque casi siempre pasa lo mismo: la culpa dura dos horas y el alivio dura días.} \textbf{Segundo, pregunta en tu casa quién sostenía a quién:} averigua con alguien mayor \textbf{quién era la persona que cuidaba a todos en su familia} ---quién cocinaba, quién estaba pendiente del enfermo, quién resolvía--- y pregúntale \textbf{quién cuidaba a esa persona} y \textbf{cómo terminó}. \textbf{Trae:} la respuesta a tu pregunta y lo que te contaron. \emph{Prepárate, porque esta conversación suele ser la más reveladora de todo el año: casi todas las familias tienen una figura así ---casi siempre una mujer---, casi nadie sabe responder quién la cuidaba a ella, y muchas veces se enfermó primero. Que en tu casa esa pregunta ya se haya hecho, por ti, cambia algo.}
+\end{infoband}
+
+\end{document}

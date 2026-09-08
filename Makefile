@@ -105,6 +105,14 @@ endif
 guia-lint-strict:  ## Igual que guia-lint pero los warnings también fallan
 	@$(PYTHON) scripts/guias-lint.py --grado $(GRADO) --strict
 
+.PHONY: guia-lint-ti
+guia-lint-ti:  ## Lint transversal de Territorio Interior (voz, plantillas, anclas)
+	@$(PYTHON) scripts/guias-lint.py --programa territorio-interior
+
+.PHONY: guia-auditoria
+guia-auditoria:  ## Informe del desfase frente al contrato (236 guías) en docs/auditoria/
+	@$(PYTHON) scripts/guias-auditoria.py --out docs/auditoria/contrato-v31-$$(date +%F).md --json
+
 .PHONY: guia-assets
 guia-assets:  ## Lista los assets (imágenes, diagramas) declarados por las guías
 ifeq ($(CLAVE),)

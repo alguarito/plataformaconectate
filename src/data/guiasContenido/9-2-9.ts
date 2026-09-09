@@ -1,7 +1,9 @@
 /**
- * Contenido enriquecido — Grado 9 · Periodo 2 · Sesión 9
- * Tema: Maquetar la revista completa — flujo de trabajo.
- * Profundidad MILC v3 completa, alineada con content/guias/9/9-2-9.yaml.
+ * Contenido enriquecido para Grado 9 · Período 2 · Sesión 9
+ * (sesión global 19).
+ *
+ * Auto-generado desde content/guias/9/9-2-9.yaml por
+ * scripts/build-guias-web-ts.py. Edita el YAML, no este archivo.
  */
 import type { ContenidoGuia } from './_schema';
 
@@ -10,98 +12,183 @@ const contenido: ContenidoGuia = {
   periodo: 2,
   sesion: 9,
   titulo: 'Maquetar la revista completa — flujo de trabajo',
-  ocultarPDF: false,
-  resumen:
-    'Produces tu revista digital de 8 páginas con tema propio, sistema visual coherente, exportada como PDF y publicada con URL. Es el producto integrador del periodo.',
-  duracionMin: 100,
+  resumen: 'Produces tu revista digital de ocho páginas con tema propio, sistema visual coherente, exportada en PDF y publicada con URL. Es el producto integrador del periodo.',
+  duracionMin: 90,
   subtema: 'Diseño editorial digital · Producto integrador',
-
-  saberAncestral: {
-    saber:
-      'El diagramador tradicional armaba la revista físicamente, pegando recortes en una mesa, decidiendo qué iba antes y qué después con todo a la vista. En las imprentas del Valle, los maestros diagramadores tenían mesas enormes donde extendían las 16, 24 o 32 páginas a la vez. Caminaban alrededor, miraban desde lejos, ajustaban. La revista nacía como cuerpo completo, no como páginas sueltas.',
-    fuente: 'Tradición del diagramador en imprentas colombianas del siglo XX',
-    preguntaPuente:
-      'Cuando miras una revista bien hecha y la pasas página por página, ¿qué hace que el conjunto se sienta "un cuerpo" y no "8 páginas pegadas"?',
-  },
-
-  mapaRuta: [
-    { numero: 1, iconos: ['🌱'], titulo: 'El diagramador y la mesa entera', duracionMin: 10 },
-    { numero: 2, iconos: ['👁'], titulo: 'Anatomía de una revista de 8 páginas', duracionMin: 15 },
-    { numero: 3, iconos: ['📖'], titulo: 'Flujo de trabajo de maquetación', duracionMin: 15 },
-    { numero: 4, iconos: ['🔎', '✏️'], titulo: 'Maqueta, exporta y publica tu revista', duracionMin: 45 },
-    { numero: 5, iconos: ['✅', '💭'], titulo: 'Verifica, reflexiona y cierra', duracionMin: 15 },
-  ],
-
   preLectura: {
-    porQueImporta:
-      'Esta es la sesión de cosecha del periodo: aquí converge todo lo aprendido en las 8 sesiones anteriores. Producir una revista de 8 páginas publicada con URL es prueba real de oficio editorial. Pasaste de la teoría al producto.',
-    preguntaDetonante:
-      'Si dentro de 5 años un futuro empleador te pidiera mostrar UN trabajo del colegio que demostrara tu capacidad de oficio, ¿qué le mostrarías? Hoy puedes producir esa pieza.',
+    porQueImporta: 'Aquí converge todo lo de las ocho sesiones anteriores. Una revista de ocho páginas publicada con URL es prueba real de oficio: pasaste de la teoría a un producto que otro puede abrir.',
+    preguntaDetonante: 'Si dentro de cinco años alguien te pidiera un solo trabajo del colegio que demostrara tu oficio, ¿qué le mostrarías?',
     activacion: {
       titulo: 'El test de la mesa entera',
-      descripcion:
-        'En 3 minutos, abre 2 revistas reales y déjalas extendidas en orden, página por página. Camina alrededor, mira desde 2 metros. ¿Qué hace que el conjunto se sienta coherente y no fragmentado? Esa mirada panorámica es la del diagramador.',
-      duracionMin: 3,
+      descripcion: 'En 3 minutos, abre dos revistas y déjalas extendidas en orden. Camina alrededor y míralas desde dos metros. ¿Qué hace que el conjunto se sienta coherente y no fragmentado?',
+      duracionMin: 3
     },
     conexion: {
-      anterior:
-        'En las sesiones 7 y 8 hiciste accesibilidad y corrección. Hoy aplicas todo el sistema visual sobre tu producto integrador.',
-      siguiente:
-        'En la sesión 10 (cierre P2) sustentas públicamente tu revista al curso — exposición de 1 minuto por página.',
-    },
+      anterior: 'En las sesiones 7 y 8 trabajaste accesibilidad y corrección sobre páginas sueltas.',
+      siguiente: 'En la sesión 10 sustentas públicamente tu revista ante el curso y defiendes tus decisiones.'
+    }
   },
-
   conceptosClave: [
     {
-      termino: 'Estructura típica de 8 páginas',
-      definicion:
-        'Portada (p.1) + editorial/sumario (p.2) + contenido principal (p.3-7) + contraportada (p.8). Esta estructura sirve para la mayoría de revistas culturales o temáticas.',
-      ejemplo:
-        'Bocas o Cromos tienen variaciones, pero la base es la misma: una portada que captura, un sumario que orienta, contenido que desarrolla, contraportada que cierra.',
-      emoji: '📰',
-    },
-    {
-      termino: 'Planear antes de maquetar',
-      definicion:
-        'Antes de tocar la herramienta digital, listar las 8 páginas en cuaderno con qué contendrá cada una. Saltar planeación es la causa principal de revistas que se sienten desordenadas.',
-      ejemplo:
-        '10 minutos planeando ahorran 2 horas de reproceso. La diferencia entre amateur y profesional pasa por aquí.',
-      emoji: '📋',
-    },
-    {
-      termino: 'Coherencia visual entre páginas',
-      definicion:
-        'Las 8 páginas comparten grilla, tipografía y paleta. Cambiar el sistema en la página 4 rompe la sensación de "un cuerpo". La coherencia es lo que diferencia revista de carpeta de imágenes.',
-      ejemplo:
-        'Si tu titular usa Bricolage Grotesque en p.1, p.2, p.3, pero en p.4 cambias a Playfair sin razón, el lector siente extrañeza aunque no sepa explicar por qué.',
-      emoji: '🧵',
+      termino: 'Estructura de ocho páginas',
+      definicion: 'Portada, editorial o sumario, contenido principal en las intermedias y contraportada. Es la base que admite variaciones.',
+      ejemplo: 'Portada, sumario en la 2, artículo principal de la 3 a la 5, secundario en 6 y 7, cierre en la 8.',
+      categoria: 'La estructura'
     },
     {
       termino: 'Ritmo del conjunto',
-      definicion:
-        'Variación visual entre páginas: algunas con más texto, otras con más imagen, otras de respiro. Sin variación, las 8 páginas se sienten iguales y aburren.',
-      ejemplo:
-        'Después de un spread con mucho texto, la siguiente puede ser una página con imagen grande + cita destacada. El ojo agradece el respiro.',
-      emoji: '🎵',
+      definicion: 'La variación entre páginas que evita que las ocho se sientan iguales sin romper la coherencia.',
+      ejemplo: 'Una página densa de texto, después una de imagen grande, después una de respiro con una cita.',
+      categoria: 'La estructura'
     },
     {
-      termino: 'Exportar como PDF',
-      definicion:
-        'Formato profesional para compartir o imprimir. Conserva tipografía, color y disposición exactos. JPG por separado pierde la integridad del documento.',
-      ejemplo:
-        'En Figma: File > Export > PDF (selecciona todas las páginas). En Canva: Descargar > PDF (Estándar o Imprimir). En Adobe Express: Exportar > PDF.',
-      emoji: '📄',
+      termino: 'Planear antes de maquetar',
+      definicion: 'Decidir el contenido de las ocho páginas antes de abrir la herramienta. Es lo que más se salta y lo que más se nota.',
+      ejemplo: 'La tabla de ocho filas en el cuaderno evita descubrir en la página 4 que falta material para la 6.',
+      categoria: 'El flujo de trabajo'
     },
     {
-      termino: 'URL pública',
-      definicion:
-        'Enlace accesible para cualquiera con internet. Sube tu PDF a Google Drive con permisos públicos, Issuu (gratis para revistas), o página en Notion. La URL hace tu revista existir en el mundo.',
-      ejemplo:
-        'drive.google.com/file/xxxxxx con permiso "Cualquiera con el enlace puede ver". O issuu.com/turevista. La URL es prueba de existencia pública.',
-      emoji: '🔗',
+      termino: 'Coherencia del sistema',
+      definicion: 'La misma grilla, la misma tipografía y la misma paleta en las ocho páginas, sin excepciones de última hora.',
+      ejemplo: 'Cambiar la tipografía en la página 4 porque cansó la anterior rompe el conjunto entero.',
+      categoria: 'El flujo de trabajo'
     },
+    {
+      termino: 'Exportar en PDF',
+      definicion: 'El PDF conserva tipografía, color y disposición en un solo documento. Las imágenes sueltas pierden el orden.',
+      ejemplo: 'Ocho archivos de imagen obligan al lector a ordenarlos; un PDF llega ya como revista.',
+      categoria: 'Publicar'
+    },
+    {
+      termino: 'URL comprobada',
+      definicion: 'El enlace no está publicado hasta que alguien más lo abre desde otro equipo y funciona.',
+      ejemplo: 'Un enlace con permisos restringidos abre bien en tu sesión y falla en la de cualquier otro.',
+      categoria: 'Publicar'
+    }
   ],
-
+  laboratorios: [
+    {
+      tipo: 'quiz',
+      titulo: 'Verifica el flujo de maquetación',
+      instrucciones: '5 preguntas para confirmar que puedes llevar una revista de la planeación a la URL. Necesitas 3/5 para continuar.',
+      preguntas: [
+        {
+          enunciado: '¿Qué va típicamente en la página 2 de una revista de ocho páginas?',
+          opciones: [
+            'El editorial o el sumario, que dan la entrada y anuncian lo que viene después',
+            'La contraportada, porque es la página que se lee justo después de la cubierta',
+            'Un anuncio de publicidad, que es lo que financia la impresión de la revista',
+            'Una imagen suelta a página completa, sin texto, para que la vista descanse'
+          ],
+          respuestaIndex: 0,
+          feedbackCorrecto: 'Correcto. La página 2 es la entrada: dice de qué va la revista y qué viene después.',
+          feedbackIncorrecto: 'La contraportada es la 8. La 2 es la entrada de la revista: editorial o sumario.'
+        },
+        {
+          enunciado: '¿Por qué planear las ocho páginas en el cuaderno antes de abrir la herramienta?',
+          opciones: [
+            'Porque los docentes piden siempre una evidencia escrita antes del trabajo digital',
+            'Porque la herramienta digital funciona más rápido si uno ya sabe lo que va a hacer',
+            'Porque saltarse la planeación es la causa principal de las revistas desordenadas',
+            'Porque el cuaderno permite dibujar bocetos que la herramienta no deja hacer igual'
+          ],
+          respuestaIndex: 2,
+          feedbackCorrecto: 'Exacto. Sin plan, el material se acaba a mitad de camino y las últimas páginas se rellenan.',
+          feedbackIncorrecto: 'No es un requisito escolar. Sin plan descubres en la página 4 que no tienes con qué llenar la 6.'
+        },
+        {
+          enunciado: '¿Qué hace que las ocho páginas se sientan un cuerpo y no páginas sueltas?',
+          opciones: [
+            'Que todas lleven el mismo color de fondo de principio a fin de la revista',
+            'Que todas estén numeradas en el mismo lugar y con la misma tipografía pequeña',
+            'Que todas tengan exactamente la misma estructura de columnas y de imágenes',
+            'Coherencia del sistema visual combinada con variación de ritmo entre páginas'
+          ],
+          respuestaIndex: 3,
+          feedbackCorrecto: 'Sí. Coherencia sin variación aburre; variación sin coherencia desarma. Hacen falta las dos.',
+          feedbackIncorrecto: 'Ni el fondo ni la numeración bastan, y páginas idénticas no son un cuerpo: son una repetición.'
+        },
+        {
+          enunciado: '¿Por qué exportar en PDF y no como imágenes sueltas?',
+          opciones: [
+            'Porque el PDF conserva tipografía, color y disposición en un documento unificado',
+            'Porque el PDF siempre pesa menos que el mismo contenido guardado como imágenes',
+            'Porque las imágenes sueltas no se pueden compartir por enlace en ninguna nube',
+            'Porque el PDF se ve más profesional aunque el contenido sea exactamente el mismo'
+          ],
+          respuestaIndex: 0,
+          feedbackCorrecto: 'Correcto. Ocho imágenes obligan al lector a ordenarlas; un PDF llega ya como revista.',
+          feedbackIncorrecto: 'No es peso ni apariencia. Es que el PDF conserva el orden y la disposición exactos.'
+        },
+        {
+          enunciado: 'El canasto de werregue se teje en rollo desde el centro. ¿Qué aplica eso a tu revista?',
+          opciones: [
+            'Que conviene empezar la revista por la página del medio e ir abriendo hacia afuera',
+            'Que las herramientas digitales imitan técnicas artesanales que ya existían antes',
+            'Que el orden importa: cada parte se apoya en la anterior y no se puede adelantar',
+            'Que una pieza hecha a mano siempre tendrá más valor que una hecha en el computador'
+          ],
+          respuestaIndex: 2,
+          feedbackCorrecto: 'Correcto. Quien teje decide el conjunto antes de la primera vuelta. Tú decides las ocho páginas antes de maquetar la primera.',
+          feedbackIncorrecto: 'No se trata de empezar por el centro ni de comparar valores. Se trata del orden: cada parte se apoya en lo ya hecho.'
+        }
+      ]
+    }
+  ],
+  postLectura: {
+    reflexion: '¿Qué entendí de verdad recién cuando lo tuve que hacer, y no cuando lo leí?',
+    transferencia: 'Esta semana comparte la URL con tres personas distintas y pídele a cada una una observación honesta. No discutas: anótalas. Son el insumo de la sustentación de la sesión 10.',
+    cierre: 'Al terminar podrás: (1) identificar los elementos de una revista de ocho páginas y su orden típico; (2) analizar el flujo narrativo y visual entre páginas para planear el conjunto; (3) aplicar un flujo de trabajo que te lleve de la planeación a una revista publicada con URL.'
+  },
+  saberAncestral: {
+    saber: 'Los wounaan, en las selvas del Chocó, tejen canastos en fibra de palma de werregue. La pieza se arma en rollo: se empieza por el centro y se cose vuelta sobre vuelta (Universidad del Rosario, 2023). El orden no es negociable. Cada vuelta se apoya en la anterior, y ninguna se puede adelantar ni deshacer sin arruinar la pieza. Quien teje decide el conjunto antes de dar la primera vuelta. Los diseños hablan de la vida cotidiana, de la naturaleza y de las creencias del pueblo. La cara de exclusión está en el registro. La técnica se enseña hoy en talleres universitarios de Bogotá. Y la página que la documenta nombra al pueblo y a la técnica, pero no a ninguna tejedora.',
+    fuente: 'Cestería wounaan en fibra de werregue · el canasto tejido en rollo desde el centro',
+    referencia: 'Universidad del Rosario, Facultad de Creación. (2023). Saberes artesanales: taller de tejeduría en werregue.',
+    preguntaPuente: '¿Por qué en un canasto de werregue no se puede adelantar una vuelta? ¿Y qué le pasa a quien maqueta la página 6 de su revista antes de haber decidido qué va en la 2?'
+  },
+  mapaRuta: [
+    {
+      numero: 1,
+      iconos: [
+        '🌱'
+      ],
+      titulo: 'El canasto que se teje en rollo',
+      duracionMin: 10
+    },
+    {
+      numero: 2,
+      iconos: [
+        '👁'
+      ],
+      titulo: 'Actividad 1 · Anatomía de una revista',
+      duracionMin: 15
+    },
+    {
+      numero: 3,
+      iconos: [
+        '📖'
+      ],
+      titulo: 'Actividad 2 · El plan de mis ocho páginas',
+      duracionMin: 20
+    },
+    {
+      numero: 4,
+      iconos: [
+        '✏️'
+      ],
+      titulo: 'Actividad 3 · Maqueta, exporta y publica',
+      duracionMin: 40
+    },
+    {
+      numero: 5,
+      iconos: [
+        '✅',
+        '💭'
+      ],
+      titulo: 'Verifica, tres citas y tu compromiso',
+      duracionMin: 5
+    }
+  ],
   actividades: [
     {
       numero: 1,
@@ -110,221 +197,95 @@ const contenido: ContenidoGuia = {
       tiempoMin: 15,
       modalidad: 'individual',
       pasos: [
-        'Toma 2 revistas reales con 8-16 páginas: una cultural seria (Bocas, El Malpensante), una temática (música, deporte, ciencia).',
-        'Para cada una: ¿qué va en portada? ¿qué en contraportada? ¿cómo se distribuye el contenido?',
-        'Identifica si hay sumario, editorial u otras secciones recurrentes.',
-        'Dibuja esquema de 8 páginas de UNA de las 2 con etiqueta de qué contiene cada una.',
+        'Busca dos revistas reales de ocho páginas o más, una cultural y una temática.',
+        'Anota qué va en la portada y qué en la contraportada de cada una.',
+        'Anota cómo se reparte el contenido principal entre las páginas del medio.',
+        'Anota si hay sumario o índice y si hay sección editorial.',
+        'Dibuja el esquema de las ocho páginas de una de las dos con la función de cada una.'
       ],
       cuaderno: {
         titulo: 'Anatomía de una revista',
-        formato: 'Esquema dibujado de 8 páginas (p.1 a p.8) con etiqueta de contenido',
-        extension: '1 página de cuaderno con esquema',
+        formato: 'el esquema dibujado de las ocho páginas con una etiqueta por página',
+        extension: 'un tercio de página'
       },
       criterios: [
-        '2 revistas reales analizadas',
-        'Esquema dibujado de 8 páginas con etiquetas',
-        'Puedes nombrar la función de cada una de las 8 páginas',
-        'Identificas secciones recurrentes (sumario, editorial)',
-      ],
+        'Están revisadas las dos revistas, no una sola.',
+        'El esquema nombra la función de las ocho páginas.'
+      ]
     },
     {
       numero: 2,
       verbo: 'ANALIZA',
-      titulo: 'Plan de mi revista de 8 páginas',
-      tiempoMin: 15,
-      modalidad: 'individual',
+      titulo: 'El plan de mis ocho páginas',
+      tiempoMin: 20,
+      modalidad: 'parejas',
       pasos: [
-        'Elige tema de tu revista (cultura local, ciencia, deporte, música, arte, etc.).',
-        'Lista las 8 páginas con contenido específico que tendrá cada una.',
-        'Para cada página decide el tipo de visual: foto, texto, infografía, cita, mixto.',
-        'Verifica que haya ritmo (no 8 páginas iguales).',
+        'Con tu pareja, escriban la estructura típica de una revista de ocho páginas.',
+        'Escriban el flujo de trabajo en sus cuatro fases con el tiempo de cada una.',
+        'Cada uno arma la tabla de sus ocho páginas con contenido y tipo de visual.',
+        'Intercambien las tablas y marquen dónde el ritmo se repite demasiado.'
       ],
       cuaderno: {
-        titulo: 'Plan de mi revista de 8 páginas',
-        formato: 'Tabla 3 columnas (Página | Contenido | Tipo de visual), 8 filas',
-        extension: '8 filas completas',
+        titulo: 'Plan de mi revista de ocho páginas',
+        formato: 'tabla de ocho filas y tres columnas (página / contenido / tipo de visual) con la marca de tu pareja',
+        extension: 'media página'
       },
       criterios: [
-        'Tema elegido y declarado',
-        '8 páginas con contenido específico',
-        'Tipo de visual variado entre páginas',
-        'Plan completo antes de tocar herramienta digital',
-      ],
+        'La tabla cubre las ocho páginas, ninguna queda sin decidir.',
+        'Está marcado el tramo donde el ritmo se repite.'
+      ]
     },
     {
       numero: 3,
       verbo: 'APLICA',
-      titulo: 'Maqueta, exporta y publica tu revista',
+      titulo: 'Maqueta, exporta y publica',
       tiempoMin: 40,
       modalidad: 'individual',
       pasos: [
-        'Abre 8 lienzos A4 vertical en tu herramienta digital (Figma, Canva o Adobe Express).',
-        'Aplica grilla guía y paleta de color a todas (coherencia desde el inicio).',
-        'Maqueta una a una empezando por la más simple. Aplica par tipográfico.',
-        'Revisa el conjunto cada 2-3 páginas para mantener ritmo.',
-        'Exporta como PDF. Sube a Drive/Issuu/Notion con permisos públicos. Verifica URL.',
+        'Abre ocho lienzos en tamaño A4 vertical.',
+        'Aplica la grilla y la paleta a los ocho antes de maquetar nada.',
+        'Maqueta una a una siguiendo tu plan, empezando por la página más fácil.',
+        'Revisa el conjunto cada dos o tres páginas para que el sistema no se te vaya.',
+        'Exporta en PDF, sube el archivo y comprueba la URL en una pestaña nueva.'
       ],
       cuaderno: {
-        titulo: 'Mi revista de 8 páginas publicada',
-        formato: 'Plan + URL pública + capturas de portada + 1 spread + contraportada + reflexión',
-        extension: '2 páginas de cuaderno',
+        titulo: 'Mi revista de ocho páginas publicada',
+        formato: 'el plan, la URL, capturas de portada, un interior y contraportada, y tres renglones de cierre',
+        extension: 'una página'
       },
       criterios: [
-        '8 páginas maquetadas con sistema visual coherente',
-        'Portada con titular + imagen + número/fecha',
-        'Editorial o sumario en p.2',
-        'Contraportada en p.8 (no en blanco)',
-        'Exportada como PDF',
-        'URL pública accesible y verificada',
-        'Reflexión personal sobre decisión más fuerte y más débil',
-      ],
-    },
-    {
-      numero: 4,
-      verbo: 'EVALÚA',
-      titulo: 'Lee la revista de un compañero',
-      tiempoMin: 15,
-      modalidad: 'parejas',
-      pasos: [
-        'Intercambia URLs. Abre la revista del compañero en pestaña incógnita.',
-        'Pasa página por página. Califica del 1 al 5: (a) ¿se siente "un cuerpo" o "páginas sueltas"?, (b) ¿hay ritmo entre páginas?, (c) ¿coherencia visual en las 8?',
-        'Marca con ✨ la página más fuerte y con 🚩 la más débil.',
-        'Conversen 5 min: ¿qué consejo se darían para la sustentación oral de la próxima sesión?',
-      ],
-      cuaderno: {
-        titulo: 'Evaluación de la revista de [nombre]',
-        formato: '3 calificaciones con justificación + marcas + 1 observación + 1 consejo',
-        extension: '3 calificaciones + 2 observaciones',
-      },
-      criterios: [
-        'Las 3 calificaciones tienen justificación',
-        'Marcaste página más fuerte y más débil',
-        'La observación es constructiva',
-        'El consejo para la sustentación es accionable',
-      ],
-    },
+        'Un compañero abrió la URL desde otro equipo y la revista cargó.',
+        'Las ocho páginas comparten grilla, tipografía y paleta.'
+      ]
+    }
   ],
-
-  laboratorios: [
-    {
-      tipo: 'quiz',
-      titulo: '✅ Verifica el flujo de maquetación',
-      instrucciones:
-        '5 preguntas para confirmar que dominas la lógica del producto integrador. Necesitas 3/5 para continuar.',
-      preguntas: [
-        {
-          enunciado: '¿Qué va típicamente en la página 2 de una revista de 8 páginas?',
-          opciones: ['Contraportada', 'Editorial o sumario', 'Anuncio publicitario', 'Imagen suelta'],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Correcto. La p.2 suele tener editorial (presentación del número) o sumario (índice de contenidos). Orienta al lector antes de entrar al contenido principal.',
-          feedbackIncorrecto:
-            'Editorial o sumario. La p.2 orienta al lector — le dice "qué vas a encontrar y por qué importa". Sin ella, el lector entra al contenido sin contexto.',
-        },
-        {
-          enunciado: '¿Por qué planear las 8 páginas en cuaderno antes de abrir la herramienta digital?',
-          opciones: [
-            'Por costumbre escolar',
-            'Porque saltar planeación es la causa principal de revistas que se sienten desordenadas',
-            'Por moda',
-            'No es necesario',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Sí. 10 minutos planeando ahorran 2 horas de reproceso. La diferencia entre amateur y profesional pasa por la planeación previa.',
-          feedbackIncorrecto:
-            'Planeación previa = revista coherente. Sin ella, llegas a la página 4 sin saber qué va en la 6. Reproceso garantizado.',
-        },
-        {
-          enunciado: '¿Qué hace que las 8 páginas se sientan "un cuerpo" y no "páginas sueltas"?',
-          opciones: [
-            'Que sean todas iguales',
-            'Coherencia visual (mismo grilla + tipografía + paleta) combinada con ritmo (variación entre páginas)',
-            'Que tengan numeración',
-            'Que tengan el mismo color de fondo',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Exacto. Coherencia para que se sienta cuerpo + variación para que tenga ritmo. Iguales = aburren. Sin coherencia = se sienten sueltas.',
-          feedbackIncorrecto:
-            'Coherencia + ritmo. Mismo sistema visual (coherencia) pero variación de contenido y peso entre páginas (ritmo). Las dos cosas a la vez.',
-        },
-        {
-          enunciado: '¿Por qué exportar como PDF y no como JPGs sueltos?',
-          opciones: [
-            'PDF es más bonito',
-            'PDF conserva tipografía, color y disposición exactos en un documento unificado',
-            'JPGs no se pueden compartir',
-            'PDF pesa menos',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Correcto. PDF preserva integridad del documento. JPGs sueltos pierden la unidad de revista y desordenan las páginas.',
-          feedbackIncorrecto:
-            'PDF = documento unificado con tipografía, color y disposición fieles. JPG suelto pierde la integridad de revista — son fotos sueltas, no publicación.',
-        },
-        {
-          enunciado:
-            'En el saber ancestral del diagramador colombiano, ¿qué aplica a tu uso de Figma/Canva hoy?',
-          opciones: [
-            'Nada — ahora es digital',
-            'Que la revista nace como cuerpo completo, no como páginas sueltas — hay que verla entera, no una a una',
-            'Que las mesas de antes eran mejores',
-            'Que se pegaban recortes',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Esa es la conexión. El diagramador caminaba alrededor de la mesa para ver todo. Tú abres las 8 páginas en miniatura para ver el cuerpo completo. Mismo gesto, formato digital.',
-          feedbackIncorrecto:
-            'Ver entera, no una a una. El diagramador de antes y tú con Figma comparten la mirada panorámica. La revista es cuerpo, no colección.',
-        },
-      ],
-    },
-  ],
-
-  postLectura: {
-    reflexion: '',
-    transferencia:
-      'Esta semana, comparte la URL de tu revista con 3 personas distintas: un familiar, un compañero, un docente. Pide UNA observación honesta a cada uno. Esas tres voces externas son insumo de la sustentación pública de la sesión 10.',
-    cierre: '',
-  },
-
   triangulo: {
     dussel: {
-      autor: 'Enrique Dussel',
+      autor: 'Enrique Dussel · Filosofía de la liberación (1977), §5.5.2',
       lente: 'lente del nosotros',
-      cita: 'Toda revista es un acto editorial: decide quién aparece, quién no, en qué tono y con qué peso.',
-      preguntaEspejo:
-        '¿Quién aparece en mi revista y qué dice eso de mis decisiones editoriales inconscientes? ¿Qué historias del Valle o de mi colegio merecen aparecer y no estaban?',
+      cita: 'Es un error pensar que la ciencia pura… aplica ella misma alguna de sus conclusiones, apareciendo la tecnología como su concreta creación… Muy por el contrario, es el discurso técnico artesanal o tecnológico… echa mano… de conclusiones o teorías científicas.',
+      preguntaEspejo: '¿Qué entendí de verdad recién cuando lo tuve que hacer, y no cuando lo leí?'
     },
     estoico: {
-      autor: 'Marco Aurelio',
+      autor: 'Marco Aurelio · Meditaciones II, 5 (c. 175 d.C.)',
       lente: 'lente del cuidado interior',
-      cita: 'Persistir 4 horas en un oficio largo enseña más que 40 horas dispersas.',
-      preguntaEspejo:
-        '¿Qué proyectos he dejado a medias por cansancio o aburrimiento? ¿Qué cambiaría si entrenara la persistencia con esta revista como ejercicio?',
+      cita: 'Haz lo que tienes entre manos con dignidad perfecta y sencilla, con afecto, con libertad y con justicia, y líbrate de todo otro pensamiento. (trad. propia)',
+      preguntaEspejo: 'Cuando me atasqué, ¿fue por la página que tenía delante o por todas las que faltaban?'
     },
     floridi: {
-      autor: 'Luciano Floridi',
+      autor: 'The Onlife Initiative (ed. Luciano Floridi) · The Onlife Manifesto (2015), § 4.5',
       lente: 'lente de la infoesfera',
-      cita: 'Publicar es añadir un agente más a la infoesfera; cuídala como cuidarías un legado.',
-      preguntaEspejo:
-        'Si dentro de 5 años alguien encuentra mi revista, ¿la voy a defender o la voy a esconder? ¿Qué cambia en mi maquetación si la pienso para durar?',
-    },
+      cita: 'Se suponía que acumular información y conocimiento llevaría a comprender mejor… pero esa expansión sin fin cada vez describe peor nuestra experiencia diaria. (trad. propia)',
+      preguntaEspejo: '¿Qué dejé fuera de mi revista, y podría defender esa decisión en voz alta?'
+    }
   },
-
   cincoDimensiones: {
-    personal:
-      'Produjiste tu primera pieza editorial completa con URL pública — prueba real de oficio.',
-    emocional:
-      'Persistir 40 minutos en un trabajo largo entrenó algo más valioso que cualquier nota: tu capacidad de terminar.',
-    ciudadana:
-      'Tu revista aporta una voz nueva a la infoesfera — pequeña pero tuya, no copia de otras.',
-    local:
-      'Heredaste el oficio del diagramador colombiano del siglo XX: ver el cuerpo entero, no la página suelta.',
-    intergeneracional:
-      'Las imprentas de tu abuelo y tu Figma de hoy se encuentran en el mismo principio: la revista es cuerpo.',
-  },
+    personal: 'Produjiste tu primera pieza editorial completa con URL pública. Es una prueba de oficio que puedes mostrar.',
+    emocional: 'Sostener el trabajo hasta el final entrenó algo que no aparece en la nota: la capacidad de terminar.',
+    ciudadana: 'Tu revista suma una voz nueva a la infoesfera. Pequeña, pero tuya y no copia de otra.',
+    local: 'El canasto de werregue se teje en un orden que no se puede saltar. Tu revista también, aunque el material sea otro.',
+    intergeneracional: 'Quien teje decide el conjunto antes de la primera vuelta. Ese cuidado por el todo se enseña y se hereda en los oficios.'
+  }
 };
 
 export default contenido;

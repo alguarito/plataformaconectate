@@ -1,7 +1,9 @@
 /**
- * Contenido enriquecido — Grado 9 · Periodo 3 · Sesión 10
- * Tema: Cosecha P3 — sustentación del mini-estudio (capstone del año).
- * Profundidad MILC v3 PRO completa, alineada con content/guias/9/9-3-10.yaml.
+ * Contenido enriquecido para Grado 9 · Período 3 · Sesión 10
+ * (sesión global 30).
+ *
+ * Auto-generado desde content/guias/9/9-3-10.yaml por
+ * scripts/build-guias-web-ts.py. Edita el YAML, no este archivo.
  */
 import type { ContenidoGuia } from './_schema';
 
@@ -10,98 +12,183 @@ const contenido: ContenidoGuia = {
   periodo: 3,
   sesion: 10,
   titulo: 'Cosecha P3 — sustentación del mini-estudio',
-  ocultarPDF: false,
-  resumen:
-    'Cierre del año: presentación de 10 min con 6-8 diapositivas que integra pregunta, datos, análisis, gráficos, 3 insights y decisión propuesta, defendida ante el grupo con Q&A. Es la prueba integral del oficio de pensar con datos.',
+  resumen: 'Cierre del año: una presentación de diez minutos que integra pregunta, datos, análisis, gráficos, tres hallazgos y una decisión propuesta, defendida ante el grupo.',
   duracionMin: 90,
   subtema: 'Datos · Rendición de cuentas',
-
-  saberAncestral: {
-    saber:
-      'El cierre del año retoma todas las anclas anteriores: la cosecha contada del campesino, el inventario del almacén, la criba de granos de la abuela, la balanza de la plaza, la lectura del cielo. El estudiante ya no solo usa Excel: piensa con datos como un campesino piensa con su libreta de campo — para decidir, no para presumir. La sustentación frente al grupo es el equivalente contemporáneo del relato del año productivo que hacían los mayores en la junta comunitaria: contar qué se sembró, qué rindió, qué falló, qué hacer distinto en el ciclo siguiente.',
-    fuente: 'Relato del año productivo en la junta comunitaria del Valle del Cauca, integrando todas las anclas del periodo',
-    preguntaPuente:
-      '¿Cómo contaba el campesino mayor el balance del año en la junta comunitaria sin diapositivas ni proyector? ¿Y qué pierde un estudiante que termina el año con muchas hojas de Excel pero sin haber sustentado nunca una decisión real frente a una audiencia que pregunta?',
-  },
-
-  mapaRuta: [
-    { numero: 1, iconos: ['🌱'], titulo: 'Relato del año productivo', duracionMin: 10 },
-    { numero: 2, iconos: ['🔎'], titulo: 'Inventario de cosecha', duracionMin: 15 },
-    { numero: 3, iconos: ['📖'], titulo: 'Anatomía de la sustentación', duracionMin: 17 },
-    { numero: 4, iconos: ['✏️'], titulo: 'Sustenta y responde Q&A', duracionMin: 40 },
-    { numero: 5, iconos: ['✅', '💭'], titulo: 'Cosecha, reflexión y compromiso', duracionMin: 15 },
-  ],
-
   preLectura: {
-    porQueImporta:
-      'Sin sustentación, el aprendizaje queda en privado. La capacidad de defender públicamente una decisión con datos es competencia profesional, ciudadana y vital. Esta es la última sesión del año: el capstone.',
-    preguntaDetonante:
-      'Si tuvieras 10 minutos con el rector, un padre de familia desconocido y un compañero de otro curso, ¿cómo les contarías tu mini-estudio para que entiendan tu decisión y te crean?',
+    porQueImporta: 'Sin sustentación, el aprendizaje queda en privado. Defender públicamente una decisión con datos es una capacidad profesional y ciudadana, y esta es la última sesión del año para entrenarla.',
+    preguntaDetonante: 'Si tuvieras diez minutos ante alguien que no vio nada de tu proceso, ¿cómo le contarías tu estudio para que entienda tu decisión?',
     activacion: {
       titulo: 'Relato del año productivo',
-      descripcion:
-        'En 3 minutos: cada estudiante cuenta en voz alta a su compañero "qué cosechó este periodo con los datos": una pregunta, un dato y una decisión. Sin diapositivas. Solo voz.',
-      duracionMin: 3,
+      descripcion: 'En 3 minutos, cuéntale en voz alta a tu compañero qué cosechaste este periodo: una pregunta, un dato y una decisión. Sin diapositivas, solo voz.',
+      duracionMin: 3
     },
     conexion: {
-      anterior:
-        'En la sesión 9 produjiste el reporte de 3 insights. Hoy integras todo el periodo en una sustentación de 10 minutos ante el grupo.',
-      siguiente:
-        'El año cierra aquí. El oficio sigue: cada vez que aparezca una pregunta cotidiana, repite el ciclo recoge → limpia → analiza → grafica → escribe insight → decide.',
-    },
+      anterior: 'En la sesión 9 produjiste el reporte con tus tres hallazgos.',
+      siguiente: 'El año cierra aquí, pero el ciclo sigue: cada vez que aparezca una pregunta cotidiana, vuelve a recorrerlo.'
+    }
   },
-
   conceptosClave: [
     {
-      termino: 'Regla 1-1-20',
-      definicion:
-        'Cada diapositiva tiene 1 idea, 1 imagen, máximo 20 palabras. Si tiene más, divídela o recórtala.',
-      ejemplo:
-        'Diapositiva "Datos": 1 frase con origen y tamaño, 1 ícono o imagen, listo. No párrafo.',
-      emoji: '📐',
+      termino: 'Inventario de cosecha',
+      definicion: 'La lista de todo lo producido en el periodo, con la decisión de qué entra y qué se descarta.',
+      ejemplo: 'La tabla sucia original entra si muestra el trabajo de limpieza; si no, se descarta.',
+      categoria: 'Preparar la sustentación'
     },
     {
-      termino: '7 momentos de la sustentación',
-      definicion:
-        'Portada, contexto, datos, análisis, 3 insights (3 diapositivas o 1), decisión y cierre. Q&A en vivo, no en diapositiva.',
-      ejemplo:
-        'Total 6-8 diapositivas para 10 minutos: ~1 minuto promedio por diapositiva.',
-      emoji: '🗂️',
+      termino: 'Una idea por diapositiva',
+      definicion: 'Cada diapositiva sostiene una sola idea con pocas palabras. La diapositiva apoya tu voz, no la reemplaza.',
+      ejemplo: 'Una diapositiva con tres hallazgos se convierte en tres diapositivas, una por hallazgo.',
+      categoria: 'Preparar la sustentación'
+    },
+    {
+      termino: 'Las tres preguntas duras',
+      definicion: 'Las objeciones que alguien atento haría, escritas y respondidas antes de exponer.',
+      ejemplo: '«¿Por qué tu decisión y no la contraria?» conviene tenerla contestada antes, no en el momento.',
+      categoria: 'Preparar la sustentación'
     },
     {
       termino: 'Limitaciones declaradas',
-      definicion:
-        'Diapositiva o frase que reconoce qué no alcanzaste a estudiar, qué quedó por fuera, qué muestra es chica. El crítico las verá; mejor decirlas tú primero.',
-      ejemplo:
-        '"Mi muestra fue de 25 estudiantes del 9B; no incluye 9A ni 9C — la conclusión vale solo para 9B".',
-      emoji: '🛡️',
+      definicion: 'Los límites del estudio dichos por ti y en su propia diapositiva. Quien escucha los va a ver de todos modos.',
+      ejemplo: '«La muestra son 40 respuestas de un solo curso, así que no habla del colegio entero.»',
+      categoria: 'Sostener lo que se dice'
     },
     {
-      termino: '3 preguntas duras anticipadas',
-      definicion:
-        'Antes de presentar, escribe las 3 preguntas críticas que un revisor podría hacer. Si no tienes respuesta honesta a las 3, la sustentación es frágil.',
-      ejemplo:
-        '"¿Cómo sabes que la muestra es representativa?", "¿Qué pasaría si el dato sucio se contara distinto?", "¿Por qué tu decisión y no la opuesta?".',
-      emoji: '🎯',
-    },
-    {
-      termino: '"No lo sé" con criterio',
-      definicion:
-        'Respuesta honesta cuando una pregunta del Q&A excede tu trabajo. Se dice limpio, sin disculpas largas. Es virtud, no derrota.',
-      ejemplo:
-        '"Esa correlación no la investigué. Sería buena pregunta para extender el estudio el próximo año".',
-      emoji: '🙏',
+      termino: 'Decir que no se sabe',
+      definicion: 'Reconocer en voz alta lo que el estudio no alcanzó a mirar, en vez de rellenar con algo plausible.',
+      ejemplo: '«Eso no lo miré; sería una buena manera de extender el estudio el año entrante.»',
+      categoria: 'Sostener lo que se dice'
     },
     {
       termino: 'Cierre con decisión',
-      definicion:
-        'La última diapositiva nombra la decisión propuesta + quién + plazo. La sustentación cierra en acción, no en agradecimiento.',
-      ejemplo:
-        '"Propongo a coordinación revisar la ruta del barrio Macarena en las próximas 4 semanas".',
-      emoji: '✅',
-    },
+      definicion: 'La última diapositiva propone qué hacer, quién lo hace y para cuándo. No es un agradecimiento.',
+      ejemplo: '«Propongo mover el refuerzo al martes; lo coordina el representante de curso antes de mayo.»',
+      categoria: 'Sostener lo que se dice'
+    }
   ],
-
+  laboratorios: [
+    {
+      tipo: 'quiz',
+      titulo: 'Verifica la sustentación',
+      instrucciones: '5 preguntas para confirmar que puedes cerrar el año rindiendo cuentas de tu estudio. Necesitas 3/5 para continuar.',
+      preguntas: [
+        {
+          enunciado: '¿Por qué declarar las limitaciones del estudio en vez de dejarlas de lado?',
+          opciones: [
+            'Porque es una convención académica que se exige en todos los trabajos escritos',
+            'Porque quien escucha las va a notar igual, y decirlas primero es lo que da credibilidad',
+            'Porque una diapositiva más ayuda a llenar el tiempo mínimo que exige la sustentación',
+            'Porque así el docente sabe qué partes del trabajo no hace falta que revise a fondo'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Correcto. Un estudio que oculta sus límites se parece a un discurso que se sostiene por lo que calla.',
+          feedbackIncorrecto: 'No es una convención ni un relleno. Quien escucha ve los huecos, y quien los nombra primero conserva la credibilidad.'
+        },
+        {
+          enunciado: '¿Qué quiere decir que una diapositiva lleve una sola idea?',
+          opciones: [
+            'Que solo puede contener una imagen, sin ningún texto que la acompañe encima',
+            'Que se debe usar el mismo tipo de gráfico en todas las diapositivas del cierre',
+            'Que si sostiene tres ideas conviene partirla en tres, y que apoya tu voz sin reemplazarla',
+            'Que cada diapositiva debe durar exactamente el mismo tiempo que todas las demás'
+          ],
+          respuestaIndex: 2,
+          feedbackCorrecto: 'Sí. Quien lee la diapositiva en voz alta ya perdió a la audiencia: el texto está para apoyar, no para sustituir.',
+          feedbackIncorrecto: 'No se trata de prohibir el texto ni de igualar tiempos. Una diapositiva con tres ideas se parte en tres.'
+        },
+        {
+          enunciado: 'En las preguntas del grupo aparece una que tu estudio no cubrió. ¿Qué respondes?',
+          opciones: [
+            'Que eso no lo miraste, y que sería una buena manera de extender el estudio',
+            'Una respuesta plausible construida con lo que sí sabes, para no dejar el vacío',
+            'Que la pregunta se sale del alcance que el docente había fijado para el trabajo',
+            'Una disculpa larga por no haber previsto esa parte durante la investigación'
+          ],
+          respuestaIndex: 0,
+          feedbackCorrecto: 'Correcto. Reconocer el límite es más sólido que cualquier rodeo bien armado, y además abre el trabajo siguiente.',
+          feedbackIncorrecto: 'Rellenar con algo plausible es lo que arruina la credibilidad de todo lo demás que dijiste.'
+        },
+        {
+          enunciado: '¿Con qué debe cerrar tu sustentación?',
+          opciones: [
+            'Con un agradecimiento a quienes escucharon durante los diez minutos de exposición',
+            'Con el gráfico más logrado del estudio, para que quede esa imagen en la memoria',
+            'Con un resumen de los pasos técnicos que seguiste a lo largo de todo el periodo',
+            'Con la decisión propuesta, diciendo qué se hace, quién lo hace y para cuándo'
+          ],
+          respuestaIndex: 3,
+          feedbackCorrecto: 'Sí. El estudio existe para llegar a una decisión. Si el cierre no la nombra, el trabajo queda sin destino.',
+          feedbackIncorrecto: 'Ni el agradecimiento ni el resumen cierran nada. Lo que cierra es la decisión con responsable y plazo.'
+        },
+        {
+          enunciado: 'Entre los misak, las decisiones grandes se llevan al Nu Nakchak y quedan por escrito con fecha. ¿Qué aplica a tu sustentación?',
+          opciones: [
+            'Que toda conclusión de datos debería quedar registrada en un documento con valor legal',
+            'Que las decisiones colectivas siempre resultan más acertadas que las decisiones de una persona',
+            'Que una decisión sostenida ante otros y por escrito pesa distinto que una opinión suelta',
+            'Que conviene presentar el estudio ante la mayor cantidad posible de personas a la vez'
+          ],
+          respuestaIndex: 2,
+          feedbackCorrecto: 'Correcto. Lo que cambia no es el número de personas: es que la decisión se sostiene delante de otros y queda escrita.',
+          feedbackIncorrecto: 'No se trata de valor legal ni de cantidad de público. Se trata de sostener una decisión ante otros y dejarla escrita.'
+        }
+      ]
+    }
+  ],
+  postLectura: {
+    reflexion: '¿Qué estoy dejando fuera de mi sustentación porque no me conviene decirlo?',
+    transferencia: 'Conserva la presentación, la bitácora y los tres hallazgos. Cuando aparezca una pregunta cotidiana que merezca un dato, repite el ciclo completo: recoge, limpia, analiza, grafica, escribe el hallazgo y decide.',
+    cierre: 'Al terminar podrás: (1) analizar qué piezas de tu trabajo del periodo entran en la sustentación y cuáles se descartan; (2) evaluar tu propio estudio antes de exponerlo, anticipando las preguntas duras que puede recibir; (3) crear y defender una presentación de seis a ocho diaposi…'
+  },
+  saberAncestral: {
+    saber: 'En el pueblo misak, en Guambía (Silvia, Cauca), las decisiones grandes no las toma una sola persona. Se llevan al Nu Nakchak, el espacio de las autoridades junto con los shures y las shuras. Ese modo de decidir dejó documentos con fecha. El Mandato de Vida y Permanencia Misak Misak, en Piendamó, 2005. Y la Misak Ley, proclamada el 12 de agosto de 2007. Lo que quedó escrito ahí no es una opinión del momento. Es una decisión sostenida, con testigos y con años encima. La cara de exclusión es que ese «no» colectivo se sostiene frente a normas externas. Y se sostiene a costa de conflicto con el Estado y con terratenientes. No es un recurso retórico: es una disputa territorial viva.',
+    fuente: 'Pueblo misak de Guambía · las decisiones llevadas al Nu Nakchak y puestas por escrito',
+    referencia: 'Pueblo Misak. (2007, 12 de agosto). Misak Ley. I Encuentro por la defensa de nuestro Derecho Mayor.',
+    preguntaPuente: '¿Qué diferencia hay entre decir que no y sostener un no por escrito, con fecha y con testigos? ¿Y qué le falta a una conclusión de datos que nadie tuvo que defender delante de nadie?'
+  },
+  mapaRuta: [
+    {
+      numero: 1,
+      iconos: [
+        '🌱'
+      ],
+      titulo: 'Las decisiones que quedan por escrito',
+      duracionMin: 5
+    },
+    {
+      numero: 2,
+      iconos: [
+        '👁'
+      ],
+      titulo: 'Actividad 1 · Inventario de cosecha',
+      duracionMin: 15
+    },
+    {
+      numero: 3,
+      iconos: [
+        '📖'
+      ],
+      titulo: 'Actividad 2 · Las tres preguntas duras',
+      duracionMin: 20
+    },
+    {
+      numero: 4,
+      iconos: [
+        '✏️'
+      ],
+      titulo: 'Actividad 3 · Sustenta el mini-estudio',
+      duracionMin: 40
+    },
+    {
+      numero: 5,
+      iconos: [
+        '✅',
+        '💭'
+      ],
+      titulo: 'Verifica, tres citas y tu compromiso',
+      duracionMin: 10
+    }
+  ],
   actividades: [
     {
       numero: 1,
@@ -110,222 +197,96 @@ const contenido: ContenidoGuia = {
       tiempoMin: 15,
       modalidad: 'individual',
       pasos: [
-        'Pon sobre la mesa todo el trabajo del periodo: tabla original, tabla limpia, fórmulas, filtros, tabla dinámica, gráficos, reporte de insights.',
-        'Para cada pieza pregunta: ¿entra en la sustentación o se queda fuera?',
-        'Una sustentación de 10 min admite máximo 8 piezas — tienes que cortar.',
-        'Marca con ✓ las 6-8 que entran y con ✗ las que se descartan, justificando cada decisión.',
+        'Pon sobre la mesa todo lo que produjiste en el periodo.',
+        'Decide para cada pieza si entra en la sustentación o se queda fuera.',
+        'Ten presente que diez minutos admiten ocho piezas como máximo.',
+        'Marca las que entran y las que quedan fuera.',
+        'Escribe la razón de cada descarte y distingue las decorativas de las que descartas por cariño.'
       ],
       cuaderno: {
         titulo: 'Inventario de cosecha',
-        formato: 'Tabla 3 columnas (Pieza | ¿Entra? ✓ o ✗ | Por qué), 8-12 filas',
-        extension: '8-12 filas',
+        formato: 'tabla de tres columnas (pieza producida / entra o no entra / por qué), una fila por pieza',
+        extension: 'un tercio de página'
       },
       criterios: [
-        'Hice inventario completo del periodo',
-        'Marqué 6-8 piezas que entran y el resto se descarta',
-        'Cada decisión justificada en 1 frase',
-        'Reconozco lo descartado como decorativo, no por descuido',
-      ],
+        'Cada inclusión y cada descarte tienen su razón escrita.',
+        'Las piezas que entran no pasan de ocho.'
+      ]
     },
     {
       numero: 2,
       verbo: 'EVALÚA',
-      titulo: 'Anatomía y preguntas duras',
-      tiempoMin: 15,
-      modalidad: 'individual',
+      titulo: 'Las tres preguntas duras',
+      tiempoMin: 20,
+      modalidad: 'parejas',
       pasos: [
-        'Esboza las 6-8 diapositivas siguiendo los 7 momentos.',
-        'Asigna tiempos por diapositiva (objetivo total: 10 min).',
-        'Anota 3 preguntas duras que un crítico podría hacer en el Q&A.',
-        'Prepara la respuesta a cada una en 1-2 frases (incluye "no lo sé" con criterio si aplica).',
+        'Con tu pareja, escriban la anatomía de la sustentación con el tiempo de cada momento.',
+        'Cada uno le presenta al otro su estudio en dos minutos.',
+        'Quien escucha escribe las tres preguntas más duras que se le ocurran.',
+        'Cada uno prepara su respuesta a las tres en una o dos frases.',
+        'Marca en cuál de las tres la respuesta honesta es que no lo miraste.'
       ],
       cuaderno: {
-        titulo: 'Anatomía y preguntas duras',
-        formato: 'Índice de 6-8 diapositivas con tiempos + 3 preguntas duras + 3 respuestas',
-        extension: '1 página',
+        titulo: 'Las tres preguntas duras',
+        formato: 'la anatomía con sus tiempos, las tres preguntas recibidas y la respuesta a cada una',
+        extension: 'media página'
       },
       criterios: [
-        'Índice de diapositivas con tiempo por cada una',
-        'Total entre 8 y 12 minutos',
-        '3 preguntas duras escritas',
-        '3 respuestas honestas preparadas',
-      ],
+        'Las tres preguntas vienen de tu pareja, no las escribiste tú.',
+        'Está marcada la pregunta cuya respuesta honesta es que no la miraste.'
+      ]
     },
     {
       numero: 3,
       verbo: 'CREA',
-      titulo: 'Produce y ensaya las diapositivas',
-      tiempoMin: 25,
+      titulo: 'Sustenta el mini-estudio',
+      tiempoMin: 40,
       modalidad: 'individual',
       pasos: [
-        'Produce las 6-8 diapositivas siguiendo regla 1-1-20.',
-        'Incluye 1 diapositiva (o frase) con limitaciones declaradas.',
-        'Cierra con decisión propuesta + quién + plazo.',
-        'Ensaya al menos 1 vez en voz alta cronometrando.',
+        'Produce las seis a ocho diapositivas siguiendo la anatomía.',
+        'Declara las limitaciones del estudio en una diapositiva propia.',
+        'Ensaya una vez en voz alta con cronómetro.',
+        'Sustenta ante el grupo y responde al menos dos preguntas con honestidad.',
+        'Anota la retroalimentación y un ajuste que harías si volvieras a sustentar.'
       ],
       cuaderno: {
-        titulo: 'Producción + ensayo',
-        formato: 'Notas del ensayo: tiempo real, qué corregir, qué simplificar',
-        extension: 'Notas del ensayo',
+        titulo: 'Sustentación del periodo 3',
+        formato: 'el índice de diapositivas, las preguntas anticipadas, la retroalimentación recibida y el ajuste',
+        extension: 'media página'
       },
       criterios: [
-        '6-8 diapositivas con regla 1-1-20',
-        'Limitaciones declaradas, no escondidas',
-        'Cierre con decisión + quién + plazo',
-        'Al menos 1 ensayo cronometrado',
-      ],
-    },
-    {
-      numero: 4,
-      verbo: 'EXPLICA',
-      titulo: 'Sustenta ante el grupo y responde Q&A',
-      tiempoMin: 15,
-      modalidad: 'equipo',
-      pasos: [
-        'Sustenta tus 10 minutos ante el grupo respetando tiempos.',
-        'Responde al menos 2 preguntas del Q&A con honestidad.',
-        'Si una pregunta excede tu trabajo, di "eso no lo sé" con criterio.',
-        'Anota la retroalimentación del docente y de al menos 1 compañero.',
-      ],
-      cuaderno: {
-        titulo: 'Sustentación y Q&A',
-        formato: 'Tiempo real + 2 preguntas recibidas + retroalimentación + 1 ajuste para próxima vez',
-        extension: '1 página',
-      },
-      criterios: [
-        'Tiempo total entre 8 y 12 min',
-        'Al menos 2 preguntas respondidas',
-        'Las limitaciones aparecieron en sustentación',
-        'Recibí retroalimentación específica',
-        'Anoté qué ajustaría para una próxima sustentación',
-      ],
-    },
+        'Las limitaciones aparecen en una diapositiva propia, no al final y en pequeño.',
+        'El cierre es la decisión propuesta, no un agradecimiento.'
+      ]
+    }
   ],
-
-  laboratorios: [
-    {
-      tipo: 'quiz',
-      titulo: '✅ Verifica sustentación',
-      instrucciones:
-        '5 preguntas para confirmar criterios de sustentación profesional. Necesitas 3/5 para continuar.',
-      preguntas: [
-        {
-          enunciado: '¿Por qué declarar las limitaciones del estudio en lugar de esconderlas?',
-          opciones: [
-            'Por humildad académica',
-            'Porque el crítico las verá igual — declararlas primero te da credibilidad y control narrativo',
-            'Por costumbre',
-            'No es necesario',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Correcto. Esconder limitaciones produce auditoría hostil; declararlas convierte al crítico en interlocutor.',
-          feedbackIncorrecto:
-            'Las limitaciones se ven solas. Declararlas primero es estrategia, no debilidad: te da credibilidad y reduce el ataque.',
-        },
-        {
-          enunciado: '¿Cuál es la regla "1-1-20" en una diapositiva?',
-          opciones: [
-            '1 hora, 1 imagen, 20 personas',
-            '1 idea, 1 imagen, máximo 20 palabras',
-            '1 gráfico, 1 tabla, 20 datos',
-            '1 minuto, 1 frase, 20 segundos',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Sí. La diapositiva apoya tu voz, no la reemplaza. Más de 20-25 palabras suele ser señal de pánico.',
-          feedbackIncorrecto:
-            '1 idea, 1 imagen, ≤20 palabras. Quien lee la diapositiva pierde a la audiencia.',
-        },
-        {
-          enunciado: 'En el Q&A, una pregunta excede tu trabajo. ¿Qué dices?',
-          opciones: [
-            'Inventas algo creíble',
-            'Te disculpas largamente',
-            '"Eso no lo investigué — sería buena pregunta para extender el estudio"',
-            'Cambias de tema',
-          ],
-          respuestaIndex: 2,
-          feedbackCorrecto:
-            'Correcto. "No lo sé" con criterio es virtud, no derrota. Defender con orgullo herido es lo único que la audiencia recuerda mal.',
-          feedbackIncorrecto:
-            'Honestidad limpia: "eso no lo investigué". El ego sereno produce respuestas que la audiencia respeta.',
-        },
-        {
-          enunciado: '¿Con qué debe cerrar tu sustentación?',
-          opciones: [
-            'Agradecimientos',
-            'La decisión propuesta + quién + plazo',
-            '"Gracias por su atención"',
-            'Un meme',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Sí. La sustentación cierra en acción, no en cortesía. La decisión es el insight final de todo el año.',
-          feedbackIncorrecto:
-            'Decisión + quién + plazo. La cortesía está bien, pero el cierre profesional nombra acción concreta.',
-        },
-        {
-          enunciado: 'En el saber ancestral del relato del año productivo, ¿qué aplica?',
-          opciones: [
-            'Nada — son contextos distintos',
-            'Sustentar es rendir cuentas comunitarias: contar qué se sembró, qué rindió, qué falló y qué hacer distinto',
-            'Que las juntas comunitarias eran cortas',
-            'Que basta con datos',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Esa es la conexión. El campesino mayor rendía cuentas sin diapositivas. Tú las rindes con datos. Mismo gesto comunitario.',
-          feedbackIncorrecto:
-            'Rendir cuentas es oficio comunitario antiguo. La sustentación profesional es su versión contemporánea con datos.',
-        },
-      ],
-    },
-  ],
-
-  postLectura: {
-    reflexion: '',
-    transferencia:
-      'El año cerró aquí. El oficio sigue. Cuando aparezca una pregunta cotidiana que merezca dato — gastos, hábitos, asistencia, encuesta del salón — repite el ciclo: recoge, limpia, analiza, grafica, escribe insight, decide. La phronesis se entrena un ciclo a la vez.',
-    cierre: '',
-  },
-
   triangulo: {
     dussel: {
-      autor: 'Enrique Dussel',
+      autor: 'Enrique Dussel · Filosofía de la liberación (1977), §4.2.4.4',
       lente: 'lente del nosotros',
-      cita: 'Toda sustentación pública debe nombrar a quienes no están presentes en la audiencia.',
-      preguntaEspejo:
-        'En mi sustentación, ¿hablo solo a los que están en el aula o nombro también a quienes no están y a quienes la decisión les caería encima?',
+      cita: 'Hay lengua cotidiana (la de todos los días), lengua de culturas ilustradas, de cultura de masas, lengua de cultura popular… lengua política (que se comprende no por lo que dice sino por lo que calla, contra quién lo dice, cuándo y por qué…).',
+      preguntaEspejo: '¿Qué estoy dejando fuera de mi sustentación porque no me conviene decirlo?'
     },
     estoico: {
-      autor: 'Marco Aurelio',
+      autor: 'Marco Aurelio · Meditaciones X, 16 (c. 175 d.C.)',
       lente: 'lente del cuidado interior',
-      cita: 'Defender sin ego es virtud; defender con orgullo herido es derrota.',
-      preguntaEspejo:
-        '¿Cómo recibí las preguntas duras del Q&A? ¿Defendí con argumento o con orgullo herido? ¿Qué hubiera dicho si hubiera podido escuchar 5 segundos más antes de responder?',
+      cita: 'De hoy más, déjate absolutamente de disputar cuál conviene que sea un hombre bueno, sino procura ser tal en realidad.',
+      preguntaEspejo: '¿Dediqué más tiempo a decir qué es un buen análisis que a mostrar el mío?'
     },
     floridi: {
-      autor: 'Luciano Floridi',
+      autor: 'Luciano Floridi · Commentary on the Onlife Manifesto (2015), § 3.1',
       lente: 'lente de la infoesfera',
-      cita: 'Toda sustentación pública con datos es un contrato implícito con quien escucha.',
-      preguntaEspejo:
-        'Mi sustentación, ¿honra el contrato implícito con la audiencia? ¿Dije con claridad de dónde vienen mis datos, cómo se podrían reproducir, y qué no alcancé a estudiar?',
-    },
+      cita: 'Una de las preguntas políticas apremiantes que enfrentamos en las sociedades de la información avanzadas es: ¿en qué clase de proyecto humano estamos trabajando? (trad. propia)',
+      preguntaEspejo: 'Todo lo que aprendí este año a hacer con datos, ¿al servicio de qué lo quiero poner?'
+    }
   },
-
   cincoDimensiones: {
-    personal:
-      'Te llevas al año siguiente la capacidad de defender públicamente una decisión con datos — competencia profesional y vital para presupuestos, proyectos personales y propuestas comunitarias.',
-    emocional:
-      'Resististe la tentación del lucimiento. Sustentar con limitaciones declaradas exige humildad activa y entrenamiento del ego sereno.',
-    ciudadana:
-      'Rendir cuentas públicas con datos es virtud democrática. Lo que practicaste en el aula es lo que la sociedad necesita en política, periodismo y servicio público.',
-    local:
-      'El campesino mayor del Valle, el tendero del barrio, la abuela de la libreta: el relato del año productivo es oficio comunitario heredado. Tu sustentación lo continúa.',
-    intergeneracional:
-      'Lo que la junta comunitaria hacía en voz, tú lo haces con diapositivas. La rendición de cuentas honesta es virtud que se hereda y se devuelve mejorada.',
-  },
+    personal: 'Te llevas la capacidad de defender en público una decisión apoyada en datos. Sirve para un presupuesto, un proyecto o una propuesta.',
+    emocional: 'Resististe la tentación del lucimiento. Sustentar con las limitaciones a la vista exige una humildad que se entrena.',
+    ciudadana: 'Rendir cuentas con datos es una virtud de la vida en común. Lo que practicaste aquí es lo que hace falta en el debate público.',
+    local: 'En el Nu Nakchak las decisiones se llevan a un espacio común y quedan por escrito con fecha. Tu sustentación hace algo parecido a otra escala.',
+    intergeneracional: 'Una decisión sostenida con testigos y con años encima pesa distinto que una opinión del momento. Esa diferencia se aprende viéndola.'
+  }
 };
 
 export default contenido;

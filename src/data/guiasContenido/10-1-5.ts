@@ -12,158 +12,280 @@ const contenido: ContenidoGuia = {
   periodo: 1,
   sesion: 5,
   titulo: 'Estructura editorial — arco narrativo, ritmo y capítulos',
-  resumen: 'La estructura editorial es el plano del libro: cómo se ordena el contenido, qué peso tiene cada parte, qué papel cumple cada capítulo en el todo.',
+  resumen: 'Subes del capítulo suelto al libro entero: el arco en tres actos, la función de cada capítulo, el reparto de páginas con variación y los tres capítulos que cargan más peso.',
   duracionMin: 90,
-  subtema: 'Estructura editorial — arco narrativo, ritmo y capítulos',
+  subtema: 'Oficio editorial · Estructura y ritmo',
   preLectura: {
-    porQueImporta: 'El criterio principal: que alguien viendo tu mapa pueda decir "sí, este libro está bien planeado", sin haber leído ningún capítulo.',
-    preguntaDetonante: '¿Qué sabía el arquitecto del barrio al dibujar el plano antes de pedir ladrillos, que el editor novato olvida cuando empieza a escribir capítulos sin haber pensado el arco completo? ¿Y por qué los 3 capítulos pivote merecen más cuidado que los demás?',
+    porQueImporta: 'Un cierre apurado desperdicia todo lo anterior, y diez capítulos del mismo largo producen un libro plano aunque cada uno esté bien escrito. La estructura decide cómo se lee el conjunto.',
+    preguntaDetonante: 'Si tu libro tuviera que perder veinte páginas, ¿de qué acto las quitarías?',
     activacion: {
-      titulo: 'Auditoría rápida de tu escaleta',
-      descripcion: 'Actividad 1 · ANALIZA — Auditoría rápida de tu escaleta (15 min · individual).',
-      duracionMin: 10
+      titulo: 'Las dos cosechas',
+      descripcion: 'En 3 minutos, dibuja una barra por cada capítulo de tu escaleta, con la altura de las páginas que estimaste. Mira el dibujo: ¿es plano o tiene relieve?',
+      duracionMin: 3
     },
     conexion: {
-      anterior: 'En la sesión 2 hiciste escaleta preliminar; en la 3 escribiste prompts; en la 4 iteraste el capítulo 1.',
-      siguiente: 'En la sesión 6 vas a aprender sobre derechos de autor y propiedad intelectual con IA (Ley 23 de 1982, obras derivadas, licencias Creative Commons).'
+      anterior: 'En la sesión 4 iteraste un capítulo hasta que sonara a tu voz.',
+      siguiente: 'En la sesión 6 defines quién firma la obra y bajo qué licencia circula.'
     }
   },
   conceptosClave: [
     {
-      termino: 'Arco narrativo de 3 actos',
-      definicion: 'Estructura heredada de Aristóteles. Acto 1 planteamiento (25%), Acto 2 desarrollo (50%), Acto 3 cierre (25%).',
-      ejemplo: 'En 80 páginas, planteamiento 20, desarrollo 40, cierre 20. La proporción sostiene el ritmo del lector.',
-      emoji: '🎭'
+      termino: 'Planteamiento',
+      definicion: 'El primer acto, cerca de una cuarta parte del libro. Presenta el tema, los conceptos y la pregunta central.',
+      ejemplo: 'Dos o tres capítulos que dejan claro de qué va el libro y por qué vale la pena seguir.',
+      categoria: 'El arco'
     },
     {
-      termino: 'Acto 1 — Planteamiento',
-      definicion: 'Primer 25% del libro. Presenta tema, personajes o conceptos clave y el conflicto o pregunta central.',
-      ejemplo: 'En el libro de amistades digitales, el acto 1 muestra al protagonista y su distancia con el amigo de la infancia.',
-      emoji: '🌱'
+      termino: 'Desarrollo',
+      definicion: 'El segundo acto, cerca de la mitad del libro. Profundiza, complica y propone. Es la zona más larga.',
+      ejemplo: 'Cuatro a seis capítulos donde cada uno agrega algo que el anterior no tenía.',
+      categoria: 'El arco'
     },
     {
-      termino: 'Acto 2 — Desarrollo',
-      definicion: '50% del libro. Profundiza, complica, propone. Zona más larga; aquí está la mayor responsabilidad del libro.',
-      ejemplo: 'El protagonista intenta retomar la amistad por chat, fracasa, prueba videollamada, fracasa, entiende algo.',
-      emoji: '🌳'
-    },
-    {
-      termino: 'Acto 3 — Cierre',
-      definicion: 'Últimos 25% del libro. Resuelve, concluye, propone. No necesita final cerrado; sí marca clara.',
-      ejemplo: 'El protagonista decide visitar al amigo en persona. No sabemos qué pasará, pero el lector queda con claridad.',
-      emoji: '🌲'
+      termino: 'Cierre',
+      definicion: 'El tercer acto, la cuarta parte restante. Resuelve y propone. No es un resumen de lo dicho.',
+      ejemplo: 'Cinco páginas para cerrar un libro de ochenta dejan a quien lee con la sensación de que faltó algo.',
+      categoria: 'El arco'
     },
     {
       termino: 'Capítulos pivote',
-      definicion: 'Tres capítulos críticos: primero (engancha o pierde), mitad (sostiene o pierde), último (cierra o decepciona).',
-      ejemplo: 'Los reescribes más veces que los demás. Si esos 3 funcionan, el libro funciona.',
-      emoji: '📍'
+      definicion: 'El primero, el del medio y el último. Cargan más que los demás y merecen más trabajo.',
+      ejemplo: 'Si la apertura falla, lo que venga después casi no importa: nadie llega a leerlo.',
+      categoria: 'Peso y ritmo'
+    },
+    {
+      termino: 'Ritmo de páginas',
+      definicion: 'El reparto deliberado de extensión entre capítulos. Cortos para transición y gancho, largos para desarrollo.',
+      ejemplo: 'Diez capítulos de ocho páginas producen una lectura plana aunque cada uno esté bien escrito.',
+      categoria: 'Peso y ritmo'
+    },
+    {
+      termino: 'Función del capítulo',
+      definicion: 'Lo que ese capítulo hace en el arco: enganchar, profundizar, contrastar, dar un giro o cerrar.',
+      ejemplo: 'Si la función no cabe en una frase, el capítulo necesita revisión antes que páginas.',
+      categoria: 'Peso y ritmo'
     }
   ],
   laboratorios: [
     {
       tipo: 'quiz',
-      titulo: '¿Diseñas estructura editorial profesional?',
-      instrucciones: '5 preguntas para verificar que dominas el arco narrativo de 3 actos.',
+      titulo: 'Verifica la estructura editorial',
+      instrucciones: '5 preguntas para confirmar que puedes repartir el peso de un libro. Necesitas 3/5 para continuar.',
       preguntas: [
         {
-          enunciado: '¿Qué porcentaje del libro ocupa el Acto 2 (desarrollo)?',
+          enunciado: '¿Qué proporción del libro suele ocupar el desarrollo?',
           opciones: [
-            '10%',
-            '25%',
-            '90%',
-            '50%'
-          ],
-          respuestaIndex: 3,
-          feedbackCorrecto: 'Exacto. El Acto 2 ocupa el 50%. Es la zona más larga del libro y la de mayor responsabilidad.',
-          feedbackIncorrecto: 'Son 50%. El desarrollo es la zona más larga; ahí se juega la mayor parte de la obra.'
-        },
-        {
-          enunciado: '¿Cuántos capítulos pivote tiene un libro bien estructurado?',
-          opciones: [
-            '1',
-            '10',
-            '3',
-            '30'
-          ],
-          respuestaIndex: 2,
-          feedbackCorrecto: 'Correcto. 3 pivotes: primero, mitad y último. Merecen más reescritura que los demás.',
-          feedbackIncorrecto: 'Son 3: el primero, el de la mitad y el último. Si esos funcionan, el libro funciona.'
-        },
-        {
-          enunciado: '¿De dónde viene la estructura de 3 actos?',
-          opciones: [
-            'De TikTok',
-            'De Aristóteles',
-            'De Microsoft Word',
-            'De los algoritmos'
+            'Cerca de una cuarta parte, igual que el planteamiento y que el cierre final',
+            'Cerca de la mitad, porque es donde el libro profundiza y avanza de verdad',
+            'Cerca de tres cuartas partes, dejando muy poco espacio para plantear y cerrar',
+            'No hay proporción fija, porque depende únicamente del género que se escriba'
           ],
           respuestaIndex: 1,
-          feedbackCorrecto: 'Exacto. Es estructura clásica que Aristóteles describió y sigue vigente.',
-          feedbackIncorrecto: 'Viene de Aristóteles. Es estructura clásica con vigencia hasta hoy en literatura y cine.'
+          feedbackCorrecto: 'Correcto. El desarrollo es la zona más larga: ahí está el trabajo que sostiene el libro.',
+          feedbackIncorrecto: 'No son tres partes iguales ni es libre. El desarrollo pesa cerca de la mitad.'
         },
         {
-          enunciado: '¿Qué pasa si todos los capítulos pesan lo mismo?',
+          enunciado: '¿Cuáles son los tres capítulos pivote?',
           opciones: [
-            'Pierde ritmo y peso editorial',
-            'El libro está perfecto',
-            'Es más fácil de leer',
-            'No tiene consecuencias'
+            'Los tres primeros, porque son los que deciden si alguien continúa leyendo el libro',
+            'Los que el autor considere más importantes según el tema que esté tratando',
+            'Los tres del acto de desarrollo, que es donde se concentra el peso del libro',
+            'El primero, el del medio y el último, que cargan más que todos los demás'
+          ],
+          respuestaIndex: 3,
+          feedbackCorrecto: 'Sí. El primero decide si siguen leyendo, el del medio sostiene la parte larga y el último es lo que queda.',
+          feedbackIncorrecto: 'No son los tres primeros ni los del desarrollo. Son el primero, el del medio y el último.'
+        },
+        {
+          enunciado: '¿Qué pasa si todos los capítulos tienen el mismo largo?',
+          opciones: [
+            'La lectura queda plana, porque nada se destaca sobre el resto del libro',
+            'Nada relevante, porque la uniformidad hace el libro más fácil de seguir',
+            'El libro resulta más corto de lo que debería para el tema que trata',
+            'Se dificulta la maquetación posterior, porque las páginas no calzan bien'
           ],
           respuestaIndex: 0,
-          feedbackCorrecto: 'Correcto. Pesos iguales aplanan el ritmo. La estructura profesional asigna pesos según función.',
-          feedbackIncorrecto: 'Pierde ritmo. Pesos iguales aplanan; la estructura profesional asigna pesos según función de cada capítulo.'
+          feedbackCorrecto: 'Correcto. Sin variación, lo importante no tiene dónde apoyarse y todo se lee igual.',
+          feedbackIncorrecto: 'No es un problema de longitud ni de maquetación. Es que sin relieve nada se destaca.'
         },
         {
-          enunciado: 'El último capítulo de un libro bien diseñado...',
+          enunciado: '¿Cuál es la prueba de que un capítulo merece estar en el libro?',
           opciones: [
-            'Tiene que dar un final feliz cerrado',
-            'Es opcional',
-            'Cierra o deja inconforme; merece ser pivote y reescribirse más',
-            'Se copia del primero'
+            'Que trate un asunto relacionado con el tema general que anuncia el título',
+            'Que su función en el arco se pueda nombrar en una sola frase',
+            'Que tenga una extensión parecida a la de los capítulos que lo rodean',
+            'Que aporte información que no aparezca en ninguna otra parte del libro'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Sí. Si la función no cabe en una frase, el capítulo está ahí porque el tema lo sugería.',
+          feedbackIncorrecto: 'Estar relacionado con el tema no basta. La prueba es poder nombrar qué hace ese capítulo en el arco.'
+        },
+        {
+          enunciado: 'El año cafetero tiene dos cosechas de distinto tamaño y un «tiempo frío» entre ellas. ¿Qué aplica eso a tu libro?',
+          opciones: [
+            'Que conviene escribir el libro en dos temporadas separadas por un periodo de descanso',
+            'Que los ciclos productivos del campo inspiraron las estructuras narrativas modernas',
+            'Que el ciclo no reparte el trabajo en partes iguales, y la estructura tampoco debería',
+            'Que todo proyecto largo necesita pausas para que quien lo hace no termine agotado'
           ],
           respuestaIndex: 2,
-          feedbackCorrecto: 'Exacto. El último es pivote. Cierra o decepciona; por eso pide más reescritura.',
-          feedbackIncorrecto: 'Es pivote. Cierra o decepciona al lector, por eso merece más cuidado y reescritura.'
+          feedbackCorrecto: 'Correcto. Una cosecha grande, una pequeña y un periodo entre las dos: el peso está repartido con relieve.',
+          feedbackIncorrecto: 'No es sobre el calendario de escritura ni sobre el descanso propio. Es sobre el reparto desigual del peso.'
         }
       ]
     }
   ],
   postLectura: {
-    reflexion: '¿Mi estructura ordena el camino del lector, o lo desordena con saltos sin propósito?',
-    transferencia: 'En la sesión 6 vas a aprender sobre derechos de autor y propiedad intelectual con IA (Ley 23 de 1982, obras derivadas, licencias Creative Commons).',
-    cierre: 'Al terminar podrás: (1) analizar la escaleta de la sesión 2 contra el arco narrativo en 3 actos, identificando si tu planteamiento es muy largo, tu desarrollo muy corto o tu cierre muy débil; (2) explicar con tus palabras por qué los 3 capítulos pivote requieren más trabajo que l…'
+    reflexion: '¿Cuál de mis capítulos está ahí por función y cuál está porque el tema lo sugería?',
+    transferencia: 'Llega a la próxima sesión con el mapa estructural. Todo lo que produzcas de aquí en adelante se va a acomodar sobre ese plano.',
+    cierre: 'Al terminar podrás: (1) analizar tu escaleta contra el arco de tres actos y detectar si el planteamiento se alargó o el cierre quedó corto; (2) explicar por qué los tres capítulos pivote necesitan más trabajo que los demás; (3) crear el mapa estructural completo, con la función d…'
   },
   saberAncestral: {
-    saber: 'En cualquier barrio del Valle del Cauca, cuando una familia decide construir su casa, el primer paso nunca es comprar ladrillos. El primer paso es ir donde el arquitecto del barrio (a veces un maestro de obra experimentado, a veces alguien con título formal). El arquitecto saca papel y lápiz, escucha a la familia ("somos 4, queremos 3 cuartos, una sala grande y un patio"), pregunta por el terreno, mira el sol, dibuja. Lo que dibuja es el plano: dónde van las puertas para que se abran cómodas, dónde las ventanas para que entre luz al cuarto correcto, qué tan grande el patio para que no se ahogue la casa, qué pendiente del techo para que el agua corra. Solo después de aprobar el plano, la familia pide los ladrillos. Si la familia se salta el plano y empieza a poner ladrillos por entusiasmo, pasa lo conocido: la casa queda con cuartos oscuros, puertas que pegan, escaleras peligrosas, presupuesto desbordado. La sabiduría del barrio es ancestral y simple: ningún edificio bueno se levanta sin plano previo. Un libro es un edificio de palabras. La estructura editorial es ese plano antes de poner los capítulos.',
-    preguntaPuente: '¿Qué sabía el arquitecto del barrio al dibujar el plano antes de pedir ladrillos, que el editor novato olvida cuando empieza a escribir capítulos sin haber pensado el arco completo? ¿Y por qué los 3 capítulos pivote merecen más cuidado que los demás?'
+    saber: 'El café no se recoge todo el año igual. Colombia tiene dos cosechas: la principal, hacia septiembre y diciembre, y una segunda más pequeña que llaman mitaca o traviesa, hacia abril y junio (Parada Sanabria, 2017). El Valle del Cauca está en traviesa durante el primer semestre, mientras otras regiones están en cosecha principal. En las veredas cafeteras de Caldas los campesinos llaman «tiempo frío» al periodo entre las dos. Y no es tiempo perdido: es la otra mitad del ciclo, la que hace posible la cosecha siguiente. La cara de exclusión está en de quién es ese descanso. Es del cultivo y del calendario, no del recolector: entre cosechas no hay jornal.',
+    fuente: 'Campesinado cafetero de Caldas · las dos cosechas y el «tiempo frío» entre ellas',
+    referencia: 'Parada Sanabria, P. J. (2017). Práctica social y cultural del campesinado cafetero en cuatro municipios de Caldas (Colombia). Revista Colombiana de Sociología, 40(1 Supl.), 193--212. https://doi.org/10.15446/rcs.v40n1Supl.65913',
+    preguntaPuente: '¿Por qué un año cafetero no reparte el trabajo en partes iguales? ¿Y qué le pasa a un libro donde los diez capítulos pesan exactamente lo mismo?'
   },
+  mapaRuta: [
+    {
+      numero: 1,
+      iconos: [
+        '🌱'
+      ],
+      titulo: 'Las dos cosechas y el tiempo frío',
+      duracionMin: 5
+    },
+    {
+      numero: 2,
+      iconos: [
+        '👁'
+      ],
+      titulo: 'Actividad 1 · Auditoría de mi escaleta',
+      duracionMin: 15
+    },
+    {
+      numero: 3,
+      iconos: [
+        '📖'
+      ],
+      titulo: 'Actividad 2 · El arco, los pivotes y el ritmo',
+      duracionMin: 20
+    },
+    {
+      numero: 4,
+      iconos: [
+        '✏️'
+      ],
+      titulo: 'Actividad 3 · Mi mapa estructural',
+      duracionMin: 35
+    },
+    {
+      numero: 5,
+      iconos: [
+        '✅',
+        '💭'
+      ],
+      titulo: 'Verifica, tres citas y tu compromiso',
+      duracionMin: 15
+    }
+  ],
+  actividades: [
+    {
+      numero: 1,
+      verbo: 'ANALIZA',
+      titulo: 'Auditoría de mi escaleta',
+      tiempoMin: 15,
+      modalidad: 'individual',
+      pasos: [
+        'Toma la escaleta que armaste en la sesión 2.',
+        'Etiqueta cada capítulo como planteamiento, desarrollo o cierre.',
+        'Suma las páginas estimadas de cada grupo y conviértelas en proporciones.',
+        'Compara esas proporciones con el arco de una cuarta parte, la mitad y una cuarta parte.',
+        'Anota dónde está la mayor desproporción y qué capítulo la causa.'
+      ],
+      cuaderno: {
+        titulo: 'Auditoría de mi escaleta',
+        formato: 'tabla con capítulo, etiqueta, páginas y total por grupo, más la comparación con el arco',
+        extension: 'un tercio de página'
+      },
+      criterios: [
+        'Todos los capítulos quedaron etiquetados, ninguno sin acto.',
+        'Está señalado el capítulo que causa la mayor desproporción.'
+      ]
+    },
+    {
+      numero: 2,
+      verbo: 'EXPLICA',
+      titulo: 'El arco, los pivotes y el ritmo',
+      tiempoMin: 20,
+      modalidad: 'parejas',
+      pasos: [
+        'Con tu pareja, escriban los tres actos con su proporción y su función.',
+        'Escriban los tres capítulos pivote y qué carga cada uno.',
+        'Escriban los errores típicos de estructura.',
+        'Cada uno explica la función de cada capítulo de su libro en una frase.',
+        'Marquen los capítulos cuya función no cabe en una frase.'
+      ],
+      cuaderno: {
+        titulo: 'El arco, los pivotes y el ritmo',
+        formato: 'los tres actos, los tres pivotes, los errores y la lista de capítulos sin función clara',
+        extension: 'media página'
+      },
+      criterios: [
+        'Cada pivote tiene escrito qué carga, no solo cuál es.',
+        'Está la lista de capítulos cuya función no cabe en una frase.'
+      ]
+    },
+    {
+      numero: 3,
+      verbo: 'CREA',
+      titulo: 'Mi mapa estructural',
+      tiempoMin: 35,
+      modalidad: 'individual',
+      pasos: [
+        'Reorganiza la escaleta hacia el arco de tres actos.',
+        'Numera los capítulos definitivos con su título.',
+        'Escribe la función de cada uno en una frase.',
+        'Reparte las páginas con variación deliberada y marca los tres pivotes.',
+        'Escribe el mapa completo en una página y léelo en voz alta.'
+      ],
+      cuaderno: {
+        titulo: 'Mi mapa estructural',
+        formato: 'el mapa en una página con arco, capítulos, funciones, páginas y pivotes',
+        extension: 'una página'
+      },
+      criterios: [
+        'Ningún capítulo quedó sin función escrita.',
+        'Las páginas están repartidas con variación, no en partes iguales.'
+      ]
+    }
+  ],
   triangulo: {
     dussel: {
-      autor: 'Enrique Dussel',
+      autor: 'Enrique Dussel · Filosofía de la liberación (1977), §4.3.1.2',
       lente: 'lente del nosotros',
-      cita: 'Un libro bien estructurado ordena el pensamiento del lector; uno mal estructurado lo desordena y desperdicia su atención.',
-      preguntaEspejo: '¿Mi estructura ordena el camino del lector, o lo desordena con saltos sin propósito?'
+      cita: 'El tema esencial del diseño es el de dotar al producto de coherencia formal; incluye a la tecnología… por cuanto esto significa coherencia funcional: el del valor del uso; incluye a la estética, porque la coherencia formal, en cuanto tal, es la belleza del producto.',
+      preguntaEspejo: '¿Cuál de mis capítulos está ahí por función y cuál está porque el tema lo sugería?'
     },
     estoico: {
-      autor: 'Marco Aurelio',
+      autor: 'Marco Aurelio · Meditaciones VII, 47 (c. 175 d.C.)',
       lente: 'lente del cuidado interior',
-      cita: 'El plan previo es disciplina; la improvisación editorial es vanidad disfrazada de espontaneidad.',
-      preguntaEspejo: '¿Estoy cerrando la estructura antes de seguir escribiendo, o voy improvisando capítulos?'
+      cita: 'Conduce mirar alrededor el curso de los astros, como quien gira con ellos, y contemplar también frecuentemente las mutuas conversiones de los elementos, porque las consideraciones de estas cosas purifican a uno de las manchas de esta vida terrestre.',
+      preguntaEspejo: 'Al mirar el libro entero de una vez, ¿qué vi que no se veía capítulo por capítulo?'
     },
     floridi: {
-      autor: 'Luciano Floridi',
+      autor: 'The Onlife Initiative (ed. Luciano Floridi) · The Onlife Manifesto (2015), § 2.3',
       lente: 'lente de la infoesfera',
-      cita: 'La estructura clara es ética del editor en la era del contenido infinito.',
-      preguntaEspejo: '¿Mi estructura merece el tiempo del lector, o pide más atención de la que devuelve?'
+      cita: 'La abundancia de información también puede producir sobrecarga cognitiva, distracción y amnesia (el presente olvidadizo). (trad. propia)',
+      preguntaEspejo: 'Si alguien leyera mi libro entero, ¿qué tres cosas recordaría una semana después?'
     }
   },
   cincoDimensiones: {
-    personal: 'Al terminar podrás: (1) analizar la escaleta de la sesión 2 contra el arco narrativo en 3 actos, identificando si tu planteamiento es muy largo, tu desarrollo muy corto o tu cierre muy débil; (2) expl…',
-    emocional: 'Es tentador empezar a escribir capítulos sin haber cerrado la estructura, con el argumento de "ya iré viendo".',
-    ciudadana: 'La estructura editorial no es trámite: es respeto cognitivo por el lector.',
-    local: 'Antes de cerrar, mira la estructura desde las cinco dimensiones humanas.',
-    intergeneracional: 'En la era de la información, los lectores tienen miles de libros disponibles.'
+    personal: 'Aprendes a mirar un trabajo largo desde arriba, y no solo desde la parte que tienes entre manos. Sirve para cualquier proyecto que dure meses.',
+    emocional: 'Reconocer que un capítulo querido no tiene función cuesta. Es la misma incomodidad de la sesión anterior, pero a escala del libro.',
+    ciudadana: 'Repartir el peso es respeto por el tiempo de quien lee. Un libro que se cae a la mitad le hace perder algo a alguien.',
+    local: 'El año cafetero tiene dos cosechas de distinto tamaño y un tiempo entre ellas. El ciclo no reparte el trabajo en partes iguales.',
+    intergeneracional: 'Que el descanso sea del cultivo y no de quien recoge es una diferencia que conviene no borrar cuando se usa el ciclo como imagen.'
   }
 };
 

@@ -69,24 +69,24 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'Tu computador se daña. Habías guardado todas tus tareas SOLO en el disco local. ¿Qué pasa?',
           opciones: [
-            'Las tareas se mantienen, los discos siempre se recuperan.',
-            'Microsoft las recupera por arte de magia.',
             'Pierdes todas las tareas si no tenías copia en la nube.',
+            'Microsoft las recupera por arte de magia.',
+            'Las tareas se mantienen, los discos siempre se recuperan.',
             'Las tareas saltan a otro computador automáticamente.'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Si no había copia en la nube (OneDrive) ni en USB ni en disco externo, las tareas se perdieron. Por eso OneDrive es tan importante: backup automático.',
           feedbackIncorrecto: 'Sin backup en la nube, las tareas se pierden. OneDrive es la solución: guarda automáticamente cada archivo. Empieza a usarlo desde hoy.'
         },
         {
           enunciado: 'Estás en casa y necesitas la tarea que hiciste en el computador del colegio. ¿Cómo la abres?',
           opciones: [
-            'Imposible, está en el cole.',
             'Voy a office.com, inicio sesión con mi cuenta institucional, abro OneDrive, ahí está la tarea.',
-            'Llamo al colegio para que me la manden.',
-            'Me toca rehacerla.'
+            'Me toca rehacerla.',
+            'Imposible, está en el cole.',
+            'Llamo al colegio para que me la manden.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Exacto. Esa es la magia de la nube: tus archivos viajan contigo (no físicamente; viven en la nube). Abres desde cualquier dispositivo con tu cuenta.',
           feedbackIncorrecto: 'office.com + cuenta institucional + OneDrive = tus archivos donde sea. La nube hace que tu mundo digital no dependa de un computador específico.'
         },
@@ -94,9 +94,9 @@ const contenido: ContenidoGuia = {
           enunciado: 'Borraste por accidente un archivo de OneDrive. ¿Está perdido?',
           opciones: [
             'Tienes 30 días para recuperarlo desde la Papelera de OneDrive.',
-            'Sí, totalmente perdido.',
             'Microsoft te llama por teléfono.',
-            'Hay que rehacerlo todo.'
+            'Hay que rehacerlo todo.',
+            'Sí, totalmente perdido.'
           ],
           respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Papelera de OneDrive guarda lo borrado 30 días. Click derecho en el archivo → Restaurar. Recuperación rápida sin estrés.',
@@ -105,24 +105,24 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'Tu cuenta institucional te da... (escoge lo más completo)',
           opciones: [
+            'Word, Excel, PowerPoint, OneDrive (1 TB), Outlook, Teams, Forms gratis.',
             'Solo correo.',
-            'Solo Word.',
             'Nada, hay que pagar.',
-            'Word, Excel, PowerPoint, OneDrive (1 TB), Outlook, Teams, Forms gratis.'
+            'Solo Word.'
           ],
-          respuestaIndex: 3,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Bien. Tu cuenta institucional te da Microsoft 365 completo: las 8 apps + 1 TB de OneDrive. Aprovéchala mientras estés en el colegio.',
           feedbackIncorrecto: 'Cuenta institucional = paquete completo de Microsoft 365 + 1 TB de OneDrive. Aprovéchalo, fuera del colegio cuesta mucho dinero.'
         },
         {
           enunciado: 'Estás organizando carpetas en OneDrive. ¿Qué nombre es MEJOR?',
           opciones: [
-            'Mis Documentos del Año Pasado',
             'MIS DOCUMENTOS',
-            'xyz',
-            'Mis-documentos'
+            'Mis Documentos del Año Pasado',
+            'Mis-documentos',
+            'xyz'
           ],
-          respuestaIndex: 3,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Mis-documentos sigue las 5 reglas: sin espacios (usa guion), sin acentos, claro, profesional. Las otras opciones violan reglas.',
           feedbackIncorrecto: 'Mis-documentos: sin espacios (guion), sin acentos, claro. Las URLs no se rompen, los profesores entienden, tu yo de un año después lo encuentra.'
         }

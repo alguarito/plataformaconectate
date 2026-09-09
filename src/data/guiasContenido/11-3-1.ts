@@ -69,48 +69,48 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'Tu amigo dice \'tengo una idea de app genial, vamos a hacerla\'. ¿Qué le respondes?',
           opciones: [
+            'Subámosla a Instagram primero.',
             'Vamos, programémosla ya.',
             'Pidamos plata a un inversionista.',
-            'Antes de programar: ¿qué problema resuelve? ¿A quién duele? ¿Entrevistamos primero?',
-            'Subámosla a Instagram primero.'
+            'Antes de programar: ¿qué problema resuelve? ¿A quién duele? ¿Entrevistamos primero?'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. Enamorarse del problema, no de la idea. Primero validas que el problema existe y duele; después construyes.',
           feedbackIncorrecto: 'Antes de construir: observa y valida. Regla moderna: problema primero, solución después. Tu amigo se enamoró de la idea sin verificar.'
         },
         {
           enunciado: '¿Cuál es un problema BIEN definido?',
           opciones: [
+            'Internet es lento.',
             'Las abuelas (60+) del barrio La Merced pierden 45 min en cada visita al banco porque las filas no priorizan adultos mayores; lo asumen como inevitable.',
             'La gente pierde tiempo en el banco.',
-            'Internet es lento.',
             'Necesitamos una app.'
           ],
-          respuestaIndex: 0,
+          respuestaIndex: 1,
           feedbackCorrecto: 'Bien. Tiene las 5 partes: quién, qué duele, cuándo, por qué no resuelto, qué hacen hoy. Eso es problema bien definido.',
           feedbackIncorrecto: 'Un problema bien definido tiene 5 partes específicas: quién, qué duele medible, cuándo, por qué no resuelto, qué hacen hoy.'
         },
         {
           enunciado: 'Tu idea inicial no convence en las entrevistas. ¿Qué haces?',
           opciones: [
+            'Abandono el proyecto.',
             'Insisto, mi idea es buena.',
             'Pivoteo: mantengo el problema, busco otra solución.',
-            'Cambio de problema.',
-            'Abandono el proyecto.'
+            'Cambio de problema.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. Pivotear es señal de emprendedor maduro. Te enamoraste del problema; la solución es ajustable.',
           feedbackIncorrecto: 'Pivotear: cambias solución, mantienes problema. Insistir en una solución que no funciona es enamoramiento, no oficio.'
         },
         {
           enunciado: '¿Qué tienen en común el ebanista de Cartago y un emprendedor digital?',
           opciones: [
+            'Ambos parten de necesidad real + oficio respondedor. No de \'idea genial\'.',
             'Nada.',
             'El ebanista usaba computador.',
-            'Es metáfora forzada.',
-            'Ambos parten de necesidad real + oficio respondedor. No de \'idea genial\'.'
+            'Es metáfora forzada.'
           ],
-          respuestaIndex: 3,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Bien. La sabiduría del oficio campesino antecede al método moderno. El método Lean Startup redescubre lo que las abuelas ya sabían.',
           feedbackIncorrecto: 'Necesidad real + oficio respondedor = emprendimiento sano. Aplica al ebanista de 1950 y al emprendedor digital de 2026.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'Tu ficha de oportunidad debe tener...',
           opciones: [
             'Solo el problema.',
+            'Solo la idea genial.',
             'Solo la solución.',
-            'Problema + afectados + causa + consecuencia + hipótesis (5 campos).',
-            'Solo la idea genial.'
+            'Problema + afectados + causa + consecuencia + hipótesis (5 campos).'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. Los 5 campos te obligan a especificar. Una ficha incompleta produce entrevistas pobres.',
           feedbackIncorrecto: '5 campos: problema + afectados + causa + consecuencia + hipótesis. Saltar uno hace que el proyecto se construya sobre arenas movedizas.'
         }

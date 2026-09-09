@@ -93,7 +93,7 @@ const contenido: ContenidoGuia = {
         {
           enunciado: '¿Qué diferencia hay entre un mandato del CRIC y lo que escribes hoy?',
           opciones: [
-            '',
+            'Ninguna: los dos son acuerdos que se ponen por escrito.',
             'Que el mandato es un acto de gobierno de un pueblo y lo tuyo es mucho más pequeño.',
             'Que el mandato se escribe a mano y el tuyo en computador.',
             'Que el mandato dura un año y el tuyo no tiene plazo fijado.'

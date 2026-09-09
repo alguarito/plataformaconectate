@@ -751,6 +751,46 @@ def lint_anclas_prohibidas(g: dict) -> tuple[list[str], list[str]]:
     return errors, warnings
 
 
+# Listas que en el PDF y en la web se imprimen como texto suelto. Si un elemento
+# lleva «algo: algo» sin comillas, YAML lo convierte en un diccionario de una
+# clave y el generador lo emite vacío: la opción de quiz desaparece de la página
+# sin que nada falle. Visto en 33 elementos de 25 guías el 2026-09-09.
+LISTAS_DE_TEXTO = ("checks", "pilares", "criterios", "opciones", "pasos", "iconos")
+
+
+def _listas_no_textuales(x, ruta=""):
+    if isinstance(x, dict):
+        for k, v in x.items():
+            yield from _listas_no_textuales(v, f"{ruta}.{k}" if ruta else str(k))
+    elif isinstance(x, list):
+        nombre = ruta.split(".")[-1].split("[")[0]
+        for i, v in enumerate(x):
+            if nombre in LISTAS_DE_TEXTO and not isinstance(v, str):
+                yield (f"{ruta}[{i}]", v)
+            else:
+                yield from _listas_no_textuales(v, f"{ruta}[{i}]")
+
+
+def lint_listas_texto(g: dict) -> list[str]:
+    """Errores por elementos de lista que no quedaron como texto.
+
+    Casi siempre es un «- Algo: algo» sin comillas. No rompe el linter ni el
+    build: rompe la página, en silencio.
+    """
+    errors = []
+    for ruta, valor in _listas_no_textuales(g):
+        if isinstance(valor, dict) and len(valor) == 1:
+            (k, v), = valor.items()
+            sugerencia = f'{k}: {v}'
+            errors.append(
+                f"{ruta}: quedó como diccionario y no como texto. "
+                f"Seguramente falta entrecomillar: - \"{sugerencia[:60]}…\""
+            )
+        else:
+            errors.append(f"{ruta}: se esperaba texto y hay {type(valor).__name__}")
+    return errors
+
+
 def _walk_strings(x, path=""):
     if isinstance(x, str):
         yield path, x
@@ -823,6 +863,7 @@ REGLAS = [
     ("oraciones-largas", _r_par(lint_oraciones_largas)),
     ("frases-plantilla", _r_par(lint_frases_plantilla)),
     ("anclas-descartadas", _r_par(lint_anclas_prohibidas)),
+    ("listas-texto", _r_err(lint_listas_texto)),
 ]
 
 # Estructurales de v3.1: presuponen `duracion_min`, `apertura.fuente`,

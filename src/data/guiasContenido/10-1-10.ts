@@ -81,24 +81,24 @@ const contenido: ContenidoGuia = {
         {
           enunciado: '¿Qué prueba si el oficio editorial funcionó o no?',
           opciones: [
-            'La lectura en voz alta del fragmento',
-            'El precio del libro',
+            'El color de la portada',
             'La cantidad de páginas',
-            'El color de la portada'
+            'El precio del libro',
+            'La lectura en voz alta del fragmento'
           ],
-          respuestaIndex: 0,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Correcto. La lectura en voz alta revela si el texto tiene voz humana o suena a chatbot.',
           feedbackIncorrecto: 'La lectura en voz alta. Revela si el libro suena a ti o si quedó genérico.'
         },
         {
           enunciado: '¿Qué actitud profesional pide la declaración de uso de IA?',
           opciones: [
-            'Ocultarlo para parecer más auténtico',
+            'Declarar modelos, porcentaje generado y porcentaje reescrito a mano',
             'No mencionarlo',
-            'Exagerar el uso humano',
-            'Declarar modelos, porcentaje generado y porcentaje reescrito a mano'
+            'Ocultarlo para parecer más auténtico',
+            'Exagerar el uso humano'
           ],
-          respuestaIndex: 3,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Exacto. La honestidad gana respeto profesional y construye la nueva cultura editorial.',
           feedbackIncorrecto: 'La honestidad sobre uso de IA es estándar profesional contemporáneo. Ocultarlo erosiona la cultura.'
         },
@@ -106,11 +106,11 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Qué papel cumples en la feria del libro escolar?',
           opciones: [
             'Solo de autor',
-            'Solo de lector',
-            '',
-            'Solo de moderador'
+            'Ambos: autor y lector que comenta otros libros',
+            'Solo de moderador',
+            'Solo de lector'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 1,
           feedbackCorrecto: 'Correcto. Cada estudiante es autor y lector. Esa doble práctica es la ciudadanía editorial.',
           feedbackIncorrecto: 'Eres autor y lector. La feria entrena en ciudadanía editorial: leer a otros con criterio y respeto.'
         },

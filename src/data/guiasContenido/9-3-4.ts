@@ -120,7 +120,7 @@ const contenido: ContenidoGuia = {
             'Que las fechas deben filtrarse siempre por rango completo.',
             'Que conviene ordenar antes de filtrar por una fecha.',
             'Que el tipo de dato de la columna podría no ser fecha.',
-            ''
+            'Que no se puede reproducir: falta la condición exacta.'
           ],
           respuestaIndex: 3,
           feedbackCorrecto: 'Correcto. «Fecha entre el 1 y el 31 de agosto» sí se puede reproducir.',

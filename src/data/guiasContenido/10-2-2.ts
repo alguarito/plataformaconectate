@@ -70,20 +70,20 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Qué porcentaje del informe ocupa el desarrollo?',
           opciones: [
             '10%',
+            '5%',
             '60-70%',
-            '100%',
-            '5%'
+            '100%'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Exacto. 60-70%. Es la sección más larga porque contiene metodología, datos y análisis.',
           feedbackIncorrecto: 'Son 60-70%. El desarrollo concentra el peso del informe.'
         },
         {
           enunciado: '¿Qué debe contener obligatoriamente la introducción?',
           opciones: [
-            'Solo el saludo',
-            'Solo conclusiones',
             'Solo bibliografía',
+            'Solo conclusiones',
+            'Solo el saludo',
             'Contexto, objetivo y alcance'
           ],
           respuestaIndex: 3,
@@ -106,9 +106,9 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Qué hace una recomendación accionable?',
           opciones: [
             'Dice "habría que mejorar"',
-            'Solo describe el problema',
+            'Es opcional',
             'Propone qué, quién y para cuándo',
-            'Es opcional'
+            'Solo describe el problema'
           ],
           respuestaIndex: 2,
           feedbackCorrecto: 'Correcto. Accionable significa qué se hace, quién lo hace y plazo concreto.',
@@ -117,12 +117,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: '¿Desde cuándo existe la estructura del informe técnico?',
           opciones: [
-            'Siglo XVII (primeros informes científicos)',
-            '',
             'Solo en TikTok',
-            '1500 a.C.'
+            '1500 a.C.',
+            'Siglo XVII (primeros informes científicos)',
+            '2025'
           ],
-          respuestaIndex: 0,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Exacto. Desde el siglo XVII con los primeros informes científicos. Sigue vigente.',
           feedbackIncorrecto: 'Existe desde el siglo XVII. Es de las herramientas más estables del oficio profesional escrito.'
         }

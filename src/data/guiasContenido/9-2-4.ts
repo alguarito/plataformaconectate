@@ -108,7 +108,7 @@ const contenido: ContenidoGuia = {
             'Aumentar la saturación de los dos colores usados.',
             'Añadir una leyenda en la esquina de la página.',
             'Cambiar a una pareja de colores más contrastada.',
-            ''
+            'Una segunda marca: una forma, un símbolo o una palabra.'
           ],
           respuestaIndex: 3,
           feedbackCorrecto: 'Sí. Es la regla que más se olvida y la más fácil de cumplir.',
@@ -191,7 +191,7 @@ const contenido: ContenidoGuia = {
       tiempoMin: 15,
       modalidad: 'individual',
       pasos: [
-        '',
+        'Reúne cinco paletas: una natural, una tradicional, una de marca, una de revista y una de aplicación.',
         'Anota cuántos colores usa cada una de verdad, contando solo los que se repiten.',
         'Anota cuál domina en cada una.',
         'Mira las cinco en escala de grises.',

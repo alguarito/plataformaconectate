@@ -117,7 +117,7 @@ const contenido: ContenidoGuia = {
         {
           enunciado: '¿Qué diferencia hay entre un gráfico feo y uno engañoso?',
           opciones: [
-            '',
+            'Ninguna: un gráfico mal hecho siempre induce a error.',
             'El feo se puede corregir y el engañoso hay que descartarlo.',
             'El engañoso siempre viene de fuentes publicitarias.',
             'Uno mal hecho puede ser perfectamente honesto.'

@@ -96,7 +96,7 @@ const contenido: ContenidoGuia = {
             'El buey, y la máquina la redistribuye.',
             'La rueda, que la genera al girar sobre su eje.',
             'La caña, al oponer resistencia entre las masas.',
-            ''
+            'Nadie: el peso del conjunto hace el trabajo.'
           ],
           respuestaIndex: 0,
           feedbackCorrecto: 'Eso es. La máquina redistribuye fuerza, no la fabrica.',

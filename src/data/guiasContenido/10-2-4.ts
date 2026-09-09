@@ -69,60 +69,60 @@ const contenido: ContenidoGuia = {
         {
           enunciado: '¿Para qué sirve "# Título"?',
           opciones: [
+            'Para hacer negrita',
             'Para un comentario',
             'Para borrar texto',
-            'Para un encabezado H1',
-            'Para hacer negrita'
+            'Para un encabezado H1'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Exacto. Un # equivale a H1, ## a H2, ### a H3. Define la jerarquía.',
           feedbackIncorrecto: '# crea encabezado H1. Más # bajan el nivel: ## H2, ### H3.'
         },
         {
           enunciado: '¿Cómo se hace negrita en Markdown?',
           opciones: [
+            '<b>texto</b>',
             '$$texto$$',
-            '**texto**',
             '___texto___',
-            '<b>texto</b>'
+            '**texto**'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Correcto. **texto** produce negrita en Markdown estándar.',
           feedbackIncorrecto: 'Se usa **texto**. Dos asteriscos a cada lado, sin espacios.'
         },
         {
           enunciado: '¿Cuál es la mayor ventaja de Markdown frente a Word?',
           opciones: [
-            '',
             'Es más bonito',
+            'No tiene ventajas',
             'Es de pago',
-            'No tiene ventajas'
+            'Es portable: el mismo .md se convierte a PDF, HTML, libro'
           ],
-          respuestaIndex: 0,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Exacto. Portabilidad: el mismo archivo soporta múltiples salidas sin reescribir el contenido.',
           feedbackIncorrecto: 'Su mayor ventaja es la portabilidad. El mismo archivo .md se convierte a PDF, HTML, libro o presentación.'
         },
         {
           enunciado: '¿Cuál de estos editores entiende Markdown y es gratuito?',
           opciones: [
-            'Photoshop',
+            'VS Code',
             'Excel',
             'WhatsApp',
-            'VS Code'
+            'Photoshop'
           ],
-          respuestaIndex: 3,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Correcto. VS Code es gratuito y soporta Markdown nativamente con vista previa.',
           feedbackIncorrecto: 'VS Code es gratuito y soporta Markdown. También StackEdit, Dillinger y Obsidian.'
         },
         {
           enunciado: '¿Quién creó Markdown y cuándo?',
           opciones: [
-            'Microsoft, 1995',
             'Google, 2010',
-            'Anonymous, 2020',
-            'John Gruber, 2004'
+            'Microsoft, 1995',
+            'John Gruber, 2004',
+            'Anonymous, 2020'
           ],
-          respuestaIndex: 3,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Exacto. John Gruber lo creó en 2004 con filosofía de simplicidad y portabilidad.',
           feedbackIncorrecto: 'John Gruber, 2004. Filosofía: texto plano que se convierte automáticamente a formato visual.'
         }

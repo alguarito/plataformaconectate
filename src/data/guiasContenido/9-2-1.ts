@@ -1,8 +1,9 @@
 /**
- * Contenido enriquecido — Grado 9 · Periodo 2 · Sesión 1
- * Tema: ¿Qué es diseñar? — orden, jerarquía, intención.
- * Apertura del Periodo 2 (Diseño editorial digital).
- * Profundidad MILC v3 completa, alineada con content/guias/9/9-2-1.yaml.
+ * Contenido enriquecido para Grado 9 · Período 2 · Sesión 1
+ * (sesión global 11).
+ *
+ * Auto-generado desde content/guias/9/9-2-1.yaml por
+ * scripts/build-guias-web-ts.py. Edita el YAML, no este archivo.
  */
 import type { ContenidoGuia } from './_schema';
 
@@ -11,318 +12,274 @@ const contenido: ContenidoGuia = {
   periodo: 2,
   sesion: 1,
   titulo: '¿Qué es diseñar? — orden, jerarquía, intención',
-  ocultarPDF: false,
-  resumen:
-    'Apertura del Periodo 2. Entrenas el ojo en piezas editoriales reales y entiendes los 3 pilares de todo buen diseño.',
+  resumen: 'Las tejedoras ingas de Santiago-Manoy construyen toda la jerarquía de un chumbe con dos o tres colores, y planean cada labor antes de tejerla. Hoy entrenas el ojo en tres piezas editoriales reales y aprendes los tres pilares: orden, jerarquía e intención. Si no puedes decir qué se lee primero, no estás diseñando: estás decorando.',
   duracionMin: 90,
   subtema: 'Apertura · Diseño editorial digital',
-
-  saberAncestral: {
-    saber:
-      'Diseñar no nació con Figma. Los pasquines populares del Valle, los almanaques campesinos, los pliegos parroquiales y las cartillas escolares de los años 50 eran piezas de diseño con propósito: jerarquía clara, tipografía legible en la plaza, orden de información que respondía a una necesidad concreta de la comunidad.',
-    fuente: 'Pasquines, almanaques, pliegos parroquiales y cartillas del Valle del Cauca',
-    preguntaPuente:
-      '¿Qué tienen en común un pasquín del Valle hace 100 años y una historia de Instagram bien hecha hoy? ¿Y en qué se diferencian profundamente?',
-  },
-
-  mapaRuta: [
-    { numero: 1, iconos: ['🌱'], titulo: 'Pasquines y oficio editorial', duracionMin: 10 },
-    { numero: 2, iconos: ['👁'], titulo: '3 productos editoriales reales', duracionMin: 15 },
-    { numero: 3, iconos: ['📖'], titulo: '3 pilares del diseño', duracionMin: 17 },
-    { numero: 4, iconos: ['✏️'], titulo: 'Análisis comparado', duracionMin: 33 },
-    { numero: 5, iconos: ['✅', '💭'], titulo: 'Verifica, reflexiona y cierra', duracionMin: 15 },
-  ],
-
   preLectura: {
-    porQueImporta:
-      'Tu próxima publicación en redes también es diseño editorial — aunque no lo pienses así. Entrenar el ojo a ver decisiones de diseño que otros toman sin que las notes es ventaja profesional inmediata. Sin esto, copias tendencias sin entenderlas.',
-    preguntaDetonante:
-      'Mira la página de Instagram que más sigues. ¿Qué decisiones de diseño tomó esa persona o esa marca para que se vea así? ¿Cuáles podrías imitar y cuáles inventar?',
+    porQueImporta: 'Quien diseña decide por quién lee: qué se ve primero, qué después y qué no se ve. Conviene saber que se está decidiendo.',
+    preguntaDetonante: 'De la última página que miraste, ¿podrías decir qué viste primero y por qué fue eso y no otra cosa?',
     activacion: {
-      titulo: 'Test del primer vistazo',
-      descripcion:
-        'En 3 minutos, abre un libro, una revista o un periódico que tengas a mano. Mira la portada o primera página durante exactamente 5 segundos. Cierra el producto. Anota qué viste. Eso que recordaste es lo que el diseñador logró que se quedara contigo.',
-      duracionMin: 3,
+      titulo: 'Diez segundos',
+      descripcion: 'En 2 minutos, mira una página cualquiera durante diez segundos y cierra los ojos. Anota qué recuerdas. Eso es su jerarquía real.',
+      duracionMin: 3
     },
     conexion: {
-      anterior:
-        'En el Periodo 1 cerraste con tu manifiesto del técnico crítico. Ahora aplicas esa mirada a la técnica más cotidiana: cómo se comunica la información.',
-      siguiente:
-        'En la sesión 2 verás la cuadrícula como primer principio operativo del orden — la columna vertebral invisible de toda página.',
-    },
+      anterior: 'En la sesión 10 del periodo 1 escribiste y defendiste tu manifiesto del técnico crítico.',
+      siguiente: 'En la sesión 2 trabajas la cuadrícula, la herramienta con que se construye el orden.'
+    }
   },
-
   conceptosClave: [
     {
       termino: 'Orden',
-      definicion:
-        'La secuencia narrativa que propone una pieza editorial: qué va antes, qué después. El ojo del lector recorre la página siguiendo ese orden, sepa o no que lo está siguiendo.',
-      ejemplo:
-        'Una revista bien diseñada te lleva del titular al subtítulo, al lead, al cuerpo y al pie de foto en ese orden. No es accidente — es decisión.',
-      emoji: '🔢',
+      definicion: 'Por dónde entra el ojo en la página y hacia dónde sigue. Es una secuencia, aunque no haya números.',
+      ejemplo: 'Un titular arriba a la izquierda propone empezar ahí, porque así leemos en español.',
+      categoria: 'Los tres pilares'
     },
     {
       termino: 'Jerarquía',
-      definicion:
-        'La distinción visual entre lo más importante y lo secundario. Se establece con tamaño, peso, color, espacio. Sin jerarquía, todo se ve igual y el ojo no sabe por dónde empezar.',
-      ejemplo:
-        'El titular es 36pt en negrita. El subtítulo 18pt en regular. El cuerpo 11pt. Esa diferencia te dice qué leer primero sin que nadie te lo explique.',
-      emoji: '🏔',
+      definicion: 'Qué es principal y qué secundario. Se construye con cuatro recursos: tamaño, peso, color y espacio.',
+      ejemplo: 'Dejar vacío alrededor de una foto la destaca más que agrandarla, y cuesta menos tinta.',
+      categoria: 'Los tres pilares'
     },
     {
       termino: 'Intención',
-      definicion:
-        'El propósito de la pieza: informar, persuadir, entretener, recordar. Toda decisión de diseño debe servir a esa intención principal. Sin intención clara, diseñar es decorar.',
-      ejemplo:
-        'Un periódico tiene intención de informar rápido (titulares grandes, lead claro). Una revista de literatura tiene intención de invitar a lectura larga (tipografía cómoda, espacio generoso).',
-      emoji: '🎯',
+      definicion: 'Para qué existe la pieza y qué quiere que haga quien la mira. Toda pieza quiere algo, lo diga o no.',
+      ejemplo: 'Un volante quiere que vayas a un lugar. Una portada quiere que abras la revista.',
+      categoria: 'Los tres pilares'
     },
     {
-      termino: 'Decisión visible vs accidente',
-      definicion:
-        'En una pieza bien diseñada, cada tamaño, color y espacio responde a una decisión. En una pieza apresurada, todo se ve igual — el ojo no sabe qué importa.',
-      ejemplo:
-        'Si abres dos volantes y uno se siente "claro" y el otro "ruidoso", la diferencia es que el primero tuvo decisiones, el segundo tuvo descuidos.',
-      emoji: '🎲',
+      termino: 'Espacio en blanco',
+      definicion: 'El vacío alrededor de los elementos. Es el recurso que menos se usa y el que más rinde.',
+      ejemplo: 'No es hueco desperdiciado: es lo que hace que lo demás se vea.',
+      categoria: 'Cómo se construye'
     },
     {
-      termino: 'Espacio negativo (aire)',
-      definicion:
-        'El espacio sin contenido que respira entre elementos. Es tan importante como el contenido — sin aire, la página agobia. Con aire, la página invita.',
-      ejemplo:
-        'Compara el feed de Apple con el de una tienda popular online. Apple usa MUCHO espacio en blanco; la otra "aprovecha cada píxel". Resultado: Apple se siente premium, la otra agobia.',
-      emoji: '🌬',
-    },
-    {
-      termino: 'Diseñar vs decorar',
-      definicion:
-        'Diseñar tiene función: resolver un problema de comunicación. Decorar es opcional, agrega sin función clara. El diseño puede ser bonito; pero ser bonito sin función no es diseño.',
-      ejemplo:
-        'Una etiqueta de medicina debe ser legible al primer vistazo (diseño). Que tenga un dibujito decorativo no la hace mejor — puede empeorarla si distrae.',
-      emoji: '⚖️',
-    },
+      termino: 'Contraste',
+      definicion: 'La diferencia entre figura y fondo. Es lo que hace visible un elemento, más que la cantidad de color.',
+      ejemplo: 'Un chumbe inga arma toda su jerarquía con dos o tres colores bien contrastados.',
+      categoria: 'Cómo se construye'
+    }
   ],
-
+  laboratorios: [
+    {
+      tipo: 'quiz',
+      titulo: '¿Distingues diseñar de decorar?',
+      instrucciones: 'Cinco preguntas sobre orden, jerarquía e intención. No va al cuaderno.',
+      preguntas: [
+        {
+          enunciado: '¿Cuál de estos es un ejemplo concreto y no una generalidad?',
+          opciones: [
+            '«La revista tiene una jerarquía visual bastante bien lograda.»',
+            '«El titular ocupa el tercio superior y está en negrita.»',
+            '«El diseño se ve moderno y agradable para la vista.»',
+            '«Los colores están bien combinados a lo largo de la pieza.»'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Sí. Señala qué parte y se puede comprobar mirando la pieza.',
+          feedbackIncorrecto: 'El que señala una parte concreta. Los otros tres dicen una impresión que no se puede verificar.'
+        },
+        {
+          enunciado: '¿Cuál es el recurso de jerarquía que menos se usa y más rinde?',
+          opciones: [
+            'El espacio en blanco alrededor de los elementos.',
+            'El tamaño de la tipografía del titular.',
+            'La cantidad de colores distintos en la página.',
+            'El peso o grosor de la letra empleada.'
+          ],
+          respuestaIndex: 0,
+          feedbackCorrecto: 'Correcto. Dejar vacío alrededor de algo lo destaca más que agrandarlo.',
+          feedbackIncorrecto: 'El espacio en blanco. No es hueco desperdiciado: es lo que hace que lo demás se vea.'
+        },
+        {
+          enunciado: '¿Qué construye la jerarquía visual en un chumbe inga?',
+          opciones: [
+            'La cantidad de hilos distintos que se usan en la faja.',
+            'El tamaño total de la pieza tejida y su ancho.',
+            'El contraste entre las labores y el color del fondo.',
+            'La velocidad con que la tejedora ejecuta cada labor.'
+          ],
+          respuestaIndex: 2,
+          feedbackCorrecto: 'Eso es. Trabaja con dos o tres colores, y lo que hace visible una labor es el contraste.',
+          feedbackIncorrecto: 'El contraste contra el fondo. Se resuelve con pocos colores, no con muchos.'
+        },
+        {
+          enunciado: 'Miras una pieza y todo tiene el mismo peso visual. ¿Qué pasa?',
+          opciones: [
+            'Que transmite una sensación de equilibrio y calma.',
+            'Que el ojo no sabe por dónde empezar.',
+            'Que la pieza está pensada para leerse completa.',
+            'Que se ahorró tinta al imprimirla en serie.'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Sí. Cuando todo pesa igual, no hay jerarquía y quien mira tiene que decidir solo.',
+          feedbackIncorrecto: 'El ojo se queda sin punto de entrada. Sin contraste no hay jerarquía.'
+        },
+        {
+          enunciado: '¿Cuál es la pregunta que distingue diseñar de decorar?',
+          opciones: [
+            '¿Qué colores combinan mejor entre sí en esta página?',
+            '¿Cuánto tiempo tomó producir la pieza terminada?',
+            '¿Qué herramienta se usó para maquetarla?',
+            '¿Qué leo primero, qué después y qué no necesito leer?'
+          ],
+          respuestaIndex: 3,
+          feedbackCorrecto: 'Correcto. Si no puedes contestarla, estás decorando.',
+          feedbackIncorrecto: 'La del recorrido de lectura. Las otras tres no dicen nada sobre cómo funciona la pieza.'
+        }
+      ]
+    }
+  ],
+  postLectura: {
+    reflexion: 'De tus tres esquemas de recorrido, ¿en cuál el ojo entró por donde el diseñador seguramente no quería?',
+    transferencia: 'Mira tres portadas cualesquiera esta semana y anota en cada una qué se ve primero. Con tres basta para entrenar el ojo.',
+    cierre: 'Si no puedes decir qué se lee primero, qué después y qué no hace falta leer, todavía no estás diseñando.'
+  },
+  saberAncestral: {
+    saber: 'En Santiago-Manoy, en el Alto Putumayo, las tejedoras ingas hacen chumbes: fajas tejidas con pictogramas geométricos que ellas llaman labores. La técnica trabaja con muy pocos colores. Uno para el fondo, otro para las labores y a veces un tercero para los bordes. Con esos tres se construye toda la jerarquía visual de la pieza. Lo que hace que una labor se vea es el contraste contra el fondo, no la cantidad de tinta. Y hay algo más exigente todavía: cada labor se planea en la mente antes de tejerse, y un punto olvidado se nota. El chumbe no es adorno: protege el vientre de la mujer. La cara de exclusión la dice una tejedora, Ruby Rodríguez, en el trabajo de campo de 2018: «estamos en amenaza de que tenemos que ser historia». Hay labores de chumbes antiguos cuyo significado ya nadie conoce, y muchas se pasaron a manillas y mochilas para la venta.',
+    fuente: 'Tejedoras ingas de Santiago-Manoy · el chumbe y la jerarquía con tres colores',
+    referencia: 'Aldana Barahona, G. M. y Sánchez Carballo, A. (2021). Tejer con la mente: el chumbe inga del Alto Putumayo colombiano como artefacto cultural y mental. Estudios Atacameños, 67, e3521. https://doi.org/10.22199/issn.0718-1043-2021-0007',
+    preguntaPuente: 'La tejedora inga construye toda la jerarquía de un chumbe con tres colores y planea cada labor antes de tejer. ¿Cuántas decisiones tomas tú antes de empezar una página?'
+  },
+  mapaRuta: [
+    {
+      numero: 1,
+      iconos: [
+        '🌱'
+      ],
+      titulo: 'Tres colores y toda la jerarquía',
+      duracionMin: 10
+    },
+    {
+      numero: 2,
+      iconos: [
+        '👁'
+      ],
+      titulo: 'Actividad 1 · Tres piezas que ya tienes',
+      duracionMin: 15
+    },
+    {
+      numero: 3,
+      iconos: [
+        '📖'
+      ],
+      titulo: 'Actividad 2 · Los tres pilares',
+      duracionMin: 20
+    },
+    {
+      numero: 4,
+      iconos: [
+        '✏️'
+      ],
+      titulo: 'Actividad 3 · El análisis comparado',
+      duracionMin: 30
+    },
+    {
+      numero: 5,
+      iconos: [
+        '✅',
+        '💭'
+      ],
+      titulo: 'Verifica, tres citas y tu compromiso',
+      duracionMin: 15
+    }
+  ],
   actividades: [
     {
       numero: 1,
       verbo: 'IDENTIFICA',
-      titulo: '3 productos editoriales bajo la lupa',
+      titulo: 'Tres piezas que ya tienes',
       tiempoMin: 15,
       modalidad: 'individual',
       pasos: [
-        'Busca 3 productos editoriales cerca de ti: un libro, una revista, un periódico o volante.',
-        'Para cada uno mira qué se ve PRIMERO (el ojo se va ahí inmediatamente).',
-        'Identifica qué viene en SEGUNDO lugar y qué en TERCER lugar.',
-        'Nombra UNA decisión de diseño específica que reconoces (tamaño, color, tipografía, espacio).',
+        'Busca a tu alrededor un libro, una revista y un periódico o volante.',
+        'Mira cada uno durante diez segundos y anota qué viste primero.',
+        'Anota qué viste segundo en cada uno.',
+        'Escribe para qué crees que existe cada pieza, en una frase.',
+        'Marca en cuál te costó más decir qué viste primero.'
       ],
       cuaderno: {
-        titulo: '3 productos editoriales bajo la lupa',
-        formato: 'Tabla 4 columnas (Producto | Qué se ve primero | Qué viene después | Decisión de diseño identificada), 3 filas',
-        extension: '3 filas completas',
+        titulo: 'Tres piezas que ya tienes',
+        formato: 'tabla de 3 filas y 4 columnas (pieza / qué vi primero / qué vi segundo / para qué existe)',
+        extension: 'un tercio de página'
       },
       criterios: [
-        'Los 3 productos son distintos en formato (libro, revista, periódico/volante)',
-        'Identificaste qué se ve primero, segundo, tercero en cada uno',
-        'Cada producto tiene al menos UNA decisión específica nombrada',
-        'No usaste palabras vagas como "bonito" o "raro"',
-      ],
+        'Las tres filas dicen qué se vio primero.',
+        'Cada pieza tiene escrita su intención en una frase.'
+      ]
     },
     {
       numero: 2,
       verbo: 'EXPLICA',
-      titulo: '3 pilares del diseño editorial',
-      tiempoMin: 15,
-      modalidad: 'individual',
+      titulo: 'Los tres pilares',
+      tiempoMin: 20,
+      modalidad: 'parejas',
       pasos: [
-        'Para cada pilar (orden, jerarquía, intención) escribe una ficha con definición en tus palabras.',
-        'En cada ficha da un ejemplo de UNO de los 3 productos analizados en Actividad 1 que cumple ese pilar.',
-        'Marca con ★ cuál pilar te parece más fuerte en cada uno de tus 3 productos.',
-        'Cierra con 1 párrafo: ¿qué pilar es más difícil de lograr y por qué?',
+        'Con tu pareja, escriban los tres pilares con una frase propia cada uno.',
+        'Tomen la pieza donde costó más decir qué se veía primero y expliquen por qué costó.',
+        'Listen los cuatro recursos de jerarquía y señalen cuáles usa esa pieza.',
+        'Escriban qué cambiarían para que el ojo entre por donde debe.'
       ],
       cuaderno: {
-        titulo: '3 pilares del diseño editorial',
-        formato: '3 fichas con definición tuya + ejemplo de tus productos analizados',
-        extension: '3 fichas + 1 párrafo de cierre',
+        titulo: 'Los tres pilares',
+        formato: 'los tres pilares con frase propia y los cuatro recursos señalados en la pieza difícil',
+        extension: 'media página'
       },
       criterios: [
-        'Cada definición está en tus palabras (no copia de libro)',
-        'Cada ficha tiene ejemplo de uno de tus 3 productos',
-        'Identificaste qué pilar es más fuerte en cada producto',
-        'Reflexionaste honestamente sobre cuál pilar es más difícil',
-      ],
+        'El cambio propuesto señala una parte concreta de la pieza.',
+        'Están nombrados los cuatro recursos de jerarquía.'
+      ]
     },
     {
       numero: 3,
       verbo: 'CREA',
-      titulo: 'Análisis comparado de 3 productos editoriales',
+      titulo: 'El análisis comparado',
       tiempoMin: 30,
       modalidad: 'individual',
       pasos: [
-        'Escribe una introducción (3-4 renglones) sobre qué 3 productos elegiste y por qué.',
-        'Analiza cada producto aplicando los 3 pilares (orden, jerarquía, intención).',
-        'Escribe comparación cruzada: qué tienen en común los 3, qué los diferencia.',
-        'Cierra con conclusión personal: ¿qué decisión de diseño quieres recordar para tu propia revista del periodo?',
+        'Aplica los tres pilares a cada una de tus tres piezas.',
+        'Escribe en cada pilar un ejemplo concreto que señale qué parte de la pieza.',
+        'Dibuja para cada una un esquema del recorrido de lectura, con flechas.',
+        'Escribe qué tienen en común las tres y en qué se diferencian.',
+        'Cierra con una decisión concreta para la revista del periodo.'
       ],
       cuaderno: {
-        titulo: 'Análisis comparado de 3 productos editoriales',
-        formato: '4 secciones escritas + dibujo/esquema simple de cada producto',
-        extension: '2 páginas de cuaderno',
+        titulo: 'El análisis comparado',
+        formato: 'los tres análisis con sus ejemplos concretos, los tres esquemas de recorrido y la decisión',
+        extension: 'una página'
       },
       criterios: [
-        '3 productos distintos analizados',
-        'Los 3 pilares aplicados a cada uno',
-        'Al menos 1 ejemplo específico por producto (no generalidad)',
-        'Comparación cruzada con común y diferencia',
-        'Conclusión personal con decisión accionable',
-      ],
-    },
-    {
-      numero: 4,
-      verbo: 'EVALÚA',
-      titulo: 'Evalúa el análisis de un compañero',
-      tiempoMin: 15,
-      modalidad: 'parejas',
-      pasos: [
-        'Intercambia cuadernos. Lee el análisis del compañero sin interrumpir.',
-        'Califica del 1 al 5: (a) ¿analizó los 3 productos con los 3 pilares?, (b) ¿hay ejemplos específicos?, (c) ¿la conclusión personal es accionable?',
-        'Marca con ✨ el análisis más sólido y con 🚩 las generalidades.',
-        'Conversen 5 min: ¿qué decisión de diseño común se llevan ambos para su revista?',
-      ],
-      cuaderno: {
-        titulo: 'Evaluación del análisis de [nombre]',
-        formato: '3 calificaciones con justificación + marcas + 1 observación',
-        extension: '3 calificaciones + 1 observación',
-      },
-      criterios: [
-        'Las 3 calificaciones tienen justificación de 1 línea',
-        'Marcaste el análisis más sólido y las generalidades',
-        'La observación menciona una decisión común',
-        'La conversación cerró con compromiso compartido',
-      ],
-    },
+        'Cada pilar tiene un ejemplo que señala una parte de la pieza.',
+        'Un compañero acertó el recorrido de uno de los esquemas.'
+      ]
+    }
   ],
-
-  laboratorios: [
-    {
-      tipo: 'quiz',
-      titulo: '✅ Verifica los 3 pilares del diseño',
-      instrucciones:
-        '5 preguntas para confirmar que dominas orden, jerarquía e intención. Necesitas 3/5 para continuar.',
-      preguntas: [
-        {
-          enunciado: '¿Cuál es la diferencia clave entre "diseñar" y "decorar"?',
-          opciones: [
-            'No hay diferencia',
-            'Diseñar tiene función (resuelve un problema); decorar es opcional y no resuelve nada',
-            'Diseñar es para profesionales; decorar para todos',
-            'Diseñar usa software; decorar usa lápiz',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Correcto. Diseñar resuelve un problema de comunicación. Decorar agrega sin función clara. Lo bonito puede ser diseño o decoración — la prueba es si tiene función.',
-          feedbackIncorrecto:
-            'Diseñar = función. Decorar = adorno opcional. Una etiqueta con dibujitos puede ser decoración; una etiqueta con jerarquía clara y legible es diseño.',
-        },
-        {
-          enunciado: 'En una revista, los titulares son 36pt, los subtítulos 18pt, el cuerpo 11pt. ¿Qué principio aplica esa decisión?',
-          opciones: ['Orden', 'Jerarquía', 'Intención', 'Decoración'],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Exacto. La jerarquía se establece con tamaño, peso, color o espacio. Los distintos puntos tipográficos te dicen qué leer primero.',
-          feedbackIncorrecto:
-            'Jerarquía. Los tamaños distintos crean orden de importancia: titular > subtítulo > cuerpo. Sin esa jerarquía, el ojo no sabe qué leer primero.',
-        },
-        {
-          enunciado: '¿Para qué sirve el "espacio negativo" en diseño editorial?',
-          opciones: [
-            'Para ahorrar tinta',
-            'Para que la página respire — sin él, agobia. Con él, invita',
-            'Para tapar errores',
-            'Para llenar espacio si falta contenido',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Correcto. El aire entre elementos es tan importante como el contenido. Apple usa mucho espacio en blanco y por eso se siente premium.',
-          feedbackIncorrecto:
-            'El espacio negativo hace respirar la página. Sin él, la información se siente apretada y agobia. Con él, la lectura es invitante.',
-        },
-        {
-          enunciado: 'Si un periódico tiene titulares grandes, lead claro y datos rápidos, ¿qué intención tiene?',
-          opciones: [
-            'Informar rápido',
-            'Invitar a lectura larga',
-            'Entretener',
-            'Vender productos',
-          ],
-          respuestaIndex: 0,
-          feedbackCorrecto:
-            'Sí. Diseño coherente con intención de informar rápido. Un periódico no compite con una novela — compite con el tiempo del lector de mañana.',
-          feedbackIncorrecto:
-            'Informar rápido. El periódico debe entregar la noticia en segundos. Por eso titulares grandes, lead claro, datos rápidos. La intención modela el diseño.',
-        },
-        {
-          enunciado:
-            'En el saber ancestral de los pasquines del Valle, ¿qué aplica a tu próxima publicación digital?',
-          opciones: [
-            'Nada — los pasquines son antiguos',
-            'Que cada elemento (jerarquía, tipografía, orden) responde a una necesidad concreta de comunicación',
-            'Que se hacían en papel',
-            'Que eran solo para adultos',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Esa es la conexión. El pasquín bien hecho tenía jerarquía clara, tipografía legible y orden propósito. Tu post de Instagram bien hecho cumple los mismos 3 pilares.',
-          feedbackIncorrecto:
-            'Cada elemento responde a necesidad concreta. Pasquín y post de redes comparten lógica: comunicar con claridad. La forma cambia, los pilares se mantienen.',
-        },
-      ],
-    },
-  ],
-
-  postLectura: {
-    reflexion: '',
-    transferencia:
-      'Esta semana, lleva tu cuaderno y cada vez que veas una pieza editorial (cartel, volante, libro, post de redes), anota UNA decisión de diseño que te llamó la atención. Al cabo de 3 días lee la lista — vas a notar cuántas decisiones pasan invisibles. El próximo lunes la traemos como insumo de la sesión 2.',
-    cierre: '',
-  },
-
   triangulo: {
     dussel: {
-      autor: 'Enrique Dussel',
+      autor: 'Enrique Dussel · Filosofía de la liberación (1977), §4.3.3.2',
       lente: 'lente del nosotros',
-      cita: 'Diseñar es decidir quién puede leer; toda decisión de diseño excluye a alguien.',
-      preguntaEspejo:
-        '¿A quién excluyen las piezas editoriales que admiro? ¿Y mis propias piezas, a quién dejan afuera sin darme cuenta?',
+      cita: 'Lo que acontece en el sistema capitalista es que existe una política de producción del deseo, que se funda en el proyecto del sistema, y que crea por la publicidad un deseo o necesidad colectiva: el mercado.',
+      preguntaEspejo: 'La última pieza que me hizo querer algo, ¿qué quería ella de mí?'
     },
     estoico: {
-      autor: 'Marco Aurelio',
+      autor: 'Epicteto · Enquiridión, 33 (c. 125 d.C.)',
       lente: 'lente del cuidado interior',
-      cita: 'Lo sencillo bien hecho es más difícil que lo complicado mal hecho.',
-      preguntaEspejo:
-        'Cuando diseño algo, ¿agrego o quito? ¿Qué de lo que pongo es necesario y qué es solo ruido visual que me da miedo eliminar?',
+      cita: 'Guarda el silencio cuanto te fuere posible. Nunca digas sino lo que absolutamente es necesario, y en ello emplea las menos palabras que pudieres.',
+      preguntaEspejo: '¿Qué le quitaría a mi última página para que lo importante se viera más?'
     },
     floridi: {
-      autor: 'Luciano Floridi',
+      autor: 'The Onlife Initiative (ed. Luciano Floridi) · The Onlife Manifesto (2015), § 4.6',
       lente: 'lente de la infoesfera',
-      cita: 'El diseño es el lenguaje silencioso con que la infoesfera se organiza.',
-      preguntaEspejo:
-        '¿Qué decisiones de diseño en las plataformas que uso a diario moldean mi atención sin que yo lo note? ¿Cuáles diseñaría diferente?',
-    },
+      cita: 'Las configuraciones por defecto y otros aspectos del diseño de nuestras tecnologías deberían respetar y proteger las capacidades atencionales. (trad. propia)',
+      preguntaEspejo: '¿Mi pieza le ahorra atención a quien la mira, o se la exige toda a la vez?'
+    }
   },
-
   cincoDimensiones: {
-    personal:
-      'Aprendiste a ver decisiones de diseño que antes eran invisibles — esa mirada es ventaja profesional inmediata.',
-    emocional:
-      'Reconociste que diseñar no es decorar — es responsabilidad por la atención de otros.',
-    ciudadana:
-      'Entendiste que diseñar es decidir quién puede leer: cada decisión incluye o excluye.',
-    local:
-      'Conectaste el pasquín popular del Valle con tu próxima publicación digital — el oficio sobrevive.',
-    intergeneracional:
-      'La cartilla de tu abuela, el pasquín de tu bisabuelo y tu post de mañana comparten 3 pilares: orden, jerarquía, intención.',
-  },
+    personal: 'Ya no vas a poder mirar una página sin preguntarte qué se ve primero, y eso no se desaprende.',
+    emocional: 'Reconocer que una pieza te hizo querer algo incomoda, y es el primer paso para no tragárselo entero.',
+    ciudadana: 'Quien diseña reparte la atención de otro, que es escasa y no es suya. Eso es una responsabilidad.',
+    local: 'Una faja tejida en el Alto Putumayo resuelve con tres colores lo que muchas páginas no resuelven con veinte.',
+    intergeneracional: 'Hay labores de chumbes antiguos cuyo significado ya nadie conoce. Un diseño también se puede perder.'
+  }
 };
 
 export default contenido;

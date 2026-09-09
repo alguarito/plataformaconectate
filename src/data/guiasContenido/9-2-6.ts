@@ -1,7 +1,9 @@
 /**
- * Contenido enriquecido — Grado 9 · Periodo 2 · Sesión 6
- * Tema: Herramientas digitales — Figma, Canva o Adobe Express.
- * Profundidad MILC v3 completa, alineada con content/guias/9/9-2-6.yaml.
+ * Contenido enriquecido para Grado 9 · Período 2 · Sesión 6
+ * (sesión global 16).
+ *
+ * Auto-generado desde content/guias/9/9-2-6.yaml por
+ * scripts/build-guias-web-ts.py. Edita el YAML, no este archivo.
  */
 import type { ContenidoGuia } from './_schema';
 
@@ -10,323 +12,274 @@ const contenido: ContenidoGuia = {
   periodo: 2,
   sesion: 6,
   titulo: 'Herramientas digitales — Figma, Canva o Adobe Express',
-  ocultarPDF: false,
-  resumen:
-    'Diseñas la portada de tu revista en software real. La herramienta no reemplaza el criterio: lo amplifica si lo tienes, lo expone si no.',
-  duracionMin: 95,
-  subtema: 'Diseño editorial digital · Herramientas profesionales',
-
-  saberAncestral: {
-    saber:
-      'El paso del taller físico al taller digital no cambió el oficio: cambió la herramienta. Los impresores antiguos del Valle dominaban la prensa de tipos móviles, los rodillos, las planchas. El tipógrafo de los 50 usaba linotipia: una máquina que componía líneas de plomo fundido. El oficio era duro, lento, costoso. Hoy Figma, Canva o Adobe Express son las nuevas linotipias: herramientas complejas que aceleran el oficio sin reemplazar el criterio.',
-    fuente: 'Tradición de la imprenta y linotipia colombiana del siglo XX',
-    preguntaPuente:
-      '¿Qué herramienta digital ya usas (aunque sea Word, Google Docs o el editor de Instagram)? ¿En qué te ayuda y qué decisiones todavía dependen de tu criterio?',
-  },
-
-  mapaRuta: [
-    { numero: 1, iconos: ['🌱'], titulo: 'Del taller físico al digital', duracionMin: 10 },
-    { numero: 2, iconos: ['🔎'], titulo: '3 herramientas comparadas', duracionMin: 15 },
-    { numero: 3, iconos: ['📖'], titulo: '4 elementos básicos digitales', duracionMin: 17 },
-    { numero: 4, iconos: ['✏️'], titulo: 'Portada digital de tu revista', duracionMin: 38 },
-    { numero: 5, iconos: ['✅', '💭'], titulo: 'Verifica, reflexiona y cierra', duracionMin: 15 },
-  ],
-
+  resumen: 'En 1986, por el Acuerdo 008, Univalle abrió sede en Cartago porque estudiar obligaba a irse, e irse costaba plata, familia y salud. La idea que dejó sigue sirviendo: nadie debería tener que perderse a sí mismo para poder estudiar. Hoy usas herramientas que hicieron algo parecido con el diseño, y produces la portada de tu revista.',
+  duracionMin: 90,
+  subtema: 'Diseño editorial digital · Herramientas',
   preLectura: {
-    porQueImporta:
-      'Figma, Canva y Adobe Express son gratuitas para uso individual. Eso significa que la barrera de acceso al diseño profesional es conexión + tiempo de aprendizaje, no dinero. Aprovechar esa ventana es soberanía técnica concreta.',
-    preguntaDetonante:
-      'Si tuvieras que enseñarle a tu hermana menor a usar UNA herramienta de diseño hoy, ¿cuál elegirías y por qué? Esa pregunta te dice mucho sobre tu propio criterio actual.',
+    porQueImporta: 'Aprender una herramienta es saber dónde están cuatro cosas en su menú. Por eso pasar de una a otra cuesta mucho menos de lo que parece.',
+    preguntaDetonante: '¿Qué programa usas hoy que hace diez años habría costado un sueldo entero?',
     activacion: {
-      titulo: 'Tour rápido de 3 sitios',
-      descripcion:
-        'En 3 minutos abre figma.com, canva.com y express.adobe.com en pestañas distintas. Mira los hero de cada página principal. ¿Qué prometen? ¿A qué tipo de usuario apuntan? La promesa de marketing te da pista sobre la lógica de la herramienta.',
-      duracionMin: 3,
+      titulo: 'Qué promete la portada',
+      descripcion: 'En 2 minutos, abre la página principal de una herramienta de diseño y anota a quién parece estar buscando.',
+      duracionMin: 3
     },
     conexion: {
-      anterior:
-        'En las sesiones 1-5 construiste criterio editorial: grilla, tipografía, color, relación imagen-texto. Hoy llevas todo eso a software.',
-      siguiente:
-        'En la sesión 7 verás accesibilidad lectora: cómo asegurar que tu revista funcione para personas con baja visión, daltonismo o conexión lenta.',
-    },
+      anterior: 'En la sesión 4 definiste la paleta de cinco colores de tu revista.',
+      siguiente: 'En la sesión 7 compruebas quién no puede leer tu revista y rediseñas un spread.'
+    }
   },
-
   conceptosClave: [
     {
-      termino: 'Figma',
-      definicion:
-        'Herramienta profesional de diseño y prototipado. Gratuita para individuos, paga para equipos grandes. Estándar de la industria tech. Curva de aprendizaje moderada pero recompensa con potencia.',
-      ejemplo:
-        'La mayoría de apps que usas (Instagram, Spotify, bancos digitales) se diseñaron en Figma. Es donde trabajan los diseñadores de Silicon Valley y Latinoamérica profesional.',
-      emoji: '🎨',
+      termino: 'Lienzo',
+      definicion: 'La página de trabajo con su tamaño definido. Fijarlo al principio evita tener que rehacerlo todo al exportar.',
+      ejemplo: 'Empezar «a ver qué sale» y descubrir al final que no cabe en A4 cuesta la tarde entera.',
+      categoria: 'Los cuatro elementos'
     },
     {
-      termino: 'Canva',
-      definicion:
-        'Herramienta más sencilla, con muchas plantillas listas. Ideal para principiantes y para producir piezas rápidas (posts de redes, presentaciones, infografías). Plan gratuito robusto.',
-      ejemplo:
-        'Si necesitas hacer una historia de Instagram en 5 minutos para un evento mañana, Canva es la opción. Tiene plantilla, tipografía, colores predefinidos.',
-      emoji: '🌈',
+      termino: 'Capa',
+      definicion: 'Cada objeto independiente que se apila sobre los demás: un texto, una imagen, una forma.',
+      ejemplo: 'Si al mover una cosa se mueven las otras, están agrupadas y conviene separarlas.',
+      categoria: 'Los cuatro elementos'
     },
     {
-      termino: 'Adobe Express',
-      definicion:
-        'Versión simplificada del ecosistema Adobe (que incluye Photoshop, Illustrator). Gratuita con cuenta, ofrece equilibrio entre poder y simplicidad. Buena para quien quiere migrar luego a Adobe profesional.',
-      ejemplo:
-        'Si planeas estudiar diseño formal después del colegio, empezar con Adobe Express prepara el camino al ecosistema profesional.',
-      emoji: '✨',
+      termino: 'Guía',
+      definicion: 'Línea de la cuadrícula que no se imprime. Se pone al principio, para construir sobre ella y no para comprobar después.',
+      ejemplo: 'Poner las guías al final es revisar, no diseñar con cuadrícula.',
+      categoria: 'Los cuatro elementos'
     },
     {
-      termino: 'Capas (layers)',
-      definicion:
-        'Cada elemento (texto, imagen, forma) es una capa independiente apilable. Mover una capa no afecta a otra. Aprender a pensar en capas es la primera habilidad digital editorial.',
-      ejemplo:
-        'En Figma o Canva, el titular es una capa, la imagen otra, el fondo otra. Puedes mover, ocultar, duplicar cualquiera sin tocar las demás.',
-      emoji: '📚',
+      termino: 'Exportar',
+      definicion: 'Convertir el archivo de trabajo en uno que otros puedan abrir. La pieza es lo que exportas.',
+      ejemplo: 'Un archivo que solo abre en tu cuenta no está entregado, aunque esté terminado.',
+      categoria: 'Los cuatro elementos'
     },
     {
-      termino: 'Lienzo (frame/artboard)',
-      definicion:
-        'La página de trabajo con tamaño definido. A4 vertical (210×297mm), Instagram post (1080×1080), historia (1080×1920). El tamaño correcto importa antes de empezar.',
-      ejemplo:
-        'Si diseñas una historia de Instagram en formato A4, al exportar quedará deforme. El lienzo correcto desde el principio te ahorra reproceso.',
-      emoji: '🖼',
-    },
-    {
-      termino: 'Exportación',
-      definicion:
-        'Formato final del archivo. JPG/PNG para web y redes. PDF para imprimir o compartir como documento. Cada formato sirve a un propósito distinto.',
-      ejemplo:
-        'Para enviar la portada por WhatsApp: JPG. Para imprimir la revista: PDF. Para subir a Instagram: PNG o JPG. Confundir formato es error frecuente.',
-      emoji: '📤',
-    },
+      termino: 'Cuál sirve, no cuál es mejor',
+      definicion: 'La pregunta es qué pieza necesitas y cuál es tu nivel hoy, no qué marca tiene mejor fama.',
+      ejemplo: 'Elegir por moda es la manera más común de perder una tarde entera.',
+      categoria: 'Elegir herramienta'
+    }
   ],
-
+  laboratorios: [
+    {
+      tipo: 'quiz',
+      titulo: '¿Sabes moverte en cualquier herramienta?',
+      instrucciones: 'Cinco preguntas sobre los cuatro elementos y sobre cómo se elige. No va al cuaderno.',
+      preguntas: [
+        {
+          enunciado: '¿Por qué se fija el tamaño del lienzo antes de empezar?',
+          opciones: [
+            'Porque después no se puede cambiar en ninguna herramienta.',
+            'Porque si no, al exportar no cuadra nada y toca rehacer.',
+            'Porque el programa funciona más rápido con medidas fijas.',
+            'Porque así se pueden compartir las medidas con el grupo.'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Sí. Es la causa más común de perder una tarde de trabajo.',
+          feedbackIncorrecto: 'Porque al exportar no cuadra. Empezar «a ver qué sale» sale caro.'
+        },
+        {
+          enunciado: 'Mueves un texto y se mueve también la imagen. ¿Qué ocurre?',
+          opciones: [
+            'Están en la misma capa o agrupadas.',
+            'El archivo se corrompió y hay que empezar de nuevo.',
+            'Falta poner las guías de la cuadrícula.',
+            'El lienzo tiene un tamaño equivocado.'
+          ],
+          respuestaIndex: 0,
+          feedbackCorrecto: 'Correcto. Conviene separarlas antes de seguir maquetando.',
+          feedbackIncorrecto: 'Están agrupadas o en la misma capa. Las capas son objetos independientes.'
+        },
+        {
+          enunciado: '¿Qué creó el Acuerdo 008 del 15 de septiembre de 1986?',
+          opciones: [
+            'La Universidad del Valle como institución pública.',
+            'La sede de Buenaventura y su programa a distancia.',
+            'El Programa de Regionalización de Univalle.',
+            'El convenio entre Univalle y la alcaldía de Cartago.'
+          ],
+          respuestaIndex: 2,
+          feedbackCorrecto: 'Eso es, y la sede de Cartago abrió ese mismo año en modalidad a distancia.',
+          feedbackIncorrecto: 'El Programa de Regionalización. De ahí salió la sede de Cartago.'
+        },
+        {
+          enunciado: '¿Cuándo se ponen las guías de la cuadrícula?',
+          opciones: [
+            'Al final, para comprobar si el contenido quedó alineado.',
+            'Al principio, para construir el contenido sobre ellas.',
+            'Solo si la pieza va a imprimirse en papel.',
+            'Cuando la herramienta lo pide al exportar el archivo.'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Sí. Ponerlas al final es revisar, no diseñar con cuadrícula.',
+          feedbackIncorrecto: 'Al principio. Son para construir sobre ellas, no para comprobar después.'
+        },
+        {
+          enunciado: '¿Cuál es la pregunta correcta al elegir una herramienta?',
+          opciones: [
+            'Cuál usan los diseñadores profesionales del sector.',
+            'Cuál tiene más funciones disponibles en su versión gratuita.',
+            'Cuál se ve mejor en el portafolio al mencionarla.',
+            'Cuál sirve a la pieza que necesito y a mi nivel de hoy.'
+          ],
+          respuestaIndex: 3,
+          feedbackCorrecto: 'Correcto. Elegir por marca o por moda es como se pierde una tarde entera.',
+          feedbackIncorrecto: 'Cuál sirve a tu pieza y a tu nivel. No cuál es mejor en abstracto.'
+        }
+      ]
+    }
+  ],
+  postLectura: {
+    reflexion: 'De las barreras que anotaste, ¿cuál te afecta de verdad a ti, y cuál afectaría a un compañero sin conexión estable?',
+    transferencia: 'Guarda una copia del archivo de trabajo en tu propio dispositivo. Lo que vive solo en una cuenta ajena no es del todo tuyo.',
+    cierre: 'Nadie debería tener que perderse a sí mismo para poder estudiar. La herramienta quita una barrera; conviene ver cuáles deja.'
+  },
+  saberAncestral: {
+    saber: 'En 1984 la Universidad del Valle escribió una propuesta que empezaba nombrando dos ciudades: Buenaventura y Cartago. Dos años después, por el Acuerdo 008 del 15 de septiembre de 1986, el Consejo Superior creó el Programa de Regionalización. La sede de Cartago abrió ese mismo año, en modalidad a distancia. La empujó un grupo de cartagüeños que consideró que la ciudad necesitaba sus propios espacios de formación. La razón de fondo era simple y muy poco romántica: estudiar obligaba a irse, e irse costaba plata, familia y salud. La cara de exclusión: no todo salió bien, y la sede de Sevilla cerró después del primer año. Pero la decisión dejó una idea que sigue sirviendo: nadie debería tener que perderse a sí mismo para poder estudiar. Hoy vas a usar herramientas que hicieron algo parecido con el diseño: acercarlo a quien no podía pagar un estudio.',
+    fuente: 'Regionalización de Univalle · que irse no fuera el precio de estudiar',
+    referencia: 'Universidad del Valle. (s.\\,f.). Historia sede Cartago. Consultado en 2026.',
+    preguntaPuente: 'La sede de Cartago existió para que estudiar no obligara a irse. Estas herramientas son gratuitas y funcionan en un navegador: ¿qué barrera quitan, y cuál dejan en pie?'
+  },
+  mapaRuta: [
+    {
+      numero: 1,
+      iconos: [
+        '🌱'
+      ],
+      titulo: 'Que irse no fuera el precio',
+      duracionMin: 10
+    },
+    {
+      numero: 2,
+      iconos: [
+        '👁'
+      ],
+      titulo: 'Actividad 1 · Tres herramientas por fuera',
+      duracionMin: 15
+    },
+    {
+      numero: 3,
+      iconos: [
+        '📖'
+      ],
+      titulo: 'Actividad 2 · Los cuatro elementos',
+      duracionMin: 20
+    },
+    {
+      numero: 4,
+      iconos: [
+        '✏️'
+      ],
+      titulo: 'Actividad 3 · La portada de tu revista',
+      duracionMin: 30
+    },
+    {
+      numero: 5,
+      iconos: [
+        '✅',
+        '💭'
+      ],
+      titulo: 'Verifica, tres citas y tu compromiso',
+      duracionMin: 15
+    }
+  ],
   actividades: [
     {
       numero: 1,
       verbo: 'IDENTIFICA',
-      titulo: '3 herramientas digitales editoriales',
+      titulo: 'Tres herramientas por fuera',
       tiempoMin: 15,
       modalidad: 'individual',
       pasos: [
-        'Visita figma.com, canva.com y express.adobe.com.',
-        'Para cada una identifica: tipo de usuario apuntado, costo (gratis/paga), tipo de pieza del primer ejemplo en home.',
-        'Crea cuenta gratuita en la que más se acerque a tu necesidad real.',
-        'Justifica la elección en 1 frase (no por moda, por necesidad).',
+        'Abre las páginas principales de las tres herramientas más usadas para diseño editorial.',
+        'Anota qué muestra cada una en lo primero que se ve.',
+        'Anota a qué tipo de usuario parece dirigirse.',
+        '',
+        'Marca cuál está más cerca de lo que necesitas hoy y escribe por qué.'
       ],
       cuaderno: {
-        titulo: '3 herramientas editoriales digitales',
-        formato: 'Tabla 4 columnas (Herramienta | Tipo de usuario | Costo | Mi impresión), 3 filas + elección final',
-        extension: '3 filas + 1 frase de elección',
+        titulo: 'Tres herramientas por fuera',
+        formato: 'tabla de 3 filas y 3 columnas (herramienta / a quién se dirige / qué exige para empezar)',
+        extension: 'un tercio de página'
       },
       criterios: [
-        'Visité las 3 páginas',
-        'Comparé tipo de usuario, precios y ejemplos',
-        'Creé cuenta gratuita en una de las 3',
-        'Elección justificada por necesidad real, no por moda',
-      ],
+        'La elección tiene una razón escrita que no es la marca.',
+        'Queda anotado qué exige cada una para empezar.'
+      ]
     },
     {
       numero: 2,
       verbo: 'EXPLICA',
-      titulo: '4 elementos básicos digitales',
-      tiempoMin: 15,
-      modalidad: 'individual',
+      titulo: 'Los cuatro elementos',
+      tiempoMin: 20,
+      modalidad: 'parejas',
       pasos: [
-        'Para cada elemento (lienzo, capas, tipografía, exportación) escribe una ficha.',
-        'En cada ficha: definición + cómo lo aplica la herramienta que elegiste.',
-        'Agrega captura de pantalla o dibujo del menú correspondiente.',
-        'Cierra con 1 párrafo: ¿cuál de los 4 elementos te parece más difícil aprender?',
+        'Con tu pareja, escriban los cuatro elementos con una frase propia cada uno.',
+        'Abran la herramienta elegida y localicen los cuatro en su menú.',
+        'Anoten cómo se llama cada uno allí, porque el nombre cambia de una a otra.',
+        'Creen un lienzo A4 con guías y dos capas, y escriban los pasos exactos que siguieron.'
       ],
       cuaderno: {
-        titulo: '4 elementos de una herramienta digital editorial',
-        formato: '4 fichas con definición + cómo lo aplica + captura/dibujo del menú',
-        extension: '4 fichas + 1 párrafo final',
+        titulo: 'Los cuatro elementos',
+        formato: 'los cuatro con frase propia, su nombre en la herramienta elegida y los pasos del lienzo A4',
+        extension: 'media página'
       },
       criterios: [
-        'Cada ficha tiene definición + ubicación en la herramienta',
-        'Hay captura o dibujo del menú',
-        'Identificas qué elemento es más difícil para ti',
-        'Puedes ubicar los 4 elementos en la herramienta sin titubear',
-      ],
+        'Otro podría crear ese lienzo siguiendo los pasos escritos.',
+        'Los cuatro elementos están localizados en el menú.'
+      ]
     },
     {
       numero: 3,
       verbo: 'CREA',
-      titulo: 'Portada digital de tu revista',
-      tiempoMin: 35,
+      titulo: 'La portada de tu revista',
+      tiempoMin: 30,
       modalidad: 'individual',
       pasos: [
-        'Crea lienzo A4 vertical en la herramienta elegida.',
-        'Agrega grilla guía (en Figma: layout grid; en Canva: reglas).',
-        'Ubica imagen principal (sube foto o usa ilustración elegida).',
-        'Escribe titular con tu display tipográfica de Sesión 3.',
-        'Aplica tu paleta de color de Sesión 4 (mínimo dominante + acento).',
-        'Agrega datos de pie (nombre revista + número/fecha).',
-        'Exporta como JPG o PDF.',
+        'Crea el lienzo A4 vertical y pon las guías de tu cuadrícula.',
+        'Coloca la imagen principal en su capa.',
+        'Escribe el titular con la display y el resto con la de cuerpo.',
+        'Aplica la paleta con sus códigos exactos, respetando la función de cada color.',
+        'Añade el pie, exporta y comprueba que el archivo abre fuera de tu cuenta.'
       ],
       cuaderno: {
-        titulo: 'Mi portada digital de revista',
-        formato: 'Captura impresa o dibujada de la portada + 1 párrafo de proceso',
-        extension: '1 página',
+        titulo: 'La portada de tu revista',
+        formato: 'el boceto con sus capas señaladas, los nombres de las tipografías, los códigos de color y dónde comprobaste el archivo',
+        extension: 'media página'
       },
       criterios: [
-        'Portada producida en software (Figma/Canva/Adobe Express)',
-        'Tamaño A4 vertical o equivalente',
-        'Tipografía display de Sesión 3 aplicada',
-        'Paleta de color de Sesión 4 aplicada',
-        'Imagen principal y titular dialogan',
-        'Datos de pie completos',
-        'Exportada en formato adecuado',
-      ],
-    },
-    {
-      numero: 4,
-      verbo: 'EVALÚA',
-      titulo: 'Evalúa la portada digital de un compañero',
-      tiempoMin: 15,
-      modalidad: 'parejas',
-      pasos: [
-        'Intercambia link o captura de la portada del compañero.',
-        'Califica del 1 al 5: (a) ¿aplica el sistema visual establecido (paleta + tipografía)?, (b) ¿la imagen y el titular dialogan?, (c) ¿se ve profesional o se siente "plantilla genérica"?',
-        'Marca con ✨ la decisión más fuerte y con 🚩 algo que sigue sintiéndose plantilla.',
-        'Conversen 5 min: ¿qué les costó más en la herramienta?',
-      ],
-      cuaderno: {
-        titulo: 'Evaluación de la portada de [nombre]',
-        formato: '3 calificaciones con justificación + marcas + 1 observación',
-        extension: '3 calificaciones + 1 observación',
-      },
-      criterios: [
-        'Las 3 calificaciones tienen justificación',
-        'Marcaste decisión más fuerte y algo de plantilla',
-        'La observación es constructiva',
-        'La conversación cerró con aprendizaje compartido sobre la herramienta',
-      ],
-    },
+        'El archivo exportado se abrió bien fuera de tu computador.',
+        'El titular añade lo que la imagen no dice sola.'
+      ]
+    }
   ],
-
-  laboratorios: [
-    {
-      tipo: 'quiz',
-      titulo: '✅ Verifica el oficio digital',
-      instrucciones:
-        '5 preguntas para confirmar que dominas la lógica básica de las herramientas editoriales digitales. Necesitas 3/5 para continuar.',
-      preguntas: [
-        {
-          enunciado: '¿Cuál es la diferencia principal entre Figma y Canva?',
-          opciones: [
-            'No hay diferencia',
-            'Figma es más profesional y potente (curva mayor); Canva es más sencilla con plantillas listas',
-            'Canva es paga, Figma gratis',
-            'Figma es para video, Canva para imagen',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Correcto. Figma = estándar profesional, curva mayor, más potente. Canva = más accesible, con plantillas. Ambas gratuitas para uso individual.',
-          feedbackIncorrecto:
-            'Figma: profesional, potente, curva. Canva: sencilla, plantillas, rápida. Ambas gratuitas. Eliges según necesidad y nivel.',
-        },
-        {
-          enunciado: '¿Qué son las "capas" en una herramienta digital editorial?',
-          opciones: [
-            'El tamaño del lienzo',
-            'Cada elemento (texto, imagen, forma) como objeto independiente apilable y editable',
-            'Los colores de fondo',
-            'Los archivos exportados',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Sí. Las capas son la base del modelo digital editorial. Cada elemento es independiente — puedes mover, ocultar, editar uno sin afectar otros.',
-          feedbackIncorrecto:
-            'Capas = elementos independientes apilables. El titular es una capa, la imagen otra, el fondo otra. Pensar en capas es la primera habilidad digital.',
-        },
-        {
-          enunciado: '¿Qué tamaño de lienzo elijo para una historia de Instagram?',
-          opciones: ['A4 vertical', '1080×1080 px', '1080×1920 px', 'No importa, se ajusta solo'],
-          respuestaIndex: 2,
-          feedbackCorrecto:
-            'Correcto. Historia de Instagram: 1080×1920 px (vertical). Post normal: 1080×1080 px (cuadrado). Elegir tamaño correcto desde el inicio evita reproceso.',
-          feedbackIncorrecto:
-            'Historias = 1080×1920 (vertical). Post normal = 1080×1080 (cuadrado). Si diseñas en A4 se deforma al exportar para Instagram.',
-        },
-        {
-          enunciado: '¿Cuál es el principal "sesgo" que tienen herramientas como Canva?',
-          opciones: [
-            'No tienen sesgo',
-            'Empujan al usuario a usar plantillas, lo que puede hacer que sus piezas se parezcan a las de otros usuarios',
-            'Son demasiado complejas',
-            'No funcionan en celular',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Sí. Canva tiene miles de plantillas, lo que es ventaja para velocidad pero riesgo de homogeneización. Reconocer ese sesgo te permite usarlo con criterio.',
-          feedbackIncorrecto:
-            'Canva sesga hacia plantillas. Eso te da velocidad pero homogeniza tu estética con la de millones de otros usuarios. Conocer el sesgo te permite resistirlo.',
-        },
-        {
-          enunciado:
-            'En el saber ancestral del tipógrafo de linotipia, ¿qué aplica directamente a tu uso de Figma o Canva hoy?',
-          opciones: [
-            'Nada — la linotipia es del pasado',
-            'Que la herramienta es compleja y aprenderla bien toma tiempo, pero amplifica el oficio sin reemplazar el criterio',
-            'Que el plomo es mejor',
-            'Que las herramientas modernas son fáciles',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Esa es la conexión. La linotipia exigía años de dominio; Figma exige meses. Pero ambas amplifican criterio editorial — no lo reemplazan. Sin criterio, la herramienta te traiciona.',
-          feedbackIncorrecto:
-            'Herramienta compleja + tiempo de aprendizaje + criterio del oficio. Lo mismo desde Gutenberg hasta Figma. Sin criterio editorial, la herramienta es solo software costoso.',
-        },
-      ],
-    },
-  ],
-
-  postLectura: {
-    reflexion: '',
-    transferencia:
-      'Esta semana haz una segunda versión de tu portada cambiando UN solo elemento (color principal, tipografía, posición de la imagen, titular). Compara las dos versiones. Anota cuál se siente mejor y por qué. Ese ejercicio de iteración es lo que separa al diseñador del usuario de plantillas.',
-    cierre: '',
-  },
-
   triangulo: {
     dussel: {
-      autor: 'Enrique Dussel',
+      autor: 'Enrique Dussel · Filosofía de la liberación (1977), §2.1.4.3',
       lente: 'lente del nosotros',
-      cita: 'El acceso a las herramientas profesionales es la nueva alfabetización del XXI; quien no las domina depende del que las domina.',
-      preguntaEspejo:
-        '¿Estoy aprovechando la ventana actual de acceso gratuito a herramientas profesionales? ¿O me limito a las herramientas básicas porque "son más fáciles"?',
+      cita: 'Codo-a-codo los hermanos en la asamblea donde se decide el destino de la patria; palabra-oído del maestro-discípulo en el aprendizaje del vivir… proximidad es la palabra que expresa la esencia del hombre.',
+      preguntaEspejo: '¿A quién puedo preguntarle lo que no entiendo de esta herramienta, y por qué no le he preguntado?'
     },
     estoico: {
-      autor: 'Marco Aurelio',
+      autor: 'Marco Aurelio · Meditaciones IX, 11 (c. 175 d.C.)',
       lente: 'lente del cuidado interior',
-      cita: 'Aprende a usar la herramienta sin que ella te use a ti.',
-      preguntaEspejo:
-        'Cuando uso una herramienta digital, ¿estoy decidiendo yo o estoy siguiendo lo que la herramienta me sugiere? ¿Dónde está el criterio?',
+      cita: 'Si puedes, corrige enseñando a quienes obran mal; y si no puedes, acuérdate de que para eso se te ha dado la indulgencia. (trad. propia)',
+      preguntaEspejo: '¿A quién de mi salón podría enseñarle hoy algo que a mí me costó entender?'
     },
     floridi: {
-      autor: 'Luciano Floridi',
+      autor: 'The Onlife Initiative (ed. Luciano Floridi) · The Onlife Manifesto (2015), § 3.6',
       lente: 'lente de la infoesfera',
-      cita: 'Las plataformas digitales no son neutrales: cada una organiza la creación según su propia lógica económica y estética.',
-      preguntaEspejo:
-        '¿Mis trabajos en Canva se parecen a otros trabajos en Canva? ¿Y mis trabajos en Figma a otros en Figma? ¿Cuál es mi voz propia más allá de la herramienta?',
-    },
+      cita: 'Internet es una extensión importante del espacio público, incluso cuando lo operan y lo poseen actores privados. (trad. propia)',
+      preguntaEspejo: '¿Qué trabajo mío existe solo dentro de la cuenta de una empresa, y qué pasaría si la cerraran?'
+    }
   },
-
   cincoDimensiones: {
-    personal:
-      'Diste el salto del cuaderno al software — produjiste tu primera pieza editorial digital con criterio propio.',
-    emocional:
-      'Resististe la tentación de "usar plantilla y listo" — elegiste aprender la herramienta con criterio.',
-    ciudadana:
-      'Aprovechaste el acceso gratuito a herramientas profesionales — soberanía técnica práctica.',
-    local:
-      'Heredaste el oficio del tipógrafo de linotipia colombiano: dominar herramienta compleja como ampliación del criterio.',
-    intergeneracional:
-      'La prensa de Gutenberg, la linotipia de los 50, y Figma de hoy son la misma cadena de oficio. Tú eres el siguiente eslabón.',
-  },
+    personal: 'Produjiste tu primera pieza real con el sistema visual que tú mismo decidiste.',
+    emocional: 'Pelearse con una herramienta nueva frustra. Saber que solo hay cuatro cosas que encontrar baja mucho esa frustración.',
+    ciudadana: 'Estas herramientas quitan la barrera del precio y dejan otras: la conexión, la cuenta y las condiciones que pone otro.',
+    local: 'En 1986 Cartago consiguió sede universitaria para que estudiar no obligara a irse. Acercar el acceso tiene historia aquí.',
+    intergeneracional: 'Quien diseñaba hace treinta años necesitaba un estudio y una licencia carísima. Hoy hace falta un navegador.'
+  }
 };
 
 export default contenido;

@@ -373,12 +373,22 @@ def lint_latex_escapes(g: dict) -> list[str]:
         "triangulo.dussel.aplicacion", "triangulo.estoico.aplicacion", "triangulo.floridi.aplicacion",
         "compromiso", "apertura.fuente",
     ]
+    # Los pilares también van al PDF y no se revisaban: un «_» sin escapar ahí
+    # rompe xelatex sin que el linter dijera nada (visto en 9-3-2, 2026-09-09).
+    listas = ["sistematizacion.pilares", "praxis.pilares"]
+    textos: list[tuple[str, str]] = []
     for path in campos:
-        text = _get(g, path)
-        if not text:
-            continue
-        # Detecta # & % sin \ previo. Excluye URLs y patrones #N
-        for char in ("#", "&", "%"):
+        t = _get(g, path)
+        if t:
+            textos.append((path, t))
+    for path in listas:
+        for i, t in enumerate(_get(g, path) or []):
+            if isinstance(t, str) and t:
+                textos.append((f"{path}[{i}]", t))
+
+    for path, text in textos:
+        # Detecta # & % _ sin \ previo. Excluye URLs y patrones #N
+        for char in ("#", "&", "%", "_"):
             # `(?<!\\)` lookahead negativo: no precedido por backslash
             pattern = rf"(?<!\\){re.escape(char)}"
             matches = re.findall(pattern, text)

@@ -1,7 +1,9 @@
 /**
- * Contenido enriquecido — Grado 9 · Periodo 3 · Sesión 3
- * Tema: Fórmulas básicas — SUMA, PROMEDIO, MAX, MIN, CONTAR.
- * Profundidad MILC v3 PRO completa, alineada con content/guias/9/9-3-3.yaml.
+ * Contenido enriquecido para Grado 9 · Período 3 · Sesión 3
+ * (sesión global 23).
+ *
+ * Auto-generado desde content/guias/9/9-3-3.yaml por
+ * scripts/build-guias-web-ts.py. Edita el YAML, no este archivo.
  */
 import type { ContenidoGuia } from './_schema';
 
@@ -10,318 +12,274 @@ const contenido: ContenidoGuia = {
   periodo: 3,
   sesion: 3,
   titulo: 'Fórmulas básicas — SUMA, PROMEDIO, MAX, MIN, CONTAR',
-  ocultarPDF: false,
-  resumen:
-    'Aplicas las 5 fórmulas básicas a tu propia tabla con interpretación contextual. El 80% de los cálculos cotidianos se resuelve con estas 5 — domínalas con criterio.',
+  resumen: 'En la tienda de barrio hay un cuaderno donde la vendedora anota quién debe y cuánto, y va tachando. La palabra vale porque hay memoria y el registro vale porque cualquiera puede abrirlo, sumar y comparar. Hoy le haces a tu tabla las cinco preguntas básicas y aprendes que la pregunta va antes que la fórmula.',
   duracionMin: 90,
   subtema: 'Datos · Aritmética digital cotidiana',
-
-  saberAncestral: {
-    saber:
-      'Los oficios colombianos resolvían cálculos cotidianos con aritmética mental heredada: el sastre estimaba metros de tela contando dedos sobre el rollo, el panadero medía harina con jarros conocidos, el carpintero usaba la palma como unidad, la tendera del barrio sumaba mentalmente 10-15 productos sin equivocarse. Cada uno tenía su técnica para SUMAR, PROMEDIAR, sacar MÁXIMOS y MÍNIMOS sin calculadora. Las 5 fórmulas básicas automatizan esa aritmética del oficio — pero la inteligencia sigue siendo humana.',
-    fuente: 'Aritmética mental del sastre, panadero, carpintero y tendera del Valle del Cauca',
-    preguntaPuente:
-      '¿Cómo hacía la tendera del barrio para sumar mentalmente 12 productos sin equivocarse? ¿Y qué pierde un programador novato cuando aplica fórmulas sin saber qué pregunta responde cada una?',
-  },
-
-  mapaRuta: [
-    { numero: 1, iconos: ['🌱'], titulo: 'La aritmética del oficio', duracionMin: 10 },
-    { numero: 2, iconos: ['🔎'], titulo: 'Mente vs fórmula', duracionMin: 15 },
-    { numero: 3, iconos: ['📖'], titulo: 'Anatomía de las 5 fórmulas básicas', duracionMin: 17 },
-    { numero: 4, iconos: ['✏️'], titulo: '5 indicadores con interpretación', duracionMin: 33 },
-    { numero: 5, iconos: ['✅', '💭'], titulo: 'Verifica, reflexiona y cierra', duracionMin: 15 },
-  ],
-
   preLectura: {
-    porQueImporta:
-      'Las 5 fórmulas básicas resuelven el 80% de los cálculos de tu vida cotidiana adulta: gastos, calificaciones, hábitos, salud. Dominarlas con criterio (no solo sintaxis) es alfabetización numérica fundamental.',
-    preguntaDetonante:
-      'Si tuvieras 20 calificaciones del curso, ¿cuál de las 5 fórmulas básicas te diría más rápido si hay alguien al borde de reprobar?',
+    porQueImporta: 'Un promedio de cuatro horas puede tapar a alguien con once. Por eso el máximo y el mínimo no son adornos del reporte.',
+    preguntaDetonante: '¿Quién lleva cuentas a mano cerca de ti, y qué revisa exactamente cuando cuadra?',
     activacion: {
-      titulo: 'El cálculo de la tendera',
-      descripcion:
-        'En 3 minutos: suma mentalmente 8 cifras de 2-3 dígitos que aparecen en una lista cualquiera (precios, edades, minutos). Cronómetrate. Después usa SUMA en una hoja de cálculo. Compara: ¿qué método fue más rápido y cuál más preciso?',
-      duracionMin: 3,
+      titulo: 'Cinco de cabeza',
+      descripcion: 'En 2 minutos, mira una lista de números que tengas y calcula de cabeza el total y el mayor. Anota cuánto tardaste en cada uno.',
+      duracionMin: 3
     },
     conexion: {
-      anterior:
-        'En la sesión 2 limpiaste y tipaste tu tabla. Hoy le aplicas las primeras 5 fórmulas que el oficio digital del XXI exige.',
-      siguiente:
-        'En la sesión 4 aprenderás filtros y ordenamiento — preguntar a los datos con criterio.',
-    },
+      anterior: 'En la sesión 2 pusiste tu tabla en forma con las tres reglas innegociables.',
+      siguiente: 'En la sesión 4 le preguntas a la tabla por una parte, con filtros y orden.'
+    }
   },
-
   conceptosClave: [
     {
-      termino: 'SUMA',
-      definicion:
-        'Suma todos los valores numéricos de un rango. Sintaxis: =SUMA(B2:B20). Responde: ¿cuánto en total?',
-      ejemplo:
-        '=SUMA(B2:B20) en columna de minutos de TikTok diarios → total semanal o mensual de uso del curso.',
-      emoji: '➕',
-    },
-    {
       termino: 'PROMEDIO',
-      definicion:
-        'Calcula el valor medio aritmético. Sintaxis: =PROMEDIO(B2:B20). Ignora celdas vacías (no las cuenta como 0). Responde: ¿cuánto típicamente?',
-      ejemplo:
-        '=PROMEDIO(C2:C20) en columna de calificaciones → nota promedio del curso.',
-      emoji: '➗',
+      definicion: 'Responde cuánto suele haber por caso. Es el indicador más usado y el que más esconde, porque aplana los extremos.',
+      ejemplo: 'Un promedio de cuatro horas de pantalla puede tapar a alguien con once.',
+      categoria: 'Las cinco'
     },
     {
-      termino: 'MAX',
-      definicion:
-        'Devuelve el valor más alto del rango. Sintaxis: =MAX(D2:D20). Sirve también con fechas (devuelve la más reciente).',
-      ejemplo:
-        '=MAX(D2:D20) en horas de sueño → identificas quién durmió más, posible caso a estudiar.',
-      emoji: '⬆️',
+      termino: 'MAX y MIN',
+      definicion: 'Señalan dónde están los extremos. Suelen ser la parte del reporte que muestra a quién le está pasando algo.',
+      ejemplo: 'El máximo es el que delata al compañero que llega sin dormir.',
+      categoria: 'Las cinco'
     },
     {
-      termino: 'MIN',
-      definicion:
-        'Devuelve el valor más bajo del rango. Sintaxis: =MIN(D2:D20). Útil para detectar casos en riesgo.',
-      ejemplo:
-        '=MIN(D2:D20) en horas de sueño → identificas quién durmió menos, atención prioritaria.',
-      emoji: '⬇️',
+      termino: 'Rango completo',
+      definicion: 'Seleccionar la columna entera y no celda por celda, para que la fórmula siga funcionando cuando lleguen filas nuevas.',
+      ejemplo: 'Si mañana entra una fila y la fórmula no la ve, nadie te avisa del error.',
+      categoria: 'Cómo se escriben'
     },
     {
-      termino: 'CONTAR vs CONTARA',
-      definicion:
-        'CONTAR(rango) cuenta solo celdas con números. CONTARA(rango) cuenta cualquier celda no vacía. Distinguirlas evita conteos falsos.',
-      ejemplo:
-        '=CONTAR(E:E) cuenta cuántas filas tienen edad numérica. =CONTARA(A:A) cuenta cuántas filas tienen nombre (texto).',
-      emoji: '🔢',
+      termino: 'Interpretación en contexto',
+      definicion: 'Decir qué significa el número en tu tema concreto, no en abstracto.',
+      ejemplo: '«El promedio es 4,2» no dice nada. «4,2 horas diarias de pantalla entre semana» sí.',
+      categoria: 'Cómo se leen'
     },
     {
-      termino: 'Interpretación contextual',
-      definicion:
-        'Cada resultado necesita una frase que diga qué significa para la decisión. Sin interpretación, el número es decoración.',
-      ejemplo:
-        '"PROMEDIO de minutos = 87, MAX = 240, MIN = 15. Hay alta dispersión. Decisión: hablar individualmente con el de 240 antes de tomar medida general."',
-      emoji: '💡',
-    },
+      termino: 'Registro verificable',
+      definicion: 'Aquel que cualquiera puede abrir, sumar y comparar. Es lo que hace que valga, más que quién lo escribió.',
+      ejemplo: 'El cuaderno del fiado se revisa y se tacha, y por eso sostiene un circuito de crédito sin firmas.',
+      categoria: 'Por qué importa'
+    }
   ],
-
+  laboratorios: [
+    {
+      tipo: 'quiz',
+      titulo: '¿Sabes preguntarle a una tabla?',
+      instrucciones: 'Cinco preguntas sobre las fórmulas básicas y sobre cómo se leen. No va al cuaderno.',
+      preguntas: [
+        {
+          enunciado: '¿Por qué conviene seleccionar el rango completo y no celda por celda?',
+          opciones: [
+            'Porque la fórmula se escribe más rápido de esa manera.',
+            'Porque si llega una fila nueva, la fórmula la incluye sola.',
+            'Porque las celdas sueltas producen siempre un mensaje de error.',
+            'Porque el programa lo exige para poder ordenar la tabla.'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Sí, y con celdas sueltas nadie te avisa de que la fórmula dejó de crecer.',
+          feedbackIncorrecto: 'Porque el rango incluye las filas nuevas. Con celdas sueltas el error pasa desapercibido.'
+        },
+        {
+          enunciado: 'Tu promedio de horas de pantalla es 4,2. ¿Qué puede estar escondiendo?',
+          opciones: [
+            '',
+            'Que la columna tiene un tipo de dato equivocado.',
+            'Un caso extremo, que se vería con el máximo.',
+            'Que faltan filas por recoger en la tabla.'
+          ],
+          respuestaIndex: 2,
+          feedbackCorrecto: 'Correcto. Por eso el máximo y el mínimo no son adornos del reporte.',
+          feedbackIncorrecto: 'Puede esconder un extremo. El promedio aplana, y el máximo es el que lo muestra.'
+        },
+        {
+          enunciado: '¿Cuál de estas es una interpretación y no solo un resultado?',
+          opciones: [
+            '«El promedio de la columna es 4,2 según la fórmula.»',
+            '«El valor máximo obtenido en la muestra fue de 11.»',
+            '«La suma total del rango asciende a 84 unidades.»',
+            '«El máximo es 11 horas, y es un compañero que llega sin dormir.»'
+          ],
+          respuestaIndex: 3,
+          feedbackCorrecto: 'Eso es. Habla del tema concreto, así que cualquiera entiende qué hacer con el dato.',
+          feedbackIncorrecto: 'La que habla del contexto. Los otros tres repiten el número con otras palabras.'
+        },
+        {
+          enunciado: '¿Qué hace que el cuaderno del fiado funcione sin ninguna firma?',
+          opciones: [
+            'Que cualquiera puede abrirlo, sumar y comparar.',
+            'Que la tendera conoce personalmente a todos sus clientes.',
+            'Que las deudas son siempre de montos muy pequeños.',
+            'Que existe una ley que respalda ese tipo de crédito.'
+          ],
+          respuestaIndex: 0,
+          feedbackCorrecto: 'Sí. La palabra vale porque hay memoria, y la memoria se puede poner a prueba.',
+          feedbackIncorrecto: 'Que se puede revisar. El registro vale porque cualquiera puede ponerlo a prueba.'
+        },
+        {
+          enunciado: 'Antes de escribir una fórmula, ¿qué conviene tener claro?',
+          opciones: [
+            'El nombre exacto de la función en el programa que uses.',
+            'Qué decisión vas a tomar con ese número.',
+            'El formato con que se mostrarán los decimales.',
+            'Cuántas filas tiene exactamente la tabla completa.'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Correcto. Un promedio sin pregunta detrás es aritmética; con pregunta, es el comienzo de una decisión.',
+          feedbackIncorrecto: 'La decisión que vas a tomar. La sintaxis se busca; la pregunta hay que tenerla antes.'
+        }
+      ]
+    }
+  ],
+  postLectura: {
+    reflexion: '¿Cuál de los cinco indicadores te dijo algo que no esperabas, y qué harías distinto por él?',
+    transferencia: 'Pregúntale a alguien que lleve cuentas a mano qué revisa cuando cuadra. Va a nombrarte alguna de las cinco.',
+    cierre: 'El cuaderno vale porque cualquiera puede abrirlo, sumar y comparar. Tu hoja de cálculo debería aguantar lo mismo.'
+  },
+  saberAncestral: {
+    saber: 'En una tienda de barrio del Valle del Cauca hay un cuaderno. La vendedora anota ahí quién debe y cuánto, y va tachando a medida que le pagan. Nadie firma nada: al fiado se entra demostrando que uno es «buena paga» y se sale cuando uno deja de serlo (Martínez Benavides, 2021). Fíjate en lo que hace ese cuaderno. La palabra vale porque hay memoria, y el registro vale porque cualquiera puede ponerlo a prueba: se abre, se suma y se compara. Es una hoja de cálculo hecha a mano, con las mismas operaciones que vas a usar hoy. La cara de exclusión es doble. La sanción por incumplir no es proporcional ni apelable: es la vergüenza en público, delante de testigos. Y a quien la tendera no conoce, no le fía, así que el circuito solo cuenta a los que ya estaban adentro.',
+    fuente: 'El fiado y el cuaderno de la tienda · la memoria que cualquiera puede revisar',
+    referencia: 'Martínez Benavides, A. (2021). Circuitos crediticios: fiado y trabajo relacional en un pequeño negocio en Cali, Colombia. Estudios Sociológicos de El Colegio de México, 39(116), 467--494. https://doi.org/10.24201/es.2021v39n116.1946',
+    preguntaPuente: 'El cuaderno de la tienda vale porque cualquiera puede abrirlo, sumar y comparar. Tu hoja de cálculo, ¿aguantaría que alguien la revisara así?'
+  },
+  mapaRuta: [
+    {
+      numero: 1,
+      iconos: [
+        '🌱'
+      ],
+      titulo: 'El cuaderno que cualquiera puede revisar',
+      duracionMin: 10
+    },
+    {
+      numero: 2,
+      iconos: [
+        '👁'
+      ],
+      titulo: 'Actividad 1 · De cabeza y con fórmula',
+      duracionMin: 15
+    },
+    {
+      numero: 3,
+      iconos: [
+        '📖'
+      ],
+      titulo: 'Actividad 2 · Qué pregunta responde cada una',
+      duracionMin: 20
+    },
+    {
+      numero: 4,
+      iconos: [
+        '✏️'
+      ],
+      titulo: 'Actividad 3 · Cinco indicadores interpretados',
+      duracionMin: 30
+    },
+    {
+      numero: 5,
+      iconos: [
+        '✅',
+        '💭'
+      ],
+      titulo: 'Verifica, tres citas y tu compromiso',
+      duracionMin: 15
+    }
+  ],
   actividades: [
     {
       numero: 1,
       verbo: 'IDENTIFICA',
-      titulo: 'Mente vs fórmula',
+      titulo: 'De cabeza y con fórmula',
       tiempoMin: 15,
       modalidad: 'individual',
       pasos: [
-        'Toma tu tabla de Sesión 2 con columna numérica.',
-        'Calcula mentalmente los 5 indicadores (SUMA, PROMEDIO, MAX, MIN, CONTAR) y mide tu tiempo.',
-        'Aplica las 5 fórmulas en la hoja y compara con tus cálculos mentales.',
-        'Anota honestamente: cuál método fue más rápido, cuál fue más preciso.',
+        'Abre tu tabla de la sesión 2 con su columna numérica.',
+        'Calcula mentalmente el total, el promedio, el máximo, el mínimo y cuántas filas hay.',
+        'Anota tus cinco respuestas y cuánto tardaste.',
+        'Calcula los cinco con fórmula y anota los resultados.',
+        'Compara, marca en cuál te alejaste más y escribe por qué crees que fue ese.'
       ],
       cuaderno: {
-        titulo: 'Mente vs fórmula',
-        formato: 'Tabla 4 columnas (Indicador | Mental | Fórmula | Tiempo), 5 filas',
-        extension: '5 filas + 1 línea de cierre',
+        titulo: 'De cabeza y con fórmula',
+        formato: 'tabla de 5 filas y 3 columnas (indicador / de cabeza / con fórmula)',
+        extension: 'un tercio de página'
       },
       criterios: [
-        'Hice los 5 cálculos mentales con tiempo cronometrado',
-        'Apliqué las 5 fórmulas correctamente',
-        'Reconozco honestamente fortalezas de cada método',
-        'Identifico cuándo conviene mente y cuándo fórmula',
-      ],
+        'Están los cinco resultados de las dos maneras.',
+        'Está escrito por qué falló ese cálculo y no otro.'
+      ]
     },
     {
       numero: 2,
       verbo: 'EXPLICA',
-      titulo: 'Anatomía de las 5 fórmulas',
-      tiempoMin: 15,
-      modalidad: 'individual',
+      titulo: 'Qué pregunta responde cada una',
+      tiempoMin: 20,
+      modalidad: 'parejas',
       pasos: [
-        'Para cada fórmula (SUMA, PROMEDIO, MAX, MIN, CONTAR/CONTARA) escribe una ficha.',
-        'En cada ficha: pregunta que responde + sintaxis exacta + tipo de dato esperado + error frecuente.',
-        'Da un ejemplo de tu tabla en cada caso.',
-        'Marca con ★ la fórmula que más te servirá en la vida adulta.',
+        'Con tu pareja, escriban las cinco fórmulas con la pregunta que responde cada una.',
+        'Escriban qué exige cada una para funcionar.',
+        'Digan qué indicador describe mejor y cuál peor un dato de sus tablas.',
+        'Busquen un caso donde el promedio esconda algo y digan qué indicador lo mostraría.'
       ],
       cuaderno: {
-        titulo: 'Anatomía de las 5 fórmulas básicas',
-        formato: '5 fichas con pregunta + sintaxis + tipo + error frecuente + ejemplo tuyo',
-        extension: '5 fichas + 1 marca de prioridad',
+        titulo: 'Qué pregunta responde cada una',
+        formato: 'las cinco fórmulas con su pregunta y lo que exigen, más el caso donde el promedio esconde algo',
+        extension: 'media página'
       },
       criterios: [
-        'Las 5 fichas tienen los 5 elementos',
-        'Cada ejemplo proviene de tu tabla real',
-        'Identifico errores frecuentes',
-        'Podría escribir las 5 fórmulas sin consultar',
-      ],
+        'Hay escrito un caso donde el promedio engaña.',
+        'Cada fórmula tiene su pregunta en lenguaje corriente.'
+      ]
     },
     {
       numero: 3,
       verbo: 'APLICA',
-      titulo: '5 indicadores con interpretación',
+      titulo: 'Cinco indicadores interpretados',
       tiempoMin: 30,
       modalidad: 'individual',
       pasos: [
-        'En tu tabla limpia, aplica las 5 fórmulas sobre la columna numérica relevante.',
-        'Para cada resultado, escribe una frase de interpretación ligada a tu pregunta original.',
-        'Marca con ★ el indicador más relevante para tu decisión.',
-        'Verifica los tipos de dato (numéricos donde corresponde) antes de cerrar.',
+        'Escribe las cinco fórmulas sobre tu tabla, con su sintaxis completa.',
+        'Comprueba que cada rango tome la columna entera.',
+        'Verifica al menos un resultado a mano, con tres filas.',
+        'Escribe la interpretación de cada indicador en una frase de tu contexto.',
+        'Señala cuál de los cinco sirve para la decisión que tenías en mente.'
       ],
       cuaderno: {
-        titulo: 'Mis 5 indicadores con interpretación',
-        formato: '5 fichas con fórmula + resultado + interpretación de 1 frase',
-        extension: '1 página de cuaderno',
+        titulo: 'Cinco indicadores interpretados',
+        formato: 'las cinco fórmulas con su resultado y su interpretación, más la señal en el que sirve',
+        extension: 'media página'
       },
       criterios: [
-        '5 fórmulas escritas con sintaxis correcta',
-        '5 resultados verificados',
-        '5 interpretaciones ligadas a la pregunta original',
-        'Identifico el indicador clave para mi decisión',
-        'Tipos de dato verificados',
-      ],
-    },
-    {
-      numero: 4,
-      verbo: 'EVALÚA',
-      titulo: 'Evalúa los indicadores de un compañero',
-      tiempoMin: 15,
-      modalidad: 'parejas',
-      pasos: [
-        'Intercambia el link de tu hoja con las 5 fórmulas aplicadas.',
-        'Califica del 1 al 5: (a) ¿fórmulas correctas?, (b) ¿interpretaciones específicas?, (c) ¿indicador clave bien elegido?',
-        'Marca con ✨ la interpretación más clara y con 🚩 las decorativas (números sin frase de uso).',
-        'Conversen 5 min sobre cuál de los 5 indicadores cambiaría más una decisión real.',
-      ],
-      cuaderno: {
-        titulo: 'Evaluación de los indicadores de [nombre]',
-        formato: '3 calificaciones con justificación + marcas + 1 observación',
-        extension: '3 calificaciones + 1 observación',
-      },
-      criterios: [
-        'Las 3 calificaciones tienen justificación',
-        'Marcaste interpretación clara y números decorativos',
-        'Sugerencia constructiva',
-        'La conversación cerró con acuerdo sobre indicador clave',
-      ],
-    },
+        'Las interpretaciones hablan del tema propio, no de estadística en general.',
+        'Un compañero explicó uno de los números sin ayuda.'
+      ]
+    }
   ],
-
-  laboratorios: [
-    {
-      tipo: 'quiz',
-      titulo: '✅ Verifica las 5 fórmulas básicas',
-      instrucciones:
-        '5 preguntas para confirmar que aplicas las 5 fórmulas con criterio, no solo sintaxis. Necesitas 3/5 para continuar.',
-      preguntas: [
-        {
-          enunciado: 'Para calcular el "típico" valor de una columna numérica, ¿qué fórmula uso?',
-          opciones: ['=SUMA(rango)', '=PROMEDIO(rango)', '=MAX(rango)', '=CONTAR(rango)'],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Correcto. PROMEDIO da el valor medio. Cuidado: ignora celdas vacías pero NO ignora ceros, lo cual puede sesgar.',
-          feedbackIncorrecto:
-            'PROMEDIO. SUMA da total, no típico. MAX da el más alto. PROMEDIO calcula el valor medio aritmético — el "típico".',
-        },
-        {
-          enunciado: '¿Cuál es la diferencia entre CONTAR y CONTARA?',
-          opciones: [
-            'No hay diferencia',
-            'CONTAR cuenta solo celdas con números; CONTARA cuenta cualquier celda no vacía',
-            'CONTAR es más rápido',
-            'CONTARA solo funciona en Excel, no en Sheets',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Exacto. Si quieres saber cuántas edades hay registradas (números): CONTAR. Si quieres saber cuántas filas tienen nombre (texto): CONTARA.',
-          feedbackIncorrecto:
-            'CONTAR = solo números. CONTARA = cualquier celda con valor. Usar la incorrecta puede dar conteos engañosos.',
-        },
-        {
-          enunciado: 'Aplicas =SUMA(B2) y devuelve solo un número. ¿Qué pasó?',
-          opciones: [
-            'Funcionó bien',
-            'Olvidaste el rango — SUMA(B2) suma solo una celda, no el rango',
-            'Es error de Excel',
-            'B2 está vacía',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Correcto. Para sumar un rango necesitas =SUMA(B2:B20). Sin rango, SUMA "suma" un solo número (que es ese mismo número).',
-          feedbackIncorrecto:
-            'Error de rango. =SUMA(B2) no suma nada — solo devuelve el valor de B2. Lo correcto: =SUMA(B2:B20) o =SUMA(B:B) para toda la columna.',
-        },
-        {
-          enunciado: '¿Por qué reportar SOLO el promedio puede ser engañoso?',
-          opciones: [
-            'Porque es lento',
-            'Porque oculta los extremos (MAX y MIN) — alguien puede estar al borde sin que el promedio lo refleje',
-            'Porque es difícil de calcular',
-            'No es engañoso',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Sí. Promedio 6.2 con MAX 9.5 y MIN 2.0 cuenta una historia muy distinta a promedio 6.2 con MAX 6.5 y MIN 5.8. Reportar solo promedio invisibiliza extremos.',
-          feedbackIncorrecto:
-            'El promedio sin MAX y MIN oculta dispersión. Siempre reportar al menos los 3: PROMEDIO + MAX + MIN da contexto justo del caso real.',
-        },
-        {
-          enunciado:
-            'En el saber ancestral de la aritmética del oficio, ¿qué aplica a las fórmulas de hoy?',
-          opciones: [
-            'Nada — la tendera no usaba Excel',
-            'Que dominar las 5 operaciones básicas con criterio resuelve el 80% de problemas reales',
-            'Que se debe calcular a mano siempre',
-            'Que las fórmulas son innecesarias',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Esa es la conexión. La tendera resolvía cuentas complejas con SUMA, PROMEDIO, MAX, MIN mentales. Tú lo haces con fórmulas — mismo oficio, distinto medio.',
-          feedbackIncorrecto:
-            'Las 5 básicas resuelven el 80%. La tendera dominaba mentalmente lo que hoy Excel automatiza. Lo que cambia es la herramienta, no el oficio de calcular para decidir.',
-        },
-      ],
-    },
-  ],
-
-  postLectura: {
-    reflexion: '',
-    transferencia:
-      'Esta semana, aplica las 5 fórmulas a UNA tabla cotidiana fuera del aula: gastos del mes, calificaciones, hábitos de sueño. Documenta una decisión real que tomes basada en esos 5 indicadores.',
-    cierre: '',
-  },
-
   triangulo: {
     dussel: {
-      autor: 'Enrique Dussel',
+      autor: 'Enrique Dussel · Filosofía de la liberación (1977), §5.5.2',
       lente: 'lente del nosotros',
-      cita: 'Un promedio que no nombra a los extremos es un indicador que invisibiliza a las minorías.',
-      preguntaEspejo:
-        'Cuando reporto "promedio del curso" o "promedio del barrio", ¿estoy invisibilizando a quienes están abajo o arriba del centro? ¿Qué cambia si reporto también MAX y MIN?',
+      cita: 'Es un error pensar que la ciencia pura… aplica ella misma alguna de sus conclusiones, apareciendo la tecnología como su concreta creación… Muy por el contrario, es el discurso técnico artesanal o tecnológico… echa mano… de conclusiones o teorías científicas.',
+      preguntaEspejo: '¿Qué cálculo hago por necesidad, sin haberlo aprendido en una clase?'
     },
     estoico: {
-      autor: 'Marco Aurelio',
+      autor: 'Marco Aurelio · Meditaciones IX, 6 (c. 175 d.C.)',
       lente: 'lente del cuidado interior',
-      cita: 'La aritmética básica bien aplicada es virtud — la aritmética compleja sin interpretación es ego.',
-      preguntaEspejo:
-        '¿Estoy invirtiendo en dominar bien las 5 básicas o saltando a fórmulas complejas que después aplico mal?',
+      cita: 'Tu opinión presente fundada en el entendimiento, tu conducta presente dirigida al bien común y tu disposición presente de contento con todo lo que sucede: eso basta. (trad. propia)',
+      preguntaEspejo: '¿Cuántos de los números que calculé sé explicar sin volver a mirarlos?'
     },
     floridi: {
-      autor: 'Luciano Floridi',
+      autor: 'Luciano Floridi · Commentary on the Onlife Manifesto (2015), § 3.1',
       lente: 'lente de la infoesfera',
-      cita: 'Las 5 fórmulas básicas son la infraestructura cognitiva mínima para decidir en la infoesfera de datos contemporánea.',
-      preguntaEspejo:
-        '¿Cuántas tablas y reportes leo a diario sin aplicar mentalmente estas 5 fórmulas? ¿Cuánto me pierdo por no entender los indicadores que rigen mi vida?',
-    },
+      cita: 'Una de las preguntas políticas apremiantes que enfrentamos en las sociedades de la información avanzadas es: ¿en qué clase de proyecto humano estamos trabajando? (trad. propia)',
+      preguntaEspejo: '¿Para qué recogí estos datos, y sigo calculando lo que responde a eso?'
+    }
   },
-
   cincoDimensiones: {
-    personal:
-      'Adquiriste 5 herramientas que usarás toda tu vida adulta: gastos, hábitos, salud, finanzas — todo cabe en SUMA/PROMEDIO/MAX/MIN/CONTAR.',
-    emocional:
-      'Resististe la tentación de "ya sé lo básico, vamos a las fórmulas complejas". El dominio de lo básico es virtud invisible.',
-    ciudadana:
-      'Leer y aplicar indicadores básicos es alfabetización numérica democrática — defenderse de reportes mal hechos en medios y publicidad.',
-    local:
-      'Heredaste la aritmética mental del sastre, panadero, tendera. Lo que cambia es la herramienta, no la phronesis.',
-    intergeneracional:
-      'La tendera del barrio que sumaba 12 productos sin errar y tu Excel comparten oficio. Las 5 fórmulas básicas son el ábaco del XXI.',
-  },
+    personal: 'Mediste cuánto se desvía tu cálculo mental, que es un dato tuyo y no de la tabla.',
+    emocional: 'Descubrir que el promedio tapaba algo incomoda, y es justo para eso que se calculan los extremos.',
+    ciudadana: 'Un registro que cualquiera puede revisar es lo que sostiene un acuerdo sin necesidad de firmas.',
+    local: 'En las tiendas del Valle el fiado funciona con un cuaderno, y ese cuaderno es una hoja de cálculo a mano.',
+    intergeneracional: 'Quien lleva cuentas a mano hace las mismas cinco preguntas que tú harás con fórmulas.'
+  }
 };
 
 export default contenido;

@@ -158,6 +158,50 @@ Reglas:
 - Mantener **Inter** como única familia (consistente con la regla de tipografía UI).
 - Para énfasis usar peso (bold/black) o color del sistema Bento, no fuentes nuevas.
 
+## Migración al contrato v3.1 (trabajo en curso)
+
+> **Si la sesión va a generar, migrar o auditar guías de grado, lee primero
+> [docs/migracion-contrato-v31.md](docs/migracion-contrato-v31.md).** Esta sección es el resumen;
+> ese documento tiene el ciclo completo, las trampas conocidas y los precedentes éticos.
+
+Las 180 guías de grado se están migrando al contrato **v3.1**, que es **opt-in por guía**: una
+guía entra cuando declara `duracion_min`. Sin ese campo las reglas nuevas solo avisan, por eso
+conviven guías migradas y legacy sin romper el build.
+
+**El linter es el contrato.** `scripts/guias-lint.py` no valida un documento aparte: es la
+especificación ejecutable. Lo que marca como error no se publica.
+
+### Estado al 2026-09-09
+
+**66 de 180.** Octavo y noveno completos (30/30 cada uno, sin warnings). Décimo 6/30. Sexto,
+séptimo y once sin empezar. Territorio Interior mantiene su estándar propio y no se migra.
+
+### Instrucción permanente del docente
+
+**«Genera las siguientes 3, audita y continúa una vez cumpla los criterios relacionados.»**
+Un lote son tres guías y termina en un PR mergeado con squash. No se acumulan lotes sin mergear.
+
+### Innegociables al migrar
+
+- **Toda apertura se apoya en un ancla de `content/anclas/banco-anclas.yaml`.** Las guías legacy
+  traen folclor sin fuente —nombres propios inventados incluidos— y eso se reemplaza, no se cita.
+- **`limites_eticos` y `cara_de_exclusion` del ancla son vinculantes.** Han hecho descartar
+  anclas que encajaban mejor por tema. Si un ancla no se puede usar sin violar su límite, se
+  cambia el ancla o se cambia el enfoque de la guía; nunca se fuerza el ancla.
+- **Máximo dos usos por ancla dentro de un mismo grado**, con ángulo distinto y declarado. Lo
+  mismo para las citas del banco, que además deben ir con autor y texto exactos.
+- **Al cerrar el lote**: actualizar `usos` del ancla, recompilar PDF y TS, **bumpear el Service
+  Worker** (se regeneraron PDFs), auditar, `npm run build` (379 páginas), comprobar que el ancla
+  llegó al HTML construido, y verificar 0 errores en los seis grados y en Territorio Interior.
+- **Revertir los PDF cuyo `.tex` no cambió** antes de commitear: recompilar cambia los bytes
+  aunque el contenido sea idéntico, y eso ensucia el repositorio con diffs binarios de ruido.
+
+### Herramienta de apoyo
+
+`scripts/comillas-listas.py <archivo.yaml>` entrecomilla los ítems de lista que YAML leyó como
+diccionario. Un `- Algo: algo` sin comillas llega a la web como **opción de quiz en blanco**, sin
+que nada falle. La regla `lint_listas_texto` lo detecta; este script lo arregla.
+
 ## Workflow de sesión — los 3 modos de trabajo
 
 > **Esta sección es el protocolo de Claude al iniciar cada sesión nueva.** Sigue este flujo sin esperar que el usuario lo recuerde.

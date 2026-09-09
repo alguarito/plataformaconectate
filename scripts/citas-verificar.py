@@ -14,12 +14,17 @@ Uso:
     python3 scripts/citas-verificar.py --fuentes DIR   # usa PDFs ya bajados
     python3 scripts/citas-verificar.py --solo dussel   # una sola voz
 
+Cubre a Dussel, a Floridi y a Marco Aurelio en la traducción de Long. Epicteto y
+Séneca se cotejaron contra Wikisource y aún no se descargan aquí: el script los
+reporta aparte, como sin fuente local, no como fallo.
+
 Requiere `pdftotext` (poppler) y salida a internet en la primera corrida.
 Devuelve 1 si alguna cita no se pudo verificar literalmente.
 """
 from __future__ import annotations
 
 import argparse
+import html
 import re
 import subprocess
 import sys
@@ -56,8 +61,26 @@ FUENTES = {
     ),
 }
 
-# Los estoicos se cotejaron contra Wikisource, cuyo HTML no se descarga aquí.
-VOCES_SIN_FUENTE_LOCAL = {"estoico"}
+# Marco Aurelio: las entradas nuevas citan la traducción inglesa de George Long,
+# que trae la numeración estándar. Se descargan los libros como HTML y se
+# concatenan en una sola fuente, porque cada cita ya declara su libro.
+LIBROS_LONG = ["II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"]
+URL_LONG = ("https://en.wikisource.org/wiki/"
+            "The_Thoughts_of_the_Emperor_Marcus_Aurelius_Antoninus/Book_{}")
+
+# Epicteto y Séneca se cotejaron contra Wikisource (es y la) y todavía no se
+# descargan aquí; el script los reporta como sin fuente local, no como fallo.
+SIN_FUENTE_LOCAL = ("Epicteto", "Séneca", "Seneca")
+
+# Wikisource rechaza el agente por defecto de urllib con un 403.
+AGENTE = "conectate-citas-verificar/1.0 (verificación del banco de citas del repositorio)"
+
+
+def _descargar(url: str, destino: Path) -> None:
+    peticion = urllib.request.Request(url, headers={"User-Agent": AGENTE})
+    with urllib.request.urlopen(peticion, timeout=60) as respuesta:
+        destino.write_bytes(respuesta.read())
+
 
 CONTROL = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f]")
 COMILLAS = re.compile(r"[«»\"“”‘’'`´]")
@@ -96,6 +119,12 @@ def _norm(texto: str) -> str:
 def _fuente_de(cita: dict) -> str | None:
     if cita["voz"] == "dussel":
         return "dussel"
+    if cita["voz"] == "estoico":
+        # solo las que citan a Long tienen fuente local; las de Díaz de Miranda,
+        # Epicteto y Séneca vienen de ediciones que este script aún no descarga.
+        if "Marco Aurelio" in cita["autor"] and "George Long" in (cita.get("edicion") or ""):
+            return "marco-aurelio-long"
+        return None
     if cita["voz"] == "floridi":
         autor = cita["autor"]
         if "Hyperhistory" in autor:
@@ -114,6 +143,14 @@ def _texto_cotejable(cita: dict) -> str:
     return re.sub(r"\(trad\. propia[^)]*\)", "", cita.get(campo) or "")
 
 
+def _html_a_texto(html_crudo: str) -> str:
+    cuerpo = re.search(r'<div class="mw-parser-output">(.*?)(?:<div class="printfooter"|<noscript)',
+                       html_crudo, re.S)
+    t = cuerpo.group(1) if cuerpo else html_crudo
+    t = re.sub(r"<(script|style|table)[^>]*>.*?</\1>", " ", t, flags=re.S)
+    return re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", t))).strip()
+
+
 def descargar(dest: Path) -> dict[str, list[str]]:
     dest.mkdir(parents=True, exist_ok=True)
     fuentes: dict[str, list[str]] = {}
@@ -122,9 +159,22 @@ def descargar(dest: Path) -> dict[str, list[str]]:
         if not txt.exists():
             if not pdf.exists():
                 print(f"  ▸ descargando {etiqueta}…")
-                urllib.request.urlretrieve(url, pdf)
+                _descargar(url, pdf)
             subprocess.run(["pdftotext", "-layout", str(pdf), str(txt)], check=True)
         fuentes[clave] = _normalizaciones(txt.read_text(encoding="utf-8", errors="replace"))
+
+    # Marco Aurelio en la traducción de Long: un archivo por libro, una sola fuente
+    long_txt = dest / "marco-aurelio-long.txt"
+    if not long_txt.exists():
+        partes = []
+        for libro in LIBROS_LONG:
+            crudo = dest / f"long-{libro}.html"
+            if not crudo.exists():
+                print(f"  ▸ descargando Meditaciones, libro {libro} (trad. Long)…")
+                _descargar(URL_LONG.format(libro), crudo)
+            partes.append(_html_a_texto(crudo.read_text(encoding="utf-8", errors="replace")))
+        long_txt.write_text("\n".join(partes), encoding="utf-8")
+    fuentes["marco-aurelio-long"] = _normalizaciones(long_txt.read_text(encoding="utf-8", errors="replace"))
     return fuentes
 
 
@@ -148,7 +198,7 @@ def main() -> int:
     divergentes: list[tuple[str, str]] = []
     for cita in citas:
         clave = _fuente_de(cita)
-        if clave is None or cita["voz"] in VOCES_SIN_FUENTE_LOCAL:
+        if clave is None or any(a in cita["autor"] for a in SIN_FUENTE_LOCAL):
             sin_fuente += 1
             continue
         crudo = _texto_cotejable(cita)
@@ -177,7 +227,7 @@ def main() -> int:
         print(f"      {nota[:150]}…")
 
     print(f"\n  Resumen: {ok} verificadas · {len(divergentes)} con divergencia documentada · "
-          f"{len(fallos)} sin verificar · {sin_fuente} sin fuente local (estoicos: Wikisource)\n")
+          f"{len(fallos)} sin verificar · {sin_fuente} sin fuente local (Epicteto y Séneca: Wikisource)\n")
     return 1 if fallos else 0
 
 

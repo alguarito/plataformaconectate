@@ -1,7 +1,9 @@
 /**
- * Contenido enriquecido — Grado 9 · Periodo 1 · Sesión 8
- * Tema: Era digital — del ábaco al chip.
- * Profundidad MILC v3 completa, alineada con content/guias/9/9-1-8.yaml.
+ * Contenido enriquecido para Grado 9 · Período 1 · Sesión 8
+ * (sesión global 8).
+ *
+ * Auto-generado desde content/guias/9/9-1-8.yaml por
+ * scripts/build-guias-web-ts.py. Edita el YAML, no este archivo.
  */
 import type { ContenidoGuia } from './_schema';
 
@@ -10,318 +12,273 @@ const contenido: ContenidoGuia = {
   periodo: 1,
   sesion: 8,
   titulo: 'Era digital — del ábaco al chip',
-  ocultarPDF: false,
-  resumen:
-    'Haces el mismo cálculo con 3 instrumentos (mente, papel, calculadora) y descubres qué capacidades cognitivas estás cultivando o atrofiando.',
+  resumen: 'En Cartago el bordado se hereda por la casa y el diseño se dibuja sobre un plástico que se disuelve al mojarse: cuando el molde se va, solo queda la puntada. Hoy haces el mismo cálculo de memoria, con papel y con calculadora, y miras qué queda de ti cuando el andamio desaparece.',
   duracionMin: 90,
   subtema: 'Historia de la técnica · Externalización del cálculo',
-
-  saberAncestral: {
-    saber:
-      'El quipu inca guardaba la memoria contable de imperios enteros con nudos en cuerdas. El ábaco mesoamericano (nepohualtzintzin) hacía cuentas complejas con cuentas de maíz. Los conteos por marcas en pared de pastores andinos llevaban el registro de ovejas. Calcular sin la mente, externalizando la memoria en un objeto, no lo inventó Silicon Valley — lo inventaron pueblos hace milenios.',
-    fuente: 'Quipu inca, ábaco mesoamericano (nepohualtzintzin), conteos andinos',
-    preguntaPuente:
-      '¿Qué cálculos haces a diario sin pensar gracias al celular? ¿Cuáles podrías hacer sin él? ¿Cuáles ya se te están olvidando?',
-  },
-
-  mapaRuta: [
-    { numero: 1, iconos: ['🌱'], titulo: 'Quipu, ábaco, chip', duracionMin: 8 },
-    { numero: 2, iconos: ['🔎'], titulo: 'Experimento de 3 instrumentos', duracionMin: 15 },
-    { numero: 3, iconos: ['📖'], titulo: '4 momentos del cálculo externo', duracionMin: 17 },
-    { numero: 4, iconos: ['✏️'], titulo: 'Bitácora + reflexión crítica', duracionMin: 35 },
-    { numero: 5, iconos: ['✅', '💭'], titulo: 'Verifica, reflexiona y cierra', duracionMin: 15 },
-  ],
-
   preLectura: {
-    porQueImporta:
-      'Cada vez que delegas un cálculo o un dato a la pantalla, repites el gesto del quipucamayoc inca. Lo nuevo no es externalizar la mente — es la velocidad. La pregunta de tu generación es si esa velocidad te hace más capaz o solo más dependiente.',
-    preguntaDetonante:
-      '¿Cuál fue la última vez que sumaste mentalmente 3 cifras sin sacar el celular? Si no recuerdas, hay un dato ahí sobre tu propia cognición.',
+    porQueImporta: 'Delegar no es el problema. Delegar sin haberlo decidido deja capacidades sin uso, y una capacidad sin uso se apaga despacio y sin avisar.',
+    preguntaDetonante: '¿Cuándo fue la última vez que calculaste algo de memoria teniendo el teléfono a mano?',
     activacion: {
-      titulo: 'Test rápido del cálculo mental',
-      descripcion:
-        'En 1 minuto, sin papel ni celular, calcula: 47 + 138 + 92. Anota tu resultado y tu tiempo. Luego verifica con la calculadora. ¿Cuánto te costó? ¿Te equivocaste? Ese mini-experimento es la antesala de la sesión.',
-      duracionMin: 2,
+      titulo: 'Sin mirar',
+      descripcion: 'En 2 minutos, calcula de memoria cuánto pagarías por tres cosas de 3.500, 2.800 y 1.200 pesos. Anota el resultado y después compruébalo.',
+      duracionMin: 3
     },
     conexion: {
-      anterior:
-        'En la sesión 7 viste cómo la electricidad reorganiza tu día. Hoy ves cómo el chip reorganiza tu cognición.',
-      siguiente:
-        'En la sesión 9 estudiarás tecnologías propias regenerativas que sobrevivieron sin chip ni electricidad — saberes que hoy se reevalúan.',
-    },
+      anterior: 'En la sesión 7 escribiste la bitácora de un día sin electricidad.',
+      siguiente: 'En la sesión 9 defiendes una tecnología propia con evidencia y con su desventaja.'
+    }
   },
-
   conceptosClave: [
     {
-      termino: 'Cálculo mental',
-      definicion:
-        'Hacer la cuenta con la mente sola, sin objeto externo. La forma más antigua de calcular y la primera que se atrofia cuando delegas todo a la pantalla.',
-      ejemplo:
-        'Tu abuelo calcula el precio total del mercado mentalmente mientras camina. Tú sacas el celular. Misma operación, distinta dependencia.',
-      emoji: '🧠',
+      termino: 'Cálculo físico',
+      definicion: 'Aquel en que la memoria sale de la cabeza y se apoya en un objeto: quipu, ábaco, marcas o un cuaderno.',
+      ejemplo: 'El cuaderno del fiado de una tienda de barrio es cálculo físico, y todavía funciona.',
+      categoria: 'Los cuatro momentos'
     },
     {
-      termino: 'Cálculo físico (quipu, ábaco)',
-      definicion:
-        'Externalizar el conteo en un objeto manipulable. El quipucamayoc inca y el contador del ábaco no son primitivos — son ingenieros cognitivos del primer cálculo distribuido.',
-      ejemplo:
-        'El quipu guardaba tributos de un imperio. Sin papel, sin chip, con cuerdas y nudos. Funcionaba para millones de personas durante siglos.',
-      emoji: '🪢',
+      termino: 'Externalizar',
+      definicion: 'Poner fuera de la cabeza una tarea que antes hacía la cabeza. Gana precisión y cobra práctica.',
+      ejemplo: 'Anotar en vez de memorizar libera memoria y, con el tiempo, reduce la que se entrena.',
+      categoria: 'Los cuatro momentos'
     },
     {
-      termino: 'Cálculo mecánico',
-      definicion:
-        'Máquinas que calculan con ruedas y engranajes (Pascalina 1642, máquina de Babbage 1822). Eslabón entre el ábaco y el computador digital.',
-      ejemplo:
-        'La Pascalina de Blaise Pascal sumaba con ruedas dentadas. Era enorme, frágil, lenta — pero ya no requería que el humano hiciera la operación.',
-      emoji: '⚙️',
+      termino: 'Andamio',
+      definicion: 'Apoyo que sostiene mientras se aprende y que conviene retirar después, como el plástico que se disuelve al mojarse.',
+      ejemplo: 'La calculadora puede ser andamio o quedarse. Depende de si lo decides tú.',
+      categoria: 'La decisión'
     },
     {
-      termino: 'Cálculo digital',
-      definicion:
-        'Chips que operan con electricidad y miniaturizan todo lo anterior. Lo que tu celular hace en milisegundos requería habitaciones enteras en 1950.',
-      ejemplo:
-        'La calculadora del celular hace en 1 segundo lo que una máquina de los años 60 hacía en horas y ocupaba 100 m².',
-      emoji: '💻',
+      termino: 'Capacidad sin uso',
+      definicion: 'La que se apaga despacio por no ejercitarse, sin que haya un día en que se note la pérdida.',
+      ejemplo: 'Un día calcular el vuelto de memoria cuesta más que antes y no recuerdas cuándo empezó.',
+      categoria: 'La decisión'
     },
     {
-      termino: 'Ganancia con costo cognitivo',
-      definicion:
-        'Toda externalización del cálculo gana precisión, velocidad y memoria, pero pierde ejercicio mental si no calculas a la vez. Lo que dejas de practicar, lo dejas de saber.',
-      ejemplo:
-        'Antes recordabas 30 números de teléfono. Hoy no recuerdas ni el de tu mejor amigo — está en el celular. La memoria no se atrofió: la delegaste.',
-      emoji: '⚖️',
-    },
-    {
-      termino: 'Cognición distribuida (Floridi)',
-      definicion:
-        'Tu mente hoy no es solo cerebro: incluye celular, Google, cuentas, algoritmos. Vives "onlife" — ni online ni offline, una vida híbrida donde lo digital es parte del yo.',
-      ejemplo:
-        'Cuando piensas "¿qué hago el sábado?" y abres el celular para ver el calendario, tu mente está distribuida. La decisión la tomas tú, pero la memoria vive en la nube.',
-      emoji: '🌐',
-    },
+      termino: 'Observación sin juicio',
+      definicion: 'Describir lo que ocurrió con datos, sin sacar conclusiones sobre uno mismo a partir de un solo experimento.',
+      ejemplo: '«Tardé cuatro minutos y me equivoqué en 62» observa. «Soy malo para las matemáticas» juzga.',
+      categoria: 'Escribir la bitácora'
+    }
   ],
-
+  laboratorios: [
+    {
+      tipo: 'quiz',
+      titulo: '¿Sabes qué delegar y qué quedarte?',
+      instrucciones: 'Cinco preguntas sobre los cuatro momentos del cálculo y sobre la decisión. No va al cuaderno.',
+      preguntas: [
+        {
+          enunciado: '¿A qué momento del cálculo pertenece el cuaderno del fiado de una tienda?',
+          opciones: [
+            'Al mental, porque el tendero recuerda las cuentas de todos.',
+            'Al mecánico, porque sustituye por completo a la persona.',
+            'Al físico, porque la memoria se apoya en un objeto.',
+            'A ninguno, porque no realiza ninguna operación por sí solo.'
+          ],
+          respuestaIndex: 2,
+          feedbackCorrecto: 'Sí. Como el ábaco o el quipu: la memoria sale de la cabeza y se apoya en algo.',
+          feedbackIncorrecto: 'Al cálculo físico. La memoria se apoya en un objeto, aunque el objeto no opere solo.'
+        },
+        {
+          enunciado: '¿Qué cobra cada salto en la historia del cálculo?',
+          opciones: [
+            'Dinero, porque cada instrumento nuevo es más caro que el anterior.',
+            'Ejercicio mental, que es la práctica que deja de hacerse.',
+            'Precisión, que siempre se pierde al automatizar una tarea.',
+            'Tiempo, porque aprender el instrumento nuevo lleva semanas.'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Correcto. Gana precisión, velocidad y memoria; cobra práctica.',
+          feedbackIncorrecto: 'Cobra ejercicio mental. La precisión no se pierde: justamente es lo que se gana.'
+        },
+        {
+          enunciado: '¿Cuál de estas es una observación sin juicio?',
+          opciones: [
+            '«Tardé cuatro minutos de memoria y me equivoqué en 62.»',
+            '«Soy malo para las matemáticas desde que era pequeño.»',
+            '«La calculadora me volvió perezoso con los números.»',
+            '«Nadie de mi edad sabe calcular sin ayuda del teléfono.»'
+          ],
+          respuestaIndex: 0,
+          feedbackCorrecto: 'Eso es. Describe lo que pasó con datos, sin concluir nada sobre quién eres.',
+          feedbackIncorrecto: 'La que da datos de lo ocurrido. Las otras tres son juicios, y ninguno se deduce de un experimento.'
+        },
+        {
+          enunciado: '¿Cuál de estas propuestas se puede cumplir o incumplir?',
+          opciones: [
+            '«Voy a usar menos el celular a partir de ahora.»',
+            '«Voy a esforzarme más con los números este año.»',
+            '«Voy a ser más consciente de mi uso de la tecnología.»',
+            '«Voy a calcular de memoria el vuelto de lunes a viernes.»'
+          ],
+          respuestaIndex: 3,
+          feedbackCorrecto: 'Sí. Dice qué cálculo y cuándo, así que al viernes se sabe si se cumplió.',
+          feedbackIncorrecto: 'La que dice qué y cuándo. Las otras no se pueden comprobar ni el viernes ni nunca.'
+        },
+        {
+          enunciado: '¿Qué enseña el plástico que se disuelve en el bordado de Cartago?',
+          opciones: [
+            'Que los materiales biodegradables son mejores para el oficio.',
+            'Que el molde sostiene mientras se trabaja y después desaparece.',
+            'Que el bordado a mano no necesita ninguna clase de plantilla.',
+            'Que el diseño debe copiarse siempre antes de mojar la tela.'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Correcto. Cuando el molde se va, lo que permanece es lo que la mano hizo.',
+          feedbackIncorrecto: 'Que el andamio sostiene mientras se aprende y luego se retira. Lo que queda es lo que hizo la mano.'
+        }
+      ]
+    }
+  ],
+  postLectura: {
+    reflexion: '¿Qué método te dio el resultado correcto y cuál te dio el más rápido? ¿Fueron el mismo?',
+    transferencia: 'Cumple tu propuesta al menos tres días y anota si te costó más el primero o el tercero. La respuesta dice bastante.',
+    cierre: 'Cuando el plástico se disuelve, solo queda la puntada. Con los aparatos pasa igual, solo que nadie avisa cuándo.'
+  },
+  saberAncestral: {
+    saber: 'En Cartago el oficio se hereda por la casa, no por la escuela. Gladys Ramírez, bordadora con más de treinta años en el oficio, aprendió a bordar de su abuela (Chica García, 2019). Fíjate en un detalle del procedimiento. El diseño se dibuja a lápiz sobre un plástico biodegradable que se disuelve al mojarse. Cuando el plástico se va, solo queda la puntada. El molde desaparece y lo que permanece es lo que la mano hizo. Esa es la pregunta de hoy, dicha con hilo. Un andamio sirve mientras se construye y después estorba. La calculadora, el corrector y el buscador son andamios: te sostienen mientras aprendes algo. La cuestión es qué queda cuando se disuelven. La cara de exclusión: la transmisión doméstica del oficio convive con la informalidad, y heredar el oficio no garantiza heredar un ingreso.',
+    fuente: 'Bordadoras de Cartago · el molde de plástico que se disuelve',
+    referencia: 'Chica García, A. (2019, 17 de agosto). Bordados de Cartago: la herencia española que apropiaron las mujeres vallunas. Radio Nacional de Colombia.',
+    preguntaPuente: 'Cuando el plástico se disuelve, solo queda la puntada. Si mañana te quitaran la calculadora del teléfono, ¿qué quedaría de lo que sabes calcular?'
+  },
+  mapaRuta: [
+    {
+      numero: 1,
+      iconos: [
+        '🌱'
+      ],
+      titulo: 'El molde que se disuelve',
+      duracionMin: 10
+    },
+    {
+      numero: 2,
+      iconos: [
+        '👁'
+      ],
+      titulo: 'Actividad 1 · El experimento de los tres instrumentos',
+      duracionMin: 15
+    },
+    {
+      numero: 3,
+      iconos: [
+        '📖'
+      ],
+      titulo: 'Actividad 2 · Los cuatro momentos del cálculo',
+      duracionMin: 20
+    },
+    {
+      numero: 4,
+      iconos: [
+        '✏️'
+      ],
+      titulo: 'Actividad 3 · La bitácora y tu decisión',
+      duracionMin: 30
+    },
+    {
+      numero: 5,
+      iconos: [
+        '✅',
+        '💭'
+      ],
+      titulo: 'Verifica, tres citas y tu compromiso',
+      duracionMin: 15
+    }
+  ],
   actividades: [
     {
       numero: 1,
       verbo: 'IDENTIFICA',
-      titulo: 'Experimento de los 3 instrumentos',
+      titulo: 'El experimento de los tres instrumentos',
       tiempoMin: 15,
       modalidad: 'individual',
       pasos: [
-        'Suma estos 10 números: 47, 138, 92, 215, 56, 304, 89, 173, 462, 218.',
-        'Primero mentalmente: anota tu resultado y el tiempo que te tomó.',
-        'Después con papel y lápiz: anota tu resultado y el tiempo.',
-        'Después con calculadora del celular: anota resultado y tiempo. Verifica cuál es el resultado correcto.',
+        'Toma los diez números de la guía y súmalos de memoria, sin escribir, anotando resultado y tiempo.',
+        'Súmalos con papel y lápiz, anotando resultado y tiempo.',
+        'Súmalos con calculadora, anotando resultado y tiempo.',
+        'Compara los tres y marca dónde estuvo cada error.'
       ],
       cuaderno: {
-        titulo: '3 instrumentos, 1 cálculo',
-        formato: 'Tabla 4 columnas (Instrumento | Resultado | Tiempo | Errores), 3 filas',
-        extension: '3 filas + 1 párrafo de observación',
+        titulo: 'El experimento de los tres instrumentos',
+        formato: 'tabla de 3 filas y 4 columnas (método / resultado / tiempo / errores)',
+        extension: 'un tercio de página'
       },
       criterios: [
-        'Los 3 métodos están con resultado y tiempo registrados',
-        'Identifiqué errores honestamente (cuándo me equivoqué)',
-        'Reconozco qué método me dio mejor resultado y por qué',
-        'No hice trampa (usé celular solo en el tercer método)',
-      ],
+        'Las tres filas tienen tiempo medido, no estimado.',
+        'Está marcado dónde estuvo cada error.'
+      ]
     },
     {
       numero: 2,
-      verbo: 'ANALIZA',
-      titulo: '4 momentos del cálculo externo',
-      tiempoMin: 15,
-      modalidad: 'individual',
+      verbo: 'EXPLICA',
+      titulo: 'Los cuatro momentos del cálculo',
+      tiempoMin: 20,
+      modalidad: 'parejas',
       pasos: [
-        'Para cada momento (mental, físico, mecánico, digital) escribe una ficha.',
-        'En cada ficha: ejemplo histórico + ejemplo cotidiano tuyo.',
-        'Anota qué capacidad humana entrena o atrofia cada uno.',
-        'Cierra con honestidad: ¿qué capacidad cognitiva tuya estás atrofiando ahora mismo?',
+        'Con tu pareja, escriban los cuatro momentos con una frase propia cada uno.',
+        'Ubiquen en ellos el ábaco, el cuaderno del fiado, la caja registradora y el teléfono.',
+        'Escriban qué ganó y qué cobró cada salto.',
+        'Comparen sus tablas del experimento y anoten en qué se parecieron y en qué no.'
       ],
       cuaderno: {
-        titulo: '4 momentos del cálculo externo',
-        formato: '4 fichas con ejemplo histórico + ejemplo tuyo + capacidad entrena/atrofia',
-        extension: '4 fichas + 1 párrafo final',
+        titulo: 'Los cuatro momentos del cálculo',
+        formato: 'los cuatro momentos con frase propia, los cuatro objetos ubicados y lo que ganó y cobró cada salto',
+        extension: 'media página'
       },
       criterios: [
-        'Cada ficha tiene un ejemplo histórico y uno tuyo',
-        'Distinguís claramente los 4 momentos',
-        'Reconoces honestamente qué capacidad estás atrofiando',
-        'Puedes explicar los 4 sin notas',
-      ],
+        'Cada salto tiene escritas las dos partes, la ganancia y el costo.',
+        'Los cuatro objetos están ubicados en su momento.'
+      ]
     },
     {
       numero: 3,
       verbo: 'APLICA',
-      titulo: 'Bitácora completa + reflexión crítica',
+      titulo: 'La bitácora y tu decisión',
       tiempoMin: 30,
       modalidad: 'individual',
       pasos: [
-        'Copia los datos del experimento de la Actividad 1 (tabla con los 3 métodos).',
-        'Escribe 3 observaciones sobre qué pasó (sin juicio).',
-        'Escribe 2-3 reflexiones personales sobre tu propia cognición.',
-        'Cierra con 1 propuesta concreta: ¿qué cálculo vas a hacer mentalmente esta semana en vez de delegar al celular?',
+        'Pasa a limpio la tabla del experimento.',
+        'Escribe tres observaciones de lo que pasó, sin juzgarte.',
+        'Escribe dos o tres reflexiones honestas y nombra una capacidad que estés dejando de usar.',
+        'Escribe una propuesta concreta para esta semana, con qué cálculo harás sin aparato y cuándo.',
+        'Léesela a un compañero y pregúntale si alguna frase le sonó a lugar común.'
       ],
       cuaderno: {
-        titulo: 'Bitácora del experimento del cálculo',
-        formato: 'Tabla + 3 observaciones + 2-3 reflexiones + 1 propuesta',
-        extension: '1 página de cuaderno',
+        titulo: 'La bitácora y tu decisión',
+        formato: 'la tabla, las tres observaciones, las reflexiones, la capacidad nombrada y la propuesta con día y lugar',
+        extension: 'media página'
       },
       criterios: [
-        'Tabla completa con los 3 métodos',
-        '3 observaciones del experimento sin juicio',
-        '2-3 reflexiones personales honestas (no clichés)',
-        '1 propuesta concreta y específica para la semana',
-        'Reconoces al menos UNA capacidad mental que estás atrofiando',
-      ],
-    },
-    {
-      numero: 4,
-      verbo: 'EVALÚA',
-      titulo: 'Evalúa la bitácora de un compañero',
-      tiempoMin: 15,
-      modalidad: 'parejas',
-      pasos: [
-        'Intercambia cuadernos. Lee la bitácora del compañero.',
-        'Califica del 1 al 5: (a) ¿datos completos del experimento?, (b) ¿reflexiones honestas, no clichés?, (c) ¿propuesta concreta y accionable?',
-        'Marca con ✨ la reflexión más honesta y con 🚩 las observaciones genéricas.',
-        'Conversen 5 min: ¿propondrían cumplir la propuesta del otro? ¿Por qué sí o no?',
-      ],
-      cuaderno: {
-        titulo: 'Evaluación de la bitácora de [nombre]',
-        formato: '3 calificaciones con justificación + marcas + 1 observación',
-        extension: '3 calificaciones + 1 observación',
-      },
-      criterios: [
-        'Las 3 calificaciones tienen justificación',
-        'Marcaste reflexiones honestas y observaciones genéricas',
-        'La conversación cerró con compromiso o desacuerdo claro',
-        'No copiaste su reflexión en tu propio cuaderno',
-      ],
-    },
+        'La propuesta se puede cumplir o incumplir esta misma semana.',
+        'Un compañero la leyó y no le sonó a lugar común.'
+      ]
+    }
   ],
-
-  laboratorios: [
-    {
-      tipo: 'quiz',
-      titulo: '✅ Verifica los momentos del cálculo',
-      instrucciones:
-        '5 preguntas para confirmar que entiendes la historia del cálculo externalizado. Necesitas 3/5 para continuar.',
-      preguntas: [
-        {
-          enunciado: '¿Cuál de estos NO es un cálculo externalizado precolombino?',
-          opciones: ['Quipu inca', 'Ábaco mesoamericano (nepohualtzintzin)', 'Calculadora de bolsillo', 'Conteos andinos por marcas'],
-          respuestaIndex: 2,
-          feedbackCorrecto:
-            'Correcto. Quipu, ábaco mesoamericano y conteos andinos son precolombinos. La calculadora de bolsillo es de 1970 — eslabón reciente en una historia de milenios.',
-          feedbackIncorrecto:
-            'La calculadora de bolsillo es de 1970. Quipu, ábaco mesoamericano y conteos andinos son precolombinos — externalización del cálculo lleva milenios.',
-        },
-        {
-          enunciado: '¿Qué significa "ganancia con costo cognitivo"?',
-          opciones: [
-            'Que calcular cuesta caro',
-            'Que ganas precisión y velocidad pero pierdes ejercicio mental si no calculas a la vez',
-            'Que el cerebro necesita más energía',
-            'Que las matemáticas son difíciles',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Exacto. Externalizar gana precisión y velocidad. Pero lo que dejas de practicar, lo dejas de saber. La ganancia técnica tiene contrapartida cognitiva.',
-          feedbackIncorrecto:
-            'Ganancia técnica + costo cognitivo. Calculadora rápida + memoria que se atrofia. La pregunta no es si delegar — es qué conviene delegar.',
-        },
-        {
-          enunciado: '¿Por qué la velocidad del chip NO es lo mismo que inteligencia?',
-          opciones: [
-            'Porque el chip es lento',
-            'Porque una calculadora opera rápido pero no entiende el problema — solo ejecuta',
-            'Porque las máquinas no piensan en español',
-            'Porque el chip consume electricidad',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Sí. La calculadora es velocísima pero no sabe si tu problema es de matemáticas o de cocina. Velocidad ≠ comprensión. Eso lo pone el humano.',
-          feedbackIncorrecto:
-            'Velocidad ≠ inteligencia. La calculadora ejecuta sin entender. El humano comprende el contexto. Esa diferencia es la frontera entre IA débil y cognición.',
-        },
-        {
-          enunciado: '¿Qué es la "cognición distribuida" según Floridi?',
-          opciones: [
-            'Que el cerebro tiene varias partes',
-            'Que tu mente hoy incluye celular, Google, cuentas, algoritmos — vives "onlife"',
-            'Que pensar requiere internet',
-            'Que la inteligencia se reparte',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Correcto. Cognición distribuida: tu mente no es solo cerebro — es cerebro + dispositivos + plataformas. Onlife = ni online ni offline, vida híbrida.',
-          feedbackIncorrecto:
-            'Cognición distribuida según Floridi: tu mente incluye los dispositivos que extienden tu cognición. Vivimos "onlife" — vida híbrida donde lo digital es parte del yo.',
-        },
-        {
-          enunciado:
-            'En el saber ancestral del quipucamayoc inca, ¿qué aplica directamente a tu uso del celular?',
-          opciones: [
-            'Nada — el quipu era primitivo',
-            'Que externalizar el cálculo requiere ENTENDER el sistema, no solo poseerlo',
-            'Que las cuerdas son mejores',
-            'Que los incas no usaban tecnología',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Esa es la conexión. El quipucamayoc era experto porque ENTENDÍA el quipu. Tú serás experto en tu celular cuando entiendas lo que delega y lo que se atrofia.',
-          feedbackIncorrecto:
-            'Entender vence a poseer. El quipucamayoc dominaba el sistema; muchos hoy solo consumen el celular sin entender qué externalizan. La diferencia es expertise vs dependencia.',
-        },
-      ],
-    },
-  ],
-
-  postLectura: {
-    reflexion: '',
-    transferencia:
-      'Esta semana, identifica 3 cálculos cotidianos que hoy haces con celular (precio total del mercado, propina, división de cuenta entre amigos) y comprométete a hacerlos mentalmente durante 3 días seguidos. Anota qué te costó, qué descubriste, si tu velocidad mejoró. El próximo lunes traemos la bitácora.',
-    cierre: '',
-  },
-
   triangulo: {
     dussel: {
-      autor: 'Enrique Dussel',
+      autor: 'Enrique Dussel · Filosofía de la liberación (1977), §5.4.5',
       lente: 'lente del nosotros',
-      cita: 'Cada saber silenciado por la Conquista es una herramienta que tu generación tendrá que reaprender.',
-      preguntaEspejo:
-        '¿Qué saberes propios de mi región (cuentas de plaza, sistemas tradicionales de medida, técnicas de memoria oral) podría conocer mejor para complementar mi dependencia digital?',
+      cita: 'Se debe tener clara conciencia que las mejores computadoras no pueden suplantar a los catorce mil millones de neuronas… situadas sólo en nuestra corteza cerebral. El método para la mejor decisión práctica es práctico.',
+      preguntaEspejo: '¿Qué decisión mía he dejado en manos de un aparato sin darme cuenta?'
     },
     estoico: {
-      autor: 'Marco Aurelio',
+      autor: 'Epicteto · Enquiridión, 1 (c. 125 d.C.)',
       lente: 'lente del cuidado interior',
-      cita: 'Lo que dejas de practicar, lo dejas de saber; lo que dejas de saber, lo dejas de poder.',
-      preguntaEspejo:
-        '¿Qué habilidad cognitiva mía estoy dejando atrofiar por delegar todo al dispositivo? ¿Estaría dispuesto a recuperarla con 5 minutos diarios?',
+      cita: 'Hay ciertas cosas que dependen de nosotros mismos, como la opinión, la inclinación, los deseos, la aversión, y en una palabra, todas nuestras operaciones. Otras hay también que no dependen, como el cuerpo, las riquezas, la reputación, los imperios.',
+      preguntaEspejo: 'De lo que me molesta de mi relación con los aparatos, ¿qué parte depende de mí?'
     },
     floridi: {
-      autor: 'Luciano Floridi',
+      autor: 'The Onlife Initiative (ed. Luciano Floridi) · The Onlife Manifesto (2015), § 4.6',
       lente: 'lente de la infoesfera',
-      cita: 'La cognición humana hoy es distribuida: parte vive en nuestra mente, parte en los dispositivos que extienden nuestra mente.',
-      preguntaEspejo:
-        '¿Qué partes de mi memoria, cálculo y juicio están hoy en dispositivos? ¿Lo diseñé yo o me lo impusieron las plataformas?',
-    },
+      cita: 'Afirmamos que las capacidades atencionales son un bien finito, precioso y escaso. (trad. propia)',
+      preguntaEspejo: '¿En qué usé la atención que me liberó el último aparato que empecé a usar?'
+    }
   },
-
   cincoDimensiones: {
-    personal:
-      'Hiciste un experimento honesto sobre tu propia cognición — y descubriste qué capacidades estás atrofiando.',
-    emocional:
-      'Sentiste el cuerpo cognitivo: la mente que se cansa, la calculadora que alivia, la elección que cuesta.',
-    ciudadana:
-      'Reconociste que la externalización masiva al chip no es neutral — concentra poder en quien diseña los dispositivos.',
-    local:
-      'Anclaste el aprendizaje en el quipu inca y el ábaco mesoamericano como antecedentes legítimos de tu celular.',
-    intergeneracional:
-      'Conectaste tu cálculo digital con 5000 años de cálculo externalizado. Lo que cambia es el material; el principio sobrevive.',
-  },
+    personal: 'Mediste algo tuyo en vez de suponerlo, y los números casi nunca coinciden con la suposición.',
+    emocional: 'Equivocarse en una suma delante de uno mismo incomoda. Escribirlo sin juzgarse es la práctica difícil.',
+    ciudadana: 'Quien no puede comprobar una cuenta depende de que quien la hizo la haya hecho bien.',
+    local: 'El cuaderno del fiado sigue siendo un instrumento de cálculo vigente a dos cuadras de tu casa.',
+    intergeneracional: 'Gladys Ramírez aprendió el bordado de su abuela, no de un curso. El molde se disuelve; la mano queda.'
+  }
 };
 
 export default contenido;

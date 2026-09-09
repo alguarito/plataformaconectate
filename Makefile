@@ -109,6 +109,10 @@ guia-lint-strict:  ## Igual que guia-lint pero los warnings también fallan
 guia-lint-ti:  ## Lint transversal de Territorio Interior (voz, plantillas, anclas)
 	@$(PYTHON) scripts/guias-lint.py --programa territorio-interior
 
+.PHONY: citas-verificar
+citas-verificar:  ## Coteja cada cita del banco contra su fuente de acceso abierto
+	@$(PYTHON) scripts/citas-verificar.py
+
 .PHONY: guia-auditoria
 guia-auditoria:  ## Informe del desfase frente al contrato (236 guías) en docs/auditoria/
 	@$(PYTHON) scripts/guias-auditoria.py --out docs/auditoria/contrato-v31-$$(date +%F).md --json

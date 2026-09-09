@@ -463,7 +463,11 @@ def lint_fuente_apertura(g: dict) -> tuple[list[str], list[str]]:
              "apertura.fuente ausente: el saber ancestral necesita una referencia (APA 7) "
              "o rotularse como relato, no como saber.")
         return errors, warnings
-    if re.search(r"\[|TODO|VERIFICAR|PENDIENTE", fuente, re.IGNORECASE):
+    # Un corchete no basta para sospechar: APA 7 lo usa para el tipo de documento
+    # («[Conjunto de datos]», «[Comunicación al Ministerio TIC]»). Lo que no puede
+    # llegar al PDF es un hueco sin rellenar.
+    hueco = re.search(r"\[\s*(?:[.…?xX\s]*)\]", fuente)
+    if hueco or re.search(r"TODO|VERIFICAR|PENDIENTE", fuente, re.IGNORECASE):
         errors.append("apertura.fuente contiene un marcador pendiente ([…], TODO, VERIFICAR): no puede llegar al PDF")
     # Una página sin fecha se cita «(s. f.)» con la fecha de consulta (APA 7).
     sin_fecha = re.search(r"\(\s*s\.\s*\\?,?\s*f\.\s*\)", fuente) and re.search(r"[Cc]onsultad[oa].*\d{4}", fuente)

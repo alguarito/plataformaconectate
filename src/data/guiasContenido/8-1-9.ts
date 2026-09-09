@@ -76,9 +76,9 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuál de estas preguntas se puede responder con datos en una semana?',
           opciones: [
             '¿Cuántos minutos de pantalla al día tienen los de 8-A?',
-            '¿Los estudiantes de hoy son más felices que los de antes?',
+            '¿Qué piensa la humanidad entera sobre la tecnología actual?',
             '¿Es bueno o malo usar el celular en las clases del colegio?',
-            '¿Qué piensa la humanidad entera sobre la tecnología actual?'
+            '¿Los estudiantes de hoy son más felices que los de antes?'
           ],
           respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Tiene algo que se mide, minutos, y un grupo alcanzable, 8-A. Las otras no se cuentan ni se miden.',
@@ -87,10 +87,10 @@ const contenido: ContenidoGuia = {
         {
           enunciado: '¿Cuándo se escribe la hipótesis?',
           opciones: [
-            'Después de calcular, para que coincida con el resultado.',
+            'En la sustentación, cuando ya se sabe todo el resultado.',
             'Solo si el estudio sale bien y confirma lo esperado.',
             'Antes de recolectar, para poder equivocarse con datos.',
-            'En la sustentación, cuando ya se sabe todo el resultado.'
+            'Después de calcular, para que coincida con el resultado.'
           ],
           respuestaIndex: 2,
           feedbackCorrecto: 'Exacto. Si la escribes después, todo parece esperado. Antes, te permite aprender del error.',
@@ -99,36 +99,36 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'Encuestaste solo a tus cinco mejores amigos sobre el tiempo de pantalla. ¿Qué es lo correcto?',
           opciones: [
-            'Presentar el resultado como el del colegio, porque son datos reales de verdad.',
             'Botar el estudio completo, porque cinco datos no sirven para concluir nada.',
+            'Declarar en las limitaciones que fueron cinco amigos y no el colegio.',
             'Inventar quince datos más parecidos para completar la muestra mínima.',
-            'Declarar en las limitaciones que fueron cinco amigos y no el colegio.'
+            'Presentar el resultado como el del colegio, porque son datos reales de verdad.'
           ],
-          respuestaIndex: 3,
+          respuestaIndex: 1,
           feedbackCorrecto: 'Eso es. Cinco amigos es una limitación, y se dice. Un estudio pequeño y honesto vale; uno inflado no.',
           feedbackIncorrecto: 'Ni se infla ni se inventa ni se bota. Se declara la limitación en la última página y se propone cómo mejorarlo.'
         },
         {
           enunciado: '¿Cuál de estas frases es un hallazgo bien escrito?',
           opciones: [
-            'Hice muchos cálculos con las cuatro funciones y varios gráficos interesantes.',
-            'Los de 8-A pasan en promedio 3 horas al día en pantalla; el máximo fue 8.',
             'Los datos muestran cosas muy importantes sobre el uso del celular en el colegio.',
-            'Creo que la gente usa mucho el celular, como todo el mundo sabe desde hace años.'
+            'Creo que la gente usa mucho el celular, como todo el mundo sabe desde hace años.',
+            'Hice muchos cálculos con las cuatro funciones y varios gráficos interesantes.',
+            'Los de 8-A pasan en promedio 3 horas al día en pantalla; el máximo fue 8.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. Una frase, con cifras, que responde la pregunta. Las otras no dicen qué encontraste.',
           feedbackIncorrecto: 'Un hallazgo dice qué encontraste, con cifras, en una frase. «Muchos cálculos» y «cosas importantes» no son hallazgos.'
         },
         {
           enunciado: 'En el censo de un resguardo, ¿qué le pasa a quien no está el día del censo, y qué te enseña eso para tu estudio?',
           opciones: [
+            'Lo reemplaza un funcionario con un promedio; en tu estudio, inventas el dato que falta.',
             'Nada, porque el cabildo lo agrega después de memoria; en tu estudio tampoco importa quién falta.',
             'Queda fuera de la lista y del reparto; en tu estudio, hay que decir quién quedó fuera.',
-            'Lo cuentan dos veces al día siguiente; en tu estudio, se duplican los datos para compensar.',
-            'Lo reemplaza un funcionario con un promedio; en tu estudio, inventas el dato que falta.'
+            'Lo cuentan dos veces al día siguiente; en tu estudio, se duplican los datos para compensar.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Correcto. La tierra se reparte conforme al censo. Por eso tu informe dice a quién no encuestaste.',
           feedbackIncorrecto: 'Quien no está en la lista no existe para el reparto. La lección es declarar quién quedó fuera, no inventar ni duplicar.'
         }

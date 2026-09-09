@@ -69,22 +69,22 @@ const contenido: ContenidoGuia = {
         {
           enunciado: '¿Cuánto da =2+3*4 en Excel, y por qué?',
           opciones: [
-            '20, porque Excel calcula de izquierda a derecha siempre.',
             '14, porque Excel multiplica antes de sumar.',
             '24, porque Excel suma los tres números y luego multiplica.',
+            '20, porque Excel calcula de izquierda a derecha siempre.',
             '9, porque Excel ignora el asterisco en las sumas.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Multiplicar va antes que sumar. Para que dé 20 hay que escribir =(2+3)*4.',
           feedbackIncorrecto: 'Excel no va siempre de izquierda a derecha. Primero multiplica 3*4 y después suma 2. Da 14.'
         },
         {
           enunciado: 'Quieres restar B2 de A2 y dividir el resultado entre C2. ¿Qué fórmula escribes?',
           opciones: [
-            '=A2-B2/C2, porque el orden ya es el correcto.',
+            '=A2/(B2-C2), para que la división vaya adelante.',
             '=A2-(B2/C2), para que reste al final.',
             '=(A2-B2)/C2, para que reste primero y divida después.',
-            '=A2/(B2-C2), para que la división vaya adelante.'
+            '=A2-B2/C2, porque el orden ya es el correcto.'
           ],
           respuestaIndex: 2,
           feedbackCorrecto: 'Correcto. Sin paréntesis, Excel divide primero. Con (A2-B2) la resta va primero, como querías.',
@@ -93,36 +93,36 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'Un compañero escribió =B2*1+19 % para el IVA de un precio de 1.000 pesos. ¿Qué obtiene?',
           opciones: [
-            '1.190 pesos, el precio con IVA.',
-            '190 pesos, solo el IVA.',
             'Un error, porque no se puede sumar un porcentaje.',
-            '1.000,19 pesos, porque suma 0,19 al final.'
+            '1.000,19 pesos, porque suma 0,19 al final.',
+            '1.190 pesos, el precio con IVA.',
+            '190 pesos, solo el IVA.'
           ],
-          respuestaIndex: 3,
+          respuestaIndex: 1,
           feedbackCorrecto: 'Exacto. Excel multiplica B2*1 y después suma 19 %, que vale 0,19. Lo correcto es =B2*(1+19 %).',
           feedbackIncorrecto: 'Excel no da error, pero tampoco 1.190. Multiplica primero y suma 0,19 al final. El paréntesis en (1+19 %) lo arregla.'
         },
         {
           enunciado: '¿Cuánto da =10/2*5?',
           opciones: [
-            '25, porque divide 10 entre 2 y luego multiplica por 5.',
-            '1, porque multiplica 2*5 primero y luego divide 10 entre 10.',
+            '7, porque resta el dos y multiplica.',
             '50, porque suma los tres números y multiplica.',
-            '7, porque resta el dos y multiplica.'
+            '1, porque multiplica 2*5 primero y luego divide 10 entre 10.',
+            '25, porque divide 10 entre 2 y luego multiplica por 5.'
           ],
-          respuestaIndex: 0,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. Dividir y multiplicar tienen el mismo nivel, así que Excel va de izquierda a derecha, 10/2=5 y 5*5=25.',
           feedbackIncorrecto: 'Entre operaciones del mismo nivel, Excel va de izquierda a derecha. Divide primero, después multiplica. Da 25.'
         },
         {
           enunciado: '¿Para qué sirve probar una fórmula con un caso cuyo resultado ya conoces?',
           opciones: [
+            'Para que el formato de la celda cambie a número.',
             'Para que Excel guarde la fórmula como plantilla.',
             'Para descubrir un orden equivocado antes de que llegue a un gráfico.',
-            'Para que la fórmula se copie sola a las demás filas.',
-            'Para que el formato de la celda cambie a número.'
+            'Para que la fórmula se copie sola a las demás filas.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Eso es. Si con 3,0 en las tres notas la final no da 3,0, el orden está mal y lo ves antes de graficar.',
           feedbackIncorrecto: 'El caso de prueba no cambia la fórmula ni el formato. Sirve para detectar un orden equivocado a tiempo.'
         }

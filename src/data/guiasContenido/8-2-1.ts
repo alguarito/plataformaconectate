@@ -75,22 +75,22 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'El huerto se debe regar si la humedad es baja y no está lloviendo. ¿Cuál regla es correcta?',
           opciones: [
-            'SI humedad baja O NO llueve ENTONCES regar.',
             'SI humedad baja Y NO llueve ENTONCES regar.',
             'SI humedad baja Y llueve ENTONCES regar.',
-            'SI NO humedad baja Y NO llueve ENTONCES regar.'
+            'SI NO humedad baja Y NO llueve ENTONCES regar.',
+            'SI humedad baja O NO llueve ENTONCES regar.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Las dos condiciones deben cumplirse, y la lluvia va con NO. Sin el NO, riegas bajo la lluvia.',
           feedbackIncorrecto: 'Con O regarías con humedad alta si no llueve; sin NO regarías bajo la lluvia. La regla es humedad baja Y NO llueve.'
         },
         {
           enunciado: 'La alarma debe sonar con humo, con temperatura alta o con el botón de pánico. ¿Qué operador une las tres condiciones?',
           opciones: [
-            'Y, porque las tres son señales de peligro.',
             'NO, porque la alarma debe estar apagada normalmente.',
+            'Ninguno, porque son tres reglas separadas.',
             'O, porque basta una de las tres para que suene.',
-            'Ninguno, porque son tres reglas separadas.'
+            'Y, porque las tres son señales de peligro.'
           ],
           respuestaIndex: 2,
           feedbackCorrecto: 'Exacto. Con O, basta una. Con Y, la alarma esperaría a que pasen las tres cosas.',
@@ -99,36 +99,36 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'Una regla con dos condiciones tiene cuatro combinaciones. Con tres condiciones, ¿cuántas?',
           opciones: [
-            'Seis, porque son tres pares.',
             'Nueve, porque tres por tres.',
-            'Tres, una por condición.',
-            'Ocho, porque cada condición duplica las combinaciones.'
+            'Ocho, porque cada condición duplica las combinaciones.',
+            'Seis, porque son tres pares.',
+            'Tres, una por condición.'
           ],
-          respuestaIndex: 3,
+          respuestaIndex: 1,
           feedbackCorrecto: 'Correcto. Dos, cuatro, ocho. Cada condición nueva duplica las filas de la tabla.',
           feedbackIncorrecto: 'Cada condición puede ser verdadera o falsa, y las combinaciones se multiplican por dos. Con tres condiciones son ocho.'
         },
         {
           enunciado: '«SI llueve Y NO tengo capucha ENTONCES paraguas». ¿Cuál combinación queda sin respuesta?',
           opciones: [
-            'Llueve y sí tengo capucha.',
-            'No llueve y no tengo capucha.',
             'Llueve y no tengo capucha.',
-            'Ninguna, la regla cubre todo.'
+            'No llueve y no tengo capucha.',
+            'Ninguna, la regla cubre todo.',
+            'Llueve y sí tengo capucha.'
           ],
-          respuestaIndex: 0,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. La regla solo dice qué hacer cuando llueve sin capucha. Con capucha, no dice nada, y también en las otras dos combinaciones. Le falta el SINO.',
           feedbackIncorrecto: 'La regla solo responde en un caso, llueve sin capucha. Llueve con capucha es una combinación sin respuesta, como las otras. Necesita un SINO.'
         },
         {
           enunciado: '¿Cuál de estas es una condición que se contradice y nunca se cumple?',
           opciones: [
+            'Edad mayor que 10 Y edad menor que 15.',
             'Edad mayor que 10 O edad menor que 5.',
             'Edad mayor que 10 Y edad menor que 5.',
-            'NO edad mayor que 10.',
-            'Edad mayor que 10 Y edad menor que 15.'
+            'NO edad mayor que 10.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Eso es. Nadie tiene más de 10 y menos de 5 a la vez. Con O sí se cumple; con Y, nunca.',
           feedbackIncorrecto: 'Mayor que 10 Y menor que 5 no se cumple para ninguna edad. Las otras sí tienen casos verdaderos.'
         }

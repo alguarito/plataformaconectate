@@ -12,159 +12,274 @@ const contenido: ContenidoGuia = {
   periodo: 3,
   sesion: 8,
   titulo: 'Estética de la liberación — cultura popular y producción ética',
-  resumen: 'Como los carnavales y las tejedurías Wayuu: belleza popular como acto político de dignidad. Aprendes a producir contenido digital que reconoce la cultura popular sin exotizarla.',
+  resumen: 'Colombia aprendió a mirar cuerpos leyendo cartillas escolares y revistas, y por eso la burla suele ser una lección vieja repetida. Toda pieza enseña a mirar. Hoy produces la tuya con los cuatro principios de la estética de la liberación y sostienes por escrito a quién dignifica y qué dejaste fuera.',
   duracionMin: 90,
-  subtema: 'Estética de la liberación · Cultura popular · Producción ética',
+  subtema: 'Producción multimedia con criterio ético',
   preLectura: {
-    porQueImporta: 'Saber producir contenido cultural con respeto te diferencia: la mayoría de creadores exotizan; pocos dignifican. La distinción es ética y profesional.',
-    preguntaDetonante: '¿Qué de los carnavales y las tejedurías —su belleza como acto político— podemos llevar al contenido digital que producimos?',
+    porQueImporta: 'Ninguna pieza es neutral: todas reparten dignidad de algún modo. La diferencia está en si quien la hizo sabía lo que estaba repartiendo.',
+    preguntaDetonante: 'La última pieza que compartiste, ¿qué le enseñó a mirar a quien la vio?',
     activacion: {
-      titulo: 'Reconocer vs exotizar',
-      descripcion: 'En 5 minutos: en parejas comparen un video que muestra cultura popular con dignidad y otro que la exotiza. ¿Qué los distingue VISUAL Y NARRATIVAMENTE?',
+      titulo: 'Quién sale mal parado',
+      descripcion: 'En 2 minutos, piensa en una publicidad que use cultura popular colombiana. ¿Quién aparece con nombre y quién aparece como decorado?',
       duracionMin: 5
     },
     conexion: {
-      anterior: 'En la sesión 27 aprendiste a protegerte de grooming.',
-      siguiente: 'En la sesión 29 construirás proyecto MILC integrador sobre problemática social.'
+      anterior: 'En la sesión 7 trabajaste grooming, sexting y el marco legal que protege a menores.',
+      siguiente: 'En la sesión 9 empieza el proyecto integrador sobre un problema real de tu entorno.'
     }
   },
   conceptosClave: [
     {
       termino: 'Estética de la liberación',
-      definicion: 'Corriente filosófica y artística de Enrique Dussel que pregunta a toda obra a quién dignifica, amplifica o deja fuera.',
-      ejemplo: 'Una pieza sobre el barrio se evalúa preguntando quién aparece, quién falta, quién queda como objeto pintoresco.',
-      emoji: '🌎'
+      definicion: 'Propuesta de Enrique Dussel para juzgar una pieza por tres preguntas, a quién amplifica, a quién dignifica y a quién deja fuera.',
+      ejemplo: 'Dos afiches sobre el mismo oficio pueden dignificarlo o convertirlo en chiste. La técnica es la misma; la posición, no.',
+      categoria: 'Cómo se juzga una pieza'
     },
     {
-      termino: 'Voz del sur',
-      definicion: 'Principio que centra a las comunidades históricamente excluidas del centro hegemónico. No para folclorizarlas, para dignificarlas.',
-      ejemplo: 'Una pieza musical que parte de la salsa caleña como matriz, no como adorno exótico para una banda sonora global.',
-      emoji: '🗣️'
+      termino: 'Centrar la voz del sur',
+      definicion: 'Que quien aparece sea alguien de aquí, con su contexto, en vez de un personaje genérico e intercambiable.',
+      ejemplo: 'No «una vendedora del mercado», sino Doña Rosa, que vende chontaduro en la galería desde hace veinte años.',
+      categoria: 'Cómo se juzga una pieza'
     },
     {
-      termino: 'Dignificación del sujeto',
-      definicion: 'Representar a las personas con nombre, oficio y contexto, no como clichés folclóricos o personajes pintorescos.',
-      ejemplo: 'La trabajadora doméstica aparece como "Doña Marta, 25 años en el oficio, vive en Cartago", no como "la empleada típica".',
-      emoji: '👤'
+      termino: 'Exotismo',
+      definicion: 'Mostrar a alguien como rareza para quien mira desde fuera. Se reconoce cuando el interés de la pieza depende de que quien mira no sea del lugar.',
+      ejemplo: 'Un video que trata una fiesta del Pacífico como espectáculo curioso, sin explicar qué significa para quien la hace.',
+      categoria: 'Errores que reproducen jerarquías'
     },
     {
-      termino: 'Producir para la comunidad',
-      definicion: 'Criterio de oficio: la pieza debe poder mostrarse al sujeto retratado y este debe poder reconocerse con orgullo.',
-      ejemplo: 'Si el video sobre tu tía no podrías mostrárselo sin pena, la representación falla aunque haya gustado al algoritmo.',
-      emoji: '🏘️'
+      termino: 'Extractivismo cultural',
+      definicion: 'Usar música, símbolos o palabras de una comunidad sin nombrar de dónde vienen ni devolverle nada.',
+      ejemplo: 'Una marca que usa un ritmo del Pacífico en su publicidad y no acredita ni paga a los músicos.',
+      categoria: 'Errores que reproducen jerarquías'
     },
     {
-      termino: 'Toma de posición',
-      definicion: 'Toda pieza toma posición, aunque pretenda ser neutral. Reconocer cuál es esa posición es phronesis del oficio digital.',
-      ejemplo: 'Una "selección neutral" de canciones del Valle que omite la salsa caleña ya tomó posición. Lo neutral no existe.',
-      emoji: '🎯'
+      termino: 'Reconocerse con orgullo',
+      definicion: 'El chequeo final de la estética de la liberación, imaginar que la persona retratada ve la pieza y preguntarse si se reconocería sin vergüenza.',
+      ejemplo: 'Si te incomoda imaginar esa escena, la pieza todavía no está lista, aunque técnicamente esté bien hecha.',
+      categoria: 'La prueba'
     }
   ],
   laboratorios: [
     {
       tipo: 'quiz',
-      titulo: '¿Diseñas con estética de la liberación?',
-      instrucciones: '5 preguntas para verificar que entiendes el marco de Dussel aplicado a multimedia.',
+      titulo: '¿Sabes juzgar a quién dignifica una pieza?',
+      instrucciones: 'Cinco preguntas sobre los principios, los errores y la prueba final. No va al cuaderno.',
       preguntas: [
         {
-          enunciado: '¿Qué pregunta central plantea la estética de la liberación a toda pieza?',
+          enunciado: 'Una pieza muestra solo lo bonito de un oficio y esconde sus dificultades. ¿Qué error comete?',
           opciones: [
-            '¿Es bonita?',
-            '¿Cuánto duró producirla?',
-            '¿A quién dignifica, amplifica y a quién deja fuera?',
-            '¿Cuántas vistas hizo?'
-          ],
-          respuestaIndex: 2,
-          feedbackCorrecto: 'Exacto. La pregunta central no es estética sino ética: a quién dignifica la pieza, a quién amplifica, a quién omite.',
-          feedbackIncorrecto: 'La pregunta es ética: a quién dignifica, amplifica y a quién deja fuera. La estética sin esa pregunta es vacía.'
-        },
-        {
-          enunciado: '¿Qué significa "centrar la voz del sur"?',
-          opciones: [
-            'Hablar sobre la región sur del país',
-            'Centrar a comunidades históricamente excluidas como matriz, no como adorno',
-            'Solo usar acentos del sur',
-            'Vivir en el sur'
+            'Extractivismo cultural.',
+            'Romantización.',
+            'Caricaturización.',
+            'Paternalismo.'
           ],
           respuestaIndex: 1,
-          feedbackCorrecto: 'Correcto. No es geografía: es centrar a las comunidades excluidas del centro hegemónico como sujetos, no como decorado.',
-          feedbackIncorrecto: 'Significa centrar a comunidades históricamente excluidas como matriz creadora, no como adorno exótico para un centro distinto.'
+          feedbackCorrecto: 'Sí. Dignificar no es embellecer: la cultura popular tiene riqueza y también dificultad.',
+          feedbackIncorrecto: 'Es romantización. Quitar las dificultades convierte el retrato en publicidad.'
         },
         {
-          enunciado: 'Tu video presenta a "la empleada típica". ¿Qué problema tiene desde la estética de la liberación?',
+          enunciado: '¿Cuál es la prueba final de la estética de la liberación?',
           opciones: [
-            '',
-            'Ninguno',
-            'Va a ser corto',
-            'No tiene música'
+            'Que la persona retratada se reconocería sin vergüenza.',
+            'Que la pieza tenga buena calidad técnica.',
+            'Que consiga muchas reacciones al publicarse.',
+            'Que el docente la apruebe con nota alta.'
           ],
           respuestaIndex: 0,
-          feedbackCorrecto: 'Exacto. "La típica" cosifica. Dignificar pide nombre, oficio y contexto. Es la diferencia entre persona y cliché.',
-          feedbackIncorrecto: 'Problema es que cosifica. Dignificar pide nombre, oficio y contexto, no etiqueta genérica que reduce a la persona.'
+          feedbackCorrecto: 'Correcto. Es el único chequeo que mide lo que la pieza reparte.',
+          feedbackIncorrecto: 'La prueba es imaginar a la persona retratada viéndola. Lo técnico no reemplaza esa pregunta.'
         },
         {
-          enunciado: '¿Cuál es la prueba última de una pieza producida con sentido comunitario?',
+          enunciado: 'Una marca usa un ritmo del Pacífico sin acreditar ni pagar a los músicos. ¿Qué error es?',
           opciones: [
-            'Que sea viral',
-            'Que tenga muchos efectos',
-            'Que dure más de 5 minutos',
-            'Que el sujeto retratado se reconozca con orgullo al verla'
-          ],
-          respuestaIndex: 3,
-          feedbackCorrecto: 'Correcto. La pieza debe poder mostrarse al sujeto. Si no lo soportarías hacerlo, la representación falla.',
-          feedbackIncorrecto: 'La prueba es que el sujeto retratado pueda reconocerse con orgullo. Sin eso, la pieza falla aun con muchos likes.'
-        },
-        {
-          enunciado: 'Una selección \'neutral\' que omite ciertas comunidades...',
-          opciones: [
-            'Es realmente neutral',
-            'Es la mejor opción',
-            'Ya tomó posición; lo neutral no existe',
-            'No comunica nada'
+            'Exotismo, porque presenta el ritmo como una rareza.',
+            'Paternalismo, porque trata a los músicos como si necesitaran ayuda.',
+            'Extractivismo cultural, porque toma sin acreditar.',
+            'Romantización, porque idealiza a los músicos.'
           ],
           respuestaIndex: 2,
-          feedbackCorrecto: 'Exacto. Toda pieza toma posición. Pretender neutralidad es esconder la posición tomada al omitir.',
-          feedbackIncorrecto: 'Ya tomó posición. Lo neutral no existe en multimedia: cada inclusión y omisión es decisión cargada de valor.'
+          feedbackCorrecto: 'Exacto. Tomar música o símbolos sin nombrar su origen ni devolver nada es extractivismo.',
+          feedbackIncorrecto: 'Es extractivismo cultural. Usar lo de una comunidad sin acreditarla ni retribuirle.'
+        },
+        {
+          enunciado: '¿Por qué se dice que ninguna pieza multimedia es neutral?',
+          opciones: [
+            'Porque siempre tiene errores técnicos.',
+            'Porque el autor no puede evitar sus gustos personales.',
+            'Porque las plataformas modifican el contenido antes de mostrarlo a otros.',
+            'Porque toda pieza amplifica a alguien y deja a alguien fuera.'
+          ],
+          respuestaIndex: 3,
+          feedbackCorrecto: 'Eso es. La diferencia está en si quien la hizo sabía lo que estaba repartiendo.',
+          feedbackIncorrecto: 'Toda pieza reparte dignidad: amplifica a unos y deja a otros fuera, se sepa o no.'
+        },
+        {
+          enunciado: '¿Cómo se reconoce el exotismo en una pieza?',
+          opciones: [
+            'Cuando el interés de la pieza depende de que quien mira no sea del lugar.',
+            'Cuando la pieza usa colores muy saturados y tipografías llamativas en el fondo.',
+            'Cuando el texto es más largo que la imagen.',
+            'Cuando la persona retratada aparece sonriendo.'
+          ],
+          respuestaIndex: 0,
+          feedbackCorrecto: 'Sí. Si el atractivo está en la rareza, la pieza está hecha para quien mira desde fuera.',
+          feedbackIncorrecto: 'Se reconoce cuando el interés depende de que quien mira sea ajeno al lugar. No es cuestión de estilo visual.'
         }
       ]
     }
   ],
   postLectura: {
-    reflexion: 'Tu siguiente video puede dignificar a alguien o instrumentalizarlo para vistas. ¿Qué eliges? La diferencia es ética, no técnica.',
-    transferencia: 'Esta semana: identifica UNA persona de tu familia o barrio con saber popular (oficio, receta, técnica). Pídele permiso para grabarla. Produce video respetando los principios.',
-    cierre: 'Carnavales y tejedurías sobreviven en cada video que reconoce sin exotizar. La estética de la liberación es política digital.'
+    reflexion: 'De los cinco errores, ¿cuál estuviste a punto de cometer en tu pieza, y qué decisión concreta lo evitó?',
+    transferencia: 'La próxima vez que veas una publicidad con cultura popular, hazte la pregunta del orgullo. ¿La persona retratada se reconocería sin vergüenza?',
+    cierre: 'Toda pieza enseña a mirar. La única diferencia es si quien la hizo sabía lo que estaba enseñando.'
   },
   saberAncestral: {
-    saber: 'En el Distrito de Aguablanca de Cali, en el barrio Obrero de Cartago, en los puentes peatonales de Buenaventura, hay un fenómeno visual que cualquier transeúnte reconoce: los murales pintados por jóvenes comunitarios. Esos murales no aparecen en revistas de diseño ni en museos: aparecen en paredes que dan a la calle. Sus motivos no son los típicos de la publicidad: no hay modelos extranjeros, ni productos de marca. Lo que aparece son las caras del barrio: la abuela del vecino, el tendero, el músico del bus, la madre cabeza de hogar, el niño que vende dulces en el semáforo. Cada figura es voz de un pueblo que el sistema publicitario no representa. Los jóvenes que los pintan no son artistas de academia: son vecinos que aprenden mientras pintan. La sabiduría del muralismo barrial es ancestral y política: representar a quien el sistema no representa es acto de dignidad. Esa práctica es la estética de la liberación de Enrique Dussel: producir belleza con sentido comunitario, que amplifique voces silenciadas, no que decore sobre voces aplastadas.',
-    fuente: 'Carnavales del Pacífico y el Caribe, tejedurías wayuu, retablos veredas colombianos',
-    preguntaPuente: '¿Qué sabían los jóvenes del Aguablanca al pintar las caras del barrio en las paredes, que el publicista comercial olvida cuando produce piezas sobre la "cultura popular" sin haber consultado al pueblo retratado? ¿Y por qué la diferencia entre representar y caricaturizar es decisión ética, no solo técnica?'
+    saber: 'Alguien nos enseñó a mirar los cuerpos así. La antropóloga Zandra Pedraza revisó lo que se leyó en Colombia entre 1830 y 1990: cartillas escolares, manuales de higiene, textos de educación popular y la revista Cromos. Encontró que el país fue aprendiendo, página por página, qué cuerpo se consideraba sano, decente y digno de respeto, y cuál no. Ese aprendizaje pasó por la escuela. La clase de higiene y la de urbanidad enseñaban a pararse, a comer, a vestirse y, sin decirlo, a avergonzarse. El cuerpo del campesino, del negro y del indígena aparecía muchas veces del lado del atraso. Por eso la burla no es un chiste espontáneo: es una lección vieja que alguien repite sin saber de dónde la sacó. La cara de exclusión señala a la escuela misma: fue el aparato que enseñó cuál cuerpo era decente. Esta guía no puede presentarse como ajena a esa historia. Hoy vas a producir una pieza, y toda pieza enseña a mirar.',
+    fuente: 'Cartillas escolares, manuales de higiene y la revista Cromos · cómo Colombia aprendió a mirar cuerpos',
+    referencia: 'Pedraza Gómez, Z. (1999). En cuerpo y alma: visiones del progreso y de la felicidad. Universidad de los Andes, Departamento de Antropología.',
+    preguntaPuente: 'Si Colombia aprendió a mirar cuerpos leyendo cartillas y revistas, tu pieza también va a enseñarle a mirar a alguien. La pregunta es sencilla y difícil: ¿qué le va a enseñar?'
   },
+  mapaRuta: [
+    {
+      numero: 1,
+      iconos: [
+        '🌱'
+      ],
+      titulo: 'Cómo aprendimos a mirar',
+      duracionMin: 10
+    },
+    {
+      numero: 2,
+      iconos: [
+        '✏️'
+      ],
+      titulo: 'Actividad 1 · Inventario de cultura popular',
+      duracionMin: 15
+    },
+    {
+      numero: 3,
+      iconos: [
+        '🔎',
+        '👁'
+      ],
+      titulo: 'Actividad 2 · Una pieza comercial por dentro',
+      duracionMin: 30
+    },
+    {
+      numero: 4,
+      iconos: [
+        '✏️',
+        '✅'
+      ],
+      titulo: 'Actividad 3 · Tu pieza y sus cuatro párrafos',
+      duracionMin: 25
+    },
+    {
+      numero: 5,
+      iconos: [
+        '💭'
+      ],
+      titulo: 'Tres ideas y tu compromiso',
+      duracionMin: 10
+    }
+  ],
+  actividades: [
+    {
+      numero: 1,
+      verbo: 'IDENTIFICA',
+      titulo: 'Inventario de cultura popular',
+      tiempoMin: 15,
+      modalidad: 'individual',
+      pasos: [
+        'Anota cinco elementos de la cultura popular de tu barrio, del Valle o del Pacífico.',
+        'Escribe al lado de cada uno cómo lo suele mostrar la publicidad.',
+        'Marca los que salen mal parados y explica en una línea por qué.',
+        'Elige uno para tu pieza y escribe a quién concreto podrías consultar sobre él.'
+      ],
+      cuaderno: {
+        titulo: 'Inventario de cultura popular',
+        formato: 'lista de cinco con dos columnas (elemento / cómo lo muestra la publicidad)',
+        extension: 'un tercio de página'
+      },
+      criterios: [
+        'Los cinco elementos tienen su columna de cómo los muestra la publicidad.',
+        'El elegido tiene una razón escrita y una persona a quien consultar.'
+      ]
+    },
+    {
+      numero: 2,
+      verbo: 'ANALIZA',
+      titulo: 'Una pieza comercial por dentro',
+      tiempoMin: 30,
+      modalidad: 'parejas',
+      pasos: [
+        'Con tu pareja, elijan una publicidad o pieza de medios masivos sobre cultura popular colombiana.',
+        'Pásenla por los cuatro principios y anoten cuáles cumple y cuáles no.',
+        'Marquen cuál de los cinco errores aparece y copien el fragmento donde se ve.',
+        'Escriban en dos líneas qué le enseña esa pieza a quien la mira sobre la gente que retrata.'
+      ],
+      cuaderno: {
+        titulo: 'Una pieza comercial por dentro',
+        formato: 'los cuatro principios con cumple o no cumple y el error señalado en un fragmento',
+        extension: 'media página'
+      },
+      criterios: [
+        'El error está señalado en un fragmento concreto, no en general.',
+        'Las dos líneas dicen qué enseña la pieza sobre la gente que retrata.'
+      ]
+    },
+    {
+      numero: 3,
+      verbo: 'CREA',
+      titulo: 'Tu pieza y sus cuatro párrafos',
+      tiempoMin: 25,
+      modalidad: 'individual',
+      pasos: [
+        'Produce tu pieza sobre el elemento que elegiste, con el formato que le convenga.',
+        'Asegúrate de que quien aparece tenga nombre, oficio y contexto.',
+        'Incluye una contradicción, algo que no sea solo lo bonito del tema.',
+        'Escribe los cuatro párrafos, a quién amplifica, a quién dignifica, qué dejaste fuera y qué cambiarías.',
+        'Revisa la pieza contra los cinco errores y anota cuál estuviste a punto de cometer.'
+      ],
+      cuaderno: {
+        titulo: 'Tu pieza y sus cuatro párrafos',
+        formato: 'la referencia a la pieza con su formato, los cuatro párrafos y la nota sobre el error evitado',
+        extension: 'media página'
+      },
+      criterios: [
+        'Quien aparece tiene nombre, oficio y contexto.',
+        'El tercer párrafo dice qué quedó fuera y por qué.'
+      ]
+    }
+  ],
   triangulo: {
     dussel: {
-      autor: 'Enrique Dussel',
+      autor: 'Enrique Dussel · Filosofía de la liberación (1977), §5.3.1',
       lente: 'lente del nosotros',
-      cita: 'Toda pieza estética toma posición; reconocer cuál es ya es acto de phronesis política.',
-      preguntaEspejo: '¿Mi pieza reconoce qué posición política toma, o pretende neutralidad imposible?'
+      cita: 'Toda persona y todo pueblo está siempre más allá del sistema desde el que otro los mira.',
+      preguntaEspejo: '¿Qué parte de esta persona no cupo en mi pieza, y por qué elegí dejarla fuera?'
     },
     estoico: {
-      autor: 'Séneca',
+      autor: 'Marco Aurelio · Meditaciones X, 16 (c. 175 d.C.)',
       lente: 'lente del cuidado interior',
-      cita: 'La simplicidad respeta al sujeto; el exotismo lo convierte en espectáculo.',
-      preguntaEspejo: '¿Estoy exotizando para vender visualmente mi pieza, o representando con la simplicidad que el sujeto merece?'
+      cita: 'Deja de discutir cómo debería ser una persona buena y procura serlo de verdad.',
+      preguntaEspejo: '¿En qué decisión concreta de mi pieza se nota el respeto, sin que yo tenga que decirlo?'
     },
     floridi: {
-      autor: 'Luciano Floridi',
+      autor: 'The Onlife Initiative (ed. Luciano Floridi) · The Onlife Manifesto (2015), Prefacio',
       lente: 'lente de la infoesfera',
-      cita: 'La producción cultural en la era digital es responsabilidad ética, no solo expresión personal.',
-      preguntaEspejo: '¿Mi pieza contribuye a una cultura digital más justa, o reproduce estereotipos que circulan?'
-    }
+      cita: 'Tememos y rechazamos aquello a lo que no logramos darle sentido.',
+      preguntaEspejo: '¿Qué de lo que retraté conozco de verdad, y qué estoy suponiendo desde afuera?'
+    },
+    modo: 'ideas'
   },
   cincoDimensiones: {
-    personal: 'Aprendiste a distinguir entre reconocer y exotizar — habilidad ética rara en una era de turismo masivo y "creator economy".',
-    emocional: 'Resististe la facilidad de la postal — entendiste que producir contenido con respeto exige más trabajo que producir con efecto.',
-    ciudadana: 'Cada video tuyo que honra cultura popular sin exotizarla es resistencia a la mirada extractiva que domina redes.',
-    local: 'Heredaste la estética de los carnavales, tejedurías y oficios populares colombianos — política y belleza fusionadas.',
-    intergeneracional: 'El artesano wayuu que enseña su técnica a la nieta y tu próximo video sobre ella comparten propósito: que la memoria popular siga viva.'
+    personal: 'Descubriste que tu forma de mirar tiene historia, y que se puede revisar.',
+    emocional: 'Escribir qué dejaste fuera incomoda. Esa incomodidad es la señal de que el análisis fue honesto.',
+    ciudadana: 'Producir sin preguntarse a quién dignifica una pieza no es neutralidad. Es repetir lo que ya estaba.',
+    local: 'Los oficios, las músicas y las fiestas de tu barrio tienen quien los haga. Tu pieza decide si además tienen quien los nombre.',
+    intergeneracional: 'Las cartillas enseñaron a avergonzarse durante siglo y medio. Lo que produces hoy también enseña, y por más tiempo del que crees.'
   }
 };
 

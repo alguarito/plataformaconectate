@@ -75,36 +75,36 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'Tienes una columna con las fechas de cumpleaños del salón y quieres ordenarla del más antiguo al más reciente. ¿Qué tipo debe tener?',
           opciones: [
-            'Texto, porque las fechas llevan el nombre del mes.',
             'Fecha, porque solo así Excel las ordena por el calendario.',
+            'Texto, porque las fechas llevan el nombre del mes.',
             'Número, porque los días son cantidades.',
             'Moneda, porque se separan con puntos.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Solo el tipo Fecha ordena por el calendario. Como texto, «15 de marzo» quedaría junto a «15 de enero» por orden alfabético.',
           feedbackIncorrecto: 'Como texto, Excel ordena las fechas por la primera letra, no por el calendario. El tipo correcto es Fecha.'
         },
         {
           enunciado: 'Sumas tres celdas: 5000, 3000 y «cinco mil» escrito con letras. ¿Qué hace Excel?',
           opciones: [
-            'Convierte «cinco mil» en 5000 y suma 13000.',
-            'Muestra un error y no calcula nada.',
             'Pregunta si quieres convertir el texto a número.',
-            'Suma 8000 y deja fuera la celda con letras, sin avisar.'
+            'Muestra un error y no calcula nada.',
+            'Suma 8000 y deja fuera la celda con letras, sin avisar.',
+            'Convierte «cinco mil» en 5000 y suma 13000.'
           ],
-          respuestaIndex: 3,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Exacto. Excel salta el texto en silencio. El total sale de dos celdas, no de tres, y nadie te avisa.',
           feedbackIncorrecto: 'Excel no convierte letras en números ni pregunta. Simplemente deja esa celda fuera de la suma y el total engaña.'
         },
         {
           enunciado: '¿Cuál es la ruta para cambiar el tipo de una columna completa?',
           opciones: [
+            'Inicio, Borrar formato, y volver a escribir los datos.',
             'Seleccionar la columna, clic derecho, Formato de celdas, pestaña Número.',
             'Insertar, Tabla, y elegir el estilo.',
-            'Datos, Validación de datos, y escribir el tipo.',
-            'Inicio, Borrar formato, y volver a escribir los datos.'
+            'Datos, Validación de datos, y escribir el tipo.'
           ],
-          respuestaIndex: 0,
+          respuestaIndex: 1,
           feedbackCorrecto: 'Correcto. Formato de celdas es donde eliges Número, Texto, Fecha, Moneda o Porcentaje para toda la columna.',
           feedbackIncorrecto: 'Las otras rutas hacen cosas distintas. El tipo se elige en Formato de celdas, pestaña Número.'
         },
@@ -113,22 +113,22 @@ const contenido: ContenidoGuia = {
           opciones: [
             '50 %.',
             '0,5 %.',
-            '5000 %.',
-            '0,005 %.'
+            '0,005 %.',
+            '5000 %.'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. Excel entiende 50 como 50 enteros, no como 0,5, y los muestra como 5000 %. Para ver 50 % hay que escribir 0,5.',
           feedbackIncorrecto: 'Por dentro, el porcentaje es un decimal. 50 entero se convierte en 5000 %. Para que muestre 50 %, la celda debe tener 0,5.'
         },
         {
           enunciado: 'Una hoja tiene la columna «Código de estudiante» con valores como A-045 y B-112. ¿Qué tipo le conviene?',
           opciones: [
+            'Porcentaje, porque cada código es una parte del total.',
             'Número, porque tiene cifras.',
             'Texto, porque es un identificador que no se calcula.',
-            'Fecha, porque el guion separa partes.',
-            'Porcentaje, porque cada código es una parte del total.'
+            'Fecha, porque el guion separa partes.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Eso es. Un código sirve para identificar, no para sumar. Va como texto aunque tenga cifras.',
           feedbackIncorrecto: 'Los códigos no se suman ni se ordenan como cantidades. Son texto, aunque lleven números.'
         }

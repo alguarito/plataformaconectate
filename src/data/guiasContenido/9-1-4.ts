@@ -105,7 +105,7 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'Tu línea del tiempo va del fuego al vapor y de ahí al computador. ¿Qué le pasa?',
           opciones: [
-            '',
+            'Nada: son los hitos que cualquier cronología seria incluye.',
             'Le faltan fechas exactas para cada uno de los hitos.',
             'Tiene demasiados hitos concentrados en el siglo XX.',
             'Cuenta la historia de una región y la llama «la técnica».'

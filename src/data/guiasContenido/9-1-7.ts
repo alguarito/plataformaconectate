@@ -96,7 +96,7 @@ const contenido: ContenidoGuia = {
             'Únicamente una antena lo bastante alta y bien orientada.',
             'Dinero y permiso, en forma de licencias que hay que renovar.',
             'Solamente voluntarios dispuestos a hablar todos los días.',
-            ''
+            'Nada más: con corriente y micrófono ya puede transmitir.'
           ],
           respuestaIndex: 1,
           feedbackCorrecto: 'Eso es. LA REC FM tiene NIT, sede y licencias ante el Ministerio TIC.',
@@ -107,7 +107,7 @@ const contenido: ContenidoGuia = {
           opciones: [
             'La luz, porque sin ella se detiene la vida nocturna.',
             'El motor, porque mueve los aparatos más grandes de la casa.',
-            '',
+            'Ninguna: las tres consumen prácticamente lo mismo.',
             'La comunicación, porque gasta poco y vence la distancia.'
           ],
           respuestaIndex: 3,

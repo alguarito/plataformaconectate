@@ -95,7 +95,7 @@ const contenido: ContenidoGuia = {
           opciones: [
             '«Imagen del gráfico que se incluye en este artículo.»',
             '«Fotografía a color tomada durante la jornada del evento.»',
-            '',
+            '«Gráfico: el consumo baja a la mitad después de marzo.»',
             '«Ilustración decorativa de la sección central de la revista.»'
           ],
           respuestaIndex: 2,

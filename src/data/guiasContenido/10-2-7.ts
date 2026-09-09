@@ -70,47 +70,47 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Qué pieza del informe comercial debe poder leerse de manera independiente?',
           opciones: [
             'El índice',
-            'El resumen ejecutivo',
             'La bibliografía',
-            'El pie de página'
+            'El pie de página',
+            'El resumen ejecutivo'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Exacto. El resumen ejecutivo es autosuficiente. Si solo se lee él, ya hay base para decidir.',
           feedbackIncorrecto: 'El resumen ejecutivo. Pieza de 1 página que el lector apurado puede leer y decidir.'
         },
         {
           enunciado: '¿Cómo debe terminar un informe comercial?',
           opciones: [
-            'Con un poema',
             'Con varios anexos',
-            '',
+            'Con un pedido claro: Solicito decisión sobre X',
+            'Con un poema',
             'Sin terminar'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 1,
           feedbackCorrecto: 'Correcto. Termina con pedido claro. Sin ese cierre, el informe queda sin propósito.',
           feedbackIncorrecto: 'Termina con pedido claro. "Informe comercial sin pedido es informe perdido."'
         },
         {
           enunciado: '¿Para qué sirve el cuerpo argumentativo?',
           opciones: [
-            'Para rellenar páginas',
-            'Para hacerlo más largo',
             'Para decorar',
-            'Para sostener la propuesta con datos y anticipar objeciones'
+            'Para hacerlo más largo',
+            'Para sostener la propuesta con datos y anticipar objeciones',
+            'Para rellenar páginas'
           ],
-          respuestaIndex: 3,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Exacto. Sostiene la propuesta con evidencia y desarma objeciones probables antes de que aparezcan.',
           feedbackIncorrecto: 'Sostiene con datos y anticipa objeciones. Sin esos argumentos, la propuesta no convence.'
         },
         {
           enunciado: 'Una recomendación accionable debe especificar...',
           opciones: [
-            'Qué, quién, plazo y recursos',
+            'Solo el costo',
             'Solo el qué',
             'Solo el plazo',
-            'Solo el costo'
+            'Qué, quién, plazo y recursos'
           ],
-          respuestaIndex: 0,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Correcto. Qué se hace, quién lo hace, en qué plazo y con qué recursos. Las 4 piezas.',
           feedbackIncorrecto: 'Qué, quién, plazo y recursos. Faltar a una vuelve la recomendación vaga e inejecutable.'
         },
@@ -118,9 +118,9 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Cuántas páginas tiene típicamente el cuerpo argumentativo?',
           opciones: [
             '2-3',
-            '0',
             '100',
-            '1000'
+            '1000',
+            '0'
           ],
           respuestaIndex: 0,
           feedbackCorrecto: 'Exacto. 2-3 páginas. Suficientes para sostener; pocas para no perder al lector.',

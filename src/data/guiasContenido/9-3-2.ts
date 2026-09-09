@@ -72,7 +72,7 @@ const contenido: ContenidoGuia = {
             'Devuelve un resultado falso sin avisar de nada.',
             'Aparece un mensaje de error que detiene el cálculo.',
             'La hoja convierte automáticamente todo a texto plano.',
-            ''
+            'No ocurre nada: las fórmulas ignoran los tipos mezclados.'
           ],
           respuestaIndex: 0,
           feedbackCorrecto: 'Sí, y ese es el problema: un número equivocado parece tan correcto como uno bueno.',
@@ -236,7 +236,7 @@ const contenido: ContenidoGuia = {
       tiempoMin: 30,
       modalidad: 'individual',
       pasos: [
-        '',
+        'Arregla los encabezados: cortos, consistentes y sin abreviaturas privadas.',
         'Revisa que cada columna guarde un solo tipo y decláralo en la hoja.',
         'Separa las celdas que contengan listas para que cada fila sea un caso.',
         'Elimina las celdas combinadas y resuelve los vacíos con un valor explícito.',

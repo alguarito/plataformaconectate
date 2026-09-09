@@ -194,7 +194,7 @@ const contenido: ContenidoGuia = {
         'Abre las páginas principales de las tres herramientas más usadas para diseño editorial.',
         'Anota qué muestra cada una en lo primero que se ve.',
         'Anota a qué tipo de usuario parece dirigirse.',
-        '',
+        'Busca qué exige cada una: registro, pago, instalación o conexión permanente.',
         'Marca cuál está más cerca de lo que necesitas hoy y escribe por qué.'
       ],
       cuaderno: {

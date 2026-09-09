@@ -81,7 +81,7 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'Tu promedio de horas de pantalla es 4,2. ¿Qué puede estar escondiendo?',
           opciones: [
-            '',
+            'Nada: el promedio resume bien el comportamiento del grupo.',
             'Que la columna tiene un tipo de dato equivocado.',
             'Un caso extremo, que se vería con el máximo.',
             'Que faltan filas por recoger en la tabla.'

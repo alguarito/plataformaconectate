@@ -69,48 +69,48 @@ const contenido: ContenidoGuia = {
         {
           enunciado: '¿Cuál es la fórmula del punto de equilibrio?',
           opciones: [
-            'Costos totales / 2',
+            'Costos fijos / (Precio unitario - Costo variable unitario)',
             'Ventas + Ganancias',
-            'No tiene fórmula',
-            'Costos fijos / (Precio unitario - Costo variable unitario)'
+            'Costos totales / 2',
+            'No tiene fórmula'
           ],
-          respuestaIndex: 3,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Exacto. Costos fijos / (Precio - Costo variable). Da unidades mínimas para no perder.',
           feedbackIncorrecto: 'Es Costos fijos / (Precio unitario - Costo variable unitario). Da unidades mínimas a vender.'
         },
         {
           enunciado: 'Los costos que ocurren cada mes existan o no ventas se llaman...',
           opciones: [
-            'Fijos',
+            'Opcionales',
             'Variables',
             'Imaginarios',
-            'Opcionales'
+            'Fijos'
           ],
-          respuestaIndex: 0,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Correcto. Fijos. Arriendo, suscripciones, sueldos.',
           feedbackIncorrecto: 'Costos fijos. Existan o no ventas, hay que cubrirlos cada mes.'
         },
         {
           enunciado: '¿Cuántos escenarios mínimos modela el flujo de caja profesional?',
           opciones: [
+            '0',
             '1',
             '3',
-            '100',
-            '0'
+            '100'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Exacto. 3: pesimista, realista, optimista.',
           feedbackIncorrecto: 'Son 3 escenarios: pesimista (30%), realista (60%) y optimista (100%) del esperado.'
         },
         {
           enunciado: 'Tu PE es 200 ventas/mes y vendes 50. ¿Qué indica?',
           opciones: [
-            'Negocio rentable',
             'Ya está bien',
-            '',
-            'No importa'
+            'No importa',
+            'Negocio rentable',
+            'Problema estructural: necesitas reducir costos fijos o subir precio'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Correcto. Si el PE supera mucho las ventas reales, el modelo necesita ajuste.',
           feedbackIncorrecto: 'Indica problema estructural. Hay que reducir costos fijos, subir precio o cambiar producto.'
         },
@@ -118,11 +118,11 @@ const contenido: ContenidoGuia = {
           enunciado: 'La regla "ningún microemprendimiento sin proyección a 3 meses sobrevive al cuarto" significa que...',
           opciones: [
             'Hay que cerrar todo',
-            'Sin proyección financiera, el negocio se sostiene por suerte hasta que falla',
             '3 meses es lo máximo',
-            'No hay que proyectar'
+            'No hay que proyectar',
+            'Sin proyección financiera, el negocio se sostiene por suerte hasta que falla'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Exacto. Sin proyección, las sorpresas matan al negocio. La proyección anticipa el problema.',
           feedbackIncorrecto: 'Sin proyección, el negocio se sostiene por suerte. La proyección anticipa problemas mientras hay tiempo.'
         }

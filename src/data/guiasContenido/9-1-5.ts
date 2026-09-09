@@ -83,7 +83,7 @@ const contenido: ContenidoGuia = {
           opciones: [
             'Porque el progreso técnico en realidad nunca quita oficios, solo los cambia.',
             'Porque suena anticuado y conviene usar un término más moderno.',
-            '',
+            'Porque el progreso no decide: deciden personas e instituciones con nombre.',
             'Porque el progreso es un concepto que solo aplica a la economía.'
           ],
           respuestaIndex: 2,

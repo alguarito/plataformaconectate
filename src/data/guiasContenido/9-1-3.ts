@@ -108,7 +108,7 @@ const contenido: ContenidoGuia = {
             'Es correcto, porque las medidas se acuerdan colectivamente.',
             'Es correcto solo cuando se trata de medidas muy antiguas.',
             'Es una respuesta parcial que conviene completar con un ejemplo.',
-            ''
+            'No es una respuesta: es una forma de no averiguarlo.'
           ],
           respuestaIndex: 3,
           feedbackCorrecto: 'Sí. Los patrones los definen un ministerio, una empresa, un colegio o una aplicación.',

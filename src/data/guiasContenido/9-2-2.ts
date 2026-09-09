@@ -72,7 +72,7 @@ const contenido: ContenidoGuia = {
             'La modular, porque reparte el contenido en cajas iguales.',
             'La columnar, con columnas verticales del mismo ancho.',
             'La jerárquica, con una zona principal que domine la página.',
-            ''
+            'Cualquiera: el tipo de cuadrícula no afecta la lectura seguida.'
           ],
           respuestaIndex: 1,
           feedbackCorrecto: 'Sí. La modular obligaría a saltar la vista cada pocas líneas.',

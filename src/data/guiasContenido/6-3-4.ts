@@ -70,20 +70,20 @@ const contenido: ContenidoGuia = {
           enunciado: 'Vas a escribir tus 5 películas favoritas. ¿Qué tipo de lista usas?',
           opciones: [
             'Numerada (1, 2, 3, 4, 5).',
+            'En párrafo seguido.',
             'Con viñetas (•, •, •, •, •).',
-            'Multinivel.',
-            'En párrafo seguido.'
+            'Multinivel.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Sí. El orden de tus películas favoritas no importa, da igual cuál sea primera. Por eso, viñetas. Si fueran tus \'5 mejores ordenadas\', sería numerada.',
           feedbackIncorrecto: 'Para listas SIN orden: viñetas. Para listas CON orden: numerada. Tus películas favoritas no tienen orden importante, entonces viñetas.'
         },
         {
           enunciado: 'Vas a escribir los 7 pasos para preparar arepas. ¿Qué tipo de lista?',
           opciones: [
-            'Con viñetas, así parece más casual.',
-            'Multinivel con 7 niveles.',
             'En un solo párrafo masivo.',
+            'Multinivel con 7 niveles.',
+            'Con viñetas, así parece más casual.',
             'Numerada, porque el orden de los pasos es crítico.'
           ],
           respuestaIndex: 3,
@@ -93,12 +93,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'Estás haciendo una lista de tus materias del colegio con sus temas. ¿Qué tipo?',
           opciones: [
-            'Solo con viñetas.',
-            'Solo numerada.',
             'Multinivel: materia (nivel 1) + tema dentro (nivel 2).',
-            'En tabla, no en lista.'
+            'Solo numerada.',
+            'En tabla, no en lista.',
+            'Solo con viñetas.'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Exacto. Materia es lo grande, los temas están adentro. Eso es jerarquía: lista multinivel. Tab para meter dentro, Shift+Tab para sacar.',
           feedbackIncorrecto: 'Cuando hay jerarquía (cosas dentro de cosas), usas multinivel. Tab mete adentro un ítem; Shift+Tab lo saca.'
         },
@@ -106,9 +106,9 @@ const contenido: ContenidoGuia = {
           enunciado: 'Hiciste una lista de 2 ítems. ¿Cuál es la regla?',
           opciones: [
             'Mejor en párrafo. Las listas se justifican desde 3 ítems.',
-            'Está bien, 2 ítems siempre son lista.',
             'Solo 1 ítem es válido en listas.',
-            'Hay que duplicar el ítem para tener 4.'
+            'Hay que duplicar el ítem para tener 4.',
+            'Está bien, 2 ítems siempre son lista.'
           ],
           respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Mínimo 3 ítems para que valga la pena la lista. Con 2 se ve forzado. En párrafo se ve natural: \'Las dos cosas que llevé fueron X y Y\'.',
@@ -117,12 +117,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'Tu lista es: 1. Lavar las verduras, 2. Cortar todo, 3. La cocción al final. ¿Qué falla?',
           opciones: [
-            'Nada, está perfecta.',
             'Falla el formato gramatical paralelo. Mejor: 1. Lavar, 2. Cortar, 3. Cocer (todos en infinitivo).',
+            'El orden está mal.',
             'Le faltan ítems.',
-            'El orden está mal.'
+            'Nada, está perfecta.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Bien. La regla de paralelismo: si el primero empieza con verbo en infinitivo (Lavar), todos en infinitivo. Mezclar formas se ve descuidado.',
           feedbackIncorrecto: 'La regla del paralelismo: todos en el mismo formato gramatical. Si arrancas con infinitivo, todos en infinitivo. Sino, se ve desordenado.'
         }

@@ -1,7 +1,9 @@
 /**
- * Contenido enriquecido — Grado 9 · Periodo 3 · Sesión 5
- * Tema: Tablas dinámicas — agrupar y comparar.
- * Profundidad MILC v3 PRO completa, alineada con content/guias/9/9-3-5.yaml.
+ * Contenido enriquecido para Grado 9 · Período 3 · Sesión 5
+ * (sesión global 25).
+ *
+ * Auto-generado desde content/guias/9/9-3-5.yaml por
+ * scripts/build-guias-web-ts.py. Edita el YAML, no este archivo.
  */
 import type { ContenidoGuia } from './_schema';
 
@@ -10,98 +12,183 @@ const contenido: ContenidoGuia = {
   periodo: 3,
   sesion: 5,
   titulo: 'Tablas dinámicas — agrupar y comparar',
-  ocultarPDF: false,
-  resumen:
-    'Una tabla dinámica resume una tabla larga agrupando por una columna y calculando otra. Es el salto del cálculo único al cálculo comparable: ya no "cuánto en total", sino "cuánto por categoría".',
+  resumen: 'Una tabla dinámica resume una tabla larga agrupando por una columna y calculando otra. Es el salto del cálculo único al cálculo comparable: ya no cuánto en total, sino cuánto por categoría.',
   duracionMin: 90,
   subtema: 'Datos · Comparar grupos',
-
-  saberAncestral: {
-    saber:
-      'El inventario del almacén de barrio en Cartago se hacía agrupando: cuántos sacos de café, cuántas latas de aceite, cuántas libras de panela. Esa agrupación informaba qué pedir, qué guardar, qué bajar de precio. La costurera del Pacífico agrupaba telas por color; el cosechero agrupaba el café por lote y altura. Agrupar es un gesto antiguo: mirar lo grande agrupando lo pequeño. La tabla dinámica es ese mismo gesto en formato digital.',
-    fuente: 'Inventario del almacén de barrio, costurera del Pacífico y cosechero campesino del Valle',
-    preguntaPuente:
-      '¿Cómo hacía el tendero del barrio para saber, sin computador, qué producto se vendía más? ¿Y qué pierde un analista novato cuando salta a las tablas dinámicas sin haber escrito antes la pregunta?',
-  },
-
-  mapaRuta: [
-    { numero: 1, iconos: ['🌱'], titulo: 'Agrupar es oficio antiguo', duracionMin: 10 },
-    { numero: 2, iconos: ['🔎'], titulo: '¿Total o por grupo?', duracionMin: 15 },
-    { numero: 3, iconos: ['📖'], titulo: 'Anatomía de una tabla dinámica', duracionMin: 17 },
-    { numero: 4, iconos: ['✏️'], titulo: 'Tu tabla dinámica con conclusión', duracionMin: 33 },
-    { numero: 5, iconos: ['✅', '💭'], titulo: 'Verifica, reflexiona y cierra', duracionMin: 15 },
-  ],
-
   preLectura: {
-    porQueImporta:
-      'El promedio general suele esconder diferencias clave entre grupos. La tabla dinámica abre la tabla por categorías para que el promedio que decide tener sea el que importa, no el que disuelve a todos en el mismo dato.',
-    preguntaDetonante:
-      'Si el promedio del curso es 6.2 pero 9A tiene 7.5 y 9B tiene 4.9, ¿qué decisión pedagógica cambia al ver el promedio por curso en lugar del total?',
+    porQueImporta: 'El promedio general suele esconder las diferencias que más importan. Agrupar abre la tabla por categorías para que el número que decide sea el que corresponde, y no el que disuelve a todos en el mismo dato.',
+    preguntaDetonante: 'Si el promedio del curso es 6.2 pero 9A tiene 7.5 y 9B tiene 4.9, ¿qué decisión cambia al ver el promedio por curso?',
     activacion: {
-      titulo: 'El inventario del almacén',
-      descripcion:
-        'En 3 minutos: el docente nombra 12 productos al azar (café, panela, arroz, café, aceite, arroz…). Los estudiantes deben "agrupar mentalmente" y reportar cuánto de cada uno. Después se compara con una tabla dinámica en vivo.',
-      duracionMin: 3,
+      titulo: 'Doce productos al azar',
+      descripcion: 'En 3 minutos, el docente nombra doce productos repitiendo algunos. Los estudiantes agrupan mentalmente y reportan cuánto de cada uno. Después se compara con una tabla dinámica en vivo.',
+      duracionMin: 3
     },
     conexion: {
-      anterior:
-        'En la sesión 4 aplicaste filtros para cortar la tabla. Hoy aprendes a re-agruparla para comparar promedios y totales por categoría.',
-      siguiente:
-        'En la sesión 6 vas a ponerle imagen a esas agrupaciones — gráficos de barra, línea y circular para que el ojo lea de un vistazo lo que la tabla dinámica dice por categoría.',
-    },
+      anterior: 'En la sesión 4 aplicaste filtros para cortar la tabla y quedarte con una parte.',
+      siguiente: 'En la sesión 6 le vas a poner imagen a esas agrupaciones con gráficos de barra, línea y circular.'
+    }
   },
-
   conceptosClave: [
     {
-      termino: 'Filas (zona)',
-      definicion:
-        'La categoría por la que agrupas: mes, curso, barrio, área. Cada valor distinto se vuelve una fila del resumen.',
-      ejemplo:
-        'Arrastras "Curso" a Filas: aparecen 9A, 9B, 9C como filas separadas.',
-      emoji: '📋',
+      termino: 'Filas',
+      definicion: 'La categoría por la que agrupas. Cada valor distinto se vuelve una fila del resumen.',
+      ejemplo: 'Arrastras «Curso» a Filas y aparecen 9A, 9B y 9C como filas separadas.',
+      categoria: 'Las cuatro zonas'
     },
     {
-      termino: 'Valores (zona)',
-      definicion:
-        'La columna numérica sobre la que calculas un indicador (suma, promedio, conteo). El motor real de la tabla dinámica.',
-      ejemplo:
-        'Arrastras "Nota" a Valores: por defecto calcula SUMA; cámbiala a PROMEDIO.',
-      emoji: '🔢',
+      termino: 'Valores',
+      definicion: 'La columna numérica sobre la que se calcula el indicador. Es el motor del resumen.',
+      ejemplo: 'Arrastras «Nota» a Valores y por defecto calcula SUMA; hay que cambiarla a PROMEDIO.',
+      categoria: 'Las cuatro zonas'
+    },
+    {
+      termino: 'Columnas',
+      definicion: 'Zona opcional que cruza una segunda categoría y arma una matriz.',
+      ejemplo: 'Filas con Curso y Columnas con Mes da el gasto promedio de cada curso en cada mes.',
+      categoria: 'Las cuatro zonas'
+    },
+    {
+      termino: 'Filtros',
+      definicion: 'Zona opcional que reduce toda la tabla dinámica a un subconjunto sin tocar las demás zonas.',
+      ejemplo: 'Un filtro de grado igual a 9 deja el resumen solo con los grupos de ese grado.',
+      categoria: 'Las cuatro zonas'
     },
     {
       termino: 'Operación',
-      definicion:
-        'SUMA, PROMEDIO, CUENTA, MAX o MIN. Cambia con clic derecho → Configuración del campo. Confundirlas es el error más común.',
-      ejemplo:
-        'Notas: usa PROMEDIO. Productos vendidos: usa SUMA. Estudiantes por curso: usa CUENTA.',
-      emoji: '⚙️',
+      definicion: 'SUMA, PROMEDIO, CUENTA, MAX o MIN. Define cuál es la pregunta que estás respondiendo.',
+      ejemplo: 'Notas piden PROMEDIO, productos vendidos piden SUMA, estudiantes por curso piden CUENTA.',
+      categoria: 'Decidir con el resumen'
     },
     {
-      termino: 'Columnas (zona, opcional)',
-      definicion:
-        'Cruce: una segunda categoría que aparece en columnas. Útil para matrices curso × mes, área × periodo.',
-      ejemplo:
-        'Filas = Curso, Columnas = Mes, Valores = Gasto promedio → matriz mes-curso.',
-      emoji: '🪟',
-    },
-    {
-      termino: 'Filtros (zona, opcional)',
-      definicion:
-        'Reduce toda la tabla dinámica a un subconjunto sin tocar las filas/columnas. Útil cuando solo te interesa una rebanada.',
-      ejemplo:
-        'Filtro Grado = 9 → la tabla dinámica solo muestra grupos del grado 9.',
-      emoji: '🎚️',
-    },
-    {
-      termino: 'Conclusión de 3 renglones',
-      definicion:
-        'Cada tabla dinámica responde mejor con una conclusión corta: grupo destacado / grupo en riesgo / decisión posible.',
-      ejemplo:
-        '"9A destaca con 7.5. 9B queda atrás con 4.9. Sugiere refuerzo focalizado en 9B antes que clase general."',
-      emoji: '💡',
-    },
+      termino: 'Conclusión de tres renglones',
+      definicion: 'El cierre mínimo de toda tabla dinámica: grupo destacado, grupo en riesgo y decisión posible.',
+      ejemplo: '9A destaca con 7.5, 9B queda atrás con 4.9 y eso sugiere refuerzo focalizado antes que clase general.',
+      categoria: 'Decidir con el resumen'
+    }
   ],
-
+  laboratorios: [
+    {
+      tipo: 'quiz',
+      titulo: 'Verifica tablas dinámicas',
+      instrucciones: '5 preguntas para confirmar que dominas tablas dinámicas con criterio. Necesitas 3/5 para continuar.',
+      preguntas: [
+        {
+          enunciado: 'Arrastras una columna de notas a Valores y la operación queda en SUMA. ¿Qué está calculando?',
+          opciones: [
+            'El promedio de las notas de cada grupo, que suele ser lo que uno quiere ver',
+            'La nota más alta que alcanzó cada uno de los grupos de la tabla',
+            'La suma de todas las notas del grupo, que casi nunca responde la pregunta',
+            'La cantidad de notas registradas en cada uno de los grupos comparados'
+          ],
+          respuestaIndex: 2,
+          feedbackCorrecto: 'Correcto. Excel arranca en SUMA por defecto. Hay que cambiarla a PROMEDIO con clic derecho, o el indicador no significa nada.',
+          feedbackIncorrecto: 'SUMA suma, incluso cuando lo que tiene sentido es promediar. Cambiar la operación es el paso que más se olvida.'
+        },
+        {
+          enunciado: 'La categoría «9A» aparece dos veces en el resumen, con totales distintos. ¿Qué pasó?',
+          opciones: [
+            'En la columna original conviven «9A» y «9a», y al agrupar quedan como dos grupos',
+            'Es el comportamiento normal de la herramienta cuando una categoría reúne muchas filas asociadas',
+            'Faltan datos en la columna numérica y el resumen parte el grupo en dos partes',
+            'Es un error conocido de Excel al construir resúmenes sobre tablas muy largas'
+          ],
+          respuestaIndex: 0,
+          feedbackCorrecto: 'Exacto. Los datos sucios se separan al agrupar: mayúsculas, espacios y tildes inconsistentes crean grupos fantasma. La limpieza de la sesión 2 importa aquí.',
+          feedbackIncorrecto: 'La causa es higiene de datos. Dos escrituras de la misma categoría producen dos grupos distintos.'
+        },
+        {
+          enunciado: '¿Cuándo conviene SUMA y cuándo PROMEDIO en la zona de Valores?',
+          opciones: [
+            'PROMEDIO sirve solo para las columnas de notas; para todo lo demás la operación correcta siempre es SUMA',
+            'Da lo mismo, porque las dos operaciones ordenan los grupos en el mismo orden',
+            'SUMA cuando preguntas cuánto en total; PROMEDIO cuando preguntas cuánto típicamente',
+            'SUMA siempre, porque es la operación que Excel trae configurada por defecto'
+          ],
+          respuestaIndex: 2,
+          feedbackCorrecto: 'Correcto. Ventas piden SUMA. Notas, edad u horas piden PROMEDIO. La operación define la pregunta que estás respondiendo.',
+          feedbackIncorrecto: 'Total lleva a SUMA y típico lleva a PROMEDIO. Elegir mal cambia la conclusión sin que se note.'
+        },
+        {
+          enunciado: '¿Qué entrega una tabla dinámica que las fórmulas básicas de la sesión 3 no entregan?',
+          opciones: [
+            'Cálculos bastante más precisos, porque el motor de agrupación redondea mejor los decimales de cada grupo',
+            'Comparar grupos sin escribir diez fórmulas, porque el indicador se recalcula por categoría',
+            'Lo mismo que las fórmulas, solo que presentado con otro formato en la hoja',
+            'Mayor velocidad de cálculo sobre tablas que tienen muchos miles de filas'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Sí. Su poder está en comparar grupos sin esfuerzo. Reemplaza muchas fórmulas condicionales repetidas a mano.',
+          feedbackIncorrecto: 'El valor está en comparar grupos. Sin tabla dinámica, un promedio por categoría exige repetir fórmulas condicionales una por una.'
+        },
+        {
+          enunciado: 'En el Eje Cafetero, la palabra «cuadrilla» nombra dos grupos distintos. ¿Qué tiene que ver eso con agrupar datos?',
+          opciones: [
+            'Que las cuadrillas del cafetal llevaban tablas de recolección muy parecidas a las hojas de cálculo actuales',
+            'Que agrupar es un invento reciente que llegó al campo con las hojas de cálculo',
+            'Que nada los conecta, porque una cosa es el trabajo y otra el análisis de datos',
+            'Que la misma etiqueta puede cubrir realidades distintas, y hay que decir cuál se agrupó'
+          ],
+          respuestaIndex: 3,
+          feedbackCorrecto: 'Correcto. Una cuadrilla da pertenencia mientras uno sirva y la otra mientras uno cree. La etiqueta es la misma; lo que hay debajo no. Con las categorías de tu tabla pasa igual.',
+          feedbackIncorrecto: 'El punto no es la herramienta sino la etiqueta. Dos realidades muy distintas pueden caer bajo el mismo nombre, y quien agrupa tiene que declarar cuál está contando.'
+        }
+      ]
+    }
+  ],
+  postLectura: {
+    reflexion: 'Cuando agrupé mi tabla, ¿quién quedó en «otros» o en «no aplica»? ¿Qué cambiaría si esa fila fuera visible?',
+    transferencia: 'Esta semana aplica una tabla dinámica real a una tabla cotidiana fuera del aula: gastos por categoría, calificaciones por área u horas de sueño por día. Documenta el grupo destacado, el grupo en riesgo y una decisión real.',
+    cierre: 'Al terminar podrás: (1) analizar cuándo una pregunta necesita agruparse y cuándo basta una fórmula simple; (2) explicar las cuatro zonas de una tabla dinámica y qué operación pide cada pregunta; (3) crear tu propia tabla dinámica con una conclusión que nombre el grupo destacado y…'
+  },
+  saberAncestral: {
+    saber: 'En el Eje Cafetero, la palabra «cuadrilla» nombra dos grupos que no se parecen en nada. Uno es el de los recolectores que entran al cafetal detrás de un patrón de corte. El patrón marca los surcos con una bandera y reparte el trabajo (Saldarriaga Ramírez, 2024). Ahí se pertenece mientras dure la cosecha. Y a la gente se la agrupa por de dónde viene: paisa, tolimense, pastuso. El otro son las Cuadrillas del Carnaval de Riosucio. Doce a quince personas trabajan un año entero en una letra, una música y un disfraz (Ministerio de Cultura, 2011). Ninguna de las tres cosas se puede repetir nunca más. Las dos cuadrillas dan pertenencia. Pero una la da mientras uno sirva, y la otra mientras uno cree. La cara de exclusión está del lado del cafetal. Se trabaja sin contrato ni seguridad social, en cuarteles hacinados, con jornadas que arrancan a las 6:30 de la mañana. Y hacia afuera pesa el estigma de «mal vestidos» o «bebedores de bar». Pertenecer a una cuadrilla puede convivir con quedar excluido del pueblo entero.',
+    fuente: 'Cuadrillas del Eje Cafetero · la del cafetal y la del Carnaval de Riosucio',
+    referencia: 'Saldarriaga Ramírez, C. (2024). Andariegos: prácticas culturales de los recolectores itinerantes de café del municipio de Pereira, Colombia. Apuntes: Revista de Estudios sobre Patrimonio Cultural, 37. https://doi.org/10.11144/Javeriana.apu37.apcr',
+    preguntaPuente: '¿Por qué la misma palabra nombra dos cuadrillas que no se parecen en nada? ¿Y qué se pierde cuando un promedio mete en una sola fila a gente que no vive lo mismo?'
+  },
+  mapaRuta: [
+    {
+      numero: 1,
+      iconos: [
+        '🌱'
+      ],
+      titulo: 'Las dos cuadrillas',
+      duracionMin: 10
+    },
+    {
+      numero: 2,
+      iconos: [
+        '👁'
+      ],
+      titulo: 'Actividad 1 · ¿Total o por grupo?',
+      duracionMin: 15
+    },
+    {
+      numero: 3,
+      iconos: [
+        '📖'
+      ],
+      titulo: 'Actividad 2 · Las cuatro zonas',
+      duracionMin: 20
+    },
+    {
+      numero: 4,
+      iconos: [
+        '✏️'
+      ],
+      titulo: 'Actividad 3 · Tu tabla dinámica',
+      duracionMin: 30
+    },
+    {
+      numero: 5,
+      iconos: [
+        '✅',
+        '💭'
+      ],
+      titulo: 'Verifica, tres citas y tu compromiso',
+      duracionMin: 15
+    }
+  ],
   actividades: [
     {
       numero: 1,
@@ -110,222 +197,95 @@ const contenido: ContenidoGuia = {
       tiempoMin: 15,
       modalidad: 'individual',
       pasos: [
-        'Toma tu tabla de Sesión 2 con fórmulas de Sesión 3 ya aplicadas.',
-        'Responde a ojo: qué categoría tiene el promedio más alto en una columna numérica y cuál tiene más filas.',
-        'Construye una primera tabla dinámica para verificar (Filas = categoría, Valores = columna numérica).',
-        'Compara: ¿qué método fue más rápido?, ¿qué método dio resultado correcto?',
+        'Toma tu tabla de la sesión 2 con las fórmulas de la sesión 3 ya aplicadas.',
+        'Responde a ojo cuál categoría tiene el promedio más alto y cuál tiene más filas.',
+        'Cronometra cuánto tardas y anota si dudaste.',
+        'Construye una primera tabla dinámica con esa categoría en Filas y la columna numérica en Valores.',
+        'Compara qué método fue más rápido y cuál dio el resultado correcto.'
       ],
       cuaderno: {
         titulo: '¿Total o por grupo?',
-        formato: 'Tabla 4 columnas (Pregunta | A ojo | Tabla dinámica | Tiempo a ojo), 2 filas',
-        extension: '2 filas + 1 línea de cierre',
+        formato: 'tabla de dos filas y cuatro columnas (pregunta / a ojo / con tabla dinámica / tiempo) y una línea de cierre',
+        extension: 'un tercio de página'
       },
       criterios: [
-        'Respondí a ojo ambas preguntas con tiempo cronometrado',
-        'Construí la tabla dinámica para verificar',
-        'Comparé honestamente velocidad y precisión',
-        'Reconozco cuándo el promedio total esconde lo que importa',
-      ],
+        'Están las dos respuestas de las dos maneras.',
+        'Está escrito qué método ganó en velocidad y cuál en precisión.'
+      ]
     },
     {
       numero: 2,
-      verbo: 'APLICA',
-      titulo: 'Anatomía de una tabla dinámica',
-      tiempoMin: 15,
-      modalidad: 'individual',
+      verbo: 'EXPLICA',
+      titulo: 'Las cuatro zonas',
+      tiempoMin: 20,
+      modalidad: 'parejas',
       pasos: [
-        'Construye 1 ficha con las 4 zonas (Filas, Columnas, Valores, Filtros).',
-        'En cada zona escribe qué pusiste y por qué (para tu propio caso).',
-        'Marca qué operación elegiste (SUMA, PROMEDIO, CUENTA, MAX, MIN) y por qué esa y no otra.',
-        'Anota 1 error común que evitaste o cometiste y aprendiste.',
+        'Con tu pareja, escriban las cuatro zonas con la función de cada una.',
+        'Escriban la secuencia de tres pasos que sigue toda tabla dinámica.',
+        'Tomen tres preguntas de sus tablas y digan qué operación necesita cada una.',
+        'Busquen una pregunta que solo se responda cruzando dos categorías y escríbanla completa.'
       ],
       cuaderno: {
-        titulo: 'Anatomía de una tabla dinámica',
-        formato: 'Ficha con 4 zonas + operación elegida + 1 error aprendido',
-        extension: '1 ficha + 1 nota',
+        titulo: 'Las cuatro zonas',
+        formato: 'las cuatro zonas con su función, la secuencia de tres pasos y la pregunta que cruza dos categorías',
+        extension: 'media página'
       },
       criterios: [
-        'Las 4 zonas tienen contenido pertinente',
-        'La operación elegida está justificada',
-        'Identifico al menos 1 error frecuente',
-        'Podría construir otra tabla dinámica sin consultar',
-      ],
+        'Cada zona tiene su función escrita en lenguaje corriente.',
+        'Está escrita la pregunta que necesita cruzar dos categorías.'
+      ]
     },
     {
       numero: 3,
       verbo: 'CREA',
-      titulo: 'Tu tabla dinámica con conclusión',
+      titulo: 'Tu tabla dinámica',
       tiempoMin: 30,
       modalidad: 'individual',
       pasos: [
-        'Escribe en 1 frase la pregunta de agrupación que quieres responder.',
-        'Selecciona toda la tabla con encabezados → Insertar → Tabla dinámica → Nueva hoja.',
-        'Arrastra categoría a Filas y columna numérica a Valores; ajusta la operación.',
-        'Ordena el resultado de mayor a menor, toma captura y escribe 3 renglones de conclusión (destaca / queda atrás / sugiere).',
+        'Escribe en una frase la pregunta de agrupación antes de tocar la hoja.',
+        'Elige la categoría que va a Filas y la columna numérica que va a Valores.',
+        'Construye la tabla dinámica y ajusta la operación a la que responde tu pregunta.',
+        'Ordena los resultados de mayor a menor y captura la pantalla.',
+        'Escribe tres renglones con el grupo destacado, el grupo en riesgo y la decisión posible.'
       ],
       cuaderno: {
         titulo: 'Mi tabla dinámica',
-        formato: 'Ficha con pregunta + configuración + captura + conclusión 3 renglones',
-        extension: '1 página de cuaderno',
+        formato: 'la pregunta, la configuración de zonas y operación, la captura y la conclusión de tres renglones',
+        extension: 'media página'
       },
       criterios: [
-        'Pregunta escrita antes de construir',
-        'Filas + valores + operación configurados correctamente',
-        'Resultados ordenados para destacar el grupo top',
-        'Captura visible de la tabla dinámica',
-        'Conclusión de 3 renglones con grupo destacado y decisión',
-      ],
-    },
-    {
-      numero: 4,
-      verbo: 'EXPLICA',
-      titulo: 'Explica tu tabla dinámica a un compañero',
-      tiempoMin: 15,
-      modalidad: 'parejas',
-      pasos: [
-        'Comparte la captura y la conclusión con un compañero, sin la tabla original.',
-        'El compañero debe poder responder: ¿qué grupo destaca?, ¿qué grupo queda atrás?, ¿qué decisión se desprende?',
-        'Marca ✨ si la conclusión es clara, 🚩 si necesita reescritura.',
-        'Conversen: ¿qué categoría quedó en "otros" o no aparece? ¿Qué cambiaría si fuera visible?',
-      ],
-      cuaderno: {
-        titulo: 'Explicación cruzada con [nombre]',
-        formato: 'Marca + 1 sugerencia de mejora + 1 observación sobre "otros"',
-        extension: '1 evaluación cruzada',
-      },
-      criterios: [
-        'La marca tiene justificación',
-        'La sugerencia es accionable',
-        'Identifico al menos una categoría invisibilizada',
-        'La conversación cerró con un ajuste posible',
-      ],
-    },
+        'La operación elegida responde la pregunta escrita, no otra.',
+        'La conclusión nombra el grupo destacado y el grupo en riesgo.'
+      ]
+    }
   ],
-
-  laboratorios: [
-    {
-      tipo: 'quiz',
-      titulo: '✅ Verifica tablas dinámicas',
-      instrucciones:
-        '5 preguntas para confirmar que dominas tablas dinámicas con criterio. Necesitas 3/5 para continuar.',
-      preguntas: [
-        {
-          enunciado: 'Arrastras una columna de notas a Valores y la operación es SUMA. ¿Qué calcula?',
-          opciones: [
-            'El promedio del grupo',
-            'La suma de todas las notas del grupo (no es lo que normalmente quieres)',
-            'La cantidad de notas',
-            'El máximo',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Correcto. Excel arranca con SUMA por defecto. Cámbiala a PROMEDIO con clic derecho → Configuración del campo, o el indicador no tendrá sentido.',
-          feedbackIncorrecto:
-            'SUMA suma — incluso si lo que tiene sentido es PROMEDIO. Cambiar la operación es el paso que más se olvida.',
-        },
-        {
-          enunciado: 'La categoría "9A" aparece dos veces en la tabla dinámica con totales distintos. ¿Qué pasó?',
-          opciones: [
-            'Bug de Excel',
-            'En la columna original hay "9A" y "9a" con minúscula: el filtro las separa',
-            'Es normal',
-            'Faltan datos',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Exacto. Datos sucios (mayúsculas, espacios, tildes inconsistentes) se separan al agrupar. Limpia la columna antes de pivotar.',
-          feedbackIncorrecto:
-            'La causa es higiene de datos: dos versiones de la categoría producen dos grupos. La limpieza de Sesión 2 importa aquí.',
-        },
-        {
-          enunciado: '¿Cuándo conviene SUMA y cuándo PROMEDIO en Valores?',
-          opciones: [
-            'Da lo mismo',
-            'SUMA cuando preguntas "cuánto en total"; PROMEDIO cuando preguntas "cuánto típicamente"',
-            'SUMA siempre',
-            'PROMEDIO solo con notas',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Correcto. Ventas: SUMA. Notas, edad, horas: PROMEDIO. La operación define la pregunta que estás respondiendo.',
-          feedbackIncorrecto:
-            'Total → SUMA. Típico → PROMEDIO. Elegir mal cambia la conclusión sin que lo notes.',
-        },
-        {
-          enunciado: '¿Qué entrega una tabla dinámica que las fórmulas básicas no entregan?',
-          opciones: [
-            'Lo mismo, en otra forma',
-            'Permite comparar grupos sin escribir 10 fórmulas: el indicador se recalcula por categoría',
-            'Más velocidad',
-            'Cálculos más precisos',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Sí. Su poder está en comparar grupos sin esfuerzo. Reemplaza horas de fórmulas =PROMEDIO.SI repetidas.',
-          feedbackIncorrecto:
-            'El valor agregado es comparar grupos. Sin tabla dinámica, replicar "promedio por categoría" requiere muchas fórmulas condicionales.',
-        },
-        {
-          enunciado: 'En el saber ancestral del almacén de barrio, ¿qué aplica a la tabla dinámica?',
-          opciones: [
-            'Nada — son tecnologías distintas',
-            'Agrupar lo grande en lo pequeño para decidir qué pedir, guardar o cambiar es oficio antiguo automatizado',
-            'Que los tenderos usaban Excel',
-            'Que agrupar es invento moderno',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Correcto. El tendero agrupaba para decidir. Tú agrupas con tabla dinámica para decidir. Mismo oficio.',
-          feedbackIncorrecto:
-            'El gesto de agrupar es antiguo. La tabla dinámica solo lo hace en milisegundos sobre cientos de filas.',
-        },
-      ],
-    },
-  ],
-
-  postLectura: {
-    reflexion: '',
-    transferencia:
-      'Esta semana, aplica una tabla dinámica real a UNA tabla cotidiana fuera del aula: gastos por categoría, calificaciones por área, horas de sueño por día. Documenta el grupo destacado, el grupo en riesgo y una decisión real.',
-    cierre: '',
-  },
-
   triangulo: {
     dussel: {
-      autor: 'Enrique Dussel',
+      autor: 'Enrique Dussel · Filosofía de la liberación (1977), §2.4.2.2',
       lente: 'lente del nosotros',
-      cita: 'Una categoría es siempre una decisión de quién se cuenta junto a quién — y de quién queda fuera de toda categoría.',
-      preguntaEspejo:
-        'Cuando agrupé mi tabla, ¿quién quedó en "otros" o "no aplica"? ¿Qué decisión cambiaría si esa categoría fuera visible?',
+      cita: 'El rostro del hombre se revela como otro cuando se recorta en nuestro sistema de instrumentos como exterior, como alguien, como una libertad que interpela, que provoca, que aparece como el que resiste a la totalización instrumental. No es algo; es alguien.',
+      preguntaEspejo: 'Cuando agrupé mi tabla, ¿quién quedó en «otros» o en «no aplica»? ¿Qué cambiaría si esa fila fuera visible?'
     },
     estoico: {
-      autor: 'Epicteto',
+      autor: 'Marco Aurelio · Meditaciones VII, 47 (c. 175 d.C.)',
       lente: 'lente del cuidado interior',
-      cita: 'No compares lo que no es comparable: ahí empieza toda confusión.',
-      preguntaEspejo:
-        'Los grupos que comparé, ¿eran realmente comparables o solo se parecían? ¿Qué diferencia silenciosa entre ellos podría explicar el resultado mejor que el grupo en sí?',
+      cita: 'Conduce mirar alrededor el curso de los astros, como quien gira con ellos, y contemplar también frecuentemente las mutuas conversiones de los elementos, porque las consideraciones de estas cosas purifican a uno de las manchas de esta vida terrestre.',
+      preguntaEspejo: '¿Qué vi al mirar el conjunto que no se veía fila por fila? ¿Y qué dejé de ver al mirarlo así?'
     },
     floridi: {
-      autor: 'Luciano Floridi',
+      autor: 'Luciano Floridi · Big data and their epistemological challenge (2012)',
       lente: 'lente de la infoesfera',
-      cita: 'Las tablas dinámicas son la infraestructura cognitiva con que la sociedad contemporánea se mira a sí misma.',
-      preguntaEspejo:
-        '¿Cuántas "tablas con totales por categoría" leí esta semana en redes o noticias? ¿Habría agrupado yo las mismas categorías?',
-    },
+      cita: 'Los pequeños patrones solo pueden ser significativos si se agregan correctamente, se comparan y se procesan a tiempo. (trad. propia, abreviada)',
+      preguntaEspejo: '¿Mi agrupación deja ver el patrón, o lo fabrica porque agrupé justo por donde quería que saliera?'
+    }
   },
-
   cincoDimensiones: {
-    personal:
-      'Pasaste de mirar un total a comparar grupos: capacidad que usarás para presupuesto familiar, hábitos, deportes, métricas de salud.',
-    emocional:
-      'Toleraste la incomodidad de "lo simple ya no alcanza". Comparar grupos pide pensar antes de calcular.',
-    ciudadana:
-      'Reportes oficiales, periodismo de datos y propaganda usan tablas dinámicas. Dominarlas es leer crítica, no consumir resúmenes.',
-    local:
-      'El tendero de barrio, la costurera, el cosechero agrupaban con criterio. Tú agrupas con tabla dinámica. Misma phronesis.',
-    intergeneracional:
-      'La libreta agrupada de la abuela y tu tabla dinámica responden la misma pregunta. La herramienta cambia, la decisión sigue.',
-  },
+    personal: 'Pasaste de mirar un total a comparar grupos. Es la capacidad que vas a usar en un presupuesto, en tus hábitos o en tus propias notas.',
+    emocional: 'Toleraste la incomodidad de que lo simple ya no alcance. Comparar grupos obliga a pensar antes de calcular.',
+    ciudadana: 'Los reportes oficiales y el periodismo de datos se construyen agrupando. Entender cómo se agrupa es poder discutir el resumen, no solo consumirlo.',
+    local: 'El patrón de corte agrupa la cuadrilla por surcos y por procedencia. Tú agrupas tu tabla por categorías. En los dos casos alguien decidió el criterio.',
+    intergeneracional: 'La libreta agrupada del almacén y tu tabla dinámica responden la misma pregunta. La herramienta cambia; la decisión sigue siendo de quien mira.'
+  }
 };
 
 export default contenido;

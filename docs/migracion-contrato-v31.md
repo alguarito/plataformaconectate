@@ -149,6 +149,10 @@ septiembre se descartó el mercado de Silvia por eso.
 Cada entrada trae `verificacion` (con `DUDA` explícita cuando algo falta cotejar),
 `cara_de_exclusion` y `limites_eticos`. Los tres son de lectura obligatoria.
 
+La trazabilidad de la investigación vive en el vault CEREBRO 2, en «Taller Editorial
+MILC/Anclas — Territorio interior/»: los lotes 1 a 6 para Territorio Interior y el lote 7
+para la ampliación de septiembre de 2026.
+
 ### `content/guias/_banco-citas.yaml` — 74 citas
 
 Verificable con `make citas-verificar`, que descarga las fuentes de acceso abierto y

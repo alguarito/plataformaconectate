@@ -1,7 +1,9 @@
 /**
- * Contenido enriquecido — Grado 9 · Periodo 3 · Sesión 1
- * Tema: ¿Qué es un dato? — recolección con propósito (apertura P3).
- * Profundidad MILC v3 PRO completa, alineada con content/guias/9/9-3-1.yaml.
+ * Contenido enriquecido para Grado 9 · Período 3 · Sesión 1
+ * (sesión global 21).
+ *
+ * Auto-generado desde content/guias/9/9-3-1.yaml por
+ * scripts/build-guias-web-ts.py. Edita el YAML, no este archivo.
  */
 import type { ContenidoGuia } from './_schema';
 
@@ -10,325 +12,274 @@ const contenido: ContenidoGuia = {
   periodo: 3,
   sesion: 1,
   titulo: '¿Qué es un dato? — recolección con propósito',
-  ocultarPDF: false,
-  resumen:
-    'Apertura del Periodo 3. Construyes tu primera tabla con 20 datos reales recolectados y la pregunta acotada que esos datos van a responder. Sin pregunta, no hay recolección — hay acumulación.',
+  resumen: 'En el Registro Único de Víctimas, 7.631 personas figuran ubicadas en Cartago, 6.385 declararon allí su hecho y 2.624 lo sufrieron dentro del municipio. Son tres cifras distintas del mismo tema y ninguna es intercambiable. Hoy aprendes qué hay que saber de un dato para poder leerlo, y recoges veinte filas reales con una pregunta que puedas usar.',
   duracionMin: 90,
   subtema: 'Apertura · Datos del registro al insight',
-
-  saberAncestral: {
-    saber:
-      'El conteo de cosecha en el campo colombiano nunca fue vanidad estadística. La abuela contaba en su libreta los racimos por mata de café, las mazorcas por surco, las mantas terminadas por luna, los días que llovió. Cada cifra tenía propósito: saber cuánto sembrar el próximo ciclo, a quién pedir ayuda, qué reservar. Sin propósito, contar es desperdicio.',
-    fuente: 'Libreta de cosecha campesina en el Valle, el Pacífico y los Andes colombianos',
-    preguntaPuente:
-      '¿Qué datos recogía tu abuela en su libreta de cosecha y para qué? ¿Y qué datos recoges tú a diario (en redes, en apps, en notas) sin tener pregunta clara que esos datos vayan a responder?',
-  },
-
-  mapaRuta: [
-    { numero: 1, iconos: ['🌱'], titulo: 'La libreta de cosecha', duracionMin: 10 },
-    { numero: 2, iconos: ['🔎'], titulo: 'Tu propia huella de datos', duracionMin: 15 },
-    { numero: 3, iconos: ['📖'], titulo: '4 elementos de una recolección honesta', duracionMin: 17 },
-    { numero: 4, iconos: ['✏️'], titulo: 'Tu primera tabla de 20 datos reales', duracionMin: 33 },
-    { numero: 5, iconos: ['✅', '💭'], titulo: 'Verifica, reflexiona y cierra', duracionMin: 15 },
-  ],
-
   preLectura: {
-    porQueImporta:
-      'En este Periodo 3 vas a producir un mini-estudio que pueda mejorar algo concreto del colegio. Pero antes de gráficos y tablas dinámicas viene la base: recolectar datos con pregunta y propósito. Sin esa base, todo el periodo se vuelve ejercicio escolar sin consecuencia.',
-    preguntaDetonante:
-      'Si tu celular registra ya cientos de datos tuyos cada día y NO toma decisiones por ti, ¿qué información sí podrías recoger tú con tu propio criterio?',
+    porQueImporta: 'Dos cifras del mismo tema pueden parecer contradictorias y estar las dos bien. Casi siempre lo que falta no es el dato: es el metadato.',
+    preguntaDetonante: '¿Qué registras de tu propia vida, y cuándo fue la última vez que lo volviste a mirar?',
     activacion: {
-      titulo: 'Inventario rápido de tu huella',
-      descripcion:
-        'En 3 minutos: anota cuántas apps en tu celular recogen datos tuyos (ubicación, tiempo de uso, contactos). Estima cuántos datos producen sobre ti por día. Esa magnitud es contra la cual decidirás qué TÚ quieres recolectar con criterio propio.',
-      duracionMin: 3,
+      titulo: 'Lo que recogen de ti',
+      descripcion: 'En 2 minutos, escribe tres datos tuyos que alguna aplicación esté recogiendo ahora mismo. Al lado, si sabes para qué los usa.',
+      duracionMin: 3
     },
     conexion: {
-      anterior:
-        'Cerraste P2 con la revista digital pública. Hoy empiezas el P3 — del registro al insight: aprenderás a leer y producir datos con criterio.',
-      siguiente:
-        'En la sesión 2 limpiarás y tiparás tu tabla para que las fórmulas y filtros posteriores funcionen sin trampa.',
-    },
+      anterior: 'En el periodo 2 produjiste la revista y sustentaste su diseño.',
+      siguiente: 'En la sesión 2 trabajas tablas y registros: la columna como tipo y la fila como caso.'
+    }
   },
-
   conceptosClave: [
     {
-      termino: 'Dato',
-      definicion:
-        'Información cuantificable o categorizable que puedas registrar de forma estructurada: edad, hora, lugar, color, número, sí/no.',
-      ejemplo:
-        '"Juan, 14 años, vive en La Esperanza, va a 9°A, 45 min de TikTok el lunes" son 5 datos. "Es buen estudiante" no es dato — es opinión.',
-      emoji: '📊',
+      termino: 'Unidad de análisis',
+      definicion: 'Qué cuenta cada fila: personas, hechos, declaraciones u hogares. Si cambia a mitad de tabla, los totales dejan de significar algo.',
+      ejemplo: 'En Cartago, 7.631 son personas ubicadas y 2.624 son desplazamientos ocurridos allí. No es lo mismo.',
+      categoria: 'Lo que hay que saber'
+    },
+    {
+      termino: 'Fecha de corte',
+      definicion: 'Hasta cuándo llegan los datos de un registro. Dos cifras con cortes distintos no se comparan directamente.',
+      ejemplo: 'Por eso «uno de cada quince» es una razón aproximada: los dos números vienen de cortes distintos.',
+      categoria: 'Lo que hay que saber'
+    },
+    {
+      termino: 'Metadato',
+      definicion: 'Lo que hay que saber del dato para poder leerlo: quién lo recogió, cuándo, con qué instrumento y a quién le preguntó.',
+      ejemplo: 'Sin metadato, una cifra es un número suelto que cada quien interpreta como le conviene.',
+      categoria: 'Lo que hay que saber'
     },
     {
       termino: 'Pregunta acotada',
-      definicion:
-        'Una pregunta concreta, específica, que se pueda responder con datos contables. Sin pregunta acotada, la recolección se vuelve acumulación sin sentido.',
-      ejemplo:
-        'Mal: "¿cómo usan el celular?". Bien: "¿cuántos minutos diarios pasan mis compañeros en TikTok los lunes?". Lo específico permite responder.',
-      emoji: '🎯',
+      definicion: 'La que se puede responder con los datos que vas a recoger, escrita en una frase corta.',
+      ejemplo: '«¿A qué hora del día se llena más la tienda del colegio?» se puede responder. «El consumo escolar» no.',
+      categoria: 'Cómo se recoge'
     },
     {
-      termino: 'Instrumento de recolección',
-      definicion:
-        'Cómo recoges los datos: encuesta (preguntas iguales a varios), observación (registras lo que ves sin preguntar), registro propio (anotas datos tuyos durante un tiempo).',
-      ejemplo:
-        'Encuesta: pregunto a 20 compañeros. Observación: cuento cuántos llevan portátil al colegio. Registro propio: anoto mi sueño por 14 noches.',
-      emoji: '📝',
-    },
-    {
-      termino: 'Muestra',
-      definicion:
-        'A quién mides y cuántos. Una buena muestra es lo suficientemente grande para tener tendencia y lo suficientemente cuidadosa para no incluir solo amigos cercanos.',
-      ejemplo:
-        '20 compañeros de TU salón es muestra clara. 5 amigos cercanos es sesgo. 200 estudiantes de todo el colegio sin saber cómo elegirlos es exceso sin método.',
-      emoji: '👥',
-    },
-    {
-      termino: 'Registro estructurado',
-      definicion:
-        'Tabla con columnas tipadas (texto, número, fecha, sí/no), no notas sueltas. La estructura permite que las fórmulas funcionen y otra persona pueda usar tu trabajo.',
-      ejemplo:
-        'Una hoja con columnas "Nombre | Edad | Minutos TikTok | Fecha" llena con 20 filas. NO: una nota en celular con párrafos mezclados.',
-      emoji: '🗂',
-    },
-    {
-      termino: 'Uso previsto',
-      definicion:
-        'Qué decisión vas a tomar cuando tengas los datos. Sin uso previsto, la recolección es curiosidad. Con uso previsto, cada dato encuentra propósito.',
-      ejemplo:
-        'Mi pregunta: "¿cuántos minutos diarios usamos TikTok?". Uso previsto: proponer al curso una franja de 30 min sin TikTok antes de dormir si el promedio supera 90 min.',
-      emoji: '🎬',
-    },
+      termino: 'Columna tipada',
+      definicion: 'Aquella que guarda una sola clase de cosa —texto, número, fecha, sí o no— y lo tiene declarado.',
+      ejemplo: '«Juan, 15 años» en una sola celda no se puede ordenar ni filtrar. Son dos columnas.',
+      categoria: 'Cómo se recoge'
+    }
   ],
-
+  laboratorios: [
+    {
+      tipo: 'quiz',
+      titulo: '¿Sabes qué hay que saber de un dato?',
+      instrucciones: 'Cinco preguntas sobre unidad de análisis, corte y recolección con propósito. No va al cuaderno.',
+      preguntas: [
+        {
+          enunciado: 'En Cartago, 7.631 personas figuran ubicadas y 2.624 desplazamientos ocurrieron allí. ¿Se contradicen?',
+          opciones: [
+            'Sí, porque las dos cifras deberían coincidir en el mismo municipio.',
+            '',
+            'Sí, porque una de las dos fuentes tiene que estar equivocada.',
+            'No, porque la diferencia se explica solo por la fecha de corte.'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Correcto. Cambia la unidad de análisis, así que no son comparables directamente.',
+          feedbackIncorrecto: 'No se contradicen: una cuenta personas ubicadas y otra hechos ocurridos en el municipio.'
+        },
+        {
+          enunciado: '¿Por qué «uno de cada quince» es una razón aproximada y no un dato exacto?',
+          opciones: [
+            'Porque los dos números vienen de cortes distintos.',
+            'Porque el registro se actualiza todos los días del año.',
+            'Porque la población de Cartago no se conoce con precisión.',
+            'Porque las cifras oficiales siempre se redondean al publicarse.'
+          ],
+          respuestaIndex: 0,
+          feedbackCorrecto: 'Sí. Comparar cifras con cortes distintos se puede, pero hay que decir que la razón es aproximada.',
+          feedbackIncorrecto: 'Porque los cortes son distintos. Se puede comparar, siempre que se diga que es aproximado.'
+        },
+        {
+          enunciado: '¿Qué es un metadato?',
+          opciones: [
+            'Un dato que se calcula a partir de otros datos ya existentes.',
+            'El dato más importante de todo un conjunto de registros.',
+            'Lo que hay que saber del dato para poder leerlo.',
+            'Un dato que se guarda por si llega a hacer falta después.'
+          ],
+          respuestaIndex: 2,
+          feedbackCorrecto: 'Eso es: quién lo recogió, cuándo, con qué instrumento y a quién le preguntó.',
+          feedbackIncorrecto: 'Es lo que hay que saber del dato para leerlo. Sin él, la cifra es un número suelto.'
+        },
+        {
+          enunciado: '¿Cuál de estas es una pregunta acotada?',
+          opciones: [
+            '«El uso del tiempo entre los estudiantes de la institución.»',
+            '«Todo lo relacionado con los hábitos de consumo escolar.»',
+            '«La influencia de la tecnología en la juventud actual.»',
+            '«¿A qué hora del día se llena más la tienda del colegio?»'
+          ],
+          respuestaIndex: 3,
+          feedbackCorrecto: 'Sí. Se puede responder con los datos que vas a recoger, y se sabe cuándo terminaste.',
+          feedbackIncorrecto: 'La que se puede responder recogiendo datos. Las otras tres son temas, no preguntas.'
+        },
+        {
+          enunciado: 'Tienes una columna con «Juan, 15 años» en cada celda. ¿Qué problema hay?',
+          opciones: [
+            'Que guarda dos cosas y no se puede ordenar ni filtrar.',
+            'Que el nombre debería ir siempre en la última columna.',
+            'Que la edad tendría que expresarse en meses cumplidos.',
+            'Que faltan comillas para que el programa lo lea bien.'
+          ],
+          respuestaIndex: 0,
+          feedbackCorrecto: 'Correcto. Una columna, una clase de cosa. Ahí son dos columnas.',
+          feedbackIncorrecto: 'Guarda dos cosas en una celda. Sin separarlas no se puede ordenar por edad ni buscar por nombre.'
+        }
+      ]
+    }
+  ],
+  postLectura: {
+    reflexion: 'De tus veinte filas, ¿cuál te sorprendió y qué tendrías que recoger para saber si fue casualidad?',
+    transferencia: 'Busca en datos abiertos una cifra de tu municipio y anota su unidad de análisis y su fecha de corte antes de creerla.',
+    cierre: 'Ubicado, declarado y ocurrido son tres cifras distintas. Lo que falta casi nunca es el dato: es el metadato.'
+  },
+  saberAncestral: {
+    saber: 'Cartago tenía 143.522 habitantes proyectados para 2025. Mira el Registro Único de Víctimas, con corte al 31 de diciembre de 2025. Allí, 7.631 personas víctimas de desplazamiento forzado figuran ubicadas en Cartago: viven allí. Otras 6.385 declararon su hecho en el municipio, y 2.624 sufrieron el desplazamiento dentro de Cartago. Son tres cifras distintas y ninguna es intercambiable. Sumando todos los hechos, con corte al 30 de junio de 2026 hay 9.393 personas víctimas ubicadas en Cartago. Comparando ese dato con la población proyectada, sale una razón aproximada: alrededor de uno de cada quince cartagüeños figura en el registro. Aproximada, porque los dos números tienen cortes distintos. En un salón de Cartago, «el que llegó de otra parte» no es una hipótesis. La cara de exclusión: estas cifras nombran desplazamiento forzado con su fuente, no como color local.',
+    fuente: 'Registro Único de Víctimas · Cartago contado con fecha de corte',
+    referencia: 'Unidad para la Atención y Reparación Integral a las Víctimas. (2026). Cifras de víctimas municipal [Conjunto de datos, corte 30 de junio de 2026]. Datos Abiertos Colombia.',
+    preguntaPuente: 'Ubicado, declarado y ocurrido son tres cifras distintas del mismo municipio. ¿Qué contarías tú en cada fila de tu tabla, y estás seguro de que siempre es lo mismo?'
+  },
+  mapaRuta: [
+    {
+      numero: 1,
+      iconos: [
+        '🌱'
+      ],
+      titulo: 'Ubicado, declarado, ocurrido',
+      duracionMin: 10
+    },
+    {
+      numero: 2,
+      iconos: [
+        '👁'
+      ],
+      titulo: 'Actividad 1 · Tu huella de datos',
+      duracionMin: 15
+    },
+    {
+      numero: 3,
+      iconos: [
+        '📖'
+      ],
+      titulo: 'Actividad 2 · Unidad, corte y metadato',
+      duracionMin: 20
+    },
+    {
+      numero: 4,
+      iconos: [
+        '✏️'
+      ],
+      titulo: 'Actividad 3 · Tu tabla de veinte filas',
+      duracionMin: 30
+    },
+    {
+      numero: 5,
+      iconos: [
+        '✅',
+        '💭'
+      ],
+      titulo: 'Verifica, tres citas y tu compromiso',
+      duracionMin: 15
+    }
+  ],
   actividades: [
     {
       numero: 1,
       verbo: 'IDENTIFICA',
-      titulo: 'Tu propia huella de datos',
+      titulo: 'Tu huella de datos',
       tiempoMin: 15,
       modalidad: 'individual',
       pasos: [
-        'Abre tu celular y haz inventario de apps que recogen datos tuyos (ubicación, uso, contactos).',
-        'Lista 3 prácticas tuyas de registro consciente (notas, agenda, lista de gastos).',
-        'Identifica 3 datos que NO registras y te servirían para mejorar una decisión.',
-        'Anota el contraste: cuántos datos te miden a ti vs cuántos recoges tú con propósito propio.',
+        'Anota qué aplicaciones de tu celular recogen datos tuyos.',
+        'Anota qué datos registras tú mismo, como notas, gastos o plan semanal.',
+        'Marca cuáles de los que recoges tú has vuelto a mirar alguna vez.',
+        'Escribe una pregunta que podrías responder con datos que ya tienes.',
+        'Marca cuál de las dos listas salió más larga.'
       ],
       cuaderno: {
         titulo: 'Mi huella de datos',
-        formato: '3 listas (apps que me miden | registros propios | datos faltantes), 5+ ítems cada una',
-        extension: '1 página de cuaderno',
+        formato: 'dos columnas, lo que recogen de mí y lo que recojo yo, con la pregunta al pie',
+        extension: 'un tercio de página'
       },
       criterios: [
-        'Identifiqué 5+ apps que recogen datos sin mi decisión activa',
-        'Reconozco 3 prácticas de registro propio actuales',
-        'Identifiqué al menos 1 dato que me servirá registrar con criterio',
-        'Anoté honestamente el desbalance (apps registran mucho de mí, yo poco de mí)',
-      ],
+        'Hay una pregunta concreta escrita, no un tema.',
+        'Están marcados los registros que se han vuelto a mirar.'
+      ]
     },
     {
       numero: 2,
       verbo: 'EXPLICA',
-      titulo: '4 elementos de una recolección honesta',
-      tiempoMin: 15,
-      modalidad: 'individual',
+      titulo: 'Unidad, corte y metadato',
+      tiempoMin: 20,
+      modalidad: 'parejas',
       pasos: [
-        'Para cada elemento (pregunta acotada, instrumento honesto, muestra adecuada, registro estructurado) escribe una ficha.',
-        'En cada ficha: definición en tus palabras + ejemplo bueno + ejemplo malo.',
-        'Marca con ★ el elemento que crees que más se descuida en tareas escolares.',
-        'Cierra con 2 renglones: ¿qué error has cometido tú antes en recolecciones previas?',
+        'Con tu pareja, escriban las tres palabras con una frase propia cada una.',
+        'Digan qué unidad de análisis usa cada una de las tres cifras de Cartago.',
+        'Escriban por qué 7.631 y 2.624 no se contradicen.',
+        'Diseñen las columnas de una tabla para la pregunta de uno de los dos, con su tipo.'
       ],
       cuaderno: {
-        titulo: '4 elementos de una recolección honesta',
-        formato: '4 fichas con definición + ejemplo bueno + ejemplo malo',
-        extension: '4 fichas + 2 renglones de cierre',
+        titulo: 'Unidad, corte y metadato',
+        formato: 'las tres palabras con frase propia, la unidad de las tres cifras y el diseño de columnas con su tipo',
+        extension: 'media página'
       },
       criterios: [
-        'Cada definición está en tus palabras',
-        'Cada ficha tiene ejemplo bueno + ejemplo malo concretos',
-        'Identifiqué el elemento más descuidado en tareas escolares',
-        'Reconozco honestamente un error propio del pasado',
-      ],
+        'Queda explicado por qué las dos cifras no se contradicen.',
+        'Cada columna diseñada tiene su tipo declarado.'
+      ]
     },
     {
       numero: 3,
       verbo: 'CREA',
-      titulo: 'Tu primera tabla con 20 datos reales',
+      titulo: 'Tu tabla de veinte filas',
       tiempoMin: 30,
-      modalidad: 'individual',
-      pasos: [
-        'Escribe la pregunta acotada en 1 frase específica.',
-        'Elige el instrumento (encuesta breve, observación, registro propio).',
-        'Diseña tabla en Google Sheets o Excel con 3-5 columnas tipadas.',
-        'Recoge los 20 datos reales sin saltarte columnas (no inventes).',
-        'Verifica que cada fila esté completa y declara el uso previsto.',
-      ],
-      cuaderno: {
-        titulo: 'Mi primera tabla de 20 datos',
-        formato: 'Pregunta + instrumento + 3-5 columnas tipadas + 20 filas reales + uso previsto',
-        extension: '1 archivo digital + 1 página de cuaderno',
-      },
-      criterios: [
-        'Pregunta acotada en 1 frase clara',
-        '20 filas reales (no inventadas)',
-        '3-5 columnas tipadas correctamente',
-        'Cero filas incompletas',
-        'Uso previsto declarado',
-        'El archivo se puede abrir y leer sin explicación oral',
-      ],
-    },
-    {
-      numero: 4,
-      verbo: 'EVALÚA',
-      titulo: 'Evalúa la recolección de un compañero',
-      tiempoMin: 15,
       modalidad: 'parejas',
       pasos: [
-        'Intercambia el link o archivo con un compañero. Abre el suyo sin que te explique.',
-        'Califica del 1 al 5: (a) ¿pregunta acotada y específica?, (b) ¿20 filas reales sin inventar?, (c) ¿uso previsto claro?',
-        'Marca con ✨ la decisión más fuerte y con 🚩 los huecos (pregunta vaga, datos genéricos).',
-        'Conversen 5 min sobre qué cambiarían para que la tabla sirviera realmente para decidir algo.',
+        'Escribe tu pregunta acotada en una frase, arriba de la hoja.',
+        '',
+        'Define entre tres y cinco columnas y declara el tipo de cada una.',
+        'Recoge veinte filas de datos reales, sin inventar ninguna.',
+        'Escribe al pie qué vas a decidir con esos datos la próxima semana.'
       ],
       cuaderno: {
-        titulo: 'Evaluación de la recolección de [nombre]',
-        formato: '3 calificaciones con justificación + marcas + 1 sugerencia',
-        extension: '3 calificaciones + 1 sugerencia',
+        titulo: 'Tu tabla de veinte filas',
+        formato: 'la pregunta, el diseño de columnas con su tipo, cinco filas copiadas a mano y el uso previsto',
+        extension: 'media página'
       },
       criterios: [
-        'Las 3 calificaciones tienen justificación de 1 línea',
-        'Marqué decisiones fuertes y huecos',
-        'La sugerencia es accionable',
-        'La conversación cerró con compromiso de mejora',
-      ],
-    },
+        'Las veinte filas son reales y ninguna queda incompleta.',
+        'El uso previsto dice qué se decidirá la próxima semana.'
+      ]
+    }
   ],
-
-  laboratorios: [
-    {
-      tipo: 'quiz',
-      titulo: '✅ Verifica la phronesis del dato',
-      instrucciones:
-        '5 preguntas para confirmar que dominas el principio "pregunta antes que dato". Necesitas 3/5 para continuar.',
-      preguntas: [
-        {
-          enunciado: '¿Qué hace que una pregunta sea "acotada" para recolectar datos?',
-          opciones: [
-            'Que sea corta',
-            'Que se pueda responder con datos contables y sea específica',
-            'Que la haga un profesor',
-            'Que se pueda hacer en encuesta',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Correcto. Acotada = específica + contestable con datos. "¿Cuántos minutos diarios pasan en TikTok los lunes?" funciona. "¿Cómo usan el celular?" no.',
-          feedbackIncorrecto:
-            'Específica + contestable con datos. "¿Cómo va el curso?" no es acotada — no se sabe qué medir. "¿Cuánto tiempo dedican a leer fuera del colegio?" sí lo es.',
-        },
-        {
-          enunciado: '¿Por qué encuestar SOLO a 5 amigos cercanos no es buena muestra?',
-          opciones: [
-            'Son pocos',
-            'Tienen sesgo de origen — comparten contigo gustos y rutinas',
-            'No saben responder',
-            'Es ilegal',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Exacto. Sesgo de origen: tus amigos se parecen a ti. Para que la muestra sea útil debe representar la diversidad de tu grupo objetivo.',
-          feedbackIncorrecto:
-            'Sesgo de origen. Tus 5 amigos comparten contigo características (gustos, barrio, rutinas) que hacen sus respuestas predecibles y no representativas del curso.',
-        },
-        {
-          enunciado: 'Si recolectas datos sin declarar "uso previsto", ¿qué pasa?',
-          opciones: [
-            'Nada, está bien igual',
-            'La recolección se vuelve acumulación sin propósito — datos que nunca llevan a decisión',
-            'Los datos caducan',
-            'Te ponen mala nota',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Sí. Sin uso previsto, recolectas y nunca decides. Es lo más común de la era digital: apps con mil datos tuyos que tú no usas para decidir nada.',
-          feedbackIncorrecto:
-            'Acumulación sin propósito. El uso previsto es lo que separa al analista del que junta cosas "por si acaso". Sin él, la recolección queda en cero decisiones.',
-        },
-        {
-          enunciado: '¿Qué columna NO debería existir en una tabla profesional?',
-          opciones: [
-            'Una columna "Fecha" con formato dd/mm/aaaa',
-            'Una columna "Edad-Género" que mezcla "14-F", "15-M"',
-            'Una columna "Notas" con números del 0 al 5',
-            'Una columna "Nombre" con texto',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Correcto. "Edad-Género" mezcla 2 variables en 1 columna. Eso impide filtrar por edad o por género por separado. Debe partirse en 2 columnas: "Edad" y "Género".',
-          feedbackIncorrecto:
-            'La mezcla de variables en una columna rompe filtros y fórmulas. "Edad" y "Género" deben ser columnas separadas para poder analizar cada variable independientemente.',
-        },
-        {
-          enunciado:
-            'En el saber ancestral de la libreta de cosecha, ¿qué aplica directamente a tu próxima recolección digital?',
-          opciones: [
-            'Nada — la abuela no usaba Excel',
-            'Que contar sin propósito es desperdicio; con propósito, cada cifra encuentra decisión',
-            'Que se debe contar a mano',
-            'Que la abuela siempre tenía razón',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Esa es la conexión. La abuela contaba racimos para decidir cuánto sembrar. Tú recoges datos para decidir qué cambiar. Mismo principio en distinta tecnología.',
-          feedbackIncorrecto:
-            'Contar con propósito. La abuela y tu Excel comparten lógica: cada cifra debe llevar a una decisión concreta. Sin eso, el conteo es acumulación.',
-        },
-      ],
-    },
-  ],
-
-  postLectura: {
-    reflexion: '',
-    transferencia:
-      'Esta semana, sigue recolectando 5 datos diarios sobre tu pregunta — llega a 50 datos reales para la próxima sesión. La tabla bien hecha hoy es la base de todo el periodo. El próximo lunes traemos los datos para estructurarlos en tablas serias.',
-    cierre: '',
-  },
-
   triangulo: {
     dussel: {
-      autor: 'Enrique Dussel',
+      autor: 'Enrique Dussel · Filosofía de la liberación (1977), §2.4.4.2',
       lente: 'lente del nosotros',
-      cita: 'Lo que no se cuenta no existe en la decisión pública — contar es ya un acto político.',
-      preguntaEspejo:
-        '¿Qué de mi vida está siendo contado por apps sin que yo decida? ¿Y qué decido yo contar de mí mismo con criterios propios?',
+      cita: 'El otro se revela realmente como otro… como el pobre, el oprimido; el que a la vera del camino, fuera del sistema, muestra su rostro sufriente y sin embargo desafiante: «¡Tengo hambre!, ¡tengo derecho a comer!».',
+      preguntaEspejo: 'Si mis veinte filas fueran sobre personas, ¿cómo cambiaría lo que estoy dispuesto a publicar?'
     },
     estoico: {
-      autor: 'Marco Aurelio',
+      autor: 'Séneca · Sobre la ira, II, 29 (c. 45 d.C.)',
       lente: 'lente del cuidado interior',
-      cita: 'La phronesis empieza por la pregunta antes que por la respuesta.',
-      preguntaEspejo:
-        '¿Estoy recolectando datos para decidir mejor o para sentirme productivo? ¿Cuál fue la última decisión real que tomé desde una tabla mía?',
+      cita: 'En cuanto a las que nos refieren, no debemos apresurarnos a creerlas. Muchos mienten para engañar, otros porque están engañados.',
+      preguntaEspejo: '¿Qué cifra he repetido este mes sin saber quién la recogió ni con qué corte?'
     },
     floridi: {
-      autor: 'Luciano Floridi',
+      autor: 'The Onlife Initiative (ed. Luciano Floridi) · The Onlife Manifesto (2015), § 4.5',
       lente: 'lente de la infoesfera',
-      cita: 'Cada dato registrado es un acto informacional que modifica la infoesfera personal y colectiva.',
-      preguntaEspejo:
-        '¿Mi recolección de hoy aporta a una infoesfera más útil para mí y mi comunidad, o solo agrega ruido a la mía y a la de las plataformas?',
-    },
+      cita: 'Se suponía que acumular información y conocimiento llevaría a comprender mejor… pero esa expansión sin fin cada vez describe peor nuestra experiencia diaria. (trad. propia)',
+      preguntaEspejo: 'De todo lo que registro de mí, ¿qué he vuelto a mirar alguna vez?'
+    }
   },
-
   cincoDimensiones: {
-    personal:
-      'Pasaste de consumidor pasivo de datos a productor con criterio — primer paso de soberanía cognitiva.',
-    emocional:
-      'Resististe la tentación de "recoger cualquier cosa". Entendiste que pregunta antes que dato es disciplina, no obstáculo.',
-    ciudadana:
-      'Reconociste que decidir qué contar es político — herramienta básica para defenderte de algoritmos que cuentan por ti.',
-    local:
-      'Heredaste la libreta de cosecha del campo colombiano: contar para decidir, no para acumular.',
-    intergeneracional:
-      'La abuela contadora de cosechas y tu primera tabla digital comparten ética. Lo que cambia es la herramienta, no la phronesis.',
-  },
+    personal: 'Descubriste cuánto se recoge de ti y cuán poco de lo que registras vuelves a mirar.',
+    emocional: 'Trabajar con cifras de desplazamiento incomoda, y esa incomodidad es la que impide tratarlas como decoración.',
+    ciudadana: 'El registro es público y está en datos abiertos. Saber leerlo es poder discutir lo que se dice del municipio.',
+    local: 'Alrededor de uno de cada quince cartagüeños figura en el registro de víctimas. No es una hipótesis sobre el salón.',
+    intergeneracional: 'Un registro guarda lo que pasó para que alguien pueda reclamarlo después. Por eso la fecha de corte importa.'
+  }
 };
 
 export default contenido;

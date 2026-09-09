@@ -1,7 +1,9 @@
 /**
- * Contenido enriquecido — Grado 9 · Periodo 3 · Sesión 9
- * Tema: Insights — del dato a la decisión.
- * Profundidad MILC v3 PRO completa, alineada con content/guias/9/9-3-9.yaml.
+ * Contenido enriquecido para Grado 9 · Período 3 · Sesión 9
+ * (sesión global 29).
+ *
+ * Auto-generado desde content/guias/9/9-3-9.yaml por
+ * scripts/build-guias-web-ts.py. Edita el YAML, no este archivo.
  */
 import type { ContenidoGuia } from './_schema';
 
@@ -10,322 +12,274 @@ const contenido: ContenidoGuia = {
   periodo: 3,
   sesion: 9,
   titulo: 'Insights — del dato a la decisión',
-  ocultarPDF: false,
-  resumen:
-    'Un insight no es un número ni un gráfico: es la lectura que conecta dato con decisión. Aprendes la anatomía dato → hallazgo → decisión y produces un reporte de 1 página con 3 insights accionables sobre tus propios datos.',
+  resumen: 'Un cafetero controla cuándo abona, no el hongo ni el precio en Nueva York. Pero la crisis de la roya no fue solo clima: al subir el costo de los insumos muchos dejaron de abonar, y el cafetal mal manejado se volvió vulnerable. Hoy conviertes tus datos en tres decisiones que nombren quién decide y en qué plazo.',
   duracionMin: 90,
-  subtema: 'Datos · Decisión accionable',
-
-  saberAncestral: {
-    saber:
-      'Antes de los meteorólogos, los campesinos del Valle leían el cielo: nubes a tres días, viento del norte, hormigas marchando en fila, ranas cantando antes del atardecer. El pescador afro-pacífico leía la mar: color del agua, viento, gaviotas. Esos eran sus insights: patrones leídos en señales que el resto veía sin mirar, y que llevaban a decisiones concretas — sembrar hoy, esperar, cosechar. Un insight no era predicción adivinada: era patrón con dato detrás y decisión que se desprende.',
-    fuente: 'Lectura del cielo del campesino del Valle y lectura de la mar del pescador afro-pacífico',
-    preguntaPuente:
-      '¿Cómo sabía el campesino que las hormigas marchando significaban lluvia? ¿Y qué pierde un analista novato cuando entrega un reporte lleno de gráficos sin haber escrito un solo insight con decisión clara?',
-  },
-
-  mapaRuta: [
-    { numero: 1, iconos: ['🌱'], titulo: 'El campesino lee el cielo', duracionMin: 10 },
-    { numero: 2, iconos: ['🔎'], titulo: 'Insight vs decoración', duracionMin: 15 },
-    { numero: 3, iconos: ['📖'], titulo: 'Anatomía del insight', duracionMin: 17 },
-    { numero: 4, iconos: ['✏️'], titulo: 'Reporte de 3 insights', duracionMin: 33 },
-    { numero: 5, iconos: ['✅', '💭'], titulo: 'Verifica, reflexiona y cierra', duracionMin: 15 },
-  ],
-
+  subtema: 'Datos · Del dato a la decisión',
   preLectura: {
-    porQueImporta:
-      'El analista contemporáneo no cierra su trabajo en el gráfico: cierra en la decisión. Un reporte que no nombra qué hacer es entretenimiento; uno que sí, es responsabilidad pública.',
-    preguntaDetonante:
-      'Si tuvieras 5 minutos con el rector para mostrar lo que aprendiste del periodo, ¿qué le dirías para que cambie algo concreto el próximo mes?',
+    porQueImporta: 'Un dato que no cambia ninguna decisión es información, y la información sola no mueve nada. La diferencia está en nombrar quién decide.',
+    preguntaDetonante: 'De todo lo que averiguaste este periodo, ¿qué harías distinto la próxima semana?',
     activacion: {
-      titulo: 'Lectura del cielo',
-      descripcion:
-        'En 3 minutos: cada estudiante nombra un "insight cotidiano" de su semana — un patrón observado y una decisión que tomó por ese patrón. Ejemplo: "vi que duermo 4h los días de exámen, decidí estudiar la víspera, no el día".',
-      duracionMin: 3,
+      titulo: 'Una sola decisión',
+      descripcion: 'En 2 minutos, escribe un número que hayas encontrado en tus datos. Al lado, qué harías distinto por ese número.',
+      duracionMin: 3
     },
     conexion: {
-      anterior:
-        'En la sesión 8 aprendiste a auditar gráficos engañosos. Hoy cierras el ciclo: convertir tu propio trabajo del periodo en 3 insights con decisión clara.',
-      siguiente:
-        'En la sesión 10 sustentas el mini-estudio completo: pregunta de investigación, datos, análisis, gráficos, insights y decisión propuesta.',
-    },
+      anterior: 'En la sesión 8 auditaste tres gráficos engañosos y los rehiciste con honestidad.',
+      siguiente: 'En la sesión 10 sustentas el mini estudio que cierra el periodo y el año.'
+    }
   },
-
   conceptosClave: [
     {
       termino: 'Dato',
-      definicion:
-        'El número, promedio, diferencia entre grupos, rango o tasa. La evidencia objetiva que sostiene el insight.',
-      ejemplo:
-        '"El promedio de gasto en transporte del 9B es 32.000; el del 9A es 20.000".',
-      emoji: '🔢',
+      definicion: 'El número que sirve de evidencia: un promedio, una diferencia entre grupos, un rango o una tasa. Va en una línea.',
+      ejemplo: '«El 60 % llega después de las siete» pesa. «Muchos llegan tarde» no permite discutir.',
+      categoria: 'Las tres piezas'
     },
     {
       termino: 'Hallazgo',
-      definicion:
-        '1 frase clara que expresa el patrón leído sobre el dato. La lectura humana de la evidencia.',
-      ejemplo:
-        '"El gasto en transporte del 9B es 60% más alto que el del 9A".',
-      emoji: '🔍',
+      definicion: 'La frase humana que dice qué significa el dato. Sin ella, el número queda a interpretación de cada quien.',
+      ejemplo: '«La mayoría no alcanza a llegar al primer bloque» explica lo que el porcentaje solo insinúa.',
+      categoria: 'Las tres piezas'
     },
     {
       termino: 'Decisión',
-      definicion:
-        '1 frase con la acción concreta que se desprende. Sin decisión, el hallazgo es comentario.',
-      ejemplo:
-        '"Revisar si la ruta del barrio Macarena (donde vive la mayoría del 9B) requiere intervención".',
-      emoji: '✅',
+      definicion: 'Qué se hace a partir del hallazgo, con quién decide y en qué plazo. Sin responsable ni fecha, no ocurre.',
+      ejemplo: '«La coordinación revisa los horarios antes del viernes» se puede cumplir o incumplir.',
+      categoria: 'Las tres piezas'
     },
     {
-      termino: 'Quién decide',
-      definicion:
-        'Persona o rol que debería actuar. La acción sin dueño se queda sin ejecutar.',
-      ejemplo:
-        '"Coordinación académica + responsable de transporte escolar".',
-      emoji: '👤',
+      termino: 'Un dato, una decisión',
+      definicion: 'Si un hallazgo propone tres cosas, son tres hallazgos mal separados y ninguno se puede discutir aparte.',
+      ejemplo: 'Separarlos permite aceptar uno y rechazar otro, que es como se decide de verdad.',
+      categoria: 'Cómo se ordena'
     },
     {
-      termino: 'Plazo',
-      definicion:
-        'Esta semana / este mes / este periodo. Una decisión sin plazo no es decisión: es deseo.',
-      ejemplo:
-        '"Esta semana revisar; el próximo mes proponer ajuste de ruta".',
-      emoji: '📅',
-    },
-    {
-      termino: 'Orden por importancia',
-      definicion:
-        'Los 3 insights se ordenan por cuánto importan, no por orden cronológico de descubrimiento. El más importante primero.',
-      ejemplo:
-        'Si el lector solo lee el Insight 1, debe quedarse con lo esencial.',
-      emoji: '🥇',
-    },
+      termino: 'Lo que depende de quién',
+      definicion: 'Separar lo que no depende de nadie, lo que depende de alguien con nombre y lo que depende de ti.',
+      ejemplo: 'En la roya, mucho de lo que parecía incontrolable venía de decisiones sobre el costo de los insumos.',
+      categoria: 'Cómo se lee'
+    }
   ],
-
+  laboratorios: [
+    {
+      tipo: 'quiz',
+      titulo: '¿Sabes convertir un dato en una decisión?',
+      instrucciones: 'Cinco preguntas sobre las tres piezas y la regla de una decisión por dato. No va al cuaderno.',
+      preguntas: [
+        {
+          enunciado: '¿Cuál de estos es un hallazgo accionable?',
+          opciones: [
+            '«Hay bastante variación en la columna de horarios de llegada.»',
+            '«Los datos muestran comportamientos muy diversos entre grupos.»',
+            '«El 60 % llega después de las siete, así que la reunión empieza siete y media.»',
+            '«Se observa una tendencia interesante que conviene seguir estudiando.»'
+          ],
+          respuestaIndex: 2,
+          feedbackCorrecto: 'Sí. Tiene número, significado y una decisión que se puede cumplir o incumplir.',
+          feedbackIncorrecto: 'El que trae número y decisión. Los otros tres son observaciones sin destino.'
+        },
+        {
+          enunciado: 'Tu hallazgo propone tres decisiones distintas. ¿Qué pasa?',
+          opciones: [
+            'Que son tres hallazgos mal separados.',
+            'Que el hallazgo es especialmente valioso por su alcance.',
+            'Que hay que elegir la más fácil de ejecutar primero.',
+            'Que conviene dejarlo así para no alargar el reporte.'
+          ],
+          respuestaIndex: 0,
+          feedbackCorrecto: 'Correcto. Separarlos permite aceptar uno y rechazar otro, que es como se decide.',
+          feedbackIncorrecto: 'Son tres hallazgos juntos. Así ninguno se puede discutir por separado.'
+        },
+        {
+          enunciado: '¿Qué le falta a «habría que revisar los horarios»?',
+          opciones: [
+            'Un dato numérico que respalde la afirmación general.',
+            'Quién decide y en qué plazo.',
+            'Una explicación de por qué los horarios importan.',
+            'Un gráfico que acompañe la recomendación escrita.'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Eso es. Sin responsable ni fecha, la decisión no ocurre y nadie queda comprometido.',
+          feedbackIncorrecto: 'Le faltan el responsable y el plazo. Sin eso no hay forma de saber si se cumplió.'
+        },
+        {
+          enunciado: '¿Qué disparó la caída de producción durante la crisis de la roya?',
+          opciones: [
+            'Únicamente el clima y la aparición del hongo.',
+            'Una decisión de los compradores internacionales de café.',
+            'El clima y también que muchos dejaron de abonar al subir los insumos.',
+            'Un cambio en las variedades sembradas por los productores.'
+          ],
+          respuestaIndex: 2,
+          feedbackCorrecto: 'Sí. Parte de lo que parecía incontrolable venía de decisiones económicas concretas.',
+          feedbackIncorrecto: 'No fue solo el clima: al encarecerse los insumos muchos dejaron de abonar.'
+        },
+        {
+          enunciado: '¿Cómo se ordenan los hallazgos en el reporte?',
+          opciones: [
+            'Por importancia, empezando por el que más cambia algo.',
+            'Por el orden en que fueron apareciendo en el análisis.',
+            'Por la cantidad de datos que respaldan cada uno.',
+            'Por la facilidad con que se pueden ejecutar sus decisiones.'
+          ],
+          respuestaIndex: 0,
+          feedbackCorrecto: 'Correcto, y ese orden dice tanto de tu criterio como los hallazgos mismos.',
+          feedbackIncorrecto: 'Por importancia. El orden cronológico no le sirve a quien tiene que decidir.'
+        }
+      ]
+    }
+  ],
+  postLectura: {
+    reflexion: 'De tus tres decisiones, ¿cuál depende de ti, cuál de alguien con nombre y cuál de nadie en particular?',
+    transferencia: 'Elige una de tus decisiones y averigua quién tendría que tomarla de verdad. Con nombre y cargo, no «el colegio».',
+    cierre: 'La pregunta no es cómo evitar la incertidumbre, sino qué hacer con la parte que sí es tuya.'
+  },
+  saberAncestral: {
+    saber: 'Un cafetero del Valle o del Quindío controla cuándo abona, cuándo renueva y cuándo recoge. No controla el hongo, ni la temperatura, ni el precio en Nueva York. Entre 2008 y 2011 la roya hizo caer la producción colombiana un 31 % en promedio frente a 2007 (Avelino et al., 2015). Y aquí viene lo que no conviene simplificar. Lo que disparó la crisis no fue solo el clima. Al subir el costo de los insumos, muchos dejaron de abonar, y un cafetal mal manejado se volvió vulnerable. Es decir: buena parte de lo que parecía incontrolable se fabricó con decisiones económicas. La cara de exclusión: presentar el precio internacional como destino sería falsear el dato. En medio de todo eso viven 557.311 familias productoras. La pregunta del cafetero no es cómo evitar la incertidumbre, sino qué hacer con la parte que sí es suya.',
+    fuente: 'Crisis de la roya (2008-2011) · lo que no depende de nadie y lo que sí',
+    referencia: 'Avelino, J., Cristancho, M., Georgiou, S., Imbach, P., Aguilar, L., Bornemann, G., Läderach, P., Anzueto, F., Hruska, A. J., & Morales, C. (2015). The coffee rust crises in Colombia and Central America (2008--2013): Impacts, plausible causes and proposed solutions. Food Security, 7(2), 303--321. https://doi.org/10.1007/s12571-015-0446-9',
+    preguntaPuente: 'El cafetero no controla el hongo ni el precio, pero sí cuándo abona. En tus datos, ¿qué parte de lo que encontraste depende de alguien que puedas nombrar?'
+  },
+  mapaRuta: [
+    {
+      numero: 1,
+      iconos: [
+        '🌱'
+      ],
+      titulo: 'Lo que sí depende de alguien',
+      duracionMin: 10
+    },
+    {
+      numero: 2,
+      iconos: [
+        '🔎'
+      ],
+      titulo: 'Actividad 1 · Hallazgo o decoración',
+      duracionMin: 15
+    },
+    {
+      numero: 3,
+      iconos: [
+        '📖'
+      ],
+      titulo: 'Actividad 2 · Dato, hallazgo, decisión',
+      duracionMin: 20
+    },
+    {
+      numero: 4,
+      iconos: [
+        '✏️'
+      ],
+      titulo: 'Actividad 3 · Tu reporte de tres hallazgos',
+      duracionMin: 30
+    },
+    {
+      numero: 5,
+      iconos: [
+        '✅',
+        '💭'
+      ],
+      titulo: 'Verifica, tres citas y tu compromiso',
+      duracionMin: 15
+    }
+  ],
   actividades: [
     {
       numero: 1,
       verbo: 'ANALIZA',
-      titulo: 'Insight vs decoración',
+      titulo: 'Hallazgo o decoración',
       tiempoMin: 15,
       modalidad: 'individual',
       pasos: [
-        'Abre tu carpeta del periodo (tabla, fórmulas, filtros, tabla dinámica, gráficos).',
-        'Para cada elemento pregunta: "¿qué decisión cambiaría si esto fuera real?".',
-        'Marca ✨ los que sí cambiarían una decisión, 🗑️ los que solo decoran.',
-        'Cuenta cuántos elementos quedaron como insight potencial.',
+        'Abre tu carpeta del periodo con todo lo que produjiste.',
+        'Pregúntate en cada elemento qué decisión cambiaría si esto fuera real.',
+        'Marca los que sí cambiarían algo.',
+        'Marca aparte los que solo se ven bien.',
+        'Cuenta cuántos hay de cada clase y anota si te sorprendió la proporción.'
       ],
       cuaderno: {
-        titulo: 'Insight vs decoración',
-        formato: 'Tabla 3 columnas (Elemento | Decisión que cambiaría | ✨ o 🗑️)',
-        extension: '6-10 filas + 1 conteo final',
+        titulo: 'Hallazgo o decoración',
+        formato: 'lista de los elementos del periodo con su marca y el conteo final de cada clase',
+        extension: 'un tercio de página'
       },
       criterios: [
-        'Pasé por cada elemento con la pregunta clave',
-        'Marqué accionables y decorativos',
-        'Reconozco honestamente la proporción',
-        'Identifico los 3 elementos con mayor potencial de insight',
-      ],
+        'Están los dos conteos y se sabe cuál pesó más.',
+        'Todos los elementos de la carpeta quedaron revisados.'
+      ]
     },
     {
       numero: 2,
-      verbo: 'EVALÚA',
-      titulo: 'Anatomía del insight',
-      tiempoMin: 15,
-      modalidad: 'individual',
+      verbo: 'EXPLICA',
+      titulo: 'Dato, hallazgo, decisión',
+      tiempoMin: 20,
+      modalidad: 'parejas',
       pasos: [
-        'Construye 1 ficha con las 5 partes del insight (dato, hallazgo, decisión, quién, plazo).',
-        'Lista los 5 errores comunes y marca con 🚨 el que más cometes.',
-        'Toma uno de tus elementos ✨ y escríbelo como insight completo.',
-        'Léelo a un compañero y verifica que entiende qué hacer.',
+        'Con tu pareja, escriban las tres piezas con una frase propia cada una.',
+        'Tomen un elemento útil y escríbanlo con las tres piezas completas.',
+        'Comprueben que la decisión nombre quién decide y en qué plazo.',
+        'Busquen un hallazgo que proponga dos decisiones y sepárenlo en dos.'
       ],
       cuaderno: {
-        titulo: 'Anatomía del insight',
-        formato: 'Ficha con 5 partes + lista de 5 errores + 1 insight de práctica',
-        extension: '1 ficha + 1 insight de prueba',
+        titulo: 'Dato, hallazgo, decisión',
+        formato: 'las tres piezas con frase propia, un elemento completo y el hallazgo doble separado en dos',
+        extension: 'media página'
       },
       criterios: [
-        'La ficha tiene las 5 partes',
-        'Identifico mi error más frecuente',
-        'El insight de práctica tiene anatomía completa',
-        'Un compañero entendió la decisión sin más explicación',
-      ],
+        'La decisión escrita nombra a alguien y un plazo.',
+        'El hallazgo doble quedó separado en dos.'
+      ]
     },
     {
       numero: 3,
-      verbo: 'EXPLICA',
-      titulo: 'Explica tu mejor insight',
-      tiempoMin: 15,
-      modalidad: 'parejas',
-      pasos: [
-        'Comparte tu insight de práctica con un compañero, sin contexto adicional.',
-        'El compañero debe poder responder qué hacer, quién y en qué plazo.',
-        'Recibe retroalimentación: ¿qué frase sobra?, ¿qué quedó confuso?, ¿qué falta?',
-        'Reescribe el insight con la retroalimentación recibida.',
-      ],
-      cuaderno: {
-        titulo: 'Explicación cruzada con [nombre]',
-        formato: 'Insight original + retroalimentación + versión reescrita',
-        extension: '3 versiones (original, feedback, final)',
-      },
-      criterios: [
-        'El compañero entendió la decisión',
-        'Recibí retroalimentación específica',
-        'Reescribí con criterio (no a ciegas)',
-        'La versión final es más clara que la original',
-      ],
-    },
-    {
-      numero: 4,
       verbo: 'CREA',
-      titulo: 'Reporte de 3 insights',
+      titulo: 'Tu reporte de tres hallazgos',
       tiempoMin: 30,
       modalidad: 'individual',
       pasos: [
-        'Escribe la pregunta de investigación de Sesión 1 al inicio del reporte.',
-        'Elige los 3 datos más significativos del periodo.',
-        'Escribe dato + hallazgo + decisión + quién + plazo para cada uno.',
-        'Ordena por importancia descendente; verifica que cabe en 1 página.',
+        'Escribe arriba tu pregunta de investigación del periodo.',
+        'Elige los tres elementos que más cambiarían una decisión.',
+        'Escribe cada uno con sus tres piezas, dato, hallazgo y decisión.',
+        'Ordénalos por importancia, no por el orden en que los encontraste.',
+        'Dáselo a leer a alguien que no estuvo en el periodo y anota si entendió las tres decisiones.'
       ],
       cuaderno: {
-        titulo: 'Reporte de 3 insights',
-        formato: '1 página con título + pregunta + 3 insights estructurados',
-        extension: '1 página de cuaderno o A4',
+        titulo: 'Tu reporte de tres hallazgos',
+        formato: 'la pregunta, los tres hallazgos con sus tres piezas y la nota de qué entendió el lector ajeno',
+        extension: 'una página'
       },
       criterios: [
-        'Pregunta de investigación incluida al inicio',
-        '3 insights con anatomía completa',
-        'Cada insight nombra quién decide y plazo',
-        'Ordenados por importancia, no por orden cronológico',
-        'Un lector ajeno entiende las 3 decisiones sin tu explicación',
-      ],
-    },
+        'Cada decisión nombra quién decide y en qué plazo.',
+        'Un lector ajeno dijo las tres decisiones con sus palabras.'
+      ]
+    }
   ],
-
-  laboratorios: [
-    {
-      tipo: 'quiz',
-      titulo: '✅ Verifica anatomía del insight',
-      instrucciones:
-        '5 preguntas para confirmar que escribes insights accionables. Necesitas 3/5 para continuar.',
-      preguntas: [
-        {
-          enunciado: '¿Qué hace que un hallazgo se vuelva un insight?',
-          opciones: [
-            'Un gráfico bonito',
-            'La decisión concreta que se desprende del hallazgo',
-            'Que use jerga profesional',
-            'Que sea largo',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Correcto. Sin decisión, el hallazgo es comentario. La decisión es el cierre obligado.',
-          feedbackIncorrecto:
-            'La decisión convierte hallazgo en insight. Un gráfico bonito sin decisión sigue siendo decoración.',
-        },
-        {
-          enunciado: '"Hay variación en la columna X" — ¿es un insight?',
-          opciones: [
-            'Sí, describe el dato',
-            'No, es descripción genérica sin hallazgo claro ni decisión',
-            'Depende del contexto',
-            'Sí, si lo acompaña un gráfico',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Exacto. "Hay variación" no nombra patrón ni decisión. Es descripción vacía. Reescríbelo nombrando el patrón concreto y la acción.',
-          feedbackIncorrecto:
-            'No basta. "Hay variación" es descripción. Falta el patrón leído y la decisión concreta que se desprende.',
-        },
-        {
-          enunciado: '¿Por qué ordenar los insights por importancia y no cronológicamente?',
-          opciones: [
-            'Es lo mismo',
-            'Porque el lector apurado lee solo el primero y debe quedarse con lo esencial',
-            'Por estética',
-            'Por costumbre',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Sí. Respeto al lector: si lee solo el Insight 1, debe llevarse el más importante. El orden cronológico es egoísmo de quien escribió.',
-          feedbackIncorrecto:
-            'Importancia, no cronología. El lector apurado merece el insight clave primero.',
-        },
-        {
-          enunciado: '¿Por qué nombrar "quién decide" en un insight?',
-          opciones: [
-            'Para llenar espacio',
-            'Porque una acción sin dueño se queda sin ejecutar',
-            'Por formato',
-            'Por respeto a las jerarquías',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Correcto. La acción nombrada sin dueño nunca pasa. Asignar responsabilidad es parte del insight.',
-          feedbackIncorrecto:
-            'Sin dueño no hay ejecución. Un insight bien escrito dice qué, quién y cuándo.',
-        },
-        {
-          enunciado: 'En el saber ancestral del campesino, ¿qué aplica al insight contemporáneo?',
-          opciones: [
-            'Nada',
-            'Un insight no es predicción adivinada: es patrón con dato detrás y decisión que se desprende',
-            'Que el clima es predecible',
-            'Que la intuición basta',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Esa es la conexión. El campesino leía las hormigas → decidía sembrar. Tú lees el promedio → decides intervención. Mismo gesto.',
-          feedbackIncorrecto:
-            'Patrón + dato + decisión. El insight es traducción contemporánea de la lectura del cielo del campesino.',
-        },
-      ],
-    },
-  ],
-
-  postLectura: {
-    reflexion: '',
-    transferencia:
-      'Esta semana, toma un reporte cotidiano (boletín escolar, factura, recibo) e identifica un insight con dato + hallazgo + decisión. Compártelo con quien pueda actuar.',
-    cierre: '',
-  },
-
   triangulo: {
     dussel: {
-      autor: 'Enrique Dussel',
+      autor: 'Enrique Dussel · Filosofía de la liberación (1977), §3.3.9.4',
       lente: 'lente del nosotros',
-      cita: 'Un insight que no nombra a las víctimas se vuelve cómplice del problema que pretende analizar.',
-      preguntaEspejo:
-        'En mis 3 insights, ¿quién aparece beneficiado y quién queda invisible? ¿Hay un insight que solo nombre el promedio cuando debería nombrar a los extremos?',
+      cita: 'El êthos de la liberación pedagógica exige al maestro saber oír en el silencio con respecto a la juventud, al pueblo.',
+      preguntaEspejo: '¿Qué dato de los míos ignoré porque no encajaba con lo que esperaba encontrar?'
     },
     estoico: {
-      autor: 'Séneca',
+      autor: 'Epicteto · Enquiridión, 20 (c. 125 d.C.)',
       lente: 'lente del cuidado interior',
-      cita: 'Lo que se dice con menos palabras se entiende con más fuerza.',
-      preguntaEspejo:
-        '¿Mis insights usan jerga para parecer más profesionales o están escritos para que cualquier persona los entienda? ¿Qué palabras puedo eliminar sin perder sentido?',
+      cita: 'Acuérdate que no te ofende el que te injuria, ni el que te golpea, sino la opinión que has concebido.',
+      preguntaEspejo: '¿Qué estoy llamando «así son las cosas» cuando en realidad alguien lo decidió?'
     },
     floridi: {
-      autor: 'Luciano Floridi',
+      autor: 'The Onlife Initiative (ed. Luciano Floridi) · The Onlife Manifesto (2015), § 3.2',
       lente: 'lente de la infoesfera',
-      cita: 'Sin decisión, el trabajo con datos es entretenimiento; con decisión, es responsabilidad pública.',
-      preguntaEspejo:
-        '¿Cuántos reportes leí esta semana sin ver una sola decisión clara? ¿Cuántos datos compartí o produje yo sin cerrar con una acción concreta?',
-    },
+      cita: 'En el mundo onlife, los artefactos han dejado de ser meras máquinas que simplemente operan según instrucciones humanas: pueden cambiar de estado de manera autónoma. (trad. propia)',
+      preguntaEspejo: '¿Qué decisión sobre mí tomó esta semana un sistema, a partir de qué dato?'
+    }
   },
-
   cincoDimensiones: {
-    personal:
-      'Aprendiste a cerrar todo análisis con una decisión clara. Esa disciplina te servirá en presupuestos, hábitos, proyectos personales.',
-    emocional:
-      'Resististe la tentación de inflar con jerga. Escribir con sencillez es respeto al lector y al propio pensamiento.',
-    ciudadana:
-      'Un insight accionable es responsabilidad pública. Los datos sin decisión son ruido informativo, no servicio civil.',
-    local:
-      'El campesino del Valle, el pescador del Pacífico, la abuela en la libreta: oficios del insight con saber heredado.',
-    intergeneracional:
-      'Las hormigas marchando y el promedio comparativo cumplen la misma función: decidir qué hacer. Cambia el medio, no el oficio.',
-  },
+    personal: 'Descubriste cuánto de lo que produjiste era decoración, que es un dato incómodo y muy útil.',
+    emocional: 'Nombrar a quien debe decidir da algo de pudor. También es lo único que convierte un dato en un cambio.',
+    ciudadana: 'Llamar destino a lo que alguien decidió es la forma más cómoda de no pedirle cuentas a nadie.',
+    local: 'En el Valle y el Quindío, 557.311 familias productoras viven de decisiones que se toman con datos como estos.',
+    intergeneracional: 'La crisis de la roya se estudió después y por eso hoy se sabe qué la disparó. Documentar sirve para eso.'
+  }
 };
 
 export default contenido;

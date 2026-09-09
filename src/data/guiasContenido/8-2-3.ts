@@ -75,60 +75,60 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'En un diagrama de flujo, ¿qué símbolo representa una decisión?',
           opciones: [
-            'El rectángulo, porque representa una acción del algoritmo.',
-            'El óvalo, porque marca un punto importante del recorrido.',
             'El rombo, con una entrada y dos salidas.',
-            'El paralelogramo, porque por ahí entra o sale un dato.'
+            'El óvalo, porque marca un punto importante del recorrido.',
+            'El paralelogramo, porque por ahí entra o sale un dato.',
+            'El rectángulo, porque representa una acción del algoritmo.'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. El rombo es la decisión, y siempre tiene dos salidas, sí y no.',
           feedbackIncorrecto: 'El rectángulo es acción, el óvalo es inicio o fin y el paralelogramo es entrada o salida. La decisión es el rombo.'
         },
         {
           enunciado: '¿Cuáles son las tres estructuras con las que se escribe cualquier algoritmo?',
           opciones: [
-            'Secuencia, decisión y repetición.',
-            'Entrada de datos, proceso y salida.',
             'Inicio, desarrollo y fin del texto.',
-            'Variable, constante y fórmula compuesta.'
+            'Variable, constante y fórmula compuesta.',
+            'Secuencia, decisión y repetición.',
+            'Entrada de datos, proceso y salida.'
           ],
-          respuestaIndex: 0,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Correcto. Con secuencia, decisión y repetición se escribe cualquier algoritmo. Entrada y salida son los datos, no estructuras.',
           feedbackIncorrecto: 'Las estructuras de control son tres, secuencia, decisión y repetición. Lo demás son datos o partes de un texto.'
         },
         {
           enunciado: 'Un rombo del diagrama tiene una sola flecha de salida. ¿Qué pasa?',
           opciones: [
-            'Nada, porque el rombo solo necesita una salida para funcionar bien.',
             'El diagrama queda más corto y por eso se entiende mejor.',
+            'Falta el camino del «no», y quien lo ejecute no sabe qué hacer.',
             'Excel lo corrige solo cuando importas el diagrama desde draw.io.',
-            'Falta el camino del «no», y quien lo ejecute no sabe qué hacer.'
+            'Nada, porque el rombo solo necesita una salida para funcionar bien.'
           ],
-          respuestaIndex: 3,
+          respuestaIndex: 1,
           feedbackCorrecto: 'Eso es. Toda decisión tiene dos salidas. Con una sola, el caso del «no» no tiene camino.',
           feedbackIncorrecto: 'Un rombo con una salida es una decisión que no decide. Falta el camino del «no».'
         },
         {
           enunciado: '¿Cuál de estas líneas está bien escrita en pseudocódigo?',
           opciones: [
+            'clima lluvia paraguas si no gorra.',
             'si el clima es lluvia pues mostrar que lleve paraguas.',
-            'SI clima = lluvia ENTONCES MOSTRAR «paraguas» SINO MOSTRAR «gorra».',
             'Lluvia paraguas, sol gorra.',
-            'clima lluvia paraguas si no gorra.'
+            'SI clima = lluvia ENTONCES MOSTRAR «paraguas» SINO MOSTRAR «gorra».'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. Palabras clave en mayúscula, una variable con nombre y los dos caminos.',
           feedbackIncorrecto: 'El pseudocódigo lleva SI, ENTONCES y SINO en mayúscula, una variable clara y los dos caminos de la decisión.'
         },
         {
           enunciado: '¿Para qué sirve que tu pareja ejecute tu diagrama sin explicaciones?',
           opciones: [
-            'Para saber si el diagrama se entiende solo, con flechas y símbolos.',
-            'Para que tu pareja aprenda a hacer tu tarea cotidiana.',
+            'Para que el diagrama quede más bonito y mejor presentado.',
             'Para ganar tiempo en la clase y terminar antes que los demás.',
-            'Para que el diagrama quede más bonito y mejor presentado.'
+            'Para saber si el diagrama se entiende solo, con flechas y símbolos.',
+            'Para que tu pareja aprenda a hacer tu tarea cotidiana.'
           ],
-          respuestaIndex: 0,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Correcto. Si alguien que no conoce la tarea llega al fin, el diagrama funciona. Donde se atasca, falta algo.',
           feedbackIncorrecto: 'La prueba del que no sabe muestra si el diagrama se sostiene solo. Cada atasco es un paso o un camino que falta.'
         }

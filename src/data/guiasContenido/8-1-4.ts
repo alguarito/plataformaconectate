@@ -75,36 +75,36 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'Tu docente pregunta cuánto recaudó la tienda escolar esta semana. ¿Qué función usas?',
           opciones: [
-            'PROMEDIO, porque resume toda la semana en una sola cifra.',
-            'MAX, porque muestra el mejor día de ventas de la semana.',
             'SUMA, porque responde cuánto en total.',
-            'MIN, porque muestra el día más flojo de ventas.'
+            'MIN, porque muestra el día más flojo de ventas.',
+            'PROMEDIO, porque resume toda la semana en una sola cifra.',
+            'MAX, porque muestra el mejor día de ventas de la semana.'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. «Cuánto en total» es SUMA. Las otras tres responden preguntas distintas.',
           feedbackIncorrecto: 'La pregunta es por el total de la semana. Eso lo responde SUMA, no el promedio ni los extremos.'
         },
         {
           enunciado: 'Dos salones tienen promedio 3,5. En uno el máximo es 4,0 y el mínimo 3,0; en el otro, 5,0 y 1,0. ¿Qué es cierto?',
           opciones: [
-            'Los dos salones están igual, porque el promedio es el mismo en ambos.',
-            'El segundo salón es más disparejo y el promedio esconde al de 1,0.',
             'El primer salón tiene más estudiantes matriculados que el segundo.',
-            'El segundo salón tiene mejor rendimiento porque alguien sacó 5,0.'
+            'El segundo salón tiene mejor rendimiento porque alguien sacó 5,0.',
+            'El segundo salón es más disparejo y el promedio esconde al de 1,0.',
+            'Los dos salones están igual, porque el promedio es el mismo en ambos.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Exacto. Mismo promedio, situaciones distintas. El máximo y el mínimo muestran lo que el promedio esconde.',
           feedbackIncorrecto: 'El promedio no dice si el grupo es parejo. Con máximo 5,0 y mínimo 1,0, el segundo salón es disparejo y hay alguien que necesita apoyo.'
         },
         {
           enunciado: 'Calculas el promedio de una columna donde tres celdas están vacías y dos tienen cero. ¿Qué hace Excel?',
           opciones: [
-            'Ignora las vacías y cuenta los ceros como notas reales.',
             'Cuenta las vacías como cero y también cuenta los ceros.',
+            'Ignora las vacías y cuenta los ceros como notas reales.',
             'Ignora las vacías y también ignora todos los ceros.',
             'Muestra un error porque hay celdas vacías dentro del rango.'
           ],
-          respuestaIndex: 0,
+          respuestaIndex: 1,
           feedbackCorrecto: 'Correcto. Las vacías no entran; los ceros sí, y bajan el promedio. Por eso en la sesión 3 no llenaste los vacíos con cero.',
           feedbackIncorrecto: 'Excel no da error ni cuenta las vacías. Las salta, pero los ceros sí los promedia como notas reales.'
         },
@@ -112,8 +112,8 @@ const contenido: ContenidoGuia = {
           enunciado: 'Escribes =SUMA(B2:B21) y el total sale menor de lo que esperabas. ¿Qué es lo más probable?',
           opciones: [
             'Excel redondeó todos los decimales hacia abajo al sumar.',
-            'El rango es demasiado grande para que la función lo procese.',
             'Falta la etiqueta a la izquierda de la celda del resultado.',
+            'El rango es demasiado grande para que la función lo procese.',
             'Alguna celda del rango tiene texto y la función la saltó.'
           ],
           respuestaIndex: 3,

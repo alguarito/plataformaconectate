@@ -75,24 +75,24 @@ const contenido: ContenidoGuia = {
         {
           enunciado: '¿Cuál de estas es una variable bien definida para el monitoreo?',
           opciones: [
-            'El clima del colegio durante la semana.',
-            'El ambiente del salón en las horas de clase.',
             'La temperatura del salón en grados, medida en el mismo rincón.',
-            'Lo que sienten los estudiantes cuando hace calor.'
+            'Lo que sienten los estudiantes cuando hace calor.',
+            'El ambiente del salón en las horas de clase.',
+            'El clima del colegio durante la semana.'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Una sola cosa, con unidad y lugar fijos. Así las treinta filas se pueden comparar.',
           feedbackIncorrecto: '«El clima» y «el ambiente» no tienen unidad ni se pueden comparar fila a fila. La temperatura en grados, en el mismo rincón, sí.'
         },
         {
           enunciado: 'Mediste cada hora el lunes y solo dos veces el martes. ¿Qué problema tiene tu bitácora?',
           opciones: [
+            'El micro:bit se descalibra cuando se mide menos veces.',
             'Ninguno, porque lo importante es llegar a treinta filas en total.',
             'La frecuencia cambió y los dos días ya no se pueden comparar.',
-            'El micro:bit se descalibra cuando se mide menos veces.',
             'El martes las mediciones valen doble para compensar.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Correcto. Sin frecuencia constante no sabes si el patrón cambió o si solo cambió cuánto mediste.',
           feedbackIncorrecto: 'El micro:bit no se descalibra y las filas no valen doble. El problema es que con frecuencias distintas los días no se comparan.'
         },
@@ -100,35 +100,35 @@ const contenido: ContenidoGuia = {
           enunciado: '¿Por qué treinta mediciones en tres jornadas valen más que cien en una hora?',
           opciones: [
             'Porque el micro:bit se calienta si mide cien veces seguidas.',
+            'Porque un patrón que se repite solo aparece mirando varios días.',
             'Porque MakeCode solo permite guardar treinta valores en una variable.',
-            'Porque la bitácora de papel no tiene espacio para cien filas.',
-            'Porque un patrón que se repite solo aparece mirando varios días.'
+            'Porque la bitácora de papel no tiene espacio para cien filas.'
           ],
-          respuestaIndex: 3,
+          respuestaIndex: 1,
           feedbackCorrecto: 'Eso es. Cien datos de una hora muestran esa hora. Treinta datos de tres días muestran lo que se repite.',
           feedbackIncorrecto: 'No es el calor, ni MakeCode, ni el papel. Es que el patrón, el pico de la 1 de la tarde, solo se ve si aparece varios días.'
         },
         {
           enunciado: 'Se te olvidó anotar dos mediciones de la jornada 2. ¿Qué haces?',
           opciones: [
-            'Dejas las filas vacías y declaras el hueco en la observación.',
-            'Inventas dos valores parecidos a los vecinos para que la tabla quede completa.',
+            'Copias los valores de la jornada 1 a la misma hora.',
             'Borras la jornada 2 entera y mides una jornada 4.',
-            'Copias los valores de la jornada 1 a la misma hora.'
+            'Inventas dos valores parecidos a los vecinos para que la tabla quede completa.',
+            'Dejas las filas vacías y declaras el hueco en la observación.'
           ],
-          respuestaIndex: 0,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. Una bitácora con huecos declarados es confiable. Una completa con datos inventados no sirve para decidir nada.',
           feedbackIncorrecto: 'Inventar o copiar valores daña todo el análisis. Se declara el hueco en la observación y se sigue.'
         },
         {
           enunciado: '¿Cuál de estas es una propuesta de acción que sale de los datos?',
           opciones: [
-            '«Hace mucho calor en el salón y deberían hacer algo».',
             '«Poner aire acondicionado en todos los salones del colegio».',
-            '«Medir la temperatura otra semana para estar más seguros».',
-            '«Abrir las ventanas a las 11:30, porque los tres días subió de 24 a 28 grados».'
+            '«Hace mucho calor en el salón y deberían hacer algo».',
+            '«Abrir las ventanas a las 11:30, porque los tres días subió de 24 a 28 grados».',
+            '«Medir la temperatura otra semana para estar más seguros».'
           ],
-          respuestaIndex: 3,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Exacto. Tiene patrón, cifra y una acción que alguien del colegio puede tomar.',
           feedbackIncorrecto: 'Sin cifra es una impresión, y «medir otra semana» no es una acción. La propuesta dice qué hacer, a qué hora y con qué dato.'
         }

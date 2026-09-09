@@ -75,12 +75,12 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'Quieres que nadie pueda escribir una nota mayor que 5 en la columna. ¿Qué usas?',
           opciones: [
-            'Formato condicional con relleno rojo para las notas mayores que 5.',
             'Validación de datos con decimal entre 0 y 5.',
-            'Una fórmula que reste 5 a cualquier nota mayor.',
-            'Ordenar la columna de mayor a menor.'
+            'Ordenar la columna de mayor a menor.',
+            'Formato condicional con relleno rojo para las notas mayores que 5.',
+            'Una fórmula que reste 5 a cualquier nota mayor.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 0,
           feedbackCorrecto: 'Sí. Impedir que entre es validación. El color solo resalta lo que ya entró.',
           feedbackIncorrecto: 'El color no impide nada, solo pinta. Para que la nota de 7 no entre, se necesita validación.'
         },
@@ -99,36 +99,36 @@ const contenido: ContenidoGuia = {
         {
           enunciado: 'Una nota de 1,0 entra a la columna porque está entre 0 y 5. ¿Cómo hacer que se note rápido?',
           opciones: [
-            'Con validación, para que no entre.',
             'Con una lista desplegable de notas.',
             'Con formato condicional, para que se pinte de rojo.',
-            'Borrando la validación de la columna.'
+            'Borrando la validación de la columna.',
+            'Con validación, para que no entre.'
           ],
-          respuestaIndex: 2,
+          respuestaIndex: 1,
           feedbackCorrecto: 'Eso es. La nota es válida, así que la validación no la detiene. Resaltarla es trabajo del formato condicional.',
           feedbackIncorrecto: '1,0 es una nota válida; la validación no la rechaza. Para verla rápido se usa formato condicional.'
         },
         {
           enunciado: 'Una validación rechaza el dato y no muestra ningún mensaje. ¿Qué pasa con la persona que escribía?',
           opciones: [
+            'La celda se pinta de rojo y ya.',
             'No pasa nada, porque Excel lo explica en la barra de estado.',
-            'Se queda sin saber qué hizo mal ni qué debe escribir.',
             'Excel corrige el dato automáticamente.',
-            'La celda se pinta de rojo y ya.'
+            'Se queda sin saber qué hizo mal ni qué debe escribir.'
           ],
-          respuestaIndex: 1,
+          respuestaIndex: 3,
           feedbackCorrecto: 'Sí. Sin mensaje, la hoja rechaza y no explica. Por eso cada validación lleva título y explicación.',
           feedbackIncorrecto: 'Excel no corrige ni explica solo. Sin mensaje, la persona no entiende el rechazo. El mensaje es parte de la regla.'
         },
         {
           enunciado: '¿Cuál de estas es una buena razón para no pintar toda la hoja con formato condicional?',
           opciones: [
-            'Si todo está pintado, ya nada resalta y la hoja se vuelve lenta.',
-            'Excel no permite más de una regla por hoja.',
+            'El formato condicional solo funciona en la primera columna.',
             'Los colores borran los datos de las celdas.',
-            'El formato condicional solo funciona en la primera columna.'
+            'Si todo está pintado, ya nada resalta y la hoja se vuelve lenta.',
+            'Excel no permite más de una regla por hoja.'
           ],
-          respuestaIndex: 0,
+          respuestaIndex: 2,
           feedbackCorrecto: 'Correcto. El color sirve porque es escaso. Si todo está pintado, no hay alerta.',
           feedbackIncorrecto: 'Excel sí permite muchas reglas y el color no borra nada. El problema es que, si todo resalta, nada resalta.'
         }

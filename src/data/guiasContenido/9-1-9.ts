@@ -1,7 +1,9 @@
 /**
- * Contenido enriquecido — Grado 9 · Periodo 1 · Sesión 9
- * Tema: Tecnologías propias — saberes que el mundo aprende ahora.
- * Profundidad MILC v3 completa, alineada con content/guias/9/9-1-9.yaml.
+ * Contenido enriquecido para Grado 9 · Período 1 · Sesión 9
+ * (sesión global 9).
+ *
+ * Auto-generado desde content/guias/9/9-1-9.yaml por
+ * scripts/build-guias-web-ts.py. Edita el YAML, no este archivo.
  */
 import type { ContenidoGuia } from './_schema';
 
@@ -10,325 +12,275 @@ const contenido: ContenidoGuia = {
   periodo: 1,
   sesion: 9,
   titulo: 'Tecnologías propias — saberes que el mundo aprende ahora',
-  ocultarPDF: false,
-  resumen:
-    'Construyes una ficha técnica de una tecnología propia regenerativa con argumentos rigurosos, no nostálgicos. Justicia técnica antes que rescate cultural.',
+  resumen: 'En los Andes de Perú y Bolivia se mira el brillo de las Pléyades en junio para decidir cuándo sembrar la papa. En el año 2000 tres investigadores lo comprobaron con satélite: la señal existía. Hoy defiendes una tecnología propia con cuatro criterios técnicos, con evidencia de lugar y tiempo, y con su desventaja escrita sin suavizar.',
   duracionMin: 90,
-  subtema: 'Historia de la técnica · Saberes regenerativos',
-
-  saberAncestral: {
-    saber:
-      'La agricultura andina de andenes regenera suelos. La navegación afro-pacífica lee corrientes sin GPS. La arquitectura en guadua resiste sismos. La medicina kogui de la Sierra Nevada cataloga plantas medicinales hace siglos. Lo que la modernidad europea llamó "atrasado" hoy lo reevalúan universidades del norte como tecnologías regenerativas: técnicas que dan más al planeta de lo que toman.',
-    fuente: 'Andenes andinos, arquitectura en guadua del Pacífico, navegación afro-pacífica, medicina kogui',
-    preguntaPuente:
-      '¿Qué saber técnico tradicional tienen tu familia o tu región que la modernidad oficial ignora o subvalora? ¿Por qué crees que lo subvalora?',
-  },
-
-  mapaRuta: [
-    { numero: 1, iconos: ['🌱'], titulo: 'Tecnologías regenerativas propias', duracionMin: 10 },
-    { numero: 2, iconos: ['👁'], titulo: '4 tecnologías propias reales', duracionMin: 15 },
-    { numero: 3, iconos: ['📖'], titulo: '4 criterios de tecnología regenerativa', duracionMin: 17 },
-    { numero: 4, iconos: ['✏️'], titulo: 'Ficha técnica con argumentos rigurosos', duracionMin: 33 },
-    { numero: 5, iconos: ['✅', '💭'], titulo: 'Verifica, reflexiona y cierra', duracionMin: 15 },
-  ],
-
+  subtema: 'Historia de la técnica · Saberes que se pueden probar',
   preLectura: {
-    porQueImporta:
-      'Frente a la crisis climática, energética y de salud mental, muchas tecnologías propias latinoamericanas ofrecen modelos. No es nostalgia: es ingeniería que sobrevivió siglos por bien diseñada. Aprender a defenderlas técnicamente es soberanía intelectual.',
-    preguntaDetonante:
-      'Si tuvieras que escoger una sola tecnología (de la lista que conoces) para reconstruir una región devastada por una catástrofe — ¿elegirías una moderna o una ancestral? ¿Por qué?',
+    porQueImporta: 'Defender un saber sin ponerlo a prueba es tratarlo como adorno. Lo valioso de las Pléyades no es que los abuelos supieran: es que la observación aguantó la prueba.',
+    preguntaDetonante: '¿Qué saber técnico de tu región no se enseña en ningún curso, y cómo se comprobaría si funciona?',
     activacion: {
-      titulo: 'Test del estereotipo',
-      descripcion:
-        'En 3 minutos, escribe los primeros 3 adjetivos que se te vienen a la cabeza cuando lees "tecnología indígena precolombina". Mira la lista honestamente. ¿Hay palabras como "primitiva" o "atrasada"? Si las hay, no eres tú — es la educación recibida. Hoy vamos a probar técnicamente si esos adjetivos aplican.',
-      duracionMin: 3,
+      titulo: 'La señal que sí existe',
+      descripcion: 'En 3 minutos, escribe una señal del entorno que alguien de tu familia usa para predecir algo. Al lado, escribe cómo la comprobarías.',
+      duracionMin: 3
     },
     conexion: {
-      anterior:
-        'En la sesión 8 viste cómo el cálculo se externalizó hacia el chip. Hoy ves saberes que sobrevivieron sin chip ni electricidad — y hoy se reevalúan.',
-      siguiente:
-        'En la sesión 10 (cierre del periodo) escribirás tu manifiesto del técnico crítico recogiendo todo lo aprendido en las 9 sesiones.',
-    },
+      anterior: 'En la sesión 8 recorriste la era digital, del ábaco al chip.',
+      siguiente: 'En la sesión 10 escribes el manifiesto del técnico crítico que cierra el periodo.'
+    }
   },
-
   conceptosClave: [
     {
-      termino: 'Tecnología propia',
-      definicion:
-        'Saber técnico desarrollado por un pueblo o región específicos, transmitido intergeneracionalmente, que resuelve un problema concreto con materiales y conocimientos locales.',
-      ejemplo:
-        'El telar wayuu no es decoración: es ingeniería textil que produce mantas duraderas con técnicas que ningún libro patentado podría reproducir.',
-      emoji: '🌎',
-    },
-    {
-      termino: 'Tecnología regenerativa',
-      definicion:
-        'Técnica que da más al sistema (suelo, agua, comunidad) de lo que toma. Opuesta a la extractiva, que toma sin reponer. La mayoría de saberes ancestrales son regenerativos por diseño.',
-      ejemplo:
-        'Los andenes andinos no agotan el suelo cuando cultivan — lo enriquecen con cada ciclo. La agricultura industrial moderna agota suelos en 30-50 años.',
-      emoji: '♻️',
-    },
-    {
       termino: 'Funcionalidad probada',
-      definicion:
-        'Un saber tradicional califica como tecnología cuando demuestra que resuelve un problema técnico real, no solo por siglos de uso sino por su persistencia frente a alternativas.',
-      ejemplo:
-        'La guadua sigue usándose para construcción antisísmica en Eje Cafetero — no por tradición sino porque ingenieros estructurales demostraron su comportamiento ante terremotos.',
-      emoji: '✅',
+      definicion: 'Que la tecnología resuelva un problema concreto y que haya evidencia de que lo resuelve, con lugar y tiempo.',
+      ejemplo: 'Los andenes andinos sostienen cultivo en pendiente fuerte y llevan más de mil años haciéndolo.',
+      categoria: 'Los cuatro criterios'
     },
     {
-      termino: 'Adaptabilidad al contexto',
-      definicion:
-        'Saber que encaja con clima, materiales y cultura locales. No exige importar nada externo. Eso lo hace resiliente cuando la cadena global falla.',
-      ejemplo:
-        'En el Pacífico llueve casi todo el año. La arquitectura en guadua con techo inclinado de palma encaja perfecto. Concreto y zinc requieren importar e impermeabilizar.',
-      emoji: '🏞',
+      termino: 'Adaptación al lugar',
+      definicion: 'Que esté hecha para ese suelo, ese clima y esos materiales, en vez de importada sin ajuste.',
+      ejemplo: 'La guadua crece cerca, se corta en luna menguante y se usa donde tiembla. Nada de eso es casual.',
+      categoria: 'Los cuatro criterios'
     },
     {
-      termino: 'Transmisibilidad intergeneracional',
-      definicion:
-        'Saber que se enseña sin tecnología compleja, de persona a persona, generación tras generación. No depende de patentes ni manuales — depende de comunidad viva.',
-      ejemplo:
-        'La medicina kogui se transmite por la mamuna (maestra) a aprendices durante 18 años. Ningún libro reemplaza ese aprendizaje encarnado.',
-      emoji: '🔗',
+      termino: 'La antigüedad es una pista',
+      definicion: 'Que algo lleve siglos funcionando indica que pasó muchos ensayos. Pero hay que decir cuáles, dónde y con qué resultado.',
+      ejemplo: '«Es ancestral» no defiende nada. «Alimenta poblaciones en pendiente desde hace mil años» sí.',
+      categoria: 'Cómo se argumenta'
     },
     {
-      termino: 'Defensa técnica vs nostálgica',
-      definicion:
-        'Defender una tecnología propia con argumentos técnicos (resuelve X problema, evidencia Y, alternativa moderna Z tiene desventaja W) en lugar de morales ("es nuestra tradición, por eso vale").',
-      ejemplo:
-        'Mal: "La guadua es bonita y representa nuestra cultura". Bien: "La guadua tiene resistencia a tracción de 132 MPa, comparable al acero estructural, con costo de carbono 10% del concreto".',
-      emoji: '🛡',
+      termino: 'La desventaja honesta',
+      definicion: 'El costo real frente a la alternativa industrial, casi siempre más trabajo humano o más conocimiento local.',
+      ejemplo: 'Un trapiche de tracción animal rinde menos por hora que un molino eléctrico. Decirlo hace creíble el resto.',
+      categoria: 'Cómo se argumenta'
     },
+    {
+      termino: 'Validar una observación',
+      definicion: 'Comprobar con otro método si la señal que alguien usa existe de verdad. Es lo que separa el conocimiento de la costumbre.',
+      ejemplo: 'Las Pléyades borrosas anuncian El Niño porque hay cirros altos. Un satélite lo confirmó en el año 2000.',
+      categoria: 'Poner a prueba'
+    }
   ],
-
+  laboratorios: [
+    {
+      tipo: 'quiz',
+      titulo: '¿Sabes defender una tecnología propia?',
+      instrucciones: 'Cinco preguntas sobre criterios, evidencia y honestidad en la defensa. No va al cuaderno.',
+      preguntas: [
+        {
+          enunciado: '¿Por qué «es ancestral» no sirve como argumento técnico?',
+          opciones: [
+            'Porque los saberes antiguos suelen estar mal documentados en general.',
+            'Porque no dice qué problema resuelve ni con qué evidencia.',
+            'Porque las tecnologías modernas siempre resultan más eficientes.',
+            'Porque la palabra no aparece en la bibliografía académica seria.'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Sí. La antigüedad es una pista de que pasó muchos ensayos, pero hay que decir cuáles.',
+          feedbackIncorrecto: 'Porque no dice qué resuelve ni cómo se sabe. La antigüedad es pista, no prueba.'
+        },
+        {
+          enunciado: '¿Qué encontraron Orlove, Chiang y Cane en el año 2000?',
+          opciones: [
+            'Que la observación de las Pléyades no tenía ninguna base física real.',
+            'Que el método servía únicamente en los Andes colombianos del sur.',
+            'Que las Pléyades borrosas anuncian El Niño porque hay cirros altos.',
+            'Que los agricultores habían copiado el método de los meteorólogos.'
+          ],
+          respuestaIndex: 2,
+          feedbackCorrecto: 'Correcto. La señal existía; lo que faltaba era la explicación.',
+          feedbackIncorrecto: 'Que la señal era real: los cirros altos anuncian El Niño y enturbian las Pléyades.'
+        },
+        {
+          enunciado: '¿De dónde es el saber de las Pléyades que estudia esta guía?',
+          opciones: [
+            'De los Andes de Perú y Bolivia.',
+            'Del norte del Valle del Cauca y el Quindío.',
+            'De los pueblos quimbayas del Cauca medio.',
+            'De las veredas cafeteras de Caldas y Risaralda.'
+          ],
+          respuestaIndex: 0,
+          feedbackCorrecto: 'Sí, y decirlo con precisión es parte del respeto por el saber.',
+          feedbackIncorrecto: 'De los Andes de Perú y Bolivia. Atribuirlo al Valle o a los quimbayas sería un error.'
+        },
+        {
+          enunciado: '¿Por qué una ficha técnica debe incluir una desventaja?',
+          opciones: [
+            'Porque el docente lo exige como requisito de formato del trabajo.',
+            'Porque toda tecnología antigua es peor que la industrial en algo.',
+            'Porque sin ella la ficha no alcanza la extensión de una página.',
+            'Porque reconocerla es lo que separa una ficha de un folleto.'
+          ],
+          respuestaIndex: 3,
+          feedbackCorrecto: 'Eso es. Una defensa sin costos se lee como propaganda y convence menos.',
+          feedbackIncorrecto: 'Porque reconocer el costo real hace creíble todo lo demás que afirmas.'
+        },
+        {
+          enunciado: 'Presentar el saber local como infalible es un problema porque…',
+          opciones: [
+            'complica innecesariamente la redacción de la ficha técnica.',
+            'también es una forma de faltarle al respeto.',
+            'impide compararlo con cualquier alternativa industrial.',
+            'resulta difícil de sostener frente a un profesor exigente.'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Sí. El saber local también se equivoca, y tratarlo como oráculo no es tomarlo en serio.',
+          feedbackIncorrecto: 'Porque también le falta al respeto: lo trata como creencia y no como conocimiento verificable.'
+        }
+      ]
+    }
+  ],
+  postLectura: {
+    reflexion: '¿Cuál de los cuatro criterios te costó más aplicar a tu tecnología, y qué te faltó averiguar?',
+    transferencia: 'Pregúntale a alguien mayor por una técnica de su oficio que no se enseñe en ningún curso. Anota qué problema resuelve.',
+    cierre: 'El punto no es que los abuelos supieran. Es que una observación se puede poner a prueba, y esa aguantó.'
+  },
+  saberAncestral: {
+    saber: 'En los Andes, los agricultores miran las Pléyades en junio para saber si el verano vendrá seco. De eso depende si conviene atrasar la siembra de la papa. Conviene decirlo con precisión: esto es de los Andes de Perú y Bolivia, no del Valle ni de los quimbayas. En el año 2000, tres investigadores lo pusieron a prueba con imágenes de satélite y datos de El Niño, y encontraron que tenían razón. Cuando las Pléyades se ven borrosas es porque hay cirros altos. Y esos cirros anuncian un año de El Niño con menos lluvia (Orlove, Chiang y Cane, 2000). El saber campesino no era superstición: era una observación buena a la que le faltaba la explicación. Hoy en Colombia las Mesas Técnicas Agroclimáticas sientan en la misma mesa a agricultores, meteorólogos y técnicos. Deciden juntos qué sembrar y cuándo (Loboguerrero et al., 2018). La cara de exclusión: el saber local también se equivoca. Presentarlo como infalible es otra forma de faltarle al respeto. El punto no es que los abuelos supieran. Es que una observación se puede poner a prueba.',
+    fuente: 'Andes de Perú y Bolivia · las Pléyades en junio, puestas a prueba con satélite',
+    referencia: 'Orlove, B. S., Chiang, J. C. H., & Cane, M. A. (2000). Forecasting Andean rainfall and crop yield from the influence of El Niño on Pleiades visibility. Nature, 403(6765), 68--71. https://doi.org/10.1038/47456',
+    preguntaPuente: 'Los agricultores andinos leían una señal real y les faltaba la explicación. ¿Qué saber de tu región conoces que nadie ha puesto a prueba todavía, y cómo se pondría a prueba?'
+  },
+  mapaRuta: [
+    {
+      numero: 1,
+      iconos: [
+        '🌱'
+      ],
+      titulo: 'Las Pléyades, puestas a prueba',
+      duracionMin: 10
+    },
+    {
+      numero: 2,
+      iconos: [
+        '👁'
+      ],
+      titulo: 'Actividad 1 · Cuatro tecnologías propias',
+      duracionMin: 15
+    },
+    {
+      numero: 3,
+      iconos: [
+        '📖'
+      ],
+      titulo: 'Actividad 2 · Los cuatro criterios',
+      duracionMin: 20
+    },
+    {
+      numero: 4,
+      iconos: [
+        '✏️'
+      ],
+      titulo: 'Actividad 3 · La ficha técnica',
+      duracionMin: 30
+    },
+    {
+      numero: 5,
+      iconos: [
+        '✅',
+        '💭'
+      ],
+      titulo: 'Verifica, tres citas y tu compromiso',
+      duracionMin: 15
+    }
+  ],
   actividades: [
     {
       numero: 1,
       verbo: 'IDENTIFICA',
-      titulo: '4 tecnologías propias reales',
+      titulo: 'Cuatro tecnologías propias',
       tiempoMin: 15,
       modalidad: 'individual',
       pasos: [
-        'Lee información concreta sobre estas 4 tecnologías propias: andenes andinos, arquitectura en guadua del Pacífico, navegación afro-pacífica, medicina kogui.',
-        'Para cada una identifica qué problema técnico resuelve.',
-        'Anota al menos UNA ventaja sobre alternativas modernas.',
-        'Anota por qué crees que la modernidad la subvaloró.',
+        'Mira andenes andinos, arquitectura en guadua, navegación del Pacífico y trapiche de caña.',
+        'Escribe para cada una qué problema técnico resuelve, en una frase.',
+        'Escribe qué evidencia hay de que lo resuelve, con siglos, extensión o adopción actual.',
+        'Marca la que más te sorprendió y di en una línea por qué.'
       ],
       cuaderno: {
-        titulo: '4 tecnologías propias latinoamericanas',
-        formato: 'Tabla 4 columnas (Tecnología | Problema | Ventaja sobre alternativa moderna | Por qué la subvaloraron), 4 filas',
-        extension: '4 filas completas',
+        titulo: 'Cuatro tecnologías propias',
+        formato: 'tabla de 4 filas y 3 columnas (tecnología / problema técnico / evidencia de que funciona)',
+        extension: 'un tercio de página'
       },
       criterios: [
-        'Las 4 tecnologías están bien identificadas con datos concretos',
-        'Cada una tiene problema técnico específico, no genérico',
-        'Reconozco al menos UNA ventaja real sobre la alternativa moderna',
-        'Identifico al menos UNA que NO conocía antes',
-      ],
+        'Ninguna casilla de evidencia dice solo «es muy antigua».',
+        'Cada problema técnico cabe en una frase.'
+      ]
     },
     {
       numero: 2,
       verbo: 'EXPLICA',
-      titulo: '4 criterios de una tecnología regenerativa',
-      tiempoMin: 15,
-      modalidad: 'individual',
+      titulo: 'Los cuatro criterios',
+      tiempoMin: 20,
+      modalidad: 'parejas',
       pasos: [
-        'Para cada criterio (funcionalidad, sostenibilidad, adaptabilidad, transmisibilidad) escribe una ficha.',
-        'En cada ficha: definición en tus palabras + 1 ejemplo de las 4 tecnologías que la cumple bien.',
-        'Cierra con 1 párrafo: ¿qué tecnología moderna familiar cumple los 4 criterios? ¿Cuál falla en uno?',
-        'Tu propio futuro técnico debería tener cuál criterio como prioridad.',
+        'Con tu pareja, escriban los cuatro criterios con una frase propia cada uno.',
+        'Apliquen los cuatro a una de las tecnologías y anoten cuáles cumple.',
+        'Busquen su alternativa industrial y escriban en qué gana cada una.',
+        'Escriban la desventaja de la tecnología propia sin suavizarla.'
       ],
       cuaderno: {
-        titulo: '4 criterios de una tecnología regenerativa',
-        formato: '4 fichas + 1 párrafo de comparación + 1 línea de prioridad personal',
-        extension: '4 fichas + 2 párrafos',
+        titulo: 'Los cuatro criterios',
+        formato: 'los cuatro criterios con frase propia aplicados a una tecnología y la comparación con su alternativa',
+        extension: 'media página'
       },
       criterios: [
-        'Cada definición está en tus palabras',
-        'Cada ficha tiene ejemplo de una de las 4 tecnologías propias',
-        'El párrafo comparativo es honesto (reconoces fallas modernas)',
-        'Identificas qué criterio priorizarías en tu futuro',
-      ],
+        'La desventaja está escrita sin suavizar.',
+        'La comparación dice en qué gana cada opción.'
+      ]
     },
     {
       numero: 3,
       verbo: 'CREA',
-      titulo: 'Ficha técnica de UNA tecnología propia',
+      titulo: 'La ficha técnica',
       tiempoMin: 30,
       modalidad: 'individual',
       pasos: [
-        'Elige UNA tecnología propia (puede ser de las 4 vistas o de tu región: trapiche, telar, conuco, etc.).',
-        'Investiga 10 min en internet con criterio técnico, no decorativo.',
-        'Llena las 6 secciones: nombre y origen, problema, mecanismo + dibujo, evidencia histórica, comparación con alternativa moderna, aplicación contemporánea.',
-        'Dibuja el mecanismo a mano (no copies foto, dibuja con etiquetas).',
-        'Cierra con propuesta contemporánea concreta (qué problema actual podría ayudar a resolver).',
+        'Elige una tecnología propia, de las cuatro o de tu región.',
+        'Escribe el problema técnico que resuelve, en una frase.',
+        'Dibuja el mecanismo y rotula sus partes.',
+        'Escribe la evidencia de que funciona, con lugar y tiempo.',
+        'Escribe una desventaja honesta y un uso actual concreto.',
+        'Intercambia la ficha con un compañero y marca si algún argumento suyo se apoya solo en la tradición.'
       ],
       cuaderno: {
-        titulo: 'Ficha técnica de [nombre]',
-        formato: '6 secciones en hoja A4 + dibujo del mecanismo + tabla de comparación',
-        extension: '1 página A4',
+        titulo: 'La ficha técnica',
+        formato: 'las cinco partes de la ficha, con el dibujo del mecanismo rotulado y la desventaja escrita',
+        extension: 'una página'
       },
       criterios: [
-        'Las 6 secciones presentes y completas',
-        'Dibujo del mecanismo técnico (no solo descripción)',
-        'Tabla de comparación con alternativa moderna',
-        'Aplicación contemporánea concreta',
-        'Cero argumentos solo de tradición; todo defendido técnicamente',
-        'Aplica al menos 3 de los 4 criterios de tecnología regenerativa',
-      ],
-    },
-    {
-      numero: 4,
-      verbo: 'EVALÚA',
-      titulo: 'Evalúa la ficha de un compañero',
-      tiempoMin: 15,
-      modalidad: 'parejas',
-      pasos: [
-        'Intercambia cuadernos. Lee la ficha del compañero sin que te explique.',
-        'Califica del 1 al 5: (a) ¿defensa técnica, no nostálgica?, (b) ¿dibujo del mecanismo claro?, (c) ¿aplicación contemporánea específica?',
-        'Marca con 🚩 los argumentos nostálgicos (si los hay) y con ✨ los técnicos rigurosos.',
-        'Conversen 5 min: ¿reconocerías esta tecnología como "hito técnico" según los 4 criterios? ¿Por qué sí o no?',
-      ],
-      cuaderno: {
-        titulo: 'Evaluación de la ficha de [nombre]',
-        formato: '3 calificaciones con justificación + marcas + 1 observación',
-        extension: '3 calificaciones + 1 observación',
-      },
-      criterios: [
-        'Las 3 calificaciones tienen justificación de 1 línea',
-        'Marcaste argumentos nostálgicos y técnicos diferenciados',
-        'La observación es constructiva y específica',
-        'La conversación cerró con acuerdo sobre si califica como hito o no',
-      ],
-    },
+        'Hay dibujo del mecanismo con las partes rotuladas.',
+        'Ningún argumento se sostiene solo en que es tradición.',
+        'Revisaste la ficha de un compañero y marcaste sus argumentos de sola tradición.'
+      ]
+    }
   ],
-
-  laboratorios: [
-    {
-      tipo: 'quiz',
-      titulo: '✅ Verifica los criterios técnicos',
-      instrucciones:
-        '5 preguntas para confirmar que distingues defensa técnica de defensa nostálgica. Necesitas 3/5 para continuar.',
-      preguntas: [
-        {
-          enunciado: '¿Cuál de estos es un argumento TÉCNICO (no nostálgico) a favor de la guadua?',
-          opciones: [
-            'Es bonita y representa nuestra cultura',
-            'Tiene resistencia a tracción comparable al acero con 10% del costo de carbono del concreto',
-            'Nuestros abuelos la usaban',
-            'Es tradición del Pacífico',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Correcto. Datos técnicos verificables, no apelaciones a tradición. Esa es la diferencia entre defensa técnica y nostalgia disfrazada.',
-          feedbackIncorrecto:
-            'El argumento técnico es el que cita datos verificables. "Es tradición" es nostalgia; "resistencia comparable al acero" es ingeniería.',
-        },
-        {
-          enunciado: '¿Qué hace que una tecnología sea "regenerativa" en sentido estricto?',
-          opciones: [
-            'Que sea antigua',
-            'Que dé más al sistema (suelo, agua, comunidad) de lo que toma',
-            'Que sea bonita',
-            'Que no use electricidad',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Exacto. Regenerativa = el sistema queda mejor después. Los andenes mejoran el suelo cultivándolo. La industrial extrae y degrada.',
-          feedbackIncorrecto:
-            'Regenerativa: deja al sistema mejor después de usarla. Los andenes enriquecen suelo; la agricultura industrial lo agota. Diferencia estructural.',
-        },
-        {
-          enunciado: '¿Por qué la modernidad europea llamó "primitivas" a las tecnologías precolombinas?',
-          opciones: [
-            'Por descuido',
-            'Porque era política de poder: descalificar saberes propios para imponer los suyos',
-            'Porque realmente eran simples',
-            'Por barrera del lenguaje',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Sí. La clasificación de "primitivo" no era descripción técnica — era poder colonial. Hoy reconocer esa política es justicia histórica.',
-          feedbackIncorrecto:
-            'Política colonial: descalificar saberes propios legitimaba el control. No era descripción técnica. La cerámica Quimbaya era ingeniería más sofisticada que muchas técnicas europeas contemporáneas.',
-        },
-        {
-          enunciado: '¿Por qué la medicina kogui de la Sierra Nevada se reevalúa hoy?',
-          opciones: [
-            'Por moda New Age',
-            'Porque su catalogación de plantas medicinales y diagnóstico holístico aporta a problemas que la medicina occidental no resuelve solos',
-            'Porque es barata',
-            'Porque está en peligro',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Correcto. La medicina kogui aporta saberes técnicos reales (plantas, diagnóstico relacional) a problemas modernos. No es moda — es complemento técnico.',
-          feedbackIncorrecto:
-            'Aporta saberes técnicos a problemas modernos. La farmacología estudia hoy plantas que los kogui usaron por siglos. Es complementación, no moda.',
-        },
-        {
-          enunciado:
-            'Si defendieras tu tecnología propia con argumentos ÚNICAMENTE técnicos, ¿qué cambiaría?',
-          opciones: [
-            'Nada — los argumentos morales también valen',
-            'Que la defensa sería tomada en serio por ingenieros, políticos y financiadores que no responden a la nostalgia',
-            'Que perdería el alma',
-            'Que sería menos cierta',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Exacto. La nostalgia convence al ya convencido. Los argumentos técnicos abren puertas en sectores que financian, regulan o ejecutan políticas.',
-          feedbackIncorrecto:
-            'Argumentos técnicos abren puertas que la nostalgia cierra. Un ingeniero o un funcionario público responde a datos. La defensa rigurosa multiplica el alcance.',
-        },
-      ],
-    },
-  ],
-
-  postLectura: {
-    reflexion: '',
-    transferencia:
-      'Esta semana, comparte tu ficha técnica con un familiar o vecino mayor que conozca tradiciones locales. Pregúntale: "¿qué corregirías o agregarías?". Anota su respuesta. Esa retroalimentación intergeneracional enriquece la ficha más que cualquier libro. El próximo lunes traemos esas correcciones — son insumo del manifiesto de cierre.',
-    cierre: '',
-  },
-
   triangulo: {
     dussel: {
-      autor: 'Enrique Dussel',
+      autor: 'Enrique Dussel · Filosofía de la liberación (1977), §2.6.7.1',
       lente: 'lente del nosotros',
-      cita: 'La descolonización del conocimiento empieza por reconocer técnicamente lo que la modernidad subvaloró.',
-      preguntaEspejo:
-        '¿Qué saber técnico de mi región o familia he considerado "atrasado" sin haberlo estudiado a fondo? ¿Qué cambia cuando lo miro con criterio técnico riguroso?',
+      cita: 'No hay liberación sin economía y tecnología humanizada, diseño, y sin partir de una formación social histórica.',
+      preguntaEspejo: '¿Qué problema de mi región se está resolviendo con una solución pensada para otro lugar?'
     },
     estoico: {
-      autor: 'Marco Aurelio',
+      autor: 'Marco Aurelio · Meditaciones VII, 47 (c. 175 d.C.)',
       lente: 'lente del cuidado interior',
-      cita: 'Lo que sobrevive siglos sin renovación tecnológica sostiene su propio peso.',
-      preguntaEspejo:
-        '¿Qué tecnología que uso hoy estará viva en 100 años sin actualizaciones forzosas? ¿Y cuál de las antiguas sigue cumpliendo su función intacta?',
+      cita: 'Conduce mirar alrededor el curso de los astros, como quien gira con ellos, y contemplar también frecuentemente las mutuas conversiones de los elementos, porque las consideraciones de estas cosas purifican a uno de las manchas de esta vida terrestre.',
+      preguntaEspejo: '¿Qué señal del entorno miro sin darme cuenta y uso para decidir algo?'
     },
     floridi: {
-      autor: 'Luciano Floridi',
+      autor: 'Luciano Floridi · Big data and their epistemological challenge (2012)',
       lente: 'lente de la infoesfera',
-      cita: 'La infoesfera saludable necesita tanto las tecnologías propias regenerativas como las digitales avanzadas.',
-      preguntaEspejo:
-        '¿Qué hibridación entre tecnología propia y tecnología digital puedo imaginar para un problema contemporáneo (clima, salud, alimentación)?',
-    },
+      cita: 'Los pequeños patrones solo pueden ser significativos si se agregan correctamente, se comparan y se procesan a tiempo. (trad. propia, abreviada)',
+      preguntaEspejo: '¿Qué observación mía repetida muchas veces podría significar algo si la comparara?'
+    }
   },
-
   cincoDimensiones: {
-    personal:
-      'Defendiste una tecnología propia con argumentos técnicos rigurosos, no nostálgicos — ese ejercicio reconfigura tu mirada.',
-    emocional:
-      'Sentiste orgullo legítimo por saberes que la educación oficial te enseñó a subvalorar.',
-    ciudadana:
-      'Entendiste que descolonizar el conocimiento es justicia técnica, no rescate folclórico.',
-    local:
-      'Pusiste el telar wayuu, la guadua, los andenes andinos al nivel técnico que tienen — sin inflarlos ni minimizarlos.',
-    intergeneracional:
-      'La conversación con un mayor sobre tradiciones locales hizo dialogar tres siglos de saberes con tu mirada técnica del XXI.',
-  },
+    personal: 'Aprendiste a defender algo con evidencia en vez de con afecto, que es más difícil y convence más.',
+    emocional: 'Reconocer la desventaja de lo que uno defiende cuesta. También es lo que hace que te crean.',
+    ciudadana: 'Un saber que nadie pone a prueba se queda de adorno en un museo, y así no le sirve a nadie.',
+    local: 'La guadua, el trapiche y la navegación del Pacífico resuelven problemas técnicos reales de este territorio.',
+    intergeneracional: 'Alguien observó el cielo durante generaciones para que la señal se pudiera comprobar en el año 2000.'
+  }
 };
 
 export default contenido;

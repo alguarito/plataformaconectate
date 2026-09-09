@@ -1,7 +1,9 @@
 /**
- * Contenido enriquecido — Grado 9 · Periodo 1 · Sesión 7
- * Tema: La electricidad — luz, motor, comunicación.
- * Profundidad MILC v3 completa, alineada con content/guias/9/9-1-7.yaml.
+ * Contenido enriquecido para Grado 9 · Período 1 · Sesión 7
+ * (sesión global 7).
+ *
+ * Auto-generado desde content/guias/9/9-1-7.yaml por
+ * scripts/build-guias-web-ts.py. Edita el YAML, no este archivo.
  */
 import type { ContenidoGuia } from './_schema';
 
@@ -10,323 +12,274 @@ const contenido: ContenidoGuia = {
   periodo: 1,
   sesion: 7,
   titulo: 'La electricidad — luz, motor, comunicación',
-  ocultarPDF: false,
-  resumen:
-    'Escribes una bitácora de un día sin electricidad. Descubres tu dependencia invisible — y separas lo esencial de la costumbre.',
+  resumen: 'La radio comunitaria del Valle está agremiada en LA REC FM, con NIT, sede en La Unión y licencias que renovar. «La voz del pueblo» no es una figura literaria: es una persona jurídica con dirección en la calle. Hoy clasificas de qué corriente dependes —luz, motor o comunicación— y escribes la bitácora de un día sin ella.',
   duracionMin: 90,
   subtema: 'Historia de la técnica · Dependencia eléctrica',
-
-  saberAncestral: {
-    saber:
-      'Antes de la luz eléctrica, el día se organizaba según el sol y el candil. Despertarse al amanecer, almorzar al mediodía, cenar antes del oscurecer. La cocina con leña y fogón; las noticias con voz a voz en la plaza; la música con instrumentos propios. La electricidad reorganizó el tiempo humano: alargó la jornada, transformó la cocina, hizo posible la radio en pueblos lejanos antes que la carretera.',
-    fuente: 'Vida cotidiana antes de la electrificación en el Valle y el Pacífico colombiano',
-    preguntaPuente:
-      '¿Qué cosas que haces sin pensar dejarían de funcionar si tu pueblo se quedara una semana sin electricidad? ¿Qué cosas seguirían intactas?',
-  },
-
-  mapaRuta: [
-    { numero: 1, iconos: ['🌱'], titulo: 'El día antes de la luz', duracionMin: 10 },
-    { numero: 2, iconos: ['👁'], titulo: 'Inventario de dependencia eléctrica', duracionMin: 15 },
-    { numero: 3, iconos: ['📖'], titulo: 'Luz, motor, comunicación', duracionMin: 17 },
-    { numero: 4, iconos: ['🔎', '✏️'], titulo: 'Bitácora de un día sin luz', duracionMin: 33 },
-    { numero: 5, iconos: ['✅', '💭'], titulo: 'Verifica, reflexiona y cierra', duracionMin: 15 },
-  ],
-
   preLectura: {
-    porQueImporta:
-      'La electricidad es la tecnología más invisible de tu vida — solo la notas cuando falla. Pero detrás de cada acto cotidiano hay un cable. Entender esa dependencia te prepara para la transición energética que tu generación va a tener que pilotear.',
-    preguntaDetonante:
-      'Si tuvieras que pagar la cuenta de electricidad de tu casa con tu propio dinero, ¿qué apagarías primero y qué nunca apagarías?',
+    porQueImporta: 'Para que una voz llegue lejos hacen falta tres cosas que no se ven: corriente, dinero y permiso. Cuando falta cualquiera, la voz se apaga.',
+    preguntaDetonante: 'Si mañana se fuera la luz por un día entero, ¿qué es lo primero que no podrías hacer?',
     activacion: {
-      titulo: 'Cuenta los enchufes',
-      descripcion:
-        'En 3 minutos, mira tu casa o salón y cuenta cuántos objetos están enchufados o cargándose AHORA mismo (incluye los apagados que dependen de electricidad). La cifra te va a sorprender — la mayoría perdió noción de cuánto depende.',
-      duracionMin: 3,
+      titulo: 'Cuántos hay enchufados',
+      descripcion: 'En 2 minutos, cuenta los aparatos enchufados o con batería que tienes a la vista, incluidos los apagados. Anota la cifra.',
+      duracionMin: 3
     },
     conexion: {
-      anterior:
-        'En la sesión 6 viste cómo la imprenta cambió la voz pública. Hoy ves cómo la electricidad cambió el tiempo de la vida — dos revoluciones invisibles que organizan tu día.',
-      siguiente:
-        'En la sesión 8 verás el ábaco, el quipu y la era digital — de los primeros conteos al chip que llevas en el bolsillo.',
-    },
+      anterior: 'En la sesión 6 diseñaste tu hoja informativa con los cinco elementos.',
+      siguiente: 'En la sesión 8 recorres la era digital, del ábaco al chip.'
+    }
   },
-
   conceptosClave: [
     {
-      termino: 'Función luz',
-      definicion:
-        'La electricidad ilumina para extender la jornada útil más allá del sol. Fue la primera función masiva de la electricidad (1880-1920) y reorganizó por completo el ritmo del día humano.',
-      ejemplo:
-        'Antes de la luz eléctrica, leer de noche costaba aceite y dañaba la vista. Hoy puedes leer 24 horas sin notar el costo — porque el costo es invisible (factura mensual).',
-      emoji: '💡',
+      termino: 'Luz',
+      definicion: 'Corriente convertida en visión. Es la función que alargó el día y cambió los horarios de trabajo y de estudio.',
+      ejemplo: 'Sin ella no puedes estudiar de noche, y eso es dependencia, no costumbre.',
+      categoria: 'Las tres funciones'
     },
     {
-      termino: 'Función motor',
-      definicion:
-        'La electricidad mueve cosas: nevera, ventilador, lavadora, ascensor, lavavajillas. Reemplaza fuerza humana o animal con electricidad transformada en movimiento mecánico.',
-      ejemplo:
-        'La nevera de tu casa: motor + compresor + electricidad funcionando 24/7. Sin ella, tendrías que comprar comida diaria o tener un pozo de hielo (como antes).',
-      emoji: '⚙️',
+      termino: 'Motor',
+      definicion: 'Corriente convertida en movimiento. Reemplaza fuerza humana o animal en una tarea repetida.',
+      ejemplo: 'La nevera, la licuadora y la bomba de agua son motor, aunque no lo parezcan.',
+      categoria: 'Las tres funciones'
     },
     {
-      termino: 'Función comunicación e información',
-      definicion:
-        'Celular, wifi, radio, TV, computador. Esta es la dependencia más reciente (1900-hoy) y la que más crece. Sin electricidad no hay infoesfera.',
-      ejemplo:
-        'Cuando se va la luz, tu celular dura 8 horas con batería. Cuando se va el wifi, tu celular pierde el internet — porque las antenas también necesitan luz.',
-      emoji: '📡',
+      termino: 'Comunicación',
+      definicion: 'Corriente convertida en señal. Es la función que menos consume y la que más se echa de menos cuando falta.',
+      ejemplo: 'Una emisora comunitaria mantiene informado a un municipio con una potencia modesta.',
+      categoria: 'Las tres funciones'
     },
     {
-      termino: 'Invisibilización progresiva',
-      definicion:
-        'Cuando una tecnología funciona, dejas de notarla. La luz eléctrica era novedad en 1900; hoy es invisible. Mañana lo será la IA. La pregunta crítica es qué pasa cuando esa invisibilidad se rompe.',
-      ejemplo:
-        'Apagón de 2 horas: descubres cuántos relojes están conectados a la luz. Descubres que no sabes qué hacer si no es a través de pantalla.',
-      emoji: '🕳',
+      termino: 'Dependencia y costumbre',
+      definicion: 'Dependes cuando sin eso no puedes hacer algo; es costumbre cuando podrías y simplemente no lo cambias.',
+      ejemplo: 'Estudiar de noche depende de la luz. El televisor encendido sin mirarlo es costumbre.',
+      categoria: 'La distinción'
     },
     {
-      termino: 'Esencial vs costumbre',
-      definicion:
-        'Distinguir lo que realmente necesitas de lo que es habitual. La nevera es esencial (sin ella se daña la comida); el ventilador con espejo led es costumbre (puedes abrir una ventana).',
-      ejemplo:
-        'Si tuvieras que vivir 1 semana con la mitad de los aparatos eléctricos, ¿cuáles eliminarías? Esa pregunta separa lo esencial de la costumbre.',
-      emoji: '⚖️',
-    },
-    {
-      termino: 'Costo ambiental invisible',
-      definicion:
-        'Cada watt de electricidad tiene origen: hidroeléctrica, termoeléctrica, solar, eólica. La factura mensual te cobra en pesos, no en daño ambiental — pero el daño existe igual.',
-      ejemplo:
-        'Cada hora de streaming consume megavatios en datacenters. Esos datacenters están en algún lugar — y consumen electricidad de origen real. La nube no es etérea.',
-      emoji: '🌍',
-    },
+      termino: 'Corriente, dinero y permiso',
+      definicion: 'Las tres condiciones que necesita una señal para existir. Si falta cualquiera, la voz se apaga.',
+      ejemplo: 'LA REC FM tiene NIT, sede en La Unión y licencias que renovar ante el Ministerio TIC.',
+      categoria: 'Lo que no se ve'
+    }
   ],
-
+  laboratorios: [
+    {
+      tipo: 'quiz',
+      titulo: '¿Distingues dependencia de costumbre?',
+      instrucciones: 'Cinco preguntas sobre las tres funciones y lo que sostiene una señal. No va al cuaderno.',
+      preguntas: [
+        {
+          enunciado: '¿A qué función eléctrica corresponde una bomba de agua?',
+          opciones: [
+            'A la de comunicación, porque conecta el tanque con la casa.',
+            'A la de motor, porque convierte corriente en movimiento.',
+            'A la de luz, porque suele llevar un piloto encendido.',
+            'A ninguna, porque el agua no depende de la electricidad.'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Sí. Reemplaza fuerza en una tarea repetida, que es lo que define a la función motor.',
+          feedbackIncorrecto: 'Es motor: convierte corriente en movimiento y reemplaza fuerza humana.'
+        },
+        {
+          enunciado: 'Tienes el televisor encendido mientras haces otra cosa. ¿Dependencia o costumbre?',
+          opciones: [
+            'Dependencia, porque el ruido de fondo ayuda a concentrarse.',
+            'Depende del tipo de programa que esté transmitiendo.',
+            'Costumbre, porque podrías hacer lo mismo sin él.',
+            'Dependencia, porque forma parte de la rutina diaria.'
+          ],
+          respuestaIndex: 2,
+          feedbackCorrecto: 'Correcto. Depender es no poder hacer algo sin eso; lo demás es costumbre.',
+          feedbackIncorrecto: 'Es costumbre. Podrías hacer lo mismo sin el televisor, y eso es justo la diferencia.'
+        },
+        {
+          enunciado: '¿Qué necesita una emisora comunitaria además de corriente eléctrica?',
+          opciones: [
+            'Únicamente una antena lo bastante alta y bien orientada.',
+            'Dinero y permiso, en forma de licencias que hay que renovar.',
+            'Solamente voluntarios dispuestos a hablar todos los días.',
+            ''
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Eso es. LA REC FM tiene NIT, sede y licencias ante el Ministerio TIC.',
+          feedbackIncorrecto: 'Dinero y permiso. Sin licencia no puede transmitir, por buena que sea la antena.'
+        },
+        {
+          enunciado: '¿Cuál de las tres funciones consume menos y se echa más de menos?',
+          opciones: [
+            'La luz, porque sin ella se detiene la vida nocturna.',
+            'El motor, porque mueve los aparatos más grandes de la casa.',
+            '',
+            'La comunicación, porque gasta poco y vence la distancia.'
+          ],
+          respuestaIndex: 3,
+          feedbackCorrecto: 'Sí. Una emisora sostiene a un municipio informado con una potencia modesta.',
+          feedbackIncorrecto: 'La comunicación. Es la que menos gasta y la primera que se extraña cuando falta.'
+        },
+        {
+          enunciado: '¿Por qué conviene que la bitácora no suene a sermón?',
+          opciones: [
+            'Porque contar qué pasó convence más que regañar a quien lee.',
+            'Porque los textos largos aburren a cualquier lector.',
+            'Porque el tema no da para conclusiones morales.',
+            'Porque el docente pidió expresamente que fuera breve.'
+          ],
+          respuestaIndex: 0,
+          feedbackCorrecto: 'Correcto. Un día sin corriente es un día, no una lección moral sobre la juventud.',
+          feedbackIncorrecto: 'Porque contar lo que pasó convence, y regañar pierde al lector en el tercer renglón.'
+        }
+      ]
+    }
+  ],
+  postLectura: {
+    reflexion: 'De tus diez momentos, ¿cuántos eran problema real y cuántos incomodidad? ¿Te esperabas esa proporción?',
+    transferencia: 'Busca si en tu municipio hay una emisora comunitaria. Anota su nombre y su frecuencia, y escúchala una vez.',
+    cierre: 'La voz del pueblo en la radio no es una figura literaria: tiene NIT, deudas y una dirección en la calle.'
+  },
+  saberAncestral: {
+    saber: 'La radio comunitaria del Valle del Cauca está agremiada en la Red de Emisoras Comunitarias del Valle del Cauca, LA REC FM. Tiene NIT 900.042.837-2, sede en La Unión, en el Norte del Valle, y representación legal. Su interlocución con el Ministerio TIC consta en documentación alojada en el portal del propio Ministerio (Red de Emisoras Comunitarias del Valle del Cauca, 2020). Fíjate en lo que eso significa. «La voz del pueblo en la radio» no es una figura literaria. Es una persona jurídica con deudas, con licencias que hay que renovar y con una dirección en la calle 17 de La Unión. Para que una voz llegue lejos hacen falta tres cosas que no se ven: corriente eléctrica, dinero y permiso. La cara de exclusión: la radio comunitaria vive endeudada y dependiente de licencias estatales, y eso condiciona lo que puede decir.',
+    fuente: 'Red de Emisoras Comunitarias del Valle del Cauca · la voz del pueblo tiene NIT y dirección',
+    referencia: 'Red de Emisoras Comunitarias del Valle del Cauca -- LA REC FM. (2020, 21 de diciembre). Solicitud aclaración temas implementación Ley 2066 del 14 de diciembre de 2020 [Comunicación al Ministerio TIC]. Ministerio de Tecnologías de la Información y las Comunicaciones.',
+    preguntaPuente: 'Una emisora comunitaria necesita corriente, dinero y permiso para que se oiga una voz. ¿Cuántas de esas tres cosas hacen falta para que se oiga la tuya?'
+  },
+  mapaRuta: [
+    {
+      numero: 1,
+      iconos: [
+        '🌱'
+      ],
+      titulo: 'La voz del pueblo tiene NIT',
+      duracionMin: 10
+    },
+    {
+      numero: 2,
+      iconos: [
+        '👁'
+      ],
+      titulo: 'Actividad 1 · Inventario de tu dependencia',
+      duracionMin: 15
+    },
+    {
+      numero: 3,
+      iconos: [
+        '📖'
+      ],
+      titulo: 'Actividad 2 · Las tres funciones y la costumbre',
+      duracionMin: 20
+    },
+    {
+      numero: 4,
+      iconos: [
+        '✏️'
+      ],
+      titulo: 'Actividad 3 · Bitácora de un día sin corriente',
+      duracionMin: 30
+    },
+    {
+      numero: 5,
+      iconos: [
+        '✅',
+        '💭'
+      ],
+      titulo: 'Verifica, tres citas y tu compromiso',
+      duracionMin: 15
+    }
+  ],
   actividades: [
     {
       numero: 1,
       verbo: 'IDENTIFICA',
-      titulo: 'Inventario de tu dependencia eléctrica',
+      titulo: 'Inventario de tu dependencia',
       tiempoMin: 15,
       modalidad: 'individual',
       pasos: [
-        'Sin moverte mucho, cuenta los objetos eléctricos en tu casa o salón (mínimo 15).',
-        'Clasifícalos en 3 grupos: "funcionan con batería propia", "no funcionan sin red eléctrica", "reemplazables por algo no eléctrico".',
-        'Marca cuáles considerarías esenciales y cuáles solo costumbre.',
-        'Anota tu primera reacción al ver el total.',
+        'Cuenta los aparatos enchufados o con batería que tienes alrededor, incluidos los apagados.',
+        'Escribe los diez que más usas.',
+        'Marca cada uno con su función, luz, motor o comunicación.',
+        'Marca aparte los que usarías igual si no hubiera corriente durante un día.',
+        'Anota cuál te costaría más perder y por qué.'
       ],
       cuaderno: {
-        titulo: 'Mi dependencia eléctrica invisible',
-        formato: 'Lista numerada de mínimo 15 objetos + clasificación en 3 grupos + marca de esenciales',
-        extension: '15+ objetos clasificados + 1 párrafo de reacción',
+        titulo: 'Inventario de mi dependencia',
+        formato: 'tabla de 10 filas y 3 columnas (aparato / función eléctrica / lo usaría igual sin corriente)',
+        extension: 'un tercio de página'
       },
       criterios: [
-        'Conté al menos 15 objetos eléctricos reales',
-        'Clasificación en 3 grupos completa',
-        'Identifiqué cuáles son esenciales vs costumbre',
-        'Reconozco la magnitud de mi dependencia',
-      ],
+        'Cada fila tiene una sola función principal marcada.',
+        'Está anotado cuál costaría más perder y por qué.'
+      ]
     },
     {
       numero: 2,
-      verbo: 'ANALIZA',
-      titulo: '3 funciones de la electricidad en tu vida',
-      tiempoMin: 15,
-      modalidad: 'individual',
+      verbo: 'EXPLICA',
+      titulo: 'Las tres funciones y la costumbre',
+      tiempoMin: 20,
+      modalidad: 'parejas',
       pasos: [
-        'Para cada función (luz, motor, comunicación) escribe una ficha.',
-        'En cada ficha lista 3 objetos tuyos que la cumplen.',
-        'Estima horas diarias que usas cada función.',
-        'Cierra cada ficha con: ¿qué pasaría si esta función desapareciera 24 horas?',
+        'Con tu pareja, escriban las tres funciones con una frase propia cada una.',
+        'Clasifiquen sus veinte aparatos y resuelvan juntos los que caigan en dos funciones.',
+        'Separen la lista en dependencia y costumbre, con una razón escrita en cada caso.',
+        'Elijan un aparato que crean costumbre y escriban qué harían en su lugar.'
       ],
       cuaderno: {
-        titulo: '3 funciones de la electricidad en mi vida',
-        formato: '3 fichas con 3 objetos + horas estimadas + qué pasaría sin 24h',
-        extension: '3 fichas completas',
+        titulo: 'Las tres funciones y la costumbre',
+        formato: 'las tres funciones con frase propia y la lista separada en dependencia y costumbre con su razón',
+        extension: 'media página'
       },
       criterios: [
-        'Cada ficha tiene 3 objetos concretos de tu vida',
-        'Estimaste honestamente las horas diarias',
-        'Reconoces la función de la que MÁS dependes',
-        'Distingo dependencia elección de costumbre acumulada',
-      ],
+        'Cada aparato de la columna «costumbre» dice qué harías en su lugar.',
+        'Los aparatos de dos funciones quedaron resueltos con una razón.'
+      ]
     },
     {
       numero: 3,
       verbo: 'CREA',
-      titulo: 'Bitácora de un día sin electricidad',
+      titulo: 'Bitácora de un día sin corriente',
       tiempoMin: 30,
       modalidad: 'individual',
       pasos: [
-        'Elige un día completo (real o imaginado) sin electricidad. Anota contexto en 3 renglones.',
-        'Lista cronológicamente 10 momentos del día (mañana, mediodía, tarde, noche).',
-        'Por cada momento describe cómo cambia sin electricidad — específico, no genérico.',
-        'Cierra con 3 aprendizajes no clichés sobre tu dependencia.',
+        'Elige un día real sin electricidad que recuerdes o reconstruye uno completo.',
+        'Escribe diez momentos en orden, con la hora.',
+        'Anota en cada uno qué función falta y qué haces en su lugar.',
+        'Marca los momentos que fueron problema real y los que solo fueron incomodidad.',
+        'Cierra con tres aprendizajes concretos y léesela a un compañero.'
       ],
       cuaderno: {
-        titulo: 'Bitácora de mi día sin electricidad',
-        formato: 'Introducción + 10 momentos cronológicos + 3 aprendizajes finales',
-        extension: '1.5 a 2 páginas',
+        titulo: 'Bitácora de un día sin corriente',
+        formato: 'los diez momentos con hora, función y solución, la marca de problema o incomodidad, y los tres aprendizajes',
+        extension: 'una página'
       },
       criterios: [
-        '10 momentos específicos y cronológicos',
-        'Cada momento identifica función eléctrica (luz, motor, comunicación)',
-        '3 aprendizajes finales no clichés',
-        'Distingo dependencia esencial de costumbre cosmética',
-        'La bitácora se puede leer sin sentirse moralista',
-      ],
-    },
-    {
-      numero: 4,
-      verbo: 'EVALÚA',
-      titulo: 'Evalúa la bitácora de un compañero',
-      tiempoMin: 15,
-      modalidad: 'parejas',
-      pasos: [
-        'Intercambia cuadernos. Lee la bitácora del compañero sin interrumpir.',
-        'Califica del 1 al 5: (a) ¿10 momentos específicos?, (b) ¿identifica función eléctrica en cada uno?, (c) ¿aprendizajes finales son honestos y no clichés?',
-        'Marca con 🚩 los momentos genéricos y con ✨ los más específicos.',
-        'Conversen 5 min: ¿coincidieron en cuál es la función más invisible o difieren?',
-      ],
-      cuaderno: {
-        titulo: 'Evaluación de la bitácora de [nombre]',
-        formato: '3 calificaciones con justificación + marcas 🚩/✨ + observación',
-        extension: '3 calificaciones + 1 observación',
-      },
-      criterios: [
-        'Las 3 calificaciones tienen justificación de 1 línea',
-        'Marcaste al menos 1 momento genérico (🚩) y 1 específico (✨)',
-        'La observación es constructiva y específica',
-        'La conversación cerró con 1 hallazgo compartido',
-      ],
-    },
+        'Los tres aprendizajes son concretos y tienen consecuencia.',
+        'Un compañero la leyó y no le sonó a sermón.'
+      ]
+    }
   ],
-
-  laboratorios: [
-    {
-      tipo: 'quiz',
-      titulo: '✅ Verifica tu lectura de la dependencia eléctrica',
-      instrucciones:
-        '5 preguntas para confirmar que distingues lo esencial de la costumbre. Necesitas 3/5 para continuar.',
-      preguntas: [
-        {
-          enunciado: '¿Cuáles son las 3 funciones esenciales de la electricidad doméstica?',
-          opciones: [
-            'Calor, frío, internet',
-            'Luz, motor, comunicación e información',
-            'TV, celular, computador',
-            'Cocina, baño, dormitorio',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Correcto. Toda la electricidad de tu casa cumple solo una de esas 3 funciones. Distinguirlas te permite decidir qué realmente necesitas.',
-          feedbackIncorrecto:
-            'Luz + motor + comunicación. Toda función eléctrica doméstica cabe en una de esas 3. El resto son ejemplos concretos.',
-        },
-        {
-          enunciado: '¿Qué significa "invisibilización progresiva" en tecnología?',
-          opciones: [
-            'Que la tecnología se vuelve pequeña',
-            'Que cuando una tecnología funciona dejas de notarla — solo aparece cuando falla',
-            'Que se rompe',
-            'Que la esconden',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Sí. La luz eléctrica fue novedad; hoy es invisible. La conexión a internet, también. Cuando se rompe la invisibilidad, descubres tu dependencia.',
-          feedbackIncorrecto:
-            'Invisibilización progresiva: cuando una tecnología funciona dejas de notarla. La luz, el wifi, pronto la IA. Solo notas cuando fallan.',
-        },
-        {
-          enunciado: 'Si en un apagón puedes seguir leyendo un libro, ¿qué demuestra eso?',
-          opciones: [
-            'Que el libro es mejor que internet',
-            'Que algunas funciones esenciales NO dependen de electricidad — puedes sustituir o prescindir',
-            'Que los libros antiguos sirven más',
-            'Que no necesitas electricidad',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Correcto. No todo depende de la red. Distinguir qué sí y qué no es libertad práctica frente a la crisis energética que viene.',
-          feedbackIncorrecto:
-            'Lo importante es distinguir qué depende de electricidad y qué no. El libro sigue siendo lectura aunque se vaya la luz. Esa autonomía es valiosa.',
-        },
-        {
-          enunciado: '¿De dónde viene la electricidad que mueve datacenters de la nube?',
-          opciones: [
-            'Es etérea, no consume energía',
-            'De plantas hidroeléctricas, termoeléctricas, solares — consume megavatios reales',
-            'De los servidores mismos',
-            'No se sabe',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Exacto. "La nube" son edificios llenos de servidores que consumen energía real. La sostenibilidad de la infoesfera es una pregunta abierta urgente.',
-          feedbackIncorrecto:
-            '"La nube" es física. Datacenters reales consumen megavatios. Cada hora de streaming, cada consulta a IA, tiene un costo eléctrico que pagaría el planeta si la energía no fuera renovable.',
-        },
-        {
-          enunciado:
-            'En el saber ancestral del día organizado por el sol, ¿qué aplica a tu vida hoy?',
-          opciones: [
-            'Nada — ahora todo es eléctrico',
-            'Que el ritmo humano natural fue sustituido por uno artificial (jornada extendida, sueño desplazado, descanso reducido)',
-            'Que el sol todavía sale igual',
-            'Que los abuelos no tenían tiempo',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Esa es la conexión. La electricidad reorganizó el tiempo humano. Antes el sol mandaba; hoy manda la jornada extendida que la luz hizo posible. Y tu cuerpo paga el costo.',
-          feedbackIncorrecto:
-            'El sol organizaba la vida; ahora la organiza la electricidad. La jornada extendida, el sueño postergado, la noche poblada de pantallas son herencia técnica reciente, no naturaleza humana.',
-        },
-      ],
-    },
-  ],
-
-  postLectura: {
-    reflexion: '',
-    transferencia:
-      'Esta semana, pasa intencionalmente 4 horas seguidas sin electricidad (apaga celular, computador, TV, luces; usa luz natural o vela). Anota qué hiciste, qué notaste de ti, qué extrañaste y qué descubriste. Esa experiencia vale más que cualquier teoría. El próximo lunes traemos la bitácora.',
-    cierre: '',
-  },
-
   triangulo: {
     dussel: {
-      autor: 'Enrique Dussel',
+      autor: 'Enrique Dussel · Filosofía de la liberación (1977), §2.2.1.1',
       lente: 'lente del nosotros',
-      cita: 'Hay regiones donde la luz nunca llegó y eso no es accidente: es diseño.',
-      preguntaEspejo:
-        '¿Quiénes en mi región siguen sin electricidad confiable? ¿Qué tipo de modernidad les es negada por esa falta?',
+      cita: 'El maestro y el discípulo deben apartarse para preparar en la vida su discurso futuro… El rodeo de la lejanía hace posible la proximidad futura.',
+      preguntaEspejo: '¿Con quién estoy cerca solo porque existe una señal, y qué pasaría si se cayera?'
     },
     estoico: {
-      autor: 'Marco Aurelio',
+      autor: 'Marco Aurelio · Meditaciones VI, 53 (c. 175 d.C.)',
       lente: 'lente del cuidado interior',
-      cita: 'Lo que mucho usas, deja de notarlo; lo que dejas de notar, te empieza a gobernar.',
-      preguntaEspejo:
-        '¿Qué dependencia eléctrica mía no he cuestionado nunca? ¿Qué pasaría si un día renunciara conscientemente a ella?',
+      cita: 'Acostúmbrate a estar con atención a lo que dice el otro, y en cuanto te sea posible intérnate dentro del alma del que hablare contigo.',
+      preguntaEspejo: '¿Cuánto de lo que oigo con un aparato encendido lo estoy escuchando de verdad?'
     },
     floridi: {
-      autor: 'Luciano Floridi',
+      autor: 'The Onlife Initiative (ed. Luciano Floridi) · The Onlife Manifesto (2015), § 3.6',
       lente: 'lente de la infoesfera',
-      cita: 'La infoesfera contemporánea es energía-dependiente: sin electricidad, sin nube, sin red, no hay realidad digital.',
-      preguntaEspejo:
-        '¿Qué de mi vida digital está consumiendo electricidad que no veo? ¿Estoy dispuesto a saber cuánto cuesta ambientalmente cada cosa?',
-    },
+      cita: 'Internet es una extensión importante del espacio público, incluso cuando lo operan y lo poseen actores privados. (trad. propia)',
+      preguntaEspejo: '¿Quién es dueño del espacio donde hablo todos los días, y qué puede decidir sobre lo que digo?'
+    }
   },
-
   cincoDimensiones: {
-    personal:
-      'Hiciste visible una dependencia que era invisible — primer paso para tener autonomía sobre tu propia vida.',
-    emocional:
-      'Sentiste el peso de cuántas cosas no funcionarían sin un cable — sin moralizar, solo observando.',
-    ciudadana:
-      'Reconociste que la electrificación selectiva sigue siendo política: hay regiones sin luz confiable en 2026.',
-    local:
-      'Conectaste el ritmo del día actual con el ritmo del sol y el candil que tus abuelos conocieron.',
-    intergeneracional:
-      'La transición energética que tu generación va a pilotear empieza por entender cómo se vivía antes y qué de eso era mejor.',
-  },
+    personal: 'Distinguiste de qué dependes y qué es costumbre, que es una pregunta que casi nadie se hace en frío.',
+    emocional: 'Un apagón saca de quicio. Escribirlo hora por hora convierte el fastidio en información.',
+    ciudadana: 'Una voz necesita corriente, dinero y permiso. Quien controla cualquiera de las tres condiciona lo que se dice.',
+    local: 'En el Norte del Valle hay una red de emisoras comunitarias con sede y NIT, y casi nadie de tu edad lo sabe.',
+    intergeneracional: 'Quien vivió antes de la electrificación hacía de noche cosas que hoy nadie sabe hacer sin luz.'
+  }
 };
 
 export default contenido;

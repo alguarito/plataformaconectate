@@ -1,7 +1,9 @@
 /**
- * Contenido enriquecido — Grado 9 · Periodo 1 · Sesión 5
- * Tema: Revolución industrial — máquinas que cambiaron el trabajo.
- * Profundidad MILC v3 completa, alineada con content/guias/9/9-1-5.yaml.
+ * Contenido enriquecido para Grado 9 · Período 1 · Sesión 5
+ * (sesión global 5).
+ *
+ * Auto-generado desde content/guias/9/9-1-5.yaml por
+ * scripts/build-guias-web-ts.py. Edita el YAML, no este archivo.
  */
 import type { ContenidoGuia } from './_schema';
 
@@ -10,313 +12,274 @@ const contenido: ContenidoGuia = {
   periodo: 1,
   sesion: 5,
   titulo: 'Revolución industrial — máquinas que cambiaron el trabajo',
-  ocultarPDF: false,
-  resumen:
-    'Mapeas oficios ganados y perdidos en tu región. La revolución industrial no es solo historia económica: es vidas concretas de tu familia.',
+  resumen: 'En la finca cafetera los oficios venían asignados: la recolección y la escogida eran de mujeres y niños. Cien años después, el DANE de 2022 muestra que la brecha de propiedad rural sigue y que hay más mujeres con título que mujeres decidiendo. Hoy mapeas los oficios que la máquina quitó y puso en tu región, y dices a quién le sirvió cada cambio.',
   duracionMin: 90,
   subtema: 'Historia de la técnica · Revoluciones del trabajo',
-
-  saberAncestral: {
-    saber:
-      'El oficio del herrero en el Valle del Cauca cambió tres veces. Primero competía con el cobre indígena de los Quimbaya. Después llegaron los hierros importados de Europa y el herrero local se reinventó como artesano de detalles. En el siglo XX la fábrica industrial casi lo extinguió — pero hoy renace, especializado en piezas únicas para la construcción regenerativa. Cada revolución técnica deja un mapa de oficios ganados y perdidos.',
-    fuente: 'Oficio del herrero en el Valle del Cauca — tres revoluciones históricas',
-    preguntaPuente:
-      '¿Qué oficio de tu familia (papá, mamá, abuelos) cambió o desapareció por una máquina? ¿Y qué oficio nuevo apareció en su lugar?',
-  },
-
-  mapaRuta: [
-    { numero: 1, iconos: ['🌱'], titulo: 'Las 3 metamorfosis del herrero', duracionMin: 10 },
-    { numero: 2, iconos: ['👁'], titulo: 'Entrevista a un mayor', duracionMin: 15 },
-    { numero: 3, iconos: ['📖'], titulo: '4 estados de un oficio frente a la máquina', duracionMin: 18 },
-    { numero: 4, iconos: ['✏️'], titulo: 'Mapa de oficios ganados y perdidos', duracionMin: 32 },
-    { numero: 5, iconos: ['✅', '💭'], titulo: 'Verifica, reflexiona y cierra', duracionMin: 15 },
-  ],
-
   preLectura: {
-    porQueImporta:
-      'La pregunta de "qué pasa con los trabajos cuando llegan las máquinas" no es del pasado: es la pregunta de tu futuro laboral. La IA y la automatización repiten patrones que ya se vieron con el telar y el vapor. Aprender a leerlos te da ventaja.',
-    preguntaDetonante:
-      'Si un familiar te ofreciera hoy heredar SU oficio (el de tu papá, tu mamá o tu abuelo) — ¿lo aceptarías? ¿Por qué sí o por qué no?',
+    porQueImporta: 'Cuando un cambio técnico se cuenta sin nombres, parece que no lo decidió nadie. Y siempre lo decidió alguien, casi nunca quien perdió el trabajo.',
+    preguntaDetonante: '¿Qué oficio conocías de niño que ya casi no ves, y qué fue de la gente que vivía de él?',
     activacion: {
-      titulo: 'Inventario rápido familiar',
-      descripcion:
-        'En 3 minutos, anota los oficios de tus 4 abuelos (o los que conozcas). Para cada uno marca si todavía existe igual, si cambió de forma, o si desapareció. Vas a ver dos generaciones de revolución técnica en tu propia familia.',
-      duracionMin: 3,
+      titulo: 'El oficio que ya no está',
+      descripcion: 'En 3 minutos, escribe el nombre de un oficio que veías de pequeño y hoy casi no existe. Al lado, escribe qué máquina o servicio ocupó su lugar.',
+      duracionMin: 3
     },
     conexion: {
-      anterior:
-        'En la sesión 4 construiste tu línea del tiempo de la técnica. Hoy aterrizas un siglo (XIX) en algo personal: tus propios oficios familiares.',
-      siguiente:
-        'En la sesión 6 verás la imprenta como una revolución específica que cambió quién puede hablar al pueblo.',
-    },
+      anterior: 'En la sesión 4 armaste la línea del tiempo de la técnica, del fuego a la imprenta.',
+      siguiente: 'En la sesión 6 trabajas la imprenta y diseñas tu propia hoja informativa.'
+    }
   },
-
   conceptosClave: [
     {
-      termino: 'Revolución industrial',
-      definicion:
-        'Periodo 1760-1840 cuando las máquinas pasaron del taller a la fábrica, la energía pasó del agua al carbón y el vapor, y el trabajo pasó del oficio personal al obrero asalariado.',
-      ejemplo:
-        'El telar mecánico en Inglaterra reemplazó a miles de tejedores manuales. El mismo telar hoy alimenta empleos en Bangladesh — la revolución no terminó, solo se desplazó.',
-      emoji: '🏭',
-    },
-    {
-      termino: '4ª revolución industrial',
-      definicion:
-        'Revolución actual con IA, robots, automatización digital y plataformas. Diferencia clave: ahora la máquina hace trabajo cognitivo (decidir, escribir, recomendar), no solo físico.',
-      ejemplo:
-        'Un radiólogo usa IA que detecta tumores. Eso no es ciencia ficción — es 2026. La pregunta es si la IA lo complementa o lo sustituye.',
-      emoji: '🤖',
-    },
-    {
       termino: 'Oficio sustituido',
-      definicion:
-        'Trabajo que la máquina reemplaza por completo. Suelen ser tareas repetitivas y predecibles. Los humanos que vivían de ese oficio quedan sin lugar inmediato.',
-      ejemplo:
-        'Lechero (sustituido por la pasteurización industrial), telefonista (sustituido por centralita automática), digitador (sustituido por OCR + dictado).',
-      emoji: '❌',
+      definicion: 'Aquel cuyo trabajo pasó a hacer una máquina, hasta que el oficio dejó de existir como tal.',
+      ejemplo: 'El telegrafista de la oficina del pueblo, cuando llegaron el teléfono y después el correo electrónico.',
+      categoria: 'Los cuatro estados'
     },
     {
-      termino: 'Oficio transformado',
-      definicion:
-        'Sigue existiendo pero cambia de forma. La habilidad central sobrevive en un nuevo formato. Quien sabe trasladarla se reinventa; quien no, se queda atrás.',
-      ejemplo:
-        'Cajero bancario: antes contaba billetes, hoy asesora sobre productos financieros. La habilidad social sobrevivió, la operativa fue automatizada.',
-      emoji: '🔄',
+      termino: 'Oficio intacto',
+      definicion: 'El que la máquina no tocó, casi siempre porque automatizarlo no le salía a cuenta a nadie.',
+      ejemplo: 'Muchos oficios de cuidado siguen igual, y eso dice más del costo que de la dificultad técnica.',
+      categoria: 'Los cuatro estados'
     },
     {
-      termino: 'Oficio complementado',
-      definicion:
-        'La máquina no reemplaza al humano: lo hace más productivo. Trabajan en equipo. Estos oficios suelen aumentar sus ingresos.',
-      ejemplo:
-        'Médico con escáner de IA: la IA detecta patrones, el médico interpreta y decide. Juntos hacen mejor diagnóstico que cualquiera solo.',
-      emoji: '🤝',
+      termino: 'Quién gana y quién pierde',
+      definicion: 'Quien gana tiempo, quien gana dinero y quien pierde el trabajo casi nunca son la misma persona.',
+      ejemplo: 'La trilladora ahorró jornales al dueño y dejó sin trabajo a las escogedoras. Dos personas distintas.',
+      categoria: 'El reparto'
     },
     {
-      termino: 'Oficio creado',
-      definicion:
-        'No existía antes de la máquina. Surgió para diseñar, mantener o cuestionar la tecnología misma. Suelen ser los mejor pagados — y los más escasos en el sur global.',
-      ejemplo:
-        'Programador, científico de datos, community manager, especialista en ética de IA. Ninguno existía hace 30 años.',
-      emoji: '✨',
+      termino: 'Oficio asignado',
+      definicion: 'Tarea repartida por costumbre y no por decisión explícita, hasta que deja de parecer una decisión.',
+      ejemplo: 'Que la recolección y la escogida fueran «de mujeres y niños» no lo decidió el café.',
+      categoria: 'El reparto'
     },
+    {
+      termino: 'Tener título no es decidir',
+      definicion: 'Aparecer como dueño de un predio y tomar las decisiones productivas sobre él son dos cosas distintas.',
+      ejemplo: 'El DANE de 2022 muestra más mujeres con predio a su nombre que mujeres decidiendo qué se hace en él.',
+      categoria: 'El reparto'
+    }
   ],
-
+  laboratorios: [
+    {
+      tipo: 'quiz',
+      titulo: '¿Sabes leer un cambio técnico en el trabajo?',
+      instrucciones: 'Cinco preguntas sobre los cuatro estados y el reparto. No va al cuaderno.',
+      preguntas: [
+        {
+          enunciado: 'Un oficio sigue existiendo pero cambió por completo por dentro. ¿En qué estado está?',
+          opciones: [
+            'Transformado.',
+            'Sustituido, porque ya no es el mismo trabajo de antes.',
+            'Intacto, porque el nombre del oficio no cambió.',
+            'Creado, porque en la práctica es un oficio nuevo.'
+          ],
+          respuestaIndex: 0,
+          feedbackCorrecto: 'Sí. Sigue existiendo y cambió de contenido: eso es transformado, no sustituido.',
+          feedbackIncorrecto: 'Está transformado. Sustituido sería que desapareciera; intacto, que no lo tocara la máquina.'
+        },
+        {
+          enunciado: '¿Por qué no sirve decir que «el progreso» quitó un oficio?',
+          opciones: [
+            'Porque el progreso técnico en realidad nunca quita oficios, solo los cambia.',
+            'Porque suena anticuado y conviene usar un término más moderno.',
+            '',
+            'Porque el progreso es un concepto que solo aplica a la economía.'
+          ],
+          respuestaIndex: 2,
+          feedbackCorrecto: 'Correcto. Sin nombrar a alguien, el reparto no se puede discutir.',
+          feedbackIncorrecto: 'Porque el progreso no decide nada. Deciden empresas, dueños y gobiernos con nombre propio.'
+        },
+        {
+          enunciado: '¿Qué muestra el dato del DANE de 2022 sobre la propiedad rural?',
+          opciones: [
+            'Que en la mayoría de departamentos ya se alcanzó la paridad.',
+            'Que en predios de un solo dueño hay 63,7 % de hombres y 36,3 % de mujeres.',
+            'Que la brecha desapareció en las zonas cafeteras del país.',
+            'Que las mujeres son hoy mayoría entre los propietarios rurales.'
+          ],
+          respuestaIndex: 1,
+          feedbackCorrecto: 'Eso es, y en ningún departamento del país hay paridad.',
+          feedbackIncorrecto: 'Que la brecha sigue: 63,7 % hombres y 36,3 % mujeres, sin paridad en ningún departamento.'
+        },
+        {
+          enunciado: '¿Qué quiere decir que tener el título no equivale a decidir?',
+          opciones: [
+            'Que los títulos de propiedad rural suelen estar mal registrados.',
+            'Que hace falta un título profesional además del predio.',
+            'Que el título se pierde si no se trabaja la tierra.',
+            'Que aparecer como dueña y tomar las decisiones productivas son cosas distintas.'
+          ],
+          respuestaIndex: 3,
+          feedbackCorrecto: 'Sí. Confundirlas es una forma cómoda de no ver la desigualdad.',
+          feedbackIncorrecto: 'Que ser dueña en el papel y decidir qué se hace en el predio no son lo mismo.'
+        },
+        {
+          enunciado: '¿Por qué conviene fijarse también en los oficios intactos?',
+          opciones: [
+            'Porque dicen qué no le convino automatizar a nadie.',
+            'Porque son los oficios que más dinero producen hoy.',
+            'Porque suelen ser los más antiguos de una región.',
+            'Porque son los únicos que no tienen relación con máquinas.'
+          ],
+          respuestaIndex: 0,
+          feedbackCorrecto: 'Correcto. Que algo no se automatice suele ser una cuestión de costo, no de dificultad.',
+          feedbackIncorrecto: 'Porque muestran qué no salía a cuenta automatizar, que es un dato sobre el dinero y no sobre la técnica.'
+        }
+      ]
+    }
+  ],
+  postLectura: {
+    reflexion: 'De los tres oficios que la máquina creó en tu mapa, ¿alguno lo ocupa hoy la gente que perdió el oficio sustituido?',
+    transferencia: 'Pregúntale a la persona que entrevistaste si el oficio nuevo paga mejor que el que desapareció. La respuesta suele sorprender.',
+    cierre: 'La revolución industrial no fue solo carbón y vapor. Fue un reparto nuevo de quién hace qué, y alguien lo decidió.'
+  },
+  saberAncestral: {
+    saber: 'En la finca cafetera del siglo XX los oficios venían asignados. Un informe consular británico de comienzos de siglo dice que la recolección «la llevan a cabo mujeres y niños». Ellas eran además escogedoras en la trilladora, cocineras de los trabajadores, encargadas de los animales, de la huerta y del pancoger (Ramírez Bacca, 2015). A la recolectora la llamaron chapolera, por la chapola, el arbolito de café recién nacido. Cien años después la desigualdad no es pasado. El DANE (2022) muestra que en los predios rurales de un solo dueño el 63,7 % son hombres y el 36,3 % mujeres. En ningún departamento del país hay paridad. Y hay un dato que incomoda más: hay más mujeres con título que mujeres tomando las decisiones productivas. La cara de exclusión es el ancla misma. Hoy la chapolera circula como disfraz folclórico para turistas, y ese disfraz tapa que el reparto de oficios fue una decisión, no una costumbre.',
+    fuente: 'Caficultura tradicional colombiana · los oficios que venían asignados y la brecha que sigue',
+    referencia: 'Ramírez Bacca, R. (2015). Mujeres en la caficultura tradicional colombiana, 1910--1970. Historia y Memoria, (10), 43--73. https://doi.org/10.19053/20275137.3200',
+    preguntaPuente: 'En la finca cafetera los oficios venían asignados y nadie los había escogido. ¿Qué oficio de tu casa está asignado hoy sin que nadie lo haya decidido en voz alta?'
+  },
+  mapaRuta: [
+    {
+      numero: 1,
+      iconos: [
+        '🌱'
+      ],
+      titulo: 'Los oficios que venían asignados',
+      duracionMin: 10
+    },
+    {
+      numero: 2,
+      iconos: [
+        '👁'
+      ],
+      titulo: 'Actividad 1 · Un oficio que ya no existe',
+      duracionMin: 15
+    },
+    {
+      numero: 3,
+      iconos: [
+        '📖'
+      ],
+      titulo: 'Actividad 2 · Los cuatro estados de un oficio',
+      duracionMin: 20
+    },
+    {
+      numero: 4,
+      iconos: [
+        '✏️'
+      ],
+      titulo: 'Actividad 3 · Mapa de oficios ganados y perdidos',
+      duracionMin: 30
+    },
+    {
+      numero: 5,
+      iconos: [
+        '✅',
+        '💭'
+      ],
+      titulo: 'Verifica, tres citas y tu compromiso',
+      duracionMin: 15
+    }
+  ],
   actividades: [
     {
       numero: 1,
       verbo: 'IDENTIFICA',
-      titulo: 'Entrevista a un mayor sobre oficios perdidos',
+      titulo: 'Un oficio que ya no existe',
       tiempoMin: 15,
       modalidad: 'individual',
       pasos: [
-        'Llama o habla con un familiar mayor de 40 años (papá, mamá, tío, abuelo).',
-        'Pregúntale: "¿qué oficio había en tu juventud que ya no existe?".',
-        'Pregúntale: "¿qué oficio existe hoy que no existía cuando eras joven?".',
-        'Anota sus respuestas LITERALES, entre comillas, sin paráfrasis.',
+        'Habla con alguien de tu familia mayor de cuarenta años.',
+        'Pregúntale qué oficio había en su juventud que hoy ya no existe.',
+        'Pregúntale qué oficio existe hoy que no existía entonces.',
+        'Anota el nombre exacto de cada oficio, el año aproximado y el lugar.',
+        'Pregúntale qué le pasó a la gente que vivía del oficio que desapareció.'
       ],
       cuaderno: {
-        titulo: 'Memoria viva de oficios',
-        formato: '(1) Persona entrevistada + parentesco + edad. (2) 2 respuestas literales. (3) Tu reacción en 2 renglones.',
-        extension: '1/2 página con respuestas textuales',
+        titulo: 'Un oficio que ya no existe',
+        formato: 'ficha con quien te contó, el oficio desaparecido con año y lugar, el oficio nuevo y qué pasó con la gente',
+        extension: 'un tercio de página'
       },
       criterios: [
-        'La persona entrevistada es real y está identificada',
-        'Las respuestas son textuales entre comillas',
-        'Las respuestas son específicas (no "muchos trabajos cambiaron")',
-        'Reconoces algo que no sabías antes de la entrevista',
-      ],
+        'Los dos oficios tienen nombre propio, no categoría.',
+        'Cada uno tiene año aproximado y lugar.'
+      ]
     },
     {
       numero: 2,
       verbo: 'EXPLICA',
-      titulo: '4 estados de un oficio frente a la máquina',
-      tiempoMin: 15,
-      modalidad: 'individual',
+      titulo: 'Los cuatro estados de un oficio',
+      tiempoMin: 20,
+      modalidad: 'parejas',
       pasos: [
-        'Para cada estado (sustituido, transformado, complementado, creado) escribe una ficha.',
-        'En cada ficha: definición en tus palabras (1 frase).',
-        'En cada ficha da 2 ejemplos: uno histórico del siglo XX, otro de la 4ª revolución industrial.',
-        'Cierra explicando cuál estado describe mejor el oficio que TÚ querrías ejercer en 10 años.',
+        'Con tu pareja, escriban los cuatro estados con una frase propia cada uno.',
+        'Clasifiquen en ellos los oficios que trajeron de sus entrevistas.',
+        'Elijan uno y escriban quién ganó tiempo, quién ganó dinero y quién perdió el trabajo.',
+        'Comprueben si las tres respuestas son la misma persona y escriban qué significa que no lo sean.'
       ],
       cuaderno: {
-        titulo: '4 estados de un oficio frente a la máquina',
-        formato: '4 fichas con definición + 2 ejemplos (1 histórico + 1 actual)',
-        extension: '4 fichas + 1 párrafo final sobre tu propio futuro',
+        titulo: 'Los cuatro estados de un oficio',
+        formato: 'los cuatro estados con frase propia, los oficios clasificados y el reparto de uno en tres renglones',
+        extension: 'media página'
       },
       criterios: [
-        'Cada definición está en tus palabras',
-        'Cada ficha tiene 2 ejemplos específicos',
-        'Distingues claramente entre los 4 estados',
-        'Tu reflexión sobre tu propio futuro es honesta y específica',
-      ],
+        'Los cuatro estados están definidos con palabras propias.',
+        'El reparto dice si las tres respuestas son la misma persona.'
+      ]
     },
     {
       numero: 3,
       verbo: 'CREA',
-      titulo: 'Mapa de oficios ganados y perdidos en tu región',
+      titulo: 'Mapa de oficios ganados y perdidos',
       tiempoMin: 30,
       modalidad: 'individual',
       pasos: [
-        'En hoja A4 horizontal dibuja un mapa con: izquierda 3 oficios perdidos, derecha 3 oficios creados, abajo cuadro de observación.',
-        'Cada oficio tiene fecha aproximada (década) y lugar concreto (mi barrio, mi vereda, Cartago, Valle).',
-        'Conecta cada oficio con su motor técnico (qué tecnología lo sustituyó o creó) usando flechas.',
-        'Cierra con cuadro de observación de 3-4 renglones: ¿quién ganó económicamente?, ¿quién pagó el costo?',
+        'Dibuja una línea de tiempo de tu región, del siglo XX a hoy.',
+        'Pon tres oficios que la máquina sustituyó, con nombre, año y lugar.',
+        'Pon tres oficios que la máquina creó, con los mismos datos.',
+        'Cierra con un cuadro que diga, para dos de ellos, a quién le sirvió el cambio y a quién no.',
+        'Muéstraselo a un compañero sin explicarle nada y anota qué no se entendió.'
       ],
       cuaderno: {
-        titulo: 'Mapa de oficios ganados y perdidos en mi región',
-        formato: 'Mapa A4 horizontal con 6 oficios + 6 fichas mini + cuadro de observación',
-        extension: '1 página A4 + 6 fichas',
+        titulo: 'Mapa de oficios ganados y perdidos',
+        formato: 'la línea de tiempo con los seis oficios rotulados y el cuadro del reparto de dos de ellos',
+        extension: 'media página'
       },
       criterios: [
-        '3 oficios perdidos + 3 oficios creados, todos con nombre concreto',
-        'Al menos UN oficio viene de la entrevista familiar',
-        'Cada oficio tiene fecha (década) y lugar local',
-        'Cuadro de observación nombra a quién benefició y a quién no',
-        'El mapa se entiende sin explicación oral',
-      ],
-    },
-    {
-      numero: 4,
-      verbo: 'EVALÚA',
-      titulo: 'Evalúa el mapa de un compañero',
-      tiempoMin: 15,
-      modalidad: 'parejas',
-      pasos: [
-        'Intercambia cuadernos. Lee el mapa del compañero sin interrumpir.',
-        'Califica del 1 al 5: (a) ¿oficios concretos con nombre, fecha y lugar?, (b) ¿al menos UN aporte familiar?, (c) ¿análisis de costos y beneficios claro?',
-        'Anota 1 observación que afirma + 1 que reta (qué oficio te sorprendió, cuál te parece débil).',
-        'Conversen 5 min: ¿coinciden los motores técnicos identificados o difieren?',
-      ],
-      cuaderno: {
-        titulo: 'Evaluación del mapa de [nombre]',
-        formato: '3 calificaciones con justificación + 2 observaciones',
-        extension: '3 calificaciones + 2 observaciones',
-      },
-      criterios: [
-        'Las 3 calificaciones tienen justificación de 1 línea',
-        'La observación que afirma señala algo específico del mapa',
-        'La observación que reta es respetuosa y concreta',
-        'La conversación cerró con 1 hallazgo compartido',
-      ],
-    },
+        'El cuadro del reparto nombra a alguien concreto, no a «el progreso».',
+        'Un compañero leyó el mapa sin explicación oral.'
+      ]
+    }
   ],
-
-  laboratorios: [
-    {
-      tipo: 'quiz',
-      titulo: '✅ Verifica el lenguaje de las revoluciones',
-      instrucciones:
-        '5 preguntas para confirmar que distingues los 4 estados de un oficio frente a la máquina. Necesitas 3/5 para continuar.',
-      preguntas: [
-        {
-          enunciado: 'Un médico que usa IA para detectar tumores y luego decide el tratamiento — ¿en qué estado está su oficio?',
-          opciones: ['Sustituido', 'Transformado', 'Complementado', 'Creado'],
-          respuestaIndex: 2,
-          feedbackCorrecto:
-            'Correcto. Complementado: la máquina no lo reemplaza, lo hace más productivo. Juntos hacen mejor diagnóstico que cualquiera solo.',
-          feedbackIncorrecto:
-            'Es complementado. La máquina ayuda al médico, no lo sustituye. Esta es una de las relaciones humano-máquina más sostenibles.',
-        },
-        {
-          enunciado: '¿Cuál de estos oficios fue sustituido (no transformado) por la revolución industrial?',
-          opciones: ['Sastre', 'Telefonista de centralita manual', 'Carpintero', 'Maestro'],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Sí. La centralita automática sustituyó a la telefonista por completo. Sastre, carpintero y maestro siguen existiendo (transformados).',
-          feedbackIncorrecto:
-            'La telefonista fue sustituida cuando llegaron las centralitas automáticas. Sastre, carpintero y maestro existen aún, transformados.',
-        },
-        {
-          enunciado: '¿Cuál es la pregunta más importante al leer una revolución técnica?',
-          opciones: [
-            '¿Es nueva la tecnología?',
-            '¿Quién gana económicamente y quién paga el costo?',
-            '¿Es bonita la máquina?',
-            '¿Cuándo se inventó?',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Exacto. Toda revolución técnica reparte beneficios y costos. Sin esa pregunta, la historia de la técnica se vuelve ingenua.',
-          feedbackIncorrecto:
-            '¿Quién gana y quién paga? La revolución industrial inglesa se hizo con algodón colombiano. Sin esa pregunta no se entiende quién pagó el progreso.',
-        },
-        {
-          enunciado: 'Si una IA puede escribir correos profesionales — ¿qué pasará con el oficio de "asistente ejecutivo"?',
-          opciones: [
-            'Será sustituido por completo',
-            'Será transformado: las tareas operativas (correo, agenda) las hará la IA; las relacionales (gestión humana) seguirán siendo del humano',
-            'Será creado nuevo',
-            'No cambiará nada',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Correcto. Las tareas operativas se automatizan; las relacionales y de juicio sobreviven. El asistente que se reinventa se enfoca en lo humano.',
-          feedbackIncorrecto:
-            'Será transformado. La IA hace lo operativo; el asistente humano se enfoca en gestión de personas, juicio en situaciones nuevas, relaciones.',
-        },
-        {
-          enunciado:
-            'En el saber ancestral del herrero del Valle, ¿qué aplica a tu propio futuro laboral?',
-          opciones: [
-            'Nada — los oficios antiguos no tienen que ver con hoy',
-            'Que cada revolución abre una nueva forma del oficio si sabes reinventarte',
-            'Que el herrero ya no existe',
-            'Que la tradición siempre se pierde',
-          ],
-          respuestaIndex: 1,
-          feedbackCorrecto:
-            'Esa es la conexión. El herrero del Valle se reinventó 3 veces porque supo trasladar habilidades. Tú tendrás que reinventarte 5-10 veces en tu vida laboral.',
-          feedbackIncorrecto:
-            'El herrero se reinventó 3 veces sin perder identidad. La habilidad de trasladar saberes entre revoluciones es lo que separa al que prospera del que se queda atrás.',
-        },
-      ],
-    },
-  ],
-
-  postLectura: {
-    reflexion: '',
-    transferencia:
-      'Esta semana, escoge UN oficio de tu mapa (perdido o creado) e investiga 15 minutos: cuándo nació o desapareció, qué tecnología fue motor, qué pasó con las personas. Anota los hallazgos. El próximo lunes los traemos al aula — son insumo del proyecto integrador del periodo.',
-    cierre: '',
-  },
-
   triangulo: {
     dussel: {
-      autor: 'Enrique Dussel',
+      autor: 'Enrique Dussel · Filosofía de la liberación (1977), §2.5.6.3',
       lente: 'lente del nosotros',
-      cita: 'Toda revolución técnica reparte beneficios y costos según una geografía de poder previa.',
-      preguntaEspejo:
-        '¿Qué materia prima, datos o trabajo de mi región alimenta tecnologías que se beneficiaron en otro lugar? ¿Cómo cambia eso lo que pienso sobre "progreso"?',
+      cita: 'La máquina, el robot, el «rostro material» del capital ha hecho del «rostro del hombre» un instrumento de sí mismo.',
+      preguntaEspejo: '¿En qué parte de mi día me estoy adaptando yo a una máquina, en vez de al revés?'
     },
     estoico: {
-      autor: 'Marco Aurelio',
+      autor: 'Epicteto · Enquiridión, 5 (c. 125 d.C.)',
       lente: 'lente del cuidado interior',
-      cita: 'No te angusties por lo que cambiará; concéntrate en lo que de tu trabajo no depende de la máquina.',
-      preguntaEspejo:
-        '¿Qué habilidad humana mía estoy cultivando que ninguna máquina puede reproducir? ¿Cuál estoy dejando atrofiar?',
+      cita: 'No son las cosas las que atormentan a los hombres, sino las opiniones que se tienen de ellas.',
+      preguntaEspejo: '¿Qué reparto de tareas doy por natural en mi casa sin que nadie lo haya decidido en voz alta?'
     },
     floridi: {
-      autor: 'Luciano Floridi',
+      autor: 'The Onlife Initiative (ed. Luciano Floridi) · The Onlife Manifesto (2015), § 4.2',
       lente: 'lente de la infoesfera',
-      cita: 'La 4ª revolución industrial reconfigura no solo el trabajo, sino la naturaleza misma de la agencia humana.',
-      preguntaEspejo:
-        '¿Qué tareas que antes hacía yo ahora hace una IA por mí? ¿Cuáles me hacen más capaz y cuáles me están atrofiando habilidades?',
-    },
+      cita: 'Nuestro yo es a la vez libre y social: la libertad no ocurre en el vacío, sino en un espacio de posibilidades y de límites. (trad. propia)',
+      preguntaEspejo: '¿Qué opciones de trabajo tengo de verdad hoy, y quién definió esa lista?'
+    }
   },
-
   cincoDimensiones: {
-    personal:
-      'Conectaste tu propio futuro laboral con la historia de las revoluciones técnicas — ya no es teoría, es tu vida.',
-    emocional:
-      'La conversación con un mayor te conectó con memoria viva: oficios reales de tu familia que cambiaron en una generación.',
-    ciudadana:
-      'Entendiste que ningún progreso técnico es para todos por igual — siempre hay reparto, y vale la pena nombrarlo.',
-    local:
-      'Anclaste el aprendizaje en oficios de tu propia región (herrero del Valle, oficios familiares) y no solo en datos abstractos.',
-    intergeneracional:
-      'La entrevista familiar y el mapa local conectan tres generaciones: la del abuelo que perdió un oficio, la del padre que se reinventó, y la tuya que aún elige.',
-  },
+    personal: 'Le preguntaste a alguien de tu familia por su trabajo, y eso casi nunca se hace.',
+    emocional: 'Perder un oficio no es una estadística para quien lo vivió. Escuchar eso antes de mapearlo cambia el mapa.',
+    ciudadana: 'Decir «el progreso» esconde a quien decidió. Nombrar a alguien es lo que permite discutir el reparto.',
+    local: 'Los seis oficios de tu mapa pasaron a menos de una hora de tu casa, y casi ninguno está escrito en ningún lado.',
+    intergeneracional: 'La chapolera existió antes de ser un disfraz para turistas. Tu mapa la devuelve a su trabajo real.'
+  }
 };
 
 export default contenido;

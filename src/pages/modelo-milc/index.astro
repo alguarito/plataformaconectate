@@ -22,46 +22,79 @@ import {
   valoracionPorContrato,
   valoracionPorDensidad,
 } from '../../data/planArea';
+import { coleccion, tomo, tomoQueProfundiza, peso } from '../../data/coleccion';
 
 const base = import.meta.env.BASE_URL;
 const planAreaHref = `${base}/plan-de-area/${planArea.pdf}`;
-const libroMilcHref = `${base}/libro-milc/libro-milc-2026.pdf`;
-const libroMilcPaginas = 226;
-const libroMilcSubtitulo = 'MILC: Modelo de Investigación Liberadora y Científica';
-const libroMilcDoi = 'https://doi.org/10.5281/zenodo.20517707';
+
+// Colección MILC: todos los datos editoriales salen de src/data/coleccion.json (fuente única).
+// Se cita y se enlaza solo por DOI de concepto (doi.org), que siempre lleva a la versión vigente.
+
+// Tomo 0 · obra matriz · versión 3.0 (libro, cuaderno de trabajo y hojas F01–F16).
+const t0 = tomo('0');
+const libroMilcHref = t0.pdf;
+const libroMilcPaginas = t0.paginas;
+const libroMilcSubtitulo = t0.subtitulo;
+const libroMilcDoi = t0.doiUrl;
+const libroMilcVersion = t0.version ?? '3.0';
+const libroMilcEdicion = t0.edicion;
+// En la cita y en Zenodo el subtítulo va con coma: «…Onlife: MILC, Modelo de…».
+const libroMilcSubtituloCita = t0.subtitulo.replace(/^MILC: /, 'MILC, ');
+const libroMilcTituloCompleto = `${t0.titulo}: ${libroMilcSubtituloCita}`;
+const libroMilcArchivo = t0.archivos.find((a) => a.rol === 'libro')!;
+const cuadernoMilc = t0.archivos.find((a) => a.rol === 'cuaderno')!;
+
+// Botones de descarga del Tomo 0: uno por archivo, con su nombre exacto.
+const etiquetaArchivo: Record<string, string> = {
+  libro: 'Libro',
+  cuaderno: 'Cuaderno de trabajo',
+  'hojas-carta': 'Hojas F01–F16 · Carta',
+  'hojas-a4': 'Hojas F01–F16 · A4',
+};
+const descargasTomo0 = t0.archivos.map((a) => {
+  const esHoja = a.rol === 'hojas-carta' || a.rol === 'hojas-a4';
+  return {
+    ...a,
+    etiqueta: etiquetaArchivo[a.rol],
+    detalle: `${a.paginas} ${esHoja ? 'hojas' : 'págs.'} · ${peso(a.bytes)}`,
+    principal: !esHoja,
+  };
+});
 
 // Colección MILC · Tomo I (ensayo de divulgación derivado de la obra matriz).
-const tomo1Href = `${base}/libro-milc/tomo-1-mercado-de-la-atencion.pdf`;
-const tomo1Paginas = 118;
-const tomo1Subtitulo = 'Cómo se disputa la atención de los jóvenes y cómo educar el criterio en la era onlife';
-const tomo1Doi = 'https://doi.org/10.5281/zenodo.20644819';
+const t1 = tomo('I');
+const tomo1Href = t1.pdf;
+const tomo1Paginas = t1.paginas;
+const tomo1Subtitulo = t1.subtitulo;
+const tomo1Doi = t1.doiUrl;
 
 // Colección MILC · Tomo II (ensayo pedagógico situado desde la filosofía de la liberación).
-const tomo2Href = `${base}/libro-milc/tomo-2-pedagogia-de-la-querencia.pdf`;
-const tomo2Paginas = 144;
-const tomo2Subtitulo = 'Reconstruir el aula desde la filosofía de la liberación para arraigar al estudiante en su territorio, su historia y sus saberes ancestrales';
-const tomo2Doi = 'https://doi.org/10.5281/zenodo.21176768';
+const t2 = tomo('II');
+const tomo2Href = t2.pdf;
+const tomo2Paginas = t2.paginas;
+const tomo2Subtitulo = t2.subtitulo;
+const tomo2Doi = t2.doiUrl;
 
 // Colección MILC · Tomo III (ensayo pedagógico situado sobre la investigación como sentido natural).
-const tomo3Href = `${base}/libro-milc/tomo-3-el-nino-que-suena-ciencia.pdf`;
-const tomo3Paginas = 138;
-const tomo3Subtitulo = 'La curiosidad es natural; la escuela debe darle método al sueño (sin apagarlo)';
-// Concept DOI (verificado 2026-07-22): 21360910. El 21360911 es el DOI de versión.
-const tomo3Doi = 'https://doi.org/10.5281/zenodo.21360910';
+const t3 = tomo('III');
+const tomo3Href = t3.pdf;
+const tomo3Paginas = t3.paginas;
+const tomo3Subtitulo = t3.subtitulo;
+const tomo3Doi = t3.doiUrl;
 
 // Colección MILC · Tomo IV (IA, datos y soberanía tecnológica: el criterio frente a la máquina).
-const tomo4Href = `${base}/libro-milc/tomo-4-no-rendir-la-mirada.pdf`;
-const tomo4Paginas = 142;
-const tomo4Subtitulo = 'La herramienta no piensa por el estudiante: le presta capacidad';
-// Concept DOI verificado contra la API de Zenodo (2026-07-23). Version DOI: 21517631.
-const tomo4Doi = 'https://doi.org/10.5281/zenodo.21517630';
+const t4 = tomo('IV');
+const tomo4Href = t4.pdf;
+const tomo4Paginas = t4.paginas;
+const tomo4Subtitulo = t4.subtitulo;
+const tomo4Doi = t4.doiUrl;
 
-// Colección MILC · Tomo V (el espacio como agente: fundar el lugar donde se llega a ser · CIERRE de la colección).
-const tomo5Href = `${base}/libro-milc/tomo-5-el-lugar-de-llegar-a-ser.pdf`;
-const tomo5Paginas = 143;
-const tomo5Subtitulo = 'El espacio pedagógico como agente de la formación: fundar, abrir y sostener los lugares donde el estudiante llega a ser';
-// Concept DOI verificado contra la API de Zenodo (2026-07-28). Version record: 21654101.
-const tomo5Doi = 'https://doi.org/10.5281/zenodo.21654100';
+// Colección MILC · Tomo V (el espacio como agente: fundar el lugar donde se llega a ser · cierre de la colección).
+const t5 = tomo('V');
+const tomo5Href = t5.pdf;
+const tomo5Paginas = t5.paginas;
+const tomo5Subtitulo = t5.subtitulo;
+const tomo5Doi = t5.doiUrl;
 
 const presentacionDir = `${base}/presentaciones/milc-onlife`;
 const presentacionPdfHref = `${presentacionDir}/${presentacionMilc.archivoPdf}`;
@@ -74,15 +107,57 @@ const articuloDoiUrl = `https://doi.org/${articuloDoi}`;
 const articuloUrl = 'https://revistahambatuscience.org/index.php/ojs/es/article/view/34';
 const articuloTitulo = 'Modelo de investigación liberadora y científica (MILC): una propuesta para la educación en la era onlife';
 
-// Estructura real de la obra matriz (índice general · 6 capítulos).
+// Estructura real de la obra matriz (versión 3.0 · 11 capítulos en 5 partes + epílogo).
+// `ruta` = la «Ruta del capítulo» que abre cada capítulo en el libro (en el 1, su mapa de lectura).
+// «Para profundizar» sale de coleccion.json (tomoQueProfundiza); el capítulo 9 no tiene tomo.
+const momentosCiclo = ['Escucha', 'Sistematización', 'Praxis', 'Evaluación liberadora', 'Devolución'];
 const libroEstructura = [
-  { n: 1, titulo: 'El Mercado de la Mirada', desc: 'La economía de la atención y el ser humano convertido en producto.' },
-  { n: 2, titulo: 'Genealogía del Futuro', desc: 'Los cimientos: Freire, Floridi y el estoicismo crítico.' },
-  { n: 3, titulo: 'La Re-ontologización del Sujeto', desc: 'Del Homo Sapiens al Homo Distractus: STEAM frugal, carácter estoico y conciencia decolonial.' },
-  { n: 4, titulo: 'La Arquitectura del Encuentro', desc: 'El Laboratorio-Ágora y la estética del hacer.' },
-  { n: 5, titulo: 'El Ciclo de la Investigación Liberadora', desc: 'Las cuatro fases del MILC: Escucha, Sistematización, Praxis y Devolución.' },
-  { n: 6, titulo: 'Las Herramientas del Oficio', desc: 'Cartografía social y portafolio de investigación.' },
-];
+  {
+    parte: 'I',
+    titulo: 'Crisis onlife',
+    capitulos: [
+      { n: 1, titulo: 'El Mercado de la Mirada', ruta: ['Atención', 'Biografía', 'Curiosidad', 'Escuela', 'Autoría', 'Comunidad', 'Docencia'], desc: 'La atención como territorio en disputa: la escuela recupera la mirada antes de pretender educar con tecnología.' },
+    ],
+  },
+  {
+    parte: 'II',
+    titulo: 'Genealogía y sujeto',
+    capitulos: [
+      { n: 2, titulo: 'Genealogía del Futuro', ruta: ['Palabra', 'Infoesfera', 'Ética', 'Territorio'], desc: 'Las raíces críticas del modelo: Freire, Floridi, el estoicismo crítico y Dussel.' },
+      { n: 3, titulo: 'La Re-ontologización del Sujeto', ruta: ['Información', 'Sentido', 'Carácter', 'Territorio'], desc: 'Un sujeto capaz de habitar la infoesfera sin renunciar a juicio, autoría ni dignidad.' },
+    ],
+  },
+  {
+    parte: 'III',
+    titulo: 'Espacio y método',
+    capitulos: [
+      { n: 4, titulo: 'La Arquitectura del Encuentro', ruta: ['Espacio', 'Materia', 'Error', 'Comunidad'], desc: 'El Laboratorio-Ágora: un espacio que educa antes de que alguien pronuncie la primera palabra.' },
+      { n: 5, titulo: 'El Ciclo de la Investigación Liberadora', ruta: momentosCiclo, desc: 'Un ciclo abierto de cinco momentos: se puede volver a cualquiera cuando la evidencia exige revisar el camino.' },
+    ],
+  },
+  {
+    parte: 'IV',
+    titulo: 'Herramientas y tiempo',
+    capitulos: [
+      { n: 6, titulo: 'Las herramientas del oficio', ruta: ['Cartografía', 'Portafolio', 'IA', 'Mantenimiento'], desc: 'Cartografía social, portafolio de investigación e inteligencia artificial con criterio.' },
+      { n: 7, titulo: 'Cronotopos de la práctica', ruta: ['Lentitud', 'Retorno', 'Urgencia', 'Memoria'], desc: 'Los tiempos de la investigación escolar: lo que una pregunta necesita para madurar.' },
+    ],
+  },
+  {
+    parte: 'V',
+    titulo: 'Escalamiento, comunidad y movimiento',
+    capitulos: [
+      { n: 8, titulo: 'Escalando esperanzas', ruta: ['Incubar', 'Instituir', 'Formar', 'Federar'], desc: 'Una pedagogía crece cuando otras comunidades la apropian, la cuidan y la vuelven suya.' },
+      { n: 9, titulo: 'ConectaTE como caso vivo', ruta: ['Memoria', 'Liderazgo', 'Producción', 'Cultura'], desc: 'La experiencia de la plataforma y su semillero, abierta a la discusión y a la verificación.' },
+      { n: 10, titulo: 'Sostenibilidad y evidencia', ruta: ['Archivo', 'Evidencia', 'Cuidado', 'Relevo'], desc: 'Documentar con cuidado para que la experiencia dure y pueda pasar a otras manos.' },
+      { n: 11, titulo: 'Red MILC y expansión territorial', ruta: ['Red', 'Mentoría', 'Apertura', 'Territorio'], desc: 'Una red para multiplicar la capacidad de aprender juntos, no para multiplicar una marca.' },
+    ],
+  },
+].map((p) => ({
+  ...p,
+  capitulos: p.capitulos.map((c) => ({ ...c, profundiza: tomoQueProfundiza(c.n) })),
+}));
+const totalCapitulos = libroEstructura.reduce((s, p) => s + p.capitulos.length, 0);
 
 // ─── Schema.org · Book + Article ─────────────────────────────────────────
 const origen = (Astro.site ?? new URL('https://alguarito.github.io')).toString().replace(/\/$/, '');
@@ -98,7 +173,7 @@ const jsonLdExtra = [
     inLanguage: 'es-CO',
     numberOfItems: 6,
     author: { '@id': `${inicio}/acerca#person` },
-    publisher: { '@id': `${inicio}#organization` },
+    publisher: { '@id': `${inicio}#sello` },
     hasPart: [
       { '@id': `${inicio}/modelo-milc#libro` },
       { '@id': `${inicio}/modelo-milc#tomo1` },
@@ -160,27 +235,41 @@ const jsonLdExtra = [
   {
     '@type': 'Book',
     '@id': `${inicio}/modelo-milc#libro`,
-    name: 'Educación en la Era Onlife',
-    alternateName: libroMilcSubtitulo,
-    bookEdition: 'Edición ampliada 2026',
+    name: t0.titulo,
+    alternateName: [libroMilcSubtitulo, libroMilcTituloCompleto],
+    bookEdition: `Versión ${libroMilcVersion} (edición revisada, octubre de 2026)`,
+    version: libroMilcVersion,
     bookFormat: 'EBook',
     inLanguage: 'es-CO',
     numberOfPages: libroMilcPaginas,
-    datePublished: '2026-05-26',
-    license: 'https://creativecommons.org/licenses/by-nc-sa/4.0/',
-    identifier: libroMilcDoi,
-    sameAs: ['https://zenodo.org/doi/10.5281/zenodo.20517707', 'https://zenodo.org/records/20518085'],
+    datePublished: t0.fecha,
+    license: t0.licencia_url,
+    // Solo el DOI de concepto: nunca el DOI ni el registro de una versión.
+    identifier: { '@type': 'PropertyValue', propertyID: 'DOI', value: t0.doi, url: libroMilcDoi },
+    sameAs: libroMilcDoi,
     url: `${inicio}/modelo-milc`,
     encodingFormat: 'application/pdf',
     position: 0,
     isPartOf: { '@type': 'BookSeries', '@id': `${inicio}/modelo-milc#coleccion`, name: 'Colección MILC' },
-    associatedMedia: {
-      '@type': 'MediaObject',
-      contentUrl: `${origen}${libroMilcHref}`,
-      encodingFormat: 'application/pdf',
-    },
+    hasPart: { '@id': `${inicio}/modelo-milc#cuaderno` },
+    associatedMedia: [
+      {
+        '@type': 'MediaObject',
+        name: libroMilcArchivo.nombre,
+        description: `Libro · ${libroMilcArchivo.paginas} páginas · ${libroMilcArchivo.formato}`,
+        contentUrl: `${origen}${libroMilcArchivo.url}`,
+        encodingFormat: 'application/pdf',
+      },
+      {
+        '@type': 'MediaObject',
+        name: cuadernoMilc.nombre,
+        description: `Cuaderno de trabajo MILC · ${cuadernoMilc.paginas} páginas · ${cuadernoMilc.formato}`,
+        contentUrl: `${origen}${cuadernoMilc.url}`,
+        encodingFormat: 'application/pdf',
+      },
+    ],
     author: { '@id': `${inicio}/acerca#person` },
-    publisher: { '@id': `${inicio}#organization` },
+    publisher: { '@id': `${inicio}#sello` },
     about: [
       'Modelo MILC',
       'Pedagogía liberadora',
@@ -188,6 +277,29 @@ const jsonLdExtra = [
       'Filosofía de la información',
       'Inteligencia artificial en el aula',
     ],
+  },
+  {
+    // Cuaderno de trabajo: parte del Tomo 0. No tiene DOI propio; se cita por el del libro.
+    '@type': 'Book',
+    '@id': `${inicio}/modelo-milc#cuaderno`,
+    name: 'Cuaderno de trabajo MILC',
+    bookFormat: 'EBook',
+    inLanguage: 'es-CO',
+    numberOfPages: cuadernoMilc.paginas,
+    version: libroMilcVersion,
+    datePublished: t0.fecha,
+    license: t0.licencia_url,
+    url: `${inicio}/modelo-milc#descargar`,
+    encodingFormat: 'application/pdf',
+    isPartOf: { '@id': `${inicio}/modelo-milc#libro` },
+    associatedMedia: {
+      '@type': 'MediaObject',
+      name: cuadernoMilc.nombre,
+      contentUrl: `${origen}${cuadernoMilc.url}`,
+      encodingFormat: 'application/pdf',
+    },
+    author: { '@id': `${inicio}/acerca#person` },
+    publisher: { '@id': `${inicio}#sello` },
   },
   {
     '@type': 'Book',
@@ -201,8 +313,8 @@ const jsonLdExtra = [
     datePublished: '2026-06-11',
     license: 'https://creativecommons.org/licenses/by-sa/4.0/',
     identifier: tomo1Doi,
-    sameAs: ['https://zenodo.org/doi/10.5281/zenodo.20644819', 'https://zenodo.org/records/20644820'],
-    url: `${inicio}/modelo-milc`,
+    sameAs: tomo1Doi,
+    url: `${origen}${t1.href}`,
     encodingFormat: 'application/pdf',
     position: 1,
     isPartOf: { '@type': 'BookSeries', '@id': `${inicio}/modelo-milc#coleccion`, name: 'Colección MILC' },
@@ -212,7 +324,7 @@ const jsonLdExtra = [
       encodingFormat: 'application/pdf',
     },
     author: { '@id': `${inicio}/acerca#person` },
-    publisher: { '@id': `${inicio}#organization` },
+    publisher: { '@id': `${inicio}#sello` },
     about: [
       'Economía de la atención',
       'Educación mediática',
@@ -232,7 +344,7 @@ const jsonLdExtra = [
     datePublished: '2026-07-03',
     license: 'https://creativecommons.org/licenses/by-sa/4.0/',
     identifier: tomo2Doi,
-    sameAs: 'https://zenodo.org/doi/10.5281/zenodo.21176768',
+    sameAs: tomo2Doi,
     url: `${inicio}/modelo-milc/querencia`,
     encodingFormat: 'application/pdf',
     position: 2,
@@ -243,7 +355,7 @@ const jsonLdExtra = [
       encodingFormat: 'application/pdf',
     },
     author: { '@id': `${inicio}/acerca#person` },
-    publisher: { '@id': `${inicio}#organization` },
+    publisher: { '@id': `${inicio}#sello` },
     about: [
       'Filosofía de la liberación',
       'Pedagogía decolonial',
@@ -264,7 +376,7 @@ const jsonLdExtra = [
     datePublished: '2026-07-14',
     license: 'https://creativecommons.org/licenses/by-sa/4.0/',
     identifier: tomo3Doi,
-    sameAs: ['https://zenodo.org/doi/10.5281/zenodo.21360910', 'https://zenodo.org/doi/10.5281/zenodo.21360911'],
+    sameAs: tomo3Doi,
     url: `${inicio}/modelo-milc/el-nino-que-suena-ciencia`,
     encodingFormat: 'application/pdf',
     position: 3,
@@ -275,7 +387,7 @@ const jsonLdExtra = [
       encodingFormat: 'application/pdf',
     },
     author: { '@id': `${inicio}/acerca#person` },
-    publisher: { '@id': `${inicio}#organization` },
+    publisher: { '@id': `${inicio}#sello` },
     about: [
       'Curiosidad y asombro',
       'Investigación escolar',
@@ -296,7 +408,7 @@ const jsonLdExtra = [
     datePublished: '2026-07-23',
     license: 'https://creativecommons.org/licenses/by-sa/4.0/',
     identifier: tomo4Doi,
-    sameAs: ['https://zenodo.org/doi/10.5281/zenodo.21517630', 'https://zenodo.org/doi/10.5281/zenodo.21517631'],
+    sameAs: tomo4Doi,
     url: `${inicio}/modelo-milc/no-rendir-la-mirada`,
     encodingFormat: 'application/pdf',
     position: 4,
@@ -307,7 +419,7 @@ const jsonLdExtra = [
       encodingFormat: 'application/pdf',
     },
     author: { '@id': `${inicio}/acerca#person` },
-    publisher: { '@id': `${inicio}#organization` },
+    publisher: { '@id': `${inicio}#sello` },
     about: [
       'Inteligencia artificial en educación',
       'Alfabetización en inteligencia artificial',
@@ -328,7 +440,7 @@ const jsonLdExtra = [
     datePublished: '2026-07-28',
     license: 'https://creativecommons.org/licenses/by-sa/4.0/',
     identifier: tomo5Doi,
-    sameAs: ['https://doi.org/10.5281/zenodo.21654100', 'https://zenodo.org/records/21654101'],
+    sameAs: tomo5Doi,
     url: `${inicio}/modelo-milc/el-lugar-de-llegar-a-ser`,
     encodingFormat: 'application/pdf',
     position: 5,
@@ -339,7 +451,7 @@ const jsonLdExtra = [
       encodingFormat: 'application/pdf',
     },
     author: { '@id': `${inicio}/acerca#person` },
-    publisher: { '@id': `${inicio}#organization` },
+    publisher: { '@id': `${inicio}#sello` },
     about: [
       'Espacio pedagógico',
       'Ambiente de aprendizaje',
@@ -380,7 +492,7 @@ const jsonLdExtra = [
     '@id': `${inicio}/modelo-milc#article`,
     headline: 'Modelo MILC · pedagogía propia',
     description:
-      'Modelo de Investigación Liberadora y Científica (MILC v3): 4 fases, triángulo de pensamiento, 5 dimensiones, 18 anclajes ancestrales, política de IA responsable y pipeline editorial reproducible.',
+      'Modelo de Investigación Liberadora y Científica (MILC): el ciclo de investigación liberadora en cinco momentos del libro (Tomo 0, versión 3.0) y cómo opera MILC en las guías de ConectaTE (contrato MILC v3): 4 fases, triángulo de pensamiento, 5 dimensiones, 18 anclajes ancestrales, política de IA responsable y pipeline editorial reproducible.',
     inLanguage: 'es-CO',
     isPartOf: { '@id': `${inicio}#website` },
     author: { '@id': `${inicio}/acerca#person` },
@@ -405,9 +517,9 @@ const colorLente: Record<string, string> = {
 
 const seccionesMilc = [
   { id: 'presentacion',    titulo: 'Presentación · 13 slides',         emoji: '🎞' },
-  { id: 'fases',           titulo: 'Las 4 fases del modelo',           emoji: '🌀' },
-  { id: 'diagrama',        titulo: 'Diagrama del ciclo completo',      emoji: '🗺' },
-  { id: 'triangulo',       titulo: 'Triángulo de pensamiento',          emoji: '🔺' },
+  { id: 'fases',           titulo: 'Las 4 fases en las guías (contrato v3)', emoji: '🌀' },
+  { id: 'diagrama',        titulo: 'Diagrama del ciclo en las guías',  emoji: '🗺' },
+  { id: 'triangulo',       titulo: 'Triángulo de pensamiento en las guías', emoji: '🔺' },
   { id: 'anclajes',        titulo: 'Saberes locales por periodo',      emoji: '🌱' },
   { id: 'politica-ia',     titulo: 'Política de IA responsable',       emoji: '🤖' },
   { id: 'valoracion',      titulo: 'Sistema de valoración de guías',   emoji: '⭐' },
@@ -421,17 +533,17 @@ const seccionesMilc = [
 
 <BaseLayout
   title={`Modelo MILC · ${planArea.area} — ConectaTE`}
-  description="Modelo de Investigación Liberadora y Científica (MILC v3): 4 fases, triángulo de pensamiento, 5 dimensiones, 18 anclajes ancestrales, política de IA responsable y pipeline editorial reproducible."
+  description="Modelo MILC: el ciclo de investigación liberadora en cinco momentos (Tomo 0, versión 3.0) y cómo opera en las guías de ConectaTE con el contrato MILC v3: 4 fases, 18 anclajes ancestrales e IA responsable."
   ogType="article"
   imagen="/og/modelo-milc.png"
   jsonLd={jsonLdExtra}
   citation={{
-    title: 'Educación en la Era Onlife',
+    title: libroMilcTituloCompleto,
     authors: ['Álvaro Cárdenas Orozco'],
-    date: '2026/05/26',
+    date: t0.fecha.replace(/-/g, '/'),
     pdfUrl: `${origen}${libroMilcHref}`,
-    doi: '10.5281/zenodo.20517707',
-    publisher: 'Sor María Juliana Ediciones',
+    doi: t0.doi,
+    publisher: coleccion.sello,
     language: 'es',
   }}
 >
@@ -471,38 +583,59 @@ const seccionesMilc = [
           </div>
         </div>
 
-        <a
-          href={libroMilcHref}
-          download
-          class="bento-card-color bg-bento-lime md:col-span-4 flex flex-col justify-between min-h-[420px] hover:scale-[1.01] transition-transform group"
+        <!-- DESCARGAS DEL TOMO 0 · un botón por archivo, con su nombre exacto -->
+        <section
+          id="descargar"
+          aria-labelledby="descargar-titulo"
+          class="bento-card-color bg-bento-lime text-black dark:bg-bento-lime dark:text-black md:col-span-4 flex flex-col justify-between gap-6 min-h-[420px] scroll-mt-24"
         >
           <div>
             <span class="text-xs font-bold uppercase tracking-widest opacity-80">Tomo 0 · obra matriz · PDF</span>
-            <div class="text-6xl mt-3">📖</div>
-          </div>
-          <div>
-            <h3 class="text-xl md:text-2xl font-black tracking-tight leading-tight mb-2">
-              Educación en la Era Onlife
-            </h3>
+            <h2 id="descargar-titulo" class="text-xl md:text-2xl font-black tracking-tight leading-tight mt-3 mb-2">
+              {t0.titulo}
+            </h2>
             <p class="text-sm font-semibold opacity-90 mb-2 leading-snug">
               {libroMilcSubtitulo}
             </p>
-            <p class="text-xs opacity-75 mb-1 leading-relaxed">
-              Edición ampliada 2026 · {libroMilcPaginas} páginas · Dr. Álvaro Cárdenas Orozco.
+            <p class="text-xs opacity-80 mb-1 leading-relaxed">
+              {libroMilcEdicion} · libro y cuaderno de trabajo
             </p>
-            <p class="text-[11px] opacity-60 mb-3 leading-relaxed">
-              Acceso abierto · DOI 10.5281/zenodo.20517707
+            <p class="text-[11px] opacity-75 leading-relaxed">
+              Dr. Álvaro Cárdenas Orozco · acceso abierto · {t0.licencia} · DOI {t0.doi}
             </p>
-            <div class="inline-flex items-center gap-2 font-bold text-sm group-hover:gap-3 transition-all">
-              Descargar libro
-              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <polyline points="7 10 12 15 17 10"></polyline>
-                <line x1="12" y1="15" x2="12" y2="3"></line>
-              </svg>
-            </div>
           </div>
-        </a>
+          <div>
+            <ul class="flex flex-col gap-2" role="list">
+              {descargasTomo0.map((a) => (
+                <li>
+                  <a
+                    href={a.url}
+                    download={a.nombre}
+                    type="application/pdf"
+                    class={`flex items-center justify-between gap-3 min-h-[44px] w-full px-4 py-2 rounded-bento-sm text-sm font-black transition-colors motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-black focus-visible:ring-offset-bento-lime dark:focus-visible:ring-black dark:focus-visible:ring-offset-bento-lime ${
+                      a.principal
+                        ? 'bg-black text-white hover:bg-neutral-800 dark:bg-black dark:text-white dark:hover:bg-neutral-800'
+                        : 'border-2 border-black/40 text-black hover:border-black dark:border-black/40 dark:text-black dark:hover:border-black'
+                    }`}
+                  >
+                    <span class="flex flex-col leading-tight">
+                      <span><span class="sr-only">Descargar </span>{a.etiqueta}</span>
+                      <span class="text-[11px] font-semibold opacity-80">{a.detalle}<span class="sr-only"> (PDF)</span></span>
+                    </span>
+                    <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                      <polyline points="7 10 12 15 17 10"></polyline>
+                      <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <p class="text-xs font-semibold leading-relaxed mt-3 opacity-80">
+              Guarda el libro y el cuaderno en la misma carpeta y sin cambiarles el nombre: así funcionan los enlaces entre los dos.
+            </p>
+          </div>
+        </section>
       </div>
 
       <!-- DE QUÉ TRATA EL LIBRO (obra matriz) -->
@@ -526,29 +659,62 @@ const seccionesMilc = [
           </p>
           <p class="text-base md:text-lg leading-relaxed italic" style="color: var(--fg-muted);">
             «La educación no cambia al mundo: cambia a las personas que van a cambiar el mundo.»
-            — Paulo Freire <span class="not-italic">(epígrafe del libro)</span>
+            — Paulo Freire
           </p>
         </div>
       </section>
 
-      <!-- CÓMO ESTÁ ARMADO EL LIBRO -->
-      <section class="mb-10">
+      <!-- CÓMO ESTÁ ARMADO EL LIBRO · 11 capítulos en 5 partes (versión 3.0) -->
+      <section id="estructura" class="mb-10 scroll-mt-24" aria-labelledby="estructura-titulo">
         <div class="flex items-center justify-between flex-wrap gap-3 mb-2">
-          <h2 class="heading-huge">Cómo está armado el libro.</h2>
-          <span class="chip-bento">6 capítulos · {libroMilcPaginas} páginas</span>
+          <h2 id="estructura-titulo" class="heading-huge">Cómo está armado el libro.</h2>
+          <span class="chip-bento">{totalCapitulos} capítulos en {libroEstructura.length} partes · {libroMilcPaginas} páginas</span>
         </div>
-        <p class="text-sm leading-relaxed mb-6 max-w-2xl" style="color: var(--fg-muted);">
-          De la <strong style="color: var(--fg);">denuncia</strong> (el mercado de la mirada) a las
-          <strong style="color: var(--fg);">herramientas del oficio</strong>, pasando por los cimientos
-          teóricos, la re-ontologización del sujeto y el ciclo de investigación liberadora.
+        <p class="text-sm leading-relaxed mb-6 max-w-2xl text-neutral-600 dark:text-neutral-400">
+          La <strong class="text-neutral-950 dark:text-neutral-50">Parte I, Crisis onlife</strong>, plantea la
+          atención como territorio en disputa. La <strong class="text-neutral-950 dark:text-neutral-50">Parte II,
+          Genealogía y sujeto</strong>, reúne las raíces críticas del modelo y el sujeto que habita la infoesfera.
+          La <strong class="text-neutral-950 dark:text-neutral-50">Parte III, Espacio y método</strong>, presenta
+          la arquitectura del encuentro y el ciclo de investigación liberadora en cinco momentos. La
+          <strong class="text-neutral-950 dark:text-neutral-50">Parte IV, Herramientas y tiempo</strong>, trata el
+          oficio de investigar y sus ritmos. La <strong class="text-neutral-950 dark:text-neutral-50">Parte V,
+          Escalamiento, comunidad y movimiento</strong>, lleva la experiencia del aula a la Red MILC. Cierra con
+          el epílogo «La clase que viene».
         </p>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {libroEstructura.map((c) => (
-            <div class="bento-card flex gap-4">
-              <span class="w-9 h-9 rounded-full bg-bento-black text-white flex items-center justify-center text-sm font-black shrink-0">{c.n}</span>
-              <div>
-                <h3 class="font-black text-lg leading-tight mb-1">{c.titulo}</h3>
-                <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">{c.desc}</p>
+        <div class="space-y-8">
+          {libroEstructura.map((p) => (
+            <div>
+              <h3 class="text-xs font-black uppercase tracking-widest mb-3 text-neutral-600 dark:text-neutral-400">
+                Parte {p.parte} · {p.titulo}
+              </h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {p.capitulos.map((c) => (
+                  <div id={`capitulo-${c.n}`} class="bento-card flex gap-4 scroll-mt-24">
+                    <span class="w-9 h-9 rounded-full bg-bento-black text-white dark:bg-neutral-50 dark:text-neutral-950 flex items-center justify-center text-sm font-black shrink-0" aria-hidden="true">{c.n}</span>
+                    <div class="min-w-0">
+                      <h4 class="font-black text-lg leading-tight mb-1">
+                        <span class="sr-only">Capítulo {c.n}. </span>{c.titulo}
+                      </h4>
+                      <p class="text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">{c.desc}</p>
+                      <p class="text-[11px] font-bold uppercase tracking-widest leading-relaxed mt-2 text-neutral-600 dark:text-neutral-400">
+                        <span class="text-neutral-950 dark:text-neutral-50">{c.n === 5 ? 'Cinco momentos' : c.n === 1 ? 'Mapa de lectura' : 'Ruta'}:</span>
+                        {' '}{c.ruta.join(' · ')}
+                      </p>
+                      {c.profundiza && (
+                        <a
+                          href={c.profundiza.href}
+                          class="mt-3 flex items-center gap-3 min-h-[44px] px-3 py-2 rounded-bento-sm border-2 border-neutral-300 dark:border-neutral-600 hover:border-neutral-950 dark:hover:border-neutral-50 transition-colors motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bento-blue dark:focus-visible:ring-bento-blue"
+                        >
+                          <span class={`w-2.5 h-2.5 rounded-full shrink-0 ring-1 ring-black/10 dark:ring-white/40 ${c.profundiza.color}`} aria-hidden="true"></span>
+                          <span class="flex flex-col leading-tight">
+                            <span class="text-[11px] font-bold uppercase tracking-widest text-neutral-600 dark:text-neutral-400">Para profundizar →</span>
+                            <span class="text-sm font-black text-neutral-950 dark:text-neutral-50">{c.profundiza.etiqueta} · {c.profundiza.titulo}</span>
+                          </span>
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           ))}
@@ -607,7 +773,7 @@ const seccionesMilc = [
       <!-- ÍNDICE DEL DOCUMENTO -->
       <IndiceDocumento
         secciones={seccionesMilc}
-        titulo="Recorré el modelo a tu ritmo."
+        titulo="Recorre el modelo a tu ritmo."
         introduccion="12 estaciones del modelo MILC, desde la presentación visual hasta el pipeline editorial. Toca cualquiera para saltar."
       />
 
@@ -624,16 +790,24 @@ const seccionesMilc = [
         </p>
       </div>
 
-      <!-- 4 FASES MILC -->
+      <!-- 4 FASES MILC · contrato de guías v3 (D10: se rotula y remite a los cinco momentos del libro) -->
       <div id="fases" class="bento-card mb-10">
-        <span class="chip-bento mb-3">4 fases del modelo</span>
+        <div class="flex flex-wrap items-center gap-2 mb-3">
+          <span class="chip-bento">Cómo opera MILC en las guías de ConectaTE (contrato MILC v3)</span>
+          <span class="chip-bento">4 fases</span>
+        </div>
         <h2 class="heading-huge mb-2 leading-tight">
           Escucha · Sistematización · Praxis · Evaluación.
         </h2>
-        <p class="text-sm md:text-base mb-8 leading-relaxed" style="color: var(--fg-muted);">
+        <p class="text-sm md:text-base mb-3 leading-relaxed" style="color: var(--fg-muted);">
           Cada clase MILC convierte la sesión en un proceso de investigación escolar.
           El estudiante escucha el contexto, organiza lo que encuentra, actúa con productos
           o prototipos, y evalúa críticamente el sentido de lo realizado.
+        </p>
+        <p class="text-sm md:text-base mb-8 leading-relaxed text-neutral-600 dark:text-neutral-400">
+          Estas fases son la forma operativa de las guías. El libro (Tomo 0) desarrolla el
+          ciclo completo en cinco momentos —Escucha, Sistematización, Praxis, Evaluación liberadora
+          y Devolución— en el <a href="#capitulo-5" class="font-bold underline underline-offset-2 text-neutral-950 dark:text-neutral-50 hover:opacity-70">capítulo 5</a>.
         </p>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
@@ -656,25 +830,33 @@ const seccionesMilc = [
         </div>
       </div>
 
-      <!-- DIAGRAMA CICLO -->
+      <!-- DIAGRAMA CICLO · contrato de guías v3 (D10) -->
       <div id="diagrama" class="bento-card mb-10">
-        <span class="chip-bento mb-3">Diagrama del ciclo completo</span>
+        <div class="flex flex-wrap items-center gap-2 mb-3">
+          <span class="chip-bento">Cómo opera MILC en las guías de ConectaTE (contrato MILC v3)</span>
+          <span class="chip-bento">Diagrama del ciclo</span>
+        </div>
         <h2 class="heading-huge mb-2 leading-tight">El recorrido visual.</h2>
         <p class="text-sm md:text-base mb-6 leading-relaxed" style="color: var(--fg-muted);">
           Las 4 fases circulan: cada cierre alimenta la apertura siguiente. En el centro,
-          el triángulo de pensamiento articula la dimensión filosófica.
+          el triángulo de pensamiento articula la dimensión filosófica. En el libro, el ciclo
+          tiene cinco momentos: la Devolución cierra cada vuelta y abre una pregunta nueva (<a href="#capitulo-5" class="font-bold underline underline-offset-2 text-neutral-950 dark:text-neutral-50 hover:opacity-70">capítulo 5</a>).
         </p>
         <DiagramaCicloMILC />
       </div>
 
-      <!-- TRIÁNGULO DE PENSAMIENTO -->
+      <!-- TRIÁNGULO DE PENSAMIENTO · contrato de guías v3 (D10) -->
       <div id="triangulo" class="bento-card mb-10">
-        <span class="chip-bento mb-3">Triángulo de pensamiento</span>
+        <div class="flex flex-wrap items-center gap-2 mb-3">
+          <span class="chip-bento">Cómo opera MILC en las guías de ConectaTE (contrato MILC v3)</span>
+          <span class="chip-bento">Triángulo de pensamiento</span>
+        </div>
         <h2 class="heading-huge mb-2 leading-tight">3 voces que dialogan al cierre.</h2>
         <p class="text-sm md:text-base mb-8 leading-relaxed" style="color: var(--fg-muted);">
           MILC integra tres lentes filosóficas distintas en el cierre de cada guía. La
           dimensión liberadora (Dussel), el dominio de sí (estoicismo) y la habitabilidad
-          ética de la infoesfera (Floridi).
+          ética de la infoesfera (Floridi). Es un recurso de cierre de las guías; el libro
+          organiza el método en el ciclo de cinco momentos del <a href="#capitulo-5" class="font-bold underline underline-offset-2 text-neutral-950 dark:text-neutral-50 hover:opacity-70">capítulo 5</a>.
         </p>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
@@ -967,21 +1149,30 @@ const seccionesMilc = [
               <div class="flex items-start gap-3 mb-4">
                 <span class="text-4xl shrink-0">📖</span>
                 <div>
-                  <span class="text-xs font-black uppercase tracking-widest opacity-70">Tomo 0 · obra matriz · {libroMilcPaginas} pp · CC BY-NC-SA</span>
-                  <h3 class="text-lg font-black leading-tight mt-1">Educación en la Era Onlife</h3>
+                  <span class="text-xs font-black uppercase tracking-widest opacity-70">Tomo 0 · obra matriz · versión {libroMilcVersion} · {libroMilcPaginas} pp · CC BY-NC-SA</span>
+                  <h3 class="text-lg font-black leading-tight mt-1">{t0.titulo}</h3>
                   <p class="text-xs opacity-80 mt-1">{libroMilcSubtitulo}.</p>
+                  <p class="text-xs opacity-80 mt-1">Libro y cuaderno de trabajo ({cuadernoMilc.paginas} págs.): guárdalos en la misma carpeta y sin cambiarles el nombre.</p>
                 </div>
               </div>
               <div class="flex items-center gap-2 flex-wrap">
-                <a href={libroMilcHref} download class="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-black text-white text-xs font-black hover:opacity-80 transition-opacity">
-                  Descargar PDF
-                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <a href={libroMilcHref} download={libroMilcArchivo.nombre} aria-label={`Descargar libro (PDF, ${libroMilcPaginas} páginas, ${peso(libroMilcArchivo.bytes)})`} class="inline-flex items-center gap-2 min-h-[44px] px-3.5 py-2 rounded-full bg-black text-white dark:bg-black dark:text-white text-xs font-black hover:opacity-80 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-black focus-visible:ring-offset-bento-lime">
+                  Descargar libro
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                     <polyline points="7 10 12 15 17 10"></polyline>
                     <line x1="12" y1="15" x2="12" y2="3"></line>
                   </svg>
                 </a>
-                <a href={libroMilcDoi} target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border-2 border-black/30 text-xs font-black hover:border-black transition-colors" aria-label="Registro citable del libro en Zenodo (se abre en una pestaña nueva)">
+                <a href={cuadernoMilc.url} download={cuadernoMilc.nombre} aria-label={`Descargar cuaderno de trabajo (PDF, ${cuadernoMilc.paginas} páginas, ${peso(cuadernoMilc.bytes)})`} class="inline-flex items-center gap-2 min-h-[44px] px-3.5 py-2 rounded-full bg-black text-white dark:bg-black dark:text-white text-xs font-black hover:opacity-80 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-black focus-visible:ring-offset-bento-lime">
+                  Descargar cuaderno
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                  </svg>
+                </a>
+                <a href={libroMilcDoi} target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 min-h-[44px] px-3.5 py-2 rounded-full border-2 border-black/30 dark:border-black/30 text-xs font-black hover:border-black transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-black focus-visible:ring-offset-bento-lime" aria-label="Registro citable del libro en Zenodo (se abre en una pestaña nueva)">
                   DOI · Zenodo
                   <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
@@ -1002,7 +1193,7 @@ const seccionesMilc = [
                 </div>
               </div>
               <div class="flex items-center gap-2 flex-wrap">
-                <a href={tomo1Href} download class="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-black text-white text-xs font-black hover:opacity-80 transition-opacity">
+                <a href={tomo1Href} download class="inline-flex items-center gap-2 min-h-[44px] px-3.5 py-2 rounded-full bg-black text-white text-xs font-black hover:opacity-80 transition-opacity">
                   Descargar PDF
                   <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -1010,7 +1201,7 @@ const seccionesMilc = [
                     <line x1="12" y1="15" x2="12" y2="3"></line>
                   </svg>
                 </a>
-                <a href={tomo1Doi} target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border-2 border-black/30 text-xs font-black hover:border-black transition-colors" aria-label="Registro citable del Tomo I en Zenodo (se abre en una pestaña nueva)">
+                <a href={tomo1Doi} target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 min-h-[44px] px-3.5 py-2 rounded-full border-2 border-black/30 text-xs font-black hover:border-black transition-colors" aria-label="Registro citable del Tomo I en Zenodo (se abre en una pestaña nueva)">
                   DOI · Zenodo
                   <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
@@ -1018,7 +1209,7 @@ const seccionesMilc = [
                     <line x1="10" y1="14" x2="21" y2="3"></line>
                   </svg>
                 </a>
-                <a href={`${base}/modelo-milc/mercado-atencion`} class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border-2 border-black/30 text-xs font-black hover:border-black transition-colors">
+                <a href={`${base}/modelo-milc/mercado-atencion`} class="inline-flex items-center gap-1.5 min-h-[44px] px-3.5 py-2 rounded-full border-2 border-black/30 text-xs font-black hover:border-black transition-colors">
                   Explorar el tomo →
                 </a>
               </div>
@@ -1034,7 +1225,7 @@ const seccionesMilc = [
                 </div>
               </div>
               <div class="flex items-center gap-2 flex-wrap">
-                <a href={tomo2Href} download class="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-black text-white text-xs font-black hover:opacity-80 transition-opacity">
+                <a href={tomo2Href} download class="inline-flex items-center gap-2 min-h-[44px] px-3.5 py-2 rounded-full bg-black text-white text-xs font-black hover:opacity-80 transition-opacity">
                   Descargar PDF
                   <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -1042,7 +1233,7 @@ const seccionesMilc = [
                     <line x1="12" y1="15" x2="12" y2="3"></line>
                   </svg>
                 </a>
-                <a href={tomo2Doi} target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border-2 border-black/30 text-xs font-black hover:border-black transition-colors" aria-label="Registro citable del Tomo II en Zenodo (se abre en una pestaña nueva)">
+                <a href={tomo2Doi} target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 min-h-[44px] px-3.5 py-2 rounded-full border-2 border-black/30 text-xs font-black hover:border-black transition-colors" aria-label="Registro citable del Tomo II en Zenodo (se abre en una pestaña nueva)">
                   DOI · Zenodo
                   <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
@@ -1050,7 +1241,7 @@ const seccionesMilc = [
                     <line x1="10" y1="14" x2="21" y2="3"></line>
                   </svg>
                 </a>
-                <a href={`${base}/modelo-milc/querencia`} class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border-2 border-black/30 text-xs font-black hover:border-black transition-colors">
+                <a href={`${base}/modelo-milc/querencia`} class="inline-flex items-center gap-1.5 min-h-[44px] px-3.5 py-2 rounded-full border-2 border-black/30 text-xs font-black hover:border-black transition-colors">
                   Explorar el tomo →
                 </a>
               </div>
@@ -1066,7 +1257,7 @@ const seccionesMilc = [
                 </div>
               </div>
               <div class="flex items-center gap-2 flex-wrap">
-                <a href={tomo3Href} download class="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-black text-white text-xs font-black hover:opacity-80 transition-opacity">
+                <a href={tomo3Href} download class="inline-flex items-center gap-2 min-h-[44px] px-3.5 py-2 rounded-full bg-black text-white text-xs font-black hover:opacity-80 transition-opacity">
                   Descargar PDF
                   <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -1074,7 +1265,7 @@ const seccionesMilc = [
                     <line x1="12" y1="15" x2="12" y2="3"></line>
                   </svg>
                 </a>
-                <a href={tomo3Doi} target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border-2 border-white/40 text-xs font-black hover:border-white transition-colors" aria-label="Registro citable del Tomo III en Zenodo (se abre en una pestaña nueva)">
+                <a href={tomo3Doi} target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 min-h-[44px] px-3.5 py-2 rounded-full border-2 border-white/40 text-xs font-black hover:border-white transition-colors" aria-label="Registro citable del Tomo III en Zenodo (se abre en una pestaña nueva)">
                   DOI · Zenodo
                   <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
@@ -1082,7 +1273,7 @@ const seccionesMilc = [
                     <line x1="10" y1="14" x2="21" y2="3"></line>
                   </svg>
                 </a>
-                <a href={`${base}/modelo-milc/el-nino-que-suena-ciencia`} class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border-2 border-white/40 text-xs font-black hover:border-white transition-colors">
+                <a href={`${base}/modelo-milc/el-nino-que-suena-ciencia`} class="inline-flex items-center gap-1.5 min-h-[44px] px-3.5 py-2 rounded-full border-2 border-white/40 text-xs font-black hover:border-white transition-colors">
                   Explorar el tomo →
                 </a>
               </div>
@@ -1098,7 +1289,7 @@ const seccionesMilc = [
                 </div>
               </div>
               <div class="flex items-center gap-2 flex-wrap">
-                <a href={tomo4Href} download class="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-bento-lime text-neutral-950 text-xs font-black hover:opacity-80 transition-opacity">
+                <a href={tomo4Href} download class="inline-flex items-center gap-2 min-h-[44px] px-3.5 py-2 rounded-full bg-bento-lime text-neutral-950 text-xs font-black hover:opacity-80 transition-opacity">
                   Descargar PDF
                   <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -1106,7 +1297,7 @@ const seccionesMilc = [
                     <line x1="12" y1="15" x2="12" y2="3"></line>
                   </svg>
                 </a>
-                <a href={tomo4Doi} target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border-2 border-white/40 text-xs font-black hover:border-white transition-colors" aria-label="Registro citable del Tomo IV en Zenodo (se abre en una pestaña nueva)">
+                <a href={tomo4Doi} target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 min-h-[44px] px-3.5 py-2 rounded-full border-2 border-white/40 text-xs font-black hover:border-white transition-colors" aria-label="Registro citable del Tomo IV en Zenodo (se abre en una pestaña nueva)">
                   DOI · Zenodo
                   <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
@@ -1114,7 +1305,7 @@ const seccionesMilc = [
                     <line x1="10" y1="14" x2="21" y2="3"></line>
                   </svg>
                 </a>
-                <a href={`${base}/modelo-milc/no-rendir-la-mirada`} class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border-2 border-white/40 text-xs font-black hover:border-white transition-colors">
+                <a href={`${base}/modelo-milc/no-rendir-la-mirada`} class="inline-flex items-center gap-1.5 min-h-[44px] px-3.5 py-2 rounded-full border-2 border-white/40 text-xs font-black hover:border-white transition-colors">
                   Explorar el tomo →
                 </a>
               </div>
@@ -1130,7 +1321,7 @@ const seccionesMilc = [
                 </div>
               </div>
               <div class="flex items-center gap-2 flex-wrap">
-                <a href={tomo5Href} download class="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-bento-lime text-neutral-950 text-xs font-black hover:opacity-80 transition-opacity">
+                <a href={tomo5Href} download class="inline-flex items-center gap-2 min-h-[44px] px-3.5 py-2 rounded-full bg-bento-lime text-neutral-950 text-xs font-black hover:opacity-80 transition-opacity">
                   Descargar PDF
                   <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -1138,7 +1329,7 @@ const seccionesMilc = [
                     <line x1="12" y1="15" x2="12" y2="3"></line>
                   </svg>
                 </a>
-                <a href={tomo5Doi} target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border-2 border-white/40 text-xs font-black hover:border-white transition-colors" aria-label="Registro citable del Tomo V en Zenodo (se abre en una pestaña nueva)">
+                <a href={tomo5Doi} target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 min-h-[44px] px-3.5 py-2 rounded-full border-2 border-white/40 text-xs font-black hover:border-white transition-colors" aria-label="Registro citable del Tomo V en Zenodo (se abre en una pestaña nueva)">
                   DOI · Zenodo
                   <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
@@ -1146,7 +1337,7 @@ const seccionesMilc = [
                     <line x1="10" y1="14" x2="21" y2="3"></line>
                   </svg>
                 </a>
-                <a href={`${base}/modelo-milc/el-lugar-de-llegar-a-ser`} class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border-2 border-white/40 text-xs font-black hover:border-white transition-colors">
+                <a href={`${base}/modelo-milc/el-lugar-de-llegar-a-ser`} class="inline-flex items-center gap-1.5 min-h-[44px] px-3.5 py-2 rounded-full border-2 border-white/40 text-xs font-black hover:border-white transition-colors">
                   Explorar el tomo →
                 </a>
               </div>
@@ -1182,14 +1373,18 @@ const seccionesMilc = [
         </div>
       </div>
 
-      <!-- Cómo citar la obra matriz -->
+      <!-- Cómo citar la obra matriz (Tomo 0 · versión 3.0) · siempre por DOI de concepto -->
       <CitaLibro
-        titulo="Educación en la Era Onlife"
+        titulo={t0.titulo}
+        subtitulo={libroMilcSubtitulo}
+        tomo={t0.etiqueta}
+        volumen={t0.numero}
+        version={libroMilcVersion}
         ano={2026}
-        editorial="Sor María Juliana Ediciones"
-        doi="10.5281/zenodo.20517707"
-        citeKey="cardenas2026onlife"
-        licencia="CC BY-NC-SA 4.0"
+        editorial={coleccion.sello}
+        doi={t0.doi}
+        citeKey={t0.cita_key}
+        licencia={t0.licencia}
         notaObraMatriz={false}
       />
 

@@ -407,11 +407,11 @@ export interface Publicacion {
 export const publicaciones: Publicacion[] = [
   {
     titulo: 'Educación en la Era Onlife',
-    subtitulo: 'MILC: Modelo de Investigación Liberadora y Científica · Edición ampliada 2026',
+    subtitulo: 'MILC: Modelo de Investigación Liberadora y Científica · Versión 3.0',
     ano: 2026,
-    paginas: 226,
+    paginas: 250,
     rol: 'Autor',
-    href: '/libro-milc/libro-milc-2026.pdf',
+    href: '/libro-milc/tomo-0/MILC.pdf',
     emoji: '📖',
   },
   {

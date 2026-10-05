@@ -7,32 +7,50 @@
  * a gestores bibliográficos (Zotero, Mendeley, EndNote), lo que facilita que
  * otros docentes e investigadores lo citen — señal de autoridad para SEO
  * académico y Google Scholar.
+ *
+ * La cita APA que se ve y la que se copia salen de la misma cadena, sin lugar
+ * de edición (APA 7). Con version="3.0" y tomo="Tomo 0" coincide con la impresa:
+ * Cárdenas Orozco, Á. (2026). *Educación en la Era Onlife: MILC, Modelo de
+ * Investigación Liberadora y Científica* (Versión 3.0; Colección MILC, Tomo 0).
+ * Sor María Juliana Ediciones. https://doi.org/10.5281/zenodo.20517707
  */
+import { tomo as tomoColeccion } from '../data/coleccion';
+
 interface Props {
   /** Título del libro. */
   titulo: string;
-  /** Etiqueta de tomo, ej. "Tomo I" / "Tomo II". Omitir para la obra matriz. */
+  /**
+   * Subtítulo. En la cita va tras «Título: ». Un título lleva un solo signo de
+   * dos puntos: si el subtítulo trae los suyos («MILC: Modelo…»), pasan a coma
+   * («MILC, Modelo…»), como en la cita impresa.
+   */
+  subtitulo?: string;
+  /** Etiqueta de tomo, ej. "Tomo 0" / "Tomo I". Omitir para citar sin tomo. */
   tomo?: string;
-  /** Número de volumen para BibTeX/RIS (1, 2…). Omitir para la obra matriz. */
+  /** Número de volumen para BibTeX/RIS (0, 1, 2…). El 0 es válido (Tomo 0). */
   volumen?: number;
+  /** Versión del libro, ej. "3.0". Se cita «(Versión 3.0; Colección MILC, Tomo 0)». */
+  version?: string;
   /** Año de publicación. */
   ano: number;
   /** Editorial. */
   editorial: string;
-  /** DOI sin prefijo de URL, ej. "10.5281/zenodo.21176768". */
+  /** DOI de concepto sin prefijo de URL, ej. "10.5281/zenodo.21176768". */
   doi: string;
   /** Clave BibTeX, ej. "cardenas2026querencia". */
   citeKey: string;
   /** Licencia legible, ej. "CC BY-SA 4.0". */
   licencia: string;
-  /** Muestra la nota de obra matriz al pie. */
+  /** Muestra la nota de licencia y de obra matriz al pie. */
   notaObraMatriz?: boolean;
 }
 
 const {
   titulo,
+  subtitulo,
   tomo,
   volumen,
+  version,
   ano,
   editorial,
   doi,
@@ -41,62 +59,90 @@ const {
   notaObraMatriz = true,
 } = Astro.props;
 
+const autorApa = 'Cárdenas Orozco, Á.';
 const autorBib = 'Cárdenas Orozco, Álvaro';
 const doiUrl = `https://doi.org/${doi}`;
-const serieApa = tomo ? `(Colección MILC, ${tomo})` : '(Colección MILC)';
+const tituloCompleto = subtitulo ? `${titulo}: ${subtitulo.replace(/\s*:\s*/, ', ')}` : titulo;
+const serie = [version ? `Versión ${version}` : '', tomo ? `Colección MILC, ${tomo}` : 'Colección MILC']
+  .filter(Boolean)
+  .join('; ');
 
-// APA 7ª
-const apa = `Cárdenas Orozco, Á. (${ano}). ${titulo} ${serieApa}. ${editorial}. ${doiUrl}`;
+// APA 7ª · una sola cadena: lo que va antes y después del título (en cursiva).
+const apaAntes = `${autorApa} (${ano}). `;
+const apaDespues = ` (${serie}). ${editorial}. ${doiUrl}`;
+const apa = `${apaAntes}${tituloCompleto}${apaDespues}`;
 
-// BibTeX
+const escapar = (t: string) =>
+  t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+// La misma cita con el título en cursiva, para pegarla con formato en un procesador de texto.
+const apaHtml = `${escapar(apaAntes)}<em>${escapar(tituloCompleto)}</em>${escapar(apaDespues)}`;
+
+// BibTeX (biblatex lee `version`; BibTeX clásico lo ignora sin error)
+const camposBib: [string, string | number | undefined][] = [
+  ['author', autorBib],
+  ['title', tituloCompleto.replace(/MILC/g, '{MILC}')],
+  ['series', 'Colección MILC'],
+  ['volume', volumen],
+  ['version', version],
+  ['year', ano],
+  ['publisher', editorial],
+  ['address', 'Cartago, Valle del Cauca, Colombia'],
+  ['doi', doi],
+  ['url', doiUrl],
+];
 const bibtex = `@book{${citeKey},
-  author    = {${autorBib}},
-  title     = {${titulo}},
-  series    = {Colección MILC},${volumen ? `\n  volume    = {${volumen}},` : ''}
-  year      = {${ano}},
-  publisher = {${editorial}},
-  address   = {Cartago, Valle del Cauca, Colombia},
-  doi       = {${doi}},
-  url       = {${doiUrl}}
+${camposBib
+  .filter(([, v]) => v !== undefined && v !== '')
+  .map(([k, v]) => `  ${k.padEnd(9)} = {${v}}`)
+  .join(',\n')}
 }`;
 
 // RIS
-const ris = `TY  - BOOK
-AU  - ${autorBib}
-TI  - ${titulo}
-T2  - Colección MILC${volumen ? `\nVL  - ${volumen}` : ''}
-PY  - ${ano}
-PB  - ${editorial}
-CY  - Cartago, Valle del Cauca, Colombia
-DO  - ${doi}
-UR  - ${doiUrl}
-ER  - `;
+const ris = [
+  'TY  - BOOK',
+  `AU  - ${autorBib}`,
+  `TI  - ${tituloCompleto}`,
+  'T2  - Colección MILC',
+  volumen !== undefined ? `VL  - ${volumen}` : '',
+  version ? `ET  - Versión ${version}` : '',
+  `PY  - ${ano}`,
+  `PB  - ${editorial}`,
+  'CY  - Cartago, Valle del Cauca, Colombia',
+  `DO  - ${doi}`,
+  `UR  - ${doiUrl}`,
+  'ER  - ',
+]
+  .filter(Boolean)
+  .join('\n');
 
 const formatos = [
-  { clave: 'apa', etiqueta: 'Copiar APA', cita: apa },
-  { clave: 'bibtex', etiqueta: 'Copiar BibTeX', cita: bibtex },
-  { clave: 'ris', etiqueta: 'Copiar RIS', cita: ris },
+  { clave: 'apa', etiqueta: 'Copiar APA', cita: apa, html: apaHtml },
+  { clave: 'bibtex', etiqueta: 'Copiar BibTeX', cita: bibtex, html: undefined },
+  { clave: 'ris', etiqueta: 'Copiar RIS', cita: ris, html: undefined },
 ];
+
+const matriz = tomoColeccion('0');
+const esMatriz = titulo.startsWith(matriz.titulo);
+const noComercial = licencia.includes('NC');
 ---
 
 <div class="bento-card mb-10 border-l-4 border-bento-blue cita-libro">
   <span class="chip-bento mb-3">📚 Cómo citar {tomo ? `este tomo` : `este libro`}</span>
-  <p class="text-sm leading-relaxed mt-2 p-4 rounded-bento-sm font-mono" style="background: var(--bg); color: var(--fg);" set:html={
-    `Cárdenas Orozco, Á. (${ano}). <em>${titulo}</em> ${serieApa}. Cartago, Valle del Cauca: ${editorial}. ${doiUrl}`
-  } />
+  <p class="text-sm leading-relaxed mt-2 p-4 rounded-bento-sm font-mono" style="background: var(--bg); color: var(--fg);">{apaAntes}<em>{tituloCompleto}</em>{apaDespues}</p>
 
   <div class="flex flex-wrap gap-2 mt-4">
     {formatos.map((f) => (
       <button
         type="button"
-        data-copiar-cita
+        data-copiar-cita-libro
         data-cita={f.cita}
+        data-cita-html={f.html}
         data-etiqueta={f.etiqueta}
-        class="inline-flex items-center gap-2 px-4 py-2 rounded-full font-bold text-xs border-2 hover:opacity-80 transition-opacity"
+        class="inline-flex items-center gap-2 min-h-[44px] px-4 py-2 rounded-full font-bold text-xs border-2 hover:opacity-80 transition-opacity"
         style="border-color: var(--border); color: var(--fg);"
       >
         <span data-copiar-icono>
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
           </svg>
@@ -109,15 +155,18 @@ const formatos = [
   {notaObraMatriz && (
     <p class="text-xs leading-relaxed mt-4" style="color: var(--fg-muted);">
       Obra académica de acceso abierto bajo licencia <strong style="color: var(--fg);">{licencia}</strong>:
-      puedes compartirla y adaptarla citando al autor y conservando la misma licencia.
-      Obra matriz: <em>Educación en la Era Onlife</em> (MILC, 2026).
+      puedes compartirla y adaptarla citando al autor{noComercial ? ', sin fines comerciales' : ''} y conservando la misma licencia.
+      {!esMatriz && <>Tomo 0 (obra matriz): <em>{matriz.titulo}</em>.</>}
     </p>
   )}
 </div>
 
 <script>
-  document.querySelectorAll<HTMLButtonElement>('[data-copiar-cita]').forEach((btn) => {
+  // Selector propio (no `[data-copiar-cita]`): CitaArticulo comparte página con este
+  // bloque en /modelo-milc y su script no debe volver a escribir el portapapeles.
+  document.querySelectorAll<HTMLButtonElement>('[data-copiar-cita-libro]').forEach((btn) => {
     const cita = btn.dataset.cita ?? '';
+    const citaHtml = btn.dataset.citaHtml;
     const texto = btn.querySelector<HTMLElement>('[data-copiar-texto]');
     const icono = btn.querySelector<HTMLElement>('[data-copiar-icono]');
     const textoOriginal = texto?.textContent ?? btn.dataset.etiqueta ?? 'Copiar';
@@ -126,7 +175,17 @@ const formatos = [
 
     btn.addEventListener('click', async () => {
       try {
-        await navigator.clipboard.writeText(cita);
+        if (citaHtml && typeof ClipboardItem !== 'undefined' && navigator.clipboard?.write) {
+          // Texto plano + HTML: al pegar en un procesador de texto, el título conserva la cursiva.
+          await navigator.clipboard.write([
+            new ClipboardItem({
+              'text/plain': new Blob([cita], { type: 'text/plain' }),
+              'text/html': new Blob([citaHtml], { type: 'text/html' }),
+            }),
+          ]);
+        } else {
+          await navigator.clipboard.writeText(cita);
+        }
       } catch {
         const ta = document.createElement('textarea');
         ta.value = cita;
@@ -143,7 +202,7 @@ const formatos = [
       if (texto) texto.textContent = '¡Copiado!';
       if (icono)
         icono.innerHTML =
-          '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+          '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>';
       btn.classList.add('bg-bento-lime', 'text-black', 'border-bento-lime');
       if (revertir) window.clearTimeout(revertir);
       revertir = window.setTimeout(() => {

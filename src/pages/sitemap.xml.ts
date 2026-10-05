@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { grados } from '../data/grados';
+import { libros } from '../data/coleccion';
 
 /**
  * Sitemap dinámico para SEO.
@@ -26,20 +27,19 @@ export const GET: APIRoute = async ({ site }) => {
   urls.push({ loc: `${fullBase}/modelo-milc`, priority: 0.9, changefreq: 'monthly' });
   urls.push({ loc: `${fullBase}/modelo-milc/coleccion`, priority: 0.9, changefreq: 'monthly' });
 
-  // Colección MILC · páginas dedicadas de cada libro (obra citable con DOI · alto valor SEO)
-  urls.push({ loc: `${fullBase}/modelo-milc/mercado-atencion`, priority: 0.85, changefreq: 'monthly' });
-  urls.push({ loc: `${fullBase}/modelo-milc/querencia`, priority: 0.85, changefreq: 'monthly' });
-  urls.push({ loc: `${fullBase}/modelo-milc/el-nino-que-suena-ciencia`, priority: 0.85, changefreq: 'monthly' });
-  urls.push({ loc: `${fullBase}/modelo-milc/no-rendir-la-mirada`, priority: 0.85, changefreq: 'monthly' });
-  urls.push({ loc: `${fullBase}/modelo-milc/el-lugar-de-llegar-a-ser`, priority: 0.85, changefreq: 'monthly' });
+  // Colección MILC · páginas dedicadas de cada libro (obra citable con DOI · alto valor SEO).
+  // El Tomo 0 vive en /modelo-milc (arriba); los tomos I–V en /modelo-milc/<slug>.
+  for (const l of libros) {
+    if (l.slug) urls.push({ loc: `${baseUrl}${l.href}`, priority: 0.85, changefreq: 'monthly' });
+  }
 
-  // PDFs de los libros · indexables directamente por Google (rankean como documento)
-  urls.push({ loc: `${fullBase}/libro-milc/libro-milc-2026.pdf`, priority: 0.7, changefreq: 'yearly' });
-  urls.push({ loc: `${fullBase}/libro-milc/tomo-1-mercado-de-la-atencion.pdf`, priority: 0.7, changefreq: 'yearly' });
-  urls.push({ loc: `${fullBase}/libro-milc/tomo-2-pedagogia-de-la-querencia.pdf`, priority: 0.7, changefreq: 'yearly' });
-  urls.push({ loc: `${fullBase}/libro-milc/tomo-3-el-nino-que-suena-ciencia.pdf`, priority: 0.7, changefreq: 'yearly' });
-  urls.push({ loc: `${fullBase}/libro-milc/tomo-4-no-rendir-la-mirada.pdf`, priority: 0.7, changefreq: 'yearly' });
-  urls.push({ loc: `${fullBase}/libro-milc/tomo-5-el-lugar-de-llegar-a-ser.pdf`, priority: 0.7, changefreq: 'yearly' });
+  // Archivos de los libros · indexables directamente por Google (rankean como documento).
+  // Salen de src/data/coleccion.json; `url` ya trae la base y el nombre codificado (%20).
+  for (const l of libros) {
+    for (const a of l.archivos) {
+      urls.push({ loc: `${baseUrl}${a.url}`, priority: a.rol === 'libro' ? 0.7 : 0.6, changefreq: 'yearly' });
+    }
+  }
 
   // Página "Acerca de"
   urls.push({ loc: `${fullBase}/acerca`, priority: 0.8, changefreq: 'monthly' });

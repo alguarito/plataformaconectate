@@ -1,138 +1,63 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { libros, tomo, coleccion, listaCapitulos, peso, type Romano } from '../../../data/coleccion';
+// Los seis libros salen de src/data/coleccion.json (fuente única, vía coleccion.ts): títulos,
+// síntesis, DOI de concepto, capítulos del Tomo 0 que profundiza cada tomo y archivos.
+// Tomo 0 = obra matriz (vive en /modelo-milc) · Tomos I–V con ficha propia.
 
 const base = import.meta.env.BASE_URL;
 
 const origen = (Astro.site ?? new URL('https://alguarito.github.io')).toString().replace(/\/$/, '');
 const inicio = `${origen}${base.replace(/\/$/, '')}`;
 
-// ─── Los seis libros de la colección ──────────────────────────────────────
-// Tomo 0 = obra matriz (vive en /modelo-milc) · Tomos I–V con ficha propia.
-// Se cita SIEMPRE por concept DOI (resuelve a la última versión).
-const libros = [
-  {
-    romano: '0',
-    id: 'libro',
-    titulo: 'Educación en la Era Onlife',
-    dimension: 'el marco',
-    pregunta: '¿qué es investigar en la escuela hoy?',
-    preguntaCorta: '¿qué es investigar?',
-    sintesis:
-      'Obra fundacional del modelo MILC: las fases, el triángulo de pensamiento y el Inforg Resiliente. Es el mapa; los cinco tomos son los territorios.',
-    doi: '10.5281/zenodo.20517707',
-    licencia: 'CC BY-NC-SA 4.0',
-    href: `${base}/modelo-milc`,
-    pdf: `${base}/libro-milc/libro-milc-2026.pdf`,
-    color: 'bg-bento-purple',
-    emoji: '📕',
-  },
-  {
-    romano: 'I',
-    id: 'tomo1',
-    titulo: 'El Mercado de la Atención',
-    dimension: 'el yo',
-    pregunta: '¿quién aprende?',
-    preguntaCorta: '¿quién aprende?',
-    sintesis:
-      'La atención como mercancía disputada y la soberanía atencional como primera condición: quien no gobierna su atención no gobierna su formación.',
-    doi: '10.5281/zenodo.20644819',
-    licencia: 'CC BY-SA 4.0',
-    href: `${base}/modelo-milc/mercado-atencion`,
-    pdf: `${base}/libro-milc/tomo-1-mercado-de-la-atencion.pdf`,
-    color: 'bg-bento-lime',
-    emoji: '📗',
-  },
-  {
-    romano: 'II',
-    id: 'tomo2',
-    titulo: 'Pedagogía de la Querencia',
-    dimension: 'el nosotros',
-    pregunta: '¿desde dónde?',
-    preguntaCorta: '¿desde dónde?',
-    sintesis:
-      'El arraigo como competencia que se educa: el territorio, la lengua y la memoria, y el diálogo con los saberes ancestrales del propio lugar.',
-    doi: '10.5281/zenodo.21176768',
-    licencia: 'CC BY-SA 4.0',
-    href: `${base}/modelo-milc/querencia`,
-    pdf: `${base}/libro-milc/tomo-2-pedagogia-de-la-querencia.pdf`,
-    color: 'bg-bento-orange',
-    emoji: '📘',
-  },
-  {
-    romano: 'III',
-    id: 'tomo3',
-    titulo: 'El Niño que Sueña Ciencia',
-    dimension: 'el cómo',
-    pregunta: '¿cómo se investiga?',
-    preguntaCorta: '¿cómo?',
-    sintesis:
-      'Del asombro espontáneo al oficio de investigar: darle método al sueño de un niño sin apagarlo.',
-    doi: '10.5281/zenodo.21360910',
-    licencia: 'CC BY-SA 4.0',
-    href: `${base}/modelo-milc/el-nino-que-suena-ciencia`,
-    pdf: `${base}/libro-milc/tomo-3-el-nino-que-suena-ciencia.pdf`,
-    color: 'bg-bento-blue',
-    emoji: '📙',
-  },
-  {
-    romano: 'IV',
-    id: 'tomo4',
-    titulo: 'No Rendir la Mirada',
-    dimension: 'la herramienta',
-    pregunta: '¿con qué?',
-    preguntaCorta: '¿con qué?',
-    sintesis:
-      'Inteligencia artificial, datos y soberanía tecnológica: la herramienta no piensa por el estudiante, le presta capacidad. Declaración, verificación y autoría.',
-    doi: '10.5281/zenodo.21517630',
-    licencia: 'CC BY-SA 4.0',
-    href: `${base}/modelo-milc/no-rendir-la-mirada`,
-    pdf: `${base}/libro-milc/tomo-4-no-rendir-la-mirada.pdf`,
-    color: 'bg-bento-yellow',
-    emoji: '📒',
-  },
-  {
-    romano: 'V',
-    id: 'tomo5',
-    titulo: 'El Lugar de Llegar a Ser',
-    dimension: 'el espacio',
-    pregunta: '¿dónde?',
-    preguntaCorta: '¿dónde?',
-    sintesis:
-      'El espacio no es el escenario neutro del aprendizaje, es uno de sus agentes: fundar, abrir y sostener los lugares donde el estudiante llega a ser.',
-    doi: '10.5281/zenodo.21654100',
-    licencia: 'CC BY-SA 4.0',
-    href: `${base}/modelo-milc/el-lugar-de-llegar-a-ser`,
-    pdf: `${base}/libro-milc/tomo-5-el-lugar-de-llegar-a-ser.pdf`,
-    color: 'bg-bento-black',
-    emoji: '📗',
-  },
-];
-
 // ─── «Por dónde empezar según…» ───────────────────────────────────────────
-const rutas = [
-  { necesidad: 'Mis estudiantes viven distraídos y no logro su atención', tomo: 'Tomo I', titulo: 'El Mercado de la Atención', href: `${base}/modelo-milc/mercado-atencion` },
-  { necesidad: 'Quiero que lo que enseño dialogue con su territorio y su historia', tomo: 'Tomo II', titulo: 'Pedagogía de la Querencia', href: `${base}/modelo-milc/querencia` },
-  { necesidad: 'Quiero llevar a mis estudiantes a investigar de verdad', tomo: 'Tomo III', titulo: 'El Niño que Sueña Ciencia', href: `${base}/modelo-milc/el-nino-que-suena-ciencia` },
-  { necesidad: 'La IA entró a mi aula y no sé con qué criterio usarla', tomo: 'Tomo IV', titulo: 'No Rendir la Mirada', href: `${base}/modelo-milc/no-rendir-la-mirada` },
-  { necesidad: 'Quiero fundar un semillero o cambiar el ambiente de mi aula', tomo: 'Tomo V', titulo: 'El Lugar de Llegar a Ser', href: `${base}/modelo-milc/el-lugar-de-llegar-a-ser` },
-  { necesidad: 'Quiero entender el modelo completo antes de empezar', tomo: 'Tomo 0', titulo: 'Educación en la Era Onlife', href: `${base}/modelo-milc` },
+const necesidades: { necesidad: string; romano: Romano }[] = [
+  { necesidad: 'Mis estudiantes viven distraídos y no logro su atención', romano: 'I' },
+  { necesidad: 'Quiero que lo que enseño dialogue con su territorio y su historia', romano: 'II' },
+  { necesidad: 'Quiero llevar a mis estudiantes a investigar de verdad', romano: 'III' },
+  { necesidad: 'La IA entró a mi aula y no sé con qué criterio usarla', romano: 'IV' },
+  { necesidad: 'Quiero fundar un semillero o cambiar el ambiente de mi aula', romano: 'V' },
+  { necesidad: 'Quiero entender el modelo completo antes de empezar', romano: '0' },
 ];
+const rutas = necesidades.map((r) => ({ ...r, libro: tomo(r.romano) }));
+
+// ─── Descargas: todos los archivos de cada libro ──────────────────────────
+// El Tomo 0 trae cuatro (libro, cuaderno y hojas F01–F16 en Carta y A4).
+// download = nombre EXACTO: los enlaces entre libro y cuaderno dependen de él.
+const descargas = libros.flatMap((l) =>
+  l.archivos.map((a) => {
+    const hojas = a.rol === 'hojas-carta' || a.rol === 'hojas-a4';
+    const titulo =
+      a.rol === 'cuaderno' ? 'Cuaderno de trabajo MILC' : hojas ? `Hojas F01–F16 · ${a.formato}` : l.titulo;
+    const detalle = [
+      a.paginas ? `${a.paginas} ${hojas ? 'hojas' : 'págs.'}` : '',
+      hojas ? '' : (a.formato ?? ''),
+      peso(a.bytes),
+    ]
+      .filter(Boolean)
+      .join(' · ');
+    return { libro: l, archivo: a, titulo, detalle };
+  }),
+);
 
 // ─── Cita de la colección completa ────────────────────────────────────────
-const citaApa =
-  'Cárdenas Orozco, Á. (2026). Colección MILC: Modelo de Investigación Liberadora y Científica (Tomos 0–V). Sor María Juliana Ediciones. https://doi.org/10.5281/zenodo.20517707';
+// La colección no tiene DOI propio: se cita con la URL de su comunidad en Zenodo.
+// Cada tomo se cita por su DOI de concepto (bloque «Cómo citar» de su ficha).
+const { autor } = coleccion;
+const citaTitulo = `${coleccion.titulo}: ${coleccion.subtitulo}`;
+const citaAntes = `${autor.apa} (2026). `;
+const citaDespues = ` (Tomos 0–V). ${coleccion.sello}. ${coleccion.comunidad_zenodo}`;
+const citaApa = `${citaAntes}${citaTitulo}${citaDespues}`;
 
-const citaBibtex = `@collection{cardenas2026milc,
-  author    = {Cárdenas Orozco, Álvaro},
-  title     = {Colección MILC: Modelo de Investigación Liberadora y Científica (Tomos 0--V)},
-  publisher = {Sor María Juliana Ediciones},
-  address   = {Cartago, Valle del Cauca, Colombia},
+const citaBibtex = `@collection{cardenas2026coleccion,
+  author    = {${autor.bib}},
+  title     = {${citaTitulo} (Tomos 0--V)},
+  publisher = {${coleccion.sello}},
+  address   = {${coleccion.lugar}},
   year      = {2026},
-  doi       = {10.5281/zenodo.20517707},
-  note      = {Obra completa en acceso abierto. Tomo 0: 10.5281/zenodo.20517707;
-               Tomo I: 10.5281/zenodo.20644819; Tomo II: 10.5281/zenodo.21176768;
-               Tomo III: 10.5281/zenodo.21360910; Tomo IV: 10.5281/zenodo.21517630;
-               Tomo V: 10.5281/zenodo.21654100}
+  url       = {${coleccion.comunidad_zenodo}},
+  note      = {Obra completa en acceso abierto. DOI de concepto de cada tomo:
+               ${libros.map((l) => `${l.etiqueta}: ${l.doi}`).join(';\n               ')}}
 }`;
 
 // ─── Schema.org · CollectionPage (referencia los nodos ya definidos) ──────
@@ -153,11 +78,11 @@ const jsonLdExtra = [
     mainEntity: {
       '@type': 'ItemList',
       name: 'Los seis libros de la Colección MILC',
-      numberOfItems: 6,
+      numberOfItems: libros.length,
       itemListOrder: 'https://schema.org/ItemListOrderAscending',
       itemListElement: libros.map((l, i) => ({
         '@type': 'ListItem',
-        position: i,
+        position: i + 1,
         item: { '@id': `${inicio}/modelo-milc#${l.id}` },
       })),
     },
@@ -167,7 +92,7 @@ const jsonLdExtra = [
 
 <BaseLayout
   title="La Colección MILC · seis libros y cómo leerlos — ConectaTE"
-  description="Guía de lectura de la Colección MILC: seis libros en acceso abierto, del Tomo 0 al Tomo V. El arco completo (el yo, el nosotros, el cómo, la herramienta y el lugar), la síntesis de cada tomo, por dónde empezar según lo que necesitas, y la descarga y cita de la obra entera. Dr. Álvaro Cárdenas Orozco."
+  description="Guía de lectura de la Colección MILC: seis libros en acceso abierto, del Tomo 0 al Tomo V. El arco completo (el yo, el nosotros, el cómo, la herramienta y el lugar), la síntesis de cada tomo, por dónde empezar según lo que necesita, y la descarga y cita de la obra entera. Dr. Álvaro Cárdenas Orozco."
   ogType="website"
   imagen="/og/coleccion-milc.png"
   jsonLd={jsonLdExtra}
@@ -261,7 +186,7 @@ const jsonLdExtra = [
                   <span class="min-w-0">
                     <span class="block text-sm font-black leading-tight md:whitespace-nowrap">{l.dimension}</span>
                     <span class="block text-xs mt-0.5 leading-snug" style="color: var(--fg-muted);">
-                      {l.preguntaCorta}
+                      {l.pregunta_corta}
                     </span>
                   </span>
                 </li>
@@ -293,6 +218,11 @@ const jsonLdExtra = [
                 <h3 class="text-xl md:text-2xl font-black leading-tight mb-1">{l.titulo}</h3>
                 <p class="text-xs font-bold italic opacity-70 mb-3">{l.pregunta}</p>
                 <p class="text-sm leading-relaxed opacity-85">{l.sintesis}</p>
+                {l.profundiza.length > 0 && (
+                  <p class="text-xs font-bold mt-3 opacity-80">
+                    Profundiza los capítulos {listaCapitulos(l.profundiza)} del Tomo 0
+                  </p>
+                )}
               </div>
               <div class="mt-4 pt-3 border-t border-current/15 flex items-center justify-between gap-2 flex-wrap">
                 <span class="text-[11px] font-semibold opacity-70">DOI {l.doi}</span>
@@ -339,10 +269,10 @@ const jsonLdExtra = [
         </p>
         <div class="bento-card divide-y" style="border-color: var(--border);">
           {rutas.map((r) => (
-            <a href={r.href} class="flex items-start md:items-center justify-between gap-4 py-4 first:pt-0 last:pb-0 group flex-col md:flex-row">
+            <a href={r.libro.href} class="flex items-start md:items-center justify-between gap-4 py-4 first:pt-0 last:pb-0 group flex-col md:flex-row">
               <p class="text-sm md:text-base font-semibold leading-snug">«{r.necesidad}»</p>
               <span class="shrink-0 text-xs md:text-sm font-black whitespace-nowrap group-hover:translate-x-0.5 transition-transform" style="color: var(--fg-muted);">
-                → {r.tomo} · {r.titulo}
+                → {r.libro.etiqueta} · {r.libro.titulo}
               </span>
             </a>
           ))}
@@ -355,19 +285,25 @@ const jsonLdExtra = [
         <h2 class="heading-huge mb-3 leading-tight">La obra entera, gratis.</h2>
         <p class="text-sm md:text-base leading-relaxed mb-6 max-w-3xl" style="color: var(--fg-muted);">
           Los seis libros son de acceso abierto y se pueden descargar, compartir y usar en el aula.
+          El Tomo 0 trae, además, su cuaderno de trabajo y las hojas F01–F16 en Carta y en A4.
         </p>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-8">
-          {libros.map((l) => (
-            <a href={l.pdf} download class="bento-card-hover flex items-center gap-3">
-              <span class="text-2xl shrink-0">{l.emoji}</span>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-3">
+          {descargas.map(({ libro: l, archivo: a, titulo, detalle }) => (
+            <a href={a.url} download={a.nombre} class="bento-card-hover flex items-center gap-3">
+              <span class="text-2xl shrink-0" aria-hidden="true">{l.emoji}</span>
               <span class="min-w-0">
-                <span class="block text-[11px] font-black uppercase tracking-widest" style="color: var(--fg-muted);">Tomo {l.romano} · PDF</span>
-                <span class="block text-sm font-bold leading-tight truncate">{l.titulo}</span>
+                <span class="block text-[11px] font-black uppercase tracking-widest" style="color: var(--fg-muted);">{l.etiqueta} · PDF</span>
+                <span class="block text-sm font-bold leading-tight truncate">{titulo}</span>
+                <span class="block text-xs mt-0.5" style="color: var(--fg-muted);">{detalle}</span>
               </span>
             </a>
           ))}
         </div>
+        <p class="text-xs leading-relaxed mb-8 max-w-3xl" style="color: var(--fg-muted);">
+          Guarde el libro y el cuaderno del Tomo 0 en la misma carpeta y sin cambiarles el nombre:
+          así funcionan los enlaces entre los dos.
+        </p>
 
         <div class="bento-card">
           <h3 class="text-lg font-black mb-1">Citar la colección completa</h3>
@@ -378,15 +314,15 @@ const jsonLdExtra = [
           <div class="mb-4">
             <div class="flex items-center justify-between gap-2 mb-2">
               <span class="text-xs font-black uppercase tracking-widest" style="color: var(--fg-muted);">APA 7.ª</span>
-              <button type="button" data-copiar={citaApa} class="text-xs font-black px-3 py-1 rounded-full border transition-colors hover:opacity-70" style="border-color: var(--border);">Copiar</button>
+              <button type="button" data-copiar={citaApa} class="text-xs font-black px-4 min-h-[44px] inline-flex items-center rounded-full border transition-colors hover:opacity-70" style="border-color: var(--border);">Copiar</button>
             </div>
-            <p class="text-sm leading-relaxed p-3 rounded-xl" style="background: var(--bg); color: var(--fg-muted);">{citaApa}</p>
+            <p class="text-sm leading-relaxed p-3 rounded-xl" style="background: var(--bg); color: var(--fg-muted);">{citaAntes}<em>{citaTitulo}</em>{citaDespues}</p>
           </div>
 
           <div>
             <div class="flex items-center justify-between gap-2 mb-2">
               <span class="text-xs font-black uppercase tracking-widest" style="color: var(--fg-muted);">BibTeX</span>
-              <button type="button" data-copiar={citaBibtex} class="text-xs font-black px-3 py-1 rounded-full border transition-colors hover:opacity-70" style="border-color: var(--border);">Copiar</button>
+              <button type="button" data-copiar={citaBibtex} class="text-xs font-black px-4 min-h-[44px] inline-flex items-center rounded-full border transition-colors hover:opacity-70" style="border-color: var(--border);">Copiar</button>
             </div>
             <pre class="text-[11px] leading-relaxed p-3 rounded-xl overflow-x-auto" style="background: var(--bg); color: var(--fg-muted);"><code>{citaBibtex}</code></pre>
           </div>

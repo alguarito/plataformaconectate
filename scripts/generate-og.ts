@@ -290,7 +290,7 @@ function tplModeloMilc(): string {
     </text>
     <!-- Stats clave -->
     <text x="80" y="475" fill="#FFFFFF" opacity="0.9" font-family="Helvetica, sans-serif" font-weight="600" font-size="22">
-      ${esc('4 fases · Triángulo Dussel-Estoico-Floridi · 18 anclajes ancestrales')}
+      ${esc('Ciclo en cinco momentos: de la Escucha a la Devolución')}
     </text>
     <text x="80" y="510" fill="#FFFFFF" opacity="0.75" font-family="Helvetica, sans-serif" font-weight="500" font-size="20">
       ${esc('Colección MILC · 6 libros (del Tomo 0 al V) · Dr. Álvaro Cárdenas Orozco')}
@@ -382,12 +382,12 @@ type LibroOg = {
 const LIBROS: LibroOg[] = [
   {
     slug: 'libro-onlife',
-    etiqueta: 'COLECCIÓN MILC · OBRA MATRIZ',
+    etiqueta: 'COLECCIÓN MILC · TOMO 0',
     titulo: 'Educación en la Era Onlife',
-    subtitulo: 'Modelo de Investigación Liberadora y Científica',
-    paginas: 226,
+    subtitulo: 'MILC: Modelo de Investigación Liberadora y Científica',
+    paginas: 250,
     licencia: 'CC BY-NC-SA 4.0',
-    doi: '10.5281/zenodo.20518085',
+    doi: '10.5281/zenodo.20517707',
     bg: '#000000', fg: '#FFFFFF', accent: '#A3FF12',
     emoji: '📖',
   },
@@ -398,7 +398,7 @@ const LIBROS: LibroOg[] = [
     subtitulo: 'Educar el criterio de los jóvenes en la era onlife',
     paginas: 118,
     licencia: 'CC BY-SA 4.0',
-    doi: '10.5281/zenodo.20644820',
+    doi: '10.5281/zenodo.20644819',
     bg: '#7C3AED', fg: '#FFFFFF', accent: '#FFD60A',
     emoji: '📕',
   },

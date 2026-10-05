@@ -57,6 +57,7 @@ const inicio = `${origen}${base.replace(/\/$/, '')}`;
 // ─── Schema.org · structured data global ─────────────────────────────────
 // Se renderiza en todas las páginas para que Google identifique:
 // - Quién es la organización (EducationalOrganization)
+// - Qué sello publica la Colección MILC (Organization #sello, dependiente de la institución)
 // - Quién es el docente (Person)
 // - Qué es la plataforma (WebSite + SearchAction)
 // Páginas específicas pueden pasar `jsonLd` adicional (ej. Book en /modelo-milc)
@@ -105,6 +106,20 @@ const schemaOrganization = {
   },
 };
 
+// Sello editorial de la Colección MILC. Los libros lo citan como `publisher: { '@id': inicio + '#sello' }`.
+const schemaSello = {
+  '@type': 'Organization',
+  '@id': `${inicio}#sello`,
+  name: 'Sor María Juliana Ediciones',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Cartago',
+    addressRegion: 'Valle del Cauca',
+    addressCountry: 'CO',
+  },
+  parentOrganization: { '@id': `${inicio}#organization` },
+};
+
 const schemaWebsite = {
   '@type': 'WebSite',
   '@id': `${inicio}#website`,
@@ -130,7 +145,7 @@ const schemaWebsite = {
 const jsonLdExtra = Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : [];
 const schemaGraph = {
   '@context': 'https://schema.org',
-  '@graph': [schemaOrganization, schemaPerson, schemaWebsite, ...jsonLdExtra],
+  '@graph': [schemaOrganization, schemaSello, schemaPerson, schemaWebsite, ...jsonLdExtra],
 };
 
 // Imagen OG: si no se pasó una específica, usamos /og/home.png (1200×630)
@@ -179,7 +194,7 @@ const ogImageHeight = isFullsizeOg ? 630 : 1024;
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
 
-    <!-- Schema.org · structured data (Person + EducationalOrganization + WebSite + extras) -->
+    <!-- Schema.org · structured data (Person + EducationalOrganization + sello editorial + WebSite + extras) -->
     <script type="application/ld+json" set:html={JSON.stringify(schemaGraph)} />
 
     <!-- OpenSearch · permite añadir ConectaTE como motor de búsqueda en Chrome/Firefox -->

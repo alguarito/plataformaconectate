@@ -1,11 +1,33 @@
 # 🎓 ConectaTE — Plataforma Educativa
 
+[![Sitio en vivo](https://img.shields.io/badge/sitio-en%20vivo-0066FF?style=flat-square)](https://alguarito.github.io/plataformaconectate/)
+[![Licencia: CC BY-NC-SA 4.0](https://img.shields.io/badge/licencia-CC%20BY--NC--SA%204.0-lightgrey?style=flat-square)](LICENSE)
+[![Astro 6](https://img.shields.io/badge/Astro-6-BC52EE?style=flat-square&logo=astro&logoColor=white)](https://astro.build)
+[![Supabase](https://img.shields.io/badge/Supabase-Postgres%20%2B%20RLS-3ECF8E?style=flat-square&logo=supabase&logoColor=white)](https://supabase.com)
+[![Offline-first](https://img.shields.io/badge/offline--first-Service%20Worker-111111?style=flat-square)](public/sw.js)
+
+![ConectaTE: 180 guías, 18 proyectos y 18 exámenes para los grados 6.º a 11.º](public/og/home.png)
+
 > **Conectando Tecnología con Educación**
 > Plataforma educativa interactiva del área de Tecnología e Informática
 > **Institución Educativa Sor María Juliana** · Cartago, Valle del Cauca
 > Dr. Álvaro Cárdenas Orozco
 
 🌐 **https://alguarito.github.io/plataformaconectate**
+
+---
+
+## 🇬🇧 In English
+
+**ConectaTE** is an offline-first learning platform for Technology and Computing (grades 6–11) at a Colombian public school, built on the **MILC** pedagogical model (Modelo de Investigación Liberadora y Científica).
+
+- **Curriculum as code.** Every guide, exam and project is a YAML file. Python builders turn each one into a print-ready PDF (XeLaTeX) and into the web version (TypeScript + Astro). A linter checks the editorial contract of every guide.
+- **Built for low connectivity.** Most students use mid-range Android phones with limited data, so a custom Service Worker caches PDFs and pages, and the interface is designed mobile-first at 360 px.
+- **Accounts with guardian consent.** Supabase (Postgres with row-level security and 5 Edge Functions) handles sign-up with guardian consent, student progress and teacher reports. A monthly GitHub Action sends progress reports to guardians.
+- **Content.** 180 learning guides (30 per grade), 18 exams, 18 integrative projects, 10 Bebras-style computational thinking challenges, a research club track and a social-emotional program.
+- **Stack.** Astro 6, Tailwind CSS, TypeScript, Supabase, Python, XeLaTeX, GitHub Actions and GitHub Pages.
+
+Author: **Álvaro Cárdenas Orozco**, systems engineer and PhD in Education Sciences ([website](https://alvarocardenasorozco.com) · [ORCID](https://orcid.org/0000-0003-1820-301X)).
 
 ---
 
@@ -19,8 +41,8 @@ Plataforma web que organiza y comparte el material del área de Tecnología e In
 | 📝 Exámenes | **18** (uno por grado y período) | `content/examenes/` |
 | 🛠 Proyectos integradores | **18** | `content/proyectos/` |
 | 🦫 Retos Bebras | **10** | `content/guias/bebras/` |
-| 🔬 Guías del Semillero | **9** de 20 | `content/guias/semillero/` |
-| 🧠 Territorio Interior | **4** de 60 | `content/guias/territorio-interior/` |
+| 🔬 Guías del Semillero | **12** de 20 | `content/guias/semillero/` |
+| 🧠 Territorio Interior | **56** de 60 | `content/guias/territorio-interior/` |
 
 Inspirada en [Física Interactiva](https://iemauxicartago.edu.co/Fisica/) de la I.E. María Auxiliadora de Cartago.
 
@@ -46,6 +68,20 @@ Inspirada en [Física Interactiva](https://iemauxicartago.edu.co/Fisica/) de la 
 | Offline | Service Worker propio (`public/sw.js`) |
 | Hosting | GitHub Pages |
 | CI/CD | GitHub Actions (Node 22) |
+
+### Flujo del contenido
+
+```mermaid
+flowchart LR
+  Y["content/**.yaml<br/>fuente única"] --> L["guias-lint.py<br/>contrato MILC"]
+  L --> B["builders de scripts/"]
+  B --> P["PDF<br/>XeLaTeX"]
+  B --> T["TypeScript<br/>src/data"]
+  T --> A["Astro 6<br/>sitio estático"]
+  P --> A
+  A --> G["GitHub Pages<br/>+ Service Worker"]
+  S["Supabase<br/>cuentas · consentimiento · progreso"] <--> A
+```
 
 ---
 
@@ -178,15 +214,16 @@ Accesibilidad no negociable: contraste **WCAG AA 4.5:1**, targets táctiles ≥ 
 - [x] 180 guías, 18 exámenes y 18 proyectos, con PDF y versión web desde un solo YAML
 - [x] Pipeline de contenido con linter del contrato MILC v3 (`make guia-lint`)
 - [x] Rediseño impreso MILC en las cuatro familias de documentos
-- [x] Semillero de Investigación (3 de 5 líneas abiertas)
-- [x] Territorio Interior: temario de 60 momentos con sus anclas documentadas
+- [x] Semillero de Investigación: 3 de 5 líneas completas (Astronomía, Pensamiento computacional y Robótica, 4 módulos cada una)
+- [x] Territorio Interior: 56 de 60 momentos escritos, cada uno con su ancla documentada
 - [x] Offline-first con Service Worker
 - [x] Cuentas, consentimiento del acudiente, progreso e informes sobre Supabase
+- [x] Censo de conectividad post-sismo (`/conectividad`)
 
 ### 🚧 En curso
-- [ ] Territorio Interior: escribir los 56 momentos restantes
-- [ ] Semillero: módulos 2–4 de Pensamiento computacional; líneas de IA e Innovación social
-- [ ] Censo de conectividad post-sismo: backend listo (RPC), falta la página de captura
+- [ ] Migración de las guías de grado al contrato v3.1
+- [ ] Territorio Interior: los 4 momentos restantes (6-1, 6-5, 6-7 y 7-7)
+- [ ] Semillero: líneas de IA e Innovación social
 - [ ] 3 anclas ancestrales que se cierran con trabajo de campo, no con búsqueda
 
 ---
@@ -194,13 +231,25 @@ Accesibilidad no negociable: contraste **WCAG AA 4.5:1**, targets táctiles ≥ 
 ## 👤 Autor
 
 **Dr. Álvaro Cárdenas Orozco**
-Docente de Tecnología e Informática
+Ingeniero de Sistemas y Computación, Doctor en Ciencias de la Educación · Docente de Tecnología e Informática
 I.E. Sor María Juliana — Cartago, Valle del Cauca, Colombia
+
+🌐 [alvarocardenasorozco.com](https://alvarocardenasorozco.com) · 🆔 [ORCID 0000-0003-1820-301X](https://orcid.org/0000-0003-1820-301X)
+
+---
+
+## 📑 Cómo citar
+
+El repositorio trae [`CITATION.cff`](CITATION.cff); GitHub lo muestra en el botón **Cite this repository**. En APA 7.ª:
+
+> Cárdenas Orozco, Á. (2026). *ConectaTE: plataforma educativa de Tecnología e Informática (6.º a 11.º)* [Software]. GitHub. https://github.com/alguarito/plataformaconectate
+
+Para citar el modelo pedagógico, usa el artículo arbitrado y los libros de la Colección MILC por su DOI de concepto: están en [`/modelo-milc`](https://alguarito.github.io/plataformaconectate/modelo-milc/).
 
 ---
 
 ## 📜 Licencia
 
-Creative Commons **CC BY-NC-SA 4.0** — uso educativo, no comercial, compartir igual.
+Creative Commons **CC BY-NC-SA 4.0** (uso educativo, no comercial, compartir igual) para el código y el contenido propio. Los libros de la Colección MILC, los retos tomados de Bebras y los recursos de terceros conservan su propia licencia. El detalle está en [`LICENSE`](LICENSE).
 
-© 2026 ConectaTE.
+© 2026 Álvaro Cárdenas Orozco · ConectaTE.

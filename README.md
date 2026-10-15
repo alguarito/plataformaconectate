@@ -222,9 +222,8 @@ Accesibilidad no negociable: contraste **WCAG AA 4.5:1**, targets táctiles ≥ 
 
 ### 🚧 En curso
 - [ ] Migración de las guías de grado al contrato v3.1
-- [ ] Territorio Interior: los 4 momentos restantes (6-1, 6-5, 6-7 y 7-7)
+- [ ] Territorio Interior: 3 momentos de sexto esperan su ancla, que se cierra con trabajo de campo y no con búsqueda (el momento 7 de séptimo se descartó por decisión ética)
 - [ ] Semillero: líneas de IA e Innovación social
-- [ ] 3 anclas ancestrales que se cierran con trabajo de campo, no con búsqueda
 
 ---
 

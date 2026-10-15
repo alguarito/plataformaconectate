@@ -55,7 +55,7 @@ export const semillero = {
     'preguntas propias, las indagan con método y comparten sus hallazgos. Es investigación ' +
     'estudiantil STEM guiada por el modelo MILC, abierta a cualquier estudiante curioso.',
   estado: 'activo' as const,
-  liderazgo: 'Dr. Álvaro Cárdenas Orozco',
+  liderazgo: 'Dr. Alvaro Cardenas Orozco',
   institucion: 'I.E. Sor María Juliana · Cartago, Valle del Cauca',
 };
 

@@ -213,7 +213,7 @@ function buildHtml(d: EmailData): string {
 
           <p style="margin:0 0 24px;color:#555;font-size:13px;line-height:1.6;">
             Si desea conversar sobre el desempeño de su hijo/a, puede responder este correo directamente.
-            El docente <strong>PhD. Álvaro Cárdenas Orozco</strong> lo atenderá a la brevedad.
+            El docente <strong>PhD. Alvaro Cardenas Orozco</strong> lo atenderá a la brevedad.
           </p>
         </td>
       </tr>

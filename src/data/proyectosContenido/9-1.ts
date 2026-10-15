@@ -15,7 +15,7 @@ const contenido: ContenidoProyecto = {
   clave: '9-1',
   titulo: 'Proyecto integrador · Manifiesto del técnico crítico',
   tituloPortada: 'Manifiesto del técnico crítico',
-  autor: 'Dr. Álvaro Cárdenas Orozco',
+  autor: 'Dr. Alvaro Cardenas Orozco',
   dba: 'Distingue técnica de tecnología, mapea su historia desde el cuerpo hasta el chip, y produce un manifiesto fundamentado del técnico crítico que decide qué adopta, qué cuestiona y qué oficios defiende.',
   estrategia: 'Investigación histórica + Manifiesto crítico + Producto comunicativo',
   duracionSemanas: 5,

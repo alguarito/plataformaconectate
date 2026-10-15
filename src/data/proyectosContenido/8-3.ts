@@ -15,7 +15,7 @@ const contenido: ContenidoProyecto = {
   clave: '8-3',
   titulo: 'Proyecto integrador · Pieza multimedia comunitaria con voz para el cambio',
   tituloPortada: 'Pieza multimedia comunitaria con voz para el cambio',
-  autor: 'Dr. Álvaro Cárdenas Orozco',
+  autor: 'Dr. Alvaro Cardenas Orozco',
   dba: 'Diseña, produce y publica una pieza multimedia (video, podcast o foto-historia) sobre un tema sensible de su entorno con criterio editorial, ética visual, derechos de imagen respetados y declaración del proceso de producción.',
   estrategia: 'Estética de la liberación + Narrativa TED + Ética visual y de datos',
   duracionSemanas: 5,

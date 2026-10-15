@@ -1,7 +1,7 @@
 /**
  * Metadata de la presentación visual «Construye una propuesta de alto valor»
  * (Samsung Solve for Tomorrow 2026), generada con NotebookLM a partir de la
- * guía PDF de ConectaTE y curada por el Dr. Álvaro Cárdenas Orozco.
+ * guía PDF de ConectaTE y curada por el Dr. Alvaro Cardenas Orozco.
  *
  * Las slides viven en `public/presentaciones/sft-propuesta/slide-NN.webp`
  * (15 imágenes, ~1.1 MB total, 1600×900). El visor solo muestra las slides;
@@ -13,7 +13,7 @@ export const presentacionSft = {
   titulo: 'Construye una propuesta de alto valor',
   subtitulo:
     'Del problema de tu comunidad a una solución STEM ganadora · La guía de preparación, en 15 slides.',
-  autor: 'PhD. Álvaro Cárdenas Orozco',
+  autor: 'PhD. Alvaro Cardenas Orozco',
   institucion: 'I.E. Sor María Juliana · Cartago, Valle del Cauca',
   fecha: '2026',
   totalSlides: 15,

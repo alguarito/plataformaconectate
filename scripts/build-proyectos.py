@@ -190,7 +190,7 @@ def construir_placeholders(data: dict) -> dict[str, str]:
         "GRADO": str(grado),
         "PERIODO": str(periodo),
         "TITULO_PORTADA": block(data.get("titulo_portada", data.get("titulo", ""))),
-        "AUTOR": block(data.get("autor", "Dr. Álvaro Cárdenas Orozco")),
+        "AUTOR": block(data.get("autor", "Dr. Alvaro Cardenas Orozco")),
         "DURACION_SEMANAS": str(data.get("duracion_semanas", 5)),
         "MODALIDAD": block(data.get("modalidad", "equipo")),
         "ESTRATEGIA": block(data.get("estrategia", "")),

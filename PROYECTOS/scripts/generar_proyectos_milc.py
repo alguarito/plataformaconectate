@@ -18,7 +18,7 @@ BASE_SCRIPT = Path("/Users/alvarocardenasorozco/Desktop/ACADEMICO/generar_guias_
 PLAN = ROOT / "plan_area_tecnologia_2025.docx"
 GUIDES_ROOT = ROOT / "GUIAS_TIC_MILC_NUEVAS"
 OUT = ROOT / "PROYECTOS_TIC_MILC_NUEVOS"
-AUTHOR = "Dr. Álvaro Cárdenas Orozco"
+AUTHOR = "Dr. Alvaro Cardenas Orozco"
 XELATEX = "xelatex"
 
 GRADE_NAMES = {

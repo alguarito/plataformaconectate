@@ -129,7 +129,7 @@ function tplHome(): string {
     </text>
     <!-- Footer institucional -->
     <text x="80" y="${H - 60}" fill="#FFFFFF" opacity="0.4" font-family="Helvetica, sans-serif" font-weight="500" font-size="20">
-      ${esc('Dr. Álvaro Cárdenas Orozco · Plataforma educativa MILC')}
+      ${esc('Dr. Alvaro Cardenas Orozco · Plataforma educativa MILC')}
     </text>
   </svg>`;
 }
@@ -221,7 +221,7 @@ function tplAcerca(): string {
       ${esc('Dr.')}
     </text>
     <text x="80" y="370" fill="#FFFFFF" font-family="Helvetica, sans-serif" font-weight="900" font-size="92" letter-spacing="-3">
-      ${esc('Álvaro Cárdenas')}
+      ${esc('Alvaro Cardenas')}
     </text>
     <text x="80" y="460" fill="#FFFFFF" font-family="Helvetica, sans-serif" font-weight="900" font-size="92" letter-spacing="-3">
       ${esc('Orozco')}
@@ -293,7 +293,7 @@ function tplModeloMilc(): string {
       ${esc('Ciclo en cinco momentos: de la Escucha a la Devolución')}
     </text>
     <text x="80" y="510" fill="#FFFFFF" opacity="0.75" font-family="Helvetica, sans-serif" font-weight="500" font-size="20">
-      ${esc('Colección MILC · 6 libros (del Tomo 0 al V) · Dr. Álvaro Cárdenas Orozco')}
+      ${esc('Colección MILC · 6 libros (del Tomo 0 al V) · Dr. Alvaro Cardenas Orozco')}
     </text>
     <!-- Wordmark esquina -->
     ${wordmark(W - 240, H - 60, '#FFFFFF', '#FFD60A')}
@@ -356,7 +356,7 @@ function tplColeccion(): string {
       ${esc('el yo · el nosotros · el cómo · la herramienta · el lugar')}
     </text>
     <text x="80" y="${H - 56}" fill="#FFFFFF" opacity="0.72" font-family="Helvetica, sans-serif" font-weight="500" font-size="20">
-      ${esc('Acceso abierto · DOI en Zenodo · Dr. Álvaro Cárdenas Orozco')}
+      ${esc('Acceso abierto · DOI en Zenodo · Dr. Alvaro Cardenas Orozco')}
     </text>
     ${wordmark(W - 240, H - 60, '#FFFFFF', '#A3FF12')}
   </svg>`;
@@ -489,7 +489,7 @@ function tplLibro(libro: LibroOg): string {
       ${esc(`${libro.paginas} páginas · ${libro.licencia} · Acceso abierto`)}
     </text>
     <text x="80" y="${H - 56}" fill="${libro.fg}" opacity="0.72" font-family="Helvetica, sans-serif" font-weight="500" font-size="20">
-      ${esc(`DOI ${libro.doi} · Dr. Álvaro Cárdenas Orozco`)}
+      ${esc(`DOI ${libro.doi} · Dr. Alvaro Cardenas Orozco`)}
     </text>
     <!-- Wordmark esquina -->
     ${wordmark(W - 240, H - 60, libro.fg, libro.accent)}

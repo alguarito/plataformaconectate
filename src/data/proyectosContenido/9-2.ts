@@ -15,7 +15,7 @@ const contenido: ContenidoProyecto = {
   clave: '9-2',
   titulo: 'Proyecto integrador · Revista escolar maquetada con criterio editorial',
   tituloPortada: 'Revista escolar maquetada con criterio editorial',
-  autor: 'Dr. Álvaro Cárdenas Orozco',
+  autor: 'Dr. Alvaro Cardenas Orozco',
   dba: 'Diseña, redacta, ilustra y maqueta una revista escolar completa con cuadrícula coherente, tipografía consistente, accesibilidad WCAG AA y voz editorial propia, asumiendo el rol de equipo editorial responsable.',
   estrategia: 'Diseño editorial + Maquetación digital + Edición y corrección',
   duracionSemanas: 5,

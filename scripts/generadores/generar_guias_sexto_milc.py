@@ -22,7 +22,7 @@ ROOT = Path(os.environ.get("MILC_RESOURCE_ROOT", SCRIPT_ROOT))
 PLAN = Path(os.environ.get("MILC_PLAN", ROOT / "00_PLAN_AREA" / "plan_area_tecnologia_2025.docx"))
 OLD_GUIDES = Path(os.environ.get("MILC_OLD_GUIDES", ROOT / "07_ANTERIORES_RESPALDO" / "Copia de 6"))
 OUT = Path(os.environ.get("MILC_OUT", ROOT / "01_GUIAS_APRENDIZAJE" / "06_SEXTO"))
-AUTHOR = "Dr. Álvaro Cárdenas Orozco"
+AUTHOR = "Dr. Alvaro Cardenas Orozco"
 GRADE = 6
 XELATEX = os.environ.get("XELATEX", "xelatex")
 TECTONIC = Path(os.environ.get("TECTONIC", "/Users/alvarocardenasorozco/.codex/plugins/cache/openai-bundled/latex-tectonic/0.1.0/bin/tectonic"))
@@ -485,7 +485,7 @@ FAMILY_CONCEPT_ROWS: dict[str, list[tuple[str, str, str]]] = {
         ("Correo institucional", "Canal formal de comunicación escolar que exige claridad, respeto y propósito.", "Mensaje al docente para pedir retroalimentación."),
         ("Asunto", "Frase breve que anticipa el motivo del mensaje.", "Solicitud de revisión de guía 3."),
         ("Destinatario", "Persona o grupo que debe recibir el mensaje.", "Enviar al docente correcto y no copiar a quien no corresponde."),
-        ("Firma profesional", "Bloque final con nombre, curso y datos pertinentes.", "Álvaro Cárdenas, grado sexto, Tecnología."),
+        ("Firma profesional", "Bloque final con nombre, curso y datos pertinentes.", "Alvaro Cardenas, grado sexto, Tecnología."),
         ("Bandeja de entrada", "Espacio donde se reciben y organizan mensajes.", "Marcar como importante, archivar o responder a tiempo."),
         ("Netiqueta", "Normas de respeto y claridad en la comunicación digital.", "Saludar, explicar el motivo y despedirse."),
         ("Adjunto", "Archivo que acompaña un correo y debe nombrarse de forma clara.", "guia3_apellido_nombre.pdf."),

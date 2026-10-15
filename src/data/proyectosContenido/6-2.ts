@@ -15,7 +15,7 @@ const contenido: ContenidoProyecto = {
   clave: '6-2',
   titulo: 'Proyecto integrador · Maestros del oficio digital: abrir la máquina',
   tituloPortada: 'Maestros del oficio digital',
-  autor: 'Dr. Álvaro Cárdenas Orozco',
+  autor: 'Dr. Alvaro Cardenas Orozco',
   dba: 'Identifica los componentes principales de un sistema informático y explica sus funciones; aplica criterios de mantenimiento, ergonomía y selección razonada de equipo (MEN, T&I 6°).',
   estrategia: 'Trabajo en equipo + producto comunitario + reflexión ética',
   duracionSemanas: 4,

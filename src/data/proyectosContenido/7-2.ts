@@ -15,7 +15,7 @@ const contenido: ContenidoProyecto = {
   clave: '7-2',
   titulo: 'Proyecto integrador · Tejedoras digitales: mi primer programa con criterio',
   tituloPortada: 'Tejedoras digitales — mi primer programa',
-  autor: 'Dr. Álvaro Cárdenas Orozco',
+  autor: 'Dr. Alvaro Cardenas Orozco',
   dba: 'Aplica las técnicas del pensamiento computacional (descomposición, patrones, abstracción, algoritmo) para producir un programa en Scratch con variables, condicionales y bucles, documentando el proceso (MEN, T&I 7°).',
   estrategia: 'Trabajo en equipo + producto programado + reflexión ética',
   duracionSemanas: 5,

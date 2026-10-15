@@ -19,7 +19,7 @@ BASE_SCRIPT = PACKAGE_ROOT / "05_SCRIPTS_GENERADORES" / "generar_guias_sexto_mil
 PLAN = PACKAGE_ROOT / "00_PLAN_AREA" / "plan_area_tecnologia_2025.docx"
 GUIDES_ROOT = PACKAGE_ROOT / "01_GUIAS_APRENDIZAJE"
 OUT = PACKAGE_ROOT / "02_PROYECTOS_INTEGRADORES"
-AUTHOR = "Dr. Álvaro Cárdenas Orozco"
+AUTHOR = "Dr. Alvaro Cardenas Orozco"
 XELATEX = "xelatex"
 
 GRADE_NAMES = {

@@ -15,7 +15,7 @@ const contenido: ContenidoProyecto = {
   clave: '7-3',
   titulo: 'Proyecto integrador · Consejeros digitales: IA con criterio para mi salón',
   tituloPortada: 'Consejeros digitales — IA con criterio',
-  autor: 'Dr. Álvaro Cárdenas Orozco',
+  autor: 'Dr. Alvaro Cardenas Orozco',
   dba: 'Usa modelos de lenguaje (LLMs) con criterio para asistir un trabajo, declarando honestamente el uso, verificando la información y manteniendo voz propia (MEN, T&I 7°).',
   estrategia: 'Trabajo en equipo + IA responsable + reflexión ética',
   duracionSemanas: 5,

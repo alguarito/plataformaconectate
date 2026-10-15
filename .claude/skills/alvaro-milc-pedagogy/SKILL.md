@@ -1,6 +1,6 @@
 ---
 name: alvaro-milc-pedagogy
-description: Audit, redesign, and generate MILC guide content using Colombian pedagogical criteria, Bloom/SOLO/DOK/Marzano taxonomies, ICFES-style evaluation, autonomous learning, formative assessment, socio-critical context, computational thinking, and a closing philosophical triangle (Dussel, Stoicism, Floridi). Use when Codex must improve Tecnología e Informática guides, projects, exams, rubrics, session plans, or curriculum data for Álvaro's MILC materials.
+description: Audit, redesign, and generate MILC guide content using Colombian pedagogical criteria, Bloom/SOLO/DOK/Marzano taxonomies, ICFES-style evaluation, autonomous learning, formative assessment, socio-critical context, computational thinking, and a closing philosophical triangle (Dussel, Stoicism, Floridi). Use when Codex must improve Tecnología e Informática guides, projects, exams, rubrics, session plans, or curriculum data for Alvaro's MILC materials.
 ---
 
 # Alvaro MILC Pedagogy
@@ -291,7 +291,7 @@ When responding after a pedagogical audit or rewrite, include:
 
 # Contrato editorial de claridad (Plataforma Conéctate)
 
-Esta sección codifica las decisiones editoriales acordadas con Álvaro para resolver el problema observado en pruebas con estudiantes: **se pierden durante el desarrollo de la guía**. Es de obligatorio cumplimiento al generar guías para la plataforma (Astro/HTML interactivo) o documentos LaTeX/PDF derivados. CLAUDE.md trae la versión corta; esta sección trae la versión con ejemplos.
+Esta sección codifica las decisiones editoriales acordadas con Alvaro para resolver el problema observado en pruebas con estudiantes: **se pierden durante el desarrollo de la guía**. Es de obligatorio cumplimiento al generar guías para la plataforma (Astro/HTML interactivo) o documentos LaTeX/PDF derivados. CLAUDE.md trae la versión corta; esta sección trae la versión con ejemplos.
 
 ## Estructura visible: 10 secciones en orden fijo
 

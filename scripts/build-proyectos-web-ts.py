@@ -170,7 +170,7 @@ def build_contenido(data: dict) -> dict:
         "clave": f"{grado}-{periodo}",
         "titulo": titulo,
         "tituloPortada": titulo_portada,
-        "autor": latex_to_text(data.get("autor", "Dr. Álvaro Cárdenas Orozco")),
+        "autor": latex_to_text(data.get("autor", "Dr. Alvaro Cardenas Orozco")),
         "dba": latex_to_text(data.get("dba", "")),
         "estrategia": latex_to_text(data.get("estrategia", "")),
         "duracionSemanas": int(data.get("duracion_semanas", 4)),

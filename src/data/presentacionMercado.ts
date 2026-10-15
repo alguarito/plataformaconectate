@@ -1,7 +1,7 @@
 /**
  * Metadata de la presentación "El Mercado de la Atención" — Tomo I de la
- * Colección MILC, generada con NotebookLM y curada por el Dr. Álvaro
- * Cárdenas Orozco.
+ * Colección MILC, generada con NotebookLM y curada por el Dr. Alvaro
+ * Cardenas Orozco.
  *
  * Las slides viven en `public/presentaciones/mercado-atencion/slide-NN.webp`
  * (12 imágenes, ~950 KB total, 1920×1080), junto al PPTX y el PDF.
@@ -17,7 +17,7 @@ export const presentacionMercado = {
   titulo: 'El Mercado de la Atención',
   subtitulo:
     'Cómo se disputa la mirada de los jóvenes y cómo educar el criterio en la era onlife · Presentación del Tomo I de la Colección MILC',
-  autor: 'PhD. Álvaro Cárdenas Orozco',
+  autor: 'PhD. Alvaro Cardenas Orozco',
   institucion: 'I.E. Sor María Juliana · Cartago, Valle del Cauca',
   fecha: '2026',
   totalSlides: 12,
@@ -32,7 +32,7 @@ export const slidesMercado: readonly SlideMilc[] = [
     numero: 1,
     titulo: 'El Mercado de la Atención',
     descripcion:
-      'Portada. Cómo se disputa la mirada de los jóvenes y cómo educar el criterio en la era onlife. Dr. Álvaro Cárdenas Orozco · Modelo MILC.',
+      'Portada. Cómo se disputa la mirada de los jóvenes y cómo educar el criterio en la era onlife. Dr. Alvaro Cardenas Orozco · Modelo MILC.',
   },
   {
     numero: 2,

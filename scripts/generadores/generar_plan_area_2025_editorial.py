@@ -23,7 +23,7 @@ PLAN = Path(os.environ.get("MILC_PLAN", ROOT / "00_PLAN_AREA" / "plan_area_tecno
 RESOURCES = ROOT
 OUT = ROOT / "00_PLAN_AREA" / "plan_area_2025_editorial_milc"
 XELATEX = os.environ.get("XELATEX", "xelatex")
-AUTHOR = "Dr. Álvaro Cárdenas Orozco"
+AUTHOR = "Dr. Alvaro Cardenas Orozco"
 PLATFORM_URL = "https://alguarito.github.io/plataformaconectate/"
 
 GRADE_NAMES = {
@@ -110,7 +110,7 @@ COMPONENTS = [
 ]
 
 BIBLIOGRAPHY = [
-    "Cárdenas Orozco, Á. (2026). ConectaTE: Conectando Tecnología con Educación. Plataforma educativa institucional. https://alguarito.github.io/plataformaconectate/",
+    "Cardenas Orozco, A. (2026). ConectaTE: Conectando Tecnología con Educación. Plataforma educativa institucional. https://alguarito.github.io/plataformaconectate/",
     "Collaborative for Academic, Social, and Emotional Learning. (2020). CASEL's SEL framework: What are the core competence areas and where are they promoted?",
     "Computer Science Teachers Association. (2017). CSTA K-12 Computer Science Standards.",
     "Dussel, E. (1998). Ética de la liberación en la edad de la globalización y de la exclusión. Trotta.",
@@ -482,7 +482,7 @@ def academic_preliminaries() -> list[PrelimSection]:
                 "Área: Tecnología e Informática.",
                 "Año lectivo: 2025.",
                 "Cobertura: grados sexto a undécimo.",
-                "Autor: Dr. Álvaro Cárdenas Orozco.",
+                "Autor: Dr. Alvaro Cardenas Orozco.",
                 "Enfoque: formación tecnológica crítica, creativa, ética y liberadora.",
             ],
             callout_title="Idea fuerza",

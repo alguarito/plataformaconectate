@@ -15,7 +15,7 @@ const contenido: ContenidoProyecto = {
   clave: '11-1',
   titulo: 'Proyecto integrador · Presencia digital empresarial con IA',
   tituloPortada: 'Presencia digital empresarial con IA',
-  autor: 'Dr. Álvaro Cárdenas Orozco',
+  autor: 'Dr. Alvaro Cardenas Orozco',
   dba: 'Diseña y sustenta una presencia digital empresarial con apoyo de IA, integrando identidad de marca, arquitectura web, redacción comercial, SEO básico, contenido para redes y criterios éticos.',
   estrategia: 'Design Thinking + ABP + IA como asistente editorial',
   duracionSemanas: 5,

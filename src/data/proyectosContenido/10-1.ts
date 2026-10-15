@@ -15,7 +15,7 @@ const contenido: ContenidoProyecto = {
   clave: '10-1',
   titulo: 'Proyecto integrador · Libro de 80 páginas con IA y firma editorial',
   tituloPortada: 'Libro editorial con IA y firma propia',
-  autor: 'Dr. Álvaro Cárdenas Orozco',
+  autor: 'Dr. Alvaro Cardenas Orozco',
   dba: 'Concibe, escribe con asistencia de IA, itera, diagrama y publica un libro de al menos 80 páginas, asumiendo el rol de editor responsable con intervención humana sustancial y declaración honesta del uso de IA.',
   estrategia: 'Oficio editorial + Prompting profesional + Iteración V1→V2→V3',
   duracionSemanas: 6,

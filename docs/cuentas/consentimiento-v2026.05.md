@@ -17,7 +17,7 @@ plataforma por parte de su acudido(a).
 
 | | |
 |---|---|
-| **Responsable del tratamiento** | Dr. Álvaro Cárdenas Orozco · CC 14.570.923 |
+| **Responsable del tratamiento** | Dr. Alvaro Cardenas Orozco · CC 14.570.923 |
 | **Lugar de ejercicio docente** | I.E. Sor María Juliana, Cartago (Valle del Cauca) |
 | **Plataforma técnica** | Conéctate · `alguarito.github.io/plataformaconectate` |
 | **Contacto para ejercer sus derechos** | alvaro.cardenas.orozco@gmail.com · WhatsApp +57 320 632 4740 |

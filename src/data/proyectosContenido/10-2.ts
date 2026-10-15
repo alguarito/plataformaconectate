@@ -15,7 +15,7 @@ const contenido: ContenidoProyecto = {
   clave: '10-2',
   titulo: 'Proyecto integrador · Informe técnico profesional con datos reales e IA',
   tituloPortada: 'Informe técnico profesional con datos reales',
-  autor: 'Dr. Álvaro Cárdenas Orozco',
+  autor: 'Dr. Alvaro Cardenas Orozco',
   dba: 'Diseña, aplica una encuesta, analiza datos cualitativos y cuantitativos, y entrega un informe técnico profesional con criterio editorial, ética en el manejo de datos y declaración honesta de IA.',
   estrategia: 'Investigación aplicada + Encuesta con phronesis + Análisis con auditoría humana',
   duracionSemanas: 5,

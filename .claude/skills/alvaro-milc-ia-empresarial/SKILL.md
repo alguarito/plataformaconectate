@@ -1,6 +1,6 @@
 ---
 name: alvaro-milc-ia-empresarial
-description: Design, audit, and improve Álvaro's MILC artificial-intelligence and business-oriented Tecnología e Informática curriculum for grades 9-11, including prompts, ethics, authorship, reverse writing, LaTeX business reports, market studies, dashboards, AI-assisted data visualization, digital business presence, process automation, customer service, privacy, and final entrepreneurial projects.
+description: Design, audit, and improve Alvaro's MILC artificial-intelligence and business-oriented Tecnología e Informática curriculum for grades 9-11, including prompts, ethics, authorship, reverse writing, LaTeX business reports, market studies, dashboards, AI-assisted data visualization, digital business presence, process automation, customer service, privacy, and final entrepreneurial projects.
 ---
 
 # Alvaro MILC IA Empresarial

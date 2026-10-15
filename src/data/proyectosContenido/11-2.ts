@@ -15,7 +15,7 @@ const contenido: ContenidoProyecto = {
   clave: '11-2',
   titulo: 'Proyecto integrador · Automatización de un proceso real con IA',
   tituloPortada: 'Automatización de un proceso real',
-  autor: 'Dr. Álvaro Cárdenas Orozco',
+  autor: 'Dr. Alvaro Cardenas Orozco',
   dba: 'Mapea, diseña y automatiza un proceso digital real con criterio ético, midiendo con KPIs honestos y aplicando IA donde aporta valor sin sustituir el contacto humano que importa.',
   estrategia: 'Mapeo BPMN + Lean automation + IA como copiloto',
   duracionSemanas: 5,

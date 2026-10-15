@@ -1,6 +1,6 @@
 ---
 name: alvaro-milc-stem-lab
-description: Enrich Álvaro's MILC Tecnología e Informática resources with STEM labs, mathematical modeling, physics simulations, electronics and IoT projects, Python scientific analysis, data visualization, experiments, contextualized problems, and grade-appropriate scientific explanations for guides, projects, exams, and dashboards.
+description: Enrich Alvaro's MILC Tecnología e Informática resources with STEM labs, mathematical modeling, physics simulations, electronics and IoT projects, Python scientific analysis, data visualization, experiments, contextualized problems, and grade-appropriate scientific explanations for guides, projects, exams, and dashboards.
 ---
 
 # Alvaro MILC STEM Lab

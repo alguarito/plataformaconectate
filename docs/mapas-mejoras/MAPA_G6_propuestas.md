@@ -1,7 +1,7 @@
 # 🗺️ Mapa de propuestas · Grado 6° · 33 guías MILC v3
 
 **Fecha:** 2026-05-09 (revisado)
-**Pendiente:** Validación del docente Álvaro
+**Pendiente:** Validación del docente Alvaro
 **Próximo paso:** Tras tu visto bueno por período, generación masiva (11 + 11 + 11).
 
 Para cada guía verás 6 bloques. Marca con ✅ / ❌ / "ajusta esto" lo que necesite.

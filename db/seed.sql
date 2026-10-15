@@ -20,7 +20,7 @@
 -- insert into public.usuarios (id, display_name, fecha_nacimiento)
 -- values (
 --   '00000000-0000-0000-0000-000000000000'::uuid, -- ⚠️ reemplazar
---   'Dr. Álvaro Cárdenas Orozco',
+--   'Dr. Alvaro Cardenas Orozco',
 --   null  -- no requerido para mayor de edad
 -- )
 -- on conflict (id) do nothing;

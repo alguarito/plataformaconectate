@@ -271,7 +271,7 @@ export interface ContenidoGuia {
 
   /**
    * Contrato MILC v3 — campos opcionales que activan el bloque editorial
-   * acordado con Álvaro (ver CLAUDE.md y skill alvaro-milc-pedagogy).
+   * acordado con Alvaro (ver CLAUDE.md y skill alvaro-milc-pedagogy).
    * Si están presentes, la página de guía los renderiza en su posición fija.
    */
   saberAncestral?: SaberAncestral;

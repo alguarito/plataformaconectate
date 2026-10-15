@@ -1,7 +1,7 @@
 # 🗺️ Mapa de propuestas · Grado 8 · 30 guías MILC v3
 
 **Fecha:** 2026-05-08
-**Pendiente:** Validación del docente Álvaro
+**Pendiente:** Validación del docente Alvaro
 **Próximo paso:** Tras tu visto bueno, generación masiva en 2 sesiones (15 + 15)
 
 Para cada guía verás 7 bloques. Marca con ✅ / ❌ / "ajusta esto" lo que necesite.

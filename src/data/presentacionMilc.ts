@@ -1,6 +1,6 @@
 /**
  * Metadata de la presentación "MILC: Educación en la Era Onlife"
- * generada con NotebookLM y curada por el Dr. Álvaro Cárdenas Orozco.
+ * generada con NotebookLM y curada por el Dr. Alvaro Cardenas Orozco.
  *
  * Las slides viven en `public/presentaciones/milc-onlife/slide-NN.webp`
  * (13 imágenes, ~1.9 MB total, 1920×1080).
@@ -24,7 +24,7 @@ export const presentacionMilc = {
   titulo: 'MILC: Educación en la Era Onlife',
   subtitulo:
     'Modelo de Investigación Liberadora y Científica · Una pedagogía para recuperar la mirada, investigar el territorio y crear tecnología con sentido',
-  autor: 'PhD. Álvaro Cárdenas Orozco',
+  autor: 'PhD. Alvaro Cardenas Orozco',
   institucion: 'I.E. Sor María Juliana · Cartago, Valle del Cauca',
   fecha: '2026',
   totalSlides: 13,

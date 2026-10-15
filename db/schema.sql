@@ -3,7 +3,7 @@
 -- Esquema de base de datos · Fase 1 (MVP)
 --
 -- Versión: 2026.05
--- Autor:   Dr. Álvaro Cárdenas Orozco
+-- Autor:   Dr. Alvaro Cardenas Orozco
 -- Aplica:  PostgreSQL 15+ (Supabase)
 --
 -- Este archivo es IDEMPOTENTE: puede aplicarse varias veces sin error.

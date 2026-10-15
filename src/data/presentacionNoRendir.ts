@@ -1,7 +1,7 @@
 /**
  * Metadata de la presentación "No rendir la mirada" — Tomo IV de la
- * Colección MILC, generada con NotebookLM y curada por el Dr. Álvaro
- * Cárdenas Orozco.
+ * Colección MILC, generada con NotebookLM y curada por el Dr. Alvaro
+ * Cardenas Orozco.
  *
  * Las slides viven en `public/presentaciones/no-rendir-la-mirada/slide-NN.webp`
  * (12 imágenes, 1920×1080), junto al PDF descargable.
@@ -17,7 +17,7 @@ export const presentacionNoRendir = {
   titulo: 'No rendir la mirada',
   subtitulo:
     'La herramienta no piensa por el estudiante: le presta capacidad · Presentación del Tomo IV de la Colección MILC',
-  autor: 'PhD. Álvaro Cárdenas Orozco',
+  autor: 'PhD. Alvaro Cardenas Orozco',
   institucion: 'I.E. Sor María Juliana · Cartago, Valle del Cauca',
   fecha: '2026',
   totalSlides: 12,
@@ -31,7 +31,7 @@ export const slidesNoRendir: readonly SlideMilc[] = [
     numero: 1,
     titulo: 'No rendir la mirada',
     descripcion:
-      'Portada. Tomo IV de la Colección MILC: «Inteligencia artificial, datos y soberanía tecnológica: usar la herramienta con criterio, autoría y cuidado». La herramienta más poderosa no debería pensar por nosotros: le presta capacidad, no la reemplaza. Dr. Álvaro Cárdenas Orozco · I.E. Sor María Juliana.',
+      'Portada. Tomo IV de la Colección MILC: «Inteligencia artificial, datos y soberanía tecnológica: usar la herramienta con criterio, autoría y cuidado». La herramienta más poderosa no debería pensar por nosotros: le presta capacidad, no la reemplaza. Dr. Alvaro Cardenas Orozco · I.E. Sor María Juliana.',
   },
   {
     numero: 2,

@@ -1,6 +1,6 @@
 /**
  * Plan de Área de Tecnología e Informática · 2026
- * I.E. Sor María Juliana — Autor: Dr. Álvaro Cárdenas Orozco
+ * I.E. Sor María Juliana — Autor: Dr. Alvaro Cardenas Orozco
  *
  * Documento rector del área. La edición 2026 cierra el pipeline editorial
  * MILC v3 (YAML SSOT → PDF + TS web) y formaliza los ajustes operativos
@@ -15,7 +15,7 @@ export const planArea = {
   cobertura: 'Grados 6° a 11°',
   institucion: 'Institución Educativa Sor María Juliana',
   ciudad: 'Cartago, Valle del Cauca',
-  autor: 'Dr. Álvaro Cárdenas Orozco',
+  autor: 'Dr. Alvaro Cardenas Orozco',
   enfoque: 'Formación tecnológica crítica, creativa, ética y liberadora',
 
   ideaFuerza:

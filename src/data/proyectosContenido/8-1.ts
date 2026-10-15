@@ -15,7 +15,7 @@ const contenido: ContenidoProyecto = {
   clave: '8-1',
   titulo: 'Proyecto integrador · Mini-estudio con phronesis y hoja de cálculo',
   tituloPortada: 'Mini-estudio con phronesis y hoja de cálculo',
-  autor: 'Dr. Álvaro Cárdenas Orozco',
+  autor: 'Dr. Alvaro Cardenas Orozco',
   dba: 'Diseña una pregunta de investigación, recolecta datos reales del entorno, los procesa con fórmulas básicas y referencias absolutas, los visualiza con honestidad y propone una decisión razonada con criterio práctico.',
   estrategia: 'Phronesis con datos + Excel/Sheets básico + Gráficos honestos',
   duracionSemanas: 5,

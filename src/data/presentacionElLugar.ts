@@ -1,7 +1,7 @@
 /**
  * Metadata de la presentación "El Lugar de Llegar a Ser" — Tomo V de la
  * Colección MILC (el tomo de cierre), generada con NotebookLM y curada
- * por el Dr. Álvaro Cárdenas Orozco.
+ * por el Dr. Alvaro Cardenas Orozco.
  *
  * Las slides viven en `public/presentaciones/el-lugar-de-llegar-a-ser/slide-NN.webp`
  * (12 imágenes), junto al PDF descargable.
@@ -17,7 +17,7 @@ export const presentacionElLugar = {
   titulo: 'El Lugar de Llegar a Ser',
   subtitulo:
     'El espacio pedagógico como agente de la formación · Presentación del Tomo V de la Colección MILC',
-  autor: 'PhD. Álvaro Cárdenas Orozco',
+  autor: 'PhD. Alvaro Cardenas Orozco',
   institucion: 'I.E. Sor María Juliana · Cartago, Valle del Cauca',
   fecha: '2026',
   totalSlides: 12,
@@ -31,7 +31,7 @@ export const slidesElLugar: readonly SlideMilc[] = [
     numero: 1,
     titulo: 'El Lugar de Llegar a Ser',
     descripcion:
-      'Portada. Tomo V de la Colección MILC: «El espacio pedagógico como agente de la formación». Porque nadie llega a ser en un lugar cualquiera. Dr. Álvaro Cárdenas Orozco · I.E. Sor María Juliana, Cartago.',
+      'Portada. Tomo V de la Colección MILC: «El espacio pedagógico como agente de la formación». Porque nadie llega a ser en un lugar cualquiera. Dr. Alvaro Cardenas Orozco · I.E. Sor María Juliana, Cartago.',
   },
   {
     numero: 2,

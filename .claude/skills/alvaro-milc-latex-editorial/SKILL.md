@@ -1,6 +1,6 @@
 ---
 name: alvaro-milc-latex-editorial
-description: Improve, repair, and design LaTeX-based MILC educational documents for Álvaro, including guide templates, project sheets, final exams, tcolorbox layouts, TikZ diagrams, pgfplots charts, circuitikz schematics, siunitx notation, tables, typography, compile errors, overfull boxes, and print-ready PDF quality.
+description: Improve, repair, and design LaTeX-based MILC educational documents for Alvaro, including guide templates, project sheets, final exams, tcolorbox layouts, TikZ diagrams, pgfplots charts, circuitikz schematics, siunitx notation, tables, typography, compile errors, overfull boxes, and print-ready PDF quality.
 ---
 
 # Alvaro MILC LaTeX Editorial

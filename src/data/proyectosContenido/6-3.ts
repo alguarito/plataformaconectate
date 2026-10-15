@@ -15,7 +15,7 @@ const contenido: ContenidoProyecto = {
   clave: '6-3',
   titulo: 'Proyecto integrador · Reporteros con criterio: documento informativo del barrio',
   tituloPortada: 'Reporteros con criterio del barrio',
-  autor: 'Dr. Álvaro Cárdenas Orozco',
+  autor: 'Dr. Alvaro Cardenas Orozco',
   dba: 'Produce un documento informativo digital aplicando criterios de formato, búsqueda y evaluación de fuentes; identifica fake news y cita responsablemente (MEN, T&I 6°).',
   estrategia: 'Trabajo en equipo + producto comunitario + reflexión ética',
   duracionSemanas: 4,

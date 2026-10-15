@@ -15,7 +15,7 @@ const contenido: ContenidoProyecto = {
   clave: '10-3',
   titulo: 'Proyecto integrador · Plan completo de microemprendimiento con contabilidad e IA',
   tituloPortada: 'Microemprendimiento con contabilidad, Canvas e IA',
-  autor: 'Dr. Álvaro Cárdenas Orozco',
+  autor: 'Dr. Alvaro Cardenas Orozco',
   dba: 'Diseña un plan completo de microemprendimiento con: idea validada, contabilidad proyectada a 3 meses, Business Model Canvas con datos verificables, 3 piezas de comunicación empresarial coherentes, y plan de validación con 5 personas reales.',
   estrategia: 'Lean Startup + Canvas + Contabilidad Sheets + Comunicación empresarial con IA',
   duracionSemanas: 6,

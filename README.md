@@ -11,7 +11,7 @@
 > **Conectando Tecnología con Educación**
 > Plataforma educativa interactiva del área de Tecnología e Informática
 > **Institución Educativa Sor María Juliana** · Cartago, Valle del Cauca
-> Dr. Álvaro Cárdenas Orozco
+> Dr. Alvaro Cardenas Orozco
 
 🌐 **https://alguarito.github.io/plataformaconectate**
 
@@ -27,7 +27,7 @@
 - **Content.** 180 learning guides (30 per grade), 18 exams, 18 integrative projects, 10 Bebras-style computational thinking challenges, a research club track and a social-emotional program.
 - **Stack.** Astro 6, Tailwind CSS, TypeScript, Supabase, Python, XeLaTeX, GitHub Actions and GitHub Pages.
 
-Author: **Álvaro Cárdenas Orozco**, systems engineer and PhD in Education Sciences ([website](https://alvarocardenasorozco.com) · [ORCID](https://orcid.org/0000-0003-1820-301X)).
+Author: **Alvaro Cardenas Orozco**, systems engineer and PhD in Education Sciences ([website](https://alvarocardenasorozco.com) · [ORCID](https://orcid.org/0000-0003-1820-301X)).
 
 ---
 
@@ -229,7 +229,7 @@ Accesibilidad no negociable: contraste **WCAG AA 4.5:1**, targets táctiles ≥ 
 
 ## 👤 Autor
 
-**Dr. Álvaro Cárdenas Orozco**
+**Dr. Alvaro Cardenas Orozco**
 Ingeniero de Sistemas y Computación, Doctor en Ciencias de la Educación · Docente de Tecnología e Informática
 I.E. Sor María Juliana — Cartago, Valle del Cauca, Colombia
 
@@ -241,7 +241,7 @@ I.E. Sor María Juliana — Cartago, Valle del Cauca, Colombia
 
 El repositorio trae [`CITATION.cff`](CITATION.cff); GitHub lo muestra en el botón **Cite this repository**. En APA 7.ª:
 
-> Cárdenas Orozco, Á. (2026). *ConectaTE: plataforma educativa de Tecnología e Informática (6.º a 11.º)* [Software]. GitHub. https://github.com/alguarito/plataformaconectate
+> Cardenas Orozco, A. (2026). *ConectaTE: plataforma educativa de Tecnología e Informática (6.º a 11.º)* [Software]. GitHub. https://github.com/alguarito/plataformaconectate
 
 Para citar el modelo pedagógico, usa el artículo arbitrado y los libros de la Colección MILC por su DOI de concepto: están en [`/modelo-milc`](https://alguarito.github.io/plataformaconectate/modelo-milc/).
 
@@ -251,4 +251,4 @@ Para citar el modelo pedagógico, usa el artículo arbitrado y los libros de la 
 
 Creative Commons **CC BY-NC-SA 4.0** (uso educativo, no comercial, compartir igual) para el código y el contenido propio. Los libros de la Colección MILC, los retos tomados de Bebras y los recursos de terceros conservan su propia licencia. El detalle está en [`LICENSE`](LICENSE).
 
-© 2026 Álvaro Cárdenas Orozco · ConectaTE.
+© 2026 Alvaro Cardenas Orozco · ConectaTE.

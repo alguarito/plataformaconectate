@@ -4,7 +4,7 @@
 > de progreso y base de datos en la plataforma, **sin afectar el sitio estático
 > actual** ni romper el modelo offline-first.
 
-**Versión**: 2026.05 · **Estado**: borrador para Fase 0 · **Autor**: Dr. Álvaro Cárdenas Orozco
+**Versión**: 2026.05 · **Estado**: borrador para Fase 0 · **Autor**: Dr. Alvaro Cardenas Orozco
 
 ---
 
@@ -38,7 +38,7 @@ Descartados: Firebase (bloquea menores en Workspace for Education), Clerk/Auth0 
 
 | Rol | Persona/Entidad |
 |---|---|
-| **Responsable del tratamiento** | Dr. Álvaro Cárdenas Orozco · CC 14.570.923 |
+| **Responsable del tratamiento** | Dr. Alvaro Cardenas Orozco · CC 14.570.923 |
 | **Lugar de ejercicio docente** | I.E. Sor María Juliana, Cartago (Valle) |
 | **Contacto para ARCO** | alvaro.cardenas.orozco@gmail.com · WhatsApp +57 320 632 4740 |
 | **Encargados externos** | Supabase Inc. (EE.UU.), GitHub/Microsoft (EE.UU.) |
@@ -281,7 +281,7 @@ Si un acudiente revoca el consentimiento, `revocado_en` se llena y **todos los d
 
 ## 11. Decisiones legales innegociables
 
-1. Responsable individual del tratamiento: **Dr. Álvaro Cárdenas Orozco, CC 14.570.923**.
+1. Responsable individual del tratamiento: **Dr. Alvaro Cardenas Orozco, CC 14.570.923**.
 2. **Consentimiento informado del acudiente** obligatorio antes de crear cuenta de menor.
 3. Política de privacidad pública y versionada (`v2026.05`).
 4. Conservación: año lectivo + 2 años. Después, eliminación o anonimización.

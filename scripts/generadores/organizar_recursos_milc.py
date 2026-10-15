@@ -297,7 +297,7 @@ Los recursos integran el método MILC: Escucha, Sistematización, Praxis y Evalu
 
 ## Autor
 
-Dr. Álvaro Cárdenas Orozco.
+Dr. Alvaro Cardenas Orozco.
 """
     (MASTER / "README.md").write_text(text, encoding="utf-8")
 

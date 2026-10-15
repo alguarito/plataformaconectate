@@ -1,7 +1,7 @@
 /**
  * Metadata de la presentación "El niño que sueña ciencia" — Tomo III de la
- * Colección MILC, generada con NotebookLM y curada por el Dr. Álvaro
- * Cárdenas Orozco.
+ * Colección MILC, generada con NotebookLM y curada por el Dr. Alvaro
+ * Cardenas Orozco.
  *
  * Las slides viven en `public/presentaciones/el-nino-que-suena-ciencia/slide-NN.webp`
  * (15 imágenes, 1920×1080), junto al PDF descargable.
@@ -17,7 +17,7 @@ export const presentacionElNino = {
   titulo: 'El niño que sueña ciencia',
   subtitulo:
     'La curiosidad es un sentido natural del ser; la escuela no la enseña, le da método sin apagarla · Presentación del Tomo III de la Colección MILC',
-  autor: 'PhD. Álvaro Cárdenas Orozco',
+  autor: 'PhD. Alvaro Cardenas Orozco',
   institucion: 'I.E. Sor María Juliana · Cartago, Valle del Cauca',
   fecha: '2026',
   totalSlides: 15,
@@ -31,7 +31,7 @@ export const slidesElNino: readonly SlideMilc[] = [
     numero: 1,
     titulo: 'El niño que sueña ciencia',
     descripcion:
-      'Portada. Tomo III de la Colección MILC: «La curiosidad es natural; la escuela debe darle método al sueño (sin apagarlo)». Dr. Álvaro Cárdenas Orozco · I.E. Sor María Juliana.',
+      'Portada. Tomo III de la Colección MILC: «La curiosidad es natural; la escuela debe darle método al sueño (sin apagarlo)». Dr. Alvaro Cardenas Orozco · I.E. Sor María Juliana.',
   },
   {
     numero: 2,

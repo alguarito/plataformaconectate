@@ -17,7 +17,7 @@ from docx.shared import Cm, Pt, RGBColor
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "00_PLAN_AREA" / "anexo_marco_teorico_milc"
 XELATEX = os.environ.get("XELATEX", "xelatex")
-AUTHOR = "Dr. Álvaro Cárdenas Orozco"
+AUTHOR = "Dr. Alvaro Cardenas Orozco"
 
 PALETTE = {
     "magenta": "E6007E",

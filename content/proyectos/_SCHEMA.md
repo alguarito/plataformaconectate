@@ -57,7 +57,7 @@ titulo_portada: |         # str · obligatorio · versión con saltos para porta
   empresarial con IA
 
 # ─── Metadatos curriculares ────────────────────────────────────────
-autor: "Dr. Álvaro Cárdenas Orozco"
+autor: "Dr. Alvaro Cardenas Orozco"
 dba: "..."                # str · DBA del MEN o equivalente
 estrategia: "..."         # str · ej. "Design Thinking + ABP"
 duracion_semanas: 5       # int · 4-6

@@ -15,7 +15,7 @@ const contenido: ContenidoProyecto = {
   clave: '8-2',
   titulo: 'Proyecto integrador · El micro:bit como vigía del barrio',
   tituloPortada: 'El micro:bit como vigía del barrio',
-  autor: 'Dr. Álvaro Cárdenas Orozco',
+  autor: 'Dr. Alvaro Cardenas Orozco',
   dba: 'Diseña, programa, calibra y sustenta un sistema de monitoreo con micro:bit que aplica lógica condicional compuesta (AND, OR, NOT), sensores con umbrales calibrados y depuración con método del relojero.',
   estrategia: 'Computación física + Lógica condicional + Depuración disciplinada',
   duracionSemanas: 5,

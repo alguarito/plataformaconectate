@@ -14,7 +14,7 @@ artículo 13 del **Decreto 1377 de 2013** y de la **Ley 1581 de 2012**.
 
 | | |
 |---|---|
-| **Nombre** | Dr. Álvaro Cárdenas Orozco |
+| **Nombre** | Dr. Alvaro Cardenas Orozco |
 | **Documento de identidad** | Cédula de Ciudadanía 14.570.923 |
 | **Calidad** | Persona natural · Docente de Tecnología e Informática |
 | **Lugar de ejercicio** | I.E. Sor María Juliana · Cartago, Valle del Cauca, Colombia |
@@ -40,7 +40,7 @@ Autoridad de control: **Superintendencia de Industria y Comercio (SIC)**.
 ## 3. Definiciones
 
 - **Titular**: persona natural cuyos datos son tratados (estudiantes, docentes, acudientes).
-- **Responsable**: quien decide sobre la base de datos y/o el tratamiento (Dr. Álvaro Cárdenas Orozco).
+- **Responsable**: quien decide sobre la base de datos y/o el tratamiento (Dr. Alvaro Cardenas Orozco).
 - **Encargado**: quien trata datos por cuenta del responsable (Supabase Inc., GitHub Inc.).
 - **Autorización**: consentimiento previo, expreso e informado del titular o de su representante legal.
 - **Datos sensibles**: aquellos que afectan la intimidad o cuyo uso indebido pueda generar discriminación (no se tratan en esta plataforma).
@@ -226,7 +226,7 @@ Si los cambios afectan finalidades o categorías de datos, se solicitará una **
 
 ## 16. Contacto
 
-Dr. Álvaro Cárdenas Orozco · CC 14.570.923
+Dr. Alvaro Cardenas Orozco · CC 14.570.923
 Plataforma Conéctate · I.E. Sor María Juliana · Cartago, Valle del Cauca
 Correo: `alvaro.cardenas.orozco@gmail.com`
 WhatsApp: +57 320 632 4740

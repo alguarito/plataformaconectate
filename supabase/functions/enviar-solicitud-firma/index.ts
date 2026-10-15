@@ -144,7 +144,7 @@ function renderEmail(opts: {
 
       <p style="font-size:15px; line-height:1.5;">
         Hola, le escribimos desde la plataforma educativa <strong>Conéctate</strong> del
-        <strong>Dr. Álvaro Cárdenas Orozco</strong>, docente de Tecnología e Informática
+        <strong>Dr. Alvaro Cardenas Orozco</strong>, docente de Tecnología e Informática
         en la I.E. Sor María Juliana.
       </p>
 

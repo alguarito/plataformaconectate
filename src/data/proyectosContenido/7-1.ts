@@ -15,7 +15,7 @@ const contenido: ContenidoProyecto = {
   clave: '7-1',
   titulo: 'Proyecto integrador · Minga digital: una obra colaborativa en la nube',
   tituloPortada: 'Minga digital — una obra en la nube',
-  autor: 'Dr. Álvaro Cárdenas Orozco',
+  autor: 'Dr. Alvaro Cardenas Orozco',
   dba: 'Produce un proyecto colaborativo en Microsoft 365 aplicando coautoría, permisos, comentarios e historial de versiones, con declaración del proceso (MEN, T&I 7°).',
   estrategia: 'Trabajo en equipo + producto colaborativo en la nube + reflexión ética',
   duracionSemanas: 4,

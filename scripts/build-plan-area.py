@@ -148,7 +148,7 @@ PREAMBLE = r"""
 \hypersetup{
   colorlinks=true,linkcolor=milcVino,urlcolor=milcTurquesa,
   pdftitle={Plan de Área 2026 · Tecnología e Informática},
-  pdfauthor={Dr. Álvaro Cárdenas Orozco},
+  pdfauthor={Dr. Alvaro Cardenas Orozco},
   pdfsubject={Plan de Área Institucional · I.E. Sor María Juliana · Cartago},
   pdfkeywords={MILC v3, plan de área, tecnología, informática, MEN},
   bookmarksopen=true,bookmarksnumbered=true,
@@ -215,7 +215,7 @@ PREAMBLE = r"""
   \begin{tcolorbox}[enhanced,colback=milcVino!90,colframe=milcVino!90,arc=2mm,boxrule=0pt,
     left=4mm,right=4mm,top=3mm,bottom=3mm,before skip=4pt,after skip=4pt]
   \footnotesize\color{white}\sffamily
-  \textbf{ASIGNACIÓN ACADÉMICA:} Dr. Álvaro Cárdenas Orozco \hfill
+  \textbf{ASIGNACIÓN ACADÉMICA:} Dr. Alvaro Cardenas Orozco \hfill
   \textbf{ÁREA / ASIGNATURA:} TECNOLOGÍA E INFORMÁTICA\\
   \textbf{NIVEL:} #1 \hfill \textbf{GRADO:} #2 \hfill \textbf{PERIODO:} #3\\
   \textbf{NÚMERO DE SESIONES PEDAGÓGICAS POR PERIODO:} 10 \hfill
@@ -768,7 +768,7 @@ def render_pie() -> str:
 \centering
 {\sffamily\color{white}\small Plan de Área 2026 · Tecnología e Informática}\\[1mm]
 {\sffamily\color{milcMostaza}\footnotesize Institución Educativa Sor María Juliana · Cartago, Valle del Cauca}\\[1mm]
-{\sffamily\color{white}\footnotesize Autor: Dr. Álvaro Cárdenas Orozco}\\[2mm]
+{\sffamily\color{white}\footnotesize Autor: Dr. Alvaro Cardenas Orozco}\\[2mm]
 {\sffamily\color{white}\scriptsize Plataforma Conéctate · \url{https://alguarito.github.io/plataformaconectate}}
 \end{tcolorbox}
 """

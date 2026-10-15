@@ -4,7 +4,7 @@ Plataforma educativa de Tecnología e Informática (I.E. Sor María Juliana, Car
 
 El contenido es **YAML como fuente única**: cada guía, examen o proyecto vive en `content/**.yaml`, y los builders de `scripts/` producen desde ahí tanto el PDF (XeLaTeX, plantilla MILC v3) como el TypeScript de la web. Nunca se edita el `.tex` ni el `.ts` generado a mano. `make help` lista el pipeline completo.
 
-Docente y propietario: **PhD. Álvaro Cárdenas Orozco**.
+Docente y propietario: **PhD. Alvaro Cardenas Orozco**.
 
 ## Lineamientos de Diseño UI/UX
 
@@ -73,7 +73,7 @@ El proyecto ya tiene un sistema **"Bento Moderna"** en [tailwind.config.mjs](tai
 7. **Evaluación** — formativa intercalada + sumativa final con rúbrica visible + al menos 1 ítem tipo ICFES en evaluaciones de cierre.
 8. **💭 Cierre filosófico — Triángulo de pensamiento** — Dussel, Estoicismo, Floridi. Versión adaptada por grado (en 6°-8° las preguntas son cotidianas; en 9°-11° con citas y autores).
 9. **Evaluación liberadora — 5 dimensiones** — personal, emocional, ciudadana, local, intergeneracional.
-10. **Pie institucional** — I.E. Sor María Juliana · Cartago · PhD. Álvaro Cárdenas Orozco · área de Tecnología e Informática.
+10. **Pie institucional** — I.E. Sor María Juliana · Cartago · PhD. Alvaro Cardenas Orozco · área de Tecnología e Informática.
 
 ### Iconografía de bloques (vocabulario visual cerrado)
 

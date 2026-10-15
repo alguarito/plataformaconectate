@@ -1,7 +1,7 @@
 /**
  * Metadata de la presentación "Pedagogía de la Querencia" — Tomo II de la
- * Colección MILC, generada con NotebookLM y curada por el Dr. Álvaro
- * Cárdenas Orozco.
+ * Colección MILC, generada con NotebookLM y curada por el Dr. Alvaro
+ * Cardenas Orozco.
  *
  * Las slides viven en `public/presentaciones/querencia/slide-NN.webp`
  * (15 imágenes, 1920×1080), junto al PDF descargable.
@@ -17,7 +17,7 @@ export const presentacionQuerencia = {
   titulo: 'Pedagogía de la Querencia',
   subtitulo:
     'Reconstruir el aula para arraigar al estudiante en su territorio, su historia y sus saberes ancestrales · Presentación del Tomo II de la Colección MILC',
-  autor: 'PhD. Álvaro Cárdenas Orozco',
+  autor: 'PhD. Alvaro Cardenas Orozco',
   institucion: 'I.E. Sor María Juliana · Cartago, Valle del Cauca',
   fecha: '2026',
   totalSlides: 15,
@@ -31,7 +31,7 @@ export const slidesQuerencia: readonly SlideMilc[] = [
     numero: 1,
     titulo: 'Pedagogía de la Querencia',
     descripcion:
-      'Portada. Ensayo pedagógico situado: reconstruir el aula desde la filosofía de la liberación para arraigar al estudiante en su territorio, su historia y sus saberes ancestrales. Dr. Álvaro Cárdenas Orozco · I.E. Sor María Juliana. «Porque ningún niño debería avergonzarse de su lugar».',
+      'Portada. Ensayo pedagógico situado: reconstruir el aula desde la filosofía de la liberación para arraigar al estudiante en su territorio, su historia y sus saberes ancestrales. Dr. Alvaro Cardenas Orozco · I.E. Sor María Juliana. «Porque ningún niño debería avergonzarse de su lugar».',
   },
   {
     numero: 2,

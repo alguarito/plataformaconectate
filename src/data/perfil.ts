@@ -1,10 +1,10 @@
 /**
- * Perfil profesional del Dr. Álvaro Cárdenas Orozco.
+ * Perfil profesional del Dr. Alvaro Cardenas Orozco.
  * Datos extraídos de su Hoja de Vida + carpetas de soporte en Google Drive.
  */
 
 export const perfil = {
-  nombre: 'Álvaro Cárdenas Orozco',
+  nombre: 'Alvaro Cardenas Orozco',
   prefijo: 'Dr.',
   cargo: 'Docente de Tecnología e Informática',
   institucion: 'I.E. Sor María Juliana · Cartago, Valle del Cauca',

@@ -15,7 +15,7 @@ const contenido: ContenidoProyecto = {
   clave: '6-1',
   titulo: 'Proyecto integrador · Pregoneros digitales del barrio',
   tituloPortada: 'Pregoneros digitales del barrio',
-  autor: 'Dr. Álvaro Cárdenas Orozco',
+  autor: 'Dr. Alvaro Cardenas Orozco',
   dba: 'Reconoce principios de identidad y comunicación digital y los aplica en una campaña concreta para su comunidad (MEN, T&I 6°).',
   estrategia: 'Trabajo en equipo + producto comunitario + reflexión ética',
   duracionSemanas: 4,

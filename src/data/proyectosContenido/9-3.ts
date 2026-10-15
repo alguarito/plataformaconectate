@@ -15,7 +15,7 @@ const contenido: ContenidoProyecto = {
   clave: '9-3',
   titulo: 'Proyecto integrador · Mini-estudio de datos del entorno con phronesis',
   tituloPortada: 'Mini-estudio de datos del entorno escolar',
-  autor: 'Dr. Álvaro Cárdenas Orozco',
+  autor: 'Dr. Alvaro Cardenas Orozco',
   dba: 'Diseña, recolecta y limpia datos del entorno escolar, los analiza con fórmulas y tablas dinámicas, los visualiza honestamente y propone una decisión razonada con insight accionable.',
   estrategia: 'Recolección con propósito + Limpieza + Análisis + Visualización honesta + Insight accionable',
   duracionSemanas: 5,

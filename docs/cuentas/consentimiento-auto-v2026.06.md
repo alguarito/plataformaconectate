@@ -8,6 +8,8 @@
 > de sus datos por tener ≥14 años cumplidos. Si el estudiante es menor de
 > 14 años, aplica la versión 2026.05 (firma del acudiente).
 
+> Nota de octubre de 2026: en esta copia pública se omite el número de documento del responsable. Se entrega al titular de los datos que lo solicite por escrito.
+
 ---
 
 En cumplimiento de la **Ley 1581 de 2012**, el **Decreto 1377 de 2013** y
@@ -21,7 +23,7 @@ cuidadosamente y diligenciar este formato antes de usar la plataforma.
 
 | | |
 |---|---|
-| **Responsable del tratamiento** | Dr. Alvaro Cardenas Orozco · CC 14.570.923 |
+| **Responsable del tratamiento** | Dr. Alvaro Cardenas Orozco |
 | **Lugar de ejercicio docente** | I.E. Sor María Juliana, Cartago (Valle del Cauca) |
 | **Plataforma técnica** | Conéctate · `alguarito.github.io/plataformaconectate` |
 | **Contacto para ejercer derechos** | alvaro.cardenas.orozco@gmail.com · WhatsApp +57 320 632 4740 |

@@ -15,7 +15,7 @@ artículo 13 del **Decreto 1377 de 2013** y de la **Ley 1581 de 2012**.
 | | |
 |---|---|
 | **Nombre** | Dr. Alvaro Cardenas Orozco |
-| **Documento de identidad** | Cédula de Ciudadanía 14.570.923 |
+| **Documento de identidad** | Se entrega al titular de los datos que lo solicite por escrito |
 | **Calidad** | Persona natural · Docente de Tecnología e Informática |
 | **Lugar de ejercicio** | I.E. Sor María Juliana · Cartago, Valle del Cauca, Colombia |
 | **Correo de contacto** | alvaro.cardenas.orozco@gmail.com |
@@ -226,7 +226,7 @@ Si los cambios afectan finalidades o categorías de datos, se solicitará una **
 
 ## 16. Contacto
 
-Dr. Alvaro Cardenas Orozco · CC 14.570.923
+Dr. Alvaro Cardenas Orozco
 Plataforma Conéctate · I.E. Sor María Juliana · Cartago, Valle del Cauca
 Correo: `alvaro.cardenas.orozco@gmail.com`
 WhatsApp: +57 320 632 4740

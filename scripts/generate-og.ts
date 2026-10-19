@@ -376,6 +376,8 @@ type LibroOg = {
   fg: string;
   accent: string;
   emoji: string;
+  /** Portada real del libro (scripts/og-portadas/<slug>.jpg). Si existe, reemplaza el emoji. */
+  portada?: string;
 };
 
 // Cada libro con el color de su card en la home (matriz=negro, Tomo I=morado, Tomo II=azul, Tomo III=naranja).
@@ -412,6 +414,7 @@ const LIBROS: LibroOg[] = [
     doi: '10.5281/zenodo.21176768',
     bg: '#0066FF', fg: '#FFFFFF', accent: '#A3FF12',
     emoji: '🌱',
+    portada: 'scripts/og-portadas/libro-querencia.jpg',
   },
   {
     slug: 'libro-el-nino-que-suena-ciencia',
@@ -476,10 +479,10 @@ function tplLibro(libro: LibroOg): string {
     <text x="80" y="120" fill="${libro.accent}" font-family="Helvetica, sans-serif" font-weight="700" font-size="22" letter-spacing="3">
       ${esc(libro.etiqueta)}
     </text>
-    <!-- Emoji decorativo -->
+    ${libro.portada ? '' : `<!-- Emoji decorativo -->
     <text x="${W - 80}" y="210" fill="${libro.fg}" opacity="0.18" font-family="Helvetica, sans-serif" font-size="170" text-anchor="end">
       ${libro.emoji}
-    </text>
+    </text>`}
     <!-- Título del libro -->
     ${titulo}
     <!-- Subtítulo -->
@@ -498,9 +501,17 @@ function tplLibro(libro: LibroOg): string {
 
 /* ────────────── Render + escritura ────────────── */
 
-async function svg2png(svg: string, outPath: string): Promise<void> {
+async function svg2png(svg: string, outPath: string, portada?: string): Promise<void> {
   mkdirSync(dirname(outPath), { recursive: true });
-  const buf = await sharp(Buffer.from(svg)).png({ compressionLevel: 9 }).toBuffer();
+  let img = sharp(Buffer.from(svg));
+  if (portada) {
+    // Portada real a la derecha: 330 × 466 px, sobre el área del emoji y sin tocar el wordmark.
+    const alto = 466;
+    const ancho = Math.round(alto * 0.708);
+    const tapa = await sharp(resolve(portada)).resize(ancho, alto, { fit: 'cover' }).toBuffer();
+    img = sharp(await img.png().toBuffer()).composite([{ input: tapa, left: W - 80 - ancho, top: 48 }]);
+  }
+  const buf = await img.png({ compressionLevel: 9 }).toBuffer();
   writeFileSync(outPath, buf);
 }
 
@@ -535,7 +546,7 @@ async function main(): Promise<void> {
 
   // Colección MILC · una portada dedicada por libro (obra citable)
   for (const libro of LIBROS) {
-    await svg2png(tplLibro(libro), `${OUT_DIR}/${libro.slug}.png`);
+    await svg2png(tplLibro(libro), `${OUT_DIR}/${libro.slug}.png`, libro.portada);
     count++;
   }
 

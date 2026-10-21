@@ -2,14 +2,17 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import SlidesViewer from '../../../components/SlidesViewer.astro';
 import CitaLibro from '../../../components/CitaLibro.astro';
+import MaterialesTomo from '../../../components/MaterialesTomo.astro';
 import { coleccion, tomo } from '../../../data/coleccion';
 import { presentacionMercado, slidesMercado } from '../../../data/presentacionMercado';
 
 const base = import.meta.env.BASE_URL;
 
-// PDF en la carpeta de esta página (requisito de Google Scholar); ruta en src/data/coleccion.json.
-const libroHref = tomo('I').pdf;
-const libroPaginas = 118;
+// Versión vigente (2.1): PDF, páginas, edición y fecha salen de src/data/coleccion.json.
+// El PDF está en la carpeta de esta página (requisito de Google Scholar).
+const t1 = tomo('I');
+const libroHref = t1.pdf;
+const libroPaginas = t1.paginas;
 const doi = 'https://doi.org/10.5281/zenodo.20644819';
 const subtitulo = 'Cómo se disputa la atención de los jóvenes y cómo educar el criterio en la era onlife';
 
@@ -26,11 +29,12 @@ const jsonLdExtra = [
     '@id': `${inicio}/modelo-milc#tomo1`,
     name: 'El Mercado de la Atención',
     alternateName: subtitulo,
-    bookEdition: 'Primera edición 2026',
+    bookEdition: t1.edicion,
+    version: t1.version,
     bookFormat: 'EBook',
     inLanguage: 'es-CO',
     numberOfPages: libroPaginas,
-    datePublished: '2026-06-11',
+    datePublished: t1.fecha,
     license: 'https://creativecommons.org/licenses/by-sa/4.0/',
     identifier: doi,
     sameAs: ['https://zenodo.org/doi/10.5281/zenodo.20644819'],
@@ -39,11 +43,14 @@ const jsonLdExtra = [
     encodingFormat: 'application/pdf',
     position: 1,
     isPartOf: { '@type': 'BookSeries', '@id': `${inicio}/modelo-milc#coleccion`, name: 'Colección MILC' },
-    associatedMedia: {
+    // El libro y sus complementos (mismo DOI de concepto).
+    associatedMedia: t1.archivos.map((a) => ({
       '@type': 'MediaObject',
-      contentUrl: `${origen}${libroHref}`,
+      name: a.nombre,
+      description: a.etiqueta ?? 'Libro',
+      contentUrl: `${origen}${a.url}`,
       encodingFormat: 'application/pdf',
-    },
+    })),
     author: { '@id': `${inicio}/acerca#person` },
     publisher: { '@id': `${inicio}#sello` },
     about: [
@@ -108,7 +115,7 @@ const partes = [
     caps: [
       '7. La soberanía atencional como competencia',
       '8. De consumidor a autor: el semillero y CosmoTEC',
-      '9. Evaluar sin pánico',
+      '9. Evaluar sin pánico: evidencia honesta en el aula',
       '10. La política de la mirada en la escuela pública',
     ],
   },
@@ -117,11 +124,11 @@ const partes = [
     titulo: 'Manual metodológico',
     desc: 'Cómo formarla en el aula.',
     caps: [
-      '11. El cerebro que atiende: neurociencia de la atención',
-      '12. Qué funciona (y qué no)',
+      '11. El cerebro que atiende',
+      '12. Prácticas, resultados y límites',
       '13. Cómo formar la atención en el aula',
       '14. Un programa por etapas',
-      '15. Las mejores prácticas del mundo, situadas',
+      '15. Aprender de otras escuelas',
     ],
   },
 ];
@@ -170,7 +177,7 @@ const ideas = [
   citation={{
     title: 'El Mercado de la Atención',
     authors: [coleccion.autor.bib],
-    date: '2026/06/11',
+    date: t1.fecha.replace(/-/g, '/'),
     pdfUrl: `${origen}${libroHref}`,
     doi: '10.5281/zenodo.20644819',
     publisher: 'Sor María Juliana Ediciones',
@@ -194,6 +201,7 @@ const ideas = [
           <div class="flex flex-wrap gap-2 mb-6">
             <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">Colección MILC · Tomo I</span>
             <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">Ensayo pedagógico situado</span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">Versión {t1.version}</span>
             <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">{libroPaginas} páginas</span>
             <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">CC BY-SA 4.0</span>
           </div>
@@ -283,7 +291,7 @@ const ideas = [
           Un recorrido que va de <strong style="color: var(--fg);">diagnosticar la máquina</strong>
           a <strong style="color: var(--fg);">formar el criterio</strong>, y termina en un manual
           práctico para el aula. Abre con Prólogo, Introducción y «Cómo leer»; cierra con la
-          Conclusión («recuperar la mirada») y las Referencias.
+          Conclusión («Recuperar la mirada»), las Palabras de cierre, las Referencias y el Glosario de lectura.
         </p>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           {partes.map((p, i) => (
@@ -308,6 +316,9 @@ const ideas = [
           ))}
         </div>
       </section>
+
+      <!-- MATERIALES PARA EL AULA (versión vigente) -->
+      <MaterialesTomo romano="I" />
 
       <!-- PRESENTACIÓN · 12 slides -->
       <div id="presentacion" class="mb-10 scroll-mt-24">
@@ -343,7 +354,7 @@ const ideas = [
         <div class="bento-card-color bg-bento-black grid-pattern text-white py-10 md:py-14 px-6 md:px-10 text-center">
           <span class="text-5xl block mb-4">📗</span>
           <h2 class="text-2xl md:text-4xl font-black tracking-tight leading-tight mb-4 max-w-2xl mx-auto">
-            Léelo completo. Son 118 páginas para recuperar la mirada.
+            Léelo completo. Son {libroPaginas} páginas para recuperar la mirada.
           </h2>
           <p class="text-base md:text-lg opacity-85 leading-relaxed max-w-2xl mx-auto mb-8">
             Si te preocupa cómo la atención de los jóvenes se volvió un mercado (y qué puede hacer
@@ -367,8 +378,11 @@ const ideas = [
       </section>
 
       <!-- Cómo citar -->
+      <!-- La cita impresa en la página legal de la versión 2.1 (título en minúsculas, APA 7). -->
       <CitaLibro
-        titulo="El Mercado de la Atención"
+        titulo="El mercado de la atención"
+        subtitulo={subtitulo}
+        version={t1.version}
         tomo="Tomo I"
         volumen={1}
         ano={2026}

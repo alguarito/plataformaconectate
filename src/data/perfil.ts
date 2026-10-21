@@ -416,11 +416,11 @@ export const publicaciones: Publicacion[] = [
   },
   {
     titulo: 'El Mercado de la Atención',
-    subtitulo: 'Colección MILC · Tomo I — Cómo se disputa la atención de los jóvenes y cómo educar el criterio en la era onlife',
+    subtitulo: 'Colección MILC · Tomo I — Cómo se disputa la atención de los jóvenes y cómo educar el criterio en la era onlife · Versión 2.1',
     ano: 2026,
-    paginas: 118,
+    paginas: 162,
     rol: 'Autor',
-    href: '/modelo-milc/mercado-atencion/tomo-1-mercado-de-la-atencion.pdf',
+    href: '/modelo-milc/mercado-atencion/Tomo1_MercadoAtencion_v2.1.pdf',
     emoji: '📕',
   },
   {

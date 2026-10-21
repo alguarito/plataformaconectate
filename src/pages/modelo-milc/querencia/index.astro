@@ -1,17 +1,19 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import CitaLibro from '../../../components/CitaLibro.astro';
+import MaterialesTomo from '../../../components/MaterialesTomo.astro';
 import { coleccion, tomo } from '../../../data/coleccion';
 import SlidesViewer from '../../../components/SlidesViewer.astro';
 import { presentacionQuerencia, slidesQuerencia } from '../../../data/presentacionQuerencia';
 
 const base = import.meta.env.BASE_URL;
 
-// PDF en la carpeta de esta página (requisito de Google Scholar); ruta en src/data/coleccion.json.
-const libroHref = tomo('II').pdf;
-const libroPaginas = 144;
-const subtitulo =
-  'Reconstruir el aula desde la filosofía de la liberación para arraigar al estudiante en su territorio, su historia y sus saberes ancestrales';
+// Versión vigente (2.4): PDF, páginas, subtítulo, edición y fecha salen de src/data/coleccion.json.
+// El PDF está en la carpeta de esta página (requisito de Google Scholar) y es idéntico al de Zenodo.
+const t2 = tomo('II');
+const libroHref = t2.pdf;
+const libroPaginas = t2.paginas;
+const subtitulo = t2.subtitulo;
 // DOI de concepto (resuelve siempre a la última versión). No se usa el DOI de versión en ninguna parte.
 const doiConcepto = '10.5281/zenodo.21176768';
 const doi = `https://doi.org/${doiConcepto}`;
@@ -30,11 +32,12 @@ const jsonLdExtra = [
     '@id': `${inicio}/modelo-milc#tomo2`,
     name: 'Pedagogía de la Querencia',
     alternateName: subtitulo,
-    bookEdition: 'Primera edición 2026',
+    bookEdition: t2.edicion,
+    version: t2.version,
     bookFormat: 'EBook',
     inLanguage: 'es-CO',
     numberOfPages: libroPaginas,
-    datePublished: '2026-07-03',
+    datePublished: t2.fecha,
     license: 'https://creativecommons.org/licenses/by-sa/4.0/',
     identifier: doi,
     sameAs: ['https://zenodo.org/doi/10.5281/zenodo.21176768'],
@@ -43,11 +46,14 @@ const jsonLdExtra = [
     encodingFormat: 'application/pdf',
     position: 2,
     isPartOf: { '@type': 'BookSeries', '@id': `${inicio}/modelo-milc#coleccion`, name: 'Colección MILC' },
-    associatedMedia: {
+    // El libro y sus complementos (mismo DOI de concepto).
+    associatedMedia: t2.archivos.map((a) => ({
       '@type': 'MediaObject',
-      contentUrl: pdfUrl,
+      name: a.nombre,
+      description: a.etiqueta ?? 'Libro',
+      contentUrl: `${origen}${a.url}`,
       encodingFormat: 'application/pdf',
-    },
+    })),
     author: { '@id': `${inicio}/acerca#person` },
     publisher: { '@id': `${inicio}#sello` },
     about: [
@@ -79,7 +85,7 @@ const jsonLdExtra = [
   },
 ];
 
-// Estructura real del tomo: 18 capítulos en 5 partes (+ preliminares y cierre).
+// Estructura real del tomo (versión 2.4): 20 capítulos en 6 partes (+ preliminares, cierre y anexos).
 const partes = [
   {
     parte: 'Parte I',
@@ -88,7 +94,7 @@ const partes = [
     caps: [
       '1. La Totalidad que educa',
       '2. La colonialidad del saber',
-      '3. El no-lugar: formar para irse',
+      '3. El no-lugar',
     ],
   },
   {
@@ -96,9 +102,9 @@ const partes = [
     titulo: 'Las caras del desarraigo',
     desc: 'Los efectos, por dimensión.',
     caps: [
-      '4. Desarraigo epistémico',
-      '5. Desarraigo territorial',
-      '6. Desarraigo identitario',
+      '4. El desarraigo epistémico',
+      '5. El desarraigo territorial',
+      '6. El desarraigo identitario',
     ],
   },
   {
@@ -109,7 +115,7 @@ const partes = [
       '7. El mito de la modernidad',
       '8. 1492 en el tablero',
       '9. Redescribir desde Abya Yala',
-      '10. La historia que se camina: los Quimbaya y Cartago',
+      '10. La historia que se camina',
     ],
   },
   {
@@ -131,8 +137,14 @@ const partes = [
       '15. Cartografía del lugar',
       '16. El aula como ágora',
       '17. Investigación situada',
-      '18. Programa por etapas (6.º–11.º)',
+      '18. Programa por etapas',
     ],
+  },
+  {
+    parte: 'Parte VI',
+    titulo: 'La red de los lugares',
+    desc: 'Cuando una escuela se encuentra con otras.',
+    caps: ['19. Federar territorios', '20. Abrir un nodo'],
   },
 ];
 
@@ -165,7 +177,7 @@ const ideas = [
   },
   {
     emoji: '🌱',
-    titulo: 'La querencia, competencia educable',
+    titulo: 'La querencia, en libertad',
     texto: 'Alas y raíces: reparar las tres heridas (reparación epistémica, reterritorialización, pertenencia). El estudiante con querencia no es el que se queda porque no pudo irse, sino el que, pudiendo irse, sabe que tiene un lugar al cual volver.',
   },
 ];
@@ -173,14 +185,14 @@ const ideas = [
 
 <BaseLayout
   title="Pedagogía de la Querencia · Tomo II — Colección MILC · ConectaTE"
-  description="Tomo II de la Colección MILC: reconstruir el aula desde la filosofía de la liberación para arraigar al estudiante en su territorio, su historia y sus saberes ancestrales. Libro en acceso abierto (CC BY-SA 4.0, DOI en Zenodo)."
+  description="Tomo II de la Colección MILC: educar para conocer el territorio, dialogar con sus saberes y construir vínculos en libertad. Libro en acceso abierto (CC BY-SA 4.0, DOI en Zenodo), con cuaderno, fichas de aula, guía docente y kit de pilotaje."
   ogType="article"
   imagen="/og/libro-querencia.png"
   jsonLd={jsonLdExtra}
   citation={{
     title: 'Pedagogía de la Querencia',
     authors: [coleccion.autor.bib],
-    date: '2026/07/03',
+    date: t2.fecha.replace(/-/g, '/'),
     pdfUrl,
     doi: doiConcepto,
     publisher: 'Sor María Juliana Ediciones',
@@ -204,6 +216,7 @@ const ideas = [
           <div class="flex flex-wrap gap-2 mb-6">
             <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">Colección MILC · Tomo II</span>
             <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">Ensayo pedagógico situado</span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">Versión {t2.version}</span>
             <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">{libroPaginas} páginas</span>
             <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">CC BY-SA 4.0</span>
           </div>
@@ -249,7 +262,7 @@ const ideas = [
       <div class="bento-card-color bg-bento-lime mb-10">
         <span class="chip-bento mb-3 bg-black/10">💡 La tesis, en una línea</span>
         <p class="text-lg md:text-2xl font-black leading-snug">
-          «La querencia (el arraigo al territorio, la historia y los saberes propios) es una competencia que se puede educar.»
+          «Desarrollar capacidades para observar, escuchar, investigar y cuidar el territorio. La pertenencia y el afecto se acompañan en libertad; no se califican.»
         </p>
         <p class="text-sm leading-relaxed mt-3 opacity-90">
           Este tomo reconstruye la pedagogía desde la <strong>filosofía de la liberación</strong>:
@@ -273,7 +286,8 @@ const ideas = [
             (la Totalidad que encubre al Otro y la Exterioridad que la transforma) y la pone a trabajar
             en el aula. Nombra las <strong>tres heridas del desarraigo</strong> (epistémica, territorial
             e identitaria) y propone la <strong>querencia</strong> (el amor y la pertenencia al lugar)
-            no como nostalgia, sino como una <strong>competencia que se puede educar</strong>.
+            no como nostalgia: la escuela desarrolla <strong>capacidades para observar, escuchar, investigar
+            y cuidar el territorio</strong>, y acompaña en libertad la pertenencia y el afecto, que no se califican.
           </p>
           <p class="text-base md:text-lg leading-relaxed">
             Es el <strong>Tomo II de la Colección MILC</strong>. Si el Tomo I formó el criterio del
@@ -288,14 +302,15 @@ const ideas = [
       <section class="mb-10">
         <div class="flex items-center justify-between flex-wrap gap-3 mb-2">
           <h2 class="heading-huge">Cómo está armado el tomo.</h2>
-          <span class="chip-bento">18 capítulos · 5 partes</span>
+          <span class="chip-bento">20 capítulos · 6 partes</span>
         </div>
         <p class="text-sm leading-relaxed mb-6 max-w-2xl" style="color: var(--fg-muted);">
           Un recorrido que va de <strong style="color: var(--fg);">diagnosticar el desarraigo</strong>
           a <strong style="color: var(--fg);">reescribir la historia</strong> y
-          <strong style="color: var(--fg);">reconstruir las prácticas</strong> del aula. Abre con
-          Prólogo, Introducción y «Cómo leer»; cierra con la Conclusión («Habitar la Exterioridad»)
-          y las Referencias.
+          <strong style="color: var(--fg);">reconstruir las prácticas</strong> del aula, y de ahí a la
+          <strong style="color: var(--fg);">red de los lugares</strong>. Abre con Prólogo, Introducción y «Cómo leer»;
+          cierra con la Conclusión («Habitar la exterioridad: mirar de nuevo el lugar»), las Palabras de cierre,
+          las Referencias, el Glosario MILC y cuatro anexos.
         </p>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           {partes.map((p, i) => (
@@ -320,6 +335,9 @@ const ideas = [
           ))}
         </div>
       </section>
+
+      <!-- MATERIALES PARA EL AULA (versión vigente) -->
+      <MaterialesTomo romano="II" />
 
       <!-- PRESENTACIÓN · 15 slides -->
       <div id="presentacion" class="mb-10 scroll-mt-24">
@@ -379,8 +397,11 @@ const ideas = [
       </section>
 
       <!-- Cómo citar -->
+      <!-- La cita impresa en la página legal de la versión 2.4 (título en minúsculas, APA 7). -->
       <CitaLibro
-        titulo="Pedagogía de la Querencia"
+        titulo="Pedagogía de la querencia"
+        subtitulo={subtitulo}
+        version={t2.version}
         tomo="Tomo II"
         volumen={2}
         ano={2026}

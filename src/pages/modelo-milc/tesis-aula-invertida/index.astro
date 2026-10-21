@@ -1,0 +1,243 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import CitaLibro from '../../../components/CitaLibro.astro';
+import { coleccion, peso } from '../../../data/coleccion';
+
+// Tesis doctoral · edición revisada y ampliada (libro MILC, versión 1.0, 2026).
+// No es un tomo de la Colección MILC. El resumen es el publicado en Zenodo y el índice es el del
+// libro. Google Scholar solo liga el PDF si está en la misma carpeta que esta página.
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const titulo =
+  'Impacto de la implementación del modelo pedagógico Flipped Classroom en la enseñanza de la tecnología en básica secundaria';
+const subtitulo = 'Relectura crítica de la experiencia desde el MILC';
+const tituloCompleto = `${titulo}: ${subtitulo}`;
+const version = '1.0';
+const fecha = '2026-10-20';
+const paginas = 146;
+const licencia = 'CC BY-NC-SA 4.0';
+const licenciaUrl = 'https://creativecommons.org/licenses/by-nc-sa/4.0/';
+// DOI de concepto (resuelve siempre a la última versión). No se usa el DOI de versión.
+const doiConcepto = '10.5281/zenodo.23519364';
+const doi = `https://doi.org/${doiConcepto}`;
+// Copia web: imágenes recomprimidas para quedar bajo los 5 MB de Google Scholar; el texto es el del depósito.
+const pdfNombre = 'Tesis_AulaInvertida_RelecturaMILC_v1.0.pdf';
+const pdfBytes = 3646480;
+const ficha = `${base}/modelo-milc/tesis-aula-invertida`;
+const pdfHref = `${ficha}/${pdfNombre}`;
+
+// ─── Schema.org · Book ───────────────────────────────────────────────────
+const origen = (Astro.site ?? new URL('https://alguarito.github.io')).toString().replace(/\/$/, '');
+const inicio = `${origen}${base}`;
+const fichaUrl = `${origen}${ficha}`;
+const pdfUrl = `${origen}${pdfHref}`;
+
+const jsonLdExtra = [
+  {
+    '@type': 'Book',
+    '@id': `${fichaUrl}#libro`,
+    name: titulo,
+    alternateName: subtitulo,
+    bookEdition: `Versión ${version} · edición revisada y ampliada de la tesis doctoral (2026)`,
+    version,
+    bookFormat: 'EBook',
+    inLanguage: 'es-CO',
+    numberOfPages: paginas,
+    datePublished: fecha,
+    license: licenciaUrl,
+    identifier: { '@type': 'PropertyValue', propertyID: 'DOI', value: doiConcepto, url: doi },
+    sameAs: doi,
+    url: fichaUrl,
+    mainEntityOfPage: fichaUrl,
+    encodingFormat: 'application/pdf',
+    associatedMedia: {
+      '@type': 'MediaObject',
+      name: pdfNombre,
+      contentUrl: pdfUrl,
+      encodingFormat: 'application/pdf',
+    },
+    author: { '@id': `${inicio}/acerca#person` },
+    publisher: { '@id': `${inicio}#sello` },
+    keywords:
+      'aula invertida, flipped classroom, Tecnología e Informática, educación secundaria, escuela pública, tesis doctoral, edición revisada, integridad de datos, MILC, ConectaTE, Cartago, Colombia',
+  },
+];
+
+// Resumen publicado en Zenodo (registro de la versión 1.0).
+const resumen = [
+  {
+    titulo: '',
+    texto:
+      'Esta edición revisada y ampliada examina una experiencia de aula invertida en Tecnología e Informática de séptimo grado, realizada en una institución oficial de Cartago, Colombia, durante el segundo periodo académico de 2022. Examina además la continuidad que el autor reconoce entre la tesis, ConectaTE y la articulación del Modelo de Investigación Liberadora y Científica (MILC) con el aula. Corrige errores de análisis y de fuentes de la versión aprobada y retira sus afirmaciones de mejora en rendimiento y motivación.',
+  },
+  {
+    titulo: 'Método',
+    texto:
+      'El reanálisis observacional y exploratorio utiliza 116 respuestas a la encuesta familiar, 112 valoraciones finales y 95 registros emparejados, con trazabilidad incompleta. La calificación es una medida institucional compuesta; no se conservan mediciones iniciales ni registros de motivación y no hubo grupo de comparación. La revisión documental contrasta cuatro obras MILC mediante doce unidades y añade seis unidades de continuidad con documentos de ConectaTE y la reconstrucción retrospectiva del autor.',
+  },
+  {
+    titulo: 'Resultados',
+    texto:
+      'El 80,4 % de las valoraciones tiene la etiqueta histórica de desempeño básico o superior. Entre 19 variables, el tiempo académico declarado al inicio se asoció con la calificación tras ajuste de Holm (p = 0,01672); no mide atención ni cumplimiento de actividades previas. No se detectó asociación socioeconómica ajustada y el resultado sobre inteligencias múltiples fue no concluyente.',
+  },
+  {
+    titulo: 'Aporte y proyección',
+    texto:
+      'El autor reconoce en la tesis un antecedente de ConectaTE y de su elaboración pedagógica posterior. La revisión contrasta esa explicación con documentos y encuentra correspondencias en acceso, formatos, actualización de contenidos y preparación de clase, sin evaluar sus efectos. El corpus reúne obras y materiales de la trayectoria del autor; el contraste con participantes y otros docentes puede enriquecer su interpretación. Se propone evaluar secuencias existentes de ConectaTE mediante comprensión, decisiones, acceso, carga y devolución.',
+  },
+  {
+    titulo: 'Sobre esta edición',
+    texto:
+      'Edición revisada y ampliada (versión 1.0) de la tesis doctoral aprobada por la Universidad Cuauhtémoc (México, plantel Aguascalientes; Doctorado en Ciencias de la Educación) el 17 de julio de 2024, dirigida por la Dra. Mary Yaneth Rodríguez Villamizar. La versión aprobada no se publica tal cual: esta edición declara y corrige sus errores de análisis y de fuentes, retira las afirmaciones de mejora en rendimiento y motivación y retira los datos personales de los estudiantes. La aprobación universitaria de 2024 corresponde a la tesis histórica y no acredita la ampliación de 2026. La revisión y la composición tuvieron asistencia de IA; las ilustraciones de cubierta y carátulas son conceptuales y se generaron con IA.',
+  },
+];
+
+// Índice del libro (versión 1.0).
+const capitulos = [
+  { n: '01', titulo: 'Planteamiento del problema', secciones: ['Contexto', 'El problema y el vacío de conocimiento', 'Preguntas de investigación', 'Objetivos', 'Hipótesis', 'Matriz de coherencia', 'Justificación', 'Alcance histórico y pregunta de la revisión'] },
+  { n: '02', titulo: 'Marco teórico y estado del arte', secciones: ['Marco conceptual', 'Estado del arte y corpus de relectura'] },
+  { n: '03', titulo: 'Método', secciones: ['Enfoque y diseño', 'Contexto y escenario', 'Participantes', 'La intervención: modelo de aula invertida', 'Instrumentos', 'Variables', 'Integridad de los datos y decisiones de esta edición', 'Análisis de datos', 'Consideraciones éticas', 'Procedimiento de la relectura y de la continuidad académica'] },
+  { n: '04', titulo: 'Resultados', secciones: ['Caracterización de la población', 'Implementación del modelo', 'Desempeño al final del periodo', 'Condiciones asociadas al desempeño', 'Inteligencia dominante y desempeño', 'Preguntas abiertas y evidencia necesaria', 'Estado de las hipótesis', 'Diferencias con la versión aprobada'] },
+  { n: '05', titulo: 'Discusión y conclusiones', secciones: ['Síntesis de los hallazgos', 'Discusión', 'Alcance de la evidencia y oportunidades de fortalecimiento', 'Conclusiones', 'Aportes', 'Implicaciones para la práctica', 'Agenda de investigación'] },
+];
+---
+
+<BaseLayout
+  title="Tesis doctoral · Aula invertida en Tecnología (edición revisada, 2026) — ConectaTE"
+  description="Edición revisada y ampliada de la tesis doctoral de Alvaro Cardenas Orozco (Universidad Cuauhtémoc, 2024): aula invertida en Tecnología e Informática de séptimo grado en Cartago, Colombia, releída desde el MILC. Libro en acceso abierto (CC BY-NC-SA 4.0, DOI en Zenodo)."
+  ogType="article"
+  jsonLd={jsonLdExtra}
+  citation={{
+    title: tituloCompleto,
+    authors: [coleccion.autor.bib],
+    date: fecha.replace(/-/g, '/'),
+    pdfUrl,
+    doi: doiConcepto,
+    publisher: coleccion.sello,
+    language: 'es',
+  }}
+>
+  <article class="pt-12 pb-20">
+    <div class="bento-container max-w-5xl">
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-sm font-semibold mb-8 flex-wrap" style="color: var(--fg-muted);">
+        <a href={base || '/'} class="hover:opacity-60 transition-opacity">Inicio</a>
+        <span>/</span>
+        <a href={`${base}/modelo-milc`} class="hover:opacity-60 transition-opacity">Modelo MILC</a>
+        <span>/</span>
+        <span style="color: var(--fg);">Tesis doctoral</span>
+      </nav>
+
+      <!-- HERO editorial -->
+      <div class="bento-card-color bg-bento-black grid-pattern text-white mb-10 py-12 md:py-16 px-6 md:px-10">
+        <div class="max-w-3xl">
+          <div class="flex flex-wrap gap-2 mb-6">
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">Tesis doctoral</span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">Edición revisada y ampliada</span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">{paginas} páginas</span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">{licencia}</span>
+          </div>
+          <h1 class="text-3xl md:text-5xl font-black tracking-tight text-balance leading-[1.05] mb-4">
+            {titulo}
+          </h1>
+          <p class="text-base md:text-lg font-semibold opacity-90 leading-relaxed mb-3">
+            {subtitulo}.
+          </p>
+          <p class="text-sm opacity-70 mb-8">
+            Alvaro Cardenas Orozco · {coleccion.sello} · versión {version}, 2026 · DOI {doiConcepto}
+          </p>
+
+          <div class="flex items-center gap-2.5 flex-wrap">
+            <a href={pdfHref} download={pdfNombre} class="inline-flex items-center gap-2 min-h-[44px] px-5 py-2.5 rounded-full bg-bento-lime text-neutral-950 text-sm font-black hover:opacity-85 transition-opacity">
+              Descargar el libro (PDF · {peso(pdfBytes)})
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+            </a>
+            <a href={doi} target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 min-h-[44px] px-5 py-2.5 rounded-full border-2 border-white/30 text-sm font-black hover:border-white transition-colors" aria-label="Registro citable en Zenodo (se abre en una pestaña nueva)">
+              DOI · Zenodo
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESUMEN (el publicado en Zenodo) -->
+      <section class="mb-10" aria-labelledby="resumen-titulo">
+        <h2 id="resumen-titulo" class="chip-bento mb-4">Resumen</h2>
+        <div class="bento-card">
+          {resumen.map((r, i) => (
+            <p class={`text-base md:text-lg leading-relaxed ${i < resumen.length - 1 ? 'mb-4' : ''}`}>
+              {r.titulo && <strong>{r.titulo}. </strong>}{r.texto}
+            </p>
+          ))}
+        </div>
+      </section>
+
+      <!-- CÓMO ESTÁ ARMADO EL LIBRO -->
+      <section class="mb-10" aria-labelledby="estructura-titulo">
+        <div class="flex items-center justify-between flex-wrap gap-3 mb-2">
+          <h2 id="estructura-titulo" class="heading-huge">Cómo está armado el libro.</h2>
+          <span class="chip-bento">{capitulos.length} capítulos · referencias · anexos A–M</span>
+        </div>
+        <p class="text-sm leading-relaxed mb-6 max-w-2xl" style="color: var(--fg-muted);">
+          Abre con «Sobre el autor», «Volver sobre mis pasos», la nota de la edición revisada, el resumen,
+          el abstract, los agradecimientos, la dedicatoria y la introducción. Cierra con las referencias y
+          trece anexos: los instrumentos, el registro de cambios frente a la versión aprobada (2024), el
+          corpus de la relectura y la continuidad de la tesis a ConectaTE y al MILC.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {capitulos.map((c) => (
+            <div class="bento-card">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="w-9 h-9 rounded-full bg-bento-black text-white dark:bg-neutral-50 dark:text-neutral-950 flex items-center justify-center text-sm font-black shrink-0" aria-hidden="true">{c.n}</span>
+                <h3 class="font-black text-lg leading-tight">{c.titulo}</h3>
+              </div>
+              <ul class="space-y-1.5">
+                {c.secciones.map((s) => (
+                  <li class="text-sm leading-snug flex gap-2">
+                    <span class="text-bento-blue font-black shrink-0">›</span>
+                    <span>{s}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- Cómo citar (la forma impresa en la página legal del libro) -->
+      <CitaLibro
+        titulo={titulo}
+        subtitulo={subtitulo}
+        version={version}
+        ano={2026}
+        editorial={coleccion.sello}
+        doi={doiConcepto}
+        citeKey="cardenas2026tesis"
+        licencia={licencia}
+        notaObraMatriz={false}
+        enColeccion={false}
+        descripcion="Edición revisada y ampliada de tesis doctoral, Universidad Cuauhtémoc"
+      />
+
+      <!-- Volver -->
+      <a href={`${base}/modelo-milc`} class="bento-card-hover flex items-center gap-4">
+        <svg class="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M19 12H5"></path>
+          <path d="m12 19-7-7 7-7"></path>
+        </svg>
+        <div>
+          <div class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">Volver al</div>
+          <div class="font-black text-lg">Modelo MILC</div>
+        </div>
+      </a>
+    </div>
+  </article>
+</BaseLayout>

@@ -17,7 +17,7 @@
  * SÍ bumpear (assets cacheados cambiaron):
  *   ✓ Cambia LOGO.png (está en cache-first on-demand, no en SHELL_URLS)
  *   ✓ Se regeneran PDFs de guías (public/guias-mejoras/*.pdf)
- *   ✓ Cambia algún PDF en public/ (plan-de-area, libro-milc, etc.)
+ *   ✓ Cambia algún PDF en public/ (plan-de-area, modelo-milc, etc.)
  *   ✓ Cambia la estrategia/lógica del propio SW
  *
  * NO bumpear (no es necesario):
@@ -32,7 +32,7 @@
  * ─────────────────────────────────────────────────────────────────────────
  */
 
-const VERSION = 'v97';
+const VERSION = 'v98';
 const BASE_PATH = '/plataformaconectate';
 
 const CACHE_SHELL = `conectate-shell-${VERSION}`;

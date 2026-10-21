@@ -8,10 +8,14 @@
 import datos from './coleccion.json';
 
 export type Romano = '0' | 'I' | 'II' | 'III' | 'IV' | 'V';
-export type RolArchivo = 'libro' | 'cuaderno' | 'hojas-carta' | 'hojas-a4';
+export type RolArchivo = 'libro' | 'cuaderno' | 'hojas-carta' | 'hojas-a4' | 'guia' | 'kit';
 
 interface ArchivoDatos {
   rol: RolArchivo;
+  /** Rótulo visible. Si falta, se usa el del rol, pensado para el Tomo 0 (cuaderno de trabajo, hojas F01–F16). */
+  etiqueta?: string;
+  /** Qué trae el archivo, en una frase (sale del LEEME de la entrega). Solo los complementos. */
+  descripcion?: string;
   /**
    * Carpeta relativa a public/, sin barras extremas. Es la de la ficha del libro
    * (modelo-milc/<ficha>): Google Scholar solo liga el PDF si está en la misma carpeta
@@ -49,7 +53,7 @@ interface LibroDatos {
   licencia_url: string;
   profundiza: number[];
   edicion: string;
-  version?: string; // solo los tomos que ya la declaran (Tomo 0: «3.0»)
+  version?: string; // solo los tomos que ya la declaran (Tomo 0: «3.0»; Tomo I: «2.1»; Tomo II: «2.4»)
   fecha: string;
   cita_key: string;
   archivos: ArchivoDatos[];

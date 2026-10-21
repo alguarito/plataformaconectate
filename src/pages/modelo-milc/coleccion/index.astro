@@ -22,13 +22,15 @@ const necesidades: { necesidad: string; romano: Romano }[] = [
 const rutas = necesidades.map((r) => ({ ...r, libro: tomo(r.romano) }));
 
 // ─── Descargas: todos los archivos de cada libro ──────────────────────────
-// El Tomo 0 trae cuatro (libro, cuaderno y hojas F01–F16 en Carta y A4).
+// El Tomo 0 trae cuatro (libro, cuaderno y hojas F01–F16 en Carta y A4); los Tomos I y II, seis
+// (libro, cuaderno, fichas en Carta y A4, guía docente y kit de pilotaje), con su rótulo en `etiqueta`.
 // download = nombre EXACTO: los enlaces entre libro y cuaderno dependen de él.
 const descargas = libros.flatMap((l) =>
   l.archivos.map((a) => {
     const hojas = a.rol === 'hojas-carta' || a.rol === 'hojas-a4';
     const titulo =
-      a.rol === 'cuaderno' ? 'Cuaderno de trabajo MILC' : hojas ? `Hojas F01–F16 · ${a.formato}` : l.titulo;
+      a.etiqueta ??
+      (a.rol === 'cuaderno' ? 'Cuaderno de trabajo MILC' : hojas ? `Hojas F01–F16 · ${a.formato}` : l.titulo);
     const detalle = [
       a.paginas ? `${a.paginas} ${hojas ? 'hojas' : 'págs.'}` : '',
       hojas ? '' : (a.formato ?? ''),
@@ -285,7 +287,8 @@ const jsonLdExtra = [
         <h2 class="heading-huge mb-3 leading-tight">La obra entera, gratis.</h2>
         <p class="text-sm md:text-base leading-relaxed mb-6 max-w-3xl" style="color: var(--fg-muted);">
           Los seis libros son de acceso abierto y se pueden descargar, compartir y usar en el aula.
-          El Tomo 0 trae, además, su cuaderno de trabajo y las hojas F01–F16 en Carta y en A4.
+          El Tomo 0 trae, además, su cuaderno de trabajo y las hojas F01–F16 en Carta y en A4; los Tomos I y II,
+          su cuaderno, las fichas en Carta y en A4, la guía docente y el kit de pilotaje.
         </p>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-3">

@@ -411,7 +411,7 @@ export const publicaciones: Publicacion[] = [
     ano: 2026,
     paginas: 250,
     rol: 'Autor',
-    href: '/libro-milc/tomo-0/MILC.pdf',
+    href: '/modelo-milc/educacion-en-la-era-onlife/MILC.pdf',
     emoji: '📖',
   },
   {
@@ -420,7 +420,7 @@ export const publicaciones: Publicacion[] = [
     ano: 2026,
     paginas: 118,
     rol: 'Autor',
-    href: '/libro-milc/tomo-1-mercado-de-la-atencion.pdf',
+    href: '/modelo-milc/mercado-atencion/tomo-1-mercado-de-la-atencion.pdf',
     emoji: '📕',
   },
   {

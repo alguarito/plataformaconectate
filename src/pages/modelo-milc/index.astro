@@ -3,6 +3,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import IndiceDocumento from '../../components/IndiceDocumento.astro';
 import CitaLibro from '../../components/CitaLibro.astro';
 import CitaArticulo from '../../components/CitaArticulo.astro';
+import Tomo0DeQueTrata from '../../components/Tomo0DeQueTrata.astro';
+import Tomo0Estructura from '../../components/Tomo0Estructura.astro';
 import DiagramaCicloMILC from '../../components/DiagramaCicloMILC.astro';
 import DiagramaPipeline from '../../components/DiagramaPipeline.astro';
 import SlidesViewer from '../../components/SlidesViewer.astro';
@@ -22,7 +24,8 @@ import {
   valoracionPorContrato,
   valoracionPorDensidad,
 } from '../../data/planArea';
-import { coleccion, tomo, tomoQueProfundiza, peso } from '../../data/coleccion';
+import { coleccion, tomo, peso } from '../../data/coleccion';
+import { tituloCompletoTomo0, descargasTomo0 } from '../../data/tomo0';
 
 const base = import.meta.env.BASE_URL;
 const planAreaHref = `${base}/plan-de-area/${planArea.pdf}`;
@@ -38,28 +41,11 @@ const libroMilcSubtitulo = t0.subtitulo;
 const libroMilcDoi = t0.doiUrl;
 const libroMilcVersion = t0.version ?? '3.0';
 const libroMilcEdicion = t0.edicion;
-// En la cita y en Zenodo el subtítulo va con coma: «…Onlife: MILC, Modelo de…».
-const libroMilcSubtituloCita = t0.subtitulo.replace(/^MILC: /, 'MILC, ');
-const libroMilcTituloCompleto = `${t0.titulo}: ${libroMilcSubtituloCita}`;
+const libroMilcTituloCompleto = tituloCompletoTomo0;
 const libroMilcArchivo = t0.archivos.find((a) => a.rol === 'libro')!;
 const cuadernoMilc = t0.archivos.find((a) => a.rol === 'cuaderno')!;
 
-// Botones de descarga del Tomo 0: uno por archivo, con su nombre exacto.
-const etiquetaArchivo: Record<string, string> = {
-  libro: 'Libro',
-  cuaderno: 'Cuaderno de trabajo',
-  'hojas-carta': 'Hojas F01–F16 · Carta',
-  'hojas-a4': 'Hojas F01–F16 · A4',
-};
-const descargasTomo0 = t0.archivos.map((a) => {
-  const esHoja = a.rol === 'hojas-carta' || a.rol === 'hojas-a4';
-  return {
-    ...a,
-    etiqueta: etiquetaArchivo[a.rol],
-    detalle: `${a.paginas} ${esHoja ? 'hojas' : 'págs.'} · ${peso(a.bytes)}`,
-    principal: !esHoja,
-  };
-});
+// Botones de descarga del Tomo 0 (uno por archivo) y estructura del libro: src/data/tomo0.ts.
 
 // Colección MILC · Tomo I (ensayo de divulgación derivado de la obra matriz).
 const t1 = tomo('I');
@@ -107,57 +93,6 @@ const articuloDoiUrl = `https://doi.org/${articuloDoi}`;
 const articuloUrl = 'https://revistahambatuscience.org/index.php/ojs/es/article/view/34';
 const articuloTitulo = 'Modelo de investigación liberadora y científica (MILC): una propuesta para la educación en la era onlife';
 
-// Estructura real de la obra matriz (versión 3.0 · 11 capítulos en 5 partes + epílogo).
-// `ruta` = la «Ruta del capítulo» que abre cada capítulo en el libro (en el 1, su mapa de lectura).
-// «Para profundizar» sale de coleccion.json (tomoQueProfundiza); el capítulo 9 no tiene tomo.
-const momentosCiclo = ['Escucha', 'Sistematización', 'Praxis', 'Evaluación liberadora', 'Devolución'];
-const libroEstructura = [
-  {
-    parte: 'I',
-    titulo: 'Crisis onlife',
-    capitulos: [
-      { n: 1, titulo: 'El Mercado de la Mirada', ruta: ['Atención', 'Biografía', 'Curiosidad', 'Escuela', 'Autoría', 'Comunidad', 'Docencia'], desc: 'La atención como territorio en disputa: la escuela recupera la mirada antes de pretender educar con tecnología.' },
-    ],
-  },
-  {
-    parte: 'II',
-    titulo: 'Genealogía y sujeto',
-    capitulos: [
-      { n: 2, titulo: 'Genealogía del Futuro', ruta: ['Palabra', 'Infoesfera', 'Ética', 'Territorio'], desc: 'Las raíces críticas del modelo: Freire, Floridi, el estoicismo crítico y Dussel.' },
-      { n: 3, titulo: 'La Re-ontologización del Sujeto', ruta: ['Información', 'Sentido', 'Carácter', 'Territorio'], desc: 'Un sujeto capaz de habitar la infoesfera sin renunciar a juicio, autoría ni dignidad.' },
-    ],
-  },
-  {
-    parte: 'III',
-    titulo: 'Espacio y método',
-    capitulos: [
-      { n: 4, titulo: 'La Arquitectura del Encuentro', ruta: ['Espacio', 'Materia', 'Error', 'Comunidad'], desc: 'El Laboratorio-Ágora: un espacio que educa antes de que alguien pronuncie la primera palabra.' },
-      { n: 5, titulo: 'El Ciclo de la Investigación Liberadora', ruta: momentosCiclo, desc: 'Un ciclo abierto de cinco momentos: se puede volver a cualquiera cuando la evidencia exige revisar el camino.' },
-    ],
-  },
-  {
-    parte: 'IV',
-    titulo: 'Herramientas y tiempo',
-    capitulos: [
-      { n: 6, titulo: 'Las herramientas del oficio', ruta: ['Cartografía', 'Portafolio', 'IA', 'Mantenimiento'], desc: 'Cartografía social, portafolio de investigación e inteligencia artificial con criterio.' },
-      { n: 7, titulo: 'Cronotopos de la práctica', ruta: ['Lentitud', 'Retorno', 'Urgencia', 'Memoria'], desc: 'Los tiempos de la investigación escolar: lo que una pregunta necesita para madurar.' },
-    ],
-  },
-  {
-    parte: 'V',
-    titulo: 'Escalamiento, comunidad y movimiento',
-    capitulos: [
-      { n: 8, titulo: 'Escalando esperanzas', ruta: ['Incubar', 'Instituir', 'Formar', 'Federar'], desc: 'Una pedagogía crece cuando otras comunidades la apropian, la cuidan y la vuelven suya.' },
-      { n: 9, titulo: 'ConectaTE como caso vivo', ruta: ['Memoria', 'Liderazgo', 'Producción', 'Cultura'], desc: 'La experiencia de la plataforma y su semillero, abierta a la discusión y a la verificación.' },
-      { n: 10, titulo: 'Sostenibilidad y evidencia', ruta: ['Archivo', 'Evidencia', 'Cuidado', 'Relevo'], desc: 'Documentar con cuidado para que la experiencia dure y pueda pasar a otras manos.' },
-      { n: 11, titulo: 'Red MILC y expansión territorial', ruta: ['Red', 'Mentoría', 'Apertura', 'Territorio'], desc: 'Una red para multiplicar la capacidad de aprender juntos, no para multiplicar una marca.' },
-    ],
-  },
-].map((p) => ({
-  ...p,
-  capitulos: p.capitulos.map((c) => ({ ...c, profundiza: tomoQueProfundiza(c.n) })),
-}));
-const totalCapitulos = libroEstructura.reduce((s, p) => s + p.capitulos.length, 0);
 
 // ─── Schema.org · Book + Article ─────────────────────────────────────────
 const origen = (Astro.site ?? new URL('https://alguarito.github.io')).toString().replace(/\/$/, '');
@@ -247,7 +182,9 @@ const jsonLdExtra = [
     // Solo el DOI de concepto: nunca el DOI ni el registro de una versión.
     identifier: { '@type': 'PropertyValue', propertyID: 'DOI', value: t0.doi, url: libroMilcDoi },
     sameAs: libroMilcDoi,
-    url: `${inicio}/modelo-milc`,
+    // Página propia del libro (meta citation_* para Google Scholar); el modelo vive en /modelo-milc.
+    url: `${origen}${t0.ficha}`,
+    mainEntityOfPage: `${origen}${t0.ficha}`,
     encodingFormat: 'application/pdf',
     position: 0,
     isPartOf: { '@type': 'BookSeries', '@id': `${inicio}/modelo-milc#coleccion`, name: 'Colección MILC' },
@@ -537,15 +474,6 @@ const seccionesMilc = [
   ogType="article"
   imagen="/og/modelo-milc.png"
   jsonLd={jsonLdExtra}
-  citation={{
-    title: libroMilcTituloCompleto,
-    authors: ['Alvaro Cardenas Orozco'],
-    date: t0.fecha.replace(/-/g, '/'),
-    pdfUrl: `${origen}${libroMilcHref}`,
-    doi: t0.doi,
-    publisher: coleccion.sello,
-    language: 'es',
-  }}
 >
   <article class="pt-8 md:pt-12 pb-20">
     <div class="bento-container max-w-6xl">
@@ -634,92 +562,18 @@ const seccionesMilc = [
             <p class="text-xs font-semibold leading-relaxed mt-3 opacity-80">
               Guarda el libro y el cuaderno en la misma carpeta y sin cambiarles el nombre: así funcionan los enlaces entre los dos.
             </p>
+            <a href={t0.ficha} class="inline-flex items-center gap-1.5 min-h-[44px] mt-1 text-sm font-black underline underline-offset-4 decoration-2 hover:opacity-70 transition-opacity">
+              Ficha del libro y cómo citarlo →
+            </a>
           </div>
         </section>
       </div>
 
       <!-- DE QUÉ TRATA EL LIBRO (obra matriz) -->
-      <section class="mb-10">
-        <span class="chip-bento mb-4">De qué trata el libro</span>
-        <div class="bento-card">
-          <p class="text-base md:text-lg leading-relaxed mb-4">
-            <em>Educación en la Era Onlife</em> es la <strong>obra que funda el modelo MILC</strong>.
-            Parte de una denuncia: la economía de la atención ha secuestrado la formación humana,
-            convirtiendo al estudiante en producto antes que en autor. Frente a eso propone una
-            pedagogía transmoderna para <strong>recuperar la mirada, investigar el territorio y crear
-            tecnología con sentido</strong>.
-          </p>
-          <p class="text-base md:text-lg leading-relaxed mb-4">
-            Articula pedagogía crítica, ciencia ciudadana, pensamiento computacional, robótica,
-            astronomía, escritura académica y memoria institucional, y nace de una experiencia real:
-            la I.E. Sor María Juliana (Cartago) y el ecosistema ConectaTE. Se apoya en cuatro pilares:
-            <strong>Freire</strong> (pedagogía crítica frente al algoritmo), <strong>Floridi</strong>
-            (la infoesfera y el sujeto como <em>inforg</em>), el <strong>estoicismo crítico</strong>
-            (la ciudadela interior) y <strong>Dussel</strong> (la filosofía de la liberación).
-          </p>
-          <p class="text-base md:text-lg leading-relaxed italic" style="color: var(--fg-muted);">
-            «La educación no cambia al mundo: cambia a las personas que van a cambiar el mundo.»
-            — Paulo Freire
-          </p>
-        </div>
-      </section>
+      <Tomo0DeQueTrata />
 
       <!-- CÓMO ESTÁ ARMADO EL LIBRO · 11 capítulos en 5 partes (versión 3.0) -->
-      <section id="estructura" class="mb-10 scroll-mt-24" aria-labelledby="estructura-titulo">
-        <div class="flex items-center justify-between flex-wrap gap-3 mb-2">
-          <h2 id="estructura-titulo" class="heading-huge">Cómo está armado el libro.</h2>
-          <span class="chip-bento">{totalCapitulos} capítulos en {libroEstructura.length} partes · {libroMilcPaginas} páginas</span>
-        </div>
-        <p class="text-sm leading-relaxed mb-6 max-w-2xl text-neutral-600 dark:text-neutral-400">
-          La <strong class="text-neutral-950 dark:text-neutral-50">Parte I, Crisis onlife</strong>, plantea la
-          atención como territorio en disputa. La <strong class="text-neutral-950 dark:text-neutral-50">Parte II,
-          Genealogía y sujeto</strong>, reúne las raíces críticas del modelo y el sujeto que habita la infoesfera.
-          La <strong class="text-neutral-950 dark:text-neutral-50">Parte III, Espacio y método</strong>, presenta
-          la arquitectura del encuentro y el ciclo de investigación liberadora en cinco momentos. La
-          <strong class="text-neutral-950 dark:text-neutral-50">Parte IV, Herramientas y tiempo</strong>, trata el
-          oficio de investigar y sus ritmos. La <strong class="text-neutral-950 dark:text-neutral-50">Parte V,
-          Escalamiento, comunidad y movimiento</strong>, lleva la experiencia del aula a la Red MILC. Cierra con
-          el epílogo «La clase que viene».
-        </p>
-        <div class="space-y-8">
-          {libroEstructura.map((p) => (
-            <div>
-              <h3 class="text-xs font-black uppercase tracking-widest mb-3 text-neutral-600 dark:text-neutral-400">
-                Parte {p.parte} · {p.titulo}
-              </h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {p.capitulos.map((c) => (
-                  <div id={`capitulo-${c.n}`} class="bento-card flex gap-4 scroll-mt-24">
-                    <span class="w-9 h-9 rounded-full bg-bento-black text-white dark:bg-neutral-50 dark:text-neutral-950 flex items-center justify-center text-sm font-black shrink-0" aria-hidden="true">{c.n}</span>
-                    <div class="min-w-0">
-                      <h4 class="font-black text-lg leading-tight mb-1">
-                        <span class="sr-only">Capítulo {c.n}. </span>{c.titulo}
-                      </h4>
-                      <p class="text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">{c.desc}</p>
-                      <p class="text-[11px] font-bold uppercase tracking-widest leading-relaxed mt-2 text-neutral-600 dark:text-neutral-400">
-                        <span class="text-neutral-950 dark:text-neutral-50">{c.n === 5 ? 'Cinco momentos' : c.n === 1 ? 'Mapa de lectura' : 'Ruta'}:</span>
-                        {' '}{c.ruta.join(' · ')}
-                      </p>
-                      {c.profundiza && (
-                        <a
-                          href={c.profundiza.href}
-                          class="mt-3 flex items-center gap-3 min-h-[44px] px-3 py-2 rounded-bento-sm border-2 border-neutral-300 dark:border-neutral-600 hover:border-neutral-950 dark:hover:border-neutral-50 transition-colors motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bento-blue dark:focus-visible:ring-bento-blue"
-                        >
-                          <span class={`w-2.5 h-2.5 rounded-full shrink-0 ring-1 ring-black/10 dark:ring-white/40 ${c.profundiza.color}`} aria-hidden="true"></span>
-                          <span class="flex flex-col leading-tight">
-                            <span class="text-[11px] font-bold uppercase tracking-widest text-neutral-600 dark:text-neutral-400">Para profundizar →</span>
-                            <span class="text-sm font-black text-neutral-950 dark:text-neutral-50">{c.profundiza.etiqueta} · {c.profundiza.titulo}</span>
-                          </span>
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+      <Tomo0Estructura />
 
       <!-- PUBLICACIÓN ARBITRADA · ancla de autoridad del modelo -->
       <section id="articulo" class="mb-10 scroll-mt-24">
@@ -1362,6 +1216,27 @@ const seccionesMilc = [
                   <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                   <polyline points="7 10 12 15 17 10"></polyline>
                   <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+              </div>
+            </a>
+
+            <a
+              href={`${base}/modelo-milc/tesis-aula-invertida`}
+              class="bg-white/10 text-white rounded-bento p-5 hover:bg-white/15 transition-colors group md:col-span-2"
+            >
+              <div class="flex items-start gap-3 mb-3">
+                <span class="text-4xl shrink-0">🎓</span>
+                <div>
+                  <span class="text-xs font-black uppercase tracking-widest opacity-70">Tesis doctoral · edición revisada y ampliada · 2026</span>
+                  <h3 class="text-lg font-black leading-tight mt-1">Aula invertida en Tecnología: relectura crítica desde el MILC</h3>
+                  <p class="text-xs opacity-80 mt-1">Universidad Cuauhtémoc (2024) · libro con DOI en Zenodo.</p>
+                </div>
+              </div>
+              <div class="inline-flex items-center gap-2 font-bold text-sm group-hover:gap-3 transition-all">
+                Ver el libro
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M5 12h14"></path>
+                  <path d="m12 5 7 7-7 7"></path>
                 </svg>
               </div>
             </a>

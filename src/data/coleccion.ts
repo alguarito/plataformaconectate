@@ -12,13 +12,21 @@ export type RolArchivo = 'libro' | 'cuaderno' | 'hojas-carta' | 'hojas-a4';
 
 interface ArchivoDatos {
   rol: RolArchivo;
-  /** Carpeta relativa a public/, sin barras extremas. */
+  /**
+   * Carpeta relativa a public/, sin barras extremas. Es la de la ficha del libro
+   * (modelo-milc/<ficha>): Google Scholar solo liga el PDF si está en la misma carpeta
+   * que la página que lleva los meta `citation_*`.
+   */
   carpeta: string;
   /** Nombre EXACTO del archivo (el libro y el cuaderno se enlazan por nombre relativo). */
   nombre: string;
   paginas?: number;
   formato?: string;
-  /** Peso exacto en bytes (el de la entrega congelada para el Tomo 0). */
+  /**
+   * Peso exacto en bytes del archivo publicado. El libro del Tomo 0 es una copia web con las
+   * imágenes recomprimidas (mismo texto que el depósito en Zenodo) para quedar bajo el
+   * límite de 5 MB de Google Scholar.
+   */
   bytes?: number;
 }
 
@@ -61,6 +69,12 @@ const presentacion: Record<Romano, { color: string; emoji: string }> = {
 
 const urlArchivo = (a: ArchivoDatos) => `${base}/${a.carpeta}/${encodeURIComponent(a.nombre)}`;
 
+/**
+ * Ficha del libro del Tomo 0. /modelo-milc presenta el modelo y el Tomo 0 a la vez; la ficha
+ * es la página propia del libro, con los meta `citation_*` que lee Google Scholar.
+ */
+export const FICHA_TOMO0 = 'educacion-en-la-era-onlife';
+
 /** «6,6 MB» / «47 KB», para los botones de descarga. */
 export const peso = (bytes?: number) =>
   bytes == null ? '' : bytes >= 1e6 ? `${(bytes / 1e6).toFixed(1).replace('.', ',')} MB` : `${Math.round(bytes / 1e3)} KB`;
@@ -74,6 +88,8 @@ export const libros = (datos.libros as LibroDatos[]).map((l) => {
     ...presentacion[l.romano],
     etiqueta: `Tomo ${l.romano}`,
     href: `${base}/modelo-milc${l.slug ? `/${l.slug}` : ''}`,
+    /** Página propia del libro (la que lee Google Scholar). En los tomos I–V coincide con `href`. */
+    ficha: `${base}/modelo-milc/${l.slug || FICHA_TOMO0}`,
     doiUrl: `https://doi.org/${l.doi}`,
     archivos,
     /** PDF principal (rol "libro"). */

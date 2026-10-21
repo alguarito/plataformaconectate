@@ -43,6 +43,10 @@ interface Props {
   licencia: string;
   /** Muestra la nota de licencia y de obra matriz al pie. */
   notaObraMatriz?: boolean;
+  /** false para un libro que no es de la Colección MILC (la tesis): la cita no lleva la serie. */
+  enColeccion?: boolean;
+  /** Descripción entre corchetes de APA, ej. «Edición revisada y ampliada de tesis doctoral, …». */
+  descripcion?: string;
 }
 
 const {
@@ -57,19 +61,24 @@ const {
   citeKey,
   licencia,
   notaObraMatriz = true,
+  enColeccion = true,
+  descripcion,
 } = Astro.props;
 
 const autorApa = 'Cardenas Orozco, A.';
 const autorBib = 'Cardenas Orozco, Alvaro';
 const doiUrl = `https://doi.org/${doi}`;
 const tituloCompleto = subtitulo ? `${titulo}: ${subtitulo.replace(/\s*:\s*/, ', ')}` : titulo;
-const serie = [version ? `Versión ${version}` : '', tomo ? `Colección MILC, ${tomo}` : 'Colección MILC']
+const serie = [
+  version ? `Versión ${version}` : '',
+  enColeccion ? (tomo ? `Colección MILC, ${tomo}` : 'Colección MILC') : '',
+]
   .filter(Boolean)
   .join('; ');
 
 // APA 7ª · una sola cadena: lo que va antes y después del título (en cursiva).
 const apaAntes = `${autorApa} (${ano}). `;
-const apaDespues = ` (${serie}). ${editorial}. ${doiUrl}`;
+const apaDespues = `${serie ? ` (${serie})` : ''}${descripcion ? ` [${descripcion}]` : ''}. ${editorial}. ${doiUrl}`;
 const apa = `${apaAntes}${tituloCompleto}${apaDespues}`;
 
 const escapar = (t: string) =>
@@ -81,7 +90,7 @@ const apaHtml = `${escapar(apaAntes)}<em>${escapar(tituloCompleto)}</em>${escapa
 const camposBib: [string, string | number | undefined][] = [
   ['author', autorBib],
   ['title', tituloCompleto.replace(/MILC/g, '{MILC}')],
-  ['series', 'Colección MILC'],
+  ['series', enColeccion ? 'Colección MILC' : undefined],
   ['volume', volumen],
   ['version', version],
   ['year', ano],
@@ -89,6 +98,7 @@ const camposBib: [string, string | number | undefined][] = [
   ['address', 'Cartago, Valle del Cauca, Colombia'],
   ['doi', doi],
   ['url', doiUrl],
+  ['note', descripcion],
 ];
 const bibtex = `@book{${citeKey},
 ${camposBib
@@ -102,7 +112,7 @@ const ris = [
   'TY  - BOOK',
   `AU  - ${autorBib}`,
   `TI  - ${tituloCompleto}`,
-  'T2  - Colección MILC',
+  enColeccion ? 'T2  - Colección MILC' : '',
   volumen !== undefined ? `VL  - ${volumen}` : '',
   version ? `ET  - Versión ${version}` : '',
   `PY  - ${ano}`,

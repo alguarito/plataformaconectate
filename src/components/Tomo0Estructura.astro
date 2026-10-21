@@ -1,0 +1,66 @@
+---
+/**
+ * «Cómo está armado el libro» del Tomo 0: 11 capítulos en 5 partes (versión 3.0), con la ruta
+ * de cada capítulo y el tomo que lo profundiza. Lo comparten /modelo-milc y la ficha del libro.
+ */
+import { tomo } from '../data/coleccion';
+import { libroEstructura, totalCapitulos } from '../data/tomo0';
+
+const libroMilcPaginas = tomo('0').paginas;
+---
+
+<section id="estructura" class="mb-10 scroll-mt-24" aria-labelledby="estructura-titulo">
+  <div class="flex items-center justify-between flex-wrap gap-3 mb-2">
+    <h2 id="estructura-titulo" class="heading-huge">Cómo está armado el libro.</h2>
+    <span class="chip-bento">{totalCapitulos} capítulos en {libroEstructura.length} partes · {libroMilcPaginas} páginas</span>
+  </div>
+  <p class="text-sm leading-relaxed mb-6 max-w-2xl text-neutral-600 dark:text-neutral-400">
+    La <strong class="text-neutral-950 dark:text-neutral-50">Parte I, Crisis onlife</strong>, plantea la
+    atención como territorio en disputa. La <strong class="text-neutral-950 dark:text-neutral-50">Parte II,
+    Genealogía y sujeto</strong>, reúne las raíces críticas del modelo y el sujeto que habita la infoesfera.
+    La <strong class="text-neutral-950 dark:text-neutral-50">Parte III, Espacio y método</strong>, presenta
+    la arquitectura del encuentro y el ciclo de investigación liberadora en cinco momentos. La
+    <strong class="text-neutral-950 dark:text-neutral-50">Parte IV, Herramientas y tiempo</strong>, trata el
+    oficio de investigar y sus ritmos. La <strong class="text-neutral-950 dark:text-neutral-50">Parte V,
+    Escalamiento, comunidad y movimiento</strong>, lleva la experiencia del aula a la Red MILC. Cierra con
+    el epílogo «La clase que viene».
+  </p>
+  <div class="space-y-8">
+    {libroEstructura.map((p) => (
+      <div>
+        <h3 class="text-xs font-black uppercase tracking-widest mb-3 text-neutral-600 dark:text-neutral-400">
+          Parte {p.parte} · {p.titulo}
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {p.capitulos.map((c) => (
+            <div id={`capitulo-${c.n}`} class="bento-card flex gap-4 scroll-mt-24">
+              <span class="w-9 h-9 rounded-full bg-bento-black text-white dark:bg-neutral-50 dark:text-neutral-950 flex items-center justify-center text-sm font-black shrink-0" aria-hidden="true">{c.n}</span>
+              <div class="min-w-0">
+                <h4 class="font-black text-lg leading-tight mb-1">
+                  <span class="sr-only">Capítulo {c.n}. </span>{c.titulo}
+                </h4>
+                <p class="text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">{c.desc}</p>
+                <p class="text-[11px] font-bold uppercase tracking-widest leading-relaxed mt-2 text-neutral-600 dark:text-neutral-400">
+                  <span class="text-neutral-950 dark:text-neutral-50">{c.n === 5 ? 'Cinco momentos' : c.n === 1 ? 'Mapa de lectura' : 'Ruta'}:</span>
+                  {' '}{c.ruta.join(' · ')}
+                </p>
+                {c.profundiza && (
+                  <a
+                    href={c.profundiza.href}
+                    class="mt-3 flex items-center gap-3 min-h-[44px] px-3 py-2 rounded-bento-sm border-2 border-neutral-300 dark:border-neutral-600 hover:border-neutral-950 dark:hover:border-neutral-50 transition-colors motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bento-blue dark:focus-visible:ring-bento-blue"
+                  >
+                    <span class={`w-2.5 h-2.5 rounded-full shrink-0 ring-1 ring-black/10 dark:ring-white/40 ${c.profundiza.color}`} aria-hidden="true"></span>
+                    <span class="flex flex-col leading-tight">
+                      <span class="text-[11px] font-bold uppercase tracking-widest text-neutral-600 dark:text-neutral-400">Para profundizar →</span>
+                      <span class="text-sm font-black text-neutral-950 dark:text-neutral-50">{c.profundiza.etiqueta} · {c.profundiza.titulo}</span>
+                    </span>
+                  </a>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+</section>

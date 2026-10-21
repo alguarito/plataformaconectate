@@ -27,11 +27,19 @@ export const GET: APIRoute = async ({ site }) => {
   urls.push({ loc: `${fullBase}/modelo-milc`, priority: 0.9, changefreq: 'monthly' });
   urls.push({ loc: `${fullBase}/modelo-milc/coleccion`, priority: 0.9, changefreq: 'monthly' });
 
-  // Colección MILC · páginas dedicadas de cada libro (obra citable con DOI · alto valor SEO).
-  // El Tomo 0 vive en /modelo-milc (arriba); los tomos I–V en /modelo-milc/<slug>.
+  // Colección MILC · ficha de cada libro (obra citable con DOI · meta citation_* para Google Scholar).
+  // El Tomo 0 tiene su ficha en /modelo-milc/educacion-en-la-era-onlife; los tomos I–V, en /modelo-milc/<slug>.
   for (const l of libros) {
-    if (l.slug) urls.push({ loc: `${baseUrl}${l.href}`, priority: 0.85, changefreq: 'monthly' });
+    urls.push({ loc: `${baseUrl}${l.ficha}`, priority: 0.85, changefreq: 'monthly' });
   }
+
+  // Tesis doctoral · edición revisada y ampliada (libro con DOI; no es un tomo de la colección).
+  urls.push({ loc: `${fullBase}/modelo-milc/tesis-aula-invertida`, priority: 0.8, changefreq: 'yearly' });
+  urls.push({
+    loc: `${fullBase}/modelo-milc/tesis-aula-invertida/Tesis_AulaInvertida_RelecturaMILC_v1.0.pdf`,
+    priority: 0.7,
+    changefreq: 'yearly',
+  });
 
   // Archivos de los libros · indexables directamente por Google (rankean como documento).
   // Salen de src/data/coleccion.json; `url` ya trae la base y el nombre codificado (%20).
@@ -88,6 +96,12 @@ export const GET: APIRoute = async ({ site }) => {
         });
       }
     }
+  }
+
+  // GitHub Pages sirve cada página en su carpeta («…/pagina/») y redirige la forma sin barra:
+  // el sitemap lista la URL final para que Google no tope con una redirección. Los archivos no se tocan.
+  for (const u of urls) {
+    if (!u.loc.endsWith('/') && !/\.[a-z0-9]+$/i.test(u.loc)) u.loc = `${u.loc}/`;
   }
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>

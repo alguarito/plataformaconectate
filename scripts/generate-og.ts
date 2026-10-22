@@ -227,7 +227,7 @@ function tplAcerca(): string {
       ${esc('Orozco')}
     </text>
     <text x="80" y="540" fill="#FFFFFF" opacity="0.85" font-family="Helvetica, sans-serif" font-weight="600" font-size="28">
-      ${esc('PhD en Educación · Docente TIC · NASA-IASC 6 años · Samsung S4T')}
+      ${esc('PhD en Ciencias de la Educación · Docente TIC · Colección MILC')}
     </text>
     ${wordmark(W - 240, H - 60, '#FFFFFF', '#FFFFFF')}
   </svg>`;

@@ -2,45 +2,77 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import {
   perfil,
+  hojaDeVida,
   formacion,
   experiencia,
+  reconocimientosDestacados,
   reconocimientos,
-  especialidades,
+  ponencias,
+  competencias,
   formacionComplementaria,
   membresias,
   stats,
   plataformaConectate,
-  publicaciones,
+  articuloArbitrado,
+  tesisLibro,
+  type Publicacion,
 } from '../../data/perfil';
+import { libros } from '../../data/coleccion';
+import { planArea } from '../../data/planArea';
 
 const base = import.meta.env.BASE_URL;
-
-// CV PDF
-const cvHref = `${base}/perfil/hoja_de_vida.pdf`;
 
 // Mensaje pre-llenado para WhatsApp del docente
 const whatsappTexto = `Hola Dr. Cardenas, le escribo desde la página "Acerca de" de la plataforma ConectaTE.`;
 const whatsappHref = `https://wa.me/${perfil.whatsappE164}?text=${encodeURIComponent(whatsappTexto)}`;
 const mailtoHref = `mailto:${perfil.email}?subject=Saludos desde ConectaTE`;
 
-// Reconocimientos destacados / restantes
-const recoDestacados = reconocimientos.filter((r) => r.destacado);
-const recoOtros = reconocimientos.filter((r) => !r.destacado);
-
-// Cargos destacados (actuales) / pasados
+// Cargos actuales / pasados
 const cargosActuales = experiencia.filter((e) => e.hasta === 'actualidad');
 const cargosPasados = experiencia.filter((e) => e.hasta !== 'actualidad');
 
-// Total de items de formación complementaria
-const totalComplementaria = formacionComplementaria.reduce(
-  (sum, g) => sum + g.items.length,
-  0,
-);
+// Formación formal: los totales salen de los datos
+const institucionesFormacion = new Set(formacion.map((f) => f.institucion)).size;
+const paisesFormacion = new Set(formacion.map((f) => f.pais)).size;
+
+// Publicaciones 2026: artículo, los seis libros de la colección (de coleccion.json), la tesis
+// como libro y el Plan de Área. Los libros se citan por DOI de concepto.
+// `url` ya lleva BASE_URL.
+type PublicacionWeb = Publicacion & { url?: string };
+const conBase = (p: Publicacion): PublicacionWeb => ({ ...p, url: p.href ? `${base}${p.href}` : undefined });
+const publicaciones: PublicacionWeb[] = [
+  conBase(articuloArbitrado),
+  ...libros.map((l) => ({
+    tipo: l.romano === '0' ? 'Colección MILC · Tomo 0, obra matriz' : `Colección MILC · Tomo ${l.romano}`,
+    titulo: l.titulo,
+    subtitulo: l.subtitulo,
+    detalle: `${l.edicion} · ${l.paginas} págs.`,
+    ano: Number(l.fecha.slice(0, 4)),
+    doi: l.doi,
+    url: l.ficha,
+    hrefTexto: 'Ver ficha',
+    emoji: l.emoji,
+  })),
+  conBase(tesisLibro),
+  conBase({
+    tipo: 'Documento institucional · Autor',
+    titulo: `Plan de Área ${planArea.ano} · ${planArea.area}`,
+    subtitulo: 'Grados 6.º a 11.º, con sus guías, proyectos y exámenes',
+    detalle: `${planArea.paginas} págs.`,
+    ano: planArea.ano,
+    href: `/plan-de-area/${planArea.pdf}`,
+    hrefTexto: 'Abrir PDF',
+    emoji: '📚',
+  }),
+];
+
+const pill =
+  'inline-flex items-center gap-2 min-h-[44px] max-w-full px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-bold border-2 hover:bg-[var(--border)] transition-colors break-words';
 ---
 
 <BaseLayout
   title={`Acerca de ${perfil.prefijo} ${perfil.nombre} — ConectaTE`}
-  description={`${perfil.prefijo} ${perfil.nombre}, ${perfil.cargo} en ${perfil.institucion}. ${stats.anosDocencia}+ años de experiencia, doctor en Ciencias de la Educación, colaborador NASA-IASC, finalista Samsung Solve for Tomorrow.`}
+  description={`${perfil.prefijo} ${perfil.nombre}, ${perfil.cargo} en ${perfil.institucion}. Doctor en Ciencias de la Educación con más de ${stats.anosDocencia} años en docencia básica, media y de posgrado, autor del Modelo MILC y líder de semilleros con ${stats.proyectosSamsung} proyectos en etapas nacionales de Samsung Solve for Tomorrow.`}
   ogType="article"
   imagen="/og/acerca.png"
 >
@@ -79,40 +111,40 @@ const totalComplementaria = formacionComplementaria.reduce(
           </div>
         </div>
 
-        <!-- Tarjeta de stats compactos -->
+        <!-- Cifras de la hoja de vida -->
         <div class="md:col-span-5 grid grid-cols-2 gap-4 md:gap-6">
           <div class="bento-card-color bg-bento-lime flex flex-col justify-between min-h-[200px]">
-            <span class="text-xs font-bold uppercase tracking-widest opacity-80">Años</span>
+            <span class="text-xs font-bold uppercase tracking-widest opacity-80">Docencia</span>
             <div>
-              <div class="text-6xl font-black tracking-tighter leading-none">{stats.anosDocencia}+</div>
-              <div class="text-sm font-bold mt-1">en docencia</div>
+              <div class="text-5xl sm:text-6xl font-black tracking-tighter leading-none">{stats.anosDocencia}+</div>
+              <div class="text-sm font-bold mt-1">años en básica, media y posgrado</div>
             </div>
           </div>
           <div class="bento-card-color bg-bento-pink flex flex-col justify-between min-h-[200px]">
-            <span class="text-xs font-bold uppercase tracking-widest opacity-80">NASA · IASC</span>
+            <span class="text-xs font-bold uppercase tracking-widest opacity-80">Samsung Solve for Tomorrow</span>
             <div>
-              <div class="text-6xl font-black tracking-tighter leading-none">{stats.anosNasaIASC}</div>
-              <div class="text-sm font-bold mt-1">años consecutivos</div>
+              <div class="text-5xl sm:text-6xl font-black tracking-tighter leading-none">{stats.proyectosSamsung}</div>
+              <div class="text-sm font-bold mt-1">proyectos en etapas nacionales (2024–2026)</div>
             </div>
           </div>
           <div class="bento-card-color bg-bento-cyan flex flex-col justify-between min-h-[200px]">
-            <span class="text-xs font-bold uppercase tracking-widest opacity-80">Formación</span>
+            <span class="text-xs font-bold uppercase tracking-widest opacity-80">Formación docente</span>
             <div>
-              <div class="text-6xl font-black tracking-tighter leading-none">{totalComplementaria}+</div>
-              <div class="text-sm font-bold mt-1">cursos y diplomados</div>
+              <div class="text-5xl sm:text-6xl font-black tracking-tighter leading-none">{stats.docentesFormados}+</div>
+              <div class="text-sm font-bold mt-1">docentes formados en IA y tecnología educativa</div>
             </div>
           </div>
           <div class="bento-card-color bg-bento-yellow flex flex-col justify-between min-h-[200px]">
-            <span class="text-xs font-bold uppercase tracking-widest opacity-80">Reconocimientos</span>
+            <span class="text-xs font-bold uppercase tracking-widest opacity-80">Colección MILC</span>
             <div>
-              <div class="text-6xl font-black tracking-tighter leading-none">{stats.reconocimientos}+</div>
-              <div class="text-sm font-bold mt-1">distintos a nivel municipal, nac. e internacional</div>
+              <div class="text-5xl sm:text-6xl font-black tracking-tighter leading-none">{libros.length}</div>
+              <div class="text-sm font-bold mt-1">libros con DOI, autor único</div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- PERFIL PROFESIONAL + CV -->
+      <!-- PERFIL PROFESIONAL + HOJA DE VIDA -->
       <div class="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6 mb-10">
         <div class="bento-card md:col-span-8">
           <span class="chip-bento mb-4">Perfil profesional</span>
@@ -121,33 +153,49 @@ const totalComplementaria = formacionComplementaria.reduce(
           </p>
         </div>
 
-        <a
-          href={cvHref}
-          download
-          class="bento-card-color bg-bento-purple md:col-span-4 flex flex-col justify-between min-h-[220px] hover:scale-[1.01] transition-transform group"
-        >
+        <div class="bento-card-color bg-bento-purple md:col-span-4 flex flex-col justify-between min-h-[220px]">
           <div class="text-7xl">📄</div>
           <div>
-            <span class="text-xs font-bold uppercase tracking-widest opacity-80">PDF · 264 KB</span>
+            <span class="text-xs font-bold uppercase tracking-widest opacity-80">Versión vigente</span>
             <h3 class="text-2xl md:text-3xl font-black tracking-tight leading-tight mt-2 mb-2">
-              Hoja de Vida
+              Hoja de vida
             </h3>
-            <p class="text-sm opacity-80 mb-3 leading-relaxed">
-              Versión completa con referencias laborales
+            <p class="text-sm opacity-80 mb-4 leading-relaxed">
+              Publicada en alvarocardenasorozco.com. Soportes y datos de contacto de referencias a solicitud.
             </p>
-            <div class="inline-flex items-center gap-2 font-bold text-sm group-hover:gap-3 transition-all">
-              Descargar
-              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <polyline points="7 10 12 15 17 10"></polyline>
-                <line x1="12" y1="15" x2="12" y2="3"></line>
-              </svg>
+            <div class="flex flex-wrap gap-2">
+              <a
+                href={hojaDeVida.url}
+                target="_blank"
+                rel="noopener"
+                class="inline-flex items-center gap-2 min-h-[44px] px-4 py-2 rounded-full text-sm font-bold bg-white text-black hover:scale-105 transition-transform"
+              >
+                Ver hoja de vida
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <line x1="10" y1="14" x2="21" y2="3"></line>
+                </svg>
+              </a>
+              <a
+                href={hojaDeVida.pdf}
+                target="_blank"
+                rel="noopener"
+                class="inline-flex items-center gap-2 min-h-[44px] px-4 py-2 rounded-full text-sm font-bold border-2 border-white/40 hover:border-white transition-colors"
+              >
+                Descargar PDF
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+              </a>
             </div>
           </div>
-        </a>
+        </div>
       </div>
 
-      <!-- PLATAFORMA CONÉCTATE + PUBLICACIONES (2026) -->
+      <!-- PLATAFORMA CONÉCTATE -->
       <div class="bento-card mb-10">
         <span class="chip-bento mb-3">Plataforma educativa propia · 2026</span>
         <h2 class="heading-huge mb-2 leading-tight">ConectaTE.</h2>
@@ -195,36 +243,6 @@ const totalComplementaria = formacionComplementaria.reduce(
           </ul>
         </div>
 
-        <!-- Publicaciones recientes (libro + plan) -->
-        <h3 class="text-sm font-black uppercase tracking-widest mb-4" style="color: var(--fg-muted);">
-          Publicaciones 2026
-        </h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-          {publicaciones.map((p) => (
-            <a
-              href={p.href ? `${base}${p.href}` : '#'}
-              download={p.href ? '' : undefined}
-              class="bento-card-hover flex items-start gap-4"
-            >
-              <div class="text-5xl shrink-0">{p.emoji ?? '📄'}</div>
-              <div class="flex-1 min-w-0">
-                <span class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">
-                  {p.rol} · {p.paginas} pág · {p.ano}
-                </span>
-                <div class="font-black text-base md:text-lg leading-tight mt-1">{p.titulo}</div>
-                {p.subtitulo && (
-                  <div class="text-sm mt-1" style="color: var(--fg-muted);">{p.subtitulo}</div>
-                )}
-              </div>
-              <svg class="w-5 h-5 shrink-0 mt-2 opacity-40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <polyline points="7 10 12 15 17 10"></polyline>
-                <line x1="12" y1="15" x2="12" y2="3"></line>
-              </svg>
-            </a>
-          ))}
-        </div>
-
         <!-- CTAs explorar -->
         <div class="flex flex-wrap gap-3">
           <a
@@ -250,10 +268,57 @@ const totalComplementaria = formacionComplementaria.reduce(
         </div>
       </div>
 
+      <!-- PUBLICACIONES 2026 -->
+      <div class="bento-card mb-10">
+        <span class="chip-bento mb-3">Publicaciones 2026</span>
+        <h2 class="heading-huge mb-2 leading-tight">Artículo, libros y plan de área.</h2>
+        <p class="text-sm md:text-base mb-8" style="color: var(--fg-muted);">
+          Un artículo arbitrado, los seis libros de la Colección MILC (autor único, Sor María
+          Juliana Ediciones, acceso abierto en Zenodo), la tesis doctoral publicada como libro y
+          el Plan de Área. Los libros se citan por su DOI de concepto.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {publicaciones.map((p) => (
+            <div class="bento-card flex items-start gap-4">
+              <div class="hidden sm:block text-4xl shrink-0">{p.emoji}</div>
+              <div class="flex-1 min-w-0">
+                <span class="text-xs font-bold uppercase tracking-widest" style="color: var(--fg-muted);">
+                  {p.tipo} · {p.ano}
+                </span>
+                <h3 class="font-black text-base md:text-lg leading-tight mt-1">{p.titulo}</h3>
+                {p.subtitulo && (
+                  <p class="text-sm mt-1" style="color: var(--fg-muted);">{p.subtitulo}</p>
+                )}
+                <p class="text-xs mt-2 leading-relaxed" style="color: var(--fg-muted);">{p.detalle}</p>
+                <div class="flex flex-wrap gap-2 mt-3">
+                  {p.url && (
+                    <a href={p.url} class={pill} style="border-color: var(--border);">
+                      {p.hrefTexto ?? 'Ver ficha'}
+                    </a>
+                  )}
+                  {p.doi && (
+                    <a
+                      href={`https://doi.org/${p.doi}`}
+                      target="_blank"
+                      rel="noopener"
+                      class={pill}
+                      style="border-color: var(--border);"
+                    >
+                      DOI {p.doi}
+                    </a>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       <!-- FORMACIÓN ACADÉMICA FORMAL -->
       <div class="bento-card mb-10">
         <span class="chip-bento mb-3">Formación académica formal</span>
-        <h2 class="heading-huge mb-2 leading-tight">5 títulos · 4 instituciones · 2 países.</h2>
+        <h2 class="heading-huge mb-2 leading-tight">{formacion.length} títulos · {institucionesFormacion} instituciones · {paisesFormacion} países.</h2>
         <p class="text-sm md:text-base mb-8" style="color: var(--fg-muted);">
           Trayectoria que va desde la ingeniería de sistemas hasta el doctorado en
           ciencias de la educación, pasando por gestión de tecnología educativa.
@@ -272,6 +337,17 @@ const totalComplementaria = formacionComplementaria.reduce(
                 <p class="text-sm md:text-base" style="color: var(--fg-muted);">
                   {f.institucion} · {f.pais} · <strong>{f.desde}–{f.hasta}</strong>
                 </p>
+                {f.nota && (
+                  <p class="text-sm mt-1" style="color: var(--fg-muted);">{f.nota}</p>
+                )}
+                {f.enlace && (
+                  <a
+                    href={`${base}${f.enlace.href}`}
+                    class="inline-flex items-center min-h-[44px] text-sm font-bold underline decoration-2 underline-offset-2"
+                  >
+                    {f.enlace.texto}
+                  </a>
+                )}
               </div>
               {i === 0 && (
                 <span class="px-2 py-1 rounded-full text-xs font-black uppercase tracking-widest bg-bento-pink text-white shrink-0">
@@ -283,14 +359,14 @@ const totalComplementaria = formacionComplementaria.reduce(
         </div>
       </div>
 
-      <!-- TRAYECTORIA DOCENTE -->
+      <!-- TRAYECTORIA PROFESIONAL -->
       <div class="bento-card mb-10">
-        <span class="chip-bento mb-3">Trayectoria docente</span>
-        <h2 class="heading-huge mb-2 leading-tight">{experiencia.length} cargos en {stats.institucionesEnsenadas} instituciones.</h2>
+        <span class="chip-bento mb-3">Trayectoria profesional</span>
+        <h2 class="heading-huge mb-2 leading-tight">De la escuela al posgrado.</h2>
         <p class="text-sm md:text-base mb-8" style="color: var(--fg-muted);">
-          De la educación básica al posgrado. De la dirección de proyectos
-          educativos a la formación de futuros docentes en la Maestría en
-          Enseñanza de la Física de la UTP.
+          Docencia en básica y media en la I.E. Sor María Juliana y de posgrado en la Maestría y
+          la Especialización en Enseñanza de la Física de la UTP, después de una trayectoria en
+          dirección de proyectos y docencia desde 2011.
         </p>
 
         <h4 class="text-xs font-black uppercase tracking-widest mb-4" style="color: var(--fg-muted);">
@@ -298,7 +374,7 @@ const totalComplementaria = formacionComplementaria.reduce(
         </h4>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
           {cargosActuales.map((e) => (
-            <div class="bento-card-color bg-bento-lime flex flex-col justify-between min-h-[160px]">
+            <div class="bento-card-color bg-bento-lime flex flex-col justify-between gap-4 min-h-[160px]">
               <span class="text-xs font-bold uppercase tracking-widest opacity-80">
                 Desde {e.desde} · activo
               </span>
@@ -306,7 +382,10 @@ const totalComplementaria = formacionComplementaria.reduce(
                 <h3 class="text-lg md:text-xl font-black leading-tight mb-1">
                   {e.cargo}
                 </h3>
-                <p class="text-sm opacity-90">{e.organizacion}</p>
+                <p class="text-sm font-bold opacity-90">{e.organizacion}</p>
+                {e.detalle && (
+                  <p class="text-sm opacity-90 mt-3 leading-relaxed">{e.detalle}</p>
+                )}
               </div>
             </div>
           ))}
@@ -323,7 +402,19 @@ const totalComplementaria = formacionComplementaria.reduce(
               </div>
               <div class="flex-1">
                 <h4 class="font-black leading-tight mb-0.5">{e.cargo}</h4>
-                <p class="text-sm" style="color: var(--fg-muted);">{e.organizacion}</p>
+                {e.organizacion && (
+                  <p class="text-sm" style="color: var(--fg-muted);">{e.organizacion}</p>
+                )}
+                {e.items && (
+                  <ul class="space-y-1 mt-1">
+                    {e.items.map((it) => (
+                      <li class="flex items-start gap-2 text-sm leading-snug" style="color: var(--fg-muted);">
+                        <span class="opacity-70">·</span>
+                        <span>{it}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
             </div>
           ))}
@@ -332,15 +423,15 @@ const totalComplementaria = formacionComplementaria.reduce(
 
       <!-- RECONOCIMIENTOS DESTACADOS -->
       <div class="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6 mb-10">
-        {recoDestacados.map((r, i) => (
-          <div class={`bento-card-color ${i === 0 ? 'bg-bento-blue' : 'bg-bento-pink'} md:col-span-6 min-h-[280px] flex flex-col justify-between`}>
-            <div class="flex items-start justify-between">
+        {reconocimientosDestacados.map((r, i) => (
+          <div class={`bento-card-color ${i === 0 ? 'bg-bento-blue' : 'bg-bento-pink'} md:col-span-6 min-h-[280px] flex flex-col justify-between gap-6`}>
+            <div class="flex items-start justify-between gap-4">
               <div>
                 <span class="text-xs font-bold uppercase tracking-widest opacity-80">
-                  Reconocimiento internacional
+                  {r.ambito}
                 </span>
                 <div class="mt-1 text-2xl font-black tracking-tighter leading-none">
-                  {r.anos.length} años
+                  {r.resumen}
                 </div>
               </div>
               <span class="text-6xl">{r.emoji}</span>
@@ -350,25 +441,27 @@ const totalComplementaria = formacionComplementaria.reduce(
                 {r.titulo}
               </h3>
               <p class="text-sm md:text-base opacity-90 mb-3 leading-relaxed">
-                {r.organizacion}
+                {r.texto}
               </p>
-              <div class="flex flex-wrap gap-1.5">
-                {r.anos.map((a) => (
-                  <span class="px-2.5 py-1 rounded-full text-xs font-black bg-black/15 tracking-widest">
-                    {a}
-                  </span>
-                ))}
-              </div>
+              {r.anos.length > 0 && (
+                <div class="flex flex-wrap gap-1.5">
+                  {r.anos.map((a) => (
+                    <span class="px-2.5 py-1 rounded-full text-xs font-black bg-black/15 tracking-widest">
+                      {a}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         ))}
       </div>
 
-      <!-- OTROS RECONOCIMIENTOS -->
+      <!-- RECONOCIMIENTOS, PROGRAMAS Y JURADOS -->
       <div class="bento-card mb-10">
-        <span class="chip-bento mb-4">Más reconocimientos y participaciones</span>
+        <span class="chip-bento mb-4">Reconocimientos, programas, mentoría y jurado</span>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-          {recoOtros.map((r) => (
+          {reconocimientos.map((r) => (
             <div class="flex items-start gap-3">
               <div class="text-3xl shrink-0">{r.emoji}</div>
               <div class="flex-1">
@@ -376,8 +469,8 @@ const totalComplementaria = formacionComplementaria.reduce(
                   {r.titulo}
                 </h3>
                 <p class="text-sm" style="color: var(--fg-muted);">
-                  {r.organizacion}
-                  {r.anos.length > 0 && ` · ${r.anos.join(', ')}`}
+                  {r.detalle}
+                  {r.fecha && ` · ${r.fecha}`}
                 </p>
               </div>
             </div>
@@ -385,56 +478,59 @@ const totalComplementaria = formacionComplementaria.reduce(
         </div>
       </div>
 
-      <!-- ÁREAS DE ESPECIALIZACIÓN -->
+      <!-- PONENCIAS -->
       <div class="bento-card mb-10">
-        <span class="chip-bento mb-3">Áreas de especialización</span>
-        <h2 class="heading-huge mb-8 leading-tight">Donde más impacto.</h2>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
-          {especialidades.map((e) => (
-            <div>
-              <div class="flex items-center justify-between mb-2">
-                <div class="flex items-center gap-2">
-                  <span class="text-2xl">{e.emoji}</span>
-                  <span class="font-bold text-sm md:text-base">{e.titulo}</span>
-                </div>
-                <span class="text-sm font-black tracking-tight" style="color: var(--fg-muted);">
-                  {e.nivel}%
-                </span>
+        <span class="chip-bento mb-3">Ponencias</span>
+        <h2 class="heading-huge mb-8 leading-tight">En congresos y encuentros.</h2>
+        <div class="space-y-3">
+          {ponencias.map((p) => (
+            <div class="flex items-start gap-4 pb-3 border-b last:border-b-0 last:pb-0" style="border-color: var(--border);">
+              <div class="text-sm font-black tracking-tight shrink-0 w-24 md:w-28" style="color: var(--fg-muted);">
+                {p.fecha}
               </div>
-              <div class="w-full h-2 rounded-full overflow-hidden" style="background: var(--border);">
-                <div
-                  class="h-full bg-bento-blue rounded-full transition-all duration-700"
-                  style={`width: ${e.nivel}%`}
-                ></div>
+              <div class="flex-1">
+                <h3 class="font-black leading-tight mb-0.5">{p.titulo}</h3>
+                <p class="text-sm" style="color: var(--fg-muted);">{p.evento}</p>
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      <!-- FORMACIÓN COMPLEMENTARIA AGRUPADA -->
+      <!-- COMPETENCIAS -->
+      <div class="bento-card mb-10">
+        <span class="chip-bento mb-3">Competencias</span>
+        <h2 class="heading-huge mb-8 leading-tight">Donde más impacto.</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
+          {competencias.map((c) => (
+            <div class="flex items-start gap-3">
+              <span class="text-2xl shrink-0">{c.emoji}</span>
+              <div>
+                <h3 class="font-bold text-sm md:text-base leading-tight">{c.titulo}</h3>
+                <p class="text-sm mt-0.5" style="color: var(--fg-muted);">{c.evidencia}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- FORMACIÓN COMPLEMENTARIA -->
       <div class="bento-card mb-10">
         <span class="chip-bento mb-3">Formación complementaria</span>
-        <h2 class="heading-huge mb-2 leading-tight">{totalComplementaria}+ certificaciones.</h2>
+        <h2 class="heading-huge mb-2 leading-tight">Diplomados y cursos.</h2>
         <p class="text-sm md:text-base mb-8" style="color: var(--fg-muted);">
-          Cursos, talleres y diplomados que complementan la formación formal,
-          agrupados por área de impacto.
+          Diplomados y cursos que complementan la formación formal, agrupados por área.
         </p>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
           {formacionComplementaria.map((g) => (
             <div class={`bento-card-color ${g.bgClass} flex flex-col`}>
               <div class="flex items-center gap-3 mb-4">
                 <span class="text-4xl">{g.emoji}</span>
-                <div>
-                  <h3 class="text-lg md:text-xl font-black tracking-tight leading-tight">
-                    {g.categoria}
-                  </h3>
-                  <p class="text-xs font-bold opacity-80 uppercase tracking-widest">
-                    {g.items.length} certificaciones
-                  </p>
-                </div>
+                <h3 class="text-lg md:text-xl font-black tracking-tight leading-tight">
+                  {g.categoria}
+                </h3>
               </div>
               <ul class="space-y-2 mt-2">
                 {g.items.map((it) => (
@@ -444,6 +540,9 @@ const totalComplementaria = formacionComplementaria.reduce(
                   </li>
                 ))}
               </ul>
+              {g.nota && (
+                <p class="text-xs font-bold opacity-80 uppercase tracking-widest mt-4">{g.nota}</p>
+              )}
             </div>
           ))}
         </div>
@@ -465,21 +564,6 @@ const totalComplementaria = formacionComplementaria.reduce(
             </div>
           ))}
         </div>
-      </div>
-
-      <!-- FILOSOFÍA / FRASES -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-10">
-        {perfil.frases.map((f, i) => (
-          <div class={`bento-card-color ${i === 0 ? 'bg-bento-purple' : 'bg-bento-orange'} flex flex-col justify-between min-h-[240px]`}>
-            <div class="text-7xl opacity-30 leading-none">"</div>
-            <div>
-              <p class="text-lg md:text-2xl font-black tracking-tight leading-tight italic mb-3">
-                {f.texto}
-              </p>
-              <p class="text-sm font-bold opacity-80">— {f.autor}</p>
-            </div>
-          </div>
-        ))}
       </div>
 
       <!-- CONTACTO -->
@@ -514,19 +598,25 @@ const totalComplementaria = formacionComplementaria.reduce(
               </svg>
               Correo
             </a>
-            <a
-              href={perfil.blog}
-              target="_blank"
-              rel="noopener"
-              class="inline-flex items-center gap-2 px-5 py-3 rounded-full font-bold text-sm border-2 border-white/30 text-white hover:border-white transition-colors"
-            >
-              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                <polyline points="15 3 21 3 21 9"></polyline>
-                <line x1="10" y1="14" x2="21" y2="3"></line>
-              </svg>
-              Blog personal
-            </a>
+            {[
+              { texto: 'Sitio web', href: perfil.sitioWeb },
+              { texto: 'LinkedIn', href: perfil.linkedin },
+              { texto: 'ORCID', href: perfil.orcid },
+            ].map((l) => (
+              <a
+                href={l.href}
+                target="_blank"
+                rel="noopener"
+                class="inline-flex items-center gap-2 px-5 py-3 rounded-full font-bold text-sm border-2 border-white/30 text-white hover:border-white transition-colors"
+              >
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <line x1="10" y1="14" x2="21" y2="3"></line>
+                </svg>
+                {l.texto}
+              </a>
+            ))}
           </div>
 
           <p class="text-xs opacity-60 mt-6">

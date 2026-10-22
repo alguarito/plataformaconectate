@@ -73,7 +73,7 @@ export const sellos = [
   },
   {
     valor: '3',
-    etiqueta: 'aliados: NASA-IASC · Samsung · RECA',
+    etiqueta: 'aliados: IASC (aliada de la NASA) · Samsung · RECA',
     bgClass: 'bg-bento-pink',
   },
   {
@@ -92,7 +92,7 @@ export const lineas: LineaInvestigacion[] = [
       'Observar y estudiar el cielo de Cartago: exoplanetas, estrellas variables y asteroides con datos reales de campañas científicas.',
     icono: '🔭',
     bgClass: 'bg-bento-purple',
-    articulaCon: 'Salomé (RECA) · NASA-IASC',
+    articulaCon: 'Salomé (RECA) · IASC, aliada de la NASA',
     ejemplos: [
       '¿Cómo se detecta un planeta que orbita otra estrella?',
       '¿Podemos hallar un asteroide analizando imágenes reales del cielo?',

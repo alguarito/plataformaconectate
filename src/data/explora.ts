@@ -4,7 +4,8 @@
  *
  * Es independiente de los proyectos integradores (esos viven atados a
  * grado/periodo en src/data/proyectosContenido). Cada programa aquí es una
- * iniciativa propia o en alianza externa (RECA, Samsung, NASA-IASC…).
+ * iniciativa propia o en alianza externa (RECA, Samsung, la IASC…). La IASC
+ * es aliada de la NASA: no se presenta como campaña de la NASA.
  *
  * Piloto 2026: "Salomé · Investigación de exoplanetas" — alianza con RECA
  * (Red de Estudiantes Colombianos en Astronomía) y la Association Ágora de
@@ -71,11 +72,11 @@ export const programas: Programa[] = [
     nombre: 'Búsqueda de asteroides',
     categoria: 'Astronomía · Ciencia ciudadana',
     descripcion:
-      'Campaña de la NASA-IASC para detectar asteroides reales analizando imágenes del cielo. Ciencia que cuenta de verdad.',
+      'Campañas de ciencia ciudadana de la IASC, aliada de la NASA, para detectar asteroides reales analizando imágenes del cielo. Ciencia que cuenta de verdad.',
     estado: 'proximamente',
     icono: '☄️',
     bgClass: 'bg-bento-blue',
-    aliado: 'NASA · IASC',
+    aliado: 'IASC, aliada de la NASA',
   },
   {
     slug: 'programacion',

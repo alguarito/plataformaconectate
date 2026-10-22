@@ -7,6 +7,8 @@
  * La Colección MILC se lee de src/data/coleccion.json, no se repite aquí.
  */
 
+import { cifrasPlataforma } from './cifrasPlataforma';
+
 /** Hoja de vida vigente. ConectaTE no aloja copia propia: enlaza la publicada. */
 export const hojaDeVida = {
   url: 'https://alvarocardenasorozco.com/hoja-de-vida.html',
@@ -438,23 +440,28 @@ export const stats = {
 
 /**
  * Plataforma educativa propia · ConectaTE · 2026.
- * Stats de las publicaciones y el corpus curricular generado.
+ * Las cifras de piezas y de anclas se cuentan en el build desde el contenido
+ * (src/data/cifrasPlataforma.ts). La hoja de vida dice lo mismo: «294 piezas
+ * publicadas, entre ellas 180 guías, 18 proyectos y 18 exámenes».
  */
 export const plataformaConectate = {
   nombre: 'Plataforma Conéctate',
   url: 'https://alguarito.github.io/plataformaconectate',
   ano: 2026,
-  totalPiezas: 216,
-  guias: 180, // 30 sesiones × 6 grados
-  proyectos: 18, // 3 períodos × 6 grados
-  examenes: 18, // 3 períodos × 6 grados
+  totalPiezas: cifrasPlataforma.totalPiezas,
+  guias: cifrasPlataforma.guias,
+  proyectos: cifrasPlataforma.proyectos,
+  examenes: cifrasPlataforma.examenes,
+  territorioInterior: cifrasPlataforma.territorioInterior,
+  semillero: cifrasPlataforma.semillero,
+  bebras: cifrasPlataforma.bebras,
   totalPaginas: 251, // páginas Astro generadas en el build
   modelo: 'MILC v3', // Modelo de Investigación Liberadora y Científica
   destacados: [
     'Pipeline editorial reproducible (YAML → PDF + Web)',
     'Offline-first vía Service Worker (PWA)',
     'Triángulo de pensamiento Dussel · Estoico · Floridi',
-    '18 anclajes ancestrales del Valle del Cauca y el Pacífico',
+    `Banco de ${cifrasPlataforma.anclas} anclas ancestrales documentadas con fuente APA`,
     'Política de IA progresiva por grados (sin IA → declaración → obligatoria)',
   ],
 };

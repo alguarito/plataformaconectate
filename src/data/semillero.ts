@@ -9,8 +9,8 @@
  * método y producen ciencia real, bajo el modelo pedagógico MILC.
  *
  * Se articula con los programas del hub Explora (que funcionan como sus
- * "canteras" de talento): Salomé · exoplanetas (RECA), Bebras, NASA-IASC y
- * Samsung Solve for Tomorrow. Ver src/data/explora.ts.
+ * "canteras" de talento): Salomé · exoplanetas (RECA), Bebras, las campañas de
+ * la IASC (aliada de la NASA) y Samsung Solve for Tomorrow. Ver src/data/explora.ts.
  *
  * NOTA DE CONTENIDO: este archivo describe la ESTRUCTURA del semillero (líneas,
  * método, participación). No incluye integrantes, cifras de membresía ni
@@ -319,7 +319,7 @@ export const planEstudios: PlanLinea[] = [
       {
         fase: 'Praxis',
         titulo: 'Del ojo al instrumento: fotómetro micro:bit',
-        rae: 'Construye y calibra un fotómetro con micro:bit para medir el brillo del cielo, y aporta sus datos a una campaña de ciencia ciudadana (RECA, NASA-IASC).',
+        rae: 'Construye y calibra un fotómetro con micro:bit para medir el brillo del cielo, y aporta sus datos a una campaña de ciencia ciudadana (RECA o la IASC, aliada de la NASA).',
         productos: [
           'Fotómetro micro:bit calibrado con umbrales (usa el sensor de luz integrado, sin cablear nada), con su pseudocódigo y 5 escenarios de prueba',
           'Serie de medidas del brillo del cielo en 3 noches, contrastada con la magnitud límite que estimó a ojo en el módulo 1',

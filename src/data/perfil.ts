@@ -333,6 +333,12 @@ export interface Membresia {
  */
 export const membresias: Membresia[] = [
   {
+    rol: 'Integrante',
+    organizacion:
+      'Grupo de Investigación Robótica Aplicada · Universidad Tecnológica de Pereira (GrupLAC, Minciencias) · desde 2026',
+    emoji: '🤖',
+  },
+  {
     rol: 'Miembro activo',
     organizacion: 'Club Rotario Pedro Morales Pino · Cartago',
     emoji: '🤝',

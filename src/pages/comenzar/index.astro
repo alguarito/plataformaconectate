@@ -5,6 +5,12 @@ import DiagramaIconosMILC from '../../components/DiagramaIconosMILC.astro';
 import DiagramaCicloMILC from '../../components/DiagramaCicloMILC.astro';
 
 const base = import.meta.env.BASE_URL;
+// Capa de cuentas desactivada (2026-10-22): sin la bandera, la página no ofrece
+// aulas virtuales, registro ni panel docente (ver docs/cuentas-2027.md).
+const cuentasActivas = import.meta.env.PUBLIC_AUTH_ENABLED === 'true';
+const descripcionPagina = cuentasActivas
+  ? 'Guía rápida para usar ConectaTE: cómo unirte a tu aula virtual, navegar 180 guías MILC, usar el cuaderno físico, explorar el Espacio Explora y cerrar con el triángulo de pensamiento MILC.'
+  : 'Guía rápida para usar ConectaTE: cómo navegar 180 guías MILC, guardar tu avance en tu dispositivo, usar el cuaderno físico, explorar el Espacio Explora y cerrar con el triángulo de pensamiento MILC.';
 const origen = (Astro.site ?? new URL('https://alguarito.github.io')).toString().replace(/\/$/, '');
 const inicio = `${origen}${base.replace(/\/$/, '')}`;
 
@@ -13,8 +19,7 @@ const jsonLdExtra = [
     '@type': 'LearningResource',
     '@id': `${inicio}/comenzar#guia`,
     name: 'Comenzar · Cómo usar ConectaTE',
-    description:
-      'Guía rápida para usar ConectaTE: cómo unirte a tu aula virtual, navegar 180 guías MILC, usar el cuaderno físico, explorar el Espacio Explora y cerrar con el triángulo de pensamiento.',
+    description: descripcionPagina,
     inLanguage: 'es-CO',
     learningResourceType: ['OnboardingGuide', 'Tutorial'],
     educationalLevel: ['Secundaria', 'Media'],
@@ -31,7 +36,7 @@ const jsonLdExtra = [
 
 <BaseLayout
   title="Comenzar · Cómo usar ConectaTE — para docentes y estudiantes"
-  description="Guía rápida para usar ConectaTE: cómo unirte a tu aula virtual, navegar 180 guías MILC, usar el cuaderno físico, explorar el Espacio Explora y cerrar con el triángulo de pensamiento MILC."
+  description={descripcionPagina}
   ogType="article"
   imagen="/og/comenzar.png"
   jsonLd={jsonLdExtra}
@@ -60,7 +65,9 @@ const jsonLdExtra = [
             Comenzar.
           </h1>
           <p class="text-base md:text-lg font-semibold opacity-90 max-w-2xl leading-snug">
-            En 5 minutos sabes cómo unirte a tu aula, navegar la plataforma, qué hay en cada guía, cómo se conecta el cuaderno físico con la web, y cómo se cierra cada sesión con el triángulo de pensamiento MILC.
+            {cuentasActivas
+              ? 'En 5 minutos sabes cómo unirte a tu aula, navegar la plataforma, qué hay en cada guía, cómo se conecta el cuaderno físico con la web, y cómo se cierra cada sesión con el triángulo de pensamiento MILC.'
+              : 'En 5 minutos sabes cómo navegar la plataforma, dónde queda guardado tu avance, qué hay en cada guía, cómo se conecta el cuaderno físico con la web, y cómo se cierra cada sesión con el triángulo de pensamiento MILC.'}
           </p>
         </div>
       </div>
@@ -102,7 +109,9 @@ const jsonLdExtra = [
         <span class="chip-bento mb-4">1 · Qué es ConectaTE</span>
         <h2 class="heading-huge mb-3 leading-tight">Una plataforma propia con 216 piezas vivas.</h2>
         <p class="text-base md:text-lg leading-relaxed mb-4">
-          ConectaTE reúne <strong>180 guías de aprendizaje, 18 proyectos integradores y 18 exámenes finales</strong> para los grados 6° a 11°. Todo el contenido es de lectura libre: no requiere instalación. Si tu docente te da un código de aula, puedes registrarte para guardar tu progreso y que él lo vea.
+          ConectaTE reúne <strong>180 guías de aprendizaje, 18 proyectos integradores y 18 exámenes finales</strong> para los grados 6° a 11°. Todo el contenido es de lectura libre: no requiere instalación. {cuentasActivas
+            ? 'Si tu docente te da un código de aula, puedes registrarte para guardar tu progreso y que él lo vea.'
+            : 'No necesitas cuenta: lo que marcas como completado se guarda en este dispositivo.'}
         </p>
 
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
@@ -134,96 +143,151 @@ const jsonLdExtra = [
         </div>
       </section>
 
-      <!-- 2. Tu aula virtual -->
-      <section class="bento-card mb-8" id="seccion-aula">
-        <span class="chip-bento mb-4">2 · Tu aula virtual</span>
-        <h2 class="heading-huge mb-3 leading-tight">Código de acceso · progreso guardado.</h2>
-        <p class="text-base mb-6 leading-relaxed" style="color: var(--fg-muted);">
-          Las aulas virtuales conectan al docente con sus estudiantes dentro de la plataforma. El registro es voluntario: puedes leer todo el contenido sin cuenta, pero necesitas un aula para que tu avance quede guardado y visible en el panel de tu docente.
-        </p>
+      {/* 2. Con cuentas: aula virtual. Sin cuentas (desactivadas desde 2026-10-22): avance local. */}
+      {cuentasActivas ? (
+        <section class="bento-card mb-8" id="seccion-aula">
+          <span class="chip-bento mb-4">2 · Tu aula virtual</span>
+          <h2 class="heading-huge mb-3 leading-tight">Código de acceso · progreso guardado.</h2>
+          <p class="text-base mb-6 leading-relaxed" style="color: var(--fg-muted);">
+            Las aulas virtuales conectan al docente con sus estudiantes dentro de la plataforma. El registro es voluntario: puedes leer todo el contenido sin cuenta, pero necesitas un aula para que tu avance quede guardado y visible en el panel de tu docente.
+          </p>
 
-        <div class="rol-content rol-estudiante">
-          <div class="space-y-3">
-            <div class="flex items-start gap-4 p-4 rounded-bento-sm bg-bento-blue/10 border-l-4 border-bento-blue">
-              <div class="text-2xl font-black text-bento-blue shrink-0">1</div>
-              <div>
-                <div class="font-black text-sm mb-0.5">Obtén el código de tu aula</div>
-                <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">El docente te comparte un código al inicio del año o período (ej. <code class="font-mono text-xs bg-bento-blue/10 px-1 rounded">AUL-7A</code>).</p>
+          <div class="rol-content rol-estudiante">
+            <div class="space-y-3">
+              <div class="flex items-start gap-4 p-4 rounded-bento-sm bg-bento-blue/10 border-l-4 border-bento-blue">
+                <div class="text-2xl font-black text-bento-blue shrink-0">1</div>
+                <div>
+                  <div class="font-black text-sm mb-0.5">Obtén el código de tu aula</div>
+                  <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">El docente te comparte un código al inicio del año o período (ej. <code class="font-mono text-xs bg-bento-blue/10 px-1 rounded">AUL-7A</code>).</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4 p-4 rounded-bento-sm bg-bento-yellow/15 border-l-4 border-bento-yellow">
+                <div class="text-2xl font-black shrink-0" style="color: var(--fg);">2</div>
+                <div>
+                  <div class="font-black text-sm mb-0.5">Ingresa el código en la plataforma</div>
+                  <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">Ve a <a href={`${base}/cuenta/unirme`} class="font-bold underline">Unirme al aula</a>, escribe el código y tus datos básicos (nombre y fecha de nacimiento).</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4 p-4 rounded-bento-sm bg-bento-pink/10 border-l-4 border-bento-pink">
+                <div class="text-2xl font-black text-bento-pink shrink-0">3</div>
+                <div>
+                  <div class="font-black text-sm mb-0.5">Tu acudiente firma el consentimiento</div>
+                  <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">Se genera un enlace para que tu acudiente autorice el tratamiento de datos. Este paso es obligatorio por la Ley 1581 (datos de menores de edad).</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4 p-4 rounded-bento-sm bg-bento-lime/30 border-l-4 border-bento-lime">
+                <div class="text-2xl font-black shrink-0" style="color: var(--fg);">4</div>
+                <div>
+                  <div class="font-black text-sm mb-0.5">Cuenta activa · inicia sesión con Google</div>
+                  <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">Cuando el acudiente firma, tu cuenta queda activa. Entra con tu cuenta Google en <a href={`${base}/cuenta/ingresar`} class="font-bold underline">Ingresar</a> para ver tu progreso.</p>
+                </div>
               </div>
             </div>
-            <div class="flex items-start gap-4 p-4 rounded-bento-sm bg-bento-yellow/15 border-l-4 border-bento-yellow">
-              <div class="text-2xl font-black shrink-0" style="color: var(--fg);">2</div>
-              <div>
-                <div class="font-black text-sm mb-0.5">Ingresa el código en la plataforma</div>
-                <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">Ve a <a href={`${base}/cuenta/unirme`} class="font-bold underline">Unirme al aula</a>, escribe el código y tus datos básicos (nombre y fecha de nacimiento).</p>
-              </div>
-            </div>
-            <div class="flex items-start gap-4 p-4 rounded-bento-sm bg-bento-pink/10 border-l-4 border-bento-pink">
-              <div class="text-2xl font-black text-bento-pink shrink-0">3</div>
-              <div>
-                <div class="font-black text-sm mb-0.5">Tu acudiente firma el consentimiento</div>
-                <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">Se genera un enlace para que tu acudiente autorice el tratamiento de datos. Este paso es obligatorio por la Ley 1581 (datos de menores de edad).</p>
-              </div>
-            </div>
-            <div class="flex items-start gap-4 p-4 rounded-bento-sm bg-bento-lime/30 border-l-4 border-bento-lime">
-              <div class="text-2xl font-black shrink-0" style="color: var(--fg);">4</div>
-              <div>
-                <div class="font-black text-sm mb-0.5">Cuenta activa · inicia sesión con Google</div>
-                <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">Cuando el acudiente firma, tu cuenta queda activa. Entra con tu cuenta Google en <a href={`${base}/cuenta/ingresar`} class="font-bold underline">Ingresar</a> para ver tu progreso.</p>
-              </div>
+            <div class="mt-5">
+              <a
+                href={`${base}/cuenta/unirme`}
+                class="inline-flex items-center gap-2 px-5 py-3 rounded-full text-sm font-bold bg-bento-blue text-white hover:scale-105 transition-transform motion-reduce:transition-none"
+              >
+                Unirme con código de aula
+              </a>
             </div>
           </div>
-          <div class="mt-5">
-            <a
-              href={`${base}/cuenta/unirme`}
-              class="inline-flex items-center gap-2 px-5 py-3 rounded-full text-sm font-bold bg-bento-blue text-white hover:scale-105 transition-transform motion-reduce:transition-none"
-            >
-              Unirme con código de aula
-            </a>
-          </div>
-        </div>
 
-        <div class="rol-content rol-docente hidden">
-          <div class="space-y-3">
-            <div class="flex items-start gap-4 p-4 rounded-bento-sm bg-bento-blue/10 border-l-4 border-bento-blue">
-              <div class="text-2xl font-black text-bento-blue shrink-0">1</div>
-              <div>
-                <div class="font-black text-sm mb-0.5">Inicia sesión con tu cuenta Google institucional</div>
-                <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">Accede desde <a href={`${base}/cuenta/ingresar`} class="font-bold underline">Ingresar</a>. Solo las cuentas autorizadas tienen acceso al panel docente.</p>
+          <div class="rol-content rol-docente hidden">
+            <div class="space-y-3">
+              <div class="flex items-start gap-4 p-4 rounded-bento-sm bg-bento-blue/10 border-l-4 border-bento-blue">
+                <div class="text-2xl font-black text-bento-blue shrink-0">1</div>
+                <div>
+                  <div class="font-black text-sm mb-0.5">Inicia sesión con tu cuenta Google institucional</div>
+                  <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">Accede desde <a href={`${base}/cuenta/ingresar`} class="font-bold underline">Ingresar</a>. Solo las cuentas autorizadas tienen acceso al panel docente.</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4 p-4 rounded-bento-sm bg-bento-yellow/15 border-l-4 border-bento-yellow">
+                <div class="text-2xl font-black shrink-0" style="color: var(--fg);">2</div>
+                <div>
+                  <div class="font-black text-sm mb-0.5">Crea el aula y comparte el código</div>
+                  <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">En Panel docente → Aulas → Nueva aula. El código generado es el que entregas a tus estudiantes al inicio del período.</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4 p-4 rounded-bento-sm bg-bento-pink/10 border-l-4 border-bento-pink">
+                <div class="text-2xl font-black text-bento-pink shrink-0">3</div>
+                <div>
+                  <div class="font-black text-sm mb-0.5">Registros pendientes de firma</div>
+                  <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">El panel muestra cuántos estudiantes esperan que su acudiente firme el consentimiento. Una vez firmado, el estudiante queda activo automáticamente.</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4 p-4 rounded-bento-sm bg-bento-lime/30 border-l-4 border-bento-lime">
+                <div class="text-2xl font-black shrink-0" style="color: var(--fg);">4</div>
+                <div>
+                  <div class="font-black text-sm mb-0.5">Seguimiento individual y descarga CSV</div>
+                  <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">Desde el detalle del aula ves guías iniciadas, completadas y promedio de cada estudiante. Descarga un CSV para tu libro de seguimiento en Excel.</p>
+                </div>
               </div>
             </div>
-            <div class="flex items-start gap-4 p-4 rounded-bento-sm bg-bento-yellow/15 border-l-4 border-bento-yellow">
-              <div class="text-2xl font-black shrink-0" style="color: var(--fg);">2</div>
-              <div>
-                <div class="font-black text-sm mb-0.5">Crea el aula y comparte el código</div>
-                <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">En Panel docente → Aulas → Nueva aula. El código generado es el que entregas a tus estudiantes al inicio del período.</p>
-              </div>
+            <div class="mt-5">
+              <a
+                href={`${base}/cuenta/ingresar`}
+                class="inline-flex items-center gap-2 px-5 py-3 rounded-full text-sm font-bold bg-bento-blue text-white hover:scale-105 transition-transform motion-reduce:transition-none"
+              >
+                Ir al panel docente
+              </a>
             </div>
-            <div class="flex items-start gap-4 p-4 rounded-bento-sm bg-bento-pink/10 border-l-4 border-bento-pink">
-              <div class="text-2xl font-black text-bento-pink shrink-0">3</div>
-              <div>
-                <div class="font-black text-sm mb-0.5">Registros pendientes de firma</div>
-                <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">El panel muestra cuántos estudiantes esperan que su acudiente firme el consentimiento. Una vez firmado, el estudiante queda activo automáticamente.</p>
+          </div>
+        </section>
+      ) : (
+        <section class="bento-card mb-8" id="seccion-aula">
+          <span class="chip-bento mb-4">2 · Tu avance</span>
+          <h2 class="heading-huge mb-3 leading-tight">Sin cuenta · queda en tu dispositivo.</h2>
+          <p class="text-base mb-6 leading-relaxed" style="color: var(--fg-muted);">
+            ConectaTE no pide registro. Lo que marcas en la web se guarda solo en el navegador de este dispositivo: si cambias de celular o borras los datos del navegador, ese avance no te acompaña. Tu cuaderno sí.
+          </p>
+
+          <div class="rol-content rol-estudiante">
+            <div class="space-y-3">
+              <div class="flex items-start gap-4 p-4 rounded-bento-sm bg-bento-blue/10 border-l-4 border-bento-blue">
+                <div class="text-2xl font-black text-bento-blue shrink-0">1</div>
+                <div>
+                  <div class="font-black text-sm mb-0.5">Marca cada guía al terminarla</div>
+                  <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">Al final de cada guía está el botón «Marcar como completada». El avance de tu grado se ve en la portada.</p>
+                </div>
               </div>
-            </div>
-            <div class="flex items-start gap-4 p-4 rounded-bento-sm bg-bento-lime/30 border-l-4 border-bento-lime">
-              <div class="text-2xl font-black shrink-0" style="color: var(--fg);">4</div>
-              <div>
-                <div class="font-black text-sm mb-0.5">Seguimiento individual y descarga CSV</div>
-                <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">Desde el detalle del aula ves guías iniciadas, completadas y promedio de cada estudiante. Descarga un CSV para tu libro de seguimiento en Excel.</p>
+              <div class="flex items-start gap-4 p-4 rounded-bento-sm bg-bento-yellow/15 border-l-4 border-bento-yellow">
+                <div class="text-2xl font-black shrink-0" style="color: var(--fg);">2</div>
+                <div>
+                  <div class="font-black text-sm mb-0.5">Tu cuaderno es tu registro</div>
+                  <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">Las actividades, el saber ancestral y la reflexión de cada guía van al cuaderno. Es lo que llevas a clase y lo que revisa tu docente.</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4 p-4 rounded-bento-sm bg-bento-pink/10 border-l-4 border-bento-pink">
+                <div class="text-2xl font-black text-bento-pink shrink-0">3</div>
+                <div>
+                  <div class="font-black text-sm mb-0.5">Mi panel, también en tu dispositivo</div>
+                  <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">En <a href={`${base}/dashboard`} class="font-bold underline">Mi panel</a> puedes hacer los tests de inteligencias múltiples y de autoconcepto. Los resultados se quedan en este navegador y puedes borrarlos cuando quieras.</p>
+                </div>
               </div>
             </div>
           </div>
-          <div class="mt-5">
-            <a
-              href={`${base}/cuenta/ingresar`}
-              class="inline-flex items-center gap-2 px-5 py-3 rounded-full text-sm font-bold bg-bento-blue text-white hover:scale-105 transition-transform motion-reduce:transition-none"
-            >
-              Ir al panel docente
-            </a>
+
+          <div class="rol-content rol-docente hidden">
+            <div class="space-y-3">
+              <div class="flex items-start gap-4 p-4 rounded-bento-sm bg-bento-blue/10 border-l-4 border-bento-blue">
+                <div class="text-2xl font-black text-bento-blue shrink-0">1</div>
+                <div>
+                  <div class="font-black text-sm mb-0.5">Sin cuentas ni panel docente, por ahora</div>
+                  <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">La plataforma funciona sin registro. Lo que cada estudiante marca en la web queda en su propio dispositivo y no llega a ningún panel.</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4 p-4 rounded-bento-sm bg-bento-yellow/15 border-l-4 border-bento-yellow">
+                <div class="text-2xl font-black shrink-0" style="color: var(--fg);">2</div>
+                <div>
+                  <div class="font-black text-sm mb-0.5">El seguimiento se hace con el cuaderno</div>
+                  <p class="text-sm leading-relaxed" style="color: var(--fg-muted);">Cada guía indica qué va al cuaderno y con qué criterio se sabe que una actividad está terminada. Los PDF imprimibles sirven cuando no hay conexión ni proyector.</p>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       <!-- 3. Cómo navegar -->
       <section class="bento-card mb-8" id="seccion-navegar">
@@ -470,15 +534,23 @@ const jsonLdExtra = [
       <!-- CTAs finales -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-10">
         <a
-          href={`${base}/cuenta/unirme`}
+          href={cuentasActivas ? `${base}/cuenta/unirme` : `${base}/dashboard`}
           class="bento-card-color bg-bento-blue flex items-center gap-4 hover:scale-[1.01] transition-transform group"
         >
           <div class="text-5xl">🎒</div>
-          <div class="flex-1">
-            <div class="text-xs font-bold uppercase tracking-widest opacity-80">Registrarme</div>
-            <div class="font-black text-xl mt-1">Unirme al aula</div>
-            <div class="text-sm opacity-80 mt-1">Ingresa el código de tu docente</div>
-          </div>
+          {cuentasActivas ? (
+            <div class="flex-1">
+              <div class="text-xs font-bold uppercase tracking-widest opacity-80">Registrarme</div>
+              <div class="font-black text-xl mt-1">Unirme al aula</div>
+              <div class="text-sm opacity-80 mt-1">Ingresa el código de tu docente</div>
+            </div>
+          ) : (
+            <div class="flex-1">
+              <div class="text-xs font-bold uppercase tracking-widest opacity-80">En tu dispositivo</div>
+              <div class="font-black text-xl mt-1">Mi panel</div>
+              <div class="text-sm opacity-80 mt-1">Tests de inteligencias y autoconcepto</div>
+            </div>
+          )}
           <svg class="w-6 h-6 group-hover:translate-x-1 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="m9 18 6-6-6-6"></path>
           </svg>

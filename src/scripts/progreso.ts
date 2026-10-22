@@ -7,7 +7,9 @@
  * - Si lo completado pertenece a SU grado → suma XP al contador principal del grado.
  * - Si pertenece a OTRO grado → suma XP al contador de exploración (independiente).
  *
- * Persistencia: localStorage (por navegador, sin login).
+ * Persistencia: localStorage (por navegador, sin login). Con la capa de cuentas
+ * activa (PUBLIC_AUTH_ENABLED='true') además se sincroniza con Supabase; está
+ * desactivada desde 2026-10-22.
  * Comunicación entre componentes: CustomEvent('progreso:cambio') en document.
  */
 
@@ -113,9 +115,13 @@ export function marcarGuia(
   else delete e.guias[k];
   escribirEstado(e);
   // Sync a BD fire-and-forget. No bloquea ni falla la mutación local.
-  void import('../lib/progreso-sync').then((m) =>
-    m.syncGuia(grado, periodo, sesion, completar),
-  );
+  // Solo con la capa de cuentas activa (desactivada desde 2026-10-22): con la
+  // bandera apagada el import se elimina del bundle y el progreso queda local.
+  if (import.meta.env.PUBLIC_AUTH_ENABLED === 'true') {
+    void import('../lib/progreso-sync').then((m) =>
+      m.syncGuia(grado, periodo, sesion, completar),
+    );
+  }
 }
 
 export function marcarProyecto(
@@ -128,10 +134,12 @@ export function marcarProyecto(
   if (completar) e.proyectos[k] = { ts: Date.now() };
   else delete e.proyectos[k];
   escribirEstado(e);
-  // Sync a BD fire-and-forget.
-  void import('../lib/progreso-sync').then((m) =>
-    m.syncProyecto(grado, periodo, completar),
-  );
+  // Sync a BD fire-and-forget (solo con la capa de cuentas activa).
+  if (import.meta.env.PUBLIC_AUTH_ENABLED === 'true') {
+    void import('../lib/progreso-sync').then((m) =>
+      m.syncProyecto(grado, periodo, completar),
+    );
+  }
 }
 
 /* ─────────── Hidratación desde BD (llamada por auth hook) ─────────── */

@@ -1,16 +1,18 @@
 ---
 /**
- * Modal de login para ConectaTE — Fase A
+ * Modal de perfil local para ConectaTE.
  *
- * Reemplaza el OnboardingGrado anterior. Tres caminos:
+ * Reemplaza el OnboardingGrado anterior. Caminos:
  *   🚪 Visitante — entra sin identificarse
- *   🎓 Estudiante — formulario nombre + grado + grupo + tests opcionales
- *   👨‍🏫 Docente — login con email/contraseña (decorativo, Fase A)
+ *   🎓 Estudiante — nombre + grado + grupo, guardados solo en este navegador
+ *   👨‍🏫 Docente — Google vía Supabase. Solo se muestra con PUBLIC_AUTH_ENABLED='true';
+ *      la capa de cuentas está desactivada desde 2026-10-22 (docs/cuentas-2027.md).
  *
- * Se muestra automáticamente en primera visita. Reabre desde
- * cualquier botón con [data-abrir-login].
+ * Se abre desde cualquier botón con [data-abrir-login].
  */
 import { grados } from '../data/grados';
+
+const cuentasActivas = import.meta.env.PUBLIC_AUTH_ENABLED === 'true';
 ---
 
 <dialog
@@ -32,8 +34,8 @@ import { grados } from '../data/grados';
               ¿Cómo entras a ConectaTE?
             </h2>
             <p class="mt-3 text-sm md:text-base leading-relaxed" style="color: var(--fg-muted);">
-              Tu progreso, tus tests y tus reflexiones se guardan en este
-              navegador. Nada viaja a un servidor.
+              Tu progreso y tus tests se guardan solo en este navegador.
+              No necesitas cuenta.
             </p>
           </div>
           <button
@@ -64,7 +66,7 @@ import { grados } from '../data/grados';
                 Soy estudiante
               </div>
               <div class="text-sm opacity-90 mt-1">
-                Registra tu nombre, grado y grupo. Tests opcionales para conocerte mejor.
+                Guarda en este dispositivo tu nombre, grado y grupo. Tests opcionales para conocerte mejor.
               </div>
             </div>
             <svg class="w-6 h-6 group-hover:translate-x-1 transition-transform shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -73,26 +75,28 @@ import { grados } from '../data/grados';
             </svg>
           </button>
 
-          <!-- Docente -->
-          <button
-            type="button"
-            data-rol-docente
-            class="bento-card-color bg-bento-purple text-left p-5 active:scale-95 transition-transform group flex items-center gap-4"
-          >
-            <div class="text-5xl shrink-0">👨‍🏫</div>
-            <div class="flex-1">
-              <div class="text-xl md:text-2xl font-black tracking-tight leading-tight">
-                Soy el docente
+          {/* Docente: solo con la capa de cuentas activa */}
+          {cuentasActivas && (
+            <button
+              type="button"
+              data-rol-docente
+              class="bento-card-color bg-bento-purple text-left p-5 active:scale-95 transition-transform group flex items-center gap-4"
+            >
+              <div class="text-5xl shrink-0">👨‍🏫</div>
+              <div class="flex-1">
+                <div class="text-xl md:text-2xl font-black tracking-tight leading-tight">
+                  Soy el docente
+                </div>
+                <div class="text-sm opacity-90 mt-1">
+                  Acceso con cuenta de Google institucional.
+                </div>
               </div>
-              <div class="text-sm opacity-90 mt-1">
-                Acceso con cuenta de Google institucional.
-              </div>
-            </div>
-            <svg class="w-6 h-6 group-hover:translate-x-1 transition-transform shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M5 12h14"></path>
-              <path d="m12 5 7 7-7 7"></path>
-            </svg>
-          </button>
+              <svg class="w-6 h-6 group-hover:translate-x-1 transition-transform shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14"></path>
+                <path d="m12 5 7 7-7 7"></path>
+              </svg>
+            </button>
+          )}
 
           <!-- Visitante -->
           <button
@@ -176,9 +180,9 @@ import { grados } from '../data/grados';
           </div>
 
           <div class="text-xs leading-relaxed p-3 rounded-bento-sm" style="background: var(--bg-card); color: var(--fg-muted); border: 1px solid var(--border);">
-            🔒 Tu información se guarda solo en este navegador. Si limpias el caché,
-            tendrás que volver a registrarte. ConectaTE no envía tus datos a ningún
-            servidor.
+            🔒 Tu información se guarda solo en este navegador: este formulario no la
+            envía a ninguna parte. Si borras los datos del navegador, tendrás que
+            escribirla de nuevo.
           </div>
 
           <button
@@ -194,9 +198,9 @@ import { grados } from '../data/grados';
         </form>
 
         <p class="text-xs mt-6 leading-relaxed" style="color: var(--fg-muted);">
-          🔒 Privacidad: ConectaTE no recolecta datos personales en servidores.
-          Todo lo que registres vive solo en tu dispositivo. Puedes borrarlo
-          en cualquier momento.
+          🔒 Privacidad: lo que escribes en este formulario y los resultados de
+          tus tests viven solo en tu dispositivo. Puedes borrarlos en cualquier
+          momento desde Mi panel.
         </p>
       </div>
     </div>
@@ -208,7 +212,6 @@ import { grados } from '../data/grados';
     loginEstudiante,
     loginVisitante,
   } from '../scripts/perfilUsuario';
-  import { signInWithGoogle } from '../lib/auth';
 
   const dialog = document.getElementById('login-modal') as HTMLDialogElement | null;
   if (!dialog) {
@@ -265,10 +268,15 @@ import { grados } from '../data/grados';
     dialog.querySelector('[data-rol-estudiante]')?.addEventListener('click', () =>
       mostrarPaso('estudiante'),
     );
-    dialog.querySelector('[data-rol-docente]')?.addEventListener('click', async () => {
-      cerrar();
-      await signInWithGoogle((import.meta.env?.BASE_URL ?? '/').replace(/\/$/, '') + '/docente');
-    });
+    // Login docente (Supabase). Con la bandera apagada este bloque se elimina del
+    // bundle y ninguna página carga el cliente Supabase.
+    if (import.meta.env.PUBLIC_AUTH_ENABLED === 'true') {
+      dialog.querySelector('[data-rol-docente]')?.addEventListener('click', async () => {
+        cerrar();
+        const { signInWithGoogle } = await import('../lib/auth');
+        await signInWithGoogle((import.meta.env?.BASE_URL ?? '/').replace(/\/$/, '') + '/docente');
+      });
+    }
     dialog.querySelector('[data-rol-visitante]')?.addEventListener('click', () => {
       loginVisitante();
       cerrar();

@@ -1,7 +1,17 @@
 /**
- * Perfil profesional del Dr. Alvaro Cardenas Orozco.
- * Datos extraídos de su Hoja de Vida + carpetas de soporte en Google Drive.
+ * Perfil profesional del Dr. Alvaro Cardenas Orozco (página /acerca).
+ *
+ * Fuente única: la hoja de vida vigente, publicada en alvarocardenasorozco.com
+ * (versión del 21-10-2026). Cada dato de este archivo está en ella; lo que no tiene
+ * respaldo allí no se publica. Si la hoja de vida cambia, se actualiza aquí.
+ * La Colección MILC se lee de src/data/coleccion.json, no se repite aquí.
  */
+
+/** Hoja de vida vigente. ConectaTE no aloja copia propia: enlaza la publicada. */
+export const hojaDeVida = {
+  url: 'https://alvarocardenasorozco.com/hoja-de-vida.html',
+  pdf: 'https://alvarocardenasorozco.com/hoja-de-vida-alvaro-cardenas.pdf',
+};
 
 export const perfil = {
   nombre: 'Alvaro Cardenas Orozco',
@@ -11,24 +21,13 @@ export const perfil = {
   email: 'alvaro.cardenas.orozco@gmail.com',
   whatsapp: '+57 320 632 4740',
   whatsappE164: '573206324740',
-  blog: 'https://alvarocardenasorozco.wixsite.com/blog',
+  sitioWeb: 'https://alvarocardenasorozco.com/',
+  linkedin: 'https://www.linkedin.com/in/alvarocardenasorozco/',
+  orcid: 'https://orcid.org/0000-0003-1820-301X',
 
-  // Perfil profesional resumido
+  // «Perfil profesional» de la hoja de vida, textual.
   resumen:
-    'Ingeniero en Sistemas, Doctor en Ciencias de la Educación y Magíster en Gestión de la Tecnología Educativa, con más de diez años de experiencia en docencia universitaria, investigación educativa y liderazgo de proyectos STEM+. Especializado en tecnologías emergentes, Inteligencia Artificial, robótica educativa y pensamiento computacional. Ponente y mentor internacional, reconocido por colaboraciones con NASA (IASC) y finalista en Solve for Tomorrow de Samsung.',
-
-  // Frases (las del CV)
-  frases: [
-    {
-      texto: 'Aunque nada cambie, si yo cambio, todo cambia.',
-      autor: 'Marcel Proust',
-    },
-    {
-      texto:
-        'La educación es el pasaporte hacia el futuro, el mañana pertenece a aquellos que se preparan hoy.',
-      autor: 'Malcolm X',
-    },
-  ],
+    'Llevo un problema educativo de la pregunta a la solución en uso: lo investigo, lo convierto en modelo y currículo, formo a los docentes y construyo el software que lo sostiene. Ingeniero de Sistemas y Computación y Doctor en Ciencias de la Educación, con más de 13 años en docencia básica, media y de posgrado. Autor del Modelo MILC, líder de semilleros de investigación escolar en básica y media y Par Experto de Colombia Programa (MinTIC – British Council).',
 };
 
 export interface Estudio {
@@ -37,10 +36,13 @@ export interface Estudio {
   pais: string;
   desde: number;
   hasta: number;
+  nota?: string;
+  /** Ruta interna (sin BASE_URL) a una obra derivada del título. */
+  enlace?: { texto: string; href: string };
 }
 
 /**
- * Formación académica formal (5 títulos).
+ * Formación académica formal, con las denominaciones de la hoja de vida.
  */
 export const formacion: Estudio[] = [
   {
@@ -49,6 +51,11 @@ export const formacion: Estudio[] = [
     pais: 'México',
     desde: 2018,
     hasta: 2024,
+    nota: 'Convalidado MEN, Res. 016493 de 2025',
+    enlace: {
+      texto: 'Tesis publicada como libro (2026)',
+      href: '/modelo-milc/tesis-aula-invertida',
+    },
   },
   {
     titulo: 'Maestría en Gestión de la Tecnología Educativa',
@@ -58,21 +65,21 @@ export const formacion: Estudio[] = [
     hasta: 2016,
   },
   {
-    titulo: 'Especialización en Administración en Informática Educativa',
+    titulo: 'Especialización en Administración de la Informática Educativa',
     institucion: 'Universidad de Santander (UDES)',
     pais: 'Colombia',
     desde: 2013,
     hasta: 2014,
   },
   {
-    titulo: 'Especialización Técnica en Sistemas de Información Geográfica',
+    titulo: 'Especialización Técnica en Desarrollo de Sistemas de Información Geográfica',
     institucion: 'SENA',
     pais: 'Colombia',
     desde: 2012,
     hasta: 2013,
   },
   {
-    titulo: 'Ingeniería en Sistemas y Computación',
+    titulo: 'Ingeniería de Sistemas y Computación',
     institucion: 'Universidad Tecnológica de Pereira (UTP)',
     pais: 'Colombia',
     desde: 2006,
@@ -82,165 +89,263 @@ export const formacion: Estudio[] = [
 
 export interface Experiencia {
   cargo: string;
-  organizacion: string;
+  organizacion?: string;
   desde: number;
   hasta: number | 'actualidad';
-  destacado?: boolean;
+  /** Descripción del cargo, tal como la trae la hoja de vida. */
+  detalle?: string;
+  /** Cargos que la hoja de vida agrupa en un solo periodo, sin años propios. */
+  items?: string[];
 }
 
 /**
- * Experiencia profesional relevante (6 cargos).
+ * Experiencia profesional. Los cargos de 2011 a 2018 van agrupados, como en la
+ * hoja de vida: no tienen años individuales publicados.
  */
 export const experiencia: Experiencia[] = [
   {
-    cargo: 'Docente de Tecnología e Informática · Líder de Semilleros',
-    organizacion: 'I.E. Sor María Juliana',
+    cargo: 'Docente de Tecnología e Informática (en propiedad desde 2016)',
+    organizacion: 'I.E. Sor María Juliana, Cartago',
     desde: 2015,
     hasta: 'actualidad',
-    destacado: true,
+    detalle:
+      'Director de tres semilleros de investigación escolar (CIR Sormatronik, Betelgeuse y ConectaTE), con énfasis en robótica, astronomía, ciencias, pensamiento computacional, IA y programación. Más de 400 proyectos escolares presentados en convocatorias regionales y nacionales. Autor del Plan de Área 2026 de 6.º a 11.º, con sus guías, proyectos y exámenes.',
   },
   {
-    cargo: 'Docente de Maestría y Especialización',
+    cargo: 'Docente hora cátedra de posgrados',
     organizacion: 'Universidad Tecnológica de Pereira',
     desde: 2018,
     hasta: 'actualidad',
-    destacado: true,
+    detalle:
+      'Maestría y Especialización en Enseñanza de la Física. Electivas de Ingenierías: Dirección de Proyectos, Gobierno TI y Seguridad Informática. Director de 6 trabajos de grado de posgrado (2 de maestría y 4 de especialización) y de 4 más en curso, en la línea de enseñanza de la física con tecnología aplicada.',
   },
   {
-    cargo: 'Docente Universitario de Pregrado',
-    organizacion: 'Universidad Remington',
-    desde: 2017,
-    hasta: 2022,
+    cargo: 'Docente de pregrado: hora cátedra (2019) y medio tiempo (2022–2023)',
+    organizacion: 'Corporación Universitaria Remington',
+    desde: 2019,
+    hasta: 2023,
   },
   {
-    cargo: 'Director de Proyectos',
-    organizacion: 'Qltura& S.A.S.',
-    desde: 2015,
-    hasta: 2016,
+    cargo: 'Experiencia anterior',
+    desde: 2011,
+    hasta: 2018,
+    items: [
+      'Director de proyectos en Qltura& S.A.S. y A Cuadrado Soluciones S.A.S.',
+      'Docente en el CRES y en la I.E. Indalecio Penilla',
+      'Líder del proyecto Red Inteligente Educativa en Innovations Ingeniería',
+      'Asistente del proyecto ReSA CUNA del DPS con FUNDASET',
+    ],
+  },
+];
+
+export interface Destacado {
+  ambito: string;
+  /** Cifra o periodo que encabeza la tarjeta. */
+  resumen: string;
+  titulo: string;
+  texto: string;
+  anos: number[];
+  emoji: string;
+}
+
+/**
+ * Los dos reconocimientos de cabecera. La IASC es aliada de la NASA: no se presenta
+ * como campaña de la NASA ni el rol como «colaborador científico» de la NASA.
+ */
+export const reconocimientosDestacados: Destacado[] = [
+  {
+    ambito: 'Semilleros · etapas nacionales',
+    resumen: '3 años seguidos',
+    titulo: 'Samsung Solve for Tomorrow',
+    texto:
+      'Líder de semilleros de investigación escolar con 11 proyectos entre los mejores del país: 1 entre los 50 seleccionados, HopeLine Connect (2024); 4 entre los 100 equipos seleccionados y 1 entre los 50, de 2.330 propuestas (2025); 6 entre los 100 seleccionados, de 2.383 propuestas de 29 departamentos (2026), el 6 % de la selección nacional. Participante desde 2021.',
+    anos: [2024, 2025, 2026],
+    emoji: '🏆',
   },
   {
-    cargo: 'Docente de Tecnología',
-    organizacion: 'I.E. Indalecio Penilla',
-    desde: 2013,
-    hasta: 2015,
-  },
-  {
-    cargo: 'Director de Proyectos Educativos',
-    organizacion: 'A Cuadrado Soluciones SAS',
-    desde: 2012,
-    hasta: 2014,
+    ambito: 'Ciencia ciudadana',
+    resumen: '2021–2026',
+    titulo: 'Campañas de ciencia ciudadana de la IASC',
+    texto:
+      'Participante en las campañas de búsqueda de asteroides de la IASC (International Astronomical Search Collaboration), aliada de la NASA; Salomé y otras. 16 estudiantes certificados por la IASC en tres campañas (2024).',
+    anos: [],
+    emoji: '☄️',
   },
 ];
 
 export interface Reconocimiento {
   titulo: string;
-  organizacion: string;
-  anos: number[];
+  detalle: string;
+  /** Texto libre, como en la hoja de vida («2024–2026», «2025 y 2026»). Vacío si no trae fecha. */
+  fecha: string;
   emoji: string;
-  destacado?: boolean;
 }
 
 /**
- * Participaciones internacionales y reconocimientos relevantes.
+ * Reconocimientos, programas, mentoría, dirección y jurado
+ * (secciones «Reconocimientos y programas», «Mentoría» y «Dirección, jurado y mentoría»).
  */
 export const reconocimientos: Reconocimiento[] = [
   {
-    titulo: 'Colaborador Científico',
-    organizacion: 'NASA · International Astronomical Search Collaboration (IASC)',
-    anos: [2021, 2022, 2023, 2024, 2025, 2026],
-    emoji: '🚀',
-    destacado: true,
+    titulo: 'Docente Par Experto, Colombia Programa',
+    detalle:
+      'MinTIC y British Council; Nodos de Pensamiento Computacional, 94 h de formación y acompañamiento',
+    fecha: '2024–2026',
+    emoji: '🧩',
   },
   {
-    titulo: 'Top 50 Finalistas · Solve for Tomorrow',
-    organizacion: 'Samsung · Participación desde 2022, finalista nacional 3 años seguidos',
-    anos: [2022, 2023, 2024, 2025],
-    emoji: '🏆',
-    destacado: true,
-  },
-  {
-    titulo: 'Feria de Ciencias y Energía',
-    organizacion: 'Pereira · Finalistas 2023 y 2024 · 2025 incentivo a la institución que más proyectos presentó',
-    anos: [2023, 2024, 2025],
+    titulo: 'Feria de Ciencias de la Empresa de Energía de Pereira',
+    detalle:
+      'Cuarto y quinto lugar (2023); segundo lugar (2024); reconocimiento a la institución con más proyectos de valor presentados (2025)',
+    fecha: '2023–2025',
     emoji: '⚡',
   },
   {
-    titulo: 'Reconocimientos Institucionales y Municipales',
-    organizacion: 'I.E. Sor María Juliana y Alcaldía de Cartago · 12 años consecutivos',
-    anos: [
-      2014, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025,
-    ],
-    emoji: '🎖',
-  },
-  {
-    titulo: 'Ponente · 12.º CNEFA',
-    organizacion: 'Universidad del Valle',
-    anos: [2024],
-    emoji: '🎤',
-  },
-  {
-    titulo: 'Ponente Internacional',
-    organizacion: 'SENACYT y UTP · Robótica Aplicada',
-    anos: [2024],
-    emoji: '🌎',
-  },
-  {
-    titulo: 'Mentor en Pensamiento Computacional',
-    organizacion: 'Programa nacional de mentores',
-    anos: [2024],
-    emoji: '🧠',
-  },
-  {
-    titulo: 'Maestro Coinvestigador · Programa Ondas',
-    organizacion: 'Ondas Valle',
-    anos: [2016, 2017, 2018, 2019, 2020, 2021, 2022],
+    titulo: 'Maestro coinvestigador, Programa Ondas Valle',
+    detalle: 'Univalle; semillero CIR Sormatronik, convocatorias de 2016 a 2022',
+    fecha: '2016–2022',
     emoji: '🔬',
   },
   {
-    titulo: 'Evaluador Internacional · Jurado',
-    organizacion: 'International Statistical Literacy Project (ISLP)',
-    anos: [2018],
-    emoji: '🌐',
-  },
-  {
-    titulo: 'Astro va a tu Cole',
-    organizacion: 'Programa de astronomía escolar',
-    anos: [2025],
+    titulo: 'Olimpiadas STEM+ Colombia (circuito regional) y La Astronomía va a tu Colegio',
+    detalle: 'MEN, UNNO y UNIMINUTO; RECA',
+    fecha: '2025 y 2026',
     emoji: '🔭',
   },
   {
-    titulo: 'Torneo STEAM',
-    organizacion: 'Competencia educativa',
-    anos: [2021],
-    emoji: '⚙️',
+    titulo: 'Reconocimiento por colaboración y compromiso con la institución',
+    detalle: 'Alcaldía de Cartago',
+    fecha: '2014',
+    emoji: '🎖',
   },
   {
-    titulo: 'VII Encuentro Internacional · Avances de Investigación y Electrónica',
-    organizacion: 'Encuentro académico internacional',
-    anos: [],
-    emoji: '🔌',
+    titulo: 'Mentor y docente enlace, VIII Concurso Nacional de Programación',
+    detalle: 'Proyecto HandSpeak. Fedesoft y REDIS',
+    fecha: '2024',
+    emoji: '🧠',
+  },
+  {
+    titulo: 'Jurado y evaluador por Colombia, Competencia Latinoamericana de Póster',
+    detalle:
+      'International Statistical Literacy Project (ISLP), proyecto de la IASE y el ISI',
+    fecha: '2018',
+    emoji: '🌐',
+  },
+  {
+    titulo: 'Comité Científico, 11.º Congreso Nacional de Enseñanza de la Física y la Astronomía',
+    detalle: 'Universidad de Antioquia; filiación UTP',
+    fecha: '',
+    emoji: '📋',
+  },
+  {
+    titulo: 'Jurado de trabajos de grado',
+    detalle: 'Especialización en Enseñanza de la Física, UTP',
+    fecha: '2023',
+    emoji: '🎓',
   },
 ];
 
-export interface Especialidad {
+export interface Ponencia {
   titulo: string;
-  emoji: string;
-  nivel: number; // 0-100 visual
+  evento: string;
+  fecha: string;
 }
 
-/**
- * Áreas de especialización (con barra de habilidades visual).
- */
-export const especialidades: Especialidad[] = [
-  { titulo: 'Capacitación docente', emoji: '🎓', nivel: 100 },
-  { titulo: 'Uso de la IA en educación', emoji: '🤖', nivel: 100 },
-  { titulo: 'Integración de TIC en educación', emoji: '💻', nivel: 95 },
-  { titulo: 'Innovación educativa STEM+', emoji: '🧪', nivel: 92 },
-  { titulo: 'Pensamiento computacional', emoji: '🧩', nivel: 92 },
-  { titulo: 'Liderazgo en investigación educativa', emoji: '🔬', nivel: 90 },
-  { titulo: 'Gamificación y aprendizaje activo', emoji: '🎮', nivel: 88 },
-  { titulo: 'CTeI y apropiación social del conocimiento', emoji: '📚', nivel: 88 },
-  { titulo: 'Formación de comunidades de aprendizaje', emoji: '🌐', nivel: 85 },
+/** Ponencias, de la más reciente a la más antigua, como en la hoja de vida. */
+export const ponencias: Ponencia[] = [
+  {
+    titulo:
+      '«Betelgeuse y MILC: una pedagogía situada para la enseñanza de la astronomía y la física en la escuela pública colombiana en la era onlife»',
+    evento:
+      'Ponencia aceptada, 13.º Congreso Nacional de Enseñanza de la Física y la Astronomía. UTP, Pereira; aplazado por el sismo.',
+    fecha: '2026',
+  },
+  {
+    titulo:
+      '«Soberanía, ética y STEAM frugal: el Modelo MILC ante los desafíos de la transmodernidad»',
+    evento:
+      'II Congreso Internacional de Investigación en Ciencias de la Educación, UNAD. Valledupar.',
+    fecha: '20–22 may 2026',
+  },
+  {
+    titulo: '«Más allá de la pantalla: ConectaTE y la Educación 4.0»',
+    evento:
+      'Panelista invitado, IV Semana Internacional de Ciencia, Tecnología e Innovación del Valle del Cauca. Gobernación del Valle.',
+    fecha: '1 oct 2025',
+  },
+  {
+    titulo: 'Taller «Escritura inversa… con IA»',
+    evento: '12.º Congreso Nacional de Enseñanza de la Física y la Astronomía. Univalle, Cali.',
+    fecha: '9–11 oct 2024',
+  },
+  {
+    titulo: '«IA aplicada en la educación»',
+    evento:
+      'VII Seminario Internacional de Avances en Investigación y Electrónica Aplicada. Univalle, sede Cartago.',
+    fecha: '2023',
+  },
+  {
+    titulo: 'Ponente oral',
+    evento: 'VII Encuentro Internacional sobre la Enseñanza de las Ciencias Exactas y Naturales. UTP.',
+    fecha: '7–8 sep 2023',
+  },
+  {
+    titulo: '«Introducción a las TIC aplicadas a la educación»',
+    evento:
+      'Ponente internacional invitado, VI Encuentro de Comunidades de Aprendizaje de Física. SENACYT (Panamá) / UTP.',
+    fecha: 'jul–ago 2021',
+  },
+];
+
+export interface Competencia {
+  titulo: string;
+  evidencia: string;
+  emoji: string;
+}
+
+/** «Competencias» de la hoja de vida, cada una con su evidencia. */
+export const competencias: Competencia[] = [
+  {
+    titulo: 'Desarrollo de software educativo',
+    evidencia: 'ConectaTE, ConciencIA, MEAEF y 11 plataformas publicadas.',
+    emoji: '💻',
+  },
+  {
+    titulo: 'Diseño curricular',
+    evidencia: 'Plan de Área 2026 de 6.º a 11.º y el Modelo MILC.',
+    emoji: '🧭',
+  },
+  {
+    titulo: 'IA aplicada a la educación',
+    evidencia: 'Módulo 9 de la UTP, ConciencIA, escritura inversa y el Tomo IV.',
+    emoji: '🤖',
+  },
+  {
+    titulo: 'Investigación y producción académica',
+    evidencia: 'Doctorado, artículo arbitrado y seis libros con DOI.',
+    emoji: '🔬',
+  },
+  {
+    titulo: 'Formación docente en IA',
+    evidencia: 'Más de 330 docentes formados; Módulo 9 del Diplomado en IA de la UTP.',
+    emoji: '🎓',
+  },
+  {
+    titulo: 'Datos abiertos y SIG',
+    evidencia: 'BioMap Cartago, 30 capas para toda la ciudad; especialización técnica en SIG.',
+    emoji: '🗺️',
+  },
+  {
+    titulo: 'Diseño editorial',
+    evidencia:
+      'Sor María Juliana Ediciones: seis libros con una misma plantilla y sistema de identidad.',
+    emoji: '📚',
+  },
+  {
+    titulo: 'Gestión de proyectos y recursos',
+    evidencia: 'Dotaciones para la institución; diagnóstico de 38 sedes en cuatro días.',
+    emoji: '🛠️',
+  },
 ];
 
 export interface FormacionGrupo {
@@ -248,77 +353,42 @@ export interface FormacionGrupo {
   emoji: string;
   bgClass: string;
   items: string[];
+  nota?: string;
 }
 
 /**
- * Formación complementaria (28 cursos/talleres + 9 diplomados) agrupada por área.
+ * Formación complementaria, como la resume la hoja de vida. No trae totales:
+ * por eso la página no muestra conteos de cursos ni de certificaciones.
  */
 export const formacionComplementaria: FormacionGrupo[] = [
   {
-    categoria: 'Inteligencia Artificial',
+    categoria: 'Diplomados',
+    emoji: '🎓',
+    bgClass: 'bg-bento-cyan',
+    items: [
+      'Régimen Laboral del Magisterio · UPN y FECODE · 144 h (2025)',
+      'Enfoque STEM+ para la Formación Integral · EAFIT y MEN · 120 h (2024)',
+      'Apropiación Social del Conocimiento · UNIMINUTO · 90 h (2024)',
+    ],
+    nota: 'Y 5 más desde 2016.',
+  },
+  {
+    categoria: 'Inteligencia artificial',
     emoji: '🤖',
     bgClass: 'bg-bento-blue',
     items: [
-      'Inteligencia Artificial Generativa — MIT',
-      'Inteligencia Artificial Aplicada a la Educación',
-      'IBM Inteligencia Artificial — Coursera (1 y 2)',
-      'Inteligencia Artificial — MINTIC',
-      'Ingeniería de Prompt',
-      'DAYIA · Diseño de Aprendizaje con IA',
+      'Anthropic Academy (7 cursos)',
+      'IBM',
+      'MinTIC',
+      'Santander Open Academy (contenidos del MIT)',
     ],
+    nota: '2024–2026',
   },
   {
-    categoria: 'Apropiación Social del Conocimiento',
-    emoji: '📡',
-    bgClass: 'bg-bento-cyan',
-    items: [
-      'Diplomado en ASC con Enfoque Territorial — UNIMINUTO PCIS',
-      'ASC con Gobernanza Territorial',
-      'Recursos metodológicos para la ASC',
-      'Recomendaciones para la formulación de proyectos ASC',
-      'La apropiación y su relación con actores y sectores CTeI',
-      'Evaluación de la ASC',
-    ],
-  },
-  {
-    categoria: 'STEAM y robótica educativa',
-    emoji: '⚙️',
-    bgClass: 'bg-bento-orange',
-    items: [
-      'Diplomado en Educación STEAM',
-      'Ruta STEAM',
-      'Diplomado STEM+',
-      'Diplomado Edumaker',
-      'Robótica Educativa',
-      'Impresión 3D',
-      'Investigación como Estrategia Pedagógica',
-    ],
-  },
-  {
-    categoria: 'Gamificación y didáctica activa',
-    emoji: '🎮',
-    bgClass: 'bg-bento-pink',
-    items: [
-      'Diplomado en ABJ y Gamificación — MAESTRO Medellín',
-      'Diplomado Comunidades para el Aprendizaje',
-      'Diplomado Docente TIC',
-      'Implementación de TOMi Digital en el Aula',
-      'Maestro TIC',
-      'Ambientes Virtuales de Aprendizaje (AVA)',
-      'Gestión del Aula',
-    ],
-  },
-  {
-    categoria: 'Pedagogía y formación docente',
+    categoria: 'Pedagogía y tecnología',
     emoji: '👩‍🏫',
     bgClass: 'bg-bento-yellow',
-    items: [
-      'Orientador Escolar TI',
-      'Seminario COVID-19 y educación',
-      'Seminario Actualización en TIC con énfasis en Electrónica',
-      'Seminario en Competencias Ciudadanas y Formación de Paz',
-      'Seminario TICs en la Formación de Ingenieros en Sistemas',
-    ],
+    items: ['Porvir y Samsung', 'UC Irvine', 'Learning by Helping', 'Computadores para Educar'],
   },
 ];
 
@@ -329,7 +399,7 @@ export interface Membresia {
 }
 
 /**
- * Membresías activas y roles vigentes.
+ * Membresías («Membresías» de la hoja de vida) y la dirección de los semilleros.
  */
 export const membresias: Membresia[] = [
   {
@@ -339,7 +409,7 @@ export const membresias: Membresia[] = [
     emoji: '🤖',
   },
   {
-    rol: 'Miembro activo',
+    rol: 'Miembro',
     organizacion: 'Club Rotario Pedro Morales Pino · Cartago',
     emoji: '🤝',
   },
@@ -349,29 +419,21 @@ export const membresias: Membresia[] = [
     emoji: '🌱',
   },
   {
-    rol: 'Tutor docente',
+    rol: 'Director',
     organizacion:
-      'Semilleros de Investigación Cir Sormatronik y Betelgeuse · I.E. Sor María Juliana',
+      'Tres semilleros de investigación escolar: CIR Sormatronik, Betelgeuse y ConectaTE · I.E. Sor María Juliana',
     emoji: '🔭',
-  },
-  {
-    rol: 'Representante sindical',
-    organizacion: 'CEID · Centro de Estudios e Investigación Docente del SUTEV',
-    emoji: '✊',
   },
 ];
 
 /**
- * Estadísticas resumen para la sección "números destacados".
+ * Cifras de la cabecera. Cada una está en la hoja de vida, con la frase citada.
+ * El número de libros con DOI sale de coleccion.json (en la página).
  */
 export const stats = {
-  anosDocencia: 13,
-  titulosAcademicos: 5,
-  formacionComplementaria: 37, // 28 cursos + 9 diplomados
-  reconocimientos: 12, // 12 reconocimientos distintos (NASA: 6 años · Samsung: 4 años · Inst/Mun: 11 años · etc.)
-  institucionesEnsenadas: 6,
-  semillerosLiderados: 2,
-  anosNasaIASC: 6, // 2021-2026
+  anosDocencia: 13, // «con más de 13 años en docencia básica, media y de posgrado»
+  proyectosSamsung: 11, // «11 proyectos en etapas nacionales de Samsung» (2024–2026)
+  docentesFormados: 330, // «Más de 330 docentes formados de forma directa en IA y tecnología aplicada a la educación»
 };
 
 /**
@@ -398,44 +460,44 @@ export const plataformaConectate = {
 };
 
 export interface Publicacion {
+  tipo: string;
   titulo: string;
   subtitulo?: string;
+  detalle: string;
   ano: number;
-  paginas: number;
-  rol: string; // "Autor", "Director editorial", etc.
-  href?: string; // ruta interna al PDF
-  emoji?: string;
+  /** DOI (de concepto, en los libros). */
+  doi?: string;
+  /** Ruta interna, sin BASE_URL: la ficha de la obra o su PDF. */
+  href?: string;
+  hrefTexto?: string;
+  emoji: string;
 }
 
 /**
- * Publicaciones recientes del autor.
+ * Publicaciones de 2026 que no son tomos de la Colección MILC (los tomos se leen de
+ * coleccion.json). El artículo y la tesis van como los trae la hoja de vida; las páginas
+ * de la tesis y del plan son las de sus PDF.
  */
-export const publicaciones: Publicacion[] = [
-  {
-    titulo: 'Educación en la Era Onlife',
-    subtitulo: 'MILC: Modelo de Investigación Liberadora y Científica · Versión 3.0',
-    ano: 2026,
-    paginas: 250,
-    rol: 'Autor',
-    href: '/modelo-milc/educacion-en-la-era-onlife/MILC.pdf',
-    emoji: '📖',
-  },
-  {
-    titulo: 'El Mercado de la Atención',
-    subtitulo: 'Colección MILC · Tomo I — Cómo se disputa la atención de los jóvenes y cómo educar el criterio en la era onlife · Versión 2.1',
-    ano: 2026,
-    paginas: 162,
-    rol: 'Autor',
-    href: '/modelo-milc/mercado-atencion/Tomo1_MercadoAtencion_v2.1.pdf',
-    emoji: '📕',
-  },
-  {
-    titulo: 'Plan de Área 2026 · Tecnología e Informática',
-    subtitulo: 'Documento rector institucional',
-    ano: 2026,
-    paginas: 39,
-    rol: 'Director editorial',
-    href: '/plan-de-area/plan-de-area-2026.pdf',
-    emoji: '📚',
-  },
-];
+export const articuloArbitrado: Publicacion = {
+  tipo: 'Artículo arbitrado',
+  titulo:
+    'Modelo de investigación liberadora y científica (MILC): una propuesta para la educación en la era onlife',
+  detalle:
+    'Cardenas Orozco, A. y Restrepo Ortiz, J. A. (UTP). Revista Hambatu Science (Ecuador), vol. 1, n.º 3, pp. 56–77. ISSN 3151-815X. Revisión por pares.',
+  ano: 2026,
+  doi: '10.63862/rhs-v1n3-56-77-2026',
+  emoji: '📰',
+};
+
+export const tesisLibro: Publicacion = {
+  tipo: 'Libro · tesis doctoral, edición revisada y ampliada',
+  titulo:
+    'Impacto de la implementación del modelo pedagógico Flipped Classroom en la enseñanza de la tecnología en básica secundaria',
+  subtitulo: 'Relectura crítica de la experiencia desde el MILC',
+  detalle: 'Versión 1.0 · 146 págs.',
+  ano: 2026,
+  doi: '10.5281/zenodo.23519364',
+  href: '/modelo-milc/tesis-aula-invertida',
+  hrefTexto: 'Ver ficha',
+  emoji: '🎓',
+};

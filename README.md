@@ -23,7 +23,7 @@
 
 - **Curriculum as code.** Every guide, exam and project is a YAML file. Python builders turn each one into a print-ready PDF (XeLaTeX) and into the web version (TypeScript + Astro). A linter checks the editorial contract of every guide.
 - **Built for low connectivity.** Most students use mid-range Android phones with limited data, so a custom Service Worker caches PDFs and pages, and the interface is designed mobile-first at 360 px.
-- **Accounts with guardian consent.** Supabase (Postgres with row-level security and 5 Edge Functions) handles sign-up with guardian consent, student progress and teacher reports. A monthly GitHub Action sends progress reports to guardians.
+- **Accounts with guardian consent (disabled since October 2026).** A Supabase layer (Postgres with row-level security and 5 Edge Functions) for sign-up with guardian consent, student progress and teacher reports stays in the repository but is switched off until 2027; meanwhile progress is stored only on each device. See [`docs/cuentas-2027.md`](docs/cuentas-2027.md).
 - **Content.** 180 learning guides (30 per grade), 18 exams, 18 integrative projects, 10 Bebras-style computational thinking challenges, a research club track and a social-emotional program.
 - **Stack.** Astro 6, Tailwind CSS, TypeScript, Supabase, Python, XeLaTeX, GitHub Actions and GitHub Pages.
 
@@ -52,7 +52,7 @@ Inspirada en [Física Interactiva](https://iemauxicartago.edu.co/Fisica/) de la 
 - 🧠 **`/explora/territorio-interior`** — programa de educación socioemocional 6.º–11.º (60 momentos, cada uno con su ancla ancestral documentada).
 - 🌌 **`/explora`** — hub de programas: Salomé (RECA), NASA-IASC, Bebras, Samsung Solve for Tomorrow.
 - 🧬 **`/modelo-milc`** · 📋 **`/plan-de-area`** — el marco pedagógico y el plan del área.
-- 👤 **`/cuenta`** · 👩‍🏫 **`/docente`** — registro con consentimiento del acudiente, progreso e informes.
+- 👤 **`/cuenta`** · 👩‍🏫 **`/docente`** — registro con consentimiento del acudiente, progreso e informes. **Desactivados desde el 22-10-2026** (no se publican); se reactivan en 2027 según [`docs/cuentas-2027.md`](docs/cuentas-2027.md).
 
 ---
 
@@ -64,7 +64,7 @@ Inspirada en [Física Interactiva](https://iemauxicartago.edu.co/Fisica/) de la 
 | Estilos | [Tailwind CSS 3](https://tailwindcss.com) + sistema propio **Bento Moderna** |
 | Tipografía | Inter (familia única) |
 | Contenido | **YAML** como fuente única → PDF (XeLaTeX) + TypeScript (web) |
-| Backend | [Supabase](https://supabase.com) — Postgres + RLS + Edge Functions |
+| Backend | [Supabase](https://supabase.com) — Postgres + RLS + Edge Functions (desactivado hasta 2027) |
 | Offline | Service Worker propio (`public/sw.js`) |
 | Hosting | GitHub Pages |
 | CI/CD | GitHub Actions (Node 22) |
@@ -117,7 +117,7 @@ npm run build
 npm run preview
 ```
 
-> Para que `/cuenta` y `/docente` funcionen en local, copia `.env.example` a `.env.local` y rellena las claves de Supabase.
+> La capa de cuentas está desactivada (`PUBLIC_AUTH_ENABLED` distinto de `'true'`): sin la bandera, `/cuenta`, `/docente` y `/conectividad` no se publican. Para probarla en local, copia `.env.example` a `.env.local` y rellena las claves de Supabase; antes de reactivarla en producción, ver [`docs/cuentas-2027.md`](docs/cuentas-2027.md).
 
 ---
 
@@ -217,8 +217,8 @@ Accesibilidad no negociable: contraste **WCAG AA 4.5:1**, targets táctiles ≥ 
 - [x] Semillero de Investigación: 3 de 5 líneas completas (Astronomía, Pensamiento computacional y Robótica, 4 módulos cada una)
 - [x] Territorio Interior: 56 de 60 momentos escritos, cada uno con su ancla documentada
 - [x] Offline-first con Service Worker
-- [x] Cuentas, consentimiento del acudiente, progreso e informes sobre Supabase
-- [x] Censo de conectividad post-sismo (`/conectividad`)
+- [x] Cuentas, consentimiento del acudiente, progreso e informes sobre Supabase (desactivados desde el 22-10-2026; ver [`docs/cuentas-2027.md`](docs/cuentas-2027.md))
+- [x] Censo de conectividad post-sismo (`/conectividad`, desactivado con las cuentas)
 
 ### 🚧 En curso
 - [ ] Migración de las guías de grado al contrato v3.1

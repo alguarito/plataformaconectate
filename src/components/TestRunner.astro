@@ -173,15 +173,18 @@ const { testId, titulo, emoji, bgClass, preguntas, opciones, duracionEstimadaMin
 
 <script>
   // Persistencia DB: escucha el evento emitido por el script de abajo y persiste en BD.
-  import { syncResultadoTest } from '../lib/progreso-sync';
-
-  document.addEventListener('test:completado', async (e: Event) => {
-    const ev = e as CustomEvent<{ testId: string; respuestas: number[] }>;
-    const { testId, respuestas } = ev.detail;
-    const root = document.querySelector<HTMLElement>(`[data-test-id="${testId}"]`);
-    const guiaClave = root?.dataset.guiaClave || undefined;
-    await syncResultadoTest({ testId, guiaClave, respuestas });
-  });
+  // Solo con la capa de cuentas activa; con PUBLIC_AUTH_ENABLED distinto de 'true'
+  // (desactivada desde 2026-10-22) el bloque se elimina y el resultado queda local.
+  if (import.meta.env.PUBLIC_AUTH_ENABLED === 'true') {
+    document.addEventListener('test:completado', async (e: Event) => {
+      const ev = e as CustomEvent<{ testId: string; respuestas: number[] }>;
+      const { testId, respuestas } = ev.detail;
+      const root = document.querySelector<HTMLElement>(`[data-test-id="${testId}"]`);
+      const guiaClave = root?.dataset.guiaClave || undefined;
+      const { syncResultadoTest } = await import('../lib/progreso-sync');
+      await syncResultadoTest({ testId, guiaClave, respuestas });
+    });
+  }
 </script>
 
 <script define:vars={{ preguntas, testId }}>

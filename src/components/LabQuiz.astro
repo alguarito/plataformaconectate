@@ -199,7 +199,8 @@ const mostrarN = data.mostrarN ?? 0;
         if (titulo) titulo.textContent = 'Repasa y vuelve a intentar';
       }
 
-      // Persistir intento en BD (índices ORIGINALES). Fire-and-forget.
+      // Avisar del intento (índices ORIGINALES). Lo recoge el script empaquetado
+      // de abajo, que solo lo sincroniza si la capa de cuentas está activa.
       const m = window.location.pathname.match(/grado-(\d+)\/periodo-(\d+)\/guia-(\d+)/);
       if (m) {
         const guiaClave = `${m[1]}-${m[2]}-${m[3]}`;
@@ -213,15 +214,15 @@ const mostrarN = data.mostrarN ?? 0;
         }
         const duracionSeg = inicioMs ? Math.max(0, Math.round((Date.now() - inicioMs) / 1000)) : null;
         const puntaje = total > 0 ? Math.round((aciertos / total) * 100) : 0;
-        import('../lib/progreso-sync').then((mod) =>
-          mod.syncIntentoQuiz({
+        document.dispatchEvent(new CustomEvent('quiz:intento', {
+          detail: {
             guiaClave,
             quizId: id,
             respuestas: { items: respuestasArray, total, aciertos },
             puntaje,
             duracionSeg,
-          }),
-        ).catch(() => { /* silencioso: no bloquea UX */ });
+          },
+        }));
       }
     }
 
@@ -313,5 +314,19 @@ const mostrarN = data.mostrarN ?? 0;
 
     /* ─── Reset ─── */
     $('[data-quiz-reset]')?.addEventListener('click', resetear);
+  }
+</script>
+
+<script>
+  // Sincronización del intento con Supabase (capa de cuentas). Script empaquetado:
+  // el import se resuelve en el build. Con PUBLIC_AUTH_ENABLED distinto de 'true'
+  // (desactivada desde 2026-10-22) el bloque se elimina y el quiz queda solo local.
+  if (import.meta.env.PUBLIC_AUTH_ENABLED === 'true') {
+    document.addEventListener('quiz:intento', (e: Event) => {
+      const intento = (e as CustomEvent).detail;
+      import('../lib/progreso-sync')
+        .then((mod) => mod.syncIntentoQuiz(intento))
+        .catch(() => { /* silencioso: no bloquea UX */ });
+    });
   }
 </script>

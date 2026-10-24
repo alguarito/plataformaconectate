@@ -1,17 +1,19 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import CitaLibro from '../../../components/CitaLibro.astro';
+import MaterialesTomo from '../../../components/MaterialesTomo.astro';
 import { coleccion, tomo } from '../../../data/coleccion';
 import SlidesViewer from '../../../components/SlidesViewer.astro';
 import { presentacionElNino, slidesElNino } from '../../../data/presentacionElNino';
 
 const base = import.meta.env.BASE_URL;
 
-// PDF en la carpeta de esta página (requisito de Google Scholar); ruta en src/data/coleccion.json.
-const libroHref = tomo('III').pdf;
-const libroPaginas = 138;
-const subtitulo =
-  'La curiosidad es natural; la escuela debe darle método al sueño (sin apagarlo)';
+// Versión vigente (2.0): PDF, páginas, subtítulo, edición y fecha salen de src/data/coleccion.json.
+// El PDF está en la carpeta de esta página (requisito de Google Scholar) y es idéntico al de Zenodo.
+const t3 = tomo('III');
+const libroHref = t3.pdf;
+const libroPaginas = t3.paginas;
+const subtitulo = t3.subtitulo;
 // DOI del Tomo III (registro citable en Zenodo).
 // Verificado el 2026-07-22 contra la comunidad `coleccion-milc`: concept DOI = 21360910.
 // Se cita SIEMPRE por concept DOI (resuelve a la última versión). El DOI de versión no
@@ -33,11 +35,12 @@ const jsonLdExtra = [
     '@id': `${inicio}/modelo-milc#tomo3`,
     name: 'El niño que sueña ciencia',
     alternateName: subtitulo,
-    bookEdition: 'Primera edición 2026',
+    bookEdition: t3.edicion,
+    version: t3.version,
     bookFormat: 'EBook',
     inLanguage: 'es-CO',
     numberOfPages: libroPaginas,
-    datePublished: '2026-07-14',
+    datePublished: t3.fecha,
     license: 'https://creativecommons.org/licenses/by-sa/4.0/',
     identifier: doi,
     sameAs: ['https://zenodo.org/doi/10.5281/zenodo.21360910'],
@@ -46,11 +49,14 @@ const jsonLdExtra = [
     encodingFormat: 'application/pdf',
     position: 3,
     isPartOf: { '@type': 'BookSeries', '@id': `${inicio}/modelo-milc#coleccion`, name: 'Colección MILC' },
-    associatedMedia: {
+    // El libro y sus complementos (mismo DOI de concepto).
+    associatedMedia: t3.archivos.map((a) => ({
       '@type': 'MediaObject',
-      contentUrl: pdfUrl,
+      name: a.nombre,
+      description: a.etiqueta ?? 'Libro',
+      contentUrl: `${origen}${a.url}`,
       encodingFormat: 'application/pdf',
-    },
+    })),
     author: { '@id': `${inicio}/acerca#person` },
     publisher: { '@id': `${inicio}#sello` },
     about: [
@@ -82,7 +88,7 @@ const jsonLdExtra = [
   },
 ];
 
-// Estructura real del tomo: 19 capítulos en 6 partes (+ preliminares y cierre).
+// Estructura real del tomo (versión 2.0): 19 capítulos en 6 partes (+ preliminares, cierre y tres anexos).
 const partes = [
   {
     parte: 'Parte I',
@@ -91,7 +97,7 @@ const partes = [
     caps: [
       '1. El asombro originario',
       '2. Nacidos preguntando',
-      '3. La curiosidad ingenua (Freire)',
+      '3. La curiosidad ingenua',
     ],
   },
   {
@@ -130,10 +136,10 @@ const partes = [
     titulo: 'Las arenas de la ciencia real',
     desc: 'El sueño que sale al mundo y gana su rigor.',
     caps: [
-      '14. Ciencia ciudadana: el rigor prestado',
-      '15. Convocatorias: el molde que da forma',
-      '16. Ferias de ciencia: la libertad orientada',
-      '17. Publicaciones: la autoría y la difusión',
+      '14. La ciencia ciudadana: el rigor prestado',
+      '15. Las convocatorias: el molde que da forma',
+      '16. Las ferias de ciencia: la libertad orientada',
+      '17. Las publicaciones: la autoría y la difusión',
     ],
   },
   {
@@ -142,7 +148,7 @@ const partes = [
     desc: 'Manual del ciclo y las arenas.',
     caps: [
       '18. Instrumentos del oficio',
-      '19. Programa por etapas (6.º–11.º)',
+      '19. Programa por etapas',
     ],
   },
 ];
@@ -152,12 +158,12 @@ const ideas = [
   {
     emoji: '🌱',
     titulo: 'El asombro originario',
-    texto: 'Investigar no es una técnica que la escuela enseñe: es un sentido natural del ser. El niño llega al aula ya investigando (pregunta, desarma, se asombra de su patio y de su gente). «Todos los hombres desean por naturaleza saber».',
+    texto: 'La investigación se aprende, pero puede arraigar en una curiosidad que aparece mucho antes de la enseñanza formal. El niño llega al aula preguntando, desarmando, asombrándose de su patio y de su gente. El asombro abre la puerta; investigar exige aprender a cruzarla.',
   },
   {
     emoji: '🧒',
     titulo: 'Nacidos preguntando',
-    texto: 'Antes de la primera clase, el niño ya es un investigador: explora, arriesga hipótesis y las pone a prueba. La curiosidad ingenua (Freire) es el deseo de saber que precede a todo método.',
+    texto: 'Si el asombro es el sentido, la pregunta es su primer gesto visible y la línea de base del niño. La curiosidad ingenua (Freire) es el deseo de saber que precede a todo método.',
   },
   {
     emoji: '🏦',
@@ -184,14 +190,14 @@ const ideas = [
 
 <BaseLayout
   title="El niño que sueña ciencia · Tomo III — Colección MILC · ConectaTE"
-  description="Tomo III de la Colección MILC: la curiosidad es un sentido natural del ser y la escuela no la enseña, le da método sin apagar el asombro. Ensayo pedagógico situado sobre la investigación como sentido natural. Libro en acceso abierto (CC BY-SA 4.0, DOI en Zenodo)."
+  description="Tomo III de la Colección MILC: cómo acompañar la curiosidad de niñas, niños y jóvenes hasta volverla investigación sin apagarla. Versión 2.0, edición revisada. Libro en acceso abierto (CC BY-SA 4.0, DOI en Zenodo), con cuaderno, fichas, guía docente, kit de pilotaje y láminas de la práctica."
   ogType="article"
   imagen="/og/libro-el-nino-que-suena-ciencia.png"
   jsonLd={jsonLdExtra}
   citation={{
     title: 'El niño que sueña ciencia',
     authors: [coleccion.autor.bib],
-    date: '2026/07/14',
+    date: t3.fecha.replace(/-/g, '/'),
     pdfUrl,
     doi: doiConcepto,
     publisher: 'Sor María Juliana Ediciones',
@@ -215,6 +221,7 @@ const ideas = [
           <div class="flex flex-wrap gap-2 mb-6">
             <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">Colección MILC · Tomo III</span>
             <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">Ensayo pedagógico situado</span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">Versión {t3.version}</span>
             <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">{libroPaginas} páginas</span>
             <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">CC BY-SA 4.0</span>
           </div>
@@ -260,12 +267,13 @@ const ideas = [
       <div class="bento-card-color bg-bento-lime mb-10">
         <span class="chip-bento mb-3 bg-black/10">💡 La tesis, en una línea</span>
         <p class="text-lg md:text-2xl font-black leading-snug">
-          «La curiosidad es un sentido natural del ser (el niño ya venía investigando): la escuela no la crea ni la enseña, su única tarea honesta es darle método sin apagar el asombro.»
+          «La escuela puede cultivar la curiosidad y enseñarle método sin apagarla.»
         </p>
         <p class="text-sm leading-relaxed mt-3 opacity-90">
           <em>Sentido</em> dice dos cosas a la vez: la investigación como <strong>facultad</strong>
-          (con la que palpamos lo real, junto a la vista y el oído) y como <strong>rumbo</strong>
-          (lo que le da significado a existir). Se atrofia una y se pierde el otro.
+          (una metáfora pedagógica para nombrar nuestra búsqueda de lo real) y como <strong>rumbo</strong>
+          (lo que le da significado a una vida). No añade un órgano a los sentidos del cuerpo ni supone que
+          todo niño domina ya el método científico. Se atrofia una y se pierde el otro.
         </p>
       </div>
 
@@ -295,8 +303,9 @@ const ideas = [
           <p class="text-base md:text-lg leading-relaxed mt-4">
             Es el <strong>Tomo III de la Colección MILC</strong>. Si el Tomo I formó el criterio del
             <em>yo</em> frente a la pantalla y el Tomo II arraigó al <em>nosotros</em> en el
-            territorio, este recupera y da método al <strong>sentido investigador</strong> con que
-            nacimos: es el tomo del <em>cómo</em>, el que vuelve capaz el asombro.
+            territorio, este recupera y da método al <strong>sentido investigador</strong>, una
+            disposición a preguntar y buscar que la educación puede cultivar y volver más rigurosa:
+            es el tomo del <em>cómo</em>, el que vuelve capaz el asombro.
           </p>
         </div>
       </section>
@@ -311,8 +320,9 @@ const ideas = [
           Un recorrido que va de <strong style="color: var(--fg);">reconocer el asombro</strong>
           a <strong style="color: var(--fg);">darle método</strong> con el ciclo MILC y a
           <strong style="color: var(--fg);">sacarlo al mundo</strong> por las arenas de la ciencia
-          real. Abre con Prólogo, Introducción y «Cómo leer»; cierra con la Conclusión
-          («Volver a soñar ciencia») y las Referencias.
+          real. Abre con Prólogo, Introducción, «Cómo leer este tomo» y «Por qué este libro»;
+          cierra con la Conclusión («Volver a soñar ciencia»), tres anexos (Atlas de Arenas; Ética,
+          IA y trazabilidad; Evaluar para seguir investigando) y las Referencias.
         </p>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           {partes.map((p, i) => (
@@ -337,6 +347,12 @@ const ideas = [
           ))}
         </div>
       </section>
+
+      <!-- MATERIALES PARA EL AULA (versión vigente) -->
+      <MaterialesTomo
+        romano="III"
+        enZenodo="La lectura adaptable del libro, el aula digital sin conexión, los registros de pilotaje y las fuentes editables están en"
+      />
 
       <!-- PRESENTACIÓN · 15 slides -->
       <div id="presentacion" class="mb-10 scroll-mt-24">
@@ -396,8 +412,11 @@ const ideas = [
       </section>
 
       <!-- Cómo citar -->
+      <!-- La cita impresa en la página legal de la versión 2.0 (título en minúsculas, APA 7). -->
       <CitaLibro
         titulo="El niño que sueña ciencia"
+        subtitulo={subtitulo}
+        version={t3.version}
         tomo="Tomo III"
         volumen={3}
         ano={2026}

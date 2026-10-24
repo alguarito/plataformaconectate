@@ -1,17 +1,23 @@
 ---
 /**
  * «Materiales para el aula» de un tomo: los complementos del libro (cuaderno, fichas en Carta
- * y A4, guía docente y kit de pilotaje), con su nombre exacto, peso y descripción. Todo sale de
- * src/data/coleccion.json. Lo demás del paquete (lectura adaptable, lectura etiquetada, aula
- * digital, registros y fuentes editables) se descarga del registro de Zenodo.
+ * y A4, guía docente, kit de pilotaje y, en el Tomo III, láminas de la práctica), con su nombre
+ * exacto, peso y descripción. Todo sale de src/data/coleccion.json. Lo demás del paquete (lectura
+ * adaptable, lectura etiquetada, aula digital, registros y fuentes editables) se descarga del
+ * registro de Zenodo; `enZenodo` lo nombra cuando el paquete de un tomo trae otra cosa.
  */
 import { tomo, peso, type Romano } from '../data/coleccion';
 
 interface Props {
   romano: Romano;
+  /** Lo que solo está en Zenodo, hasta «… están en»; detrás va el enlace «el registro de Zenodo». */
+  enZenodo?: string;
 }
 
-const { romano } = Astro.props;
+const {
+  romano,
+  enZenodo = 'La lectura adaptable, la lectura etiquetada para lectores de pantalla, el aula digital y las fuentes editables están en',
+} = Astro.props;
 const t = tomo(romano);
 const materiales = t.archivos
   .filter((a) => a.rol !== 'libro')
@@ -28,8 +34,7 @@ const materiales = t.archivos
       <span class="chip-bento">Versión {t.version} · mismo DOI</span>
     </div>
     <p class="text-sm leading-relaxed mb-6 max-w-2xl" style="color: var(--fg-muted);">
-      Los complementos para imprimir y usar en clase; comparten el DOI del libro. La lectura adaptable,
-      la lectura etiquetada para lectores de pantalla, el aula digital y las fuentes editables están en
+      Los complementos para imprimir y usar en clase; comparten el DOI del libro. {enZenodo}{' '}
       <a href={t.doiUrl} target="_blank" rel="noopener" class="font-bold underline underline-offset-2" style="color: var(--fg);">el registro de Zenodo</a>.
     </p>
     <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4" role="list">

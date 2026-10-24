@@ -8,7 +8,7 @@
 import datos from './coleccion.json';
 
 export type Romano = '0' | 'I' | 'II' | 'III' | 'IV' | 'V';
-export type RolArchivo = 'libro' | 'cuaderno' | 'hojas-carta' | 'hojas-a4' | 'guia' | 'kit';
+export type RolArchivo = 'libro' | 'cuaderno' | 'hojas-carta' | 'hojas-a4' | 'guia' | 'kit' | 'laminas';
 
 interface ArchivoDatos {
   rol: RolArchivo;
@@ -53,7 +53,7 @@ interface LibroDatos {
   licencia_url: string;
   profundiza: number[];
   edicion: string;
-  version?: string; // solo los tomos que ya la declaran (Tomo 0: «3.0»; Tomo I: «2.1»; Tomo II: «2.4»)
+  version?: string; // solo los tomos que ya la declaran (Tomo 0: «3.0»; Tomo I: «2.1»; Tomo II: «2.4»; Tomo III: «2.0»)
   fecha: string;
   cita_key: string;
   archivos: ArchivoDatos[];

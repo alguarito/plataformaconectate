@@ -432,11 +432,13 @@ const LIBROS: LibroOg[] = [
     etiqueta: 'COLECCIÓN MILC · TOMO IV',
     titulo: 'No rendir la mirada',
     subtitulo: 'IA, datos y soberanía tecnológica: usar la herramienta con criterio',
-    paginas: 142,
+    paginas: 186,
     licencia: 'CC BY-SA 4.0',
     doi: '10.5281/zenodo.21517630',
     bg: '#1A1A2E', fg: '#FFFFFF', accent: '#C9A227',
     emoji: '📕',
+    // Página 1 del PDF de la versión 2.0 (idéntico al de Zenodo).
+    portada: 'scripts/og-portadas/libro-no-rendir-la-mirada.jpg',
   },
   {
     slug: 'libro-el-lugar-de-llegar-a-ser',

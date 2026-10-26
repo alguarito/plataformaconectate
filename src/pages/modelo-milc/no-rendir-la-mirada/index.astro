@@ -7,11 +7,12 @@ import { presentacionNoRendir, slidesNoRendir } from '../../../data/presentacion
 
 const base = import.meta.env.BASE_URL;
 
-// PDF en la carpeta de esta página (requisito de Google Scholar); ruta en src/data/coleccion.json.
-const libroHref = tomo('IV').pdf;
-const libroPaginas = 142;
-const subtitulo =
-  'Inteligencia artificial, datos y soberanía tecnológica: usar la herramienta con criterio, autoría y cuidado';
+// Versión vigente (2.0): PDF, páginas, subtítulo, edición y fecha salen de src/data/coleccion.json.
+// El PDF está en la carpeta de esta página (requisito de Google Scholar) y es idéntico al de Zenodo.
+const t4 = tomo('IV');
+const libroHref = t4.pdf;
+const libroPaginas = t4.paginas;
+const subtitulo = t4.subtitulo;
 // DOI del Tomo IV. Verificado contra la API de Zenodo el 2026-07-23: concept DOI = 21517630.
 // Se cita SIEMPRE por concept DOI (resuelve a la última versión); el DOI de versión no se usa.
 const doiConcepto = '10.5281/zenodo.21517630';
@@ -31,11 +32,12 @@ const jsonLdExtra = [
     '@id': `${inicio}/modelo-milc#tomo4`,
     name: 'No rendir la mirada',
     alternateName: subtitulo,
-    bookEdition: 'Primera edición 2026',
+    bookEdition: t4.edicion,
+    version: t4.version,
     bookFormat: 'EBook',
     inLanguage: 'es-CO',
     numberOfPages: libroPaginas,
-    datePublished: '2026-07-23',
+    datePublished: t4.fecha,
     license: 'https://creativecommons.org/licenses/by-sa/4.0/',
     identifier: doi,
     sameAs: ['https://zenodo.org/doi/10.5281/zenodo.21517630'],
@@ -81,7 +83,7 @@ const jsonLdExtra = [
   },
 ];
 
-// Estructura real del tomo: 15 capítulos en 4 partes (+ preliminares y cierre).
+// Estructura real del tomo (versión 2.0): 15 capítulos en 4 partes (+ preliminares y cierre).
 const partes = [
   {
     parte: 'Parte I',
@@ -120,9 +122,9 @@ const partes = [
     titulo: 'Manual metodológico',
     desc: 'La herramienta con sentido en el aula, de sexto a once.',
     caps: [
-      '12. De la caja negra al criterio: IA y datos por grados',
+      '12. De la caja negra al criterio: introducir IA y datos por grados',
       '13. El laboratorio de datos: sensores, medición y cartografía',
-      '14. El taller de producción con IA: trazabilidad y autoría',
+      '14. El taller de producción con IA: escritura, prototipado y código con trazabilidad',
       '15. Programa por etapas (6.º–11.º): del bit a la soberanía',
     ],
   },
@@ -133,12 +135,12 @@ const ideas = [
   {
     emoji: '🎭',
     titulo: 'Parece pensar, y no piensa',
-    texto: 'Un modelo de lenguaje predice la siguiente palabra: está optimizado para sonar plausible, no para ser veraz. Distinguir el parecer del ser es el primer acto de soberanía, y el que decide todo lo demás.',
+    texto: 'La máquina no piensa: acierta. Un sistema entrenado para producir lenguaje fluido puede envolver por igual una solución acertada, un razonamiento útil o un error convincente. Tratar la herramienta como oráculo es rendir la mirada; tratarla como mediación es el primer acto de soberanía.',
   },
   {
     emoji: '🩼',
     titulo: 'Andamio o muleta',
-    texto: 'La misma IA puede instalar capacidad o instalar dependencia. La pregunta que las distingue no es cuánto esfuerzo ahorra, sino qué queda cuando se retira: el andamio deja una capacidad; la muleta, una deuda cognitiva.',
+    texto: 'El andamio es el apoyo que ayuda a construir una habilidad y puede retirarse cuando se consolida; la muleta, la sustitución que impide practicar lo que se quería aprender. La diferencia no está en cuánto esfuerzo ahorra la herramienta, sino en cuál. Al saldo que deja la muleta el libro lo llama deuda cognitiva: un riesgo pedagógico, no un diagnóstico clínico.',
   },
   {
     emoji: '✍️',
@@ -158,21 +160,21 @@ const ideas = [
   {
     emoji: '🌱',
     titulo: 'Frugalidad y territorio',
-    texto: 'Con 41,9 % de conexión en el campo colombiano, el manual se escribe en versión de un solo dispositivo. Y usar la máquina desde la exterioridad (Dussel) es aportarle la mirada que al centro le falta.',
+    texto: 'En el campo colombiano, solo el 41,9 % de los hogares tenía internet en 2024 (DANE, 2025). El manual parte de la versión de un solo dispositivo: no como remedio de los que no tienen, sino como la forma más digna de empezar. Y usar la máquina desde la exterioridad (Dussel) es mirarla con ojos que el centro no tiene.',
   },
 ];
 ---
 
 <BaseLayout
   title="No rendir la mirada · Tomo IV — Colección MILC · ConectaTE"
-  description="Tomo IV de la Colección MILC: la herramienta no piensa por el estudiante, le presta capacidad. Ensayo pedagógico situado sobre inteligencia artificial, datos y soberanía tecnológica en la escuela, con manual de aula de sexto a once. Libro en acceso abierto (CC BY-SA 4.0, DOI en Zenodo)."
+  description="Tomo IV de la Colección MILC: no prohibir la inteligencia artificial ni rendirse a ella, sino enseñar a usarla con criterio (declarar, verificar y responder como autor). Versión 2.0, edición revisada, con manual de aula de sexto a once. Libro en acceso abierto (CC BY-SA 4.0, DOI en Zenodo)."
   ogType="article"
   imagen="/og/libro-no-rendir-la-mirada.png"
   jsonLd={jsonLdExtra}
   citation={{
     title: 'No rendir la mirada',
     authors: [coleccion.autor.bib],
-    date: '2026/07/23',
+    date: t4.fecha.replace(/-/g, '/'),
     pdfUrl,
     doi: doiConcepto,
     publisher: 'Sor María Juliana Ediciones',
@@ -196,6 +198,7 @@ const ideas = [
           <div class="flex flex-wrap gap-2 mb-6">
             <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">Colección MILC · Tomo IV</span>
             <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">Ensayo pedagógico situado</span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">Versión {t4.version}</span>
             <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">{libroPaginas} páginas</span>
             <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15">CC BY-SA 4.0</span>
           </div>
@@ -241,12 +244,14 @@ const ideas = [
       <div class="bento-card-color bg-bento-lime mb-10">
         <span class="chip-bento mb-3 bg-black/10">💡 La tesis, en una línea</span>
         <p class="text-lg md:text-2xl font-black leading-snug">
-          «La herramienta no piensa por el estudiante: le presta capacidad. Lo que decide su efecto no es la máquina, es el diseño pedagógico con que entra al aula.»
+          «La herramienta no piensa por el estudiante: le presta capacidad.»
         </p>
         <p class="text-sm leading-relaxed mt-3 opacity-90">
           Por eso la escuela no puede ni <strong>prohibir</strong> (no se educa el criterio prohibiendo
           aquello frente a lo cual hay que tener criterio) ni <strong>rendirse</strong> (usar mucho una
           herramienta no es usarla bien). Queda una tercera vía, más difícil: el <strong>criterio</strong>.
+          Ningún diseño garantiza por sí solo el aprendizaje: hay que explicitar qué se delega, enseñar a
+          revisar y observar qué capacidad desarrolla cada estudiante.
         </p>
       </div>
 
@@ -254,6 +259,15 @@ const ideas = [
       <section class="mb-10">
         <span class="chip-bento mb-4">De qué trata</span>
         <div class="bento-card">
+          <!-- Sinopsis de la contracubierta de la versión 2.0, aprobada por el autor. -->
+          <p class="text-base md:text-lg leading-relaxed mb-4">
+            La inteligencia artificial llegó al aula más rápido que nuestras preguntas sobre ella. Este
+            cuarto tomo de la Colección MILC propone no prohibirla ni rendirse a ella, sino enseñar a
+            usarla con criterio: declarar cuándo y cómo se usó, verificar lo que dice y responder como
+            autor por lo que se entrega, sin ceder el propio juicio, los propios datos ni el propio
+            territorio. Desde experiencias reales de una escuela pública de Cartago, y con un manual de
+            sexto a once, muestra que la herramienta puede prestar capacidad sin quitarnos la mirada.
+          </p>
           <p class="text-base md:text-lg leading-relaxed mb-4">
             <em>No rendir la mirada</em> parte de un gesto que se repite cada mañana en cualquier
             salón: un estudiante escribe una pregunta, recibe un texto impecable y lo copia sin
@@ -262,7 +276,7 @@ const ideas = [
           </p>
           <p class="text-base md:text-lg leading-relaxed mb-4">
             El tomo mira de frente lo que la herramienta le hace al que aprende cuando lo sustituye
-            en vez de acompañarlo: la <strong>dependencia</strong>, que atrofia el juicio; la
+            en vez de acompañarlo: la <strong>dependencia</strong>, cuando la máquina piensa por él; la
             <strong>autoría rendida</strong>, que vuelve invisible al estudiante en su propio
             trabajo; la <strong>extracción</strong>, que convierte su huella en mercancía; y la
             <strong>brecha</strong>, que ensancha la distancia entre los que pueden y los que no.
@@ -273,8 +287,8 @@ const ideas = [
             hace) y, enmarcándolos, ser <strong>soberano</strong>: no ceder el juicio, ni los datos,
             ni el lugar desde el cual se mira el mundo. La última parte lo baja al aula con un
             manual de sexto a once, laboratorio de datos, Política de IA del Aula y rúbrica de
-            autoría, escrito en <strong>versión de un solo dispositivo</strong> para que ningún
-            colegio quede fuera por falta de equipos.
+            autoría, que parte de la <strong>versión de un solo dispositivo</strong>: la versión por
+            defecto para quien empieza, no el remedio de los que no tienen.
           </p>
           <p class="text-base md:text-lg leading-relaxed mt-4">
             Es el <strong>Tomo IV de la Colección MILC</strong>. Si el Tomo I formó el
@@ -297,7 +311,9 @@ const ideas = [
           a <strong style="color: var(--fg);">mirar sus efectos</strong>, de ahí a
           <strong style="color: var(--fg);">educar el criterio</strong> y por último al
           <strong style="color: var(--fg);">manual de aula</strong>. Abre con Prólogo, Introducción
-          y «Cómo leer»; cierra con la Conclusión y las Referencias (50 fichas en APA 7.ª).
+          y «Cómo leer este tomo»; cierra con la Conclusión, las Palabras de cierre («Lo que no
+          rendimos»), las Referencias (61 en APA 7.ª) y «Del libro a la práctica», con los recursos
+          complementarios.
         </p>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           {partes.map((p, i) => (
@@ -382,8 +398,11 @@ const ideas = [
       </section>
 
       <!-- Cómo citar -->
+      <!-- La cita impresa en la página legal de la versión 2.0 (subtítulo corto, APA 7). -->
       <CitaLibro
         titulo="No rendir la mirada"
+        subtitulo="Inteligencia artificial, datos y soberanía tecnológica"
+        version={t4.version}
         tomo="Tomo IV"
         volumen={4}
         ano={2026}

@@ -53,7 +53,7 @@ interface LibroDatos {
   licencia_url: string;
   profundiza: number[];
   edicion: string;
-  version?: string; // solo los tomos que ya la declaran (Tomo 0: «3.0»; Tomo I: «2.1»; Tomo II: «2.4»; Tomo III y Tomo IV: «2.0»)
+  version?: string; // solo los tomos que ya la declaran (Tomo 0: «3.0»; Tomo I: «2.1»; Tomo II: «2.4»; Tomo III, Tomo IV y Tomo V: «2.0»)
   fecha: string;
   cita_key: string;
   archivos: ArchivoDatos[];

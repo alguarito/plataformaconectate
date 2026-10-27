@@ -47,6 +47,11 @@ interface Props {
   enColeccion?: boolean;
   /** Descripción entre corchetes de APA, ej. «Edición revisada y ampliada de tesis doctoral, …». */
   descripcion?: string;
+  /**
+   * true cuando la cita impresa conserva los dos puntos del subtítulo (Tomo V:
+   * «…de la formación: Fundar, abrir…»). Por defecto pasan a coma.
+   */
+  conservarDosPuntos?: boolean;
 }
 
 const {
@@ -63,12 +68,15 @@ const {
   notaObraMatriz = true,
   enColeccion = true,
   descripcion,
+  conservarDosPuntos = false,
 } = Astro.props;
 
 const autorApa = 'Cardenas Orozco, A.';
 const autorBib = 'Cardenas Orozco, Alvaro';
 const doiUrl = `https://doi.org/${doi}`;
-const tituloCompleto = subtitulo ? `${titulo}: ${subtitulo.replace(/\s*:\s*/, ', ')}` : titulo;
+const tituloCompleto = subtitulo
+  ? `${titulo}: ${conservarDosPuntos ? subtitulo : subtitulo.replace(/\s*:\s*/, ', ')}`
+  : titulo;
 const serie = [
   version ? `Versión ${version}` : '',
   enColeccion ? (tomo ? `Colección MILC, ${tomo}` : 'Colección MILC') : '',

@@ -98,7 +98,7 @@ export const slidesElNino: readonly SlideMilc[] = [
     numero: 12,
     titulo: 'Defender lo propio y volverse autor',
     descripcion:
-      'En la Feria de Energía de Pereira, la participación creció desde 2023 (un cuarto y un quinto puesto) hasta cerca de cuarenta y ocho proyectos de sexto a once en 2025, y el libro recuerda que «la ciencia no es tener razón, sino estar dispuesto a corregirse en público». En publicaciones, del semillero de astronomía salió ¿Qué vemos en el cielo? Astronomía para jóvenes curiosos, de León (2023), y la institución publicó los volúmenes 1 y 2 de la revista CosmoTEC (2023 y 2024), con artículos de estudiantes y docentes. La regla es «publicar poco y verdadero antes que mucho y falso».',
+      'En la Feria de Energía de Pereira, la participación creció desde 2023 (un cuarto y un quinto puesto) hasta cuarenta y ocho proyectos de sexto a once en 2025, y el libro recuerda que «la ciencia no es tener razón, sino estar dispuesto a corregirse en público». En publicaciones, del semillero de astronomía salió ¿Qué vemos en el cielo? Astronomía para jóvenes curiosos, de León (2023), y la institución publicó los volúmenes 1 y 2 de la revista CosmoTEC (2023 y 2024), con artículos de estudiantes y docentes. La regla es «publicar poco y verdadero antes que mucho y falso».',
   },
   {
     numero: 13,

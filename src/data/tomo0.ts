@@ -27,7 +27,7 @@ export const descargasTomo0 = t0.archivos.map((a) => {
   };
 });
 
-// Estructura real de la obra matriz (versión 3.0 · 11 capítulos en 5 partes + epílogo).
+// Estructura real de la obra matriz (versión 4.0, igual a la 3.0 · 11 capítulos en 5 partes + epílogo).
 // `ruta` = la «Ruta del capítulo» que abre cada capítulo en el libro (en el 1, su mapa de lectura).
 // «Para profundizar» sale de coleccion.json (tomoQueProfundiza); el capítulo 9 no tiene tomo.
 const momentosCiclo = ['Escucha', 'Sistematización', 'Praxis', 'Evaluación liberadora', 'Devolución'];

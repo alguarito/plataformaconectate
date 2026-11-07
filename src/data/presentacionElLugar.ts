@@ -1,10 +1,11 @@
 /**
  * Metadata de la presentación "El Lugar de Llegar a Ser" — Tomo V de la
- * Colección MILC (el tomo de cierre), generada con NotebookLM y curada
- * por el Dr. Alvaro Cardenas Orozco.
+ * Colección MILC (el tomo de cierre), compuesta desde la versión 2.0 del libro
+ * (octubre de 2026). Las citas son literales del libro; el generador vive en
+ * CEREBRO (taller/presentaciones-milc-v2-2026-10-27/).
  *
  * Las slides viven en `public/presentaciones/el-lugar-de-llegar-a-ser/slide-NN.webp`
- * (12 imágenes), junto al PDF descargable.
+ * (12 imágenes, 1920×1080), junto al PDF descargable.
  *
  * Cada entrada describe el slide para:
  *  - Alt text accesible (lectores de pantalla)
@@ -16,7 +17,7 @@ import type { SlideMilc } from './presentacionMilc';
 export const presentacionElLugar = {
   titulo: 'El Lugar de Llegar a Ser',
   subtitulo:
-    'El espacio pedagógico como agente de la formación · Presentación del Tomo V de la Colección MILC',
+    'El espacio pedagógico como agente de la formación · Presentación del Tomo V de la Colección MILC, versión 2.0',
   autor: 'PhD. Alvaro Cardenas Orozco',
   institucion: 'I.E. Sor María Juliana · Cartago, Valle del Cauca',
   fecha: '2026',
@@ -31,72 +32,72 @@ export const slidesElLugar: readonly SlideMilc[] = [
     numero: 1,
     titulo: 'El Lugar de Llegar a Ser',
     descripcion:
-      'Portada. Tomo V de la Colección MILC: «El espacio pedagógico como agente de la formación». Porque nadie llega a ser en un lugar cualquiera. Dr. Alvaro Cardenas Orozco · I.E. Sor María Juliana, Cartago.',
+      'Portada del Tomo V de la Colección MILC, El Lugar de Llegar a Ser, en su versión 2.0, edición revisada de octubre de 2026. Es el tomo que cierra la colección y pregunta por el espacio: ¿dónde puedo llegar a ser? Su autor es el Dr. Alvaro Cardenas Orozco, de la I.E. Sor María Juliana (Cartago, Valle del Cauca), y la obra circula en acceso abierto con licencia CC BY-SA 4.0.',
   },
   {
     numero: 2,
-    titulo: 'La pregunta que faltaba en la educación',
+    titulo: '¿Dónde puedo llegar a ser?',
     descripcion:
-      'El arco de la colección como una trayectoria ascendente: 1. El Yo (la atención), 2. El Nosotros (el arraigo), 3. El Cómo (el método), 4. El Con Qué (la herramienta) y, al final, iluminado en oro, 5. El Dónde (el lugar). Después de definir al sujeto, la comunidad, el método y la herramienta, queda la condición donde todo florece: el espacio. No es un apéndice de los otros cuatro; es la condición donde la vida que aprende llega a ser.',
+      'La colección reúne seis obras: el Tomo 0, Educación en la Era Onlife, que es la obra matriz, y cinco tomos temáticos. Cada tomo temático hace una pregunta distinta sobre el mismo acto de aprender: el yo, el nosotros, el cómo y la herramienta. Faltaba el dónde, y el libro explica por qué: «La atención se defiende en un sitio, el arraigo se cultiva en un sitio, el método se practica en un sitio».',
   },
   {
     numero: 3,
-    titulo: 'El aula no es neutra: es un agente de formación',
+    titulo: 'El espacio no es el fondo: es un agente',
     descripcion:
-      'Parte uno, el problema. Contraste visual entre el aula en filas frente al tablero y una trama de islas interconectadas. El paradigma falso: creer que el espacio es solo el contenedor neutro y el aprendizaje el contenido. La realidad incómoda: el lugar educa por su sola disposición, y hay aulas que apagan exactamente la capacidad que dicen querer encender. El silencio de un estudiante no es un dato sobre él; es una noticia sobre el lugar donde lo pusimos a estar.',
+      'Capítulo 1, El aula que apaga. Con Vygotsky (1978), el libro sostiene que el desarrollo ocurre primero entre las personas, y por eso el ambiente es parte de la maquinaria del aprendizaje. La regla que propone es sencilla: «El silencio de un estudiante no basta para juzgar su capacidad.»',
   },
   {
     numero: 4,
-    titulo: 'La frontera mental: escuelas que se empobrecen al cerrarse',
+    titulo: 'La escuela-isla frente a la escuela-nodo',
     descripcion:
-      'La escuela-isla frente a la escuela-nodo. La isla es una fortaleza que defiende su perímetro y funciona de puertas para adentro; enseña a los jóvenes de la periferia que lo importante sucede «lejos» y sin ellos. El nodo es un cruce de trayectorias: entiende que su espacio no se mide en metros cuadrados, sino en la densidad de su red, y le dice al joven, con hechos, que pertenece a la comunidad de los que investigan y crean.',
+      'Dos columnas contraponen la escuela que se encierra (capítulo 3) y la escuela que se conecta (capítulo 8). La frontera de ladrillo es necesaria; la frontera mental es una decisión y se puede mover. El libro advierte, sin embargo: «Tampoco todo aislamiento es elegido: puede resultar de barreras de transporte, conectividad, seguridad, financiación o exclusión institucional.»',
   },
   {
     numero: 5,
-    titulo: 'Lo que la pedagogía sabe (y nuestra práctica olvidó)',
+    titulo: 'Lo que la pedagogía sabe desde hace décadas',
     descripcion:
-      'Parte dos, los referentes. Cuatro anclajes teóricos: Reggio Emilia (Malaguzzi) y el ambiente como «tercer maestro», que educa sin dar clase por su luz, su forma y lo que invita a hacer; Vygotsky y el desarrollo mediado, donde las funciones superiores aparecen primero en la interacción con el entorno; Yi-Fu Tuan y la distinción espacio/lugar, pues el espacio anónimo se vuelve lugar solo cuando lo cargamos de experiencia y valor; y Lave y Wenger con las comunidades de práctica, donde lo que sostiene el aprendizaje no es la sala, sino el vínculo.',
+      'Cuatro referentes que la Introducción y el capítulo 1 ponen en diálogo, junto con el currículo oculto de Jackson (1968). El libro aclara que no son equivalentes: «Estas perspectivas no son equivalentes ni prueban una causa única; permiten mirar juntos ambiente, actividad y participación.»',
   },
   {
     numero: 6,
-    titulo: 'Si alguien lo diseñó, alguien puede rediseñarlo',
+    titulo: 'Lo que alguien diseñó, alguien puede rediseñarlo',
     descripcion:
-      'Parte tres, la solución. «Esperar el presupuesto es esperar el permiso para no hacer nada». El espacio es un artefacto: no podemos decir «el aula es así» como quien dice «la gravedad es así». Mover las mesas no requiere presupuesto; requiere una decisión pedagógica.',
+      'Capítulo 2, El espacio es un artefacto: el aula no es un hecho de la naturaleza, sino un objeto fabricado, y su disposición es una decisión pedagógica. La Ventana del Grupo Ecosistemas Digitales (2024) muestra un salón común convertido en laboratorio de sensores y prototipos. El libro acota que esa experiencia contó con equipos, tiempo y acompañamiento, y que «el cambio no puede atribuirse solo a mover las mesas».',
   },
   {
     numero: 7,
-    titulo: 'Las cuatro operaciones sobre el espacio',
+    titulo: 'Nombrar, fundar, abrir, sostener: un solo gesto',
     descripcion:
-      'El ciclo del método: 1. Nombrar (reconocer que el espacio es un agente activo y que su disposición actual es una decisión tuya); 2. Fundar (crear «el espacio otro» —un semillero, un laboratorio— donde no había nada, con lo que hay a mano); 3. Abrir (tejer la red, buscar la infraestructura prestada y conectar la escuela como nodo hacia el mundo exterior); 4. Sostener (institucionalizar la práctica y medir lo invisible, para que el espacio sobreviva al maestro que lo fundó).',
+      'Las cuatro partes del libro son cuatro operaciones sobre el espacio, y se sostienen unas a otras: «no se sostiene lo que no se fundó, no se abre lo que no existe, y no se funda bien lo que antes no se supo nombrar». No reemplazan el ciclo de investigación MILC de la obra matriz (Escucha, Sistematización, Praxis, Evaluación liberadora y Devolución); los productos de la Parte IV se construyen dentro de él.',
   },
   {
     numero: 8,
-    titulo: 'Fundar: el vínculo resiste, el ladrillo no',
+    titulo: 'El espacio no se pide: se funda',
     descripcion:
-      'Dos ideas de la fundación. El espacio sin lugar: si no hay sede, por cierre o falta de recursos, se funda el vínculo, porque el espacio educativo no es el edificio sino la red de personas investigando juntas. Y abrir el ágora: todo lugar fundado necesita un escenario de palabra pública, donde el estudiante no responde un examen para ser calificado, sino que defiende como autor lo que investigó y es tomado en serio.',
+      'Los cuatro capítulos de la Parte II: fundar donde no había nada, dar identidad (CIR Sormatronik, el semillero de robótica nacido en 2015 que el autor dirige desde 2016), nacer en la adversidad (Betelgeuse, creado durante la pandemia) y abrir el ágora. El ágora completa la fundación, porque «un semillero sin ágora forma para saber, pero no para responder por lo que se sabe».',
   },
   {
     numero: 9,
-    titulo: 'Abrir: la lógica de la red sobre la lógica del inventario',
+    titulo: 'La red como arquitectura del espacio',
     descripcion:
-      'Cambiar la pregunta: de «¿cuánto cuesta?» a «¿quién lo presta?». Lo que un colegio público no puede lograr acumulando propiedad, lo logra extendiendo conexiones. El diagrama muestra a la escuela pública conectada con universidades (EAFIT, Univalle), empresas de tecnología (ESRI, Fedesoft) y entidades de gobierno. Aliarse no es recibir caridad: es extender las fronteras del aula e integrar al estudiante en la práctica profesional real.',
+      'La escuela en el centro y tres clases de vínculo (capítulos 8 a 10): la red que la cuenta como nodo, la infraestructura que le prestan y los aliados que se vuelven parte del aula. El cambio empieza por la pregunta, que deja de ser «¿cuánto cuesta?» y pasa a ser «¿quién lo presta?». Con la IASC, el libro habla «de participación, no de descubrimientos».',
   },
   {
     numero: 10,
-    titulo: 'Sostener: evaluar lo que la nota no ve',
+    titulo: 'Hacer visible lo que la nota no captura',
     descripcion:
-      'Lo que no se puede mostrar, se recorta. La nota tradicional fotografía un instante; el ambiente exige medir el proceso y la trayectoria. La rúbrica de ambiente tiene cuatro dimensiones: participación (de la asistencia pasiva a tomar la palabra sin que se lo manden), autoría (de repetir un contenido dado a defender un portafolio propio), pertenencia (de estar «de paso» a usar el lenguaje del «nosotros» y cuidar el espacio) y apertura (del aislamiento escolar al número de redes y salidas externas conectadas).',
+      'Rúbrica de ambiente del capítulo 15: cada fila va del nivel inicial al sostenido, con un nivel intermedio (en desarrollo), y revisa el ambiente sin calificar a los estudiantes. Es una propuesta para adaptar, no una escala validada, y advierte: «No sume los niveles ni produzca un ranking.» Sostener también es institucionalizar el espacio (capítulo 13) y tejerle una red (capítulo 14), porque «Hacer visible no es lo mismo que probar.»',
   },
   {
     numero: 11,
-    titulo: 'El destino cambia cuando cambia la arquitectura del encuentro',
+    titulo: 'La misma persona, dos lugares',
     descripcion:
-      'Parte cuatro, conclusiones y logros. Dos casos reales. El de Luisa: apagada y sin voz en un aula evaluada solo con exposiciones orales, recuperó la voz en el semillero de astronomía Betelgeuse al cambiar la palabra de «examen» a «compartir un hallazgo», ganó galardones y viajó al extranjero; no cambió Luisa, cambió el sitio. Y el congreso nacional: un estudiante de escuela pública presentando ante investigadores adultos, que no es una hazaña de superación personal, sino el triunfo de un espacio que le otorgó un ágora y lo validó como autor en igualdad de condiciones.',
+      'Tres Ventanas al Aula del libro: Luisa en el semillero Betelgeuse (capítulo 1), un estudiante en el 12.º Congreso Nacional de Enseñanza de la Física y la Astronomía (Universidad del Valle, Cali, 2024; capítulo 7) y el taller de constelaciones que Luisa lideró en la I.E. Alfonso López Pumarejo (capítulo 11). Del congreso, el libro concluye: «La hazaña no es del joven solo: es de la arquitectura que lo hizo posible.» Y sobre Luisa advierte: «Esta historia no permite aislar el efecto del lugar del esfuerzo de Luisa, del acompañamiento, del tiempo o de otras experiencias de su vida.»',
   },
   {
     numero: 12,
     titulo: 'El último acto de soberanía',
     descripcion:
-      'Cierre. «El lugar donde alguien llega a ser no lo decreta el sistema… lo funda un maestro que se atreve». El último acto de soberanía docente no es decidir qué se enseña o con qué, sino atreverse a diseñar el entorno físico y social para que el potencial de un joven deje de ser invisible. Funda hoy el lugar donde otro llegará a ser mañana.',
+      'Cierre del Tomo V y de la Colección MILC. Después de la atención, el origen, el método y la herramienta, queda la soberanía sobre el lugar, que es también un asunto de justicia. El libro termina así: «Porque nadie llega a ser en un lugar cualquiera. Y ese lugar, el que sí lo permite, no lo espera el maestro: lo funda.»',
   },
 ] as const;

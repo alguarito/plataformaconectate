@@ -68,6 +68,17 @@ export const programas: Programa[] = [
     aliado: 'Samsung',
   },
   {
+    slug: 'feria-ciencia-energetica',
+    nombre: 'Feria de la Ciencia Energética',
+    categoria: 'Ciencia e innovación',
+    descripcion:
+      'La feria de Energía de Pereira, con sede en Cartago: prototipos sobre ciudades inteligentes, transformación digital y autosostenibilidad. Con guía de preparación ConectaTE.',
+    estado: 'activo',
+    icono: '⚡',
+    bgClass: 'bg-bento-yellow',
+    aliado: 'Energía de Pereira',
+  },
+  {
     slug: 'iasc',
     nombre: 'Búsqueda de asteroides',
     categoria: 'Astronomía · Ciencia ciudadana',
